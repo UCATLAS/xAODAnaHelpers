@@ -73,10 +73,20 @@ class BasicEventSelection : public xAH::Algorithm
     */
     bool m_doPUreweighting = false;
     bool m_doPUreweightingSys = false;
+
     /// @brief Comma separated list of filenames
     std::string m_lumiCalcFileNames = "";
     /// @brief Comma separated list of filenames
     std::string m_PRWFileNames = "";
+    /// @brief Automatically configure PRW using config files from SUSYTools instead of using m_PRWFileNames.
+    bool m_autoconfigPRW = false;
+    /**
+      @rst
+      mc16(acd) to bypass the automatic campaign determination from AMI, several campaigns can be separated by a comma. Only used
+      when m_autoconfigPRW is true
+      @endrst
+    */
+    std::string m_mcCampaign;
     /// @brief Use Period Configuration or auto
     std::string m_periodConfig = "auto";
 
@@ -182,6 +192,7 @@ class BasicEventSelection : public xAH::Algorithm
     double m_MD_finalSumW;	     //!
     double m_MD_initialSumWSquared;  //!
     double m_MD_finalSumWSquared;    //!
+    std::string m_mcCampaignMD; //!
 
     // cutflow
     TH1D* m_cutflowHist = nullptr;      //!
@@ -217,6 +228,18 @@ class BasicEventSelection : public xAH::Algorithm
     // variables that don't get filled at submission time should be
     // protected from being send from the submission node to the worker
     // node (done by the //!)
+
+    /** helper functions */
+    /**
+       @brief Automatically add the required PRW config file for the DSID being processed to the PRW tool.
+       @rst
+       The PRW config files stored by SUSYTools are added to the m_pileup_tool_handle. If the m_mcCampaign is 
+       not set, the campaign is determined automatically. If it is set, then all of the campaings listed
+       in the setting are added.
+       @endrst
+    */
+    StatusCode autoconfigurePileupRWTool();
+
   public:
     // Tree *myTree; //!
     // TH1 *myHist; //!
