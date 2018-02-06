@@ -37,6 +37,8 @@ void EventInfo::setTree(TTree *tree)
   } else {
     connectBranch<float   >(tree, "prescale_DataWeight",         &m_prescale_DataWeight);
     connectBranch<int     >(tree, "DistEmptyBCID",               &m_DistEmptyBCID);
+    connectBranch<int     >(tree, "DistLastUnpairedBCID",        &m_DistLastUnpairedBCID);
+    connectBranch<int     >(tree, "DistNextUnpairedBCID",        &m_DistNextUnpairedBCID);
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -127,6 +129,8 @@ void EventInfo::setBranches(TTree *tree)
   } else {
     tree->Branch("prescale_DataWeight",       &m_prescale_DataWeight,  "prescale_DataWeight/F");
     tree->Branch("DistEmptyBCID",             &m_DistEmptyBCID,        "DistEmptyBCID/I");
+    tree->Branch("DistLastUnpairedBCID",      &m_DistLastUnpairedBCID, "DistLastUnpairedBCID/I");
+    tree->Branch("DistNextUnpairedBCID",      &m_DistNextUnpairedBCID, "DistNextUnpairedBCID/I");
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -203,7 +207,9 @@ void EventInfo::clear()
   m_SCTFlags = 0;
   m_mcEventWeight = 1.;
   m_prescale_DataWeight = 1.;
-  m_DistEmptyBCID = 1.;
+  m_DistEmptyBCID = -999;
+  m_DistLastUnpairedBCID = -999;
+  m_DistNextUnpairedBCID = -999;
   m_weight_pileup = 1.;
   m_weight_pileup_down = 1.;
   m_weight_pileup_up = 1.;
@@ -266,6 +272,10 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
     static SG::AuxElement::ConstAccessor< int > DistEmptyBCID ("DistEmptyBCID");
     if ( DistEmptyBCID.isAvailable( *eventInfo ) )   { m_DistEmptyBCID = DistEmptyBCID( *eventInfo ); }     else { m_DistEmptyBCID = -999; }
+    static SG::AuxElement::ConstAccessor< int > DistLastUnpairedBCID ("DistLastUnpairedBCID");
+    if ( DistLastUnpairedBCID.isAvailable( *eventInfo ) )   { m_DistLastUnpairedBCID = DistLastUnpairedBCID( *eventInfo ); }     else { m_DistLastUnpairedBCID = -999; }
+    static SG::AuxElement::ConstAccessor< int > DistNextUnpairedBCID ("DistNextUnpairedBCID");
+    if ( DistNextUnpairedBCID.isAvailable( *eventInfo ) )   { m_DistNextUnpairedBCID = DistNextUnpairedBCID( *eventInfo ); }     else { m_DistNextUnpairedBCID = -999; }
 
   }
 

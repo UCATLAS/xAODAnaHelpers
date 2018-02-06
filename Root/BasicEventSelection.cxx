@@ -962,18 +962,45 @@ EL::StatusCode BasicEventSelection :: execute ()
     HLTPSKey(*eventInfo) = m_trigConfTool_handle->hltPrescaleKey();
   }
 
-  // Calculate distance to previous empty BCID and save as decoration
+  // Calculate distance to previous empty BCID and previous unpaired BCID, and save as decorations
+  std::cout << "A: " << isMC() << " and " << m_trigConfTool_handle.isUserConfigured() << std::endl;
   if( !isMC() && m_trigConfTool_handle.isUserConfigured() ){
+    std::cout << "B" << std::endl;
+    //Distance to previous empty BCID
     for (int i = eventInfo->bcid() - 1; i >= 0; i--){
       //get the bunch group pattern for bunch crossing i
       uint16_t bgPattern = m_trigConfTool_handle->bunchGroupSet()->bgPattern()[i];
-      bool isLast = (bgPattern >> 3) & 0x1;
-      if (isLast){
+      std::cout << "Looking at bg pattern " << bgPattern << std::endl;
+      bool isEmpty = (bgPattern >> 3) & 0x1;
+      if (isEmpty){
         static SG::AuxElement::Decorator< int > DistEmptyBCID("DistEmptyBCID");
         DistEmptyBCID(*eventInfo) = eventInfo->bcid()-i;
         break;
       }
     }//for each bcid
+    //Distance to previous unpaired crossing
+    for (int i = eventInfo->bcid() - 1; i >= 0; i--){
+      //get the bunch group pattern for bunch crossing i
+      uint16_t bgPattern = m_trigConfTool_handle->bunchGroupSet()->bgPattern()[i];
+      bool isUnpaired = !((bgPattern >> 1) & 0x1);
+      if (isUnpaired){
+        static SG::AuxElement::Decorator< int > DistLastUnpairedBCID("DistLastUnpairedBCID");
+        DistLastUnpairedBCID(*eventInfo) = eventInfo->bcid()-i;
+        break;
+      }
+    }//for each bcid
+    //Distance to next unpaired crossing
+    for (int i = eventInfo->bcid() + 1; i <= 3654; i++){
+      //get the bunch group pattern for bunch crossing i
+      uint16_t bgPattern = m_trigConfTool_handle->bunchGroupSet()->bgPattern()[i];
+      bool isUnpaired = !((bgPattern >> 1) & 0x1);
+      if (isUnpaired){
+        static SG::AuxElement::Decorator< int > DistNextUnpairedBCID("DistNextUnpairedBCID");
+        DistNextUnpairedBCID(*eventInfo) = i-eventInfo->bcid();
+        break;
+      }
+    }//  for each bcid 
+
   }//if data
 
   return EL::StatusCode::SUCCESS;

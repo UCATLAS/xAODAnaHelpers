@@ -58,6 +58,8 @@ namespace xAH {
     int      m_bcid;
     float    m_prescale_DataWeight;
     int      m_DistEmptyBCID;
+    int      m_DistLastUnpairedBCID;
+    int      m_DistNextUnpairedBCID;
 
     // event pileup
     int      m_npv;
