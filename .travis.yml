@@ -1,6 +1,7 @@
 # our main test script
 services: docker
 language: ruby
+filter_secrets: false
 # only test 'push' builds to master (including PRs that target master)
 branches:
   only:
