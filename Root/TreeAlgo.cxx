@@ -44,7 +44,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   treeFile->mkdir(m_name.c_str());
   treeFile->cd(m_name.c_str());
 
-  // to handle more than one jet collections (reco and truth)
+  // to handle more than one jet collections (reco, trig and truth)
   std::string token;
   std::istringstream ss_reco_containers(m_jetContainerName);
   while ( std::getline(ss_reco_containers, token, ' ') ){
@@ -56,6 +56,18 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_jetContainerName.empty() && m_jetContainers.size()!=m_jetBranches.size()){
     ANA_MSG_ERROR( "The number of jet containers must be equal to the number of jet name branches. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+  std::istringstream ss_trig_containers(m_trigJetContainerName);
+  while ( std::getline(ss_trig_containers, token, ' ') ){
+    m_trigJetContainers.push_back(token);
+  }
+  std::istringstream ss_trig_names(m_trigJetBranchName);
+  while ( std::getline(ss_trig_names, token, ' ') ){
+    m_trigJetBranches.push_back(token);
+  }
+  if( !m_trigJetContainerName.empty() && m_trigJetContainers.size()!=m_trigJetBranches.size()){
+    ANA_MSG_ERROR( "The number of trig jet containers must be equal to the number of trig jet name branches. Exiting");
     return EL::StatusCode::FAILURE;
   }
   std::istringstream ss_truth_containers(m_truthJetContainerName);
@@ -71,13 +83,21 @@ EL::StatusCode TreeAlgo :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // allow to store different variables for each jet collection (reco only, default: store the same)
+  // allow to store different variables for each jet collection (reco and trig only, default: store the same)
   std::istringstream ss(m_jetDetailStr);
   while ( std::getline(ss, token, '|') ){
     m_jetDetails.push_back(token);
   }
   if( m_jetDetails.size()!=1  && m_jetContainers.size()!=m_jetDetails.size()){
     ANA_MSG_ERROR( "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+  std::istringstream ss_trig_details(m_trigJetDetailStr);
+  while ( std::getline(ss_trig_details, token, '|') ){
+    m_trigJetDetails.push_back(token);
+  }
+  if( m_trigJetDetails.size()!=1  && m_trigJetContainers.size()!=m_trigJetDetails.size()){
+    ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
 
@@ -205,7 +225,14 @@ EL::StatusCode TreeAlgo :: execute ()
       }
     }
     if (!m_l1JetContainerName.empty() )         { helpTree->AddL1Jets();                                           }
-    if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
+    // if (!m_trigJetContainerName.empty() )       { helpTree->AddJets(m_trigJetDetailStr, "trigJet");                }
+    if (!m_trigJetContainerName.empty() )      {
+      for(unsigned int ll=0; ll<m_trigJetContainers.size();++ll){
+        // helpTree->AddJets       (m_trigJetDetailStr, m_trigJetBranches.at(ll).c_str());
+        if(m_trigJetDetails.size()==1) helpTree->AddJets       (m_trigJetDetailStr, m_trigJetBranches.at(ll).c_str());
+	else{ helpTree->AddJets       (m_trigJetDetails.at(ll), m_trigJetBranches.at(ll).c_str()); }
+      }
+    }
     if (!m_truthJetContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_truthJetContainers.size();++ll){
         helpTree->AddJets       (m_truthJetDetailStr, m_truthJetBranches.at(ll).c_str());
@@ -318,15 +345,23 @@ EL::StatusCode TreeAlgo :: execute ()
 
       const xAOD::JetRoIContainer* inL1Jets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainerName, m_event, m_store, msg()) );
-      helpTree->FillL1Jets( inL1Jets);
+      helpTree->FillL1Jets( inL1Jets, m_sortL1Jets );
     }
 
     if ( !m_trigJetContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainerName, m_event, m_store, msg()) ) continue;
+      bool reject = false;
+      for(unsigned int ll=0;ll<m_trigJetContainers.size();++ll){
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainers.at(ll), m_event, m_store, msg()) ) {
+          reject = true;
+          break;
+        }
 
-      const xAOD::JetContainer* inTrigJets(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainerName, m_event, m_store, msg()) );
-      helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), "trigJet" );
+        const xAOD::JetContainer* inTrigJets(nullptr);
+        ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainers.at(ll), m_event, m_store, msg()) );
+        helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_trigJetBranches.at(ll) );
+      }
+
+      if ( reject ) continue;
     }
 
     if ( !m_truthJetContainerName.empty() ) {
