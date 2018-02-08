@@ -563,7 +563,7 @@ void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jet
     }
     std::sort(L1jet_Et_sorted.begin(), L1jet_Et_sorted.end(), std::greater<float>());
 
-    for( int i = 0; i < L1jet_Et.size(); i++) {
+    for( unsigned int i = 0; i < L1jet_Et.size(); i++) {
       int index = std::find (L1jet_Et.begin(), L1jet_Et.end(), L1jet_Et_sorted.at(i)) - L1jet_Et.begin();
       m_l1Jet_et8x8.push_back ( jets->at(index)->et8x8() / m_units );
       m_l1Jet_eta.push_back( jets->at(index)->eta() );
