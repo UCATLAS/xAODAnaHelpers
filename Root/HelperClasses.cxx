@@ -109,6 +109,7 @@ namespace HelperClasses{
     m_pileup        = has_exact("pileup");
     m_pileupsys     = has_exact("pileupsys");
     m_eventCleaning = has_exact("eventCleaning");
+    m_bcidInfo      = has_exact("bcidInfo");
     m_shapeEM       = has_exact("shapeEM");
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");

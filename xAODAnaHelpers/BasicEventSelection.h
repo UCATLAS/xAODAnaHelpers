@@ -98,7 +98,10 @@ class BasicEventSelection : public xAH::Algorithm
     // Unprescaling data
     bool m_savePrescaleDataWeight = false;
 
-  // Primary Vertex
+    /// @brief Calculate distance to nearest empty and unpaired BCIDs
+    bool m_calcBCIDInfo = false;
+
+    // Primary Vertex
     /// @brief Name of vertex container
     std::string m_vertexContainerName = "PrimaryVertices";
     /// @brief Enable to apply a primary vertex cut
@@ -233,7 +236,7 @@ class BasicEventSelection : public xAH::Algorithm
     /**
        @brief Automatically add the required PRW config file for the DSID being processed to the PRW tool.
        @rst
-       The PRW config files stored by SUSYTools are added to the m_pileup_tool_handle. If the m_mcCampaign is 
+       The PRW config files stored by SUSYTools are added to the m_pileup_tool_handle. If the m_mcCampaign is
        not set, the campaign is determined automatically. If it is set, then all of the campaings listed
        in the setting are added.
        @endrst
