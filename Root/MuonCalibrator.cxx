@@ -252,10 +252,8 @@ EL::StatusCode MuonCalibrator :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
-  std::string randYear = "Data16";
-
-  // a default 2016 run
-  int runNumber = 296939;
+  std::string randYear = m_YearsList.at(0);
+  int runNumber = 0;
 
   if ( !isMC() && m_forceDataCalib ) {
     runNumber = eventInfo->runNumber();
@@ -339,16 +337,15 @@ EL::StatusCode MuonCalibrator :: execute ()
 
       for ( auto muSC_itr : *(calibMuonsSC.first) ) {
 
-	ANA_MSG_DEBUG( "  uncailbrated muon " << idx << ", pt = " << muSC_itr->pt()*1e-3 << " GeV");
-	if(muSC_itr-> primaryTrackParticle()){
-	  if ( m_muonCalibrationAndSmearingTools[randYear]->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
-	    ANA_MSG_WARNING( "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
-	  }
-	}
+	      ANA_MSG_DEBUG( "  uncailbrated muon " << idx << ", pt = " << muSC_itr->pt()*1e-3 << " GeV");
+	      if(muSC_itr-> primaryTrackParticle()){
+	        if ( m_muonCalibrationAndSmearingTools[randYear]->applyCorrection(*muSC_itr) == CP::CorrectionCode::Error ) {  // Can have CorrectionCode values of Ok, OutOfValidityRange, or Error. Here only checking for Error.
+	          ANA_MSG_WARNING( "MuonCalibrationAndSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original muon values are taken.
+	        }
+	      }
 
-	ANA_MSG_DEBUG( "  corrected muon pt = " << muSC_itr->pt()*1e-3 << " GeV");
-
-	++idx;
+	      ANA_MSG_DEBUG( "  corrected muon pt = " << muSC_itr->pt()*1e-3 << " GeV");
+	      ++idx;
 
       } // close calibration loop
     }
