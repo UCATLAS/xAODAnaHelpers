@@ -418,7 +418,7 @@ EL::StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METContainerName + metSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METContainerName + metSuffix, m_event, m_store, msg()) );
       helpTree->FillMET( inMETCont );
     }
 
