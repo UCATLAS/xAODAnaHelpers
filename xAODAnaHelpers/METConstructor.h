@@ -28,21 +28,15 @@ class METConstructor : public xAH::Algorithm
 public:
 
   // configuration variables
-  TString m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
-  TString m_mapName = "METAssoc_AntiKt4LCTopo";
-  TString m_coreName = "MET_Core_AntiKt4LCTopo";
-  TString m_outputContainer = "NewRefFinal";
-  TString m_inputJets = "";
-  TString m_inputElectrons = "";
-  TString m_inputPhotons = "";
-  TString m_inputTaus = "";
-  TString m_inputMuons = "";
-
-
-  //std::string  m_inputAlgoJets;  // name of vector<string> of syst retrieved from TStore
-  //std::string  m_inputAlgoSystMuons;  // name of vector<string> of syst retrieved from TStore
-  //std::string  m_inputAlgoSystEle;  // name of vector<string> of syst retrieved from TStore
-  //std::string m_inputAlgoPhotons; // name of vector<string> of syst retrieved from TStore
+  std::string m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
+  std::string m_mapName = "METAssoc_AntiKt4LCTopo";
+  std::string m_coreName = "MET_Core_AntiKt4LCTopo";
+  std::string m_outputContainer = "NewRefFinal";
+  std::string m_inputJets = "";
+  std::string m_inputElectrons = "";
+  std::string m_inputPhotons = "";
+  std::string m_inputTaus = "";
+  std::string m_inputMuons = "";
 
   bool    m_doElectronCuts = false;
   bool    m_doPhotonCuts = false;
@@ -84,8 +78,6 @@ public:
   /// @brief Write systematics names to metadata
   bool        m_writeSystToMetadata = false;
 
-  std::string m_SoftTermSystConfigFile = "TrackSoftTerms.config";
-
   /** @rst
         Name of jet systematics vector from  :cpp:class:`~JetCalibrator`.
       @endrst
@@ -123,8 +115,7 @@ private:
 
   asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool", this}; //!
 
-  TString coreMetKey;
-  std::vector<CP::SystematicSet> sysList; //!
+  std::vector<CP::SystematicSet> m_sysList; //!
 
   int m_numEvent;         //!
 
