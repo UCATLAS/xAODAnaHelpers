@@ -9,6 +9,9 @@ import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gROOT.SetBatch(True)
 
+import inspect
+from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
+
 from .utils import NameGenerator
 
 class Config(object):
@@ -61,21 +64,39 @@ class Config(object):
 
     # Construct the given constructor
     #    (complicated b/c we have to deal nesting of namespaces)
-    alg = reduce(lambda x,y: getattr(x, y, None), className.split('.'), ROOT)
+    alg = reduce(lambda x,y: getattr(x, y, None), className.split('::'), ROOT)
     if alg is None:
       raise AttributeError(className)
 
-    # Construct an instance of the alg and set its attributes
-    alg_obj = alg()
-    alg_obj.SetName(algName)
-    alg_obj.setMsgLevel(msgLevel)
-    self._log.append((className,algName))
-    for k,v in options.iteritems():
-      # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
-      if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
-        raise AttributeError(k)
-      elif hasattr(alg_obj, k):
-        #handle unicode from json
+    # get a list of parent classes
+    parents = inspect.getmro(alg)
+    if ROOT.EL.Algorithm in parents:
+      # Construct an instance of the alg and set its attributes
+      alg_obj = alg()
+      alg_obj.SetName(algName)
+      self._log.append((className,algName))
+      alg_obj.setMsgLevel(msgLevel)
+      for k,v in options.iteritems():
+        # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
+        if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
+          raise AttributeError(k)
+        elif hasattr(alg_obj, k):
+          #handle unicode from json
+          if isinstance(v, unicode): v = v.encode('utf-8')
+          self._log.append((algName, k, v))
+          try:
+            setattr(alg_obj, k, v)
+          except:
+            logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
+            raise
+    elif ROOT.EL.AnaAlgorithm in parents:
+      alg_obj = AnaAlgorithmConfig(className)
+      alg_obj.setName(algName)
+      self._log.append((className, algName))
+      # TODO
+      #setattr(alg_obj, "OutputLevel", msgLevel)
+      for k,v in options.iteritems():
+        if k in ['m_msgLevel', 'm_name']: continue
         if isinstance(v, unicode): v = v.encode('utf-8')
         self._log.append((algName, k, v))
         try:
@@ -83,6 +104,8 @@ class Config(object):
         except:
           logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
           raise
+    else:
+      raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm. I do not know how to configure it. {1}".format(className, parents))
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
