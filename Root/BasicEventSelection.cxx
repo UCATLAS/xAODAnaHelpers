@@ -249,26 +249,27 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //
   // Metadata for the MC campaign to be used by PRW autoconfiguration.
   if(isMC() && m_autoconfigPRW)
-    {
-      std::string amiTag = "";
-      m_mcCampaignMD = "";
-      const xAOD::FileMetaData* fmd = 0;
-      if (m_event->retrieveMetaInput(fmd, "FileMetaData"))
-	{
-	  fmd->value(xAOD::FileMetaData::amiTag, amiTag);
-	  if( amiTag.find("r9364")!=std::string::npos ) m_mcCampaignMD = "mc16a";
-	  else if( amiTag.find("r9781")!=std::string::npos ) m_mcCampaignMD = "mc16c";
-	  else if( amiTag.find("r10201")!=std::string::npos ) m_mcCampaignMD = "mc16d";
-	  else {
-	    ANA_MSG_ERROR( "unrecognized xAOD::FileMetaData::amiTag, \'" << amiTag << "'. Please check your input sample and make sure it's mc16a, c or d. If it is, contact someone." );
-	    return StatusCode::FAILURE;
-	  }
-	}
-      else
-	{
-	  ANA_MSG_WARNING( "access to FileMetaData failed for MC campaign determination" );
-	}
+  {
+    const xAOD::EventInfo* evtInfo = 0;
+    ANA_CHECK( m_event->retrieve( evtInfo, "EventInfo" ) );
+    uint32_t runNum = evtInfo->runNumber();
+  
+    m_mcCampaignMD = "";
+    switch(runNum) {
+      case 284500 :
+        m_mcCampaignMD="mc16a";
+        break;
+      // This should be switched to mc16d once it is available.
+      case 300000 :
+        m_mcCampaignMD="mc16c";
+        break;
+      default :
+        ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autocongigure PRW. Aborting." );
+        return StatusCode::FAILURE;
+      break;
     }
+    ANA_MSG_INFO( "Determined MC campaign to be " << m_mcCampaignMD);
+  }
 
   return EL::StatusCode::SUCCESS;
 
@@ -512,20 +513,23 @@ EL::StatusCode BasicEventSelection :: initialize ()
         tmp_lumiCalcFileNames.erase(0, pos+1);
       }
     }
-    ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
-    for( unsigned int i=0; i < PRWFiles.size(); ++i){
-      printf( "\t %s \n", PRWFiles.at(i).c_str() );
-    }
-    ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
-    for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
-      printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
-    }
 
     if(m_autoconfigPRW)
       {	ANA_CHECK( autoconfigurePileupRWTool() ); }
     else
-      { ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles)); }
-    ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+      {
+        ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
+        for( unsigned int i=0; i < PRWFiles.size(); ++i){
+          printf( "\t %s \n", PRWFiles.at(i).c_str() );
+        }
+        ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
+        
+        ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
+        for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
+          printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
+        }
+        ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+      }
     ANA_CHECK( m_pileup_tool_handle.setProperty("UsePeriodConfig", m_periodConfig) );
     ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
     ANA_CHECK( m_pileup_tool_handle.retrieve());
@@ -1007,14 +1011,18 @@ EL::StatusCode BasicEventSelection :: execute ()
 // https://gitlab.cern.ch/atlas/athena/blob/3be30397de7c6cfdc15de38f532fdb4b9f338297/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/SUSYObjDef_xAOD.cxx#L700
 StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 {
+  
+  // Don't do this if we aren't supposed to
+  if (! (isMC() && m_autoconfigPRW ))
+    return StatusCode::SUCCESS;
+
   // doing here some black magic to autoconfigure the pileup reweighting tool
   std::string prwConfigFile = "";
-  if ( isMC() && m_autoconfigPRW )
-    {
-      // Extract campaign from user configuration
-      std::string tmp_mcCampaign = m_mcCampaign;
-      std::vector<std::string> mcCampaignList;
-      while ( tmp_mcCampaign.size() > 0)
+  
+  // Extract campaign from user configuration
+  std::string tmp_mcCampaign = m_mcCampaign;
+  std::vector<std::string> mcCampaignList;
+  while ( tmp_mcCampaign.size() > 0)
 	{
 	  size_t pos = tmp_mcCampaign.find_first_of(',');
 	  if ( pos == std::string::npos )
@@ -1090,7 +1098,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	}
       ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
       for(const auto& mcCampaign : mcCampaignList)
-	printf( "\t %s \n", mcCampaign.c_str() );
+	    ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
 
       std::vector<std::string> prwConfigFiles;
       int DSID_INT = (int) dsid;
@@ -1102,14 +1110,68 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
 	  else
 	    {
-	      ANA_MSG_INFO( "autoconfigurePileupRWTool(): add " << prwConfigFile << " to PRW tool" );
 	      prwConfigFiles.push_back( prwConfigFile );
 	    }
 	}
-      ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
+    
+    // also need to handle lumicalc files: only use 2015+2016 with mc16a
+    // and only use 2017 with mc16c
+    // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
+    
+    // Parse lumicalc file names
+    std::vector<std::string> allLumiCalcFiles;
+    std::string tmp_lumiCalcFileNames = m_lumiCalcFileNames;
+    while ( tmp_lumiCalcFileNames.size() > 0) {
+      size_t pos = tmp_lumiCalcFileNames.find_first_of(',');
+      if ( pos == std::string::npos ) {
+        pos = tmp_lumiCalcFileNames.size();
+        allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+        tmp_lumiCalcFileNames.erase(0, pos);
+      } else {
+        allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+        tmp_lumiCalcFileNames.erase(0, pos+1);
+      }
     }
-  // Return gracefully
-  return StatusCode::SUCCESS;
+    
+    std::vector<std::string> lumiCalcFiles;
+    for(const auto& mcCampaign : mcCampaignList)
+	{
+       for(const auto& filename : allLumiCalcFiles)
+       {
+          // looking for things of format "stuff/data15_13TeV/stuff" etc
+    	  size_t pos = filename.find("data");
+	      std::string year = filename.substr(pos+4, 2);
+         
+          // Case mc16a: want 2015 and 2016
+          if (mcCampaign == "mc16a") {
+            if (year == "15" || year == "16") {
+              lumiCalcFiles.push_back(filename);
+            }
+          } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
+            if (year == "17") {
+              lumiCalcFiles.push_back(filename);
+            }
+          } else {
+             ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
+          }
+       }
+    }
+
+    // Set everything and report on it.
+    ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
+    for( unsigned int i=0; i < prwConfigFiles.size(); ++i) {
+      printf( "\t %s \n", prwConfigFiles.at(i).c_str() );
+    }
+    ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
+    
+    ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
+    for( unsigned int i=0; i < lumiCalcFiles.size(); ++i) {
+      printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
+    }
+    ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+
+    // Return gracefully
+    return StatusCode::SUCCESS;
 }
 
 
