@@ -259,6 +259,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       case 284500 :
         m_mcCampaignMD="mc16a";
         break;
+      // This should be switched to mc16d once it is available.
       case 300000 :
         m_mcCampaignMD="mc16c";
         break;
