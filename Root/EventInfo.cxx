@@ -34,8 +34,6 @@ void EventInfo::setTree(TTree *tree)
     if ( m_infoSwitch.m_weightsSys ) {
       connectBranch< std::vector<float> >(tree, "mcEventWeights", &m_mcEventWeights);
     }
-  } else {
-    connectBranch<float   >(tree, "prescale_DataWeight",         &m_prescale_DataWeight);
   }
 
   if ( m_infoSwitch.m_bcidInfo && !m_mc ){
@@ -129,8 +127,6 @@ void EventInfo::setBranches(TTree *tree)
     if ( m_infoSwitch.m_weightsSys ) {
       tree->Branch("mcEventWeights",   &m_mcEventWeights);
     }
-  } else {
-    tree->Branch("prescale_DataWeight",       &m_prescale_DataWeight,  "prescale_DataWeight/F");
   }
 
   if ( m_infoSwitch.m_bcidInfo && !m_mc ){
@@ -212,7 +208,6 @@ void EventInfo::clear()
   m_TileFlags = 0;
   m_SCTFlags = 0;
   m_mcEventWeight = 1.;
-  m_prescale_DataWeight = 1.;
   m_DistEmptyBCID = -999;
   m_DistLastUnpairedBCID = -999;
   m_DistNextUnpairedBCID = -999;
@@ -270,10 +265,6 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
         m_mcEventWeights      = std::vector<float>{m_mcEventWeight};
       }
     }
-  }
-  if ( !m_mc ) {
-    static SG::AuxElement::ConstAccessor< float > prsc_DataWeight ("prescale_DataWeight");
-    if ( prsc_DataWeight.isAvailable( *eventInfo ) )	 { m_prescale_DataWeight = prsc_DataWeight( *eventInfo ); }	    else { m_prescale_DataWeight = 1.0; }
   }
 
   if ( m_infoSwitch.m_bcidInfo && !m_mc ){

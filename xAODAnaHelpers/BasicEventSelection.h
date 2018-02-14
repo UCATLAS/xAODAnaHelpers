@@ -95,9 +95,6 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief The maximum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>
     int m_actualMuMax = -1; // Default to off
 
-    // Unprescaling data
-    bool m_savePrescaleDataWeight = false;
-
     /// @brief Calculate distance to nearest empty and unpaired BCIDs
     bool m_calcBCIDInfo = false;
 
@@ -126,6 +123,9 @@ class BasicEventSelection : public xAH::Algorithm
 
     /// @brief Decisions of triggers which are saved but not cut on
     std::string m_extraTriggerSelection = "";
+
+    /// @brief Comma-separated trigger chains to calculate lumi-based prescale data weights for
+    std::string m_triggerUnprescale = "";
 
     /**
       @rst
@@ -177,6 +177,8 @@ class BasicEventSelection : public xAH::Algorithm
   private:
 
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
+    // trigger unprescale chains
+    std::vector<std::string> m_triggerUnprescaleChainList; //!
 
     // tools
     asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; //!
