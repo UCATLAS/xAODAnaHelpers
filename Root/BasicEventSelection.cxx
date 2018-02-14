@@ -303,6 +303,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_MSG_INFO( "Truth only! Turn off trigger stuff");
     m_triggerSelection      = "";
     m_extraTriggerSelection = "";
+    m_triggerUnprescale     = "";
     m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
     ANA_MSG_INFO( "Truth only! Turn off GRL");
     m_applyGRLCut = false;
@@ -435,7 +436,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
   m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
-  if ( !m_triggerSelection.empty() > 0 && m_applyTriggerCut ) {
+  if ( !m_triggerSelection.empty() && m_applyTriggerCut ) {
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
@@ -536,14 +537,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
   }
 
-  // pileup reweighing tool is needed to get the data weight for unprescaling
-  if ( m_savePrescaleDataWeight && !m_doPUreweighting) {
-
-    ANA_MSG_ERROR( "m_savePrescaleDataWeight is true but m_doPUreweighting is false !!!");
-    return EL::StatusCode::FAILURE;
-
-  }
-
   // 3.
   // initialize the Trig::TrigDecisionTool
   //
@@ -560,6 +553,24 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_CHECK( m_trigDecTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
   }//end trigger configuration
+  
+  // Parse trigger chains for unprescaling
+  if ( !isMC() && !m_triggerUnprescale.empty() ) {
+    // pileup reweighing tool is needed to get the data weight for unprescaling
+    if ( !m_doPUreweighting ) {
+      ANA_MSG_ERROR( "m_triggerUnprescale is not empty but m_doPUreweighting is false !!!");
+      return EL::StatusCode::FAILURE;
+    }
+
+    ANA_MSG_INFO("*** Trigger chains used for data unprescaling:");
+    // parse and split by comma
+    std::string token;
+    std::istringstream ss(m_triggerUnprescale);
+    while (std::getline(ss, token, ',')) {
+        m_triggerUnprescaleChainList.push_back(token);
+        ANA_MSG_INFO("\t" << token);
+    }
+  }
 
   // As a check, let's see the number of events in our file (long long int)
   //
@@ -602,7 +613,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   std::string TriggerExpression = "";
 
   if ( !m_triggerSelection.empty() ) {
-    if (m_eventCounter == 0 || m_savePrescaleDataWeight) {
+    if (m_eventCounter == 0) {
       if (m_eventCounter == 0) ANA_MSG_INFO( "*** Triggers used (in OR) are:\n");
       auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_triggerSelection);
       std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
@@ -669,33 +680,6 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   //------------------------------------------------------------------------------------------
-  // Declare an 'eventInfo' decorator with prescale weight for unprescaling data
-  // https://cds.cern.ch/record/2014726/files/ATL-COM-SOFT-2015-119.pdf (line 130)
-  //------------------------------------------------------------------------------------------
-
-  static SG::AuxElement::Decorator< float > prsc_DataWeightDecor("prescale_DataWeight");
-  static SG::AuxElement::Accessor< float >  prsc_DataWeightAcc("prescale_DataWeight");
-
-  float prsc_DataWeight(1.0);
-
-  // Check if need to create xAH event weight
-  //
-  if ( !prsc_DataWeightDecor.isAvailable(*eventInfo) ) {
-    if ( !isMC() && m_savePrescaleDataWeight ) {
-
-      // get mu dependent data weight
-      prsc_DataWeight = m_pileup_tool_handle->getDataWeight( *eventInfo, TriggerExpression, true );
-    }
-
-    // Decorate event with the *total* MC event weight
-    //
-    prsc_DataWeightDecor(*eventInfo) = prsc_DataWeight;
-  } else {
-    prsc_DataWeight = prsc_DataWeightAcc(*eventInfo);
-  }
-
-
-  //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the Sherpa 2.2 reweight to multijet truth
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
   //------------------------------------------------------------------------------------------
@@ -712,6 +696,30 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     } // If not already decorated
   } // if m_reweightSherpa22
+
+
+  //------------------------------------------------------------------------------------------
+  // Declare an 'eventInfo' decorator with prescale weights for unprescaling data
+  // from the list of corresponding trigger chains
+  // https://cds.cern.ch/record/2014726/files/ATL-COM-SOFT-2015-119.pdf (line 130)
+  //------------------------------------------------------------------------------------------
+
+  if ( !isMC() && !m_triggerUnprescale.empty() ) {
+    static SG::AuxElement::Decorator< std::map<std::string, float> > prescaleMapDecor("triggerPrescalesLumi");
+
+    if (!prescaleMapDecor.isAvailable(*eventInfo)) {
+      prescaleMapDecor(*eventInfo) = std::map<std::string, float>();
+    }
+
+    for (const std::string &chain : m_triggerUnprescaleChainList) {
+      // get mu dependent data weight
+      float dataWeight = m_pileup_tool_handle->getDataWeight( *eventInfo, chain, true );
+
+      prescaleMapDecor(*eventInfo)[chain] = dataWeight;
+
+      ANA_MSG_VERBOSE("Data weight for chain" << chain << ": " << dataWeight);
+    }
+  }
 
 
   //------------------------------------------------------------------------------------------

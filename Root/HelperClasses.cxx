@@ -122,6 +122,8 @@ namespace HelperClasses{
     m_menuKeys          = has_exact("menuKeys");
     m_passTriggers      = has_exact("passTriggers");
     m_passTrigBits      = has_exact("passTrigBits");
+    m_prescales         = has_exact("prescales");
+    m_prescalesLumi     = has_exact("prescalesLumi");
   }
 
   void JetTriggerInfoSwitch::initialize(){

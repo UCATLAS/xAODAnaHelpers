@@ -167,7 +167,14 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   if ( m_trigInfoSwitch->m_passTriggers ) {
     // vector of strings for trigger names which fired
     m_tree->Branch("passedTriggers",       &m_passTriggers        );
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
     m_tree->Branch("triggerPrescales",     &m_triggerPrescales    );
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescalesLumi ) {
+    m_tree->Branch("triggerPrescalesLumi", &m_triggerPrescalesLumi);
   }
 
   if ( m_trigInfoSwitch->m_passTrigBits ) {
@@ -228,8 +235,23 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
     if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
 
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_prescales"); }
+
     static SG::AuxElement::ConstAccessor< std::vector< float > > trigPrescales("triggerPrescales");
     if( trigPrescales.isAvailable( *eventInfo ) ) { m_triggerPrescales = trigPrescales( *eventInfo ); }
+
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescalesLumi ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_prescalesLumi"); }
+
+    static SG::AuxElement::ConstAccessor< std::map< std::string, float > > trigPrescalesLumi("triggerPrescalesLumi");
+    if( trigPrescalesLumi.isAvailable( *eventInfo ) ) { m_triggerPrescalesLumi = trigPrescalesLumi( *eventInfo ); }
 
   }
 
@@ -257,6 +279,7 @@ void HelpTreeBase::ClearTrigger() {
 
   m_passTriggers.clear();
   m_triggerPrescales.clear();
+  m_triggerPrescalesLumi.clear();
   m_isPassBits.clear();
   m_isPassBitsNames.clear();
 

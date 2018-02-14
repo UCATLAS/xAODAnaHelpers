@@ -168,14 +168,19 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Trigger Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_basic        basic        exact
-        m_menuKeys     menuKeys     exact
-        m_passTriggers passTriggers exact
-        m_passTrigBits passTrigBits exact
-        ============== ============ =======
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_basic          basic          exact
+        m_menuKeys       menuKeys       exact
+        m_passTriggers   passTriggers   exact
+        m_passTrigBits   passTrigBits   exact
+        m_prescales      prescales      exact
+        m_prescalesLumi  prescalesLumi  exact
+        ================ ============== =======
+
+        .. note::
+            ``m_prescales`` contains information from the ``TrigDecisionTool`` for every trigger used in event selection and event trigger-matching. ``m_prescalesLumi`` contains information retrieved from the pile-up reweighting tool based on the actual luminosities of triggers.
 
     @endrst
    */
@@ -185,6 +190,8 @@ namespace HelperClasses {
     bool m_menuKeys;
     bool m_passTriggers;
     bool m_passTrigBits;
+    bool m_prescales;
+    bool m_prescalesLumi;
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
