@@ -99,35 +99,32 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   m_decorSF = m_decor + "_SF";
 
-  bool allOK(false);
+  bool opOK(false),taggerOK(false);
   m_getScaleFactors = false;
   // not calibrated yet
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTagCalib2015#Pre_Recommendation_August_2015
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
-  if (m_operatingPt == "FixedCutBEff_30") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_50") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_80") { allOK = true; }
-  if (m_operatingPt == "FixedCutBEff_90") { allOK = true; }
-  // these are the only calibrated working points
-  if (m_operatingPt == "FixedCutBEff_60") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "FixedCutBEff_70") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "FixedCutBEff_77") { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "FixedCutBEff_85") { allOK = true; m_getScaleFactors =  true; }
-  //
-  if (m_operatingPt == "FlatBEff_30") { allOK = true; }
-  if (m_operatingPt == "FlatBEff_40") { allOK = true; }
-  if (m_operatingPt == "FlatBEff_50") { allOK = true; }
-  if (m_operatingPt == "FlatBEff_60") { allOK = true; }
-  if (m_operatingPt == "FlatBEff_70") { allOK = true; }
-  if (m_operatingPt == "FlatBEff_77") { allOK = true; }
-  if (m_operatingPt == "FlatBEff_85") { allOK = true; }
-  if (m_operatingPt == "HybBEff_60")  { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_70")  { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_77")  { allOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_85")  { allOK = true; m_getScaleFactors =  true; }
+  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTagCalib2017
+  // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/BTaggingBenchmarksRelease21
 
-  if( !allOK ) {
-    ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
+  // All working points are calibrated (but not all taggers, see next check)
+  if (m_operatingPt == "FixedCutBEff_60") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_70") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_77") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_85") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_60")  { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_70")  { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_77")  { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "HybBEff_85")  { opOK = true; m_getScaleFactors =  true; }
+
+  // Only DL1 and MV2c10 are calibrated
+  if (m_taggerName == "MV2c10")    { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "MV2c10rnn") { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "MV2c10mu")  { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1")       { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "DL1rnn")    { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1mu")     { taggerOK = true; m_getScaleFactors =  false; }
+
+  if( !opOK || !taggerOK ) {
+    ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
     return EL::StatusCode::FAILURE;
   }
 

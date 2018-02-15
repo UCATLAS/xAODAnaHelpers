@@ -109,6 +109,7 @@ namespace HelperClasses{
     m_pileup        = has_exact("pileup");
     m_pileupsys     = has_exact("pileupsys");
     m_eventCleaning = has_exact("eventCleaning");
+    m_bcidInfo      = has_exact("bcidInfo");
     m_shapeEM       = has_exact("shapeEM");
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");
@@ -121,6 +122,8 @@ namespace HelperClasses{
     m_menuKeys          = has_exact("menuKeys");
     m_passTriggers      = has_exact("passTriggers");
     m_passTrigBits      = has_exact("passTrigBits");
+    m_prescales         = has_exact("prescales");
+    m_prescalesLumi     = has_exact("prescalesLumi");
   }
 
   void IParticleInfoSwitch::initialize(){

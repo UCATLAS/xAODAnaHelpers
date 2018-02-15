@@ -19,10 +19,10 @@ public:
   // holds bools that control which branches are filled
   std::string m_evtDetailStr = "";
   std::string m_trigDetailStr = "";
-  std::string m_trigJetDetailStr = "";
   std::string m_muDetailStr = "";
   std::string m_elDetailStr = "";
   std::string m_jetDetailStr = "";
+  std::string m_trigJetDetailStr = "";
   std::string m_truthJetDetailStr = "";
   std::string m_fatJetDetailStr = "";
   std::string m_truthFatJetDetailStr = "";
@@ -40,6 +40,7 @@ public:
   std::string m_truthJetContainerName = "";
   std::string m_truthJetBranchName = "truthJet";
   std::string m_trigJetContainerName = "";
+  std::string m_trigJetBranchName = "trigJet";
   std::string m_fatJetContainerName = "";
   std::string m_truthFatJetContainerName = "";
   std::string m_tauContainerName = "";
@@ -48,6 +49,7 @@ public:
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
   std::string m_l1JetContainerName = "";
+  bool m_sortL1Jets = false;
 
   // if these are set, assume systematics are being processed over
   std::string m_muSystsVec = "";
@@ -62,12 +64,15 @@ public:
 
 protected:
   std::vector<std::string> m_jetDetails; //!
+  std::vector<std::string> m_trigJetDetails; //!
 
   std::vector<std::string> m_jetContainers; //!
   std::vector<std::string> m_truthJetContainers; //!
+  std::vector<std::string> m_trigJetContainers; //!
 
   std::vector<std::string> m_jetBranches; //!
   std::vector<std::string> m_truthJetBranches; //!
+  std::vector<std::string> m_trigJetBranches; //!
 
   std::map<std::string, HelpTreeBase*> m_trees;            //!
 

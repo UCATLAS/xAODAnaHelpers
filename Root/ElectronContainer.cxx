@@ -677,11 +677,21 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
   if ( m_infoSwitch.m_PID ) {
     static std::map< std::string, SG::AuxElement::Accessor<char> > accPID;
+    static SG::AuxElement::Accessor<bool> accBLayer( "bLayerPass" );
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
       if (!PID.empty()) {
-        accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( PID ) ) );
-        safeFill<char, int, xAOD::Electron>( elec, accPID.at( PID ), &m_PID->at( PID ), -1 );
+        if (PID == "LHLooseBL") {
+          accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( "LHLoose" ) ) );
+          if ( accPID.at( PID ).isAvailable( *elec ) && accBLayer.isAvailable( *elec ) ) {
+            m_PID->at( PID ).push_back( accBLayer( *elec ) == 1 && (accPID.at( PID ))( *elec ) == 1 );
+          } else {
+            m_PID->at( PID ).push_back( -1 );
+          }
+        } else {
+          accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( PID ) ) );
+          safeFill<char, int, xAOD::Electron>( elec, accPID.at( PID ), &m_PID->at( PID ), -1 );
+        }
       }
     }
   }

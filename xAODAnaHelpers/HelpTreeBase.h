@@ -130,7 +130,7 @@ public:
 
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
-  void FillL1Jets( const xAOD::JetRoIContainer* jets );
+  void FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jets = false );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
@@ -319,6 +319,7 @@ protected:
   // jet trigger
   std::vector<std::string> m_passTriggers;
   std::vector<float> m_triggerPrescales;
+  std::map<std::string, float> m_triggerPrescalesLumi;
   std::vector<std::string>  m_isPassBitsNames;
   std::vector<unsigned int> m_isPassBits;
 

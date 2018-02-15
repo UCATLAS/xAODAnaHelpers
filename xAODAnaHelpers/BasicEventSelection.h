@@ -95,10 +95,10 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief The maximum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>
     int m_actualMuMax = -1; // Default to off
 
-    // Unprescaling data
-    bool m_savePrescaleDataWeight = false;
+    /// @brief Calculate distance to nearest empty and unpaired BCIDs
+    bool m_calcBCIDInfo = false;
 
-  // Primary Vertex
+    // Primary Vertex
     /// @brief Name of vertex container
     std::string m_vertexContainerName = "PrimaryVertices";
     /// @brief Enable to apply a primary vertex cut
@@ -123,6 +123,9 @@ class BasicEventSelection : public xAH::Algorithm
 
     /// @brief Decisions of triggers which are saved but not cut on
     std::string m_extraTriggerSelection = "";
+
+    /// @brief Comma-separated trigger chains to calculate lumi-based prescale data weights for
+    std::string m_triggerUnprescale = "";
 
     /**
       @rst
@@ -174,6 +177,8 @@ class BasicEventSelection : public xAH::Algorithm
   private:
 
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
+    // trigger unprescale chains
+    std::vector<std::string> m_triggerUnprescaleChainList; //!
 
     // tools
     asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; //!
@@ -233,7 +238,7 @@ class BasicEventSelection : public xAH::Algorithm
     /**
        @brief Automatically add the required PRW config file for the DSID being processed to the PRW tool.
        @rst
-       The PRW config files stored by SUSYTools are added to the m_pileup_tool_handle. If the m_mcCampaign is 
+       The PRW config files stored by SUSYTools are added to the m_pileup_tool_handle. If the m_mcCampaign is
        not set, the campaign is determined automatically. If it is set, then all of the campaings listed
        in the setting are added.
        @endrst
