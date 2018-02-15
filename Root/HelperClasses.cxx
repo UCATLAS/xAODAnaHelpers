@@ -126,11 +126,6 @@ namespace HelperClasses{
     m_prescalesLumi     = has_exact("prescalesLumi");
   }
 
-  void JetTriggerInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
-    m_clean         = has_exact("clean");
-  }
-
   void IParticleInfoSwitch::initialize(){
     m_kinematic     = has_exact("kinematic");
 
@@ -238,6 +233,7 @@ namespace HelperClasses{
   void JetInfoSwitch::initialize(){
     std::string tmpConfigStr; // temporary config string used to extract multiple values
 
+    m_trigger       = has_exact("trigger");
     m_substructure  = has_exact("substructure");
     m_bosonCount    = has_exact("bosonCount");
     m_VTags         = has_exact("VTags");

@@ -75,10 +75,6 @@ public:
   
   std::string    m_diTauTrigChains = "";
 
-  //@brief Recommended threshold for muon triggers: 
-  //see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
-  double         m_minDeltaR = 0.1; // This DeltaR will probably need an update
-  
 private:
 
   int m_numEvent;           //!
