@@ -20,15 +20,15 @@ public:
   std::string m_inContainerName = "";
   std::string m_outContainerName = "";
 
-  std::string m_release = "";
+  std::string m_release = "Recs2017_08_02";
   /// @brief comma-separated list of years
-  std::string m_Years = "Data16,Data15";
+  std::string m_Years = "Data17,Data16,Data15";
 
   // sort after calibration
   bool    m_sort = true;
 
   bool         m_do_sagittaCorr = true;
-  std::string  m_sagittaRelease = "sagittaBiasDataAll_06_02_17";
+  std::string  m_sagittaRelease = "sagittaBiasDataAll_25_07_17";
   bool         m_do_sagittaMCDistortion = false;
 
   // systematics
