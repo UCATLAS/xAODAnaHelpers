@@ -519,29 +519,27 @@ EL::StatusCode METConstructor :: execute ()
      ANA_MSG_DEBUG("storing met container :  " << (m_outputContainer + systName));
      ANA_MSG_DEBUG("storing  Aux met container :  "<< (m_outputContainer + systName + "Aux."));
 
-
-     /* something causes a crash down here
-     if ( m_debug ) {
+     // Debug compare reference and recomputed MET
+     if ( m_msgLevel <= MSG::DEBUG ) {
        const xAOD::MissingETContainer* oldMet(0);
        ANA_CHECK( HelperFunctions::retrieve(oldMet, m_referenceMETContainer, m_event, m_store, msg()) );
-       //xAOD::MissingETContainer::const_iterator final(oldMet->find("FinalClus"));
-       //xAOD::MissingETContainer::const_iterator newfinal(newMet->find("FinalClus"));
-       ANA_MSG_INFO( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-       if( m_inputElectrons.Length() > 0 ) ANA_MSG_INFO( "RefEle:     old=%8.f  new=%8.f", (*oldMet->find("RefEle"))->met(), (*newMet->find("RefEle"))->met());
-       if( m_inputPhotons.Length() > 0 )   ANA_MSG_INFO( "RefPhoton:  old=%8.f  new=%8.f", (*oldMet->find("RefGamma"))->met(), (*newMet->find("RefGamma"))->met());
-       if( m_inputTaus.Length() > 0 )      ANA_MSG_INFO( "RefTau:     old=%8.f  new=%8.f", (*oldMet->find("RefTau"))->met(), (*newMet->find("RefTau"))->met());
-       if( m_inputMuons.Length() > 0 )     ANA_MSG_INFO( "RefMuon:    old=%8.f  new=%8.f", (*oldMet->find("Muons"))->met(), (*newMet->find("Muons"))->met());
-       ANA_MSG_INFO( "RefJet:       old=%8.f  new=%8.f", (*oldMet->find("RefJet"))->met(), (*newMet->find("RefJet"))->met());
-       ANA_MSG_INFO( "SoftClus:     old=%8.f  new=%8.f", (*oldMet->find("SoftClus"))->met(), (*newMet->find("SoftClus"))->met());
-       ANA_MSG_INFO( "PVSoftTrk:    old=%8.f  new=%8.f", (*oldMet->find("PVSoftTrk"))->met(), (*newMet->find("PVSoftTrk"))->met());
-       ANA_MSG_INFO( "  ");
-       ANA_MSG_INFO( "FinalClus:    old=%8.f  new=%8.f", (*oldMet->find("FinalClus"))->met(), (*newMet->find("FinalClus"))->met());
-       ANA_MSG_INFO( "       >>>>> R=%.3f",          (*oldMet->find("FinalClus"))->met()/ (*newMet->find("FinalClus"))->met());
-       // ANA_MSG_INFO( "FinalTrk:     old=%8.f  new=%8.f", (*oldMet->find("FinalTrk"))->met(), (*newMet->find("FinalTrk"))->met());
-       // ANA_MSG_INFO( "       >>>>> R=%.3f",          (*oldMet->find("FinalTrk"))->met()/ (*newMet->find("FinalTrk"))->met());
-     }
-     */
 
+       ANA_MSG_DEBUG( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+       if ( !m_inputElectrons.empty() ) ANA_MSG_DEBUG( "RefEle:       old=" << (*oldMet->find("RefEle"))->met() << " \tnew" << (*newMet->find("RefEle"))->met());
+       if ( !m_inputPhotons.empty() )   ANA_MSG_DEBUG( "RefPhoton:    old=" << (*oldMet->find("RefGamma"))->met() << " \tnew" << (*newMet->find("RefGamma"))->met());
+       if ( !m_inputTaus.empty() )      ANA_MSG_DEBUG( "RefTau:       old=" << (*oldMet->find("RefTau"))->met() << " \tnew" << (*newMet->find("RefTau"))->met());
+       if ( !m_inputMuons.empty() )     ANA_MSG_DEBUG( "RefMuon:      old=" << (*oldMet->find("Muons"))->met() << " \tnew" << (*newMet->find("Muons"))->met());
+       ANA_MSG_DEBUG( "RefJet:       old=" << (*oldMet->find("RefJet"))->met() << " \tnew" << (*newMet->find("RefJet"))->met());
+       if ( m_addSoftClusterTerms ) {
+         ANA_MSG_DEBUG( "SoftClus:     old=" << (*oldMet->find("SoftClus"))->met() << " \tnew" << (*newMet->find("SoftClus"))->met());
+       }
+       ANA_MSG_DEBUG( "PVSoftTrk:    old=" << (*oldMet->find("PVSoftTrk"))->met() << " \tnew" << (*newMet->find("PVSoftTrk"))->met());
+       ANA_MSG_DEBUG( "  ");
+       ANA_MSG_DEBUG( "FinalClus:    old=" << (*oldMet->find("FinalClus"))->met() << " \tnew" << (*newMet->find("FinalClus"))->met());
+       ANA_MSG_DEBUG( "       >>>>> R=" << (*oldMet->find("FinalClus"))->met()/ (*newMet->find("FinalClus"))->met());
+       ANA_MSG_INFO( "FinalTrk:     old=" << (*oldMet->find("FinalTrk"))->met() << " \tnew" << (*newMet->find("FinalTrk"))->met());
+       ANA_MSG_INFO( "       >>>>> R=" << (*oldMet->find("FinalTrk"))->met()/ (*newMet->find("FinalTrk"))->met());
+     }
 
    } //end loop over systematics
 

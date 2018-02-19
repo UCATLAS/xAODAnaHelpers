@@ -90,8 +90,8 @@ public:
   void AddFatJets     (const std::string detailStr = "", const std::string fatjetName = "fatjet", const std::string subjetDetailStr="", const std::string suffix="");
   void AddTruthFatJets(const std::string detailStr = "", const std::string truthFatJetName = "truth_fatjet");
 
-  void AddTaus        (const std::string detailStr = "",  const std::string tauName = "tau");
-  void AddMET         (const std::string detailStr = "");
+  void AddTaus        (const std::string detailStr = "", const std::string tauName = "tau");
+  void AddMET         (const std::string detailStr = "", const std::string metName = "met");
 
   /**
    *  @brief  Helper function to lookup each fatjet container name/suffix combo in the internal map
@@ -155,7 +155,7 @@ public:
 
   void FillTaus( const xAOD::TauJetContainer* taus, const std::string tauName = "tau" );
   void FillTau ( const xAOD::TauJet* tau,           const std::string tauName = "tau" );
-  void FillMET( const xAOD::MissingETContainer* met );
+  void FillMET( const xAOD::MissingETContainer* met, const std::string metName = "met" );
 
   void Fill();
   void ClearEvent();
@@ -171,7 +171,7 @@ public:
   void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
   void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
   void ClearTaus        (const std::string tauName = "tau" );
-  void ClearMET();
+  void ClearMET         (const std::string metName = "met");
 
   bool writeTo( TFile *file );
 
@@ -242,8 +242,8 @@ public:
     return;
   };
 
-  virtual void AddMETUser(const std::string detailStr = "")       {
-    if(m_debug) Info("AddMETUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+  virtual void AddMETUser(const std::string detailStr = "", const std::string metName = "met")       {
+    if(m_debug) Info("AddMETUser","Empty function called from HelpTreeBase %s for %s",detailStr.c_str(), metName.c_str());
     return;
   };
 
@@ -258,7 +258,7 @@ public:
   virtual void ClearFatJetsUser     (const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/)   { return; };
   virtual void ClearTruthFatJetsUser(const std::string /*truthFatJetName = "truth_fatjet"*/)   { return; };
   virtual void ClearTausUser        (const std::string /*tauName = "tau"*/) 	    { return; };
-  virtual void ClearMETUser         ()       { return; };
+  virtual void ClearMETUser         (const std::string /*metName = "met"*/)       { return; };
 
   virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
   virtual void FillMuonsUser    ( const xAOD::Muon*,     const std::string /*muonName = "muon"*/  )             { return; };
@@ -278,7 +278,7 @@ public:
   virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/) { return; };
   virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, const std::string /*fatjetName = "truth_fatjet"*/   )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*,           const std::string /*tauName = "tau"*/  )            { return; };
-  virtual void FillMETUser( const xAOD::MissingETContainer*  ) { return; };
+  virtual void FillMETUser( const xAOD::MissingETContainer*, const std::string /*metName = "met"*/ ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
   virtual void FillJetTriggerUser()                            { return; };
 
@@ -380,8 +380,10 @@ protected:
   //
   std::map<std::string, xAH::TauContainer*> m_taus;
 
+  //
   // met
-  xAH::MetContainer*      m_met;
+  //
+  std::map<std::string, xAH::MetContainer* > m_met;
 
 };
 

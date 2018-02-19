@@ -28,6 +28,7 @@ public:
   std::string m_truthFatJetDetailStr = "";
   std::string m_tauDetailStr = "";
   std::string m_METDetailStr = "";
+  std::string m_METReferenceDetailStr = "";
   std::string m_photonDetailStr = "";
   std::string m_truthParticlesDetailStr = "";
   std::string m_trackParticlesDetailStr = "";
@@ -45,6 +46,7 @@ public:
   std::string m_truthFatJetContainerName = "";
   std::string m_tauContainerName = "";
   std::string m_METContainerName = "";
+  std::string m_METReferenceContainerName = "";
   std::string m_photonContainerName = "";
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
