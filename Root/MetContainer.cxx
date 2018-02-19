@@ -4,8 +4,8 @@
 
 using namespace xAH;
 
-MetContainer::MetContainer(const std::string& detailStr, float units)
-  : m_infoSwitch(detailStr), m_debug(false), m_units(units)
+MetContainer::MetContainer(const std::string& name, const std::string& detailStr, float units)
+  : m_name(name), m_infoSwitch(detailStr), m_debug(false), m_units(units)
 {
 }
 
@@ -18,93 +18,93 @@ void MetContainer::setTree(TTree *tree)
 {
 
   if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
-    connectBranch<float>(tree, "metFinalClus",         &m_metFinalClus     );
-    connectBranch<float>(tree, "metFinalClusPx",       &m_metFinalClusPx   );
-    connectBranch<float>(tree, "metFinalClusPy",       &m_metFinalClusPy   );
-    connectBranch<float>(tree, "metFinalClusSumEt",    &m_metFinalClusSumEt);
-    connectBranch<float>(tree, "metFinalClusPhi",      &m_metFinalClusPhi  );
+    connectBranch<float>(tree, "FinalClus",         &m_metFinalClus     );
+    connectBranch<float>(tree, "FinalClusPx",       &m_metFinalClusPx   );
+    connectBranch<float>(tree, "FinalClusPy",       &m_metFinalClusPy   );
+    connectBranch<float>(tree, "FinalClusSumEt",    &m_metFinalClusSumEt);
+    connectBranch<float>(tree, "FinalClusPhi",      &m_metFinalClusPhi  );
   }
 
   if ( m_infoSwitch.m_sigClus ) {
-    connectBranch<float>(tree, "metFinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt );
-    connectBranch<float>(tree, "metFinalClusOverSqrtHt",     &m_metFinalClusOverSqrtHt    );
-    connectBranch<float>(tree, "metFinalClusSignificance",   &m_metFinalClusSignificance  );
-    connectBranch<float>(tree, "metFinalClusSigDirectional", &m_metFinalClusSigDirectional);
+    connectBranch<float>(tree, "FinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt );
+    connectBranch<float>(tree, "FinalClusOverSqrtHt",     &m_metFinalClusOverSqrtHt    );
+    connectBranch<float>(tree, "FinalClusSignificance",   &m_metFinalClusSignificance  );
+    connectBranch<float>(tree, "FinalClusSigDirectional", &m_metFinalClusSigDirectional);
   }
 
   if ( m_infoSwitch.m_sigResolutionClus ) {
-    connectBranch<float>(tree, "metFinalClusRho",  &m_metFinalClusRho );
-    connectBranch<float>(tree, "metFinalClusVarL", &m_metFinalClusVarL);
-    connectBranch<float>(tree, "metFinalClusVarT", &m_metFinalClusVarT);
+    connectBranch<float>(tree, "FinalClusRho",  &m_metFinalClusRho );
+    connectBranch<float>(tree, "FinalClusVarL", &m_metFinalClusVarL);
+    connectBranch<float>(tree, "FinalClusVarT", &m_metFinalClusVarT);
   }
 
   if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
-    connectBranch<float>(tree, "metFinalTrk",          &m_metFinalTrk     );
-    connectBranch<float>(tree, "metFinalTrkPx",        &m_metFinalTrkPx   );
-    connectBranch<float>(tree, "metFinalTrkPy",        &m_metFinalTrkPy   );
-    connectBranch<float>(tree, "metFinalTrkSumEt",     &m_metFinalTrkSumEt);
-    connectBranch<float>(tree, "metFinalTrkPhi",       &m_metFinalTrkPhi  );
+    connectBranch<float>(tree, "FinalTrk",          &m_metFinalTrk     );
+    connectBranch<float>(tree, "FinalTrkPx",        &m_metFinalTrkPx   );
+    connectBranch<float>(tree, "FinalTrkPy",        &m_metFinalTrkPy   );
+    connectBranch<float>(tree, "FinalTrkSumEt",     &m_metFinalTrkSumEt);
+    connectBranch<float>(tree, "FinalTrkPhi",       &m_metFinalTrkPhi  );
   }
 
   if ( m_infoSwitch.m_sigTrk ) {
-    connectBranch<float>(tree, "metFinalTrkOverSqrtSumEt",  &m_metFinalTrkOverSqrtSumEt );
-    connectBranch<float>(tree, "metFinalTrkOverSqrtHt",     &m_metFinalTrkOverSqrtHt    );
-    connectBranch<float>(tree, "metFinalTrkSignificance",   &m_metFinalTrkSignificance  );
-    connectBranch<float>(tree, "metFinalTrkSigDirectional", &m_metFinalTrkSigDirectional);
+    connectBranch<float>(tree, "FinalTrkOverSqrtSumEt",  &m_metFinalTrkOverSqrtSumEt );
+    connectBranch<float>(tree, "FinalTrkOverSqrtHt",     &m_metFinalTrkOverSqrtHt    );
+    connectBranch<float>(tree, "FinalTrkSignificance",   &m_metFinalTrkSignificance  );
+    connectBranch<float>(tree, "FinalTrkSigDirectional", &m_metFinalTrkSigDirectional);
   }
 
   if ( m_infoSwitch.m_sigResolutionTrk ) {
-    connectBranch<float>(tree, "metFinalTrkRho",  &m_metFinalTrkRho );
-    connectBranch<float>(tree, "metFinalTrkVarL", &m_metFinalTrkVarL);
-    connectBranch<float>(tree, "metFinalTrkVarT", &m_metFinalTrkVarT);
+    connectBranch<float>(tree, "FinalTrkRho",  &m_metFinalTrkRho );
+    connectBranch<float>(tree, "FinalTrkVarL", &m_metFinalTrkVarL);
+    connectBranch<float>(tree, "FinalTrkVarT", &m_metFinalTrkVarT);
   }
 
   if ( m_infoSwitch.m_refEle ) {
-    connectBranch<float>(tree, "metEle",             &m_metEle       );
-    connectBranch<float>(tree, "metEleSumEt",        &m_metEleSumEt  );
-    connectBranch<float>(tree, "metElePhi",          &m_metElePhi    );
+    connectBranch<float>(tree, "Ele",             &m_metEle       );
+    connectBranch<float>(tree, "EleSumEt",        &m_metEleSumEt  );
+    connectBranch<float>(tree, "ElePhi",          &m_metElePhi    );
   }
 
   if ( m_infoSwitch.m_refGamma ) {
-    connectBranch<float>(tree, "metGamma",           &m_metGamma     );
-    connectBranch<float>(tree, "metGammaSumEt",      &m_metGammaSumEt);
-    connectBranch<float>(tree, "metGammaPhi",        &m_metGammaPhi  );
+    connectBranch<float>(tree, "Gamma",           &m_metGamma     );
+    connectBranch<float>(tree, "GammaSumEt",      &m_metGammaSumEt);
+    connectBranch<float>(tree, "GammaPhi",        &m_metGammaPhi  );
   }
 
   if ( m_infoSwitch.m_refTau ) {
-    connectBranch<float>(tree, "metTau",             &m_metTau      );
-    connectBranch<float>(tree, "metTauSumEt",        &m_metTauSumEt );
-    connectBranch<float>(tree, "metTauPhi",          &m_metTauPhi   );
+    connectBranch<float>(tree, "Tau",             &m_metTau      );
+    connectBranch<float>(tree, "TauSumEt",        &m_metTauSumEt );
+    connectBranch<float>(tree, "TauPhi",          &m_metTauPhi   );
   }
 
   if ( m_infoSwitch.m_refMuons ) {
-    connectBranch<float>(tree, "metMuons",           &m_metMuons      );
-    connectBranch<float>(tree, "metMuonsSumEt",      &m_metMuonsSumEt );
-    connectBranch<float>(tree, "metMuonsPhi",        &m_metMuonsPhi   );
+    connectBranch<float>(tree, "Muons",           &m_metMuons      );
+    connectBranch<float>(tree, "MuonsSumEt",      &m_metMuonsSumEt );
+    connectBranch<float>(tree, "MuonsPhi",        &m_metMuonsPhi   );
   }
 
   if ( m_infoSwitch.m_refJet ) {
-    connectBranch<float>(tree, "metJet",             &m_metJet      );
-    connectBranch<float>(tree, "metJetSumEt",        &m_metJetSumEt );
-    connectBranch<float>(tree, "metJetPhi",          &m_metJetPhi   );
+    connectBranch<float>(tree, "Jet",             &m_metJet      );
+    connectBranch<float>(tree, "JetSumEt",        &m_metJetSumEt );
+    connectBranch<float>(tree, "JetPhi",          &m_metJetPhi   );
   }
 
   if ( m_infoSwitch.m_refJetTrk ) {
-    connectBranch<float>(tree, "metJetTrk",          &m_metJetTrk     );
-    connectBranch<float>(tree, "metJetTrkSumEt",     &m_metJetTrkSumEt);
-    connectBranch<float>(tree, "metJetTrkPhi",       &m_metJetTrkPhi  );
+    connectBranch<float>(tree, "JetTrk",          &m_metJetTrk     );
+    connectBranch<float>(tree, "JetTrkSumEt",     &m_metJetTrkSumEt);
+    connectBranch<float>(tree, "JetTrkPhi",       &m_metJetTrkPhi  );
   }
 
   if ( m_infoSwitch.m_softClus) {
-    connectBranch<float>(tree, "metSoftClus",        &m_metSoftClus     );
-    connectBranch<float>(tree, "metSoftClusSumEt",   &m_metSoftClusSumEt);
-    connectBranch<float>(tree, "metSoftClusPhi",     &m_metSoftClusPhi  );
+    connectBranch<float>(tree, "SoftClus",        &m_metSoftClus     );
+    connectBranch<float>(tree, "SoftClusSumEt",   &m_metSoftClusSumEt);
+    connectBranch<float>(tree, "SoftClusPhi",     &m_metSoftClusPhi  );
   }
 
   if ( m_infoSwitch.m_softTrk) {
-    connectBranch<float>(tree, "metSoftTrk",         &m_metSoftTrk      );
-    connectBranch<float>(tree, "metSoftTrkSumEt",    &m_metSoftTrkSumEt	);
-    connectBranch<float>(tree, "metSoftTrkPhi",      &m_metSoftTrkPhi   );
+    connectBranch<float>(tree, "SoftTrk",         &m_metSoftTrk     );
+    connectBranch<float>(tree, "SoftTrkSumEt",    &m_metSoftTrkSumEt);
+    connectBranch<float>(tree, "SoftTrkPhi",      &m_metSoftTrkPhi  );
   }
 
 }
@@ -114,93 +114,93 @@ void MetContainer::setBranches(TTree *tree)
 {
 
   if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
-    tree->Branch("metFinalClus",         &m_metFinalClus,      "metFinalClus/F"     );
-    tree->Branch("metFinalClusPx",       &m_metFinalClusPx,    "metFinalClusPx/F"   );
-    tree->Branch("metFinalClusPy",       &m_metFinalClusPy,    "metFinalClusPy/F"   );
-    tree->Branch("metFinalClusSumEt",    &m_metFinalClusSumEt, "metFinalClusSumEt/F");
-    tree->Branch("metFinalClusPhi",      &m_metFinalClusPhi,   "metFinalClusPhi/F"  );
+    setBranch(tree, "FinalClus",         &m_metFinalClus,      "F");
+    setBranch(tree, "FinalClusPx",       &m_metFinalClusPx,    "F");
+    setBranch(tree, "FinalClusPy",       &m_metFinalClusPy,    "F");
+    setBranch(tree, "FinalClusSumEt",    &m_metFinalClusSumEt, "F");
+    setBranch(tree, "FinalClusPhi",      &m_metFinalClusPhi,   "F");
   }
 
   if ( m_infoSwitch.m_sigClus ) {
-    tree->Branch("metFinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt,  "metFinalClusOverSqrtSumEt/F" );
-    tree->Branch("metFinalClusOverSqrtHt",     &m_metFinalClusOverSqrtHt,     "metFinalClusOverSqrtHt/F"    );
-    tree->Branch("metFinalClusSignificance",   &m_metFinalClusSignificance,   "metFinalClusSignificance/F"  );
-    tree->Branch("metFinalClusSigDirectional", &m_metFinalClusSigDirectional, "metFinalClusSigDirectional/F");
+    setBranch(tree, "FinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt,  "/F");
+    setBranch(tree, "FinalClusOverSqrtHt",     &m_metFinalClusOverSqrtHt,     "/F");
+    setBranch(tree, "FinalClusSignificance",   &m_metFinalClusSignificance,   "/F");
+    setBranch(tree, "FinalClusSigDirectional", &m_metFinalClusSigDirectional, "/F");
   }
 
   if ( m_infoSwitch.m_sigResolutionClus ) {
-    tree->Branch("metFinalClusRho",  &m_metFinalClusRho,  "metFinalClusRho/F" );
-    tree->Branch("metFinalClusVarL", &m_metFinalClusVarL, "metFinalClusVarL/F");
-    tree->Branch("metFinalClusVarT", &m_metFinalClusVarT, "metFinalClusVarT/F");
+    setBranch(tree, "FinalClusRho",  &m_metFinalClusRho,  "F");
+    setBranch(tree, "FinalClusVarL", &m_metFinalClusVarL, "F");
+    setBranch(tree, "FinalClusVarT", &m_metFinalClusVarT, "F");
   }
 
   if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
-    tree->Branch("metFinalTrk",          &m_metFinalTrk,       "metFinalTrk/F"     );
-    tree->Branch("metFinalTrkPx",        &m_metFinalTrkPx,     "metFinalTrkPx/F"   );
-    tree->Branch("metFinalTrkPy",        &m_metFinalTrkPy,     "metFinalTrkPy/F"   );
-    tree->Branch("metFinalTrkSumEt",     &m_metFinalTrkSumEt,  "metFinalTrkSumEt/F");
-    tree->Branch("metFinalTrkPhi",       &m_metFinalTrkPhi,    "metFinalTrkPhi/F"  );
+    setBranch(tree, "FinalTrk",          &m_metFinalTrk,       "F");
+    setBranch(tree, "FinalTrkPx",        &m_metFinalTrkPx,     "F");
+    setBranch(tree, "FinalTrkPy",        &m_metFinalTrkPy,     "F");
+    setBranch(tree, "FinalTrkSumEt",     &m_metFinalTrkSumEt,  "F");
+    setBranch(tree, "FinalTrkPhi",       &m_metFinalTrkPhi,    "F");
   }
 
   if ( m_infoSwitch.m_sigTrk ) {
-    tree->Branch("metFinalTrkOverSqrtSumEt",  &m_metFinalTrkOverSqrtSumEt,  "metFinalTrkOverSqrtSumEt/F" );
-    tree->Branch("metFinalTrkOverSqrtHt",     &m_metFinalTrkOverSqrtHt,     "metFinalTrkOverSqrtHt/F"    );
-    tree->Branch("metFinalTrkSignificance",   &m_metFinalTrkSignificance,   "metFinalTrkSignificance/F"  );
-    tree->Branch("metFinalTrkSigDirectional", &m_metFinalTrkSigDirectional, "metFinalTrkSigDirectional/F");
+    setBranch(tree, "FinalTrkOverSqrtSumEt",  &m_metFinalTrkOverSqrtSumEt,  "F");
+    setBranch(tree, "FinalTrkOverSqrtHt",     &m_metFinalTrkOverSqrtHt,     "F");
+    setBranch(tree, "FinalTrkSignificance",   &m_metFinalTrkSignificance,   "F");
+    setBranch(tree, "FinalTrkSigDirectional", &m_metFinalTrkSigDirectional, "F");
   }
 
   if ( m_infoSwitch.m_sigResolutionTrk ) {
-    tree->Branch("metFinalTrkRho",  &m_metFinalTrkRho,  "metFinalTrkRho/F" );
-    tree->Branch("metFinalTrkVarL", &m_metFinalTrkVarL, "metFinalTrkVarL/F");
-    tree->Branch("metFinalTrkVarT", &m_metFinalTrkVarT, "metFinalTrkVarT/F");
+    setBranch(tree, "FinalTrkRho",  &m_metFinalTrkRho,  "F");
+    setBranch(tree, "FinalTrkVarL", &m_metFinalTrkVarL, "F");
+    setBranch(tree, "FinalTrkVarT", &m_metFinalTrkVarT, "F");
   }
 
   if ( m_infoSwitch.m_refEle ) {
-    tree->Branch("metEle",             &m_metEle,            "metEle/F");
-    tree->Branch("metEleSumEt",        &m_metEleSumEt,       "metEleSumEt/F");
-    tree->Branch("metElePhi",          &m_metElePhi,         "metElePhi/F");
+    setBranch(tree, "Ele",             &m_metEle,            "F");
+    setBranch(tree, "EleSumEt",        &m_metEleSumEt,       "F");
+    setBranch(tree, "ElePhi",          &m_metElePhi,         "F");
   }
 
   if ( m_infoSwitch.m_refGamma ) {
-    tree->Branch("metGamma",           &m_metGamma,          "metGamma/F");
-    tree->Branch("metGammaSumEt",      &m_metGammaSumEt,     "metGammaSumEt/F");
-    tree->Branch("metGammaPhi",        &m_metGammaPhi,       "metGammaPhi/F");
+    setBranch(tree, "Gamma",           &m_metGamma,          "F");
+    setBranch(tree, "GammaSumEt",      &m_metGammaSumEt,     "F");
+    setBranch(tree, "GammaPhi",        &m_metGammaPhi,       "F");
   }
 
   if ( m_infoSwitch.m_refTau ) {
-    tree->Branch("metTau",             &m_metTau,            "metTau/F");
-    tree->Branch("metTauSumEt",        &m_metTauSumEt,       "metTauSumEt/F");
-    tree->Branch("metTauPhi",          &m_metTauPhi,         "metTauPhi/F");
+    setBranch(tree, "Tau",             &m_metTau,            "F");
+    setBranch(tree, "TauSumEt",        &m_metTauSumEt,       "F");
+    setBranch(tree, "TauPhi",          &m_metTauPhi,         "F");
   }
 
   if ( m_infoSwitch.m_refMuons ) {
-    tree->Branch("metMuons",           &m_metMuons,          "metMuons/F");
-    tree->Branch("metMuonsSumEt",      &m_metMuonsSumEt,     "metMuonsSumEt/F");
-    tree->Branch("metMuonsPhi",        &m_metMuonsPhi,       "metMuonsPhi/F");
+    setBranch(tree, "Muons",           &m_metMuons,          "F");
+    setBranch(tree, "MuonsSumEt",      &m_metMuonsSumEt,     "F");
+    setBranch(tree, "MuonsPhi",        &m_metMuonsPhi,       "F");
   }
 
   if ( m_infoSwitch.m_refJet ) {
-    tree->Branch("metJet",             &m_metJet,            "metJet/F");
-    tree->Branch("metJetSumEt",        &m_metJetSumEt,       "metJetSumEt/F");
-    tree->Branch("metJetPhi",          &m_metJetPhi,         "metJetPhi/F");
+    setBranch(tree, "Jet",             &m_metJet,            "F");
+    setBranch(tree, "JetSumEt",        &m_metJetSumEt,       "F");
+    setBranch(tree, "JetPhi",          &m_metJetPhi,         "F");
   }
 
   if ( m_infoSwitch.m_refJetTrk ) {
-    tree->Branch("metJetTrk",          &m_metJetTrk,         "metJetTrk/F");
-    tree->Branch("metJetTrkSumEt",     &m_metJetTrkSumEt,    "metJetTrkSumEt/F");
-    tree->Branch("metJetTrkPhi",       &m_metJetTrkPhi,      "metJetTrkPhi/F");
+    setBranch(tree, "JetTrk",          &m_metJetTrk,         "F");
+    setBranch(tree, "JetTrkSumEt",     &m_metJetTrkSumEt,    "F");
+    setBranch(tree, "JetTrkPhi",       &m_metJetTrkPhi,      "F");
   }
 
   if ( m_infoSwitch.m_softClus) {
-    tree->Branch("metSoftClus",        &m_metSoftClus,       "metSoftClus/F");
-    tree->Branch("metSoftClusSumEt",   &m_metSoftClusSumEt,  "metSoftClusSumEt/F");
-    tree->Branch("metSoftClusPhi",     &m_metSoftClusPhi,    "metSoftClussPhi/F");
+    setBranch(tree, "SoftClus",        &m_metSoftClus,       "F");
+    setBranch(tree, "SoftClusSumEt",   &m_metSoftClusSumEt,  "F");
+    setBranch(tree, "SoftClusPhi",     &m_metSoftClusPhi,    "F");
   }
 
   if ( m_infoSwitch.m_softTrk) {
-    tree->Branch("metSoftTrk",         &m_metSoftTrk,        "metSoftTrk/F");
-    tree->Branch("metSoftTrkSumEt",    &m_metSoftTrkSumEt,   "metSoftTrkSumEt/F");
-    tree->Branch("metSoftTrkPhi",      &m_metSoftTrkPhi,     "metSoftTrksPhi/F");
+    setBranch(tree, "SoftTrk",         &m_metSoftTrk,        "F");
+    setBranch(tree, "SoftTrkSumEt",    &m_metSoftTrkSumEt,   "F");
+    setBranch(tree, "SoftTrkPhi",      &m_metSoftTrkPhi,     "F");
   }
 
 

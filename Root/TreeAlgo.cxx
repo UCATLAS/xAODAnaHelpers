@@ -248,6 +248,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr);               }
     if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
+    if (!m_METReferenceContainerName.empty() )  { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
     if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
     if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
     if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesContainerName, m_trackParticlesDetailStr); }
@@ -420,6 +421,14 @@ EL::StatusCode TreeAlgo :: execute ()
       const xAOD::MissingETContainer* inMETCont(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METContainerName + metSuffix, m_event, m_store, msg()) );
       helpTree->FillMET( inMETCont );
+    }
+
+    if ( !m_METReferenceContainerName.empty() ) {
+      if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METReferenceContainerName, m_event, m_store, msg()) ) continue;
+
+      const xAOD::MissingETContainer* inMETCont(nullptr);
+      ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METReferenceContainerName, m_event, m_store, msg()) );
+      helpTree->FillMET( inMETCont, "referenceMet" );
     }
 
     if ( !m_photonContainerName.empty() ) {

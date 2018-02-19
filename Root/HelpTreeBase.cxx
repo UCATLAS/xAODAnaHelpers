@@ -31,8 +31,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_trigInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
-  m_eventInfo(nullptr),
-  m_met(nullptr)
+  m_eventInfo(nullptr)
 {
 
   m_units = units;
@@ -82,7 +81,8 @@ HelpTreeBase::~HelpTreeBase() {
       delete tau.second;
 
     //met
-    delete m_met;
+    for (auto met: m_met)
+      delete met.second;
 
     //jet
     for (auto jet: m_jets)
@@ -942,29 +942,37 @@ void HelpTreeBase::ClearTaus(const std::string tauName) {
  *
  *     MET
  *
- ********************/
-void HelpTreeBase::AddMET( const std::string detailStr ) {
+ ********************/ 
+void HelpTreeBase::AddMET( const std::string detailStr, const std::string metName ) {
 
   if(m_debug) Info("AddMET()", "Adding MET variables: %s", detailStr.c_str());
 
-  m_met = new xAH::MetContainer(detailStr, m_units);
-  m_met -> setBranches(m_tree);
-  this->AddMETUser();
+  m_met[metName] = new xAH::MetContainer(metName, detailStr, m_units);
+  
+  xAH::MetContainer* thisMet = m_met[metName];
+  
+  thisMet->setBranches(m_tree);
+  this->AddMETUser(metName);
 }
 
-void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
+void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met, const std::string metName ) {
 
   // Clear previous events
-  this->ClearMET();
-  this->ClearMETUser();
+  this->ClearMET(metName);
 
-  m_met->FillMET(met);
+  xAH::MetContainer* thisMet = m_met[metName];
 
-  this->FillMETUser(met);
+  thisMet->FillMET(met);
+
+  this->FillMETUser(met, metName);
 }
 
-void HelpTreeBase::ClearMET() {
-  m_met->clear();
+void HelpTreeBase::ClearMET( const std::string metName ) {
+  xAH::MetContainer* thisMet = m_met[metName];
+
+  thisMet->clear();
+
+  this->ClearMETUser(metName);
 }
 
 
