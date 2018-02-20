@@ -467,7 +467,6 @@ namespace HelperClasses {
    */
   class JetInfoSwitch : public IParticleInfoSwitch {
   public:
-    bool m_kinematic;
     bool m_trigger;
     bool m_substructure;
     bool m_bosonCount;
