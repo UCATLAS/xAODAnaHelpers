@@ -49,6 +49,12 @@ int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* verte
 {
   msg.setName(msg.name()+".getPrimaryVertexLocation");
   int location(0);
+
+  if(vertexContainer == nullptr) {
+    msg << MSG::DEBUG << "No primary vertex container was found! Returning -1" << endmsg;
+    return -1;
+  }
+
   for( auto vtx_itr : *vertexContainer )
   {
     if(vtx_itr->vertexType() == xAOD::VxType::VertexType::PriVtx) {
