@@ -16,8 +16,8 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   }
 
   // clean
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
-    if(m_infoSwitch.m_clean){
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanNoSumm) {
+    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanNoSumm){
       m_Timing                    =new std::vector<float>();
       m_LArQuality                =new std::vector<float>();
       m_HECQuality                =new std::vector<float>();
@@ -423,8 +423,8 @@ JetContainer::~JetContainer()
   }
 
   // clean
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
-    if(m_infoSwitch.m_clean){
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanNoSumm) {
+    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanNoSumm){
       delete m_Timing;
       delete m_LArQuality;
       delete m_HECQuality;
@@ -796,9 +796,9 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"rapidity",                      &m_rapidity);
     }
 
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanNoSumm)
     {
-      if(m_infoSwitch.m_clean){
+      if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanNoSumm){
         connectBranch<float>(tree, "Timing",                     &m_Timing);
         connectBranch<float>(tree, "LArQuality",                 &m_LArQuality);
         connectBranch<int>  (tree, "LArBadHVNCell",              &m_LArBadHVNCell);
@@ -1018,10 +1018,10 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.rapidity                    =m_rapidity                    ->at(idx);
     }
 
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanNoSumm)
     {
       if(m_debug) std::cout << "updating clean " << std::endl;
-      if(m_infoSwitch.m_clean){
+      if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanNoSumm){
         jet.Timing                    =m_Timing                    ->at(idx);
         jet.LArQuality                =m_LArQuality                ->at(idx);
         jet.HECQuality                =m_HECQuality                ->at(idx);
@@ -1488,8 +1488,8 @@ void JetContainer::setBranches(TTree *tree)
   }
 
 
-  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
-    if(m_infoSwitch.m_clean){
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanNoSumm ) {
+    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanNoSumm ){
       setBranch<float>(tree,"Timing",                        m_Timing               );
       setBranch<float>(tree,"LArQuality",                    m_LArQuality         );
       setBranch<float>(tree,"HECQuality",                    m_HECQuality               );
@@ -1856,8 +1856,8 @@ void JetContainer::clear()
   }
 
   // clean
-  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
-    if(m_infoSwitch.m_clean){
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanNoSumm ) {
+    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanNoSumm){
       m_Timing                    ->clear();
       m_LArQuality                ->clear();
       m_HECQuality                ->clear();
@@ -2221,9 +2221,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_rapidity->push_back( jet->rapidity() );
   }
 
-  if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+  if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanNoSumm ) {
 
-    if(m_infoSwitch.m_clean){
+    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanNoSumm){
 
       static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
       safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
@@ -2270,19 +2270,23 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::ConstAccessor<float> leadClusSecondR ("LeadingClusterSecondR");
       safeFill<float, float, xAOD::Jet>(jet, leadClusSecondR, m_LeadingClusterSecondR, -999);
 
-      static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
-      safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
+      if(!m_infoSwitch.m_cleanNoSumm) {
+        static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
+        safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
 
-      static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
-      safeFill<char, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
+        static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
+        safeFill<char, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
+      }
 
     }
 
-    static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
-    safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
+    if(!m_infoSwitch.m_cleanNoSumm) {
+      static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
+      safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
 
-    static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
-    safeFill<char, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
+      static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
+      safeFill<char, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
+    }
 
   } // clean
 
