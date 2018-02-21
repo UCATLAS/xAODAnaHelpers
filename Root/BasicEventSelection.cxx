@@ -211,9 +211,17 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	  } // is derivation
       }
 
-      m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
-      m_MD_initialSumW	      = allEventsCBK->sumOfEventWeights();
-      m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
+      if(allEventsCBK == nullptr) {
+        ANA_MSG_WARNING("No allEventsCBK found (this is expected for DataScouting, otherwise not). Event numbers set to 0.");
+        m_MD_initialNevents     = 0;
+        m_MD_initialSumW        = 0;
+        m_MD_initialSumWSquared = 0;
+      }
+      else {
+        m_MD_initialNevents     = allEventsCBK->nAcceptedEvents();
+        m_MD_initialSumW        = allEventsCBK->sumOfEventWeights();
+        m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
+      }
 
       if ( m_isDerivation && !DxAODEventsCBK ) {
         ANA_MSG_ERROR( "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
