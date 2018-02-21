@@ -3,6 +3,11 @@
 
 #include "xAODBase/IParticleContainer.h"
 
+// samples
+#include <SampleHandler/SampleGrid.h>
+#include <SampleHandler/MetaFields.h>
+#include <SampleHandler/MetaObject.h>
+
 // jet reclustering
 #include <fastjet/PseudoJet.hh>
 #include <fastjet/ClusterSequence.hh>
@@ -11,6 +16,13 @@
 #include <fastjet/tools/Filter.hh>
 #include <JetEDM/JetConstituentFiller.h>
 
+void xAH::addRucio(SH::SampleHandler& sh, const std::string& name, const std::string& dslist)
+{
+  std::unique_ptr<SH::SampleGrid> sample(new SH::SampleGrid(name));
+  sample->meta()->setString(SH::MetaFields::gridName, dslist);
+  sample->meta()->setString(SH::MetaFields::gridFilter, SH::MetaFields::gridFilter_default);
+  sh.add(sample.release());
+}
 
 MsgStream& HelperFunctions::msg( MSG::Level lvl ) {
   static MsgStream msgStream( "HelperFunctions" );

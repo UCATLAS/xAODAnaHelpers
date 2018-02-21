@@ -47,6 +47,7 @@
 #include <xAODAnaHelpers/MinixAOD.h>
 
 /* Other */
+#include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/TrigMatcher.h>
 #include <xAODAnaHelpers/Writer.h>
@@ -58,6 +59,9 @@
 #pragma link off all classes;
 #pragma link off all functions;
 #pragma link C++ nestedclass;
+
+#pragma link C++ namespace xAH;
+#pragma link C++ function xAH::addRucio;
 
 #pragma link C++ class xAH::Algorithm+;
 
