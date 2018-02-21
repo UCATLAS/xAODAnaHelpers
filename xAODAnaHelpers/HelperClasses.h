@@ -136,6 +136,7 @@ namespace HelperClasses {
         Parameter        Pattern        Match
         ================ ============== =======
         m_eventCleaning  eventCleaning  exact
+        m_bcidInfo       bcidInfo       exact
         m_pileup         pileup         exact
         m_pileupsys      pileupsys      exact
         m_shapeEM        shapeEM        exact
@@ -150,6 +151,7 @@ namespace HelperClasses {
   class EventInfoSwitch : public InfoSwitch {
   public:
     bool m_eventCleaning;
+    bool m_bcidInfo;
     bool m_pileup;
     bool m_pileupsys;
     bool m_shapeEM;
@@ -166,14 +168,19 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for Trigger Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_basic        basic        exact
-        m_menuKeys     menuKeys     exact
-        m_passTriggers passTriggers exact
-        m_passTrigBits passTrigBits exact
-        ============== ============ =======
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_basic          basic          exact
+        m_menuKeys       menuKeys       exact
+        m_passTriggers   passTriggers   exact
+        m_passTrigBits   passTrigBits   exact
+        m_prescales      prescales      exact
+        m_prescalesLumi  prescalesLumi  exact
+        ================ ============== =======
+
+        .. note::
+            ``m_prescales`` contains information from the ``TrigDecisionTool`` for every trigger used in event selection and event trigger-matching. ``m_prescalesLumi`` contains information retrieved from the pile-up reweighting tool based on the actual luminosities of triggers.
 
     @endrst
    */
@@ -183,30 +190,9 @@ namespace HelperClasses {
     bool m_menuKeys;
     bool m_passTriggers;
     bool m_passTrigBits;
+    bool m_prescales;
+    bool m_prescalesLumi;
     TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
-  protected:
-    void initialize();
-  };
-
-  /**
-    @rst
-        The :cpp:class:`HelperClasses::InfoSwitch` struct for Jet Trigger Information.
-
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_kinematic    kinematic    exact
-        m_clean        clean        exact
-        ============== ============ =======
-
-    @endrst
-   */
-
-  class JetTriggerInfoSwitch : public InfoSwitch {
-  public:
-    bool m_kinematic;
-    bool m_clean;
-    JetTriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
   };
@@ -261,7 +247,26 @@ namespace HelperClasses {
         m_trackhitcont         trackhitcont         exact
         m_effSF                effSF                exact
         m_energyLoss           energyLoss           exact
+        m_recoWPs[XYZ]         RECO_XYZ             pattern
+        m_isolWPs[""]          ISOL_                exact
+        m_isolWPs[""]          ISOL_NONE            exact
+        m_isolWPs[XYZ]         ISOL_XYZ             pattern
+        m_trigWPs[XYZ]         TRIG_XYZ             pattern
         ====================== ==================== =======
+
+        .. note::
+
+             ``quality``, ``isolation`` and ``effSF`` switches do not enable any additional output by themselves. They require additional working point pattern using ``RECO_XYZ`` for quality working points and scale factors, ``ISOL_XYZ`` for isolation working points and scale factors, and ``TRIG_XYZ`` for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
+
+                 m_configStr = "... RECO_Medium ..."
+
+             will define the ``Medium`` quality working point and the accompanying scale factors.
+
+             Isolation supports ``NONE`` or empty option which will enable scale factors without additional isolation requirements, for example::
+
+                 m_configStr = "... ISOL_NONE ISOL_Loose ..."
+
+             will define the ``Loose`` isolation working point status branch, and scale factors without isolation requirements and using the ``Loose`` WP.
 
     @endrst
    */
@@ -303,17 +308,31 @@ namespace HelperClasses {
         m_trigger             trigger             exact
         m_isolation           isolation           exact
         m_isolationKinematics isolationKinematics exact
-        m_quality             quality             exact
         m_PID                 PID                 exact
         m_trackparams         trackparams         exact
         m_trackhitcont        trackhitcont        exact
         m_effSF               effSF               exact
         m_PIDWPs[XYZ]         PID_XYZ             pattern
+        m_PIDSFWPs[XYZ]       PIDSF_XYZ           pattern
         m_isolWPs[""]         ISOL_               exact
         m_isolWPs[""]         ISOL_NONE           exact
         m_isolWPs[XYZ]        ISOL_XYZ            pattern
         m_trigWPs[XYZ]        TRIG_XYZ            pattern
         ===================== =================== =======
+
+        .. note::
+
+            ``PID``, ``isolation`` and ``effSF`` switches do not enable any additional output by themselves. They require additional working point pattern using ``PID_XYZ`` for PID working points, ``PIDSF_XYZ`` for PID scale factors, ``ISOL_XYZ`` for isolation working points and scale factors, and ``TRIG_XYZ`` for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
+
+                m_configStr = "... PID_LHMedium PIDSF_MediumLLH ..."
+
+            will define the ``LHMedium`` PID working point and the accompanying scale factors. Note that not all PID working points have scale factors available.
+
+            Isolation supports ``NONE`` or empty option which will enable scale factors without additional isolation requirements, for example::
+
+                m_configStr = "... ISOL_NONE ISOL_Loose ..."
+
+            will define the ``Loose`` isolation working point status branch, and scale factors without isolation requirements and using the ``Loose`` WP.
 
     @endrst
    */
@@ -329,6 +348,7 @@ namespace HelperClasses {
     bool m_effSF;
     bool m_promptlepton;
     std::vector< std::string > m_PIDWPs;
+    std::vector< std::string > m_PIDSFWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
@@ -373,6 +393,8 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_kinematic      kinematic      exact
+        m_trigger        trigger        exact
         m_substructure   substructure   exact
         m_bosonCount     bosonCount     exact
         m_VTags          VTags          exact
@@ -445,6 +467,7 @@ namespace HelperClasses {
    */
   class JetInfoSwitch : public IParticleInfoSwitch {
   public:
+    bool m_trigger;
     bool m_substructure;
     bool m_bosonCount;
     bool m_VTags;

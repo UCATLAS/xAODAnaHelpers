@@ -31,6 +31,11 @@ namespace xAH {
       Jet();
       float rapidity;
 
+      // trigger
+      int               isTrigMatched;
+      std::vector<int>  isTrigMatchedToChain;
+      std::string       listTrigChains;
+      
       // clean
       float Timing;
       float LArQuality;

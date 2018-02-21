@@ -21,7 +21,7 @@ namespace xAH {
     public:
       ElectronContainer(const std::string& name = "el", const std::string& detailStr="", float units = 1e3, bool mc = false, bool storeSystSFs = true);
       virtual ~ElectronContainer();
-    
+
       virtual void setTree(TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
@@ -31,28 +31,19 @@ namespace xAH {
 
     protected:
       virtual void updateParticle(uint idx, Electron& elec);
-    
+
     private:
 
       // kinematics
       std::vector<float>*  m_caloCluster_eta;
- 
+
       // trigger
       std::vector<int>*  m_isTrigMatched;
       std::vector<std::vector<int> >* m_isTrigMatchedToChain;
       std::vector<std::string>*       m_listTrigChains;
 
       // isolation
-      std::vector<int>*   m_isIsolated_LooseTrackOnly;
-      std::vector<int>*   m_isIsolated_Loose;
-      std::vector<int>*   m_isIsolated_Tight;
-      std::vector<int>*   m_isIsolated_Gradient;
-      std::vector<int>*   m_isIsolated_GradientLoose;
-      std::vector<int>*   m_isIsolated_FixedCutLoose;
-      std::vector<int>*   m_isIsolated_FixedCutTight;
-      std::vector<int>*   m_isIsolated_FixedCutTightTrackOnly;
-      std::vector<int>*   m_isIsolated_UserDefinedFixEfficiency;
-      std::vector<int>*   m_isIsolated_UserDefinedCut;
+      std::map< std::string, std::vector< int > >* m_isIsolated;
       std::vector<float>* m_etcone20;
       std::vector<float>* m_ptcone20;
       std::vector<float>* m_ptcone30;
@@ -65,23 +56,8 @@ namespace xAH {
       std::vector<float>* m_topoetcone40;
 
       // PID
-      int m_n_LHVeryLoose;
-      std::vector<int>*   m_LHVeryLoose;
-      int m_n_LHLoose;
-      std::vector<int>*   m_LHLoose;
-      int m_n_LHLooseBL;
-      std::vector<int>*   m_LHLooseBL;
-      int m_n_LHMedium;
-      std::vector<int>*   m_LHMedium;
-      int m_n_LHTight;
-      std::vector<int>*   m_LHTight;
-      int m_n_IsEMLoose;
-      std::vector<int>*   m_IsEMLoose;
-      int m_n_IsEMMedium;
-      std::vector<int>*   m_IsEMMedium;
-      int m_n_IsEMTight;
-      std::vector<int>*   m_IsEMTight;
-    
+      std::map< std::string, std::vector< int > >* m_PID;
+
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > >* m_RecoEff_SF;
@@ -90,7 +66,7 @@ namespace xAH {
       std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
-      
+
       // track parameters
       std::vector<float>* m_trkd0;
       std::vector<float>* m_trkd0sig;
@@ -100,7 +76,7 @@ namespace xAH {
       std::vector<float>* m_trktheta;
       std::vector<float>* m_trkcharge;
       std::vector<float>* m_trkqOverP;
-    
+
       // track hit content
       std::vector<int>*   m_trknSiHits;
       std::vector<int>*   m_trknPixHits;
@@ -123,7 +99,7 @@ namespace xAH {
       std::vector<int>*   m_PromptLeptonIso_sv1_jf_ntrkv;
       std::vector<float>* m_PromptLeptonNoIso_TagWeight;
       std::vector<float>* m_PromptLepton_TagWeight;
-    
+
     };
 }
 #endif // xAODAnaHelpers_ElectronContainer_H

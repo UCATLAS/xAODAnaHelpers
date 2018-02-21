@@ -31,8 +31,7 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_trigInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
-  m_eventInfo(nullptr),
-  m_met(nullptr)
+  m_eventInfo(nullptr)
 {
 
   m_units = units;
@@ -82,7 +81,8 @@ HelpTreeBase::~HelpTreeBase() {
       delete tau.second;
 
     //met
-    delete m_met;
+    for (auto met: m_met)
+      delete met.second;
 
     //jet
     for (auto jet: m_jets)
@@ -167,7 +167,14 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   if ( m_trigInfoSwitch->m_passTriggers ) {
     // vector of strings for trigger names which fired
     m_tree->Branch("passedTriggers",       &m_passTriggers        );
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
     m_tree->Branch("triggerPrescales",     &m_triggerPrescales    );
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescalesLumi ) {
+    m_tree->Branch("triggerPrescalesLumi", &m_triggerPrescalesLumi);
   }
 
   if ( m_trigInfoSwitch->m_passTrigBits ) {
@@ -228,8 +235,23 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
     if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
 
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_prescales"); }
+
     static SG::AuxElement::ConstAccessor< std::vector< float > > trigPrescales("triggerPrescales");
     if( trigPrescales.isAvailable( *eventInfo ) ) { m_triggerPrescales = trigPrescales( *eventInfo ); }
+
+  }
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescalesLumi ) {
+
+    if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_prescalesLumi"); }
+
+    static SG::AuxElement::ConstAccessor< std::map< std::string, float > > trigPrescalesLumi("triggerPrescalesLumi");
+    if( trigPrescalesLumi.isAvailable( *eventInfo ) ) { m_triggerPrescalesLumi = trigPrescalesLumi( *eventInfo ); }
 
   }
 
@@ -257,6 +279,7 @@ void HelpTreeBase::ClearTrigger() {
 
   m_passTriggers.clear();
   m_triggerPrescales.clear();
+  m_triggerPrescalesLumi.clear();
   m_isPassBits.clear();
   m_isPassBitsNames.clear();
 
@@ -542,15 +565,34 @@ void HelpTreeBase::AddL1Jets()
 
 }
 
-void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets ) {
+void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jets ) {
 
   this->ClearL1Jets();
 
-  for( auto jet_itr : *jets ) {
-    m_l1Jet_et8x8.push_back ( jet_itr->et8x8() / m_units );
-    m_l1Jet_eta.push_back( jet_itr->eta() );
-    m_l1Jet_phi.push_back( jet_itr->phi() );
-    m_nL1Jet++;
+  if(!sortL1Jets) {
+    for( auto jet_itr : *jets ) {
+      m_l1Jet_et8x8.push_back ( jet_itr->et8x8() / m_units );
+      m_l1Jet_eta.push_back( jet_itr->eta() );
+      m_l1Jet_phi.push_back( jet_itr->phi() );
+      m_nL1Jet++;
+    }
+  }
+
+  else {
+    std::vector< float > L1jet_Et, L1jet_Et_sorted;
+    for( auto jet_itr : *jets ) {
+      L1jet_Et.push_back( jet_itr->et8x8() );
+      L1jet_Et_sorted.push_back( jet_itr->et8x8() );
+    }
+    std::sort(L1jet_Et_sorted.begin(), L1jet_Et_sorted.end(), std::greater<float>());
+
+    for( unsigned int i = 0; i < L1jet_Et.size(); i++) {
+      int index = std::find (L1jet_Et.begin(), L1jet_Et.end(), L1jet_Et_sorted.at(i)) - L1jet_Et.begin();
+      m_l1Jet_et8x8.push_back ( jets->at(index)->et8x8() / m_units );
+      m_l1Jet_eta.push_back( jets->at(index)->eta() );
+      m_l1Jet_phi.push_back( jets->at(index)->phi() );
+      m_nL1Jet++;
+    }
   }
 }
 
@@ -900,29 +942,37 @@ void HelpTreeBase::ClearTaus(const std::string tauName) {
  *
  *     MET
  *
- ********************/
-void HelpTreeBase::AddMET( const std::string detailStr ) {
+ ********************/ 
+void HelpTreeBase::AddMET( const std::string detailStr, const std::string metName ) {
 
   if(m_debug) Info("AddMET()", "Adding MET variables: %s", detailStr.c_str());
 
-  m_met = new xAH::MetContainer(detailStr, m_units);
-  m_met -> setBranches(m_tree);
-  this->AddMETUser();
+  m_met[metName] = new xAH::MetContainer(metName, detailStr, m_units);
+  
+  xAH::MetContainer* thisMet = m_met[metName];
+  
+  thisMet->setBranches(m_tree);
+  this->AddMETUser(metName);
 }
 
-void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met ) {
+void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met, const std::string metName ) {
 
   // Clear previous events
-  this->ClearMET();
-  this->ClearMETUser();
+  this->ClearMET(metName);
 
-  m_met->FillMET(met);
+  xAH::MetContainer* thisMet = m_met[metName];
 
-  this->FillMETUser(met);
+  thisMet->FillMET(met);
+
+  this->FillMETUser(met, metName);
 }
 
-void HelpTreeBase::ClearMET() {
-  m_met->clear();
+void HelpTreeBase::ClearMET( const std::string metName ) {
+  xAH::MetContainer* thisMet = m_met[metName];
+
+  thisMet->clear();
+
+  this->ClearMETUser(metName);
 }
 
 

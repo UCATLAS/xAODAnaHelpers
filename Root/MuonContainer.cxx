@@ -19,15 +19,7 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     
   // isolation
   if ( m_infoSwitch.m_isolation ) {
-    m_isIsolated_LooseTrackOnly                  = new  vector<int>   ();
-    m_isIsolated_Loose                           = new  vector<int>   ();
-    m_isIsolated_Tight                           = new  vector<int>   ();
-    m_isIsolated_Gradient                        = new  vector<int>   ();
-    m_isIsolated_GradientLoose                   = new  vector<int>   ();
-    m_isIsolated_FixedCutLoose                   = new  vector<int>   ();
-    m_isIsolated_FixedCutTightTrackOnly          = new  vector<int>   ();
-    m_isIsolated_UserDefinedFixEfficiency        = new  vector<int>   ();
-    m_isIsolated_UserDefinedCut                  = new  vector<int>   ();
+    m_isIsolated = new std::map< std::string, std::vector< int > >();
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
@@ -41,15 +33,12 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     m_topoetcone30                               = new  vector<float> ();
     m_topoetcone40                               = new  vector<float> ();
   }
-  
+
   // quality
   if ( m_infoSwitch.m_quality ) {
-    m_isVeryLoose  = new vector<int>();   
-    m_isLoose      = new vector<int>();   
-    m_isMedium     = new vector<int>();   
-    m_isTight      = new vector<int>();   
+    m_quality = new std::map< std::string, std::vector< int > >();
   }
-  
+
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -125,15 +114,7 @@ MuonContainer::~MuonContainer()
     
   // isolation
   if ( m_infoSwitch.m_isolation ) {
-    delete m_isIsolated_LooseTrackOnly                  ;
-    delete m_isIsolated_Loose                           ;
-    delete m_isIsolated_Tight                           ;
-    delete m_isIsolated_Gradient                        ;
-    delete m_isIsolated_GradientLoose                   ;
-    delete m_isIsolated_FixedCutLoose                   ;
-    delete m_isIsolated_FixedCutTightTrackOnly          ;
-    delete m_isIsolated_UserDefinedFixEfficiency        ;
-    delete m_isIsolated_UserDefinedCut                  ;
+    delete m_isIsolated;
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
@@ -150,10 +131,7 @@ MuonContainer::~MuonContainer()
   
   // quality
   if ( m_infoSwitch.m_quality ) {
-    delete m_isVeryLoose  ;   
-    delete m_isLoose      ;   
-    delete m_isMedium     ;   
-    delete m_isTight      ;   
+    delete m_quality;  
   }
   
   // scale factors w/ sys
@@ -232,15 +210,12 @@ void MuonContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_isolation ) {
-    connectBranch<int>(tree,"isIsolated_LooseTrackOnly", &m_isIsolated_LooseTrackOnly);
-    connectBranch<int>(tree,"isIsolated_Loose",	     &m_isIsolated_Loose);
-    connectBranch<int>(tree,"isIsolated_Tight",	     &m_isIsolated_Tight);
-    connectBranch<int>(tree,"isIsolated_Gradient",	     &m_isIsolated_Gradient);
-    connectBranch<int>(tree,"isIsolated_GradientLoose",  &m_isIsolated_GradientLoose);
-    connectBranch<int>(tree,"isIsolated_FixedCutLoose",	   &m_isIsolated_FixedCutLoose);
-    connectBranch<int>(tree,"isIsolated_FixedCutTightTrackOnly", &m_isIsolated_FixedCutTightTrackOnly);
-    connectBranch<int>(tree,"isIsolated_UserDefinedFixEfficiency",    &m_isIsolated_UserDefinedFixEfficiency);
-    connectBranch<int>(tree,"isIsolated_UserDefinedCut",              &m_isIsolated_UserDefinedCut);
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      if (!isol.empty()) {
+        tree->SetBranchStatus ( (m_name + "_isIsolated_" + isol).c_str() , 1);
+        tree->SetBranchAddress( (m_name + "_isIsolated_" + isol).c_str() , & (*m_isIsolated)[ isol ] );
+      }
+    }
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
@@ -256,34 +231,36 @@ void MuonContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
     for (auto& reco : m_infoSwitch.m_recoWPs) {
-      std::string recoEffSF = "muon_RecoEff_SF_" + reco; 
-      tree->SetBranchAddress( recoEffSF.c_str() , & (*m_RecoEff_SF)[ reco ] );
+      tree->SetBranchStatus ( (m_name + "_RecoEff_SF_Reco" + reco).c_str() , 1);
+      tree->SetBranchAddress( (m_name + "_RecoEff_SF_Reco" + reco).c_str() , & (*m_RecoEff_SF)[ reco ] );
+
+      for (auto& trig : m_infoSwitch.m_trigWPs) {
+        tree->SetBranchStatus ( (m_name + "_TrigEff_SF_" + trig + "_Reco" + reco).c_str() , 1 );
+        tree->SetBranchAddress( (m_name + "_TrigEff_SF_" + trig + "_Reco" + reco).c_str() , & (*m_TrigEff_SF)[ trig+reco ] );
+
+        tree->SetBranchStatus ( (m_name + "_TrigMCEff_"  + trig + "_Reco" + reco).c_str() , 1 );
+        tree->SetBranchAddress( (m_name + "_TrigMCEff_"  + trig + "_Reco" + reco).c_str() , & (*m_TrigMCEff) [ trig+reco ] );
+      }
     }
-    
+
     for (auto& isol : m_infoSwitch.m_isolWPs) {
-      std::string isolEffSF = "muon_IsoEff_SF_" + isol; 
-      tree->SetBranchAddress( isolEffSF.c_str() , & (*m_IsoEff_SF)[ isol ] );
+      if (!isol.empty()) {
+        tree->SetBranchStatus ( (m_name + "_IsoEff_SF_Iso" + isol).c_str() , 1);
+        tree->SetBranchAddress( (m_name + "_IsoEff_SF_Iso" + isol).c_str() , & (*m_IsoEff_SF)[ isol ] );
+      }
     }
-    
-    for (auto& trig : m_infoSwitch.m_trigWPs) {
-      std::string trigEffSF = "muon_TrigEff_SF_" + trig; 
-      tree->SetBranchAddress( trigEffSF.c_str() , & (*m_TrigEff_SF)[ trig ] );
-      
-      
-      std::string trigMCEff = "muon_TrigMCEff_" + trig;
-      tree->SetBranchAddress( trigMCEff.c_str() , & (*m_TrigMCEff)[ trig ] );
-    }
-    
+
     connectBranch<vector<float> >(tree,"TTVAEff_SF",  &m_TTVAEff_SF);
   }
 
   if ( m_infoSwitch.m_quality ) {
-    connectBranch<int>(tree,"isVeryLoose",  &m_isVeryLoose);
-    connectBranch<int>(tree,"isLoose",      &m_isLoose);
-    connectBranch<int>(tree,"isMedium",     &m_isMedium);
-    connectBranch<int>(tree,"isTight",      &m_isTight);
+    for (auto& quality : m_infoSwitch.m_recoWPs) {
+      if (!quality.empty()) {
+        tree->SetBranchStatus ( (m_name + "is" + quality).c_str() , 1);
+        tree->SetBranchAddress( (m_name + "is" + quality).c_str() , & (*m_quality)[ quality ] );
+      }
+    }
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -348,15 +325,11 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     
   // isolation
   if ( m_infoSwitch.m_isolation ) {
-    muon.isIsolated_LooseTrackOnly                =     m_isIsolated_LooseTrackOnly                  ->at(idx);
-    muon.isIsolated_Loose                         =     m_isIsolated_Loose                           ->at(idx);
-    muon.isIsolated_Tight                         =     m_isIsolated_Tight                           ->at(idx);
-    muon.isIsolated_Gradient                      =     m_isIsolated_Gradient                        ->at(idx);
-    muon.isIsolated_GradientLoose                 =     m_isIsolated_GradientLoose                   ->at(idx);
-    muon.isIsolated_FixedCutLoose                 =     m_isIsolated_FixedCutLoose                   ->at(idx);
-    muon.isIsolated_FixedCutTightTrackOnly        =     m_isIsolated_FixedCutTightTrackOnly          ->at(idx);
-    muon.isIsolated_UserDefinedFixEfficiency      =     m_isIsolated_UserDefinedFixEfficiency        ->at(idx);
-    muon.isIsolated_UserDefinedCut                =     m_isIsolated_UserDefinedCut                  ->at(idx);
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      if (!isol.empty()) {
+        muon.isIsolated[isol] = (*m_isIsolated)[ isol ].at(idx);
+      }
+    }
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
@@ -373,10 +346,11 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
   
   // quality
   if ( m_infoSwitch.m_quality ) {
-    muon.isVeryLoose    = m_isVeryLoose  ->at(idx);   
-    muon.isLoose        = m_isLoose      ->at(idx);   
-    muon.isMedium       = m_isMedium     ->at(idx);   
-    muon.isTight        = m_isTight      ->at(idx);   
+    for (auto& quality : m_infoSwitch.m_recoWPs) {
+      if (!quality.empty()) {
+        muon.quality[quality] = (*m_quality)[ quality ].at(idx);
+      }
+    } 
   }
   
   // scale factors w/ sys
@@ -385,15 +359,15 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     
     for (auto& reco : m_infoSwitch.m_recoWPs) {
       muon.RecoEff_SF[ reco ] = (*m_RecoEff_SF)[ reco ].at(idx);
+
+      for (auto& trig : m_infoSwitch.m_trigWPs) {
+        muon.TrigEff_SF[ trig+reco ] = (*m_TrigEff_SF)[ trig+reco ].at(idx);
+        muon.TrigMCEff [ trig+reco ] = (*m_TrigMCEff )[ trig+reco ].at(idx);
+      }
     }
-    
+
     for (auto& isol : m_infoSwitch.m_isolWPs) {
       muon.IsoEff_SF[ isol ] = (*m_IsoEff_SF)[ isol ].at(idx);
-    }
-    
-    for (auto& trig : m_infoSwitch.m_trigWPs) {
-      muon.TrigEff_SF[ trig ] = (*m_TrigEff_SF)[ trig ].at(idx);
-      muon.TrigMCEff [ trig ] = (*m_TrigMCEff )[ trig ].at(idx);
     }
 
     muon.TTVAEff_SF = m_TTVAEff_SF -> at(idx);
@@ -466,15 +440,11 @@ void MuonContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_isolation ) {
-    setBranch<int>(tree,"isIsolated_LooseTrackOnly", m_isIsolated_LooseTrackOnly);
-    setBranch<int>(tree,"isIsolated_Loose",	     m_isIsolated_Loose);
-    setBranch<int>(tree,"isIsolated_Tight",	     m_isIsolated_Tight);
-    setBranch<int>(tree,"isIsolated_Gradient",	     m_isIsolated_Gradient);
-    setBranch<int>(tree,"isIsolated_GradientLoose",  m_isIsolated_GradientLoose);
-    setBranch<int>(tree,"isIsolated_FixedCutLoose",	   m_isIsolated_FixedCutLoose);
-    setBranch<int>(tree,"isIsolated_FixedCutTightTrackOnly", m_isIsolated_FixedCutTightTrackOnly);
-    setBranch<int>(tree,"isIsolated_UserDefinedFixEfficiency",    m_isIsolated_UserDefinedFixEfficiency);
-    setBranch<int>(tree,"isIsolated_UserDefinedCut",              m_isIsolated_UserDefinedCut);
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      if (!isol.empty()) {
+        setBranch<int>(tree, "isIsolated_" + isol, &(*m_isIsolated)[isol]);
+      }
+    }
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
@@ -492,20 +462,16 @@ void MuonContainer::setBranches(TTree *tree)
   if ( m_infoSwitch.m_effSF && m_mc ) {
     
     for (auto& reco : m_infoSwitch.m_recoWPs) {
-      std::string recoEffSF = "muon_RecoEff_SF_" + reco;
-      tree->Branch( recoEffSF.c_str() , & (*m_RecoEff_SF)[ reco ] );
+      tree->Branch( (m_name + "_RecoEff_SF_Reco" + reco).c_str() , & (*m_RecoEff_SF)[ reco ] );
+      
+      for (auto& trig : m_infoSwitch.m_trigWPs) {
+        tree->Branch( (m_name + "_TrigEff_SF_" + trig + "_Reco" + reco).c_str() , & (*m_TrigEff_SF)[ trig+reco ] );
+        tree->Branch( (m_name + "_TrigMCEff_" + trig + "_Reco" + reco).c_str() , & (*m_TrigMCEff)[ trig+reco ] );
+      }
     }
     
     for (auto& isol : m_infoSwitch.m_isolWPs) {
-      std::string isolEffSF = "muon_IsoEff_SF_" + isol;
-      tree->Branch( isolEffSF.c_str() , & (*m_IsoEff_SF)[ isol ] );
-    }
-    
-    for (auto& trig : m_infoSwitch.m_trigWPs) {
-      std::string trigEffSF = "muon_TrigEff_SF_" + trig;
-      std::string trigMCEff = "muon_TrigMCEff_" + trig; 
-      tree->Branch( trigEffSF.c_str() , & (*m_TrigEff_SF)[ trig ] );
-      tree->Branch( trigMCEff.c_str() , & (*m_TrigMCEff)[ trig ] );
+      tree->Branch( (m_name + "_IsoEff_SF_Iso" + isol).c_str() , & (*m_IsoEff_SF)[ isol ] );
     }
     
     setBranch<vector<float> >(tree,"TTVAEff_SF",  m_TTVAEff_SF);
@@ -513,10 +479,11 @@ void MuonContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_quality ) {
-    setBranch<int>(tree,"isVeryLoose",  m_isVeryLoose);
-    setBranch<int>(tree,"isLoose",      m_isLoose);
-    setBranch<int>(tree,"isMedium",     m_isMedium);
-    setBranch<int>(tree,"isTight",      m_isTight);
+    for (auto& quality : m_infoSwitch.m_recoWPs) {
+      if (!quality.empty()) {
+        setBranch<int>(tree, "is" + quality, &(*m_quality)[quality]);
+      }
+    }
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -583,15 +550,9 @@ void MuonContainer::clear()
   }
 
   if ( m_infoSwitch.m_isolation ) {
-    m_isIsolated_LooseTrackOnly->clear();
-    m_isIsolated_Loose->clear();
-    m_isIsolated_Tight->clear();
-    m_isIsolated_Gradient->clear();
-    m_isIsolated_GradientLoose->clear();
-    m_isIsolated_FixedCutLoose->clear();
-    m_isIsolated_FixedCutTightTrackOnly->clear();
-    m_isIsolated_UserDefinedFixEfficiency->clear();
-    m_isIsolated_UserDefinedCut->clear();
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      (*m_isIsolated)[ isol ].clear();
+    }
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
@@ -607,10 +568,9 @@ void MuonContainer::clear()
   }
 
   if ( m_infoSwitch.m_quality ) {
-    m_isVeryLoose->clear();
-    m_isLoose->clear();
-    m_isMedium->clear();
-    m_isTight->clear();
+    for (auto& quality : m_infoSwitch.m_recoWPs) {
+      (*m_quality)[ quality ].clear();
+    }
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -653,17 +613,17 @@ void MuonContainer::clear()
     
     for (auto& reco : m_infoSwitch.m_recoWPs) {
       (*m_RecoEff_SF)[ reco ].clear();
+
+      for (auto& trig : m_infoSwitch.m_trigWPs) {
+        (*m_TrigEff_SF)[ trig+reco ].clear();
+        (*m_TrigMCEff)[ trig+reco ].clear();
+      }
     }
-    
+
     for (auto& isol : m_infoSwitch.m_isolWPs) {
       (*m_IsoEff_SF)[ isol ].clear();
     }
-    
-    for (auto& trig : m_infoSwitch.m_trigWPs) {
-      (*m_TrigEff_SF)[ trig ].clear();
-      (*m_TrigMCEff)[ trig ].clear();
-    }
-    
+
     m_TTVAEff_SF->clear();
   }
 
@@ -723,34 +683,15 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
   
   
   if ( m_infoSwitch.m_isolation ) {
-    
+    static std::map< std::string, SG::AuxElement::Accessor<char> > accIsol;
 
-    static SG::AuxElement::Accessor<char> isIsoLooseTrackOnlyAcc ("isIsolated_LooseTrackOnly");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoLooseTrackOnlyAcc, m_isIsolated_LooseTrackOnly, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoLooseAcc ("isIsolated_Loose");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoLooseAcc, m_isIsolated_Loose, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoTightAcc ("isIsolated_Tight");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoTightAcc, m_isIsolated_Tight, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoGradientAcc ("isIsolated_Gradient");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoGradientAcc, m_isIsolated_Gradient, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoGradientLooseAcc ("isIsolated_GradientLoose");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoGradientLooseAcc, m_isIsolated_GradientLoose, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoFixedCutLooseAcc ("isIsolated_FixedCutLoose");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoFixedCutLooseAcc, m_isIsolated_FixedCutLoose, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoFixedCutTightTrackOnlyAcc ("isIsolated_FixedCutTightTrackOnly");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoFixedCutTightTrackOnlyAcc, m_isIsolated_FixedCutTightTrackOnly, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoUserDefinedFixEfficiencyAcc ("isIsolated_UserDefinedFixEfficiency");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoUserDefinedFixEfficiencyAcc, m_isIsolated_UserDefinedFixEfficiency, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoUserDefinedCutAcc ("isIsolated_UserDefinedCut");
-    safeFill<char, int, xAOD::Muon>(muon, isIsoUserDefinedCutAcc, m_isIsolated_UserDefinedCut, -1);
+    for (auto& isol : m_infoSwitch.m_isolWPs) {
+      if (!isol.empty()) {
+        std::string isolWP = "isIsolated_" + isol;
+        accIsol.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( isol , SG::AuxElement::Accessor<char>( isolWP ) ) );
+        safeFill<char, int, xAOD::Muon>( muon, accIsol.at( isol ), &m_isIsolated->at( isol ), -1 );
+      }
+    }
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
@@ -767,17 +708,14 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
   }
 
   if ( m_infoSwitch.m_quality ) {
-    static SG::AuxElement::Accessor<char> isVeryLooseQAcc ("isVeryLooseQ");
-    safeFill<char, int, xAOD::Muon>(muon, isVeryLooseQAcc, m_isVeryLoose, -1);
+    static std::map< std::string, SG::AuxElement::Accessor<char> > accQuality;
 
-    static SG::AuxElement::Accessor<char> isLooseQAcc ("isLooseQ");
-    safeFill<char, int, xAOD::Muon>(muon, isLooseQAcc, m_isLoose, -1);
-
-    static SG::AuxElement::Accessor<char> isMediumQAcc ("isMediumQ");
-    safeFill<char, int, xAOD::Muon>(muon, isMediumQAcc, m_isMedium, -1);
-
-    static SG::AuxElement::Accessor<char> isTightQAcc ("isTightQ");
-    safeFill<char, int, xAOD::Muon>(muon, isTightQAcc, m_isTight, -1);    
+    for (auto& quality : m_infoSwitch.m_recoWPs) {
+      if (!quality.empty()) {
+        accQuality.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( quality , SG::AuxElement::Accessor<char>( "is" + quality + "Q" ) ) );
+        safeFill<char, int, xAOD::Muon>( muon, accQuality.at( quality ), &m_quality->at( quality ), -1 );
+      }
+    } 
   }
   
   const xAOD::TrackParticle* trk = muon->primaryTrackParticle();
@@ -876,29 +814,29 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     std::vector<float> junkEff(1,0.0);
 
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accRecoSF;
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
     for (auto& reco : m_infoSwitch.m_recoWPs) {
-      std::string recoEffSF = "MuRecoEff_SF_syst_" + reco;
+      std::string recoEffSF = "MuRecoEff_SF_syst_Reco" + reco;
       accRecoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( reco , SG::AuxElement::Accessor< std::vector< float > >( recoEffSF ) ) );
       safeSFVecFill<float, xAOD::Muon>( muon, accRecoSF.at( reco ), &m_RecoEff_SF->at( reco ), junkSF );
+
+      for (auto& trig : m_infoSwitch.m_trigWPs) {
+        std::string trigEffSF = "MuTrigEff_SF_syst_" + trig + "_Reco" + reco;
+        accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+reco , SG::AuxElement::Accessor< std::vector< float > >( trigEffSF ) ) );
+        safeSFVecFill<float, xAOD::Muon>( muon, accTrigSF.at( trig+reco ), &m_TrigEff_SF->at( trig+reco ), junkSF );
+
+        std::string trigMCEff = "MuTrigMCEff_syst_" + trig + "_Reco" + reco;
+        accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig+reco , SG::AuxElement::Accessor< std::vector< float > >( trigMCEff ) ) );
+        safeSFVecFill<float, xAOD::Muon>( muon, accTrigEFF.at( trig+reco ), &m_TrigMCEff->at( trig+reco ), junkEff );
+      }
     }
 
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
     for (auto& isol : m_infoSwitch.m_isolWPs) {
-      std::string isolEffSF = "MuIsoEff_SF_syst_" + isol;
+      std::string isolEffSF = "MuIsoEff_SF_syst_Iso" + isol;
       accIsoSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( isol , SG::AuxElement::Accessor< std::vector< float > >( isolEffSF ) ) );
       safeSFVecFill<float, xAOD::Muon>( muon, accIsoSF.at( isol ), &m_IsoEff_SF->at( isol ), junkSF );
-    }
-
-    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
-    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
-    for (auto& trig : m_infoSwitch.m_trigWPs) {
-      std::string trigEffSF = "MuTrigEff_SF_syst_" + trig;
-      accTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigEffSF ) ) );
-      safeSFVecFill<float, xAOD::Muon>( muon, accTrigSF.at( trig ), &m_TrigEff_SF->at( trig ), junkSF );
-
-      std::string trigMCEff = "MuTrigMCEff_syst_" + trig;
-      accTrigEFF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigMCEff ) ) );
-      safeSFVecFill<float, xAOD::Muon>( muon, accTrigEFF.at( trig ), &m_TrigMCEff->at( trig ), junkEff );
     }
 
     static SG::AuxElement::Accessor< std::vector< float > > accTTVASF("MuTTVAEff_SF_syst_TTVA");

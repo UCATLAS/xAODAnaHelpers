@@ -28,6 +28,8 @@
 #include "JetJvtEfficiency/IJetJvtEfficiency.h"
 #include "JetInterface/IJetModifier.h"
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
+#include "TriggerMatchingTool/IMatchingTool.h"
+#include "TrigDecisionTool/TrigDecisionTool.h"
 
 class JetSelector : public xAH::Algorithm
 {
@@ -223,6 +225,12 @@ public:
   std::string              m_passAuxDecorKeys = "";
   std::string              m_failAuxDecorKeys = "";
 
+  /* trigger matching */
+  /** A comma-separated string w/ alll the HLT single jet trigger chains for which you want to perform the matching. If left empty (as it is by default), no trigger matching will be attempted at all */
+  std::string    m_singleJetTrigChains = "";
+  /** A comma-separated string w/ all the HLT dijet trigger chains for which you want to perform the matching.  If left empty (as it is by default), no trigger matching will be attempted at all */
+  std::string    m_diJetTrigChains = "";
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
@@ -257,9 +265,18 @@ private:
   std::vector<CP::SystematicSet> m_systListJVT; //!
   std::vector<CP::SystematicSet> m_systListfJVT; //!
 
+  std::vector<std::string>            m_singleJetTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleJetTrigChains */
+  std::vector<std::string>            m_diJetTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diJetTrigChains */
+  
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::JetJvtEfficiency/JVT"}; //!
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency/fJVT"}; //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
+
+  asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle{"Trig::MatchingTool/MatchingTool", this}; //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; //!
+
+  /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
+  bool m_doTrigMatch = true; //!
 
   std::string m_outputJVTPassed = "JetJVT_Passed"; //!
   std::string m_outputfJVTPassed = "JetfJVT_Passed"; //!

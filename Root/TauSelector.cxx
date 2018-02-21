@@ -514,7 +514,9 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
             isTrigMatchedMapTauDecor( *tau ) = std::map<std::string,char>();
           }
 
-          char matched = ( m_trigTauMatchTool_handle->match( *tau, chain, m_minDeltaR ) );
+          // check whether the tau is matched (NOTE: no DR is required for taus)
+          //
+          char matched = ( m_trigTauMatchTool_handle->match( *tau, chain ) );
 
           ANA_MSG_DEBUG( "\t\t is tau trigger matched? " << matched);
 
@@ -569,9 +571,9 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
       	    myTaus.push_back( selectedTaus->at(itau) );
       	    myTaus.push_back( selectedTaus->at(jtau) );
 
-            // check whether the pair is matched
+            // check whether the pair is matched (NOTE: no DR is required for taus)
             //
-      	    char matched = m_trigTauMatchTool_handle->match( myTaus, chain, m_minDeltaR );
+      	    char matched = m_trigTauMatchTool_handle->match( myTaus, chain  );
 
       	    ANA_MSG_DEBUG( "\t\t is the tau pair ("<<itau<<","<<jtau<<") trigger matched? " << matched);
 

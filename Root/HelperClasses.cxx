@@ -109,6 +109,7 @@ namespace HelperClasses{
     m_pileup        = has_exact("pileup");
     m_pileupsys     = has_exact("pileupsys");
     m_eventCleaning = has_exact("eventCleaning");
+    m_bcidInfo      = has_exact("bcidInfo");
     m_shapeEM       = has_exact("shapeEM");
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");
@@ -121,11 +122,8 @@ namespace HelperClasses{
     m_menuKeys          = has_exact("menuKeys");
     m_passTriggers      = has_exact("passTriggers");
     m_passTrigBits      = has_exact("passTrigBits");
-  }
-
-  void JetTriggerInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
-    m_clean         = has_exact("clean");
+    m_prescales         = has_exact("prescales");
+    m_prescalesLumi     = has_exact("prescalesLumi");
   }
 
   void IParticleInfoSwitch::initialize(){
@@ -157,15 +155,23 @@ namespace HelperClasses{
 
     // working points combinations for trigger corrections
     std::string token;
-    std::string reco_prfx = "Reco";
-    std::string isol_prfx = "Iso";
-    std::string trig_prfx = "HLT";
+    std::string reco_keyword = "RECO_";
+    std::string isol_keyword = "ISOL_";
+    std::string trig_keyword = "TRIG_";
 
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
-      if ( token.compare( 0, reco_prfx.length(), reco_prfx ) == 0 ) { m_recoWPs.push_back(token); }
-      if ( token.compare( 0, isol_prfx.length(), isol_prfx ) == 0 ) { m_isolWPs.push_back(token); }
-      if ( token.compare( 0, trig_prfx.length(), trig_prfx ) == 0 ) { m_trigWPs.push_back(token); }
+      auto reco_substr = token.find(reco_keyword);
+      auto isol_substr = token.find(isol_keyword);
+      auto trig_substr = token.find(trig_keyword);
+      if( reco_substr != std::string::npos ){
+        m_recoWPs.push_back(token.substr(5));
+      } else if(isol_substr != std::string::npos){
+        if(token.substr(5) == "NONE" || token == isol_keyword) m_isolWPs.push_back("");
+        else m_isolWPs.push_back(token.substr(5));
+      } else if(trig_substr != std::string::npos){
+        m_trigWPs.push_back(token.substr(5));
+      }
     }
 
     m_recoEff_sysNames = has_exact("recoEff_sysNames");
@@ -180,6 +186,9 @@ namespace HelperClasses{
     m_isolation     = has_exact("isolation");
     m_isolationKinematics = has_exact("isolationKinematics");
     m_quality       = has_exact("quality");
+    if (m_quality) {
+        std::cerr << "WARNING! The 'quality' option is deprecated in ElectronInfoSwitch. Use 'PID' instead." << std::endl;
+    }
     m_PID           = has_exact("PID");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
@@ -190,16 +199,20 @@ namespace HelperClasses{
     // working points combinations for trigger corrections
     std::string token;
     std::string pid_keyword = "PID_";
+    std::string pidsf_keyword = "PIDSF_";
     std::string isol_keyword = "ISOL_";
     std::string trig_keyword = "TRIG_";
 
     std::istringstream ss(m_configStr);
     while ( std::getline(ss, token, ' ') ) {
       auto pid_substr = token.find(pid_keyword);
+      auto pidsf_substr = token.find(pidsf_keyword);
       auto isol_substr = token.find(isol_keyword);
       auto trig_substr = token.find(trig_keyword);
       if( pid_substr != std::string::npos ){
         m_PIDWPs.push_back(token.substr(4));
+      } else if( pidsf_substr != std::string::npos ){
+        m_PIDSFWPs.push_back(token.substr(6));
       } else if(isol_substr != std::string::npos){
         if(token.substr(5) == "NONE" || token == isol_keyword) m_isolWPs.push_back("");
         else m_isolWPs.push_back(token.substr(5));
@@ -220,6 +233,7 @@ namespace HelperClasses{
   void JetInfoSwitch::initialize(){
     std::string tmpConfigStr; // temporary config string used to extract multiple values
 
+    m_trigger       = has_exact("trigger");
     m_substructure  = has_exact("substructure");
     m_bosonCount    = has_exact("bosonCount");
     m_VTags         = has_exact("VTags");

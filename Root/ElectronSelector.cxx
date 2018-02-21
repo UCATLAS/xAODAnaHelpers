@@ -692,6 +692,11 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
             ANA_MSG_DEBUG( "\t\t is the electron pair ("<<iel<<","<<jel<<") trigger matched? " << matched);
 
+            // set basic matching information
+            ( isTrigMatchedMapElDecor( *myElectrons[0] ) )[chain] = matched;
+            ( isTrigMatchedMapElDecor( *myElectrons[1] ) )[chain] = matched;
+
+            // set pair decision information
             std::pair <unsigned int, unsigned int>  chain_idxs = std::make_pair(iel,jel);
             dielectron_trigmatch_pair                   chain_decision = std::make_pair(chain_idxs,matched);
             diElectronTrigMatchPairMapDecor( *eventInfo ).insert( std::pair< std::string, dielectron_trigmatch_pair >(chain,chain_decision) );
@@ -919,27 +924,30 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   d0SigDecor( *electron ) = static_cast<float>(d0_significance);
 
 
-  // BLayer track quality cut
-  //
+  // BLayer track quality
+  static SG::AuxElement::Decorator< bool > bLayerDecor("bLayerPass");
+
+  // this is taken from ElectronPhotonSelectorTools/Root/AsgElectronLikelihoodTool.cxx
+  uint8_t expectBlayer(true);
+  uint8_t nBlayerHits(0);
+  uint8_t nBlayerOutliers(0);
+
+  tp->summaryValue(expectBlayer,    xAOD::expectBLayerHit);
+  tp->summaryValue(nBlayerHits,     xAOD::numberOfBLayerHits);
+  tp->summaryValue(nBlayerOutliers, xAOD::numberOfBLayerOutliers);
+
+  bool bLayerPass = expectBlayer && (nBlayerHits+nBlayerOutliers) >= 1;
+  bLayerDecor( *electron ) = bLayerPass;
+
   if ( m_doBLTrackQualityCut ) {
-
-    // this is taken from ElectronPhotonSelectorTools/Root/AsgElectronLikelihoodTool.cxx
-
-    uint8_t expectBlayer(true);
-    uint8_t nBlayerHits(0);
-    uint8_t nBlayerOutliers(0);
-
-    tp->summaryValue(expectBlayer,    xAOD::expectBLayerHit);
-    tp->summaryValue(nBlayerHits,     xAOD::numberOfBLayerHits);
-    tp->summaryValue(nBlayerOutliers, xAOD::numberOfBLayerOutliers);
-
-    if ( expectBlayer && (nBlayerHits+nBlayerOutliers) < 1 ) {
+    if ( !bLayerPass ) {
       ANA_MSG_DEBUG( "Electron failed BL track quality cut.");
       return 0;
     }
+
+    if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_BL_cut, 1 );
+    if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_BL_cut, 1 ); }
   }
-  if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_BL_cut, 1 );
-  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_BL_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
@@ -1112,5 +1120,3 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   return 1;
 }
-
-

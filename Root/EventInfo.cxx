@@ -34,9 +34,12 @@ void EventInfo::setTree(TTree *tree)
     if ( m_infoSwitch.m_weightsSys ) {
       connectBranch< std::vector<float> >(tree, "mcEventWeights", &m_mcEventWeights);
     }
-  } else {
-    connectBranch<float   >(tree, "prescale_DataWeight",         &m_prescale_DataWeight);
+  }
+
+  if ( m_infoSwitch.m_bcidInfo && !m_mc ){
     connectBranch<int     >(tree, "DistEmptyBCID",               &m_DistEmptyBCID);
+    connectBranch<int     >(tree, "DistLastUnpairedBCID",        &m_DistLastUnpairedBCID);
+    connectBranch<int     >(tree, "DistNextUnpairedBCID",        &m_DistNextUnpairedBCID);
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -124,9 +127,12 @@ void EventInfo::setBranches(TTree *tree)
     if ( m_infoSwitch.m_weightsSys ) {
       tree->Branch("mcEventWeights",   &m_mcEventWeights);
     }
-  } else {
-    tree->Branch("prescale_DataWeight",       &m_prescale_DataWeight,  "prescale_DataWeight/F");
+  }
+
+  if ( m_infoSwitch.m_bcidInfo && !m_mc ){
     tree->Branch("DistEmptyBCID",             &m_DistEmptyBCID,        "DistEmptyBCID/I");
+    tree->Branch("DistLastUnpairedBCID",      &m_DistLastUnpairedBCID, "DistLastUnpairedBCID/I");
+    tree->Branch("DistNextUnpairedBCID",      &m_DistNextUnpairedBCID, "DistNextUnpairedBCID/I");
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
@@ -202,8 +208,9 @@ void EventInfo::clear()
   m_TileFlags = 0;
   m_SCTFlags = 0;
   m_mcEventWeight = 1.;
-  m_prescale_DataWeight = 1.;
-  m_DistEmptyBCID = 1.;
+  m_DistEmptyBCID = -999;
+  m_DistLastUnpairedBCID = -999;
+  m_DistNextUnpairedBCID = -999;
   m_weight_pileup = 1.;
   m_weight_pileup_down = 1.;
   m_weight_pileup_up = 1.;
@@ -259,14 +266,14 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
       }
     }
   }
-  if ( !m_mc ) {
 
-    static SG::AuxElement::ConstAccessor< float > prsc_DataWeight ("prescale_DataWeight");
-    if ( prsc_DataWeight.isAvailable( *eventInfo ) )	 { m_prescale_DataWeight = prsc_DataWeight( *eventInfo ); }	    else { m_prescale_DataWeight = 1.0; }
-
+  if ( m_infoSwitch.m_bcidInfo && !m_mc ){
     static SG::AuxElement::ConstAccessor< int > DistEmptyBCID ("DistEmptyBCID");
     if ( DistEmptyBCID.isAvailable( *eventInfo ) )   { m_DistEmptyBCID = DistEmptyBCID( *eventInfo ); }     else { m_DistEmptyBCID = -999; }
-
+    static SG::AuxElement::ConstAccessor< int > DistLastUnpairedBCID ("DistLastUnpairedBCID");
+    if ( DistLastUnpairedBCID.isAvailable( *eventInfo ) )   { m_DistLastUnpairedBCID = DistLastUnpairedBCID( *eventInfo ); }     else { m_DistLastUnpairedBCID = -999; }
+    static SG::AuxElement::ConstAccessor< int > DistNextUnpairedBCID ("DistNextUnpairedBCID");
+    if ( DistNextUnpairedBCID.isAvailable( *eventInfo ) )   { m_DistNextUnpairedBCID = DistNextUnpairedBCID( *eventInfo ); }     else { m_DistNextUnpairedBCID = -999; }
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
