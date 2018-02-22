@@ -250,7 +250,7 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_prescalesLumi"); }
 
-    static SG::AuxElement::ConstAccessor< std::map< std::string, float > > trigPrescalesLumi("triggerPrescalesLumi");
+    static SG::AuxElement::ConstAccessor< std::vector< float > > trigPrescalesLumi("triggerPrescalesLumi");
     if( trigPrescalesLumi.isAvailable( *eventInfo ) ) { m_triggerPrescalesLumi = trigPrescalesLumi( *eventInfo ); }
 
   }
