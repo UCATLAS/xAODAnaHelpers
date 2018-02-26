@@ -72,7 +72,9 @@ public:
   /// @brief config for JES Uncertainty Tool
   std::string m_JESUncertConfig = "";
   /// @brief JetUncertaintiesTool parameter
-  std::string m_JESUncertMCType = "MC15";
+  std::string m_JESUncertMCType = "MC16";
+  /// @brief JES CalibArea tag
+  std::string m_JESCalibArea = "CalibArea-02";
   /** @rst
     If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.
 
