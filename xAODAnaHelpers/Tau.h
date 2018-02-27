@@ -18,12 +18,17 @@ namespace xAH {
     int               ntrk;
     float             charge;
 
-    int               isJetBDTVeryLoose;
-    int               isJetBDTLoose;
-    int               isJetBDTMedium;
-    int               isJetBDTTight;
+    int               isJetBDTSigVeryLoose;
+    int               isJetBDTSigLoose;
+    int               isJetBDTSigMedium;
+    int               isJetBDTSigTight;
+    
+    int               isJetBDTBkgLoose;
+    int               isJetBDTBkgMedium;
+    int               isJetBDTBkgTight;
     
     float             JetBDTScore;
+    float             JetBDTScoreSigTrans;
   };
 
 }//xAH

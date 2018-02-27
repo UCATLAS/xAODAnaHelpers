@@ -42,12 +42,17 @@ namespace xAH {
       std::vector<int>   *m_ntrk;
       std::vector<float> *m_charge;
 
-      std::vector<int>   *m_isJetBDTVeryLoose;
-      std::vector<int>   *m_isJetBDTLoose;
-      std::vector<int>   *m_isJetBDTMedium;
-      std::vector<int>   *m_isJetBDTTight;
+      std::vector<int>   *m_isJetBDTSigVeryLoose;
+      std::vector<int>   *m_isJetBDTSigLoose;
+      std::vector<int>   *m_isJetBDTSigMedium;
+      std::vector<int>   *m_isJetBDTSigTight;
     
+      std::vector<int>   *m_isJetBDTBkgLoose;
+      std::vector<int>   *m_isJetBDTBkgMedium;
+      std::vector<int>   *m_isJetBDTBkgTight;
+      
       std::vector<float>   *m_JetBDTScore;
+      std::vector<float>   *m_JetBDTScoreSigTrans;
 
     };
 }

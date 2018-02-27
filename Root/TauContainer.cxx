@@ -23,12 +23,17 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
   }
   
   if( m_infoSwitch.m_JetID) {
-    m_isJetBDTVeryLoose = new  std::vector<int>   ();
-    m_isJetBDTLoose     = new  std::vector<int>   ();
-    m_isJetBDTMedium    = new  std::vector<int>   ();
-    m_isJetBDTTight     = new  std::vector<int>   ();
+    m_isJetBDTSigVeryLoose = new  std::vector<int>   ();
+    m_isJetBDTSigLoose     = new  std::vector<int>   ();
+    m_isJetBDTSigMedium    = new  std::vector<int>   ();
+    m_isJetBDTSigTight     = new  std::vector<int>   ();
     
-    m_JetBDTScore     = new  std::vector<float>   ();
+    m_isJetBDTBkgLoose     = new  std::vector<int>   ();
+    m_isJetBDTBkgMedium    = new  std::vector<int>   ();
+    m_isJetBDTBkgTight     = new  std::vector<int>   ();
+    
+    m_JetBDTScore          = new  std::vector<float>   ();
+    m_JetBDTScoreSigTrans  = new  std::vector<float>   ();
   }
 
 }
@@ -49,12 +54,17 @@ TauContainer::~TauContainer()
   }
 
   if( m_infoSwitch.m_JetID) {
-    delete m_isJetBDTVeryLoose;
-    delete m_isJetBDTLoose;
-    delete m_isJetBDTMedium;
-    delete m_isJetBDTTight;
+    delete m_isJetBDTSigVeryLoose;
+    delete m_isJetBDTSigLoose;
+    delete m_isJetBDTSigMedium;
+    delete m_isJetBDTSigTight;
+    
+    delete m_isJetBDTBkgLoose;
+    delete m_isJetBDTBkgMedium;
+    delete m_isJetBDTBkgTight;
     
     delete m_JetBDTScore;
+    delete m_JetBDTScoreSigTrans;
   }
 
 }
@@ -77,12 +87,17 @@ void TauContainer::setTree(TTree *tree)
   }
   
   if ( m_infoSwitch.m_JetID ){
-    connectBranch<int>    (tree, "isJetBDTVeryLoose",   &m_isJetBDTVeryLoose);
-    connectBranch<int>    (tree, "isJetBDTLoose",       &m_isJetBDTLoose);
-    connectBranch<int>    (tree, "isJetBDTMedium",      &m_isJetBDTMedium);
-    connectBranch<int>    (tree, "isJetBDTTight",       &m_isJetBDTTight);
+    connectBranch<int>    (tree, "isJetBDTSigVeryLoose",   &m_isJetBDTSigVeryLoose);
+    connectBranch<int>    (tree, "isJetBDTSigLoose",       &m_isJetBDTSigLoose);
+    connectBranch<int>    (tree, "isJetBDTSigMedium",      &m_isJetBDTSigMedium);
+    connectBranch<int>    (tree, "isJetBDTSigTight",       &m_isJetBDTSigTight);
     
-    connectBranch<float>  (tree, "JetBDTScore",       &m_JetBDTScore);
+    connectBranch<int>    (tree, "isJetBDTBkgLoose",       &m_isJetBDTBkgLoose);
+    connectBranch<int>    (tree, "isJetBDTBkgMedium",      &m_isJetBDTBkgMedium);
+    connectBranch<int>    (tree, "isJetBDTBkgTight",       &m_isJetBDTBkgTight);
+    
+    connectBranch<float>  (tree, "JetBDTScore",         &m_JetBDTScore);
+    connectBranch<float>  (tree, "JetBDTScoreSigTrans", &m_JetBDTScoreSigTrans);
   }
 }
 
@@ -104,11 +119,17 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
   
   // JetID
   if ( m_infoSwitch.m_JetID ) {
-    tau.isJetBDTVeryLoose =   m_isJetBDTVeryLoose ->at(idx);
-    tau.isJetBDTLoose     =   m_isJetBDTLoose     ->at(idx);
-    tau.isJetBDTMedium    =   m_isJetBDTMedium    ->at(idx);
-    tau.isJetBDTTight     =   m_isJetBDTTight     ->at(idx);
-    tau.JetBDTScore    =   m_JetBDTScore    ->at(idx);
+    tau.isJetBDTSigVeryLoose   =   m_isJetBDTSigVeryLoose   ->at(idx);
+    tau.isJetBDTSigLoose       =   m_isJetBDTSigLoose       ->at(idx);
+    tau.isJetBDTSigMedium      =   m_isJetBDTSigMedium      ->at(idx);
+    tau.isJetBDTSigTight       =   m_isJetBDTSigTight       ->at(idx);
+    
+    tau.isJetBDTBkgLoose       =   m_isJetBDTBkgLoose       ->at(idx);
+    tau.isJetBDTBkgMedium      =   m_isJetBDTBkgMedium      ->at(idx);
+    tau.isJetBDTBkgTight       =   m_isJetBDTBkgTight       ->at(idx);
+    
+    tau.JetBDTScore         =   m_JetBDTScore         ->at(idx);
+    tau.JetBDTScoreSigTrans =   m_JetBDTScoreSigTrans ->at(idx);
   }
 
 }
@@ -135,11 +156,17 @@ void TauContainer::setBranches(TTree *tree)
   }
   
   if ( m_infoSwitch.m_JetID ){
-    setBranch<int>   (tree,"isJetBDTVeryLoose", m_isJetBDTVeryLoose);
-    setBranch<int>   (tree,"isJetBDTLoose", m_isJetBDTLoose);
-    setBranch<int>   (tree,"isJetBDTMedium", m_isJetBDTMedium);
-    setBranch<int>   (tree,"isJetBDTTight", m_isJetBDTTight);
+    setBranch<int>   (tree,"isJetBDTSigVeryLoose", m_isJetBDTSigVeryLoose);
+    setBranch<int>   (tree,"isJetBDTSigLoose", m_isJetBDTSigLoose);
+    setBranch<int>   (tree,"isJetBDTSigMedium", m_isJetBDTSigMedium);
+    setBranch<int>   (tree,"isJetBDTSigTight", m_isJetBDTSigTight);
+    
+    setBranch<int>   (tree,"isJetBDTBkgLoose", m_isJetBDTBkgLoose);
+    setBranch<int>   (tree,"isJetBDTBkgMedium", m_isJetBDTBkgMedium);
+    setBranch<int>   (tree,"isJetBDTBkgTight", m_isJetBDTBkgTight);
+    
     setBranch<float> (tree,"JetBDTScore", m_JetBDTScore);
+    setBranch<float> (tree,"JetBDTScoreSigTrans", m_JetBDTScoreSigTrans);
 
   }
   
@@ -165,11 +192,17 @@ void TauContainer::clear()
   }
   
   if ( m_infoSwitch.m_JetID ) {
-    m_isJetBDTVeryLoose->clear();
-    m_isJetBDTLoose->clear();
-    m_isJetBDTMedium->clear();
-    m_isJetBDTTight->clear();
+    m_isJetBDTSigVeryLoose->clear();
+    m_isJetBDTSigLoose->clear();
+    m_isJetBDTSigMedium->clear();
+    m_isJetBDTSigTight->clear();
+    
+    m_isJetBDTBkgLoose->clear();
+    m_isJetBDTBkgMedium->clear();
+    m_isJetBDTBkgTight->clear();
+    
     m_JetBDTScore->clear();
+    m_JetBDTScoreSigTrans->clear();
   }
 
 }
@@ -223,21 +256,32 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
 
   if ( m_infoSwitch.m_JetID ) {
     
-    static SG::AuxElement::Accessor<char> isJetBDTVeryLooseAcc ("isJetBDTVeryLoose");
-    safeFill<char, int, xAOD::TauJet>(tau, isJetBDTVeryLooseAcc, m_isJetBDTVeryLoose, -1);
+    static SG::AuxElement::Accessor<int> isJetBDTSigVeryLooseAcc ("isJetBDTSigVeryLoose");
+    safeFill<int, int, xAOD::TauJet>(tau, isJetBDTSigVeryLooseAcc, m_isJetBDTSigVeryLoose, -1);
 
-    static SG::AuxElement::Accessor<char> isJetBDTLooseAcc ("isJetBDTLoose");
-    safeFill<char, int, xAOD::TauJet>(tau, isJetBDTLooseAcc, m_isJetBDTLoose, -1);
+    static SG::AuxElement::Accessor<int> isJetBDTSigLooseAcc ("isJetBDTSigLoose");
+    safeFill<int, int, xAOD::TauJet>(tau, isJetBDTSigLooseAcc, m_isJetBDTSigLoose, -1);
 
-    static SG::AuxElement::Accessor<char> isJetBDTMediumAcc ("isJetBDTMedium");
-    safeFill<char, int, xAOD::TauJet>(tau, isJetBDTMediumAcc, m_isJetBDTMedium, -1);
+    static SG::AuxElement::Accessor<int> isJetBDTSigMediumAcc ("isJetBDTSigMedium");
+    safeFill<int, int, xAOD::TauJet>(tau, isJetBDTSigMediumAcc, m_isJetBDTSigMedium, -1);
 
-    static SG::AuxElement::Accessor<char> isJetBDTTightAcc ("isJetBDTTight");
-    safeFill<char, int, xAOD::TauJet>(tau, isJetBDTTightAcc, m_isJetBDTTight, -1);
+    static SG::AuxElement::Accessor<int> isJetBDTSigTightAcc ("isJetBDTSigTight");
+    safeFill<int, int, xAOD::TauJet>(tau, isJetBDTSigTightAcc, m_isJetBDTSigTight, -1);
     
-    static SG::AuxElement::Accessor<char> JetBDTScoreAcc ("JetBDTScore");
-    safeFill<char, float, xAOD::TauJet>(tau, JetBDTScoreAcc, m_JetBDTScore, -999.);
+    static SG::AuxElement::Accessor<int> isJetBDTBkgLooseAcc ("isJetBDTBkgLoose");
+    safeFill<int, int, xAOD::TauJet>(tau, isJetBDTBkgLooseAcc, m_isJetBDTBkgLoose, -1);
+    
+    static SG::AuxElement::Accessor<int> isJetBDTBkgMediumAcc ("isJetBDTBkgMedium");
+    safeFill<int, int, xAOD::TauJet>(tau, isJetBDTBkgMediumAcc, m_isJetBDTBkgMedium, -1);
+   
+    static SG::AuxElement::Accessor<int> isJetBDTBkgTightAcc ("isJetBDTBkgTight");
+    safeFill<int, int, xAOD::TauJet>(tau, isJetBDTBkgTightAcc, m_isJetBDTBkgTight, -1);
 
+    static SG::AuxElement::Accessor<float> JetBDTScoreAcc ("JetBDTScore");
+    safeFill<float, float, xAOD::TauJet>(tau, JetBDTScoreAcc, m_JetBDTScore, -999.);
+
+    static SG::AuxElement::Accessor<float> JetBDTScoreSigTransAcc ("JetBDTScoreSigTrans");
+    safeFill<float, float, xAOD::TauJet>(tau, JetBDTScoreSigTransAcc, m_JetBDTScoreSigTrans, -999.);
   }
   
   return;
