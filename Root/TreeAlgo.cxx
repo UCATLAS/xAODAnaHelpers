@@ -260,12 +260,10 @@ EL::StatusCode TreeAlgo :: execute ()
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   const xAOD::VertexContainer* vertices(nullptr);
-  const xAOD::Vertex* primaryVertex(0);
-  if(m_retrievePV) {
+  if (m_retrievePV) {
     ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
-    // get the primaryVertex
-    const xAOD::Vertex* primaryVertex = HelperFunctions::getPrimaryVertex( vertices , msg());
   }
+  const xAOD::Vertex* primaryVertex = m_retrievePV ? HelperFunctions::getPrimaryVertex( vertices , msg() ) : nullptr;
 
   for(const auto& systName: event_systNames){
     auto& helpTree = m_trees[systName];
