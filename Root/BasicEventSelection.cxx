@@ -311,7 +311,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_MSG_INFO( "Truth only! Turn off trigger stuff");
     m_triggerSelection      = "";
     m_extraTriggerSelection = "";
-    m_triggerUnprescale     = "";
     m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
     ANA_MSG_INFO( "Truth only! Turn off GRL");
     m_applyGRLCut = false;
@@ -487,6 +486,23 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
 
   // 2.
+  // initialize the Trig::TrigDecisionTool
+  //
+  if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
+      m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+
+    ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_trigConfTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigConfTool_handle);
+
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+  }//end trigger configuration
+
+  // 3.
   // initialize the CP::PileupReweightingTool
   //
 
@@ -523,16 +539,35 @@ EL::StatusCode BasicEventSelection :: initialize ()
       }
     }
 
+    // Find trigger specific lumicalc files
+    if ( !isMC() ) {
+      for ( const std::string &lumiCalcFile : lumiCalcFiles) {
+        size_t pos = lumiCalcFile.find_first_of(':');
+        if ( pos != std::string::npos ) {
+          m_triggerUnprescaleList.push_back(lumiCalcFile.substr(pos + 1));
+        }
+      }
+
+      if ( !m_triggerUnprescaleList.empty() ) {
+        ANA_MSG_INFO("*** Trigger chains used for data unprescaling:");
+        for ( const std::string &trigger : m_triggerUnprescaleList ) {
+          ANA_MSG_INFO( "\t " << trigger );
+        }
+      }
+    }
+
     if(m_autoconfigPRW)
       {	ANA_CHECK( autoconfigurePileupRWTool() ); }
     else
       {
-        ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
-        for( unsigned int i=0; i < PRWFiles.size(); ++i){
-          printf( "\t %s \n", PRWFiles.at(i).c_str() );
+        if ( isMC() ) {
+          ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
+          for( unsigned int i=0; i < PRWFiles.size(); ++i){
+            printf( "\t %s \n", PRWFiles.at(i).c_str() );
+          }
+          ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
         }
-        ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
-        
+
         ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
         for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
           printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
@@ -541,43 +576,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
       }
     ANA_CHECK( m_pileup_tool_handle.setProperty("UsePeriodConfig", m_periodConfig) );
     ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
+    if ( !m_triggerUnprescaleList.empty() ) {
+      // We need to make an instance of ITrigDecisionTool:
+      asg::AnaToolHandle<Trig::ITrigDecisionTool> iTrigDecTool_handle {"Trig::TrigDecisionTool/TrigDecisionTool"};
+      if ( !iTrigDecTool_handle.isUserConfigured() ) {
+        ANA_MSG_FATAL("A configured " << iTrigDecTool_handle.typeAndName() << " must have been previously created!");
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_CHECK( iTrigDecTool_handle.retrieve() );
+      ANA_CHECK( m_pileup_tool_handle.setProperty("TrigDecisionTool", iTrigDecTool_handle ));
+    }
     ANA_CHECK( m_pileup_tool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
-  }
-
-  // 3.
-  // initialize the Trig::TrigDecisionTool
-  //
-  if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
-      m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
-
-    ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
-    ANA_CHECK( m_trigConfTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigConfTool_handle);
-
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
-    ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
-  }//end trigger configuration
-  
-  // Parse trigger chains for unprescaling
-  if ( !isMC() && !m_triggerUnprescale.empty() ) {
-    // pileup reweighing tool is needed to get the data weight for unprescaling
-    if ( !m_doPUreweighting ) {
-      ANA_MSG_ERROR( "m_triggerUnprescale is not empty but m_doPUreweighting is false !!!");
-      return EL::StatusCode::FAILURE;
-    }
-
-    ANA_MSG_INFO("*** Trigger chains used for data unprescaling:");
-    // parse and split by comma
-    std::string token;
-    std::istringstream ss(m_triggerUnprescale);
-    while (std::getline(ss, token, ',')) {
-        m_triggerUnprescaleChainList.push_back(token);
-        ANA_MSG_INFO("\t" << token);
-    }
   }
 
   // As a check, let's see the number of events in our file (long long int)
@@ -704,30 +714,6 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     } // If not already decorated
   } // if m_reweightSherpa22
-
-
-  //------------------------------------------------------------------------------------------
-  // Declare an 'eventInfo' decorator with prescale weights for unprescaling data
-  // from the list of corresponding trigger chains
-  // https://cds.cern.ch/record/2014726/files/ATL-COM-SOFT-2015-119.pdf (line 130)
-  //------------------------------------------------------------------------------------------
-
-  if ( !isMC() && !m_triggerUnprescale.empty() ) {
-    static SG::AuxElement::Decorator< std::map<std::string, float> > prescaleMapDecor("triggerPrescalesLumi");
-
-    if (!prescaleMapDecor.isAvailable(*eventInfo)) {
-      prescaleMapDecor(*eventInfo) = std::map<std::string, float>();
-    }
-
-    for (const std::string &chain : m_triggerUnprescaleChainList) {
-      // get mu dependent data weight
-      float dataWeight = m_pileup_tool_handle->getDataWeight( *eventInfo, chain, true );
-
-      prescaleMapDecor(*eventInfo)[chain] = dataWeight;
-
-      ANA_MSG_VERBOSE("Data weight for chain" << chain << ": " << dataWeight);
-    }
-  }
 
 
   //------------------------------------------------------------------------------------------
@@ -916,6 +902,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
       std::vector<std::string>  passTriggers;
       std::vector<float>        triggerPrescales;
+      std::vector<float>        triggerPrescalesLumi;
       std::vector<std::string>  isPassedBitsNames;
       std::vector<unsigned int> isPassedBits;
 
@@ -926,6 +913,12 @@ EL::StatusCode BasicEventSelection :: execute ()
         if ( trigChain->isPassed() ) {
           passTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
+
+          if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
+            triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+          } else {
+            triggerPrescalesLumi.push_back( -1 );
+          }
         }
         isPassedBitsNames.push_back( trigName );
         isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
@@ -942,6 +935,12 @@ EL::StatusCode BasicEventSelection :: execute ()
 	        if ( trigChain->isPassed() ) {
 	          passTriggers.push_back( trigName );
 	          triggerPrescales.push_back( trigChain->getPrescale() );
+
+              if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
+                triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+              } else {
+                triggerPrescalesLumi.push_back( -1 );
+              }
 	        }
 	        isPassedBitsNames.push_back( trigName );
 	        isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
@@ -952,6 +951,8 @@ EL::StatusCode BasicEventSelection :: execute ()
       passTrigs( *eventInfo ) = passTriggers;
       static SG::AuxElement::Decorator< std::vector< float > >        trigPrescales("triggerPrescales");
       trigPrescales( *eventInfo ) = triggerPrescales;
+      static SG::AuxElement::Decorator< std::vector< float > >        trigPrescalesLumi("triggerPrescalesLumi");
+      trigPrescalesLumi( *eventInfo ) = triggerPrescalesLumi;
       static SG::AuxElement::Decorator< std::vector< unsigned int > > isPassBits("isPassedBits");
       isPassBits( *eventInfo ) = isPassedBits;
       static SG::AuxElement::Decorator< std::vector< std::string > >  isPassBitsNames("isPassedBitsNames");

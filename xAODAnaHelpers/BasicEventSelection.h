@@ -124,9 +124,6 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief Decisions of triggers which are saved but not cut on
     std::string m_extraTriggerSelection = "";
 
-    /// @brief Comma-separated trigger chains to calculate lumi-based prescale data weights for
-    std::string m_triggerUnprescale = "";
-
     /**
       @rst
         Skip events in which the trigger string :cpp:member:`~BasicEventSelection::m_triggerSelection` does not fire
@@ -178,7 +175,7 @@ class BasicEventSelection : public xAH::Algorithm
 
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
     // trigger unprescale chains
-    std::vector<std::string> m_triggerUnprescaleChainList; //!
+    std::vector<std::string> m_triggerUnprescaleList; //!
 
     // tools
     asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; //!
