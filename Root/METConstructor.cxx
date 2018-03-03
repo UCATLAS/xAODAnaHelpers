@@ -204,8 +204,8 @@ EL::StatusCode METConstructor :: execute ()
    //
 
    //add the syst for jets
+   std::vector<std::string>* sysJetsNames(nullptr);
    if(!m_runNominal && !m_jetSystematics.empty()){
-     std::vector<std::string>* sysJetsNames(nullptr);
      ANA_CHECK( HelperFunctions::retrieve(sysJetsNames, m_jetSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysJetsNames ) {
@@ -215,8 +215,8 @@ EL::StatusCode METConstructor :: execute ()
    }
 
    //add the syst for electrons
+   std::vector<std::string>* sysElectronsNames(nullptr);
    if(!m_runNominal && !m_eleSystematics.empty()){
-     std::vector<std::string>* sysElectronsNames(nullptr);
      ANA_CHECK( HelperFunctions::retrieve(sysElectronsNames, m_eleSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysElectronsNames ) {
@@ -226,8 +226,8 @@ EL::StatusCode METConstructor :: execute ()
    }
 
    //add the syst for muons
+   std::vector<std::string>* sysMuonsNames(nullptr);
    if(!m_runNominal && !m_muonSystematics.empty()){
-     std::vector<std::string>* sysMuonsNames(nullptr);
      ANA_CHECK( HelperFunctions::retrieve(sysMuonsNames, m_muonSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysMuonsNames ) {
@@ -237,8 +237,8 @@ EL::StatusCode METConstructor :: execute ()
    }
 
    //add the syst for tau
+   std::vector<std::string>* sysTausNames(nullptr);
    if(!m_runNominal && !m_tauSystematics.empty()){
-     std::vector<std::string>* sysTausNames(nullptr);
      ANA_CHECK( HelperFunctions::retrieve(sysTausNames, m_tauSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysTausNames ) {
@@ -248,8 +248,8 @@ EL::StatusCode METConstructor :: execute ()
    }
 
    //add the syst for photons
+   std::vector<std::string>* sysPhotonsNames(nullptr);
    if(!m_runNominal && !m_phoSystematics.empty()){
-     std::vector<std::string>* sysPhotonsNames(nullptr);
      ANA_CHECK( HelperFunctions::retrieve(sysPhotonsNames, m_phoSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysPhotonsNames ) {
@@ -293,11 +293,18 @@ EL::StatusCode METConstructor :: execute ()
 
       if ( !m_inputElectrons.empty() ) {
          const xAOD::ElectronContainer* eleCont(0);
-         if ( m_store->contains<xAOD::ElectronContainer>(m_inputElectrons + systName) ) {
-           ANA_CHECK( HelperFunctions::retrieve(eleCont, m_inputElectrons + systName, m_event, m_store, msg()));
-           ANA_MSG_DEBUG("retrieving ele container " << m_inputElectrons + systName << " to be added to the MET");
-         }else{
-           ANA_CHECK( HelperFunctions::retrieve(eleCont, m_inputElectrons, m_event, m_store, msg()));
+         std::string suffix = "";
+         if (sysElectronsNames && std::find(std::begin(*sysElectronsNames), std::end(*sysElectronsNames), systName) != std::end(*sysElectronsNames)) {
+           ANA_MSG_DEBUG("doing electron systematics");
+           suffix = systName;
+         }
+
+         if ( m_store->contains<xAOD::ElectronContainer>(m_inputElectrons + suffix) || m_event->contains<xAOD::ElectronContainer>(m_inputElectrons + suffix) ) {
+           ANA_CHECK( HelperFunctions::retrieve(eleCont, m_inputElectrons + suffix, m_event, m_store, msg()));
+           ANA_MSG_DEBUG("retrieving ele container " << m_inputElectrons + suffix << " to be added to the MET");
+         } else {
+           ANA_MSG_DEBUG("container " << m_inputElectrons + suffix << " not available upstream - skipping systematics");
+           continue;
          }
 
          ANA_MSG_DEBUG("rebuilding MET term: RefEle");
@@ -317,12 +324,19 @@ EL::StatusCode METConstructor :: execute ()
 
       if ( !m_inputPhotons.empty() ) {
          const xAOD::PhotonContainer* phoCont(0);
-         if ( m_store->contains<xAOD::PhotonContainer>(m_inputPhotons + systName) ) {
-           ANA_CHECK( HelperFunctions::retrieve(phoCont, m_inputPhotons + systName, m_event, m_store, msg()));
-           ANA_MSG_DEBUG("retrieving ph container " << m_inputPhotons + systName << " to be added to the MET");
+         std::string suffix = "";
+         if (sysPhotonsNames && std::find(std::begin(*sysPhotonsNames), std::end(*sysPhotonsNames), systName) != std::end(*sysPhotonsNames)) {
+           ANA_MSG_DEBUG("doing photon systematics");
+           suffix = systName;
+         }
+
+         if ( m_store->contains<xAOD::PhotonContainer>(m_inputPhotons + suffix) || m_event->contains<xAOD::PhotonContainer>(m_inputPhotons + suffix) ) {
+           ANA_CHECK( HelperFunctions::retrieve(phoCont, m_inputPhotons + suffix, m_event, m_store, msg()));
+           ANA_MSG_DEBUG("retrieving ph container " << m_inputPhotons + suffix << " to be added to the MET");
          } else {
-         ANA_CHECK( HelperFunctions::retrieve(phoCont, m_inputPhotons, m_event, m_store, msg()));
-      }
+           ANA_MSG_DEBUG("container " << m_inputPhotons + suffix << " not available upstream - skipping systematics");
+           continue;
+         }
 
       ANA_MSG_DEBUG("rebuilding MET term: RefGamma");
       if (m_doPhotonCuts) {
@@ -357,11 +371,18 @@ EL::StatusCode METConstructor :: execute ()
 
      if ( !m_inputTaus.empty() ) {
         const xAOD::TauJetContainer* tauCont(0);
-        if ( m_store->contains<xAOD::TauJetContainer>(m_inputTaus + systName) ) {
-          ANA_CHECK( HelperFunctions::retrieve(tauCont, m_inputTaus + systName, m_event, m_store, msg()));
-          ANA_MSG_DEBUG("retrieving tau container " << m_inputTaus + systName << " to be added to the MET");
+        std::string suffix = "";
+        if (sysTausNames && std::find(std::begin(*sysTausNames), std::end(*sysTausNames), systName) != std::end(*sysTausNames)) {
+          ANA_MSG_DEBUG("doing tau systematics");
+          suffix = systName;
+        }
+
+        if ( m_store->contains<xAOD::TauJetContainer>(m_inputTaus + suffix) || m_event->contains<xAOD::TauJetContainer>(m_inputTaus + suffix) ) {
+          ANA_CHECK( HelperFunctions::retrieve(tauCont, m_inputTaus + suffix, m_event, m_store, msg()));
+          ANA_MSG_DEBUG("retrieving tau container " << m_inputTaus + suffix << " to be added to the MET");
         } else {
-        ANA_CHECK( HelperFunctions::retrieve(tauCont, m_inputTaus, m_event, m_store, msg()));
+            ANA_MSG_DEBUG("container " << m_inputTaus + suffix << " not available upstream - skipping systematics");
+            continue;
       }
 
       ANA_MSG_DEBUG("rebuilding MET term: RefTau");
@@ -387,11 +408,18 @@ EL::StatusCode METConstructor :: execute ()
 
      if ( !m_inputMuons.empty() ) {
         const xAOD::MuonContainer* muonCont(0);
-        if ( m_store->contains<xAOD::MuonContainer>(m_inputMuons + systName) ) {
-          ANA_CHECK( HelperFunctions::retrieve(muonCont, m_inputMuons + systName, m_event, m_store, msg()));
-          ANA_MSG_DEBUG("retrieving muon container " << m_inputMuons + systName << " to be added to the MET");
+        std::string suffix = "";
+        if (sysMuonsNames && std::find(std::begin(*sysMuonsNames), std::end(*sysMuonsNames), systName) != std::end(*sysMuonsNames)) {
+          ANA_MSG_DEBUG("doing muon systematics");
+          suffix = systName;
+        }
+
+        if ( m_store->contains<xAOD::MuonContainer>(m_inputMuons + suffix) || m_event->contains<xAOD::MuonContainer>(m_inputMuons + suffix) ) {
+          ANA_CHECK( HelperFunctions::retrieve(muonCont, m_inputMuons + suffix, m_event, m_store, msg()));
+          ANA_MSG_DEBUG("retrieving muon container " << m_inputMuons + suffix << " to be added to the MET");
         } else {
-          ANA_CHECK( HelperFunctions::retrieve(muonCont, m_inputMuons, m_event, m_store, msg()));
+          ANA_MSG_DEBUG("container " << m_inputMuons + suffix << " not available upstream - skipping systematics");
+          continue;
         }
 
         ANA_MSG_DEBUG("rebuilding MET term: Muons");
@@ -414,11 +442,18 @@ EL::StatusCode METConstructor :: execute ()
      }
 
      const xAOD::JetContainer* jetCont(0);
-     if ( m_store->contains<xAOD::JetContainer>(m_inputJets + systName) ) {
-       ANA_CHECK( HelperFunctions::retrieve(jetCont, m_inputJets + systName, m_event, m_store, msg()));
-       ANA_MSG_DEBUG("retrieving jet container " << m_inputJets + systName << " to be added to the MET");
+     std::string suffix = "";
+     if (sysJetsNames && std::find(std::begin(*sysJetsNames), std::end(*sysJetsNames), systName) != std::end(*sysJetsNames)) {
+       ANA_MSG_DEBUG("doing muon systematics");
+       suffix = systName;
+     }
+
+     if ( m_store->contains<xAOD::JetContainer>(m_inputJets + suffix) || m_event->contains<xAOD::JetContainer>(m_inputJets + suffix) ) {
+       ANA_CHECK( HelperFunctions::retrieve(jetCont, m_inputJets + suffix, m_event, m_store, msg()));
+       ANA_MSG_DEBUG("retrieving jet container " << m_inputJets + suffix << " to be added to the MET");
      } else {
-       ANA_CHECK( HelperFunctions::retrieve(jetCont, m_inputJets, m_event, m_store, msg()));
+       ANA_MSG_DEBUG("container " << m_inputJets + suffix << " not available upstream - skipping systematics");
+       continue;
      }
 
      // the jet term and soft term(s) are built simultaneously using METMaker::rebuildJetMET(...) or METMaker::rebuildTrackMET(...)
