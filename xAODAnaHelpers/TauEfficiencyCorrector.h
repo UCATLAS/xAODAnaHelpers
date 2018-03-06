@@ -36,16 +36,28 @@ public:
   // configuration variables
   std::string   m_inContainerName = "";
 
-  //std::string   m_calibRelease = "Data15_allPeriods_241115";
-
   // Reco efficiency SF
-  //std::string   m_WorkingPointReco = "Loose";
+  // deafault is empty. To "activate" the corrections
+  // pass the string "Reco"
+  std::string   m_WorkingPointReco = "";
 
   // Iso efficiency SF
-  //std::string   m_WorkingPointTauID = "LooseTrackOnly";
+  std::string   m_WorkingPointTauID = "Medium";
 
-  /// @brief Use with caution!!!
-  //bool          m_AllowZeroSF = false;
+  // Ele OR efficiency
+  // deafault is empty for EleOLRHadTau. To "activate" 
+  // the corrections pass the string "EleOLRHadTau"
+  std::string   m_WorkingPointEleOLRHadTau = "";
+  
+  // deafault is empty for EleOLRElectron. To "activate" 
+  // the corrections pass the string corresponding to
+  // the working point
+  std::string   m_WorkingPointEleOLRElectron = "";
+
+  // working point for tauID used in 
+  // combination with the trigger
+  std::string   m_WorkingPointTrigger = "";
+  std::string   m_TriggerName = "";
 
   /// @brief list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed
   //std::string   m_MuTrigLegs = "HLT_mu26_imedium";
@@ -54,49 +66,46 @@ public:
   /**
     @brief The name of the vector containing the names of the systematically-varied taus-related containers from the upstream algorithm, which will be processed by this algorithm.
 
-    Only muon tau systematics or any other that create shallow copies of tau containers should be passed to this tool. It is advised to run this algorithm before running algorithms combining multiple calibration systematics (e.g. overlap removal).
+    Only tau systematics or any other that create shallow copies of tau containers should be passed to this tool. It is advised to run this algorithm before running algorithms combining multiple calibration systematics (e.g. overlap removal).
   */
-  //std::string   m_inputSystNamesTaus = "";
+  std::string   m_inputSystNamesTaus = "";
 
   /// @brief Write systematics names to metadata
   bool          m_writeSystToMetadata = false;
 
-  //float         m_systValReco = 0.0;
-  //float         m_systValTauID = 0.0;
-  //float         m_systValTrig = 0.0;
-  std::string   m_systName = "";
-  //std::string   m_systNameReco = "";
-  //std::string   m_systNameTauID = "";
-  //std::string   m_systNameTrig = "";
-  //std::string   m_outputSystNamesReco = "TauEfficiencyCorrector_RecoSyst";
-  //std::string   m_outputSystNamesTauID = "TauEfficiencyCorrector_TauIDSyst";
-  //std::string   m_outputSystNamesTrig = "TauEfficiencyCorrector_TrigSyst";
+  float         m_systValReco = 0.0;
+  float         m_systValTauID = 0.0;
+  float         m_systValEleOLRHadTau = 0.0;
+  float         m_systValEleOLRElectron = 0.0;
+  float         m_systValTrigger = 0.0;
+  
+  std::string   m_systNameReco = "";
+  std::string   m_systNameTauID = "";
+  std::string   m_systNameEleOLRHadTau = "";
+  std::string   m_systNameEleOLRElectron = "";
+  std::string   m_systNameTrigger = "";
+  
+  std::string   m_outputSystNamesReco = "TauEfficiencyCorrector_RecoSyst";
+  std::string   m_outputSystNamesTauID = "TauEfficiencyCorrector_TauIDSyst";
+  std::string   m_outputSystNamesEleOLRHadTau = "TauEfficiencyCorrector_EleOLRHadTauSyst";
+  std::string   m_outputSystNamesEleOLRElectron = "TauEfficiencyCorrector_EleOLRElectronSyst";
+  std::string   m_outputSystNamesTrigger = "TauEfficiencyCorrector_TrigSyst";
 
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  std::vector<CP::SystematicSet> m_systList; //!
-  //std::vector<CP::SystematicSet> m_systListReco; //!
-  //std::vector<CP::SystematicSet> m_systListTauID;  //!
-  //std::vector<CP::SystematicSet> m_systListTrig; //!
+  std::vector<CP::SystematicSet> m_systListReco;  //!
+  std::vector<CP::SystematicSet> m_systListTauID; //!
+  std::vector<CP::SystematicSet> m_systListEleOLRHadTau; //!
+  std::vector<CP::SystematicSet> m_systListEleOLRElectron; //!
+  std::vector<CP::SystematicSet> m_systListTrigger;  //!
 
-  //std::string m_outputSystNamesTrigBase; //!
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
   asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",     this}; //! 
   
-  
-  //CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool = nullptr;               //!
-  //std::string m_recoEffSF_tool_name;                                       //!
-  //CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
-  //std::string m_isoEffSF_tool_name;                                        //!
-  //CP::MuonTriggerScaleFactors* m_muTrigSF_tool = nullptr;                  //!
-  //std::string m_trigEffSF_tool_name;                                       //!
-  //CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               //!
-  //std::string m_TTVAEffSF_tool_name;                                       //!
-  //std::vector<std::string> m_SingleMuTriggers;                             //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
