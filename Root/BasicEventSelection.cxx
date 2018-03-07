@@ -256,7 +256,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //---------------------------
   //
   // Metadata for the MC campaign to be used by PRW autoconfiguration.
-  if(isMC() && m_autoconfigPRW)
+  if ((!m_useMetaData || m_MD_finalNevents > 0) && isMC() && m_autoconfigPRW)
   {
     const xAOD::EventInfo* evtInfo = 0;
     ANA_CHECK( m_event->retrieve( evtInfo, "EventInfo" ) );
