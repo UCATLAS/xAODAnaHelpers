@@ -41,7 +41,21 @@ namespace xAH {
 
       std::vector<int>   *m_ntrk;
       std::vector<float> *m_charge;
-
+      
+      // tau identification
+      std::map< std::string, std::vector< int > >* m_isIdentified;
+      
+      // scale factors w/ sys
+      // per object
+      std::vector< std::vector< float > > *m_EleOLRHadTauEff_SF;
+      std::vector< std::vector< float > > *m_RecoEff_SF;
+      
+      std::map< std::string, std::vector< std::vector< float > > >* m_TauIDEff_SF;
+      std::map< std::string, std::vector< std::vector< float > > >* m_EleOLRElectronEff_SF;
+      std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
+      
+      
+      // might need to delete these
       std::vector<int>   *m_isJetBDTSigVeryLoose;
       std::vector<int>   *m_isJetBDTSigLoose;
       std::vector<int>   *m_isJetBDTSigMedium;

@@ -4,7 +4,7 @@
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/egammaPIDdefs.h"
 #include "ElectronPhotonSelectorTools/LikelihoodEnums.h"
-
+#include "xAODTau/TauDefs.h"
 
 namespace HelperClasses{
 
@@ -56,6 +56,19 @@ namespace HelperClasses{
 //    std::string IsEMMedium("IsEMMedium");   enumMap.insert(std::make_pair( IsEMMedium, egammaPID::IsEMMedium));
 //    std::string IsEMTight("IsEMTight");     enumMap.insert(std::make_pair( IsEMTight , egammaPID::IsEMTight));
 //  }
+
+
+  /* parser for Tau BDT ID enum */
+  /* Apparently this won't be useful for non-Athena users...  */
+  
+  template <>
+  EnumParser<xAOD::TauJetParameters::IsTauFlag>::EnumParser()
+  {
+    std::string TauIDVeryLoose("TauIDVeryLoose"); enumMap.insert(std::make_pair(TauIDVeryLoose , xAOD::TauJetParameters::JetBDTSigVeryLoose));
+    std::string TauIDLoose("TauIDLoose");         enumMap.insert(std::make_pair(TauIDLoose     , xAOD::TauJetParameters::JetBDTSigLoose));
+    std::string TauIDMedium("TauIDMedium");       enumMap.insert(std::make_pair(TauIDMedium    , xAOD::TauJetParameters::JetBDTSigMedium));
+    std::string TauIDTight("TauIDTight");         enumMap.insert(std::make_pair(TauIDTight     , xAOD::TauJetParameters::JetBDTSigTight));
+  }
 
   /* parser for muon quality enum */
   template <>
