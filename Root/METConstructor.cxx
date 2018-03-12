@@ -130,7 +130,7 @@ EL::StatusCode METConstructor :: initialize ()
   //////////// IMETSignificance ////////////////
   ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
   ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
-  ANA_CHECK( m_metSignificance_handle.setProperty("IsData", !isMC()) );
+
   // For AFII samples
   if ( isMC() ) {
     // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
