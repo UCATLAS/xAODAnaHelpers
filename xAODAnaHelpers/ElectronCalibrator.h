@@ -73,8 +73,8 @@ public:
   /** @brief Force AFII flag in calibration, in case metadata is broken */
   bool m_setAFII = false;
 
-  // for calo based isolation vars leakage correction
-  bool        m_useDataDrivenLeakageCorr = false;
+  /** @brief Apply isolation correction, not needed by default */
+  bool m_applyIsolationCorrection = false;
 
 private:
   int m_numEvent;         //!
