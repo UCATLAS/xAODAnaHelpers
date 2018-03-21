@@ -194,15 +194,17 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   // initialize the CP::IsolationCorrectionTool
   //
-  if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>("IsolationCorrectionTool") ) {
-    m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>("IsolationCorrectionTool");
-  } else {
-    m_IsolationCorrectionTool = new CP::IsolationCorrectionTool("IsolationCorrectionTool");
+  if ( m_applyIsolationCorrection ) {
+    if ( asg::ToolStore::contains<CP::IsolationCorrectionTool>("IsolationCorrectionTool") ) {
+      m_IsolationCorrectionTool = asg::ToolStore::get<CP::IsolationCorrectionTool>("IsolationCorrectionTool");
+    } else {
+      m_IsolationCorrectionTool = new CP::IsolationCorrectionTool("IsolationCorrectionTool");
+    }
+    m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
+    ANA_CHECK( m_IsolationCorrectionTool->setProperty("IsMC", isMC() ));
+    ANA_CHECK( m_IsolationCorrectionTool->initialize());
+    ANA_MSG_INFO( "Applying electron isolation correction" );
   }
-  m_IsolationCorrectionTool->msg().setLevel( MSG::INFO ); // DEBUG, VERBOSE, INFO
-  //ANA_CHECK( m_IsolationCorrectionTool->setProperty("Apply_datadriven", m_useDataDrivenLeakageCorr ));
-  ANA_CHECK( m_IsolationCorrectionTool->setProperty("IsMC", isMC() ));
-  ANA_CHECK( m_IsolationCorrectionTool->initialize());
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -291,12 +293,15 @@ EL::StatusCode ElectronCalibrator :: execute ()
       // apply calibration (w/ syst) and leakage correction to calo based iso vars
       //
       if ( elSC_itr->caloCluster() && elSC_itr->trackParticle() ) {  // NB: derivations might remove CC and tracks for low pt electrons
-	if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
-	  ANA_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
-	}
-	if ( elSC_itr->pt() > 7e3 && m_IsolationCorrectionTool->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
-	  ANA_MSG_WARNING( "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
-	}
+        if ( m_EgammaCalibrationAndSmearingTool->applyCorrection( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+          ANA_MSG_WARNING( "Problem in CP::EgammaCalibrationAndSmearingTool::applyCorrection()");
+        }
+
+        if ( m_applyIsolationCorrection ) {
+          if ( elSC_itr->pt() > 7e3 && m_IsolationCorrectionTool->CorrectLeakage( *elSC_itr ) != CP::CorrectionCode::Ok ) {
+            ANA_MSG_WARNING( "Problem in CP::IsolationCorrectionTool::CorrectLeakage()");
+          }
+        }
       }
 
       ANA_MSG_DEBUG( "Calibrated pt with systematic: " << syst_it.name() <<" , pt = " << elSC_itr->pt() * 1e-3 << " GeV");
