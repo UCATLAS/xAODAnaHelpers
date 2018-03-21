@@ -278,8 +278,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
 
     for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
-      m_systVal = m_systValVector.at(iSyst);
-      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJES, m_systValJES, msg() );
+      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJES, m_systValVector.at(iSyst), msg() );
 
       for(unsigned int i=0; i < JESSysList.size(); ++i){
         // do not add another nominal syst to the list!!
