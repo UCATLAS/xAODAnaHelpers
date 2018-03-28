@@ -901,26 +901,27 @@ EL::StatusCode BasicEventSelection :: execute ()
     if ( m_storeTrigDecisions ) {
 
       std::vector<std::string>  passTriggers;
+      std::vector<std::string>  triggerNames;
       std::vector<float>        triggerPrescales;
       std::vector<float>        triggerPrescalesLumi;
-      std::vector<std::string>  isPassedBitsNames;
       std::vector<unsigned int> isPassedBits;
 
       // Save info for the triggers used to skim events
       //
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-        if ( trigChain->isPassed() ) {
+        if ( trigChain->isPassed() )
           passTriggers.push_back( trigName );
-          triggerPrescales.push_back( trigChain->getPrescale() );
 
-          if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
-            triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
-          } else {
-            triggerPrescalesLumi.push_back( -1 );
-          }
-        }
-        isPassedBitsNames.push_back( trigName );
+	triggerNames.push_back( trigName );
+
+	triggerPrescales.push_back( trigChain->getPrescale() );
+
+	if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end())
+	  triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+	else
+	  triggerPrescalesLumi.push_back( -1 );
+
         isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
       }
 
@@ -928,35 +929,36 @@ EL::StatusCode BasicEventSelection :: execute ()
       //
       if ( !m_extraTriggerSelection.empty() ) {
 
-	      auto extraTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
+	auto extraTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
 
-	      for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
-	        auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-	        if ( trigChain->isPassed() ) {
-	          passTriggers.push_back( trigName );
-	          triggerPrescales.push_back( trigChain->getPrescale() );
+	for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
+	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
+	  if ( trigChain->isPassed() )
+	    passTriggers.push_back( trigName );
 
-              if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
-                triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
-              } else {
-                triggerPrescalesLumi.push_back( -1 );
-              }
-	        }
-	        isPassedBitsNames.push_back( trigName );
-	        isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
-	      }
+	  triggerNames.push_back( trigName );
+	
+	  triggerPrescales.push_back( trigChain->getPrescale() );
+
+	  if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end())
+	    triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+	  else
+	    triggerPrescalesLumi.push_back( -1 );
+
+	  isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
+	}
       }
 
-      static SG::AuxElement::Decorator< std::vector< std::string > >  passTrigs("passTriggers");
-      passTrigs( *eventInfo ) = passTriggers;
-      static SG::AuxElement::Decorator< std::vector< float > >        trigPrescales("triggerPrescales");
-      trigPrescales( *eventInfo ) = triggerPrescales;
-      static SG::AuxElement::Decorator< std::vector< float > >        trigPrescalesLumi("triggerPrescalesLumi");
-      trigPrescalesLumi( *eventInfo ) = triggerPrescalesLumi;
-      static SG::AuxElement::Decorator< std::vector< unsigned int > > isPassBits("isPassedBits");
-      isPassBits( *eventInfo ) = isPassedBits;
-      static SG::AuxElement::Decorator< std::vector< std::string > >  isPassBitsNames("isPassedBitsNames");
-      isPassBitsNames( *eventInfo ) = isPassedBitsNames;
+      static SG::AuxElement::Decorator< std::vector< std::string > >  dec_passTriggers        ("passTriggers");
+      dec_passTriggers        ( *eventInfo ) = passTriggers;
+      static SG::AuxElement::Decorator< std::vector< std::string > >  dec_triggerNames        ("triggerNames");
+      dec_triggerNames        ( *eventInfo ) = triggerNames;
+      static SG::AuxElement::Decorator< std::vector< float > >        dec_triggerPrescales    ("triggerPrescales");
+      dec_triggerPrescales    ( *eventInfo ) = triggerPrescales;
+      static SG::AuxElement::Decorator< std::vector< float > >        dec_triggerPrescalesLumi("triggerPrescalesLumi");
+      dec_triggerPrescalesLumi( *eventInfo ) = triggerPrescalesLumi;
+      static SG::AuxElement::Decorator< std::vector< unsigned int > > dec_isPassedBits        ("isPassedBits");
+      dec_isPassedBits        ( *eventInfo ) = isPassedBits;
 
     }
 

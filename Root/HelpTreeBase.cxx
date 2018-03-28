@@ -169,18 +169,17 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
     m_tree->Branch("passedTriggers",       &m_passTriggers        );
   }
 
-  if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
+  if(m_trigInfoSwitch->m_passTrigBits || (!m_isMC && (m_trigInfoSwitch->m_prescalesLumi || m_trigInfoSwitch->m_prescales)))
+    m_tree->Branch("triggerNames",         &m_triggerNames        );
+
+  if ( !m_isMC && m_trigInfoSwitch->m_prescales )
     m_tree->Branch("triggerPrescales",     &m_triggerPrescales    );
-  }
 
-  if ( !m_isMC && m_trigInfoSwitch->m_prescalesLumi ) {
+  if ( !m_isMC && m_trigInfoSwitch->m_prescalesLumi )
     m_tree->Branch("triggerPrescalesLumi", &m_triggerPrescalesLumi);
-  }
 
-  if ( m_trigInfoSwitch->m_passTrigBits ) {
+  if ( m_trigInfoSwitch->m_passTrigBits )
     m_tree->Branch("isPassBits",           &m_isPassBits          );
-    m_tree->Branch("isPassBitsNames",      &m_isPassBitsNames     );
-  }
 
   //this->AddTriggerUser();
 }
@@ -237,6 +236,12 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
 
   }
 
+  if(m_trigInfoSwitch->m_passTrigBits || (!m_isMC && (m_trigInfoSwitch->m_prescalesLumi || m_trigInfoSwitch->m_prescales)))
+    {
+      static SG::AuxElement::ConstAccessor< std::vector< std::string > > triggerNames("triggerNames");
+      if( triggerNames.isAvailable( *eventInfo ) ) { m_triggerNames = triggerNames( *eventInfo ); }
+    }
+
   if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_prescales"); }
@@ -260,9 +265,6 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     static SG::AuxElement::ConstAccessor< std::vector< unsigned int > > isPassBits("isPassedBits");
     if( isPassBits.isAvailable( *eventInfo ) ) { m_isPassBits = isPassBits( *eventInfo ); }
 
-    static SG::AuxElement::ConstAccessor< std::vector< std::string > > isPassBitsNames("isPassedBitsNames");
-    if( isPassBitsNames.isAvailable( *eventInfo ) ) { m_isPassBitsNames = isPassBitsNames( *eventInfo ); }
-
   }
 
 }
@@ -277,11 +279,11 @@ void HelpTreeBase::ClearTrigger() {
   m_L1PSKey   = 0;
   m_HLTPSKey  = 0;
 
-  m_passTriggers.clear();
-  m_triggerPrescales.clear();
+  m_passTriggers        .clear();
+  m_triggerNames        .clear();
+  m_triggerPrescales    .clear();
   m_triggerPrescalesLumi.clear();
-  m_isPassBits.clear();
-  m_isPassBitsNames.clear();
+  m_isPassBits          .clear();
 
 }
 
