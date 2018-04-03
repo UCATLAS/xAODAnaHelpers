@@ -444,6 +444,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
     ANA_MSG_DEBUG("Size is " << sysVariationNames->size());
     for(auto sysName : *sysVariationNames) ANA_MSG_DEBUG(sysName);
+  } else {
+    delete sysVariationNames;
   }
 
   return EL::StatusCode::SUCCESS;
