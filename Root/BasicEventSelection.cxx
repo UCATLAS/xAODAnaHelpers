@@ -261,7 +261,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
     const xAOD::EventInfo* evtInfo = 0;
     ANA_CHECK( m_event->retrieve( evtInfo, "EventInfo" ) );
     uint32_t runNum = evtInfo->runNumber();
-  
+
     m_mcCampaignMD = "";
     switch(runNum) {
       case 284500 :
@@ -1028,14 +1028,14 @@ EL::StatusCode BasicEventSelection :: execute ()
 // https://gitlab.cern.ch/atlas/athena/blob/3be30397de7c6cfdc15de38f532fdb4b9f338297/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/SUSYObjDef_xAOD.cxx#L700
 StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 {
-  
+
   // Don't do this if we aren't supposed to
   if (! (isMC() && m_autoconfigPRW ))
     return StatusCode::SUCCESS;
 
   // doing here some black magic to autoconfigure the pileup reweighting tool
   std::string prwConfigFile = "";
-  
+
   // Extract campaign from user configuration
   std::string tmp_mcCampaign = m_mcCampaign;
   std::vector<std::string> mcCampaignList;
@@ -1056,7 +1056,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	}
 
       // Automatically determine campgain
-      prwConfigFile = PathResolverFindCalibDirectory("dev/SUSYTools/PRW_AUTOCONGIF/files/");
+      prwConfigFile = "dev/SUSYTools/PRW_AUTOCONGIF/files/";
 
       float dsid = -999;
       const xAOD::EventInfo* eventInfo(nullptr);
@@ -1122,6 +1122,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       for(const auto& mcCampaign : mcCampaignList)
 	{
 	  prwConfigFile += "pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root";
+    prwConfigFile = PathResolverFindCalibFile(prwConfigFile);
 	  TFile testF(prwConfigFile.data(),"read");
 	  if(testF.IsZombie())
 	    ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
@@ -1130,11 +1131,11 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	      prwConfigFiles.push_back( prwConfigFile );
 	    }
 	}
-    
+
     // also need to handle lumicalc files: only use 2015+2016 with mc16a
     // and only use 2017 with mc16c
     // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
-    
+
     // Parse lumicalc file names
     std::vector<std::string> allLumiCalcFiles;
     std::string tmp_lumiCalcFileNames = m_lumiCalcFileNames;
@@ -1149,7 +1150,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
         tmp_lumiCalcFileNames.erase(0, pos+1);
       }
     }
-    
+
     std::vector<std::string> lumiCalcFiles;
     for(const auto& mcCampaign : mcCampaignList)
 	{
@@ -1158,7 +1159,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
           // looking for things of format "stuff/data15_13TeV/stuff" etc
     	  size_t pos = filename.find("data");
 	      std::string year = filename.substr(pos+4, 2);
-         
+
           // Case mc16a: want 2015 and 2016
           if (mcCampaign == "mc16a") {
             if (year == "15" || year == "16") {
@@ -1180,7 +1181,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       printf( "\t %s \n", prwConfigFiles.at(i).c_str() );
     }
     ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
-    
+
     ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
     for( unsigned int i=0; i < lumiCalcFiles.size(); ++i) {
       printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
