@@ -70,7 +70,8 @@ void EventInfo::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_shapeEM ) {
-    connectBranch<double>(tree, "rhoEM",   &m_rhoEM);
+    connectBranch<double>(tree, "rhoEM",        &m_rhoEM);
+    connectBranch<double>(tree, "rhoEMPFlow",   &m_rhoEMPFlow);
   }
 
   if ( m_infoSwitch.m_shapeLC ) {
@@ -164,11 +165,13 @@ void EventInfo::setBranches(TTree *tree)
 
   if ( m_infoSwitch.m_shapeEM ) {
     tree->Branch("rhoEM",                &m_rhoEM,            "rhoEM/D");
+    tree->Branch("rhoEMPFlow",           &m_rhoEMPFlow,       "rhoEMPFlow/D");
   }
 
   if ( m_infoSwitch.m_shapeLC ) {
     tree->Branch("rhoLC",                &m_rhoLC,            "rhoLC/D");
   }
+
 
   if( m_infoSwitch.m_truth && m_mc ) {
     tree->Branch("pdgId1",            &m_pdgId1,        "pdgId1/I" );
@@ -221,6 +224,7 @@ void EventInfo::clear()
   m_actualMu = m_averageMu = -999;
   // shapeEM
   m_rhoEM = -999;
+  m_rhoEMPFlow = -999;
   // shapeLC
   m_rhoLC = -999;
   // truth
@@ -346,6 +350,13 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
+    }
+  
+    const xAOD::EventShape* evtShape_PFlow(nullptr);
+    HelperFunctions::retrieve( evtShape_PFlow, "Kt4EMPFlowEventShape", event, 0 );
+    if ( !evtShape_PFlow->getDensity( xAOD::EventShape::Density, m_rhoEMPFlow ) ) {
+      Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
+      m_rhoEMPFlow = -999;
     }
   }
 

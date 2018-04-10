@@ -67,6 +67,8 @@ namespace xAH {
 
     // event shapeEM
     double   m_rhoEM;
+    double   m_rhoEMPFlow;
+    // event shapeLC
     double   m_rhoLC;
 
     // truth
