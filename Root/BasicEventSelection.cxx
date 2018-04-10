@@ -251,34 +251,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
   }
 
-  //---------------------------
-  // Meta data - MC Campgain
-  //---------------------------
-  //
-  // Metadata for the MC campaign to be used by PRW autoconfiguration.
-  if ((!m_useMetaData || m_MD_finalNevents > 0) && isMC() && m_autoconfigPRW)
-  {
-    const xAOD::EventInfo* evtInfo = 0;
-    ANA_CHECK( m_event->retrieve( evtInfo, "EventInfo" ) );
-    uint32_t runNum = evtInfo->runNumber();
-
-    m_mcCampaignMD = "";
-    switch(runNum) {
-      case 284500 :
-        m_mcCampaignMD="mc16a";
-        break;
-      // This should be switched to mc16d once it is available.
-      case 300000 :
-        m_mcCampaignMD="mc16c";
-        break;
-      default :
-        ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autocongigure PRW. Aborting." );
-        return StatusCode::FAILURE;
-      break;
-    }
-    ANA_MSG_INFO( "Determined MC campaign to be " << m_mcCampaignMD);
-  }
-
   return EL::StatusCode::SUCCESS;
 
 }
@@ -339,6 +311,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cleanPowheg = true;
     ANA_MSG_INFO( "This is J5 Powheg - cleaning that nasty huge weight event");
   }
+
 
   //////// Initialize Tool for Sherpa 2.2 Reweighting ////////////
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
@@ -1033,163 +1006,184 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   if (! (isMC() && m_autoconfigPRW ))
     return StatusCode::SUCCESS;
 
-  // doing here some black magic to autoconfigure the pileup reweighting tool
-  std::string prwConfigFile = "";
+  const xAOD::EventInfo* eventInfo = 0;
+  ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
+
+  // Extract campaign automatically from Run Number
+  std::string mcCampaignMD = "";
+  
+  uint32_t runNum = eventInfo->runNumber();
+
+  switch(runNum)
+    {
+    case 284500 :
+      mcCampaignMD="mc16a";
+      break;
+      // This should be switched to mc16d once it is available.
+    case 300000 :
+      mcCampaignMD="mc16c";
+      break;
+    default :
+      ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autocongigure PRW. Aborting." );
+      return StatusCode::FAILURE;
+      break;
+    }
+  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
 
   // Extract campaign from user configuration
   std::string tmp_mcCampaign = m_mcCampaign;
   std::vector<std::string> mcCampaignList;
   while ( tmp_mcCampaign.size() > 0)
+    {
+      size_t pos = tmp_mcCampaign.find_first_of(',');
+      if ( pos == std::string::npos )
 	{
-	  size_t pos = tmp_mcCampaign.find_first_of(',');
-	  if ( pos == std::string::npos )
-	    {
-	      pos = tmp_mcCampaign.size();
-	      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	      tmp_mcCampaign.erase(0, pos);
-	    }
-	  else
-	    {
-	      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	      tmp_mcCampaign.erase(0, pos+1);
-	    }
+	  pos = tmp_mcCampaign.size();
+	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+	  tmp_mcCampaign.erase(0, pos);
 	}
-
-      // Automatically determine campgain
-      prwConfigFile = "dev/SUSYTools/PRW_AUTOCONGIF/files/";
-
-      float dsid = -999;
-      const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( evtStore()->retrieve( eventInfo, m_eventInfoContainerName ) );
-      dsid = eventInfo->mcChannelNumber();
-
-      // Sanity checks
-      bool mc16X_GoodFromProperty = !mcCampaignList.empty();
-      bool mc16X_GoodFromMetadata = false;
-      for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d");
-      if( m_mcCampaignMD == "mc16a" || m_mcCampaignMD == "mc16c" || m_mcCampaignMD == "mc16d") mc16X_GoodFromMetadata = true;
-
-      if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
+      else
 	{
-	  // ::
-	  std::string MetadataAndPropertyBAD("");
-	  MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-	  MetadataAndPropertyBAD += "'mc16a', 'mc16c' or 'mc16d' and restart your job. If you set it to any other string, you will still incur in this error.";
-	  ANA_MSG_ERROR( MetadataAndPropertyBAD );
-	  return StatusCode::FAILURE;
-	  // ::
+	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+	  tmp_mcCampaign.erase(0, pos+1);
 	}
+    }
 
-      if ( mc16X_GoodFromProperty && mc16X_GoodFromMetadata)
-	{
-	  bool MDinP=false;
-	  for(const auto& mcCampaignP : mcCampaignList) MDinP |= (m_mcCampaignMD==mcCampaignP);
-	  if( !MDinP )
-	    {
-	      // ::
-	      std::string MetadataAndPropertyConflict("");
-	      MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + m_mcCampaignMD;
-	      MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
-	      MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
-	      ANA_MSG_WARNING( MetadataAndPropertyConflict );
-	      // ::
-	    }
-	  else
-	    {
-	      // ::
-	      std::string NoMetadataButPropertyOK("");
-	      NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
-	      NoMetadataButPropertyOK += m_mcCampaign;
-	      NoMetadataButPropertyOK += "'. Autocongiguring PRW accordingly.";
-	      ANA_MSG_WARNING( NoMetadataButPropertyOK );
-	      // ::
-	    }
-	}
+  // Sanity checks
+  bool mc16X_GoodFromProperty = !mcCampaignList.empty();
+  bool mc16X_GoodFromMetadata = false;
+  for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d");
+  if( mcCampaignMD == "mc16a" || mcCampaignMD == "mc16c" || mcCampaignMD == "mc16d") mc16X_GoodFromMetadata = true;
 
+  if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
+    {
       // ::
-      // Retrieve the input file
-      if(!mc16X_GoodFromProperty)
-	{
-	  mcCampaignList.clear();
-	  mcCampaignList.push_back(m_mcCampaignMD);
-	}
-      ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
-      for(const auto& mcCampaign : mcCampaignList)
-	    ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
+      std::string MetadataAndPropertyBAD("");
+      MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
+      MetadataAndPropertyBAD += "'mc16a', 'mc16c' or 'mc16d' and restart your job. If you set it to any other string, you will still incur in this error.";
+      ANA_MSG_ERROR( MetadataAndPropertyBAD );
+      return StatusCode::FAILURE;
+      // ::
+    }
 
-      std::vector<std::string> prwConfigFiles;
-      int DSID_INT = (int) dsid;
-      for(const auto& mcCampaign : mcCampaignList)
+  if ( mc16X_GoodFromProperty && mc16X_GoodFromMetadata)
+    {
+      bool MDinP=false;
+      for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
+      if( !MDinP )
 	{
-	  prwConfigFile += "pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root";
-    prwConfigFile = PathResolverFindCalibFile(prwConfigFile);
+	  // ::
+	  std::string MetadataAndPropertyConflict("");
+	  MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD;
+	  MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
+	  MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
+	  ANA_MSG_WARNING( MetadataAndPropertyConflict );
+	  // ::
+	}
+      else
+	{
+	  // ::
+	  std::string NoMetadataButPropertyOK("");
+	  NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
+	  NoMetadataButPropertyOK += m_mcCampaign;
+	  NoMetadataButPropertyOK += "'. Autocongiguring PRW accordingly.";
+	  ANA_MSG_WARNING( NoMetadataButPropertyOK );
+	  // ::
+	}
+    }
+
+  // ::
+  // Retrieve the input file
+  if(!mc16X_GoodFromProperty)
+    {
+      mcCampaignList.clear();
+      mcCampaignList.push_back(mcCampaignMD);
+    }
+  ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
+  for(const auto& mcCampaign : mcCampaignList)
+    ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
+
+  // 
+  float dsid = -999;
+  dsid = eventInfo->mcChannelNumber();
+  int DSID_INT = (int) dsid;
+
+  std::vector<std::string> prwConfigFiles;
+  for(const auto& mcCampaign : mcCampaignList)
+    {
+      std::string prwConfigFile = PathResolverFindCalibFile("/dev/SUSYTools/PRW_AUTOCONFIG/files/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root");
+      std::cout << prwConfigFile << std::endl;
+      TFile testF(prwConfigFile.data(),"read");
+      if(testF.IsZombie())
+	ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
+      else
+	{	  
 	  TFile testF(prwConfigFile.data(),"read");
 	  if(testF.IsZombie())
 	    ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
 	  else
-	    {
-	      prwConfigFiles.push_back( prwConfigFile );
-	    }
+	    prwConfigFiles.push_back( prwConfigFile );
 	}
-
-    // also need to handle lumicalc files: only use 2015+2016 with mc16a
-    // and only use 2017 with mc16c
-    // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
-
-    // Parse lumicalc file names
-    std::vector<std::string> allLumiCalcFiles;
-    std::string tmp_lumiCalcFileNames = m_lumiCalcFileNames;
-    while ( tmp_lumiCalcFileNames.size() > 0) {
-      size_t pos = tmp_lumiCalcFileNames.find_first_of(',');
-      if ( pos == std::string::npos ) {
-        pos = tmp_lumiCalcFileNames.size();
-        allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
-        tmp_lumiCalcFileNames.erase(0, pos);
-      } else {
-        allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
-        tmp_lumiCalcFileNames.erase(0, pos+1);
-      }
     }
 
-    std::vector<std::string> lumiCalcFiles;
-    for(const auto& mcCampaign : mcCampaignList)
+  // also need to handle lumicalc files: only use 2015+2016 with mc16a
+  // and only use 2017 with mc16c
+  // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
+
+  // Parse lumicalc file names
+  std::vector<std::string> allLumiCalcFiles;
+  std::string tmp_lumiCalcFileNames = m_lumiCalcFileNames;
+  while ( tmp_lumiCalcFileNames.size() > 0) {
+    size_t pos = tmp_lumiCalcFileNames.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_lumiCalcFileNames.size();
+      allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+      tmp_lumiCalcFileNames.erase(0, pos);
+    } else {
+      allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+      tmp_lumiCalcFileNames.erase(0, pos+1);
+    }
+  }
+
+  std::vector<std::string> lumiCalcFiles;
+  for(const auto& mcCampaign : mcCampaignList)
+    {
+      for(const auto& filename : allLumiCalcFiles)
 	{
-       for(const auto& filename : allLumiCalcFiles)
-       {
-          // looking for things of format "stuff/data15_13TeV/stuff" etc
-    	  size_t pos = filename.find("data");
-	      std::string year = filename.substr(pos+4, 2);
+	  // looking for things of format "stuff/data15_13TeV/stuff" etc
+	  size_t pos = filename.find("data");
+	  std::string year = filename.substr(pos+4, 2);
 
-          // Case mc16a: want 2015 and 2016
-          if (mcCampaign == "mc16a") {
-            if (year == "15" || year == "16") {
-              lumiCalcFiles.push_back(filename);
-            }
-          } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
-            if (year == "17") {
-              lumiCalcFiles.push_back(filename);
-            }
-          } else {
-             ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
-          }
-       }
+	  // Case mc16a: want 2015 and 2016
+	  if (mcCampaign == "mc16a") {
+	    if (year == "15" || year == "16") {
+	      lumiCalcFiles.push_back(filename);
+	    }
+	  } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
+	    if (year == "17") {
+	      lumiCalcFiles.push_back(filename);
+	    }
+	  } else {
+	    ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
+	  }
+	}
     }
 
-    // Set everything and report on it.
-    ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
-    for( unsigned int i=0; i < prwConfigFiles.size(); ++i) {
-      printf( "\t %s \n", prwConfigFiles.at(i).c_str() );
-    }
-    ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
+  // Set everything and report on it.
+  ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
+  for( unsigned int i=0; i < prwConfigFiles.size(); ++i) {
+    printf( "\t %s \n", prwConfigFiles.at(i).c_str() );
+  }
+  ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
 
-    ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
-    for( unsigned int i=0; i < lumiCalcFiles.size(); ++i) {
-      printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
-    }
-    ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+  ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
+  for( unsigned int i=0; i < lumiCalcFiles.size(); ++i) {
+    printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
+  }
+  ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
 
-    // Return gracefully
-    return StatusCode::SUCCESS;
+  // Return gracefully
+  return StatusCode::SUCCESS;
 }
 
 
