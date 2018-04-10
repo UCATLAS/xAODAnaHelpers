@@ -126,6 +126,8 @@ public:
   float m_pt_max_JVT = 60e3;
   /// @brief detector eta cut
   float m_eta_max_JVT = 2.4;
+  /// @brief Does the input have truth jets? If not, cannot decorate with true hard scatter / pileup info
+  bool m_haveTruthJets = true;
 
   /**
     @brief Minimum value of JVT for selecting jets.
