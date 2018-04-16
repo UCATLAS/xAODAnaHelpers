@@ -191,26 +191,27 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   // flavorTag
   if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
-    //m_MV1                       =new std::vector<float>();
-    m_MV2c00                    =new std::vector<float>();
-    m_MV2c10                    =new std::vector<float>();
-    m_MV2c10mu                  =new std::vector<float>();
-    m_MV2c10rnn                 =new std::vector<float>();
-    m_MV2c20                    =new std::vector<float>();
-    m_MV2c100                   =new std::vector<float>();
-    m_DL1                       =new std::vector<float>();
-    m_DL1_pu                    =new std::vector<float>();
-    m_DL1_pc                    =new std::vector<float>();
-    m_DL1_pb                    =new std::vector<float>();
-    m_DL1mu                     =new std::vector<float>();
-    m_DL1mu_pu                  =new std::vector<float>();
-    m_DL1mu_pc                  =new std::vector<float>();
-    m_DL1mu_pb                  =new std::vector<float>();
-    m_DL1rnn                    =new std::vector<float>();
-    m_DL1rnn_pu                 =new std::vector<float>();
-    m_DL1rnn_pc                 =new std::vector<float>();
-    m_DL1rnn_pb                 =new std::vector<float>();
-    m_HadronConeExclTruthLabelID=new std::vector<int>();
+    //m_MV1                               =new std::vector<float>();
+    m_MV2c00                            =new std::vector<float>();
+    m_MV2c10                            =new std::vector<float>();
+    m_MV2c10mu                          =new std::vector<float>();
+    m_MV2c10rnn                         =new std::vector<float>();
+    m_MV2c20                            =new std::vector<float>();
+    m_MV2c100                           =new std::vector<float>();
+    m_DL1                               =new std::vector<float>();
+    m_DL1_pu                            =new std::vector<float>();
+    m_DL1_pc                            =new std::vector<float>();
+    m_DL1_pb                            =new std::vector<float>();
+    m_DL1mu                             =new std::vector<float>();
+    m_DL1mu_pu                          =new std::vector<float>();
+    m_DL1mu_pc                          =new std::vector<float>();
+    m_DL1mu_pb                          =new std::vector<float>();
+    m_DL1rnn                            =new std::vector<float>();
+    m_DL1rnn_pu                         =new std::vector<float>();
+    m_DL1rnn_pc                         =new std::vector<float>();
+    m_DL1rnn_pb                         =new std::vector<float>();
+    m_HadronConeExclTruthLabelID        =new std::vector<int>();
+    m_HadronConeExclExtendedTruthLabelID=new std::vector<int>();
 
     // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
@@ -629,6 +630,7 @@ JetContainer::~JetContainer()
     delete m_DL1rnn_pb;
 
     delete m_HadronConeExclTruthLabelID;
+    delete m_HadronConeExclExtendedTruthLabelID;
 
     // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
@@ -883,25 +885,26 @@ void JetContainer::setTree(TTree *tree)
 
   if(m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT)
     {
-      connectBranch<float>(tree,"MV2c00",               &m_MV2c00);
-      connectBranch<float>(tree,"MV2c10",               &m_MV2c10);
-      connectBranch<float>(tree,"MV2c10mu",             &m_MV2c10mu);
-      connectBranch<float>(tree,"MV2c10rnn",            &m_MV2c10rnn);
-      connectBranch<float>(tree,"MV2c20",               &m_MV2c20);
-      connectBranch<float>(tree,"MV2c100",              &m_MV2c100);
-      connectBranch<float>(tree,"DL1",                  &m_DL1      );
-      connectBranch<float>(tree,"DL1_pu",               &m_DL1_pu   );
-      connectBranch<float>(tree,"DL1_pc",               &m_DL1_pc   );
-      connectBranch<float>(tree,"DL1_pb",               &m_DL1_pb   );
-      connectBranch<float>(tree,"DL1mu",                &m_DL1mu    );
-      connectBranch<float>(tree,"DL1mu_pu",             &m_DL1mu_pu );
-      connectBranch<float>(tree,"DL1mu_pc",             &m_DL1mu_pc );
-      connectBranch<float>(tree,"DL1mu_pb",             &m_DL1mu_pb );
-      connectBranch<float>(tree,"DL1rnn",               &m_DL1rnn   );
-      connectBranch<float>(tree,"DL1rnn_pu",            &m_DL1rnn_pu);
-      connectBranch<float>(tree,"DL1rnn_pc",            &m_DL1rnn_pc);
-      connectBranch<float>(tree,"DL1rnn_pb",            &m_DL1rnn_pb);
-      connectBranch<int>  (tree,"HadronConeExclTruthLabelID",&m_HadronConeExclTruthLabelID);
+      connectBranch<float>(tree,"MV2c00"                            ,&m_MV2c00);
+      connectBranch<float>(tree,"MV2c10"                            ,&m_MV2c10);
+      connectBranch<float>(tree,"MV2c10mu"                          ,&m_MV2c10mu);
+      connectBranch<float>(tree,"MV2c10rnn"                         ,&m_MV2c10rnn);
+      connectBranch<float>(tree,"MV2c20"                            ,&m_MV2c20);
+      connectBranch<float>(tree,"MV2c100"                           ,&m_MV2c100);
+      connectBranch<float>(tree,"DL1"                               ,&m_DL1      );
+      connectBranch<float>(tree,"DL1_pu"                            ,&m_DL1_pu   );
+      connectBranch<float>(tree,"DL1_pc"                            ,&m_DL1_pc   );
+      connectBranch<float>(tree,"DL1_pb"                            ,&m_DL1_pb   );
+      connectBranch<float>(tree,"DL1mu"                             ,&m_DL1mu    );
+      connectBranch<float>(tree,"DL1mu_pu"                          ,&m_DL1mu_pu );
+      connectBranch<float>(tree,"DL1mu_pc"                          ,&m_DL1mu_pc );
+      connectBranch<float>(tree,"DL1mu_pb"                          ,&m_DL1mu_pb );
+      connectBranch<float>(tree,"DL1rnn"                            ,&m_DL1rnn   );
+      connectBranch<float>(tree,"DL1rnn_pu"                         ,&m_DL1rnn_pu);
+      connectBranch<float>(tree,"DL1rnn_pc"                         ,&m_DL1rnn_pc);
+      connectBranch<float>(tree,"DL1rnn_pb"                         ,&m_DL1rnn_pb);
+      connectBranch<int>  (tree,"HadronConeExclTruthLabelID"        ,&m_HadronConeExclTruthLabelID);
+      connectBranch<int>  (tree,"HadronConeExclExtendedTruthLabelID",&m_HadronConeExclExtendedTruthLabelID);
     }
 
   if(m_infoSwitch.m_flavorTagHLT)
@@ -1134,7 +1137,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_DL1rnn_pc) jet.DL1rnn_pc =m_DL1rnn_pc            ->at(idx);
       if(m_DL1rnn_pb) jet.DL1rnn_pb =m_DL1rnn_pb            ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
-      jet.HadronConeExclTruthLabelID=m_HadronConeExclTruthLabelID->at(idx);
+      if(m_HadronConeExclTruthLabelID)         jet.HadronConeExclTruthLabelID        =m_HadronConeExclTruthLabelID        ->at(idx);
+      if(m_HadronConeExclExtendedTruthLabelID) jet.HadronConeExclExtendedTruthLabelID=m_HadronConeExclExtendedTruthLabelID->at(idx);
       if(m_debug) std::cout << "leave flavorTag " << std::endl;
     }
 
@@ -1709,6 +1713,7 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"DL1rnn_pb", m_DL1rnn_pb);
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
+    setBranch<int  >(tree,"HadronConeExclExtendedTruthLabelID", m_HadronConeExclExtendedTruthLabelID);
 
     if( m_infoSwitch.m_jetFitterDetails){
 
@@ -2062,25 +2067,26 @@ void JetContainer::clear()
   // flavor tag
   if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT  ) {
 
-    m_MV2c00                    ->clear();
-    m_MV2c10                    ->clear();
-    m_MV2c10mu                  ->clear();
-    m_MV2c10rnn                 ->clear();
-    m_MV2c20                    ->clear();
-    m_MV2c100                   ->clear();
-    m_DL1                       ->clear();
-    m_DL1_pu                    ->clear();
-    m_DL1_pc                    ->clear();
-    m_DL1_pb                    ->clear();
-    m_DL1mu                     ->clear();
-    m_DL1mu_pu                  ->clear();
-    m_DL1mu_pc                  ->clear();
-    m_DL1mu_pb                  ->clear();
-    m_DL1rnn                    ->clear();
-    m_DL1rnn_pu                 ->clear();
-    m_DL1rnn_pc                 ->clear();
-    m_DL1rnn_pb                 ->clear();
-    m_HadronConeExclTruthLabelID->clear();
+    m_MV2c00                            ->clear();
+    m_MV2c10                            ->clear();
+    m_MV2c10mu                          ->clear();
+    m_MV2c10rnn                         ->clear();
+    m_MV2c20                            ->clear();
+    m_MV2c100                           ->clear();
+    m_DL1                               ->clear();
+    m_DL1_pu                            ->clear();
+    m_DL1_pc                            ->clear();
+    m_DL1_pb                            ->clear();
+    m_DL1mu                             ->clear();
+    m_DL1mu_pu                          ->clear();
+    m_DL1mu_pc                          ->clear();
+    m_DL1mu_pb                          ->clear();
+    m_DL1rnn                            ->clear();
+    m_DL1rnn_pu                         ->clear();
+    m_DL1rnn_pc                         ->clear();
+    m_DL1rnn_pb                         ->clear();
+    m_HadronConeExclTruthLabelID        ->clear();
+    m_HadronConeExclExtendedTruthLabelID->clear();
 
 
     if( m_infoSwitch.m_jetFitterDetails){
@@ -2843,6 +2849,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     // flavor groups truth definition
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
     safeFill<int, int, xAOD::Jet>(jet, hadConeExclTruthLabel, m_HadronConeExclTruthLabelID, -999);
+
+    static SG::AuxElement::ConstAccessor<int> hadConeExclExtendedTruthLabel("HadronConeExclExtendedTruthLabelID");
+    safeFill<int, int, xAOD::Jet>(jet, hadConeExclExtendedTruthLabel, m_HadronConeExclExtendedTruthLabelID, -999);
 
     if(m_infoSwitch.m_jetFitterDetails ) {
 
