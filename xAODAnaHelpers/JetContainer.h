@@ -190,6 +190,7 @@ namespace xAH {
       std::vector<float> *m_DL1rnn_pc;
       std::vector<float> *m_DL1rnn_pb;
       std::vector<int>   *m_HadronConeExclTruthLabelID;
+      std::vector<int>   *m_HadronConeExclExtendedTruthLabelID;
 
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
