@@ -961,7 +961,7 @@ void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, const std::string fa
 
 
 void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets, const std::string truthFatJetName ) {
-  this->ClearTruthFatJets();
+  this->ClearTruthFatJets(truthFatJetName);
 
   for( auto truth_fatjet_itr : *truthTruthFatJets ) {
 

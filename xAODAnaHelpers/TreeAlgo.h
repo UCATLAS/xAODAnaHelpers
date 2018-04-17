@@ -47,6 +47,7 @@ public:
   std::string m_fatJetContainerName = "";
   std::string m_fatJetBranchName = ""; // default is to use container name
   std::string m_truthFatJetContainerName = "";
+  std::string m_truthFatJetBranchName = "truth_fatjet";
   std::string m_tauContainerName = "";
   std::string m_METContainerName = "";
   std::string m_METReferenceContainerName = "";
