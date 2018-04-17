@@ -359,6 +359,7 @@ namespace HelperFunctions {
       msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TEvent" << endmsg;
       return true;
     } else {
+      msg << MSG::DEBUG << funcName << "\t\tNot found at all" << endmsg;
       return false;
     }
     return false;
