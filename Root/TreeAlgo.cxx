@@ -464,6 +464,7 @@ EL::StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for(unsigned int ll=0;ll<m_fatJetContainers.size();++ll){
         if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll) + " was not retrieved. Skipping all remaining fat jet collections");
           reject = true;
           break;
         }
@@ -473,7 +474,10 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillFatJets( inFatJets, m_fatJetBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a fat jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_truthFatJetContainerName.empty() ) {
