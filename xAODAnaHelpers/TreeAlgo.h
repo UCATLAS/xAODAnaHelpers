@@ -45,6 +45,7 @@ public:
   std::string m_trigJetContainerName = "";
   std::string m_trigJetBranchName = "trigJet";
   std::string m_fatJetContainerName = "";
+  std::string m_fatJetBranchName = ""; // default is to use container name
   std::string m_truthFatJetContainerName = "";
   std::string m_tauContainerName = "";
   std::string m_METContainerName = "";
@@ -73,14 +74,17 @@ public:
 protected:
   std::vector<std::string> m_jetDetails; //!
   std::vector<std::string> m_trigJetDetails; //!
+  std::vector<std::string> m_fatJetDetails; //!
 
   std::vector<std::string> m_jetContainers; //!
   std::vector<std::string> m_truthJetContainers; //!
   std::vector<std::string> m_trigJetContainers; //!
+  std::vector<std::string> m_fatJetContainers; //!
 
   std::vector<std::string> m_jetBranches; //!
   std::vector<std::string> m_truthJetBranches; //!
   std::vector<std::string> m_trigJetBranches; //!
+  std::vector<std::string> m_fatJetBranches; //!
 
   std::vector<std::string> m_clusterDetails; //!
   std::vector<std::string> m_clusterContainers; //!
