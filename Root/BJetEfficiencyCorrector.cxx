@@ -325,7 +325,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
   SG::AuxElement::Decorator< char > dec_isBTag( m_decor );
   SG::AuxElement::Decorator< std::vector<float> > dec_sfBTag( m_decorSF );
-
   //
   // run the btagging decision and get scale factors
   //
@@ -379,7 +378,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
     ANA_MSG_DEBUG( "Jet is out of validity range");
   }
-
 	// Add it to vector
 	sfVec.push_back(SF);
 
