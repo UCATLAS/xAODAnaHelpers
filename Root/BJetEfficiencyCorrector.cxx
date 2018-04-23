@@ -389,7 +389,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
     ANA_MSG_DEBUG( "Jet is out of validity range");
   }
-
 	// Add it to vector
 	sfVec.push_back(SF);
 
