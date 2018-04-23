@@ -326,8 +326,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
   SG::AuxElement::Decorator< char > dec_isBTag( m_decor );
   SG::AuxElement::Decorator< std::vector<float> > dec_sfBTag( m_decorSF );
-
   SG::AuxElement::Decorator< char > dec_isBTagOR( m_decor+"OR" );
+
   //
   // run the btagging decision and get scale factors
   //
