@@ -293,7 +293,7 @@ namespace HelperClasses{
       std::string input(m_configStr);
       // erase everything before the interesting string
       input.erase( 0, input.find("trackJetName") );
-      input.erase( input.find(" "), std::string::npos );
+      if(input.find(" ")!=std::string::npos) input.erase( input.find(" "), std::string::npos );
       input.erase( 0, 13 );
 
       std::stringstream ss(input);
