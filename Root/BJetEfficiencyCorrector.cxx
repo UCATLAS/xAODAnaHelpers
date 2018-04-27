@@ -1,4 +1,3 @@
-
 /**************************************************
  *
  * Interface to CP BJet Efficiency Correction Tool.
@@ -54,6 +53,7 @@ EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 
   return EL::StatusCode::SUCCESS;
 }
+
 
 
 
