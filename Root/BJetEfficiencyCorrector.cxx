@@ -295,6 +295,19 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     sfVec(*jet_itr) = std::vector<float>();
   }
 
+  //
+  // Add decorator for btag decision
+  //
+  for( auto jet_itr : *(inJets)) {
+    SG::AuxElement::Decorator< char > isBTag( m_decor );
+    if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
+      isBTag( *jet_itr ) = 1;
+    }
+    else {
+      isBTag( *jet_itr ) = 0;
+    }
+  }
+
   std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
 
   //
@@ -339,17 +352,10 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     for( auto jet_itr : *(inJets)) {
 
       //
-      // Add decorator for decision
+      // retrieve btag decision
       //
       SG::AuxElement::Decorator< char > isBTag( m_decor );
-      if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
-        isBTag( *jet_itr ) = 1;
-        tagged = true;
-      }
-      else {
-        isBTag( *jet_itr ) = 0;
-        tagged = false;
-      }
+      tagged = isBTag(*jet_itr);
 
       float SF(1.0);
       // if only decorator with decision because OP is not calibrated, set SF to 1
