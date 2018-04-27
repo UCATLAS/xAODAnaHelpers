@@ -406,7 +406,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     dec_sfBTag( *jet_itr ) = sfVec;
   }
 
-
   //
   // Store list of available systematics
   //
