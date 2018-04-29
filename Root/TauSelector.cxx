@@ -664,10 +664,6 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   static SG::AuxElement::Decorator< int > isJetBDTSigMedium("isJetBDTSigMedium");
   static SG::AuxElement::Decorator< int > isJetBDTSigTight("isJetBDTSigTight");
 
-  static SG::AuxElement::Decorator< int > isJetBDTBkgLoose("isJetBDTBkgLoose");
-  static SG::AuxElement::Decorator< int > isJetBDTBkgMedium("isJetBDTBkgMedium");
-  static SG::AuxElement::Decorator< int > isJetBDTBkgTight("isJetBDTBkgTight");
-
   static SG::AuxElement::Decorator< float > JetBDTScore("JetBDTScore");
   static SG::AuxElement::Decorator< float > JetBDTScoreSigTrans("JetBDTScoreSigTrans");
   
@@ -678,10 +674,6 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   isJetBDTSigMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigMedium));
   isJetBDTSigTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigTight));
 
-  isJetBDTBkgLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTBkgLoose));
-  isJetBDTBkgMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTBkgMedium));
-  isJetBDTBkgTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTBkgTight));
-  
   JetBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScore));
   JetBDTScoreSigTrans( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScoreSigTrans));
 

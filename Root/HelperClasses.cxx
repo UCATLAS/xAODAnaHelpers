@@ -465,10 +465,28 @@ namespace HelperClasses{
   }
 
   void TauInfoSwitch::initialize(){
-    m_trigger       = has_exact("trigger");
-    m_JetID         = has_exact("JetID");
-    m_trackparams   = has_exact("trackparams");
-    m_trackhitcont  = has_exact("trackhitcont");
+    m_trigger        = has_exact("trigger");
+    m_JetID          = has_exact("JetID");
+    m_effSF          = has_exact("effSF");
+    m_trackparams    = has_exact("trackparams");
+    m_trackhitcont   = has_exact("trackhitcont");
+
+    // working points combinations for trigger corrections
+    std::string token;
+    std::string taueff_keyword = "TAUEFF_";
+    std::string trig_keyword  = "TRIG_";
+
+    std::istringstream ss(m_configStr);
+    while ( std::getline(ss, token, ' ') ) {
+      auto taueff_substr = token.find(taueff_keyword);
+      auto trig_substr = token.find(trig_keyword);
+      if( taueff_substr != std::string::npos ){
+        m_tauEffWPs.push_back(token.substr(7));
+      } else if(trig_substr != std::string::npos){
+        m_trigWPs.push_back(token.substr(5));
+      }
+    }
+
   }
 
   void METInfoSwitch::initialize(){

@@ -18,26 +18,14 @@ namespace xAH {
     int               ntrk;
     float             charge;
     
-    // identification
-    std::map< std::string, int > isIdentified;
-
-    std::map< std::string, std::vector< float > > TauIDEff_SF;
-    std::map< std::string, std::vector< float > > EleOLRElectronEff_SF;
-    std::map< std::string, std::vector< float > > TrigEff_SF;
-
-    std::vector< float >  RecoEff_SF;
-    std::vector< float >  EleOLRHadTauEff_SF;
+    std::map< std::string, std::vector< float > > TauEff_SF;
+    std::map< std::string, std::vector< float > > TauTrigEff_SF;
     
     // might need to delete these
     int               isJetBDTSigVeryLoose;
     int               isJetBDTSigLoose;
     int               isJetBDTSigMedium;
     int               isJetBDTSigTight;
-    
-    int               isJetBDTBkgLoose;
-    int               isJetBDTBkgMedium;
-    int               isJetBDTBkgTight;
-   
 
     float             JetBDTScore;
     float             JetBDTScoreSigTrans;

@@ -37,30 +37,20 @@ public:
   std::string   m_inContainerName = "";
 
   // Reco efficiency SF
-  // deafault is empty. To "activate" the corrections
-  // pass the string "Reco"
   std::string   m_WorkingPointReco = "";
-
-  // Iso efficiency SF
-  std::string   m_WorkingPointTauID = "Medium";
-
-  // Ele OR efficiency
-  // deafault is empty for EleOLRHadTau. To "activate" 
-  // the corrections pass the string "EleOLRHadTau"
-  std::string   m_WorkingPointEleOLRHadTau = "";
   
-  // deafault is empty for EleOLRElectron. To "activate" 
-  // the corrections pass the string corresponding to
-  // the working point
+  // EleOLR efficiency SF if the the reco tau is a true tau
+  std::string   m_WorkingPointEleOLRHadTau = "";
+
+  // EleOLR efficiency SF if the the reco tau is a true electron
   std::string   m_WorkingPointEleOLRElectron = "";
+  
+  // TauID efficiency SF
+  std::string   m_WorkingPointTauID = "";
 
   // working point for tauID used in 
   // combination with the trigger
-  std::string   m_WorkingPointTrigger = "";
   std::string   m_TriggerName = "";
-
-  /// @brief list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed
-  //std::string   m_MuTrigLegs = "HLT_mu26_imedium";
 
   // systematics
   /**
@@ -73,40 +63,24 @@ public:
   /// @brief Write systematics names to metadata
   bool          m_writeSystToMetadata = false;
 
-  float         m_systValReco = 0.0;
-  float         m_systValTauID = 0.0;
-  float         m_systValEleOLRHadTau = 0.0;
-  float         m_systValEleOLRElectron = 0.0;
-  float         m_systValTrigger = 0.0;
+  float         m_systVal = 0.0;
   
-  std::string   m_systNameReco = "";
-  std::string   m_systNameTauID = "";
-  std::string   m_systNameEleOLRHadTau = "";
-  std::string   m_systNameEleOLRElectron = "";
-  std::string   m_systNameTrigger = "";
+  std::string   m_systName = "";
   
-  std::string   m_outputSystNamesReco = "TauEfficiencyCorrector_RecoSyst";
-  std::string   m_outputSystNamesTauID = "TauEfficiencyCorrector_TauIDSyst";
-  std::string   m_outputSystNamesEleOLRHadTau = "TauEfficiencyCorrector_EleOLRHadTauSyst";
-  std::string   m_outputSystNamesEleOLRElectron = "TauEfficiencyCorrector_EleOLRElectronSyst";
-  std::string   m_outputSystNamesTrigger = "TauEfficiencyCorrector_TrigSyst";
+  std::string   m_outputSystNames = "TauEfficiencyCorrector_Syst";
 
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  std::vector<CP::SystematicSet> m_systListReco;  //!
-  std::vector<CP::SystematicSet> m_systListTauID; //!
-  std::vector<CP::SystematicSet> m_systListEleOLRHadTau; //!
-  std::vector<CP::SystematicSet> m_systListEleOLRElectron; //!
-  std::vector<CP::SystematicSet> m_systListTrigger;  //!
-
+  std::vector<CP::SystematicSet> m_systList;  //!
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",     this}; //! 
+  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",           this}; //! 
+  // the selection tool is needed for baseline configuration
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool"}; //!
   
-
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
