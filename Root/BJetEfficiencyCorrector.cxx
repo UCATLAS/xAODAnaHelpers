@@ -212,30 +212,12 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
       }
     }
 
-    // Get a list of recommended systematics
-    CP::SystematicSet recSysts = m_BJetEffSFTool_handle->recommendedSystematics();
-    // Convert into a simple list -- nominal is included already here!!
-    m_systList = CP::make_systematics_vector(recSysts);
-    if( !m_systName.empty() ) {
-      for ( const auto& syst_it : m_systList ){
-        ANA_MSG_DEBUG(" available recommended systematic: " << syst_it.name());
-      }
-    } else { // remove all but the nominal
-      std::vector<CP::SystematicSet>::iterator syst_it = m_systList.begin();
-      while( syst_it != m_systList.end() ) {
-        if( syst_it->name().empty() ) { syst_it++; }
-        else { syst_it = m_systList.erase(syst_it); }
-      }
-    }
-
-    if( m_systName.empty() ){
+    if( m_systName.empty() )
       ANA_MSG_INFO(" Running w/ nominal configuration!");
-    }
 
-  } else {
-    // need the nominal to get the decisions
-    CP::SystematicSet recSysts; // empty
-    m_systList = CP::make_systematics_vector(recSysts); // comes back with 1 entry for nominal
+    // Get a list of recommended systematics
+    CP::SystematicSet recSyst = m_BJetEffSFTool_handle->recommendedSystematics();
+    m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
   }
 
   if( m_runAllSyst ){
@@ -321,22 +303,11 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   for(const auto& syst_it : m_systList){
 
     //
-    //  If not nominal jets, dont calculate systematics
+    //  If not nominal input jet collection, dont calculate systematics
     //
     if ( !doNominal ) {
-      if( syst_it.name() != "" ) {
+      if( syst_it.name() != "" ) { // if not nominal btag decision
         ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
-        continue;
-      }
-    }
-
-    //
-    // if not running systematics, only compulte weight for specified systematic (m_systName)
-    //    default is nominal (i.e., "")
-    //
-    if ( !m_runAllSyst ) {
-      if( syst_it.name() != m_systName ) {
-        ANA_MSG_DEBUG("Not running systematics only apply nominal SF");
         continue;
       }
     }
