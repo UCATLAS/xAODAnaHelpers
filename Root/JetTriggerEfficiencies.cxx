@@ -35,6 +35,28 @@
 #include "TObjArray.h"
 #include "TObjString.h"
 
+
+// for reading in output of shell commands
+#include <cstdio>
+// #include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <array>
+
+std::string exec(const char* cmd) {
+  std::array<char, 128> buffer;
+  std::string result;
+  std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+  if (!pipe) throw std::runtime_error("popen() failed!");
+  while (!feof(pipe.get())) {
+    if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
+      result += buffer.data();
+  }
+  return result;
+}
+
+
+
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetTriggerEfficiencies)
 
@@ -73,6 +95,89 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
 
   ANA_MSG_DEBUG( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
+
+  // if last character of name is a alphanumeric add a / so that
+  // in the output file, a TDirectory is created with the histograms inside
+  if( isalnum( m_mainHistName.back() ) && !ispunct( m_mainHistName.back() ) ) {
+    m_mainHistName += "/";
+  }
+
+  // decode the turnon string
+  // each turnon is of the form "probeTrigger/refTrigger" and they are split by "|"
+
+  if(m_turnonString == "") {
+    std::cout << "no turnons requested" << std::endl;
+    return EL::StatusCode::FAILURE;
+  }
+
+  // strip out whitespace
+  m_turnonString.erase(remove(m_turnonString.begin(), m_turnonString.end(), ' '), m_turnonString.end());
+
+  // split by | into turnons
+  std::vector<std::string> turnons = splitString(m_turnonString, "|");
+
+  for (auto turnon : turnons) {
+    // split by "/" to get the probe and reference
+    std::vector<std::string> turnonParts = splitString(turnon, "/");
+
+    // check there are exactly two entries
+    if (turnonParts.size() != 2) {
+      std::cout << "turnon string part " << turnon << " was not specified correctly - it should have a single '/' separating a reference and probe" << std::endl;
+      for (auto part : turnonParts) {
+        std::cout << "  " << part << std::endl;
+      }
+      return EL::StatusCode::FAILURE;
+    }
+
+    // fill the probe and reference vectors
+    m_probeTriggers.push_back(turnonParts[0]);
+    m_referenceTriggers.push_back(turnonParts[1]);
+  }
+
+  // print the findings
+  std::cout << "I am going to make " << m_probeTriggers.size() << " turnons:" << std::endl;
+  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+    std::cout << "  " << m_probeTriggers[i_turnon] << " / " << m_referenceTriggers[i_turnon] << std::endl;
+  }
+
+  // get the variables of interest
+  // get the info from the mega script?
+
+
+  ///////
+  std::string jetTriggerInfoPath = "/afs/cern.ch/user/c/ckaldero/trigger/useful-scripts/menu";
+  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+    std::cout << "getting info for " << m_probeTriggers[i_turnon] << std::endl;
+    std::string command = "python " + jetTriggerInfoPath + "/get_trigger_info.py --trigger " + m_probeTriggers[i_turnon] + " --verbosity 0";
+    std::string result = exec(command.c_str());
+    std::cout << result << std::endl;
+
+    JetTriggerInfo thisJetTriggerInfo;
+    thisJetTriggerInfo.fillInfo(result);
+    m_probeTriggerInfo.push_back(thisJetTriggerInfo);
+    // fillJetTriggerInfo(m_probeTriggerInfo[i_turnon], result);
+
+  }
+
+
+  // create the histograms
+  // to start with, let's just do jet pt
+  std::string var = "pt[0]";
+  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+    
+    std::cout << "making hists " << i_turnon << std::endl;
+    TH1F* tempHist = book(m_mainHistName, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_num_"+var, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_num_"+var,  1000, 0, 1000, wk());
+    std::cout << "made, now pushing back" << std::endl;
+    // std::cout << m_numeratorHists << std::endl;
+    std::cout << m_numeratorHists.size() << std::endl;
+    m_numeratorHists.push_back( tempHist );
+
+    std::cout << "did one" << i_turnon << std::endl;
+    m_denominatorHists.push_back( book(m_mainHistName, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_denom_"+var, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_denom_"+var,  1000, 0, 1000, wk()) );
+
+  }
+
+  std::cout << "histInitialise is done!" << std::endl;
 
   return EL::StatusCode::SUCCESS;
 }
@@ -166,35 +271,62 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     mcEvtWeight = mcEvtWeightAcc( *eventInfo );
   }
 
+  // get offline jet collection on which to do event selection and whih is going to be source of the quantity the efficiency is plotted as a function of
   const xAOD::JetContainer* inJets(nullptr);
-
-  // this will be the collection processed - no matter what!!
   ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
-  std::string refChainName = "HLT_j260";
-  std::cout << refChainName << " info:" << std::endl;
-  bool passedRefTrigger = m_trigDecTool_handle->isPassed(refChainName);
-  const unsigned int refBits = m_trigDecTool_handle->isPassedBits(refChainName);
-  bool L1_isPassedBeforePrescale = refBits & TrigDefs::L1_isPassedBeforePrescale;
-  bool L1_isPassedAfterPrescale  = refBits & TrigDefs::L1_isPassedAfterPrescale;
-  bool L1_isPassedAfterVeto      = refBits & TrigDefs::L1_isPassedAfterVeto;
 
-  bool isPrescaledOut = refBits & TrigDefs::EF_prescaled;
-  std::cout << "  passed? " << passedRefTrigger << std::endl;
+  // iterate over turnons
+  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
 
-  std::cout << "  L1 passed before prescale? " << L1_isPassedBeforePrescale << std::endl;
-  std::cout << "  L1 passed after prescale? " << L1_isPassedAfterPrescale << std::endl;
-  std::cout << "  L1 passed after veto? " << L1_isPassedAfterVeto << std::endl;
+    // get the reference trigger info
+    std::string refChainName = m_referenceTriggers[i_turnon];
+    bool passedRefTrigger = m_trigDecTool_handle->isPassed(refChainName);
+    // no point doing anything else if the reference trigger failed
+    if(!passedRefTrigger)
+      continue;
 
-  std::cout << "  HLT prescaled out? " << isPrescaledOut << std::endl;
+    // get the probe trigger info
+    std::string probeChainName = m_probeTriggers[i_turnon];
+    bool passedProbeTrigger = m_trigDecTool_handle->isPassed(refChainName);
+    const unsigned int probeBits = m_trigDecTool_handle->isPassedBits(probeChainName);
+    bool L1_isPassedBeforePrescale = probeBits & TrigDefs::L1_isPassedBeforePrescale;
+    bool L1_isPassedAfterPrescale  = probeBits & TrigDefs::L1_isPassedAfterPrescale;
+    bool L1_isPassedAfterVeto      = probeBits & TrigDefs::L1_isPassedAfterVeto;
+    bool isPrescaledOut = probeBits & TrigDefs::EF_prescaled;
+    if(m_emulate) {
+      // need to define separate function? Or tool?
+      // read in stuff from the megaScript-filled class
+      continue;
+    }
 
-  // pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName, true );
+    // only fill ref trigger if the L1 of the HLT passed and it was not prescaled out
+    if(!L1_isPassedAfterVeto || isPrescaledOut)
+      continue;
 
-  // look what we have in TStore
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+
+    // make a class that is populated from the megaScript in initialise
+    // to do
+    int mult = 1;
 
 
-  ANA_MSG_DEBUG( "Leave jet trigger efficiencies... ");
+    // apply event selection
+    if(inJets->size() < mult)
+      continue;
+
+
+    // get the relevant variable
+    float var_to_fill = inJets->at(0)->pt() / 1000.;
+
+
+    // fill hists
+    m_denominatorHists.at(i_turnon)->Fill(var_to_fill);
+    if(passedProbeTrigger)
+      m_numeratorHists.at(i_turnon)->Fill(var_to_fill);
+
+  }
+
+  ANA_MSG_DEBUG( "Leaving jet trigger efficiencies... ");
 
   return EL::StatusCode::SUCCESS;
 
@@ -252,3 +384,35 @@ EL::StatusCode JetTriggerEfficiencies :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
+
+// the following borrowed and modified from xAH::HistogramManager because I am bad at c++ and have no idea how to use it otherwise
+
+TH1F* JetTriggerEfficiencies::book(std::string name, std::string title, std::string xlabel,
+                                   int xbins, double xlow, double xhigh, EL::Worker* wk)
+{
+  TH1F* tmp = new TH1F( (name + title).c_str(), (title+";"+xlabel).c_str(), xbins, xlow, xhigh);
+  tmp->Sumw2();
+  wk->addOutput(tmp);
+  return tmp;
+}
+
+
+
+std::vector<std::string> splitString(std::string parentString, std::string sep) {
+  std::size_t start = 0, end = 0;
+  std::vector<std::string> splitVec;
+  while ((end = parentString.find(sep, start)) != std::string::npos) {
+    splitVec.push_back(parentString.substr(start, end - start));
+    start = end + 1;
+  }
+  splitVec.push_back(parentString.substr(start));
+  return splitVec;
+}
+
+// void fillJetTriggerInfo(JetTriggerInfo jetTriggerInfo, std::string infoString) {
+  // std::vector<std::string> splitInfoString = splitString(infoString, "\n");
+  // for(auto part : splitInfoString) {
+    // std::cout << "===" << part << "===" << std::endl;
+  // }
+
+// }
