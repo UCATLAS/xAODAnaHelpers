@@ -134,47 +134,97 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     m_referenceTriggers.push_back(turnonParts[1]);
   }
 
+  // set selections
+  m_selectionString.erase(remove(m_selectionString.begin(), m_selectionString.end(), ' '), m_selectionString.end());
+  // if only one, set the same for every trigger
+  if (m_selectionString.find("|") == std::string::npos) {
+    for(auto turnon : turnons) {
+      m_selections.push_back(m_selectionString);
+    }
+  }
+  else {
+    m_selections = splitString(m_selectionString, "|");
+  }
+  if(m_selections.size() != m_probeTriggers.size()) {
+    ANA_MSG_ERROR( "m_selections is a different length to m_probeTriggers! Examine m_selectionString and m_turnonString");
+    return EL::StatusCode::FAILURE;
+  }
+
+
+  // set variables to plot on x axes of turnons
+  m_variableString.erase(remove(m_variableString.begin(), m_variableString.end(), ' '), m_variableString.end());
+  // if only one, set the same for every trigger
+  if (m_variableString.find("|") == std::string::npos) {
+    for(auto turnon : turnons) {
+      m_variables.push_back(m_variableString);
+    }
+  }
+  else {
+    m_variables = splitString(m_variableString, "|");
+  }
+  if(m_variables.size() != m_probeTriggers.size()) {
+    ANA_MSG_ERROR( "m_variables is a different length to m_probeTriggers! Examine m_variableString and m_turnonString");
+    return EL::StatusCode::FAILURE;
+  }
+  
+
   // print the findings
   std::cout << "I am going to make " << m_probeTriggers.size() << " turnons:" << std::endl;
   for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
-    std::cout << "  " << m_probeTriggers[i_turnon] << " / " << m_referenceTriggers[i_turnon] << std::endl;
+    std::cout << "  " << m_probeTriggers[i_turnon] << " / " << m_referenceTriggers[i_turnon] << " with selection " << m_selections[i_turnon] << " and variable " << m_variables[i_turnon] << std::endl;
   }
 
-  // get the variables of interest
-  // get the info from the mega script?
 
-
-  ///////
   std::string jetTriggerInfoPath = "/afs/cern.ch/user/c/ckaldero/trigger/useful-scripts/menu";
   for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
     std::cout << "getting info for " << m_probeTriggers[i_turnon] << std::endl;
+
+    // get trigger info from python script
     std::string command = "python " + jetTriggerInfoPath + "/get_trigger_info.py --trigger " + m_probeTriggers[i_turnon] + " --verbosity 0";
     std::string result = exec(command.c_str());
     std::cout << result << std::endl;
 
+    // parse the python string output into the JetTriggerInfo class
     JetTriggerInfo thisJetTriggerInfo;
-    thisJetTriggerInfo.fillInfo(result);
-    m_probeTriggerInfo.push_back(thisJetTriggerInfo);
-    // fillJetTriggerInfo(m_probeTriggerInfo[i_turnon], result);
+    thisJetTriggerInfo.fillInfo(result, m_selections[i_turnon]);
 
+    // set the index in m_variables[i_turnon], adjust multiplicity reuirement if necessary
+    if (m_variables[i_turnon].find("[") == std::string::npos) {
+      int mult = thisJetTriggerInfo.getMultiplicity();
+      if(mult==-1) {
+        ANA_MSG_ERROR( "failed to get multiplicity for " + m_probeTriggers[i_turnon] );
+        return EL::StatusCode::FAILURE;
+      }
+      m_variables_var.push_back(m_variables[i_turnon]);
+      m_variables_index.push_back(mult-1);
+      m_variables[i_turnon] = m_variables[i_turnon] + "[" + std::to_string(mult-1) + "]";
+    }
+    else {
+      int mult = std::stoi( splitString( splitString(m_variables[i_turnon],"[")[1], "]")[0] ) + 1;
+      m_variables_var.push_back(splitString(m_variables[i_turnon],"[")[0]);
+      m_variables_index.push_back(mult-1);
+      bool succeeded = thisJetTriggerInfo.setMultiplicity(mult);
+      if(!succeeded) {
+        ANA_MSG_ERROR( "failed to set multiplicity for " + m_probeTriggers[i_turnon] );
+        return EL::StatusCode::FAILURE;
+      }
+    }
+
+    std::cout << "variable set to " << m_variables[i_turnon] << std::endl;
+
+    m_probeTriggerInfo.push_back(thisJetTriggerInfo);
   }
 
 
+  
   // create the histograms
-  // to start with, let's just do jet pt
-  std::string var = "pt[0]";
+
   for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
-    
-    std::cout << "making hists " << i_turnon << std::endl;
-    TH1F* tempHist = book(m_mainHistName, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_num_"+var, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_num_"+var,  1000, 0, 1000, wk());
-    std::cout << "made, now pushing back" << std::endl;
-    // std::cout << m_numeratorHists << std::endl;
-    std::cout << m_numeratorHists.size() << std::endl;
-    m_numeratorHists.push_back( tempHist );
+    std::string histname = m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_"+m_variables[i_turnon];
+    std::string xaxistitle = m_inContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString;
 
-    std::cout << "did one" << i_turnon << std::endl;
-    m_denominatorHists.push_back( book(m_mainHistName, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_denom_"+var, m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_denom_"+var,  1000, 0, 1000, wk()) );
-
+    m_numeratorHists.push_back( book(m_mainHistName, histname + "_num", xaxistitle, 1000, 0, 1000, wk()) );
+    m_denominatorHists.push_back( book(m_mainHistName, histname + "_denom", xaxistitle, 1000, 0, 1000, wk()) );
   }
 
   std::cout << "histInitialise is done!" << std::endl;
@@ -288,7 +338,7 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
     // get the probe trigger info
     std::string probeChainName = m_probeTriggers[i_turnon];
-    bool passedProbeTrigger = m_trigDecTool_handle->isPassed(refChainName);
+    bool passedProbeTrigger = m_trigDecTool_handle->isPassed(probeChainName);
     const unsigned int probeBits = m_trigDecTool_handle->isPassedBits(probeChainName);
     bool L1_isPassedBeforePrescale = probeBits & TrigDefs::L1_isPassedBeforePrescale;
     bool L1_isPassedAfterPrescale  = probeBits & TrigDefs::L1_isPassedAfterPrescale;
@@ -300,29 +350,73 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       continue;
     }
 
-    // only fill ref trigger if the L1 of the HLT passed and it was not prescaled out
+    // only fill denominator hist if the L1 of the HLT passed and it was not prescaled out
     if(!L1_isPassedAfterVeto || isPrescaledOut)
       continue;
 
-
-    // make a class that is populated from the megaScript in initialise
-    // to do
-    int mult = 1;
-
-
-    // apply event selection
+    // apply selections
+    int mult = m_probeTriggerInfo[i_turnon].getMultiplicity();
     if(inJets->size() < mult)
       continue;
 
 
+    std::vector<int> good_indices;
+    for(int i=0; i<inJets->size(); i++){
+      good_indices.push_back(i);
+    }
+
+    for(auto selection : m_probeTriggerInfo[i_turnon].offlineSelection) {
+      // if already failed, don't waste time calculating things
+      if(good_indices.size() < mult)
+        break;
+
+      std::vector<int> passed_indices;
+
+      // ignore multiplicity
+      if(selection.first == "multiplicity") {
+        continue;
+      }
+
+      // eta
+      else if(selection.first == "eta") {
+        for(auto index : good_indices) {
+          if( fabs(inJets->at(index)->eta()) > selection.second.first && fabs(inJets->at(index)->eta()) < selection.second.second )
+            passed_indices.push_back(index);
+        }
+      }
+
+      // else complain
+      else {
+        ANA_MSG_ERROR("do not recognise selection " + selection.first);
+        return EL::StatusCode::FAILURE;
+      }
+
+      // carry forward only the good ones
+      good_indices = passed_indices;
+    }
+    
+    if(good_indices.size() < mult)
+      continue;
+
+
     // get the relevant variable
-    float var_to_fill = inJets->at(0)->pt() / 1000.;
+    int index = m_variables_index[i_turnon];
+    std::string variable = m_variables_var[i_turnon];
+    float var_to_fill = -1;
+    if(variable=="pt") {
+      var_to_fill = inJets->at(good_indices[index])->pt() / 1000.;
+    }
+    else {
+      ANA_MSG_ERROR("don't know how to interpret the variable "+ variable);
+      return EL::StatusCode::FAILURE;
+    }
 
 
     // fill hists
     m_denominatorHists.at(i_turnon)->Fill(var_to_fill);
-    if(passedProbeTrigger)
+    if(passedProbeTrigger){
       m_numeratorHists.at(i_turnon)->Fill(var_to_fill);
+    }
 
   }
 
@@ -403,16 +497,29 @@ std::vector<std::string> splitString(std::string parentString, std::string sep) 
   std::vector<std::string> splitVec;
   while ((end = parentString.find(sep, start)) != std::string::npos) {
     splitVec.push_back(parentString.substr(start, end - start));
-    start = end + 1;
+    start = end + sep.size();
   }
   splitVec.push_back(parentString.substr(start));
   return splitVec;
 }
 
-// void fillJetTriggerInfo(JetTriggerInfo jetTriggerInfo, std::string infoString) {
-  // std::vector<std::string> splitInfoString = splitString(infoString, "\n");
-  // for(auto part : splitInfoString) {
-    // std::cout << "===" << part << "===" << std::endl;
-  // }
 
-// }
+// decodes a python list
+std::vector<std::string> splitListString(std::string parentString) {
+  // step 1: strip whitespace
+  std::string tempString = regex_replace(parentString, std::regex("^ +| +$|( ) +"), "$1");
+
+  // step 2: remove [ and ] (first and last, given whitespace stripping)
+  tempString = tempString.substr(1,tempString.size()-2);
+  
+  // step 3: split into vector of strings
+  std::vector<std::string> splitVec = splitString(tempString, ",");
+
+  // step 4: remove quotation marks and whitespace
+  for(unsigned int i = 0; i<splitVec.size(); i++) {
+    splitVec[i] = regex_replace(splitVec[i], std::regex("^ +| +$|( ) +"), "$1");
+    splitVec[i] = splitVec[i].substr(1,splitVec[i].size()-2);
+  }
+
+  return splitVec;
+}
