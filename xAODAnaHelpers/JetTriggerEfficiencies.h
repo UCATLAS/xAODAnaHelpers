@@ -29,7 +29,9 @@
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
 #include <string.h>
+#include <regex>
 std::vector<std::string> splitString(std::string parentString, std::string sep);
+std::vector<std::string> splitListString(std::string parentString);
 
 class RulebookEntry {
  public:
@@ -54,63 +56,156 @@ class JetTriggerInfo {
   std::vector< std::pair<std::string, std::pair<float, float> > > HLTselection;
   std::vector< std::pair<std::string, std::pair<float, float> > > L1selection;
   std::vector< std::pair<std::string, std::pair<float, float> > > offlineSelectionRecommended;
-  int multiplicity;
+  std::vector< std::pair<std::string, std::pair<float, float> > > offlineSelection;
+  std::string offlineSelectionString;
 
-  void fillInfo(std::string infoString) {
+  // pull out relevant part of infoString
+  std::string find_and_strip(std::string infoString, std::string key) {
     std::vector<std::string> splitInfoString = splitString(infoString, "\n");
-    /* later: build protection for the case it's not in the menu */
+    std::string resultString = "";
+    for(auto part : splitInfoString) {
+      // check whether part starts with key
+      if( strncmp(part.c_str(), key.c_str(), key.size()) == 0 ) {
+        resultString = part.substr(key.size(), part.size());
+        break;
+      }
+    }
+
+    // strip whitespace
+    return std::regex_replace(resultString, std::regex("^ +| +$|( ) +"), "$1");
+  }
+  
+  // translate the python dictionary like selection string into the c++ equivalent
+  std::vector< std::pair<std::string, std::pair<float, float> > > decodeSelection(std::string selectionString) {
+    std::vector< std::pair<std::string, std::pair<float, float> > > selection;
+    
+    // {'multiplicity': 1, 'eta': [0, 2.8000000000000003]}
+
+    // trim { and }
+    selectionString = selectionString.substr(1, selectionString.size()-2);
+
+    // remove all whitespace
+    selectionString.erase(remove(selectionString.begin(), selectionString.end(), ' '), selectionString.end());
+
+    // split on ", '" since keys are strings and selections are floats or ints
+    std::vector<std::string> vecString = splitString(selectionString, ",'");
+
+    // now have:
+    //  "multiplicity': 1"
+    //  "eta': [0.0, 3.1]"
+    //  "ET': 100"
+    for (auto part : vecString ) {
+      // get key
+      std::string key = splitString(part, "':")[0];
+      // remove stray ' characters
+      key.erase(remove(key.begin(), key.end(), '\''), key.end());
+
+
+      // get value part
+      std::string val_str = splitString(part, "':")[1];
+      std::pair<float, float> vals_pair;
+      // if it's a single number
+      if (val_str.find(",") == std::string::npos) {
+        float val_float = std::stof(val_str);
+        vals_pair.first = val_float;
+        vals_pair.second = val_float;
+      }
+      // if it's a range
+      else {
+        // remove [ and ]
+        val_str = val_str.substr(1,val_str.size()-2);
+        vals_pair.first = std::stof(splitString(val_str, ",")[0]);
+        vals_pair.second = std::stof(splitString(val_str, ",")[1]);
+      }
+
+      std::pair<std::string, std::pair<float, float> > thisSelection;
+      thisSelection.first = key;
+      thisSelection.second = vals_pair;
+      selection.push_back(thisSelection);
+    }
+    
+    return selection;
+  }
+
+
+  void fillInfo(std::string infoString, std::string offlineSelectionStr) {
+    
+    std::vector<std::string> splitInfoString = splitString(infoString, "\n");
     if(splitInfoString.size() == 0) {
       std::cout << "something went wrong" << std::endl;
       return;
     }
+
+    // get chain name. Later: build protection for the case it's not in the menu
     chainName = splitInfoString.at(0);
-    std::cout << "sadly I haven't implemented this yet" << std::endl;
-    /* std::string offlSelStr = "   offline selection recommended"; */
-    /* for(auto part : splitInfoString) { */
-      /* std::cout << "===" << part << "===" << std::endl; */
-      /* if( strncmp(part.c_str(), offlSelStr.c_str(), offlSelStr.size()) == 0 ) { */
-        //    offline selection recommended  {'multiplicity': 1, 'eta': [0, 2.8000000000000003]}
-        /* std::cout << "  yahoo! " << std::endl; */
-        /* std::string selectionString = splitString(part, "{").at(1); //.pop_back(); */
-        /* selectionString = splitString(selectionString, "}").at(0); */
-        // 'multiplicity': 1, 'eta': [0, 2.8000000000000003]
-        /* std::cout << selectionString << std::endl; */
-        /* std::vector<std::string> selectionStringsVec = splitString(selectionString, ","); */
-        // this isn't going to work because vec has comma
-        // make / steal a better python list parser
-        // can't do this now :-(
-        /* for(auto selStr : selectionStringsVec) { */
-          /* if( strncmp(selStr.c_str(), std::string("'multiplicity': ").c_str(), std::string("'multiplicity': ").size()) == 0 ) { */
-            /* multiplicity = std::atoi(splitString(selStr, ":").at(1)); */
-          /* } */
-          /* if( strncmp(selStr.c_str(), std::string("'eta': ").c_str(), std::string("'eta': ").size()) == 0 ) { */
-            /* float etaLow = std::atoi( splitString(selStr, ":").at(1) ); */
-          /* } */
-          
-        /* } */
-      /* } */
-      /* else { */
-        /* std::cout << "  booo" << std::endl; */
-      /* } */
+
+    // easy ones - just strings
+    L1                          = find_and_strip(infoString, "   L1");
+    HLTjetContainer             = find_and_strip(infoString, "   HLT jet container");
+    HLTjetContainerPreselection = find_and_strip(infoString, "   HLT jet container preselection");
+    topoclusterFormation        = find_and_strip(infoString, "   topocluster formation");
+    clusters                    = find_and_strip(infoString, "   clusters");
+    clustering                  = find_and_strip(infoString, "   clustering");
+    comment                     = find_and_strip(infoString, "   comment");
+
+    // get calibration steps: python list of strings -> vector of strings
+    calibrationSteps = splitListString( find_and_strip(infoString, "   calibration steps") );
+
+    // get L1, HLT, offline selections: dictionary -> vector of map<variable, map<low,high> >
+    L1selection      = decodeSelection( find_and_strip(infoString, "   L1 selection") );
+    HLTselection     = decodeSelection( find_and_strip(infoString, "   HLT selection") );
+    offlineSelectionRecommended = decodeSelection( find_and_strip(infoString, "   offline selection recommended") );
+
+    // set offline selection to use - "auto" takes recommended, otherwise decode as above
+    if(offlineSelectionStr == "auto") {
+      offlineSelection = offlineSelectionRecommended;
+      offlineSelectionString = find_and_strip(infoString, "   offline selection recommended");
+    }
+    else {
+      offlineSelection = decodeSelection( offlineSelectionStr );
+      offlineSelectionString = offlineSelectionStr;
+    }
 
 
-    /* } */
-    /* later: build protection for the case it's not in the menu */
-    /* HLT_j225_gsc420_boffperf_split */
-      /* signature                  Jet */
-      /* L1                         L1_J100 */
-      /* HLT jet container preselection  HLT_xAOD__JetContainer_a4tcemsubjesISFS */
-      /* HLT jet container          HLT_xAOD__JetContainer_GSCJet */
-      /* topocluster formation      full scan */
-      /* clusters                   em topoclusters */
-      /* clustering                 radius 0.4 anti-kt */
-      /* calibration steps          ['pileup subtraction', 'Jet Energy Scale correction', 'eta and JES in-situ corrections', 'calorimeter parts of GSC', 'ID track parts of GSC'] */
-      /* comment                    Standard gsc central jet triggers (primaries) */
-      /* rulebook entry             {1000: {'comment': 'Primary 1.7e34, Express ATR-17782', 'PS': 1.0, 'ESRate': 0.2}, 24001: {'comment': 'Disabled', 'PS': -1.0}} */
-      /* HLT selection              {'multiplicity': 1, 'ET_preselection': 225, 'eta': [0.0, 3.2], 'ET': 420} */
-      /* L1 selection               {'multiplicity': 1, 'eta': [0.0, 3.1], 'ET': 100} */
-    
-    
+    // get rulebook
+    // do this later...
+    /*
+    class RulebookEntry {
+    public:
+      float lumiPoint;
+      float rate;
+      std::string comment;
+      };*/
+    /* rulebook entry             {1000: {'comment': 'Primary 1.7e34, Express ATR-17782', 'PS': 1.0, 'ESRate': 0.2}, 24001: {'comment': 'Disabled', 'PS': -1.0}} */
+        
+  }
+
+  // look for 'multiplicity' in offlineSelection
+  int getMultiplicity() {
+    int mult = -1;
+    for (auto selection : offlineSelection) {
+      if(selection.first == "multiplicity") {
+        mult = int(selection.second.first);
+        break;
+      }
+    }
+    return mult;
+  }
+
+  bool setMultiplicity(int mult) {
+    bool found = false;
+    for (auto selection : offlineSelection) {
+      if(selection.first == "multiplicity") {
+        found = true;
+        // only increase multiplicity, don't decrease
+        int origMult = int(selection.second.first);
+        if (mult > origMult) {
+          selection.second.first = mult;
+          selection.second.second = mult;
+        }
+      }
+    }
+    return found;
   }
 
 };
@@ -136,6 +231,8 @@ public:
   
   /// @brief string defining turnons to make
   std::string m_turnonString = "";
+  std::string m_selectionString = "auto";
+  std::string m_variableString = "pt";
 
   /// @brief emulate the turnon?
   bool m_emulate = false;
@@ -162,6 +259,12 @@ private:
   /// @brief vectors reference and probe trigger names, decoded from m_turnonString
   std::vector<std::string> m_referenceTriggers; //!
   std::vector<std::string> m_probeTriggers; //!
+
+  /// @brief vectors of selection and variable to plot, one for each turnon
+  std::vector<std::string> m_selections; //!
+  std::vector<std::string> m_variables; //!
+  std::vector<std::string> m_variables_var; //!
+  std::vector<int> m_variables_index; //!
 
   /// @brief vector of histograms - one for each turnon - that will be numerators (ie pass ref and probe) and denominators (ie pass ref) in the efficiencies
   std::vector<TH1F*> m_numeratorHists; //!
