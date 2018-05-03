@@ -196,6 +196,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if(systName.empty()) treeName = "nominal";
 
     ANA_MSG_INFO( "Making tree " << m_name << "/" << treeName );
+    std::cout << "Making tree " << m_name << "/" << treeName << std::endl;
     TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
     if ( !outTree ) {
       ANA_MSG_ERROR("Failed to instantiate output tree!");
@@ -207,6 +208,11 @@ EL::StatusCode TreeAlgo :: execute ()
 
     // tell the tree to go into the file
     outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
+    
+    // Ensure tree flushes memory after a reasonable amount of time
+    // Otherwise jobs with a lot of systematics use too much memory.
+    outTree->SetAutoFlush(-500000); // replace 5 with 10?
+    
     // choose if want to add tree to same directory as ouput histograms
     if ( m_outHistDir ) {
       if(m_trees.size() > 1) ANA_MSG_WARNING( "You're running systematics! You may find issues in writing all of the output TTrees to the output histogram file... Set `m_outHistDir = false` if you run into issues!");
