@@ -93,7 +93,8 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  ANA_MSG_DEBUG( "Calling histInitialize");
+  ANA_MSG_INFO( "Calling histInitialize");
+  std::cout << "this is " << m_name << std::endl;
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   // if last character of name is a alphanumeric add a / so that
@@ -177,16 +178,17 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
 
   std::string jetTriggerInfoPath = "/afs/cern.ch/user/c/ckaldero/trigger/useful-scripts/menu";
   for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
-    std::cout << "getting info for " << m_probeTriggers[i_turnon] << std::endl;
+    std::cout << "getting info for " << m_probeTriggers[i_turnon] << " (" << m_referenceTriggers[i_turnon] << ")" << std::endl;
 
     // get trigger info from python script
-    std::string command = "python " + jetTriggerInfoPath + "/get_trigger_info.py --trigger " + m_probeTriggers[i_turnon] + " --verbosity 0";
+    std::string command = "python " + jetTriggerInfoPath + "/get_trigger_info.py --trigger " + m_probeTriggers[i_turnon] + " --verbosity 0 --menuSet "+m_jetTriggerMenuSet;
     std::string result = exec(command.c_str());
     std::cout << result << std::endl;
 
     // parse the python string output into the JetTriggerInfo class
     JetTriggerInfo thisJetTriggerInfo;
     thisJetTriggerInfo.fillInfo(result, m_selections[i_turnon]);
+
 
     // set the index in m_variables[i_turnon], adjust multiplicity reuirement if necessary
     if (m_variables[i_turnon].find("[") == std::string::npos) {
@@ -385,6 +387,22 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
         }
       }
 
+      // m
+      else if(selection.first == "m") {
+        for(auto index : good_indices) {
+          if( inJets->at(index)->m()/1000. > selection.second.first)
+            passed_indices.push_back(index);
+        }
+      }
+
+      // pt
+      else if(selection.first == "pt") {
+        for(auto index : good_indices) {
+          if( inJets->at(index)->pt()/1000. > selection.second.first)
+            passed_indices.push_back(index);
+        }
+      }
+
       // else complain
       else {
         ANA_MSG_ERROR("do not recognise selection " + selection.first);
@@ -405,6 +423,9 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     float var_to_fill = -1;
     if(variable=="pt") {
       var_to_fill = inJets->at(good_indices[index])->pt() / 1000.;
+    }
+    else if(variable=="m") {
+      var_to_fill = inJets->at(good_indices[index])->m() / 1000.;
     }
     else {
       ANA_MSG_ERROR("don't know how to interpret the variable "+ variable);
