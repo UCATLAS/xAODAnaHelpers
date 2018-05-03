@@ -196,7 +196,6 @@ EL::StatusCode TreeAlgo :: execute ()
     if(systName.empty()) treeName = "nominal";
 
     ANA_MSG_INFO( "Making tree " << m_name << "/" << treeName );
-    std::cout << "Making tree " << m_name << "/" << treeName << std::endl;
     TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
     if ( !outTree ) {
       ANA_MSG_ERROR("Failed to instantiate output tree!");
