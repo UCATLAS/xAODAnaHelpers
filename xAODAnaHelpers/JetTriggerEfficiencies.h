@@ -79,7 +79,9 @@ class JetTriggerInfo {
   std::vector< std::pair<std::string, std::pair<float, float> > > decodeSelection(std::string selectionString) {
     std::vector< std::pair<std::string, std::pair<float, float> > > selection;
     
-    // {'multiplicity': 1, 'eta': [0, 2.8000000000000003]}
+    // if empty (eg RD0_FILLED) then return empty selection vector
+    if(selectionString == "{}")
+      return selection;
 
     // trim { and }
     selectionString = selectionString.substr(1, selectionString.size()-2);
@@ -160,6 +162,36 @@ class JetTriggerInfo {
     if(offlineSelectionStr == "auto") {
       offlineSelection = offlineSelectionRecommended;
       offlineSelectionString = find_and_strip(infoString, "   offline selection recommended");
+    }
+    else if (offlineSelectionStr.find("auto+") != std::string::npos) {
+      // auto part
+      std::vector< std::pair<std::string, std::pair<float, float> > > autoSelection = offlineSelectionRecommended;
+      std::string autoSelectionString = find_and_strip(infoString, "   offline selection recommended");
+
+      // extra part
+      std::string extraPart = splitString(offlineSelectionStr,"auto+")[1];
+      std::vector< std::pair<std::string, std::pair<float, float> > > extraSelection = decodeSelection(extraPart);
+
+      // merge
+      offlineSelection = extraSelection;
+      // get keys of extraSelection
+      std::vector<std::string> extraSelectionKeys;
+      for(auto selection : extraSelection) {
+        extraSelectionKeys.push_back(selection.first);
+      }
+      // add bits of autoSelection that aren't in extraSelection
+      for(auto selection : autoSelection) {
+        // don't overwrite anything in extraSelection
+        if (std::find(extraSelectionKeys.begin(), extraSelectionKeys.end(), selection.first) != extraSelectionKeys.end()) {
+          continue;
+        }
+        else {
+          offlineSelection.push_back(selection);
+        }
+      }
+      // lazy definition of string, because faff
+      offlineSelectionString = autoSelectionString + " + " + extraPart;
+      std::cout << "new string " << offlineSelectionString << std::endl;
     }
     else {
       offlineSelection = decodeSelection( offlineSelectionStr );
@@ -243,6 +275,10 @@ public:
 
   /// @ brief path where jet trigger info script lives
   std::string m_jetTriggerInfoPath = "";
+
+  /// @ brief menu set to use
+  std::string m_jetTriggerMenuSet = "2018";
+
 
 private:
   // variables that don't get filled at submission time should be
