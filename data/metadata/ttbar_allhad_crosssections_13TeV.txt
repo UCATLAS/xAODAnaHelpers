@@ -9,4 +9,6 @@ id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
 303725   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad_mtt_4   696.24  1.   0.00043823  1.
 303726   PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_allhad_mtt_5   696.24  1.   0.00025914  1.
 
-
+410470  PhPy8EG_A14_ttbar_hdamp258p75_nonallhad 7.297700e+02    1.      5.437900e-01    1.
+410471  PhPy8EG_A14_ttbar_hdamp258p75_allhad    7.297800e+02    1.      4.562800e-01    1.
+410472  PhPy8EG_A14_ttbar_hdamp258p75_dil       7.297700e+02    1.      1.054600e-01    1.
