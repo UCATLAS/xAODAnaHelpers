@@ -72,6 +72,10 @@ HelpTreeBase::~HelpTreeBase() {
     for (auto photon: m_photons)
       delete photon.second;
 
+    //cl
+    for (auto cluster: m_clusters)
+      delete cluster.second;
+
     //fatjet
     for (auto fatjet: m_fatjets)
       delete fatjet.second;
@@ -549,6 +553,54 @@ void HelpTreeBase::ClearPhotons(const std::string photonName) {
 
 /*********************
  *
+ * CLUSTERS
+ *
+ *********************/
+
+void HelpTreeBase::AddClusters(const std::string detailStr, const std::string clusterName) {
+
+  if(m_debug)  Info("AddClusters()", "Adding cluster variables: %s", detailStr.c_str());
+
+  m_clusters[clusterName] = new xAH::ClusterContainer(clusterName, detailStr, m_units, m_isMC);
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+
+  thisCluster->setBranches(m_tree);
+  this->AddClustersUser(clusterName);
+}
+
+
+void HelpTreeBase::FillClusters( const xAOD::CaloClusterContainer* clusters, const std::string clusterName ) {
+
+  this->ClearClusters(clusterName);
+
+  for ( auto cl_itr : *clusters ) {
+    this->FillCluster(cl_itr, clusterName);
+  }
+}
+
+void HelpTreeBase::FillCluster( const xAOD::CaloCluster* cluster, const std::string clusterName ) {
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+
+  thisCluster->FillCluster(cluster);
+
+  this->FillClustersUser(cluster, clusterName);
+
+  return;
+}
+
+
+void HelpTreeBase::ClearClusters(const std::string clusterName) {
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+  thisCluster->clear();
+
+  this->ClearClustersUser(clusterName);
+}
+
+/*********************
+ *
  *   L1 JETS
  *
  ********************/
@@ -942,15 +994,15 @@ void HelpTreeBase::ClearTaus(const std::string tauName) {
  *
  *     MET
  *
- ********************/ 
+ ********************/
 void HelpTreeBase::AddMET( const std::string detailStr, const std::string metName ) {
 
   if(m_debug) Info("AddMET()", "Adding MET variables: %s", detailStr.c_str());
 
   m_met[metName] = new xAH::MetContainer(metName, detailStr, m_units);
-  
+
   xAH::MetContainer* thisMet = m_met[metName];
-  
+
   thisMet->setBranches(m_tree);
   this->AddMETUser(metName);
 }
