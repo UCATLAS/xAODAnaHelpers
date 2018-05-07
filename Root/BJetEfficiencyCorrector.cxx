@@ -287,136 +287,109 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 {
   ANA_MSG_DEBUG("Applying BJet Cuts and Efficiency Correction (when applicable...) ");
 
+  SG::AuxElement::Decorator< char > dec_isBTag( m_decor );
+  SG::AuxElement::Decorator< std::vector<float> > dec_sfBTag( m_decorSF );
+
   //
-  // Create Scale Factor aux for all jets
+  // run the btagging decision and get scale factors
   //
-  SG::AuxElement::Decorator< std::vector<float> > sfVec( m_decorSF );
+  unsigned int idx(0);
   for( auto jet_itr : *(inJets)) {
-    sfVec(*jet_itr) = std::vector<float>();
+
+    // Add decorator for decision
+    bool tagged;
+    if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
+      dec_isBTag( *jet_itr ) = 1;
+      tagged = true;
+    }
+    else {
+      dec_isBTag( *jet_itr ) = 0;
+      tagged = false;
+    }
+
+    // Create Scale Factor aux for all jets
+    std::vector<float> sfVec;
+
+    if(m_getScaleFactors) { // loop over available systematics
+      for(const auto& syst_it : m_systList) {
+	//  If not nominal input jet collection, dont calculate systematics
+	if ( !doNominal ) {
+	  if( syst_it.name() != "" ) { // if not nominal btag decision
+	    ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
+	    continue;
+	  }
+	}
+
+	// configure tool with syst variation
+	if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+	  ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
+	  return EL::StatusCode::FAILURE;
+	}
+	ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
+
+	// get the scale factor
+	float SF(1.0);
+	// if only decorator with decision because OP is not calibrated, set SF to 1
+	if ( fabs(jet_itr->eta()) < 2.5 ) {
+
+	  CP::CorrectionCode BJetEffCode;
+	  // if passes cut take the efficiency scale factor
+	  // if failed cut take the inefficiency scale factor
+	  if( tagged ) {
+	    BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+	  } else {
+	    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+	  }
+	  if (BJetEffCode == CP::CorrectionCode::Error){
+	    ANA_MSG_WARNING( "Error in getEfficiencyScaleFactor");
+	    SF = -2;
+	    //return EL::StatusCode::FAILURE;
+	  }
+	  // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
+	  //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
+	} // eta < 2.5
+
+	// Add it to vector
+	sfVec.push_back(SF);
+
+	ANA_MSG_DEBUG( "===>>>");
+	ANA_MSG_DEBUG( " ");
+	ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
+	ANA_MSG_DEBUG( " ");
+	ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
+	ANA_MSG_DEBUG( " ");
+	ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+	ANA_MSG_DEBUG( " ");
+	ANA_MSG_DEBUG( "BTag SF: " << SF);
+	ANA_MSG_DEBUG( "--------------------------------------");
+      }
+    }
+    else { // no scale factors available, set to 1.
+      sfVec.push_back(1.);
+    }
+
+    // save scale factors
+    idx++;
+    dec_sfBTag( *jet_itr ) = sfVec;
   }
 
-  std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
-
   //
-  // loop over available systematics
-  //
-  for(const auto& syst_it : m_systList){
-
-    //
-    //  If not nominal input jet collection, dont calculate systematics
-    //
-    if ( !doNominal ) {
-      if( syst_it.name() != "" ) { // if not nominal btag decision
-        ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
-        continue;
-      }
-    }
-
-    //
-    // Create the name of the weight
-    //   template:  SYSNAME
-    //
-    ANA_MSG_DEBUG("systematic variation name is: " << syst_it.name());
-    sysVariationNames->push_back(syst_it.name());
-
-    //
-    // configure tool with syst variation
-    //
-    if (m_getScaleFactors ) {
-
-      if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
-        ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
-        return EL::StatusCode::FAILURE;
-      }
-      ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
-    }
-
-    bool tagged(false);
-    //
-    // and now apply data-driven efficiency and efficiency SF!
-    //
-    unsigned int idx(0);
-    for( auto jet_itr : *(inJets)) {
-
-      //
-      // Add decorator for decision
-      //
-      SG::AuxElement::Decorator< char > isBTag( m_decor );
-      if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
-        isBTag( *jet_itr ) = 1;
-        tagged = true;
-      }
-      else {
-        isBTag( *jet_itr ) = 0;
-        tagged = false;
-      }
-
-      float SF(1.0);
-      // if only decorator with decision because OP is not calibrated, set SF to 1
-      if ( m_getScaleFactors && fabs(jet_itr->eta()) < 2.5 ) {
-
-        CP::CorrectionCode BJetEffCode;
-        // if passes cut take the efficiency scale factor
-        // if failed cut take the inefficiency scale factor
-        if( tagged ) {
-          BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-        } else {
-          BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-        }
-        if (BJetEffCode == CP::CorrectionCode::Error){
-          ANA_MSG_WARNING( "Error in getEfficiencyScaleFactor");
-          SF = -2;
-          //return EL::StatusCode::FAILURE;
-        }
-        // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
-        //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
-      } //m_getScaleFactors && eta < 2.5
-
-      // Add it to vector
-      sfVec(*jet_itr).push_back(SF);
-
-      /*
-      if( m_getScaleFactors){
-        //
-        // directly obtain reco efficiency
-        //
-        float eff(0.0);
-        if( (fabs(jet_itr->eta()) < 2.5) &&
-            m_BJetEffSFTool_handle->getEfficiency( *jet_itr, eff ) != CP::CorrectionCode::Ok){
-          ANA_MSG_ERROR( "Problem in getRecoEfficiency");
-          //return EL::StatusCode::FAILURE;
-        }
-        ANA_MSG_INFO( "\t reco efficiency = %g", eff );
-      }
-      */
-
-      ANA_MSG_DEBUG( "===>>>");
-      ANA_MSG_DEBUG( " ");
-      ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
-      ANA_MSG_DEBUG( " ");
-      ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
-      ANA_MSG_DEBUG( " ");
-      ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-      ANA_MSG_DEBUG( " ");
-      ANA_MSG_DEBUG( "BTag SF:");
-      ANA_MSG_DEBUG( "\t from tool = " << SF << ", from object = " << sfVec(*jet_itr).back());
-      ANA_MSG_DEBUG( "--------------------------------------");
-      ++idx;
-
-    } // close jet loop
-
-  } // close loop on systematics
-
-  //
-  // add list of sys names to TStore
+  // Store list of available systematics
   //
   if(doNominal){
+    std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
+    if(m_getScaleFactors) {
+      for(const auto& syst_it : m_systList)
+	sysVariationNames->push_back(syst_it.name());
+    }
+    else {
+      sysVariationNames->push_back("");
+    }
+
     ANA_CHECK( m_store->record( sysVariationNames, m_outputSystName));
 
     ANA_MSG_DEBUG("Size is " << sysVariationNames->size());
     for(auto sysName : *sysVariationNames) ANA_MSG_DEBUG(sysName);
-  } else {
-    delete sysVariationNames;
   }
 
   return EL::StatusCode::SUCCESS;
