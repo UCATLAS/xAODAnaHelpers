@@ -230,6 +230,9 @@ namespace HelperClasses{
     m_trigger       = has_exact("trigger");
   }
 
+  void ClusterInfoSwitch::initialize(){
+  }
+
   void JetInfoSwitch::initialize(){
     std::string tmpConfigStr; // temporary config string used to extract multiple values
 

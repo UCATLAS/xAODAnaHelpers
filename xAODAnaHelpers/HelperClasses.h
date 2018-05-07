@@ -386,6 +386,14 @@ namespace HelperClasses {
     virtual void initialize();
   };
 
+  class ClusterInfoSwitch : public IParticleInfoSwitch {
+  public:
+    ClusterInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
+    virtual ~ClusterInfoSwitch() {}
+  protected:
+    virtual void initialize();
+  };
+
   /**
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Jet Information.
