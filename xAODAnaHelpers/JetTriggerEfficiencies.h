@@ -33,11 +33,30 @@
 std::vector<std::string> splitString(std::string parentString, std::string sep);
 std::vector<std::string> splitListString(std::string parentString);
 
+
 class RulebookEntry {
  public:
   float lumiPoint;
   float rate;
   std::string comment;
+};
+
+
+class TriggerDecision {
+ public:
+  bool passedTrigger = false;
+  bool L1_isPassedBeforePrescale = false;
+  bool L1_isPassedAfterPrescale = false;
+  bool L1_isPassedAfterVeto = false;
+  bool HLT_isPrescaledOut = true;
+
+  void fillFromBits(unsigned int triggerBits) {
+    L1_isPassedBeforePrescale = triggerBits & TrigDefs::L1_isPassedBeforePrescale;
+    L1_isPassedAfterPrescale  = triggerBits & TrigDefs::L1_isPassedAfterPrescale;
+    L1_isPassedAfterVeto      = triggerBits & TrigDefs::L1_isPassedAfterVeto;
+    HLT_isPrescaledOut        = triggerBits & TrigDefs::EF_prescaled;
+  }
+
 };
 
 
@@ -142,31 +161,31 @@ class JetTriggerInfo {
     chainName = splitInfoString.at(0);
 
     // easy ones - just strings
-    L1                          = find_and_strip(infoString, "   L1");
-    HLTjetContainer             = find_and_strip(infoString, "   HLT jet container");
-    HLTjetContainerPreselection = find_and_strip(infoString, "   HLT jet container preselection");
-    topoclusterFormation        = find_and_strip(infoString, "   topocluster formation");
-    clusters                    = find_and_strip(infoString, "   clusters");
-    clustering                  = find_and_strip(infoString, "   clustering");
-    comment                     = find_and_strip(infoString, "   comment");
+    L1                          = find_and_strip(infoString, "   L1:");
+    HLTjetContainer             = find_and_strip(infoString, "   HLT jet container:");
+    HLTjetContainerPreselection = find_and_strip(infoString, "   HLT jet container preselection:");
+    topoclusterFormation        = find_and_strip(infoString, "   topocluster formation:");
+    clusters                    = find_and_strip(infoString, "   clusters:");
+    clustering                  = find_and_strip(infoString, "   clustering:");
+    comment                     = find_and_strip(infoString, "   comment:");
 
     // get calibration steps: python list of strings -> vector of strings
-    calibrationSteps = splitListString( find_and_strip(infoString, "   calibration steps") );
+    calibrationSteps = splitListString( find_and_strip(infoString, "   calibration steps:") );
 
     // get L1, HLT, offline selections: dictionary -> vector of map<variable, map<low,high> >
-    L1selection      = decodeSelection( find_and_strip(infoString, "   L1 selection") );
-    HLTselection     = decodeSelection( find_and_strip(infoString, "   HLT selection") );
-    offlineSelectionRecommended = decodeSelection( find_and_strip(infoString, "   offline selection recommended") );
+    L1selection      = decodeSelection( find_and_strip(infoString, "   L1 selection:") );
+    HLTselection     = decodeSelection( find_and_strip(infoString, "   HLT selection:") );
+    offlineSelectionRecommended = decodeSelection( find_and_strip(infoString, "   offline selection recommended:") );
 
     // set offline selection to use - "auto" takes recommended, otherwise decode as above
     if(offlineSelectionStr == "auto") {
       offlineSelection = offlineSelectionRecommended;
-      offlineSelectionString = find_and_strip(infoString, "   offline selection recommended");
+      offlineSelectionString = find_and_strip(infoString, "   offline selection recommended:");
     }
     else if (offlineSelectionStr.find("auto+") != std::string::npos) {
       // auto part
       std::vector< std::pair<std::string, std::pair<float, float> > > autoSelection = offlineSelectionRecommended;
-      std::string autoSelectionString = find_and_strip(infoString, "   offline selection recommended");
+      std::string autoSelectionString = find_and_strip(infoString, "   offline selection recommended:");
 
       // extra part
       std::string extraPart = splitString(offlineSelectionStr,"auto+")[1];
@@ -242,7 +261,6 @@ class JetTriggerInfo {
 
 };
 
-void fillJetTriggerInfo(JetTriggerInfo jetTriggerInfo, std::string infoString);
 
 
 class JetTriggerEfficiencies : public xAH::Algorithm
@@ -256,10 +274,8 @@ public:
   std::string m_trigDecTool_name{"TDT:JetTriggerEfficiencies"};
   
   // configuration variables
-  /// @brief input container name
-  std::string m_inContainerName = "";
-  // also need the HLT containers if going to emulate
-  // for L1, HLT_presel and HLT
+  /// @brief container to use as offline reference (ie efficiencies are made as a function of this)
+  std::string m_offlineContainerName = "";
   
   /// @brief string defining turnons to make
   std::string m_turnonString = "";
@@ -267,14 +283,15 @@ public:
   std::string m_variableString = "pt";
 
   /// @brief emulate the turnon?
+  bool m_TDT = true;
   bool m_emulate = false;
 
   // modified from HistogramManager
   /// @brief generically the main name assigned to all histograms
   std::string m_mainHistName = "effHists";
 
-  /// @ brief path where jet trigger info script lives
-  std::string m_jetTriggerInfoPath = "";
+  /// @ brief path where jet trigger info script lives - needs to be part of this code so grid knows about it
+  std::string m_jetTriggerInfoPath = "xAODAnaHelpers/menu";
 
   /// @ brief menu set to use
   std::string m_jetTriggerMenuSet = "2018";
@@ -303,7 +320,8 @@ private:
   std::vector<int> m_variables_index; //!
 
   /// @brief vector of histograms - one for each turnon - that will be numerators (ie pass ref and probe) and denominators (ie pass ref) in the efficiencies
-  std::vector<TH1F*> m_numeratorHists; //!
+  std::vector<TH1F*> m_numeratorHistsTDT; //!
+  std::vector<TH1F*> m_numeratorHistsEmulated; //!
   std::vector<TH1F*> m_denominatorHists; //!
 
   std::vector<JetTriggerInfo> m_referenceTriggerInfo; //!
@@ -334,9 +352,15 @@ public:
   // these are the functions not inherited from Algorithm
   /* virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName, bool isNominal ); */
 
+
   // added functions not from Algorithm
   // why does this need to be virtual?
   /* virtual int PassCuts( const xAOD::Jet* jet ); */
+
+  virtual EL::StatusCode emulateTriggerDecision(JetTriggerInfo &triggerInfo, TriggerDecision &triggerDecision);
+  virtual bool applySelections(std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel=false);
+  virtual std::vector<int> applySelection(std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, std::vector<int> good_indices, bool isHLTpresel);
+
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
@@ -345,6 +369,8 @@ public:
   
   
 };
+
+
 
 
 #endif

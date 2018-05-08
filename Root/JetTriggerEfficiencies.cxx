@@ -171,17 +171,17 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
 
   // print the findings
   std::cout << "I am going to make " << m_probeTriggers.size() << " turnons:" << std::endl;
-  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+  for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
     std::cout << "  " << m_probeTriggers[i_turnon] << " / " << m_referenceTriggers[i_turnon] << " with selection " << m_selections[i_turnon] << " and variable " << m_variables[i_turnon] << std::endl;
   }
 
 
-  std::string jetTriggerInfoPath = "/afs/cern.ch/user/c/ckaldero/trigger/useful-scripts/menu";
-  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+  for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
     std::cout << "getting info for " << m_probeTriggers[i_turnon] << " (" << m_referenceTriggers[i_turnon] << ")" << std::endl;
 
     // get trigger info from python script
-    std::string command = "python " + jetTriggerInfoPath + "/get_trigger_info.py --trigger " + m_probeTriggers[i_turnon] + " --verbosity 0 --menuSet "+m_jetTriggerMenuSet;
+    std::string fullJetTriggerInfoPath = PathResolverFindCalibDirectory(m_jetTriggerInfoPath);
+    std::string command = "python " + fullJetTriggerInfoPath + "/get_trigger_info.py --trigger " + m_probeTriggers[i_turnon] + " --verbosity 0 --menuSet "+m_jetTriggerMenuSet;
     std::string result = exec(command.c_str());
     std::cout << result << std::endl;
 
@@ -221,11 +221,14 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
   
   // create the histograms
 
-  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+  for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
     std::string histname = m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_"+m_variables[i_turnon];
-    std::string xaxistitle = m_inContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString;
+    std::string xaxistitle = m_offlineContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString;
 
-    m_numeratorHists.push_back( book(m_mainHistName, histname + "_num", xaxistitle, 1000, 0, 1000, wk()) );
+    if(m_TDT)
+      m_numeratorHistsTDT.push_back( book(m_mainHistName, histname + "_numTDT", xaxistitle, 1000, 0, 1000, wk()) );
+    if(m_emulate)
+      m_numeratorHistsEmulated.push_back( book(m_mainHistName, histname + "_numEmulated", xaxistitle, 1000, 0, 1000, wk()) );
     m_denominatorHists.push_back( book(m_mainHistName, histname + "_denom", xaxistitle, 1000, 0, 1000, wk()) );
   }
 
@@ -278,7 +281,7 @@ EL::StatusCode JetTriggerEfficiencies :: initialize ()
   m_store = wk()->xaodStore();
 
   
-  if ( m_inContainerName.empty() ) {
+  if ( m_offlineContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
@@ -324,12 +327,12 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   }
 
   // get offline jet collection on which to do event selection and whih is going to be source of the quantity the efficiency is plotted as a function of
-  const xAOD::JetContainer* inJets(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
+  const xAOD::JetContainer* offlineJets(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(offlineJets, m_offlineContainerName, m_event, m_store, msg()) );
 
 
   // iterate over turnons
-  for ( int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+  for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
 
     // get the reference trigger info
     std::string refChainName = m_referenceTriggers[i_turnon];
@@ -339,82 +342,44 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       continue;
 
     // get the probe trigger info
-    std::string probeChainName = m_probeTriggers[i_turnon];
-    bool passedProbeTrigger = m_trigDecTool_handle->isPassed(probeChainName);
-    const unsigned int probeBits = m_trigDecTool_handle->isPassedBits(probeChainName);
-    bool L1_isPassedBeforePrescale = probeBits & TrigDefs::L1_isPassedBeforePrescale;
-    bool L1_isPassedAfterPrescale  = probeBits & TrigDefs::L1_isPassedAfterPrescale;
-    bool L1_isPassedAfterVeto      = probeBits & TrigDefs::L1_isPassedAfterVeto;
-    bool isPrescaledOut = probeBits & TrigDefs::EF_prescaled;
+    TriggerDecision probeDecision;
+    if(m_TDT) {
+      std::string probeChainName = m_probeTriggers[i_turnon];
+      probeDecision.passedTrigger = m_trigDecTool_handle->isPassed(probeChainName);
+      const unsigned int probeBits = m_trigDecTool_handle->isPassedBits(probeChainName);
+      probeDecision.fillFromBits(probeBits);
+    }
+
+    // emulate trigger
+    TriggerDecision probeDecisionEmulated;
     if(m_emulate) {
-      // need to define separate function? Or tool?
-      // read in stuff from the megaScript-filled class
-      continue;
+      this->emulateTriggerDecision(m_probeTriggerInfo[i_turnon], probeDecisionEmulated);
     }
-
-    // only fill denominator hist if the L1 of the HLT passed and it was not prescaled out
-    if(!L1_isPassedAfterVeto || isPrescaledOut)
-      continue;
-
-    // apply selections
-    int mult = m_probeTriggerInfo[i_turnon].getMultiplicity();
-    if(inJets->size() < mult)
-      continue;
-
-
-    std::vector<int> good_indices;
-    for(int i=0; i<inJets->size(); i++){
-      good_indices.push_back(i);
-    }
-
-    for(auto selection : m_probeTriggerInfo[i_turnon].offlineSelection) {
-      // if already failed, don't waste time calculating things
-      if(good_indices.size() < mult)
-        break;
-
-      std::vector<int> passed_indices;
-
-      // ignore multiplicity
-      if(selection.first == "multiplicity") {
-        continue;
+    if(m_TDT) {
+      if(probeDecisionEmulated.passedTrigger != probeDecision.passedTrigger) {
+        ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + "in event " << eventInfo->eventNumber());
+        std::cout << "  emulated passed? " << probeDecisionEmulated.passedTrigger << std::endl;
+        std::cout << "  TDT passed?      " << probeDecision.passedTrigger << std::endl;
       }
-
-      // eta
-      else if(selection.first == "eta") {
-        for(auto index : good_indices) {
-          if( fabs(inJets->at(index)->eta()) > selection.second.first && fabs(inJets->at(index)->eta()) < selection.second.second )
-            passed_indices.push_back(index);
-        }
-      }
-
-      // m
-      else if(selection.first == "m") {
-        for(auto index : good_indices) {
-          if( inJets->at(index)->m()/1000. > selection.second.first)
-            passed_indices.push_back(index);
-        }
-      }
-
-      // pt
-      else if(selection.first == "pt") {
-        for(auto index : good_indices) {
-          if( inJets->at(index)->pt()/1000. > selection.second.first)
-            passed_indices.push_back(index);
-        }
-      }
-
-      // else complain
-      else {
-        ANA_MSG_ERROR("do not recognise selection " + selection.first);
-        return EL::StatusCode::FAILURE;
-      }
-
-      // carry forward only the good ones
-      good_indices = passed_indices;
     }
     
-    if(good_indices.size() < mult)
+
+    // only fill denominator hist if the L1 of the HLT passed and it was not prescaled out
+    // need to do something different if it's an L1 turnon
+    if(!m_emulate) {
+      if(!probeDecision.L1_isPassedAfterVeto || probeDecision.HLT_isPrescaledOut)
+        continue;
+    }
+
+
+    // apply selections
+    int multiplicity_required = m_probeTriggerInfo[i_turnon].getMultiplicity();
+    std::vector<int> good_indices;
+    bool passSelections = this->applySelections(m_probeTriggerInfo[i_turnon].offlineSelection, offlineJets, multiplicity_required, good_indices);
+    if (!passSelections)
       continue;
+
+
 
 
     // get the relevant variable
@@ -422,10 +387,10 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     std::string variable = m_variables_var[i_turnon];
     float var_to_fill = -1;
     if(variable=="pt") {
-      var_to_fill = inJets->at(good_indices[index])->pt() / 1000.;
+      var_to_fill = offlineJets->at(good_indices[index])->pt() / 1000.;
     }
     else if(variable=="m") {
-      var_to_fill = inJets->at(good_indices[index])->m() / 1000.;
+      var_to_fill = offlineJets->at(good_indices[index])->m() / 1000.;
     }
     else {
       ANA_MSG_ERROR("don't know how to interpret the variable "+ variable);
@@ -435,8 +400,11 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
     // fill hists
     m_denominatorHists.at(i_turnon)->Fill(var_to_fill);
-    if(passedProbeTrigger){
-      m_numeratorHists.at(i_turnon)->Fill(var_to_fill);
+    if(m_TDT && probeDecision.passedTrigger){
+      m_numeratorHistsTDT.at(i_turnon)->Fill(var_to_fill);
+    }
+    if(m_emulate && probeDecisionEmulated.passedTrigger){
+      m_numeratorHistsEmulated.at(i_turnon)->Fill(var_to_fill);
     }
 
   }
@@ -543,4 +511,126 @@ std::vector<std::string> splitListString(std::string parentString) {
   }
 
   return splitVec;
+}
+
+
+bool JetTriggerEfficiencies :: applySelections(std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel) {
+ 
+    for(unsigned int i=0; i<jets->size(); i++){
+      good_indices.push_back(i);
+    }
+
+    for(auto selection : selections) {
+      // if already failed, don't waste time calculating things
+      if(good_indices.size() < multiplicity_required)
+        return false;
+
+      // get the indices that pass this selection
+      std::vector<int> passed_indices = this->applySelection(selection, jets, good_indices, isHLTpresel);
+
+      // carry forward only the good ones
+      good_indices = passed_indices;
+    }
+    
+    if(good_indices.size() < multiplicity_required)
+      return false;
+    
+    return true;
+}
+
+
+std::vector<int> JetTriggerEfficiencies :: applySelection(std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, std::vector<int> good_indices, bool isHLTpresel) {
+
+  std::vector<int> passed_indices;
+
+  // ignore multiplicity
+  if(selection.first == "multiplicity") {
+    return good_indices;
+  }
+
+  // if preselection, ignore ET, if not ignore ET_preselection
+  if(isHLTpresel) {
+    if(selection.first == "ET")
+      return good_indices;
+  }
+  else {
+    if(selection.first == "ET_preselection")
+      return good_indices;
+  }
+
+  // eta
+  if(selection.first == "eta") {
+    for(auto index : good_indices) {
+      if( fabs(jets->at(index)->eta()) > selection.second.first && fabs(jets->at(index)->eta()) < selection.second.second )
+        passed_indices.push_back(index);
+    }
+  }
+  
+  // m
+  else if(selection.first == "m") {
+    for(auto index : good_indices) {
+      if( jets->at(index)->m()/1000. > selection.second.first)
+        passed_indices.push_back(index);
+    }
+  }
+  
+  // pt
+  else if(selection.first == "pt") {
+    for(auto index : good_indices) {
+      if( jets->at(index)->pt()/1000. > selection.second.first)
+        passed_indices.push_back(index);
+    }
+  }
+  
+  // ET - try et(), else .p4().Et()
+  else if(selection.first == "ET" || selection.first == "ET_preselection") {
+    for(auto index : good_indices) {
+      if( jets->at(index)->p4().Et()/1000. > selection.second.first)
+        passed_indices.push_back(index);
+    }
+  }
+  
+
+  // else complain
+  else {
+    ANA_MSG_ERROR("do not recognise selection " + selection.first + " - not applying");
+    return good_indices;
+  }
+  
+  return passed_indices;
+  
+}
+
+
+
+EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &triggerInfo, TriggerDecision &triggerDecision) {
+
+  int multiplicity_required = triggerInfo.getMultiplicity();
+  bool passed = true;
+
+  // check for preselection
+  if(triggerInfo.HLTjetContainerPreselection != "") {
+    const xAOD::JetContainer* HLTpreselJets(nullptr);
+    ANA_CHECK( HelperFunctions::retrieve(HLTpreselJets, triggerInfo.HLTjetContainerPreselection, m_event, m_store, msg()) );
+    
+    std::vector<int> good_indices;
+    bool passSelections = this->applySelections(triggerInfo.HLTselection, HLTpreselJets, multiplicity_required, good_indices, true); // isHLTpresel=true
+    if (!passSelections)
+      passed = false;
+  }
+
+  // main HLT selection
+  const xAOD::JetContainer* HLTjets(nullptr);
+  ANA_CHECK( HelperFunctions::retrieve(HLTjets, triggerInfo.HLTjetContainer, m_event, m_store, msg()) );
+  
+  std::vector<int> good_indices;
+  bool passSelections = this->applySelections(triggerInfo.HLTselection, HLTjets, multiplicity_required, good_indices, false); // isHLTpresel=false
+  if (!passSelections)
+    passed = false;
+  
+
+  triggerDecision.passedTrigger = passed;
+
+  return EL::StatusCode::SUCCESS;
+
 }

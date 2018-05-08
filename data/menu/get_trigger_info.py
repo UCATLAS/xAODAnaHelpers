@@ -585,16 +585,16 @@ def print_item(item, onlyPrint=None):
     if onlyPrint == None:
         for thing in printorder:
             if thing in item:
-                print '  ', thing, ' '*(25-len(thing)), item[thing]
+                print '  ', thing+':', ' '*(25-len(thing)), item[thing]
     else:
         for thing in printorder:
             if thing in item and thing in onlyPrint:
-                print '  ', thing, ' '*(25-len(thing)), item[thing]
+                print '  ', thing+':', ' '*(25-len(thing)), item[thing]
                 
     # print anything not in above order that - ie added elsewhere and forgotten about
     for thing in sorted(item):
         if thing not in printorder and thing != 'HLT':
-            print '  ', thing, ' '*(25-len(thing)), item[thing]
+            print '  ', thing+':', ' '*(25-len(thing)), item[thing]
             
 
 
