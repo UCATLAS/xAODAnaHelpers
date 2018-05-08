@@ -209,6 +209,9 @@ TauCalibrator
 TauSelector
 ~~~~~~~~~~~
 
+TauEfficiencyCorrector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 HelperFunctions
 ---------------
 

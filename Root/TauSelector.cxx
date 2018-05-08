@@ -658,22 +658,24 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   // TauSelectorTool cut
   //
 
-  // JetBDTID decoration
-  static SG::AuxElement::Decorator< char > isJetBDTVeryLoose("isJetBDTVeryLoose");
-  static SG::AuxElement::Decorator< char > isJetBDTLoose("isJetBDTLoose");
-  static SG::AuxElement::Decorator< char > isJetBDTMedium("isJetBDTMedium");
-  static SG::AuxElement::Decorator< char > isJetBDTTight("isJetBDTTight");
+  // JetBDTSigID decoration
+  static SG::AuxElement::Decorator< int > isJetBDTSigVeryLoose("isJetBDTSigVeryLoose");
+  static SG::AuxElement::Decorator< int > isJetBDTSigLoose("isJetBDTSigLoose");
+  static SG::AuxElement::Decorator< int > isJetBDTSigMedium("isJetBDTSigMedium");
+  static SG::AuxElement::Decorator< int > isJetBDTSigTight("isJetBDTSigTight");
 
-  static SG::AuxElement::Decorator< char > JetBDTScore("JetBDTScore");
+  static SG::AuxElement::Decorator< float > JetBDTScore("JetBDTScore");
+  static SG::AuxElement::Decorator< float > JetBDTScoreSigTrans("JetBDTScoreSigTrans");
   
   ANA_MSG_DEBUG( "Got the decors" );
 
-  isJetBDTVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigVeryLoose));
-  isJetBDTLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
-  isJetBDTMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigMedium));
-  isJetBDTTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigTight));
- 
+  isJetBDTSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigVeryLoose));
+  isJetBDTSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
+  isJetBDTSigMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigMedium));
+  isJetBDTSigTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigTight));
+
   JetBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScore));
+  JetBDTScoreSigTrans( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScoreSigTrans));
 
   ANA_MSG_DEBUG( "Got decoration values" );
 

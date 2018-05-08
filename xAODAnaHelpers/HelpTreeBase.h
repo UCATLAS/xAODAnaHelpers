@@ -375,10 +375,10 @@ protected:
   // muons
   //
   std::map<std::string, xAH::MuonContainer*> m_muons;
-  std::map<std::string, std::vector<std::string> > m_RecoEff_SF_sysNames;
-  std::map<std::string, std::vector<std::string> > m_IsoEff_SF_sysNames;
-  std::map<std::string, std::vector<std::string> > m_TrigEff_SF_sysNames;
-  std::vector<std::string>  m_TTVAEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_MuonRecoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_MuonIsoEff_SF_sysNames;
+  std::map<std::string, std::vector<std::string> > m_MuonTrigEff_SF_sysNames;
+  std::vector<std::string>  m_MuonTTVAEff_SF_sysNames;
 
   //
   // electrons

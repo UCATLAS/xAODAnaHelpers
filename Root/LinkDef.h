@@ -28,6 +28,7 @@
 /* Scale Factors */
 #include <xAODAnaHelpers/ElectronEfficiencyCorrector.h>
 #include <xAODAnaHelpers/MuonEfficiencyCorrector.h>
+#include <xAODAnaHelpers/TauEfficiencyCorrector.h>
 #include <xAODAnaHelpers/BJetEfficiencyCorrector.h>
 
 /* Plotting Tools */
@@ -88,6 +89,7 @@
 
 #pragma link C++ class ElectronEfficiencyCorrector+;
 #pragma link C++ class MuonEfficiencyCorrector+;
+#pragma link C++ class TauEfficiencyCorrector+;
 #pragma link C++ class BJetEfficiencyCorrector+;
 
 #pragma link C++ class IParticleHistsAlgo+;
