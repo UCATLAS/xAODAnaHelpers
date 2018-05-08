@@ -170,7 +170,8 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   // Trigger Decision for each and every trigger in a vector
   if ( m_trigInfoSwitch->m_passTriggers ) {
     // vector of strings for trigger names which fired
-    m_tree->Branch("passedTriggers",       &m_passTriggers        );
+    m_tree->Branch("passedTriggers",       &m_passedTriggers      );
+    m_tree->Branch("disabledTriggers",     &m_disabledTriggers    );
   }
 
   if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
@@ -236,9 +237,10 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
   if ( m_trigInfoSwitch->m_passTriggers ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_passTriggers"); }
-    static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
-    if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
-
+    static SG::AuxElement::ConstAccessor< std::vector< std::string > > acc_passedTriggers  ("passedTriggers");
+    if( acc_passedTriggers  .isAvailable( *eventInfo ) ) { m_passedTriggers   = acc_passedTriggers  ( *eventInfo ); }
+    static SG::AuxElement::ConstAccessor< std::vector< std::string > > acc_disabledTriggers("disabledTriggers");
+    if( acc_disabledTriggers.isAvailable( *eventInfo ) ) { m_disabledTriggers = acc_disabledTriggers( *eventInfo ); }
   }
 
   if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
@@ -281,7 +283,8 @@ void HelpTreeBase::ClearTrigger() {
   m_L1PSKey   = 0;
   m_HLTPSKey  = 0;
 
-  m_passTriggers.clear();
+  m_passedTriggers.clear();
+  m_disabledTriggers.clear();
   m_triggerPrescales.clear();
   m_triggerPrescalesLumi.clear();
   m_isPassBits.clear();

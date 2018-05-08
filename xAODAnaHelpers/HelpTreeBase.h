@@ -331,7 +331,8 @@ protected:
 						   */
 
   // jet trigger
-  std::vector<std::string> m_passTriggers;
+  std::vector<std::string> m_passedTriggers;
+  std::vector<std::string> m_disabledTriggers;
   std::vector<float> m_triggerPrescales;
   std::vector<float> m_triggerPrescalesLumi;
   std::vector<std::string>  m_isPassBitsNames;
