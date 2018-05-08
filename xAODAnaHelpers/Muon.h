@@ -88,15 +88,18 @@ namespace xAH {
     }
 
     // prompt lepton
-    float PromptLeptonIso_DRlj;
-    float PromptLeptonIso_LepJetPtFrac;
-    float PromptLeptonIso_TagWeight;
-    int   PromptLeptonIso_TrackJetNTrack;
-    float PromptLeptonIso_ip2;
-    float PromptLeptonIso_ip3;
-    int   PromptLeptonIso_sv1_jf_ntrkv;
-    float PromptLeptonNoIso_TagWeight;
-    float PromptLepton_TagWeight;
+    float PromptLeptonInput_DL1mu;
+    float PromptLeptonInput_DRlj;
+    float PromptLeptonInput_LepJetPtFrac;
+    float PromptLeptonInput_PtFrac;
+    float PromptLeptonInput_PtRel;
+    int   PromptLeptonInput_TrackJetNTrack;
+    float PromptLeptonInput_ip2;
+    float PromptLeptonInput_ip3;
+    float PromptLeptonInput_rnnip;
+    int   PromptLeptonInput_sv1_jf_ntrkv;
+    float PromptLeptonIso;
+    float PromptLeptonVeto;
 
   };
 

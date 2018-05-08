@@ -251,34 +251,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
   }
 
-  //---------------------------
-  // Meta data - MC Campgain
-  //---------------------------
-  //
-  // Metadata for the MC campaign to be used by PRW autoconfiguration.
-  if(isMC() && m_autoconfigPRW)
-  {
-    const xAOD::EventInfo* evtInfo = 0;
-    ANA_CHECK( m_event->retrieve( evtInfo, "EventInfo" ) );
-    uint32_t runNum = evtInfo->runNumber();
-  
-    m_mcCampaignMD = "";
-    switch(runNum) {
-      case 284500 :
-        m_mcCampaignMD="mc16a";
-        break;
-      // This should be switched to mc16d once it is available.
-      case 300000 :
-        m_mcCampaignMD="mc16c";
-        break;
-      default :
-        ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autocongigure PRW. Aborting." );
-        return StatusCode::FAILURE;
-      break;
-    }
-    ANA_MSG_INFO( "Determined MC campaign to be " << m_mcCampaignMD);
-  }
-
   return EL::StatusCode::SUCCESS;
 
 }
@@ -311,7 +283,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_MSG_INFO( "Truth only! Turn off trigger stuff");
     m_triggerSelection      = "";
     m_extraTriggerSelection = "";
-    m_triggerUnprescale     = "";
     m_applyTriggerCut = m_storeTrigDecisions = m_storePassL1 = m_storePassHLT = m_storeTrigKeys = false;
     ANA_MSG_INFO( "Truth only! Turn off GRL");
     m_applyGRLCut = false;
@@ -340,6 +311,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cleanPowheg = true;
     ANA_MSG_INFO( "This is J5 Powheg - cleaning that nasty huge weight event");
   }
+
 
   //////// Initialize Tool for Sherpa 2.2 Reweighting ////////////
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
@@ -487,6 +459,23 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
 
   // 2.
+  // initialize the Trig::TrigDecisionTool
+  //
+  if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
+      m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
+
+    ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_trigConfTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigConfTool_handle);
+
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
+    ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+  }//end trigger configuration
+
+  // 3.
   // initialize the CP::PileupReweightingTool
   //
 
@@ -523,16 +512,35 @@ EL::StatusCode BasicEventSelection :: initialize ()
       }
     }
 
+    // Find trigger specific lumicalc files
+    if ( !isMC() ) {
+      for ( const std::string &lumiCalcFile : lumiCalcFiles) {
+        size_t pos = lumiCalcFile.find_first_of(':');
+        if ( pos != std::string::npos ) {
+          m_triggerUnprescaleList.push_back(lumiCalcFile.substr(pos + 1));
+        }
+      }
+
+      if ( !m_triggerUnprescaleList.empty() ) {
+        ANA_MSG_INFO("*** Trigger chains used for data unprescaling:");
+        for ( const std::string &trigger : m_triggerUnprescaleList ) {
+          ANA_MSG_INFO( "\t " << trigger );
+        }
+      }
+    }
+
     if(m_autoconfigPRW)
       {	ANA_CHECK( autoconfigurePileupRWTool() ); }
     else
       {
-        ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
-        for( unsigned int i=0; i < PRWFiles.size(); ++i){
-          printf( "\t %s \n", PRWFiles.at(i).c_str() );
+        if ( isMC() ) {
+          ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
+          for( unsigned int i=0; i < PRWFiles.size(); ++i){
+            printf( "\t %s \n", PRWFiles.at(i).c_str() );
+          }
+          ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
         }
-        ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
-        
+
         ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
         for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
           printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
@@ -541,43 +549,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
       }
     ANA_CHECK( m_pileup_tool_handle.setProperty("UsePeriodConfig", m_periodConfig) );
     ANA_CHECK( m_pileup_tool_handle.setProperty("OutputLevel", msg().level() ));
+    if ( !m_triggerUnprescaleList.empty() ) {
+      // We need to make an instance of ITrigDecisionTool:
+      asg::AnaToolHandle<Trig::ITrigDecisionTool> iTrigDecTool_handle {"Trig::TrigDecisionTool/TrigDecisionTool"};
+      if ( !iTrigDecTool_handle.isUserConfigured() ) {
+        ANA_MSG_FATAL("A configured " << iTrigDecTool_handle.typeAndName() << " must have been previously created!");
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_CHECK( iTrigDecTool_handle.retrieve() );
+      ANA_CHECK( m_pileup_tool_handle.setProperty("TrigDecisionTool", iTrigDecTool_handle ));
+    }
     ANA_CHECK( m_pileup_tool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
-  }
-
-  // 3.
-  // initialize the Trig::TrigDecisionTool
-  //
-  if( !m_triggerSelection.empty() || !m_extraTriggerSelection.empty() ||
-      m_applyTriggerCut || m_storeTrigDecisions || m_storePassL1 || m_storePassHLT || m_storeTrigKeys ) {
-
-    ANA_CHECK( m_trigConfTool_handle.setProperty("OutputLevel", msg().level()));
-    ANA_CHECK( m_trigConfTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigConfTool_handle);
-
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
-    ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
-    ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
-  }//end trigger configuration
-  
-  // Parse trigger chains for unprescaling
-  if ( !isMC() && !m_triggerUnprescale.empty() ) {
-    // pileup reweighing tool is needed to get the data weight for unprescaling
-    if ( !m_doPUreweighting ) {
-      ANA_MSG_ERROR( "m_triggerUnprescale is not empty but m_doPUreweighting is false !!!");
-      return EL::StatusCode::FAILURE;
-    }
-
-    ANA_MSG_INFO("*** Trigger chains used for data unprescaling:");
-    // parse and split by comma
-    std::string token;
-    std::istringstream ss(m_triggerUnprescale);
-    while (std::getline(ss, token, ',')) {
-        m_triggerUnprescaleChainList.push_back(token);
-        ANA_MSG_INFO("\t" << token);
-    }
   }
 
   // As a check, let's see the number of events in our file (long long int)
@@ -704,30 +687,6 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     } // If not already decorated
   } // if m_reweightSherpa22
-
-
-  //------------------------------------------------------------------------------------------
-  // Declare an 'eventInfo' decorator with prescale weights for unprescaling data
-  // from the list of corresponding trigger chains
-  // https://cds.cern.ch/record/2014726/files/ATL-COM-SOFT-2015-119.pdf (line 130)
-  //------------------------------------------------------------------------------------------
-
-  if ( !isMC() && !m_triggerUnprescale.empty() ) {
-    static SG::AuxElement::Decorator< std::map<std::string, float> > prescaleMapDecor("triggerPrescalesLumi");
-
-    if (!prescaleMapDecor.isAvailable(*eventInfo)) {
-      prescaleMapDecor(*eventInfo) = std::map<std::string, float>();
-    }
-
-    for (const std::string &chain : m_triggerUnprescaleChainList) {
-      // get mu dependent data weight
-      float dataWeight = m_pileup_tool_handle->getDataWeight( *eventInfo, chain, true );
-
-      prescaleMapDecor(*eventInfo)[chain] = dataWeight;
-
-      ANA_MSG_VERBOSE("Data weight for chain" << chain << ": " << dataWeight);
-    }
-  }
 
 
   //------------------------------------------------------------------------------------------
@@ -916,6 +875,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
       std::vector<std::string>  passTriggers;
       std::vector<float>        triggerPrescales;
+      std::vector<float>        triggerPrescalesLumi;
       std::vector<std::string>  isPassedBitsNames;
       std::vector<unsigned int> isPassedBits;
 
@@ -926,6 +886,12 @@ EL::StatusCode BasicEventSelection :: execute ()
         if ( trigChain->isPassed() ) {
           passTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
+
+          if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
+            triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+          } else {
+            triggerPrescalesLumi.push_back( -1 );
+          }
         }
         isPassedBitsNames.push_back( trigName );
         isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
@@ -942,6 +908,12 @@ EL::StatusCode BasicEventSelection :: execute ()
 	        if ( trigChain->isPassed() ) {
 	          passTriggers.push_back( trigName );
 	          triggerPrescales.push_back( trigChain->getPrescale() );
+
+              if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
+                triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+              } else {
+                triggerPrescalesLumi.push_back( -1 );
+              }
 	        }
 	        isPassedBitsNames.push_back( trigName );
 	        isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
@@ -952,6 +924,8 @@ EL::StatusCode BasicEventSelection :: execute ()
       passTrigs( *eventInfo ) = passTriggers;
       static SG::AuxElement::Decorator< std::vector< float > >        trigPrescales("triggerPrescales");
       trigPrescales( *eventInfo ) = triggerPrescales;
+      static SG::AuxElement::Decorator< std::vector< float > >        trigPrescalesLumi("triggerPrescalesLumi");
+      trigPrescalesLumi( *eventInfo ) = triggerPrescalesLumi;
       static SG::AuxElement::Decorator< std::vector< unsigned int > > isPassBits("isPassedBits");
       isPassBits( *eventInfo ) = isPassedBits;
       static SG::AuxElement::Decorator< std::vector< std::string > >  isPassBitsNames("isPassedBitsNames");
@@ -1027,167 +1001,189 @@ EL::StatusCode BasicEventSelection :: execute ()
 // https://gitlab.cern.ch/atlas/athena/blob/3be30397de7c6cfdc15de38f532fdb4b9f338297/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/SUSYObjDef_xAOD.cxx#L700
 StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 {
-  
+
   // Don't do this if we aren't supposed to
   if (! (isMC() && m_autoconfigPRW ))
     return StatusCode::SUCCESS;
 
-  // doing here some black magic to autoconfigure the pileup reweighting tool
-  std::string prwConfigFile = "";
+  const xAOD::EventInfo* eventInfo = 0;
+  ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
+
+  // Extract campaign automatically from Run Number
+  std::string mcCampaignMD = "";
   
+  uint32_t runNum = eventInfo->runNumber();
+
+  switch(runNum)
+    {
+    case 284500 :
+      mcCampaignMD="mc16a";
+      break;
+      // This should be switched to mc16d once it is available.
+    case 300000 :
+      mcCampaignMD="mc16c";
+      break;
+    default :
+      ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autocongigure PRW. Aborting." );
+      return StatusCode::FAILURE;
+      break;
+    }
+  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
+
   // Extract campaign from user configuration
   std::string tmp_mcCampaign = m_mcCampaign;
   std::vector<std::string> mcCampaignList;
   while ( tmp_mcCampaign.size() > 0)
+    {
+      size_t pos = tmp_mcCampaign.find_first_of(',');
+      if ( pos == std::string::npos )
 	{
-	  size_t pos = tmp_mcCampaign.find_first_of(',');
-	  if ( pos == std::string::npos )
-	    {
-	      pos = tmp_mcCampaign.size();
-	      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	      tmp_mcCampaign.erase(0, pos);
-	    }
-	  else
-	    {
-	      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	      tmp_mcCampaign.erase(0, pos+1);
-	    }
+	  pos = tmp_mcCampaign.size();
+	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+	  tmp_mcCampaign.erase(0, pos);
 	}
-
-      // Automatically determine campgain
-      prwConfigFile = PathResolverFindCalibDirectory("dev/SUSYTools/PRW_AUTOCONGIF/files/");
-
-      float dsid = -999;
-      const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( evtStore()->retrieve( eventInfo, m_eventInfoContainerName ) );
-      dsid = eventInfo->mcChannelNumber();
-
-      // Sanity checks
-      bool mc16X_GoodFromProperty = !mcCampaignList.empty();
-      bool mc16X_GoodFromMetadata = false;
-      for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d");
-      if( m_mcCampaignMD == "mc16a" || m_mcCampaignMD == "mc16c" || m_mcCampaignMD == "mc16d") mc16X_GoodFromMetadata = true;
-
-      if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
+      else
 	{
-	  // ::
-	  std::string MetadataAndPropertyBAD("");
-	  MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-	  MetadataAndPropertyBAD += "'mc16a', 'mc16c' or 'mc16d' and restart your job. If you set it to any other string, you will still incur in this error.";
-	  ANA_MSG_ERROR( MetadataAndPropertyBAD );
-	  return StatusCode::FAILURE;
-	  // ::
+	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+	  tmp_mcCampaign.erase(0, pos+1);
 	}
+    }
 
-      if ( mc16X_GoodFromProperty && mc16X_GoodFromMetadata)
-	{
-	  bool MDinP=false;
-	  for(const auto& mcCampaignP : mcCampaignList) MDinP |= (m_mcCampaignMD==mcCampaignP);
-	  if( !MDinP )
-	    {
-	      // ::
-	      std::string MetadataAndPropertyConflict("");
-	      MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + m_mcCampaignMD;
-	      MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
-	      MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
-	      ANA_MSG_WARNING( MetadataAndPropertyConflict );
-	      // ::
-	    }
-	  else
-	    {
-	      // ::
-	      std::string NoMetadataButPropertyOK("");
-	      NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
-	      NoMetadataButPropertyOK += m_mcCampaign;
-	      NoMetadataButPropertyOK += "'. Autocongiguring PRW accordingly.";
-	      ANA_MSG_WARNING( NoMetadataButPropertyOK );
-	      // ::
-	    }
-	}
+  // Sanity checks
+  bool mc16X_GoodFromProperty = !mcCampaignList.empty();
+  bool mc16X_GoodFromMetadata = false;
+  for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d");
+  if( mcCampaignMD == "mc16a" || mcCampaignMD == "mc16c" || mcCampaignMD == "mc16d") mc16X_GoodFromMetadata = true;
 
+  if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
+    {
       // ::
-      // Retrieve the input file
-      if(!mc16X_GoodFromProperty)
-	{
-	  mcCampaignList.clear();
-	  mcCampaignList.push_back(m_mcCampaignMD);
-	}
-      ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
-      for(const auto& mcCampaign : mcCampaignList)
-	    ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
+      std::string MetadataAndPropertyBAD("");
+      MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
+      MetadataAndPropertyBAD += "'mc16a', 'mc16c' or 'mc16d' and restart your job. If you set it to any other string, you will still incur in this error.";
+      ANA_MSG_ERROR( MetadataAndPropertyBAD );
+      return StatusCode::FAILURE;
+      // ::
+    }
 
-      std::vector<std::string> prwConfigFiles;
-      int DSID_INT = (int) dsid;
-      for(const auto& mcCampaign : mcCampaignList)
+  if ( mc16X_GoodFromProperty && mc16X_GoodFromMetadata)
+    {
+      bool MDinP=false;
+      for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
+      if( !MDinP )
 	{
-	  prwConfigFile += "pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root";
+	  // ::
+	  std::string MetadataAndPropertyConflict("");
+	  MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD;
+	  MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
+	  MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
+	  ANA_MSG_WARNING( MetadataAndPropertyConflict );
+	  // ::
+	}
+      else
+	{
+	  // ::
+	  std::string NoMetadataButPropertyOK("");
+	  NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
+	  NoMetadataButPropertyOK += m_mcCampaign;
+	  NoMetadataButPropertyOK += "'. Autocongiguring PRW accordingly.";
+	  ANA_MSG_WARNING( NoMetadataButPropertyOK );
+	  // ::
+	}
+    }
+
+  // ::
+  // Retrieve the input file
+  if(!mc16X_GoodFromProperty)
+    {
+      mcCampaignList.clear();
+      mcCampaignList.push_back(mcCampaignMD);
+    }
+  ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
+  for(const auto& mcCampaign : mcCampaignList)
+    ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
+
+  // 
+  float dsid = -999;
+  dsid = eventInfo->mcChannelNumber();
+  int DSID_INT = (int) dsid;
+
+  std::vector<std::string> prwConfigFiles;
+  for(const auto& mcCampaign : mcCampaignList)
+    {
+      std::string prwConfigFile = PathResolverFindCalibFile("/dev/SUSYTools/PRW_AUTOCONFIG/files/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root");
+      std::cout << prwConfigFile << std::endl;
+      TFile testF(prwConfigFile.data(),"read");
+      if(testF.IsZombie())
+	ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
+      else
+	{	  
 	  TFile testF(prwConfigFile.data(),"read");
 	  if(testF.IsZombie())
 	    ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
 	  else
-	    {
-	      prwConfigFiles.push_back( prwConfigFile );
-	    }
+	    prwConfigFiles.push_back( prwConfigFile );
 	}
-    
-    // also need to handle lumicalc files: only use 2015+2016 with mc16a
-    // and only use 2017 with mc16c
-    // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
-    
-    // Parse lumicalc file names
-    std::vector<std::string> allLumiCalcFiles;
-    std::string tmp_lumiCalcFileNames = m_lumiCalcFileNames;
-    while ( tmp_lumiCalcFileNames.size() > 0) {
-      size_t pos = tmp_lumiCalcFileNames.find_first_of(',');
-      if ( pos == std::string::npos ) {
-        pos = tmp_lumiCalcFileNames.size();
-        allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
-        tmp_lumiCalcFileNames.erase(0, pos);
-      } else {
-        allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
-        tmp_lumiCalcFileNames.erase(0, pos+1);
-      }
     }
-    
-    std::vector<std::string> lumiCalcFiles;
-    for(const auto& mcCampaign : mcCampaignList)
+
+  // also need to handle lumicalc files: only use 2015+2016 with mc16a
+  // and only use 2017 with mc16c
+  // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
+
+  // Parse lumicalc file names
+  std::vector<std::string> allLumiCalcFiles;
+  std::string tmp_lumiCalcFileNames = m_lumiCalcFileNames;
+  while ( tmp_lumiCalcFileNames.size() > 0) {
+    size_t pos = tmp_lumiCalcFileNames.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_lumiCalcFileNames.size();
+      allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+      tmp_lumiCalcFileNames.erase(0, pos);
+    } else {
+      allLumiCalcFiles.push_back(tmp_lumiCalcFileNames.substr(0, pos));
+      tmp_lumiCalcFileNames.erase(0, pos+1);
+    }
+  }
+
+  std::vector<std::string> lumiCalcFiles;
+  for(const auto& mcCampaign : mcCampaignList)
+    {
+      for(const auto& filename : allLumiCalcFiles)
 	{
-       for(const auto& filename : allLumiCalcFiles)
-       {
-          // looking for things of format "stuff/data15_13TeV/stuff" etc
-    	  size_t pos = filename.find("data");
-	      std::string year = filename.substr(pos+4, 2);
-         
-          // Case mc16a: want 2015 and 2016
-          if (mcCampaign == "mc16a") {
-            if (year == "15" || year == "16") {
-              lumiCalcFiles.push_back(filename);
-            }
-          } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
-            if (year == "17") {
-              lumiCalcFiles.push_back(filename);
-            }
-          } else {
-             ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
-          }
-       }
+	  // looking for things of format "stuff/data15_13TeV/stuff" etc
+	  size_t pos = filename.find("data");
+	  std::string year = filename.substr(pos+4, 2);
+
+	  // Case mc16a: want 2015 and 2016
+	  if (mcCampaign == "mc16a") {
+	    if (year == "15" || year == "16") {
+	      lumiCalcFiles.push_back(filename);
+	    }
+	  } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
+	    if (year == "17") {
+	      lumiCalcFiles.push_back(filename);
+	    }
+	  } else {
+	    ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
+	  }
+	}
     }
 
-    // Set everything and report on it.
-    ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
-    for( unsigned int i=0; i < prwConfigFiles.size(); ++i) {
-      printf( "\t %s \n", prwConfigFiles.at(i).c_str() );
-    }
-    ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
-    
-    ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
-    for( unsigned int i=0; i < lumiCalcFiles.size(); ++i) {
-      printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
-    }
-    ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+  // Set everything and report on it.
+  ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
+  for( unsigned int i=0; i < prwConfigFiles.size(); ++i) {
+    printf( "\t %s \n", prwConfigFiles.at(i).c_str() );
+  }
+  ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
 
-    // Return gracefully
-    return StatusCode::SUCCESS;
+  ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
+  for( unsigned int i=0; i < lumiCalcFiles.size(); ++i) {
+    printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
+  }
+  ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
+
+  // Return gracefully
+  return StatusCode::SUCCESS;
 }
 
 

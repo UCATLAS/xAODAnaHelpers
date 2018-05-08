@@ -110,6 +110,7 @@ namespace xAH {
       float DL1rnn_pc;
       float DL1rnn_pb;
       int  HadronConeExclTruthLabelID;
+      int  HadronConeExclExtendedTruthLabelID;
 
       float vtxOnlineValid;
       float vtxHadDummy;

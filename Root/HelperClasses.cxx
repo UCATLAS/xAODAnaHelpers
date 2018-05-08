@@ -243,6 +243,9 @@ namespace HelperClasses{
     m_trigger       = has_exact("trigger");
   }
 
+  void ClusterInfoSwitch::initialize(){
+  }
+
   void JetInfoSwitch::initialize(){
     std::string tmpConfigStr; // temporary config string used to extract multiple values
 
@@ -306,7 +309,7 @@ namespace HelperClasses{
       std::string input(m_configStr);
       // erase everything before the interesting string
       input.erase( 0, input.find("trackJetName") );
-      input.erase( input.find(" "), std::string::npos );
+      if(input.find(" ")!=std::string::npos) input.erase( input.find(" "), std::string::npos );
       input.erase( 0, 13 );
 
       std::stringstream ss(input);

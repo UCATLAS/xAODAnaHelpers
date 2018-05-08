@@ -30,6 +30,7 @@ public:
   std::string m_METDetailStr = "";
   std::string m_METReferenceDetailStr = "";
   std::string m_photonDetailStr = "";
+  std::string m_clusterDetailStr = "";
   std::string m_truthParticlesDetailStr = "";
   std::string m_trackParticlesDetailStr = "";
 
@@ -48,6 +49,7 @@ public:
   std::string m_METContainerName = "";
   std::string m_METReferenceContainerName = "";
   std::string m_photonContainerName = "";
+  std::string m_clusterContainerName = "";
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
   std::string m_l1JetContainerName = "";
@@ -94,7 +96,7 @@ public:
   virtual EL::StatusCode postExecute ();                    //!
   virtual EL::StatusCode finalize ();                       //!
   virtual EL::StatusCode histFinalize ();                   //!
-  
+
   // Help tree creator function
   virtual HelpTreeBase* createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store); //!
 

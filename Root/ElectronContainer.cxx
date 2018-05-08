@@ -75,15 +75,18 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_promptlepton ) {
-    m_PromptLeptonIso_DRlj                = new std::vector<float> ();
-    m_PromptLeptonIso_LepJetPtFrac        = new std::vector<float> ();
-    m_PromptLeptonIso_TagWeight           = new std::vector<float> ();
-    m_PromptLeptonIso_TrackJetNTrack      = new std::vector<int>   ();
-    m_PromptLeptonIso_ip2                 = new std::vector<float> ();
-    m_PromptLeptonIso_ip3                 = new std::vector<float> ();
-    m_PromptLeptonIso_sv1_jf_ntrkv        = new std::vector<int>   ();
-    m_PromptLeptonNoIso_TagWeight         = new std::vector<float> ();
-    m_PromptLepton_TagWeight              = new std::vector<float> ();
+    m_PromptLeptonInput_DL1mu           = new std::vector<float> ();
+    m_PromptLeptonInput_DRlj            = new std::vector<float> ();
+    m_PromptLeptonInput_LepJetPtFrac    = new std::vector<float> ();
+    m_PromptLeptonInput_PtFrac          = new std::vector<float> ();
+    m_PromptLeptonInput_PtRel           = new std::vector<float> ();
+    m_PromptLeptonInput_TrackJetNTrack  = new std::vector<int>   ();
+    m_PromptLeptonInput_ip2             = new std::vector<float> ();
+    m_PromptLeptonInput_ip3             = new std::vector<float> ();
+    m_PromptLeptonInput_rnnip           = new std::vector<float> ();
+    m_PromptLeptonInput_sv1_jf_ntrkv    = new std::vector<int>   ();
+    m_PromptLeptonIso                   = new std::vector<float> ();
+    m_PromptLeptonVeto                  = new std::vector<float> ();
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -178,15 +181,18 @@ ElectronContainer::~ElectronContainer()
   }
 
   if ( m_infoSwitch.m_promptlepton ) {
-    delete m_PromptLeptonIso_DRlj            ;
-    delete m_PromptLeptonIso_LepJetPtFrac    ;
-    delete m_PromptLeptonIso_TagWeight       ;
-    delete m_PromptLeptonIso_TrackJetNTrack  ;
-    delete m_PromptLeptonIso_ip2             ;
-    delete m_PromptLeptonIso_ip3             ;
-    delete m_PromptLeptonIso_sv1_jf_ntrkv    ;
-    delete m_PromptLeptonNoIso_TagWeight     ;
-    delete m_PromptLepton_TagWeight          ;
+    delete m_PromptLeptonInput_DL1mu           ;
+    delete m_PromptLeptonInput_DRlj            ;
+    delete m_PromptLeptonInput_LepJetPtFrac    ;
+    delete m_PromptLeptonInput_PtFrac          ;
+    delete m_PromptLeptonInput_PtRel           ;
+    delete m_PromptLeptonInput_TrackJetNTrack  ;
+    delete m_PromptLeptonInput_ip2             ;
+    delete m_PromptLeptonInput_ip3             ;
+    delete m_PromptLeptonInput_rnnip           ;
+    delete m_PromptLeptonInput_sv1_jf_ntrkv    ;
+    delete m_PromptLeptonIso                   ;
+    delete m_PromptLeptonVeto                  ;
   }
 
 }
@@ -286,15 +292,18 @@ void ElectronContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_promptlepton ) {
-    connectBranch<float>(tree, "PromptLeptonIso_DRlj",           &m_PromptLeptonIso_DRlj);
-    connectBranch<float>(tree, "PromptLeptonIso_LepJetPtFrac",   &m_PromptLeptonIso_LepJetPtFrac);
-    connectBranch<float>(tree, "PromptLeptonIso_TagWeight",      &m_PromptLeptonIso_TagWeight);
-    connectBranch<int>  (tree, "PromptLeptonIso_TrackJetNTrack", &m_PromptLeptonIso_TrackJetNTrack);
-    connectBranch<float>(tree, "PromptLeptonIso_ip2",            &m_PromptLeptonIso_ip2);
-    connectBranch<float>(tree, "PromptLeptonIso_ip3",            &m_PromptLeptonIso_ip3);
-    connectBranch<int>  (tree, "PromptLeptonIso_sv1_jf_ntrkv",   &m_PromptLeptonIso_sv1_jf_ntrkv);
-    connectBranch<float>(tree, "PromptLeptonNoIso_TagWeight",    &m_PromptLeptonNoIso_TagWeight);
-    connectBranch<float>(tree, "PromptLepton_TagWeight",         &m_PromptLepton_TagWeight);
+    connectBranch<float>(tree, "PromptLeptonInput_DL1mu",          &m_PromptLeptonInput_DL1mu);
+    connectBranch<float>(tree, "PromptLeptonInput_DRlj",           &m_PromptLeptonInput_DRlj);
+    connectBranch<float>(tree, "PromptLeptonInput_LepJetPtFrac",   &m_PromptLeptonInput_LepJetPtFrac);
+    connectBranch<float>(tree, "PromptLeptonInput_PtFrac",         &m_PromptLeptonInput_PtFrac);
+    connectBranch<float>(tree, "PromptLeptonInput_PtRel",          &m_PromptLeptonInput_PtRel);
+    connectBranch<int>  (tree, "PromptLeptonInput_TrackJetNTrack", &m_PromptLeptonInput_TrackJetNTrack);
+    connectBranch<float>(tree, "PromptLeptonInput_ip2",            &m_PromptLeptonInput_ip2);
+    connectBranch<float>(tree, "PromptLeptonInput_ip3",            &m_PromptLeptonInput_ip3);
+    connectBranch<float>(tree, "PromptLeptonInput_rnnip",          &m_PromptLeptonInput_rnnip);
+    connectBranch<int>  (tree, "PromptLeptonInput_sv1_jf_ntrkv",   &m_PromptLeptonInput_sv1_jf_ntrkv);
+    connectBranch<float>(tree, "PromptLeptonIso",                  &m_PromptLeptonIso);
+    connectBranch<float>(tree, "PromptLeptonVeto",                 &m_PromptLeptonVeto);
   }
 
 }
@@ -393,15 +402,18 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
 
   // prompt lepton
   if ( m_infoSwitch.m_promptlepton ) {
-    elec.PromptLeptonIso_DRlj            = m_PromptLeptonIso_DRlj            ->at(idx);
-    elec.PromptLeptonIso_LepJetPtFrac    = m_PromptLeptonIso_LepJetPtFrac    ->at(idx);
-    elec.PromptLeptonIso_TagWeight       = m_PromptLeptonIso_TagWeight       ->at(idx);
-    elec.PromptLeptonIso_TrackJetNTrack  = m_PromptLeptonIso_TrackJetNTrack  ->at(idx);
-    elec.PromptLeptonIso_ip2             = m_PromptLeptonIso_ip2             ->at(idx);
-    elec.PromptLeptonIso_ip3             = m_PromptLeptonIso_ip3             ->at(idx);
-    elec.PromptLeptonIso_sv1_jf_ntrkv    = m_PromptLeptonIso_sv1_jf_ntrkv    ->at(idx);
-    elec.PromptLeptonNoIso_TagWeight     = m_PromptLeptonNoIso_TagWeight     ->at(idx);
-    elec.PromptLepton_TagWeight          = m_PromptLepton_TagWeight          ->at(idx);
+    elec.PromptLeptonInput_DL1mu           = m_PromptLeptonInput_DL1mu           ->at(idx);
+    elec.PromptLeptonInput_DRlj            = m_PromptLeptonInput_DRlj            ->at(idx);
+    elec.PromptLeptonInput_LepJetPtFrac    = m_PromptLeptonInput_LepJetPtFrac    ->at(idx);
+    elec.PromptLeptonInput_PtFrac          = m_PromptLeptonInput_PtFrac          ->at(idx);
+    elec.PromptLeptonInput_PtRel           = m_PromptLeptonInput_PtRel           ->at(idx);
+    elec.PromptLeptonInput_TrackJetNTrack  = m_PromptLeptonInput_TrackJetNTrack  ->at(idx);
+    elec.PromptLeptonInput_ip2             = m_PromptLeptonInput_ip2             ->at(idx);
+    elec.PromptLeptonInput_ip3             = m_PromptLeptonInput_ip3             ->at(idx);
+    elec.PromptLeptonInput_rnnip           = m_PromptLeptonInput_rnnip           ->at(idx);
+    elec.PromptLeptonInput_sv1_jf_ntrkv    = m_PromptLeptonInput_sv1_jf_ntrkv    ->at(idx);
+    elec.PromptLeptonIso                   = m_PromptLeptonIso                   ->at(idx);
+    elec.PromptLeptonVeto                  = m_PromptLeptonVeto                  ->at(idx);
   }
 
 }
@@ -491,15 +503,18 @@ void ElectronContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_promptlepton ) {
-    setBranch<float>(tree, "PromptLeptonIso_DRlj",            m_PromptLeptonIso_DRlj);
-    setBranch<float>(tree, "PromptLeptonIso_LepJetPtFrac",    m_PromptLeptonIso_LepJetPtFrac);
-    setBranch<float>(tree, "PromptLeptonIso_TagWeight",       m_PromptLeptonIso_TagWeight);
-    setBranch<int>  (tree, "PromptLeptonIso_TrackJetNTrack",  m_PromptLeptonIso_TrackJetNTrack);
-    setBranch<float>(tree, "PromptLeptonIso_ip2",             m_PromptLeptonIso_ip2);
-    setBranch<float>(tree, "PromptLeptonIso_ip3",             m_PromptLeptonIso_ip3);
-    setBranch<int>  (tree, "PromptLeptonIso_sv1_jf_ntrkv",    m_PromptLeptonIso_sv1_jf_ntrkv);
-    setBranch<float>(tree, "PromptLeptonNoIso_TagWeight",     m_PromptLeptonNoIso_TagWeight);
-    setBranch<float>(tree, "PromptLepton_TagWeight",          m_PromptLepton_TagWeight);
+    setBranch<float>(tree, "PromptLeptonInput_DL1mu",           m_PromptLeptonInput_DL1mu);
+    setBranch<float>(tree, "PromptLeptonInput_DRlj",            m_PromptLeptonInput_DRlj);
+    setBranch<float>(tree, "PromptLeptonInput_LepJetPtFrac",    m_PromptLeptonInput_LepJetPtFrac);
+    setBranch<float>(tree, "PromptLeptonInput_PtFrac",          m_PromptLeptonInput_PtFrac);
+    setBranch<float>(tree, "PromptLeptonInput_PtRel",           m_PromptLeptonInput_PtRel);
+    setBranch<int>  (tree, "PromptLeptonInput_TrackJetNTrack",  m_PromptLeptonInput_TrackJetNTrack);
+    setBranch<float>(tree, "PromptLeptonInput_ip2",             m_PromptLeptonInput_ip2);
+    setBranch<float>(tree, "PromptLeptonInput_ip3",             m_PromptLeptonInput_ip3);
+    setBranch<float>(tree, "PromptLeptonInput_rnnip",           m_PromptLeptonInput_rnnip);
+    setBranch<int>  (tree, "PromptLeptonInput_sv1_jf_ntrkv",    m_PromptLeptonInput_sv1_jf_ntrkv);
+    setBranch<float>(tree, "PromptLeptonIso",                   m_PromptLeptonIso);
+    setBranch<float>(tree, "PromptLeptonVeto",                  m_PromptLeptonVeto);
   }
 
   return;
@@ -590,15 +605,18 @@ void ElectronContainer::clear()
   }
 
   if ( m_infoSwitch.m_promptlepton ) {
-    m_PromptLeptonIso_DRlj             -> clear();
-    m_PromptLeptonIso_LepJetPtFrac     -> clear();
-    m_PromptLeptonIso_TagWeight        -> clear();
-    m_PromptLeptonIso_TrackJetNTrack   -> clear();
-    m_PromptLeptonIso_ip2              -> clear();
-    m_PromptLeptonIso_ip3              -> clear();
-    m_PromptLeptonIso_sv1_jf_ntrkv     -> clear();
-    m_PromptLeptonNoIso_TagWeight      -> clear();
-    m_PromptLepton_TagWeight           -> clear();
+    m_PromptLeptonInput_DL1mu            -> clear();
+    m_PromptLeptonInput_DRlj             -> clear();
+    m_PromptLeptonInput_LepJetPtFrac     -> clear();
+    m_PromptLeptonInput_PtFrac           -> clear();
+    m_PromptLeptonInput_PtRel            -> clear();
+    m_PromptLeptonInput_TrackJetNTrack   -> clear();
+    m_PromptLeptonInput_ip2              -> clear();
+    m_PromptLeptonInput_ip3              -> clear();
+    m_PromptLeptonInput_rnnip            -> clear();
+    m_PromptLeptonInput_sv1_jf_ntrkv     -> clear();
+    m_PromptLeptonIso                    -> clear();
+    m_PromptLeptonVeto                   -> clear();
   }
 
 }
@@ -762,25 +780,31 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
   }
 
   if ( m_infoSwitch.m_promptlepton ) {
-    SG::AuxElement::ConstAccessor<float> acc_Iso_DRlj           ("PromptLeptonIso_DRlj");
-    SG::AuxElement::ConstAccessor<float> acc_Iso_LepJetPtFrac   ("PromptLeptonIso_LepJetPtFrac");
-    SG::AuxElement::ConstAccessor<float> acc_Iso_TagWeight      ("PromptLeptonIso_TagWeight");
-    SG::AuxElement::ConstAccessor<short> acc_Iso_TrackJetNTrack ("PromptLeptonIso_TrackJetNTrack");
-    SG::AuxElement::ConstAccessor<float> acc_Iso_ip2            ("PromptLeptonIso_ip2");
-    SG::AuxElement::ConstAccessor<float> acc_Iso_ip3            ("PromptLeptonIso_ip3");
-    SG::AuxElement::ConstAccessor<short> acc_Iso_sv1_jf_ntrkv   ("PromptLeptonIso_sv1_jf_ntrkv");
-    SG::AuxElement::ConstAccessor<float> acc_NoIso_TagWeight    ("PromptLeptonNoIso_TagWeight");
-    SG::AuxElement::ConstAccessor<float> acc_TagWeight          ("PromptLepton_TagWeight");
+    SG::AuxElement::ConstAccessor<float> acc_DL1mu          ("PromptLeptonInput_DL1mu");
+    SG::AuxElement::ConstAccessor<float> acc_DRlj           ("PromptLeptonInput_DRlj");
+    SG::AuxElement::ConstAccessor<float> acc_LepJetPtFrac   ("PromptLeptonInput_LepJetPtFrac");
+    SG::AuxElement::ConstAccessor<float> acc_PtFrac         ("PromptLeptonInput_PtFrac");
+    SG::AuxElement::ConstAccessor<float> acc_PtRel          ("PromptLeptonInput_PtRel");
+    SG::AuxElement::ConstAccessor<short> acc_TrackJetNTrack ("PromptLeptonInput_TrackJetNTrack");
+    SG::AuxElement::ConstAccessor<float> acc_ip2            ("PromptLeptonInput_ip2");
+    SG::AuxElement::ConstAccessor<float> acc_ip3            ("PromptLeptonInput_ip3");
+    SG::AuxElement::ConstAccessor<float> acc_rnnip          ("PromptLeptonInput_rnnip");
+    SG::AuxElement::ConstAccessor<short> acc_sv1_jf_ntrkv   ("PromptLeptonInput_sv1_jf_ntrkv");
+    SG::AuxElement::ConstAccessor<float> acc_Iso            ("PromptLeptonIso");
+    SG::AuxElement::ConstAccessor<float> acc_Veto           ("PromptLeptonVeto");
 
-    m_PromptLeptonIso_DRlj           ->push_back( acc_Iso_DRlj           .isAvailable(*elec) ? acc_Iso_DRlj(*elec)           : -100);
-    m_PromptLeptonIso_LepJetPtFrac   ->push_back( acc_Iso_LepJetPtFrac   .isAvailable(*elec) ? acc_Iso_LepJetPtFrac(*elec)   : -100);
-    m_PromptLeptonIso_TagWeight      ->push_back( acc_Iso_TagWeight      .isAvailable(*elec) ? acc_Iso_TagWeight(*elec)      : -100);
-    m_PromptLeptonIso_TrackJetNTrack ->push_back( acc_Iso_TrackJetNTrack .isAvailable(*elec) ? acc_Iso_TrackJetNTrack(*elec) : -100);
-    m_PromptLeptonIso_ip2            ->push_back( acc_Iso_ip2            .isAvailable(*elec) ? acc_Iso_ip2(*elec)            : -100);
-    m_PromptLeptonIso_ip3            ->push_back( acc_Iso_ip3            .isAvailable(*elec) ? acc_Iso_ip3(*elec)            : -100);
-    m_PromptLeptonIso_sv1_jf_ntrkv   ->push_back( acc_Iso_sv1_jf_ntrkv   .isAvailable(*elec) ? acc_Iso_sv1_jf_ntrkv(*elec)   : -100);
-    m_PromptLeptonNoIso_TagWeight    ->push_back( acc_NoIso_TagWeight    .isAvailable(*elec) ? acc_NoIso_TagWeight(*elec)    : -100);
-    m_PromptLepton_TagWeight         ->push_back( acc_TagWeight          .isAvailable(*elec) ? acc_TagWeight(*elec)          : -100);
+    m_PromptLeptonInput_DL1mu          ->push_back( acc_DL1mu          .isAvailable(*elec) ? acc_DL1mu(*elec)          : -100);
+    m_PromptLeptonInput_DRlj           ->push_back( acc_DRlj           .isAvailable(*elec) ? acc_DRlj(*elec)           : -100);
+    m_PromptLeptonInput_LepJetPtFrac   ->push_back( acc_LepJetPtFrac   .isAvailable(*elec) ? acc_LepJetPtFrac(*elec)   : -100);
+    m_PromptLeptonInput_PtFrac         ->push_back( acc_PtFrac         .isAvailable(*elec) ? acc_PtFrac(*elec)         : -100);
+    m_PromptLeptonInput_PtRel          ->push_back( acc_PtRel          .isAvailable(*elec) ? acc_PtRel(*elec)          : -100);
+    m_PromptLeptonInput_TrackJetNTrack ->push_back( acc_TrackJetNTrack .isAvailable(*elec) ? acc_TrackJetNTrack(*elec) : -100);
+    m_PromptLeptonInput_ip2            ->push_back( acc_ip2            .isAvailable(*elec) ? acc_ip2(*elec)            : -100);
+    m_PromptLeptonInput_ip3            ->push_back( acc_ip3            .isAvailable(*elec) ? acc_ip3(*elec)            : -100);
+    m_PromptLeptonInput_rnnip          ->push_back( acc_rnnip          .isAvailable(*elec) ? acc_rnnip(*elec)          : -100);
+    m_PromptLeptonInput_sv1_jf_ntrkv   ->push_back( acc_sv1_jf_ntrkv   .isAvailable(*elec) ? acc_sv1_jf_ntrkv(*elec)   : -100);
+    m_PromptLeptonIso                  ->push_back( acc_Iso            .isAvailable(*elec) ? acc_Iso(*elec)            : -100);
+    m_PromptLeptonVeto                 ->push_back( acc_Veto           .isAvailable(*elec) ? acc_Veto(*elec)           : -100);
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {

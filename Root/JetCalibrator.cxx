@@ -255,13 +255,14 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  if ( !m_JESUncertConfig.empty() && !m_systNameJES.empty()  && m_systNameJES != "None" ) {
+  if ( !m_JESUncertConfig.empty() && !m_systNameJES.empty() && m_systNameJES != "None" ) {
 
     ANA_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("MCType",m_JESUncertMCType));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", PathResolverFindCalibFile(m_JESUncertConfig)));
+    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", m_JESUncertConfig));
+    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("CalibArea", m_JESCalibArea));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetUncertaintiesTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_JetUncertaintiesTool_handle);
@@ -277,8 +278,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
 
     for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
-      m_systVal = m_systValVector.at(iSyst);
-      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJES, m_systValJES, msg() );
+      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJES, m_systValVector.at(iSyst), msg() );
 
       for(unsigned int i=0; i < JESSysList.size(); ++i){
         // do not add another nominal syst to the list!!

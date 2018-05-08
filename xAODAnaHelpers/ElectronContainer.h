@@ -90,15 +90,18 @@ namespace xAH {
       std::vector<float>* m_trkPixdEdX;            // not available in DC14
 
       // prompt lepton
-      std::vector<float>* m_PromptLeptonIso_DRlj;
-      std::vector<float>* m_PromptLeptonIso_LepJetPtFrac;
-      std::vector<float>* m_PromptLeptonIso_TagWeight;
-      std::vector<int>*   m_PromptLeptonIso_TrackJetNTrack;
-      std::vector<float>* m_PromptLeptonIso_ip2;
-      std::vector<float>* m_PromptLeptonIso_ip3;
-      std::vector<int>*   m_PromptLeptonIso_sv1_jf_ntrkv;
-      std::vector<float>* m_PromptLeptonNoIso_TagWeight;
-      std::vector<float>* m_PromptLepton_TagWeight;
+      std::vector<float>* m_PromptLeptonInput_DL1mu;
+      std::vector<float>* m_PromptLeptonInput_DRlj;
+      std::vector<float>* m_PromptLeptonInput_LepJetPtFrac;
+      std::vector<float>* m_PromptLeptonInput_PtFrac;
+      std::vector<float>* m_PromptLeptonInput_PtRel;
+      std::vector<int>*   m_PromptLeptonInput_TrackJetNTrack;
+      std::vector<float>* m_PromptLeptonInput_ip2;
+      std::vector<float>* m_PromptLeptonInput_ip3;
+      std::vector<float>* m_PromptLeptonInput_rnnip;
+      std::vector<int>*   m_PromptLeptonInput_sv1_jf_ntrkv;
+      std::vector<float>* m_PromptLeptonIso;
+      std::vector<float>* m_PromptLeptonVeto;
 
     };
 }
