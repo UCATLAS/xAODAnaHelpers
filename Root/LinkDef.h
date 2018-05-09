@@ -56,6 +56,7 @@
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 
 #include <xAODAnaHelpers/JetTriggerEfficiencies.h>
+#include <xAODAnaHelpers/TreeReader.h>
 
 #ifdef __CINT__
 
@@ -115,4 +116,5 @@
 #pragma link C++ class MessagePrinterAlgo+;
 
 #pragma link C++ class JetTriggerEfficiencies+;
+#pragma link C++ class TreeReader+;
 #endif
