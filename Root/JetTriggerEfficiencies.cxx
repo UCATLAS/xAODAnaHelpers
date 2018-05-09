@@ -225,11 +225,14 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     std::string histname = m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_"+m_variables[i_turnon];
     std::string xaxistitle = m_offlineContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString;
 
-    if(m_TDT)
+    if(m_TDT) {
       m_numeratorHistsTDT.push_back( book(m_mainHistName, histname + "_numTDT", xaxistitle, 1000, 0, 1000, wk()) );
-    if(m_emulate)
+      m_denominatorHistsTDT.push_back( book(m_mainHistName, histname + "_denomTDT", xaxistitle, 1000, 0, 1000, wk()) );
+    }
+    if(m_emulate) {
       m_numeratorHistsEmulated.push_back( book(m_mainHistName, histname + "_numEmulated", xaxistitle, 1000, 0, 1000, wk()) );
-    m_denominatorHists.push_back( book(m_mainHistName, histname + "_denom", xaxistitle, 1000, 0, 1000, wk()) );
+      m_denominatorHistsEmulated.push_back( book(m_mainHistName, histname + "_denomEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+    }
   }
 
   std::cout << "histInitialise is done!" << std::endl;
@@ -357,9 +360,12 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     }
     if(m_TDT) {
       if(probeDecisionEmulated.passedTrigger != probeDecision.passedTrigger) {
-        ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + "in event " << eventInfo->eventNumber());
-        std::cout << "  emulated passed? " << probeDecisionEmulated.passedTrigger << std::endl;
-        std::cout << "  TDT passed?      " << probeDecision.passedTrigger << std::endl;
+        // if TDT failed, maybe it's because of prescales. Only worry about it if it is not - ie the trigger fails but was not prescaled out at L1 or HLT
+        if( probeDecision.passedTrigger || (!probeDecision.passedTrigger && probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut)) {
+          ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + " in event " << eventInfo->eventNumber());
+          std::cout << "  emulated passed? " << probeDecisionEmulated.passedTrigger << std::endl;
+          std::cout << "  TDT passed?      " << probeDecision.passedTrigger << std::endl;
+        }
       }
     }
     
@@ -399,14 +405,23 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
 
     // fill hists
-    m_denominatorHists.at(i_turnon)->Fill(var_to_fill);
-    if(m_TDT && probeDecision.passedTrigger){
-      m_numeratorHistsTDT.at(i_turnon)->Fill(var_to_fill);
+    // TDT needs to account for probe L1 and prescale
+    if(m_TDT) {
+      if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
+        m_denominatorHistsTDT.at(i_turnon)->Fill(var_to_fill);
+        if(probeDecision.passedTrigger){
+          m_numeratorHistsTDT.at(i_turnon)->Fill(var_to_fill);
+        }
+      }
     }
-    if(m_emulate && probeDecisionEmulated.passedTrigger){
-      m_numeratorHistsEmulated.at(i_turnon)->Fill(var_to_fill);
+    // emulated doesn't need to worry about probe L1 or prescale
+    // currently not emulating L1 in order to compare, add as option?
+    if(m_emulate) {
+      m_denominatorHistsEmulated.at(i_turnon)->Fill(var_to_fill);
+      if(probeDecisionEmulated.passedTrigger){
+        m_numeratorHistsEmulated.at(i_turnon)->Fill(var_to_fill);
+      }
     }
-
   }
 
   ANA_MSG_DEBUG( "Leaving jet trigger efficiencies... ");
