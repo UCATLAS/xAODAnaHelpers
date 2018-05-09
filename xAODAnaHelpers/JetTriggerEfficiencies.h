@@ -322,7 +322,8 @@ private:
   /// @brief vector of histograms - one for each turnon - that will be numerators (ie pass ref and probe) and denominators (ie pass ref) in the efficiencies
   std::vector<TH1F*> m_numeratorHistsTDT; //!
   std::vector<TH1F*> m_numeratorHistsEmulated; //!
-  std::vector<TH1F*> m_denominatorHists; //!
+  std::vector<TH1F*> m_denominatorHistsTDT; //!
+  std::vector<TH1F*> m_denominatorHistsEmulated; //!
 
   std::vector<JetTriggerInfo> m_referenceTriggerInfo; //!
   std::vector<JetTriggerInfo> m_probeTriggerInfo; //!
