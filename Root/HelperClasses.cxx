@@ -190,6 +190,7 @@ namespace HelperClasses{
         std::cerr << "WARNING! The 'quality' option is deprecated in ElectronInfoSwitch. Use 'PID' instead." << std::endl;
     }
     m_PID           = has_exact("PID");
+    m_recoparams    = has_exact("recoparams");
     m_trackparams   = has_exact("trackparams");
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
