@@ -7,4 +7,5 @@ Efficiency Correcting
    BJetEfficiencyCorrector
    ElectronEfficiencyCorrector
    MuonEfficiencyCorrector
+   TauEfficiencyCorrector
 

@@ -19,7 +19,7 @@ namespace xAH {
   class TauContainer : public ParticleContainer<Tau,HelperClasses::TauInfoSwitch>
     {
     public:
-      TauContainer(const std::string& name = "tau", const std::string& detailStr="", float units = 1e3, bool mc = false);
+      TauContainer(const std::string& name = "tau", const std::string& detailStr="", float units = 1e3, bool mc = false, bool storeSystSFs = true);
       virtual ~TauContainer();
     
       virtual void setTree(TTree *tree);
@@ -41,13 +41,21 @@ namespace xAH {
 
       std::vector<int>   *m_ntrk;
       std::vector<float> *m_charge;
-
-      std::vector<int>   *m_isJetBDTVeryLoose;
-      std::vector<int>   *m_isJetBDTLoose;
-      std::vector<int>   *m_isJetBDTMedium;
-      std::vector<int>   *m_isJetBDTTight;
+      
+      // scale factors w/ sys
+      // per object
+      std::map< std::string, std::vector< std::vector< float > > >* m_TauEff_SF;
+      std::map< std::string, std::vector< std::vector< float > > >* m_TauTrigEff_SF;
+      
+      
+      // might need to delete these
+      std::vector<int>   *m_isJetBDTSigVeryLoose;
+      std::vector<int>   *m_isJetBDTSigLoose;
+      std::vector<int>   *m_isJetBDTSigMedium;
+      std::vector<int>   *m_isJetBDTSigTight;
     
       std::vector<float>   *m_JetBDTScore;
+      std::vector<float>   *m_JetBDTScoreSigTrans;
 
     };
 }

@@ -8,6 +8,7 @@
 #include <xAODEventInfo/EventInfo.h>
 #include <AthContainers/ConstDataVector.h>
 #include <xAODEgamma/PhotonContainer.h>
+#include <xAODCaloEvent/CaloClusterContainer.h>
 
 #include <xAODAnaHelpers/TreeAlgo.h>
 
@@ -250,6 +251,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
     if (!m_METReferenceContainerName.empty() )  { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
     if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
+    if (!m_clusterContainerName.empty() )       { helpTree->AddClusters(m_clusterDetailStr);                         }
     if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
     if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesContainerName, m_trackParticlesDetailStr); }
   }
@@ -273,6 +275,7 @@ EL::StatusCode TreeAlgo :: execute ()
     std::string elSuffix("");
     std::string jetSuffix("");
     std::string photonSuffix("");
+    std::string clusterSuffix("");
     std::string fatJetSuffix("");
     std::string metSuffix("");
     /*
@@ -338,7 +341,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
-      
+
       if ( reject ) continue;
     }
 
@@ -378,7 +381,7 @@ EL::StatusCode TreeAlgo :: execute ()
         ANA_CHECK( HelperFunctions::retrieve(inTruthJets, m_truthJetContainers.at(ll), m_event, m_store, msg()) );
         helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthJetBranches.at(ll) );
       }
-      
+
       if ( reject ) continue;
     }
 
@@ -396,7 +399,7 @@ EL::StatusCode TreeAlgo :: execute ()
 	ANA_CHECK( HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, msg()) );
       	helpTree->FillFatJets( inFatJets, token );
       }
-      
+
       if ( reject ) continue;
     }
 
@@ -438,6 +441,14 @@ EL::StatusCode TreeAlgo :: execute ()
       const xAOD::PhotonContainer* inPhotons(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_photonContainerName+photonSuffix, m_event, m_store, msg()) );
       helpTree->FillPhotons( inPhotons );
+    }
+
+    if ( !m_clusterContainerName.empty() ) {
+      if ( !HelperFunctions::isAvailable<xAOD::CaloClusterContainer>(m_clusterContainerName + clusterSuffix, m_event, m_store, msg()) ) continue;
+
+      const xAOD::CaloClusterContainer* inClusters(nullptr);
+      ANA_CHECK( HelperFunctions::retrieve(inClusters, m_clusterContainerName+clusterSuffix, m_event, m_store, msg()) );
+      helpTree->FillClusters( inClusters );
     }
 
     if ( !m_truthParticlesContainerName.empty() ) {

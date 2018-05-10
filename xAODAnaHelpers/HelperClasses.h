@@ -388,6 +388,14 @@ namespace HelperClasses {
     virtual void initialize();
   };
 
+  class ClusterInfoSwitch : public IParticleInfoSwitch {
+  public:
+    ClusterInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
+    virtual ~ClusterInfoSwitch() {}
+  protected:
+    virtual void initialize();
+  };
+
   /**
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` class for Jet Information.
@@ -465,7 +473,6 @@ namespace HelperClasses {
 
 	    ``trackJetName`` expects one or more track jet container names separated by an underscore. For example, the string ``trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet`` will set the attriubte ``m_trackJetNames``
 	    to ``{"GhostAntiKt2TrackJet", "GhostVR30Rmax4Rmin02TrackJet"}``.
-
     @endrst
    */
   class JetInfoSwitch : public IParticleInfoSwitch {
@@ -589,14 +596,27 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` struct for Tau Information.
 
-        ================ ============== =======
-        Parameter        Pattern        Match
-        ================ ============== =======
-        m_trigger        trigger        exact
-        m_JetID          JetID          exact
-        m_trackparams    trackparams    exact
-        m_trackhitcont   trackhitcont   exact
-        ================ ============== =======
+        ================== ================ =======
+        Parameter          Pattern          Match
+        ================== ================ =======
+        m_trigger          trigger          exact
+        m_effSF            effSF            exact
+        m_JetID            JetID            exact
+        m_trackparams      trackparams      exact
+        m_trackhitcont     trackhitcont     exact
+        m_tauEffWP         TAUEFF_XYZ       pattern
+        m_trigWP           TRIG_XYZ         pattern
+        ================== ================ =======
+
+        .. note::
+
+             ``identification`` and ``effSF`` switches do not enable any additional output by themselves. 
+             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ`` 
+             for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
+
+                 m_configStr = "... TAUEFF_EleOLRElectronEleBDTLoose_TauIDMedium ... TRIG_EleOLRElectronEleBDTMedium_TauIDLoose_TrigMyTriggerMenu"
+
+             Notice that the working point for TAUEFF is a combination of two working points from EleOLRElectron and TauID.
 
 
     @endrst
@@ -607,6 +627,11 @@ namespace HelperClasses {
     bool m_JetID;
     bool m_trackparams;
     bool m_trackhitcont;
+    bool m_effSF;
+    
+    std::vector< std::string > m_tauEffWPs;
+    std::vector< std::string > m_trigWPs;
+
     TauInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~TauInfoSwitch() { }
   protected:

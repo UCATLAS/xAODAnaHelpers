@@ -17,13 +17,18 @@ namespace xAH {
     
     int               ntrk;
     float             charge;
-
-    int               isJetBDTVeryLoose;
-    int               isJetBDTLoose;
-    int               isJetBDTMedium;
-    int               isJetBDTTight;
     
+    std::map< std::string, std::vector< float > > TauEff_SF;
+    std::map< std::string, std::vector< float > > TauTrigEff_SF;
+    
+    // might need to delete these
+    int               isJetBDTSigVeryLoose;
+    int               isJetBDTSigLoose;
+    int               isJetBDTSigMedium;
+    int               isJetBDTSigTight;
+
     float             JetBDTScore;
+    float             JetBDTScoreSigTrans;
   };
 
 }//xAH

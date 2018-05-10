@@ -72,6 +72,10 @@ HelpTreeBase::~HelpTreeBase() {
     for (auto photon: m_photons)
       delete photon.second;
 
+    //cl
+    for (auto cluster: m_clusters)
+      delete cluster.second;
+
     //fatjet
     for (auto fatjet: m_fatjets)
       delete fatjet.second;
@@ -166,7 +170,8 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
   // Trigger Decision for each and every trigger in a vector
   if ( m_trigInfoSwitch->m_passTriggers ) {
     // vector of strings for trigger names which fired
-    m_tree->Branch("passedTriggers",       &m_passTriggers        );
+    m_tree->Branch("passedTriggers",       &m_passedTriggers      );
+    m_tree->Branch("disabledTriggers",     &m_disabledTriggers    );
   }
 
   if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
@@ -232,9 +237,10 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
   if ( m_trigInfoSwitch->m_passTriggers ) {
 
     if ( m_debug ) { Info("HelpTreeBase::FillTrigger()", "Switch: m_trigInfoSwitch->m_passTriggers"); }
-    static SG::AuxElement::ConstAccessor< std::vector< std::string > > passTrigs("passTriggers");
-    if( passTrigs.isAvailable( *eventInfo ) ) { m_passTriggers = passTrigs( *eventInfo ); }
-
+    static SG::AuxElement::ConstAccessor< std::vector< std::string > > acc_passedTriggers  ("passedTriggers");
+    if( acc_passedTriggers  .isAvailable( *eventInfo ) ) { m_passedTriggers   = acc_passedTriggers  ( *eventInfo ); }
+    static SG::AuxElement::ConstAccessor< std::vector< std::string > > acc_disabledTriggers("disabledTriggers");
+    if( acc_disabledTriggers.isAvailable( *eventInfo ) ) { m_disabledTriggers = acc_disabledTriggers( *eventInfo ); }
   }
 
   if ( !m_isMC && m_trigInfoSwitch->m_prescales ) {
@@ -277,7 +283,8 @@ void HelpTreeBase::ClearTrigger() {
   m_L1PSKey   = 0;
   m_HLTPSKey  = 0;
 
-  m_passTriggers.clear();
+  m_passedTriggers.clear();
+  m_disabledTriggers.clear();
   m_triggerPrescales.clear();
   m_triggerPrescalesLumi.clear();
   m_isPassBits.clear();
@@ -322,27 +329,27 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
      if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& reco : muonInfoSwitch.m_recoWPs) {
          std::string recoEffSF_sysNames = "muon_RecoEff_SF_" + reco + "_sysNames";
-         m_tree->Branch( recoEffSF_sysNames.c_str() , & (m_RecoEff_SF_sysNames)[ reco ] );
+         m_tree->Branch( recoEffSF_sysNames.c_str() , & (m_MuonRecoEff_SF_sysNames)[ reco ] );
        }
      }
 
      if ( muonInfoSwitch.m_isoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& isol : muonInfoSwitch.m_isolWPs) {
          std::string isolEffSF_sysNames = "muon_IsoEff_SF_" + isol + "_sysNames";
-         m_tree->Branch( isolEffSF_sysNames.c_str() , & (m_IsoEff_SF_sysNames)[ isol ] );
+         m_tree->Branch( isolEffSF_sysNames.c_str() , & (m_MuonIsoEff_SF_sysNames)[ isol ] );
        }
      }
 
      if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& trig : muonInfoSwitch.m_trigWPs) {
          std::string trigEffSF_sysNames = "muon_TrigEff_SF_" + trig + "_sysNames";
-         m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_TrigEff_SF_sysNames)[ trig ] );
+         m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_MuonTrigEff_SF_sysNames)[ trig ] );
        }
      }
 
      if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        std::string ttvaEffSF_sysNames = "muon_TTVAEff_SF_sysNames";
-       m_tree->Branch( ttvaEffSF_sysNames.c_str() , &m_TTVAEff_SF_sysNames );
+       m_tree->Branch( ttvaEffSF_sysNames.c_str() , &m_MuonTTVAEff_SF_sysNames );
      }
 
   }
@@ -364,7 +371,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
         std::vector< std::string >* tmp_reco_sys(nullptr);
         if ( m_store->retrieve(tmp_reco_sys, "MuonEfficiencyCorrector_RecoSyst_" + reco).isSuccess() ) {
-          (m_RecoEff_SF_sysNames)[ reco ] = *tmp_reco_sys;
+          (m_MuonRecoEff_SF_sysNames)[ reco ] = *tmp_reco_sys;
         }
       }
     }
@@ -373,7 +380,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       for ( auto& isol : muonInfoSwitch.m_isolWPs ) {
         std::vector< std::string >* tmp_iso_sys(nullptr);
         if ( m_store->retrieve(tmp_iso_sys, "MuonEfficiencyCorrector_IsoSyst_" + isol).isSuccess() ) {
-          (m_IsoEff_SF_sysNames)[ isol ] = *tmp_iso_sys;
+          (m_MuonIsoEff_SF_sysNames)[ isol ] = *tmp_iso_sys;
         }
       }
     }
@@ -382,7 +389,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
       for ( auto& trig : muonInfoSwitch.m_trigWPs ) {
         std::vector< std::string >* tmp_trig_sys(nullptr);
         if ( m_store->retrieve(tmp_trig_sys, "MuonEfficiencyCorrector_TrigSyst_" + trig).isSuccess() ) {
-          (m_TrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
+          (m_MuonTrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
         }
       }
     }
@@ -390,7 +397,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       std::vector< std::string >* tmp_ttva_sys(nullptr);
       if ( m_store->retrieve(tmp_ttva_sys, "MuonEfficiencyCorrector_TTVASyst_TTVA").isSuccess() ) {
-        m_TTVAEff_SF_sysNames = *tmp_ttva_sys;
+        m_MuonTTVAEff_SF_sysNames = *tmp_ttva_sys;
       }
     }
 
@@ -423,24 +430,24 @@ void HelpTreeBase::ClearMuons(const std::string muonName) {
 
     if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
-          (m_RecoEff_SF_sysNames)[ reco ].clear();
+          (m_MuonRecoEff_SF_sysNames)[ reco ].clear();
         }
     }
 
     if ( muonInfoSwitch.m_isoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& isol : muonInfoSwitch.m_isolWPs ) {
-          (m_IsoEff_SF_sysNames)[ isol ].clear();
+          (m_MuonIsoEff_SF_sysNames)[ isol ].clear();
         }
     }
 
     if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& trig : muonInfoSwitch.m_trigWPs ) {
-          (m_TrigEff_SF_sysNames)[ trig ].clear();
+          (m_MuonTrigEff_SF_sysNames)[ trig ].clear();
         }
     }
 
     if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
-       m_TTVAEff_SF_sysNames.clear();
+       m_MuonTTVAEff_SF_sysNames.clear();
     }
 
   }
@@ -545,6 +552,54 @@ void HelpTreeBase::ClearPhotons(const std::string photonName) {
   thisPhoton->clear();
 
   this->ClearPhotonsUser(photonName);
+}
+
+/*********************
+ *
+ * CLUSTERS
+ *
+ *********************/
+
+void HelpTreeBase::AddClusters(const std::string detailStr, const std::string clusterName) {
+
+  if(m_debug)  Info("AddClusters()", "Adding cluster variables: %s", detailStr.c_str());
+
+  m_clusters[clusterName] = new xAH::ClusterContainer(clusterName, detailStr, m_units, m_isMC);
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+
+  thisCluster->setBranches(m_tree);
+  this->AddClustersUser(clusterName);
+}
+
+
+void HelpTreeBase::FillClusters( const xAOD::CaloClusterContainer* clusters, const std::string clusterName ) {
+
+  this->ClearClusters(clusterName);
+
+  for ( auto cl_itr : *clusters ) {
+    this->FillCluster(cl_itr, clusterName);
+  }
+}
+
+void HelpTreeBase::FillCluster( const xAOD::CaloCluster* cluster, const std::string clusterName ) {
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+
+  thisCluster->FillCluster(cluster);
+
+  this->FillClustersUser(cluster, clusterName);
+
+  return;
+}
+
+
+void HelpTreeBase::ClearClusters(const std::string clusterName) {
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+  thisCluster->clear();
+
+  this->ClearClustersUser(clusterName);
 }
 
 /*********************
@@ -901,10 +956,10 @@ void HelpTreeBase::AddTaus(const std::string detailStr, const std::string tauNam
 
   if ( m_debug )  Info("AddTaus()", "Adding tau variables: %s", detailStr.c_str());
 
-  m_taus[tauName] = new xAH::TauContainer(tauName, detailStr, m_units, m_isMC);
-
+  m_taus[tauName] = new xAH::TauContainer(tauName, detailStr, m_units, m_isMC, m_nominalTree);
+  
   xAH::TauContainer* thisTau = m_taus[tauName];
-
+  
   thisTau->setBranches(m_tree);
   this->AddTausUser();
 }
@@ -930,6 +985,7 @@ void HelpTreeBase::FillTau( const xAOD::TauJet* tau, const std::string tauName )
 void HelpTreeBase::ClearTaus(const std::string tauName) {
 
   xAH::TauContainer* thisTau = m_taus[tauName];
+
   thisTau->clear();
 
   this->ClearTausUser(tauName);
@@ -942,15 +998,15 @@ void HelpTreeBase::ClearTaus(const std::string tauName) {
  *
  *     MET
  *
- ********************/ 
+ ********************/
 void HelpTreeBase::AddMET( const std::string detailStr, const std::string metName ) {
 
   if(m_debug) Info("AddMET()", "Adding MET variables: %s", detailStr.c_str());
 
   m_met[metName] = new xAH::MetContainer(metName, detailStr, m_units);
-  
+
   xAH::MetContainer* thisMet = m_met[metName];
-  
+
   thisMet->setBranches(m_tree);
   this->AddMETUser(metName);
 }

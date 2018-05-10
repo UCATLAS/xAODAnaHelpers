@@ -200,6 +200,7 @@ namespace xAH {
             destination->push_back( accessor(*xAODObj) );
           } else {
             destination->push_back( std::vector< float > ({accessor(*xAODObj)[0]}) );
+            //std::cout << "NUMBER: " << std::vector< float > ({accessor(*xAODObj)[0]}) << std::endl;
           }
         } else {
           destination->push_back( defaultValue );
