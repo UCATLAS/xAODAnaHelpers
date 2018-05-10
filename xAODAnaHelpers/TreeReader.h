@@ -35,39 +35,39 @@ class JetInfo {
   std::string NTUPname = "";
   std::string xAODname = "";
 
-  vector<float>* pt;
-  vector<float>* eta;
-  vector<float>* phi;
-  vector<float>* E;
+  vector<float>* pt = nullptr;
+  vector<float>* eta = nullptr;
+  vector<float>* phi = nullptr;
+  vector<float>* E = nullptr;
 
-  vector<float>* muonSegments;
-  vector<float>* EMFrac;
-  vector<float>* HECFrac;
-  vector<float>* timing;
-  vector<float>* negativeE;
+  vector<float>* muonSegments = nullptr;
+  vector<float>* EMFrac = nullptr;
+  vector<float>* HECFrac = nullptr;
+  vector<float>* timing = nullptr;
+  vector<float>* negativeE = nullptr;
 
-  vector<int>*   clean_passLooseBad;
+  vector<int>*   clean_passLooseBad = nullptr;
 		
-  vector<float>* LArQuality;
-  vector<float>* AverageLArQF;
-  vector<float>* HECQuality;
-  vector<float>* FracSamplingMax;
-  vector<int>*   FracSamplingMaxIndex;
-  vector< vector<float> >* EnergyPerSampling;
+  vector<float>* LArQuality = nullptr;
+  vector<float>* AverageLArQF = nullptr;
+  vector<float>* HECQuality = nullptr;
+  vector<float>* FracSamplingMax = nullptr;
+  vector<int>*   FracSamplingMaxIndex = nullptr;
+  vector< vector<float> >* EnergyPerSampling = nullptr;
 
-  vector<float>* LeadingClusterPt;
-  vector<float>* LeadingClusterSecondLambda;
-  vector<float>* LeadingClusterCenterLambda;
-  vector<float>* LeadingClusterSecondR;
+  vector<float>* LeadingClusterPt = nullptr;
+  vector<float>* LeadingClusterSecondLambda = nullptr;
+  vector<float>* LeadingClusterCenterLambda = nullptr;
+  vector<float>* LeadingClusterSecondR = nullptr;
 
   // scales
-  vector<float>* emScalePt;
-  vector<float>* constScalePt;
-  vector<float>* pileupScalePt;
-  vector<float>* originConstitScalePt;
-  vector<float>* etaJESScalePt;
-  vector<float>* gscScalePt;
-  vector<float>* insituScalePt;
+  vector<float>* emScalePt = nullptr;
+  vector<float>* constScalePt = nullptr;
+  vector<float>* pileupScalePt = nullptr;
+  vector<float>* originConstitScalePt = nullptr;
+  vector<float>* etaJESScalePt = nullptr;
+  vector<float>* gscScalePt = nullptr;
+  vector<float>* insituScalePt = nullptr;
 
 };
 
@@ -103,19 +103,18 @@ class TreeReader : public xAH::Algorithm
   // TileFlags
   // SCTFlags
 
-  int       m_NPV; //!  
-  float     m_avgIntPerX; //!
-  float     m_actIntPerX; //!
-  float     m_correct_mu; //!
-  float     m_pileupWeight; //!
+  int       m_NPV = -1; //!  
+  float     m_avgIntPerX = -1; //!
+  float     m_actIntPerX = -1; //!
+  float     m_correct_mu = -1; //!
+  float     m_pileupWeight = -1; //!
+
+  vector<std::string>*  m_passedTriggers = nullptr; //!
+  vector<float>*        m_triggerPrescales = nullptr; //!
+  vector<std::string>*  m_isPassBitsNames = nullptr;  //!
+  vector<unsigned int>* m_isPassBits = nullptr;  //!
 
 
-
-
-  vector<string>* m_passedTriggers;  //!
-  vector<float>*  m_triggerPrescales;  //!
-  /* vector<string>* m_isPassBitsNames;  //! */
-  /* vector<int>*  m_isPassBits;  //! */
 
   
   // list of branches in tree
@@ -149,7 +148,7 @@ class TreeReader : public xAH::Algorithm
   virtual EL::StatusCode histFinalize ();
   
   // these are the functions not inherited from Algorithm
-  // need c++14 :-(
+  // need c++14 for auto :-(
   /* void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, auto &m_var); */
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, bool &m_var);
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, int &m_var);
@@ -159,6 +158,7 @@ class TreeReader : public xAH::Algorithm
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, uint32_t &m_var);
   
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector<int>* &m_var);
+  void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector<unsigned int>* &m_var);
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector<float>* &m_var);
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector<std::string>* &m_var);
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector< std::vector<float> >* &m_var);
