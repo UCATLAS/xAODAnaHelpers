@@ -31,7 +31,7 @@ ClassImp(TreeReader)
 
 // maybe include the Algorithm() part, maybe not...
 TreeReader :: TreeReader () :
-  Algorithm("JetTriggerEfficiencies")
+  Algorithm("TreeReader")
 {
 }
 
@@ -133,60 +133,56 @@ EL::StatusCode TreeReader :: changeInput (bool firstFile)
   this->SetBranchStatusAndAddress(tree, "eventNumber",       m_eventNumber);
   this->SetBranchStatusAndAddress(tree, "lumiBlock",         m_lumiBlock);
 
-  // this->SetBranchStatusAndAddress(tree, "bcid",              m_bcid);
+  this->SetBranchStatusAndAddress(tree, "bcid",              m_bcid);
   // this->SetBranchStatusAndAddress(tree, "timeStamp",         m_timeStamp);
   // this->SetBranchStatusAndAddress(tree, "timeStampNSOffset", m_timeStampNSOffset);
   // this->SetBranchStatusAndAddress(tree, "LArError",          m_LArError);
   // this->SetBranchStatusAndAddress(tree, "LArFlags",          m_LArFlags);
 
-  // this->SetBranchStatusAndAddress(tree, "NPV",               m_NPV);
-  // this->SetBranchStatusAndAddress(tree, "averageInteractionsPerCrossing", m_avgIntPerX);
-  // this->SetBranchStatusAndAddress(tree, "actualInteractionsPerCrossing",  m_actIntPerX);
-  // this->SetBranchStatusAndAddress(tree, "correct_mu",  m_correct_mu);
-  // this->SetBranchStatusAndAddress(tree, "weight_pileup",  m_pileupWeight);
+  this->SetBranchStatusAndAddress(tree, "NPV",                            m_NPV);
+  this->SetBranchStatusAndAddress(tree, "averageInteractionsPerCrossing", m_avgIntPerX);
+  this->SetBranchStatusAndAddress(tree, "actualInteractionsPerCrossing",  m_actIntPerX);
+  this->SetBranchStatusAndAddress(tree, "correct_mu",                     m_correct_mu);
+  this->SetBranchStatusAndAddress(tree, "weight_pileup",                  m_pileupWeight);
 
-  // these cause a crash on GetEntry()
-  // this->SetBranchStatusAndAddress(tree, "passedTriggers",   m_passedTriggers);
-  // this->SetBranchStatusAndAddress(tree, "triggerPrescales", m_triggerPrescales);
+  this->SetBranchStatusAndAddress(tree, "passedTriggers",   m_passedTriggers);
+  this->SetBranchStatusAndAddress(tree, "triggerPrescales", m_triggerPrescales);
+  this->SetBranchStatusAndAddress(tree, "isPassBitsNames",  m_isPassBitsNames);
+  this->SetBranchStatusAndAddress(tree, "isPassBits",       m_isPassBits);
 
-  // bool allCleaning = false; // etc
 
   for(unsigned int i = 0; i < m_jetCollectionInfos.size(); i++) {
     std::string jetCollectionName = m_jetCollectionInfos.at(i).NTUPname;
     this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_pt").c_str(), m_jetCollectionInfos.at(i).pt);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_eta").c_str(), m_jetCollectionInfos.at(i).eta);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_phi").c_str(), m_jetCollectionInfos.at(i).phi);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_E").c_str(), m_jetCollectionInfos.at(i).E);
-
-    // some work, some don't
-    // figure out how to stop crash....
-    //<thing> = NULL doesn't work
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_eta").c_str(), m_jetCollectionInfos.at(i).eta);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_phi").c_str(), m_jetCollectionInfos.at(i).phi);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_E").c_str(), m_jetCollectionInfos.at(i).E);
 
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_EMFrac").c_str(), m_jetCollectionInfos.at(i).EMFrac);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_HECFrac").c_str(), m_jetCollectionInfos.at(i).HECFrac);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_GhostMuonSegmentCount").c_str(), m_jetCollectionInfos.at(i).muonSegments);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_clean_passLooseBad").c_str(), m_jetCollectionInfos.at(i).clean_passLooseBad);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_Timing").c_str(), m_jetCollectionInfos.at(i).timing);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_NegativeE").c_str(), m_jetCollectionInfos.at(i).negativeE);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_Timing").c_str(), m_jetCollectionInfos.at(i).timing);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_NegativeE").c_str(), m_jetCollectionInfos.at(i).negativeE);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_LArQuality").c_str(), m_jetCollectionInfos.at(i).LArQuality);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_AverageLArQF").c_str(), m_jetCollectionInfos.at(i).AverageLArQF);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_HECQuality").c_str(), m_jetCollectionInfos.at(i).HECQuality);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_FracSamplingMax").c_str(), m_jetCollectionInfos.at(i).FracSamplingMax);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_FracSamplingMaxIndex").c_str(), m_jetCollectionInfos.at(i).FracSamplingMaxIndex);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_EnergyPerSampling").c_str(), m_jetCollectionInfos.at(i).EnergyPerSampling);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_FracSamplingMax").c_str(), m_jetCollectionInfos.at(i).FracSamplingMax);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_FracSamplingMaxIndex").c_str(), m_jetCollectionInfos.at(i).FracSamplingMaxIndex);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_EnergyPerSampling").c_str(), m_jetCollectionInfos.at(i).EnergyPerSampling);
 
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_LeadingClusterPt").c_str(), m_jetCollectionInfos.at(i).LeadingClusterPt);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_LeadingClusterSecondLambda").c_str(), m_jetCollectionInfos.at(i).LeadingClusterSecondLambda);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_LeadingClusterCenterLambda").c_str(), m_jetCollectionInfos.at(i).LeadingClusterCenterLambda);
     // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_LeadingClusterSecondR").c_str(), m_jetCollectionInfos.at(i).LeadingClusterSecondR);
     
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_emScalePt").c_str(), m_jetCollectionInfos.at(i).emScalePt);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_constScalePt").c_str(), m_jetCollectionInfos.at(i).constScalePt);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_pileupScalePt").c_str(), m_jetCollectionInfos.at(i).pileupScalePt);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_originConstitScalePt").c_str(), m_jetCollectionInfos.at(i).originConstitScalePt);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_etaJESScalePt").c_str(), m_jetCollectionInfos.at(i).etaJESScalePt);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_gscScalePt").c_str(), m_jetCollectionInfos.at(i).gscScalePt);
-    // this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_insituScalePt").c_str(), m_jetCollectionInfos.at(i).insituScalePt);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_emScalePt").c_str(), m_jetCollectionInfos.at(i).emScalePt);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_constScalePt").c_str(), m_jetCollectionInfos.at(i).constScalePt);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_pileupScalePt").c_str(), m_jetCollectionInfos.at(i).pileupScalePt);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_originConstitScalePt").c_str(), m_jetCollectionInfos.at(i).originConstitScalePt);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_etaJESScalePt").c_str(), m_jetCollectionInfos.at(i).etaJESScalePt);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_gscScalePt").c_str(), m_jetCollectionInfos.at(i).gscScalePt);
+    this->SetBranchStatusAndAddress(tree, (jetCollectionName+"_insituScalePt").c_str(), m_jetCollectionInfos.at(i).insituScalePt);
 
   }
 
@@ -238,25 +234,23 @@ EL::StatusCode TreeReader :: execute ()
 
   ++m_eventCounter;
 
+  ANA_MSG_INFO("about to get entry " << wk()->treeEntry() << " of tree");
   wk()->tree()->GetEntry (wk()->treeEntry());
+  ANA_MSG_INFO("entry got successfully");
+
 
   if(m_eventCounter % 10000 == 0) cout << "executing event " << m_eventCounter << endl;
   // else if(m_debug) cout << "executing event " << m_eventCounter << endl;
 
-
-  std::cout << "this event has runNum, LB, evtNum = " << m_runNumber << ", " << m_lumiBlock << ", " << m_eventNumber << std::endl;
-  if(m_bcid==NULL) {
-    std::cout << "oh no, no BCID" << std::endl;
-  }
-  else {
-    std::cout << m_bcid << std::endl;
-  }
-
+  // std::cout << "this event has runNum, LB, evtNum = " << m_runNumber << ", " << m_lumiBlock << ", " << m_eventNumber << std::endl;
   for(auto jetInfo : m_jetCollectionInfos) {
-    std::cout << "jet collection with NTUP name " << jetInfo.NTUPname << std::endl;
-    std::cout << jetInfo.pt->size() << std::endl;
-    if(jetInfo.pt->size() > 0) std::cout << jetInfo.pt->at(0) << std::endl;
+    unsigned int nJets = jetInfo.pt->size();
+    float jetPt0 = 0;
+    if(nJets > 0)
+      jetPt0 = jetInfo.pt->at(0);
   }
+
+
 
   return EL::StatusCode::SUCCESS;
 }
@@ -351,15 +345,18 @@ void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName,
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " << branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
+
 void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName, int &m_var) {
   if(std::find(m_branchesInTree.begin(), m_branchesInTree.end(), branchName) != m_branchesInTree.end()) {
     tree->SetBranchStatus(branchName.c_str(), 1);
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
@@ -370,6 +367,7 @@ void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName,
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
@@ -380,6 +378,7 @@ void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName,
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
@@ -390,6 +389,7 @@ void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName,
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
@@ -400,6 +400,18 @@ void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName,
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
+    m_var = NULL;
+  }
+}
+
+void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector<unsigned int>* &m_var) {
+  if(std::find(m_branchesInTree.begin(), m_branchesInTree.end(), branchName) != m_branchesInTree.end()) {
+    tree->SetBranchStatus(branchName.c_str(), 1);
+    tree->SetBranchAddress(branchName.c_str(), &m_var);
+  }
+  else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
@@ -410,6 +422,7 @@ void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName,
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
@@ -419,13 +432,19 @@ void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName,
      tree->SetBranchStatus(branchName.c_str(), 1);
      tree->SetBranchAddress(branchName.c_str(), &m_var);
    }
+  else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
+    m_var = NULL;
+  }
  }
+
 void TreeReader::SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector< std::vector<float> >* &m_var) {
   if(std::find(m_branchesInTree.begin(), m_branchesInTree.end(), branchName) != m_branchesInTree.end()) {
     tree->SetBranchStatus(branchName.c_str(), 1);
     tree->SetBranchAddress(branchName.c_str(), &m_var);
   }
   else {
+    std::cout << "not initialising " <<	branchName << " since it's not in the tree" << std::endl;
     m_var = NULL;
   }
 }
