@@ -45,6 +45,10 @@ namespace xAH {
     //const std::vector< std::string > m_PIDWPs = {"LooseAndBLayerLLH","MediumLLH","TightLLH"};
     //const std::vector< std::string > m_isolWPs = {"","_isolFixedCutLoose","_isolFixedCutTight","_isolFixedCutTightTrackOnly","_isolGradient","_isolGradientLoose","_isolLoose","_isolLooseTrackOnly","_isolTight"};
 
+    // reco parameters
+    int  author;
+    int  OQ;
+
     // track parameters
     float  trkd0;
     float  trkd0sig;

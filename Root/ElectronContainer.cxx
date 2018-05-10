@@ -50,6 +50,11 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_RecoEff_SF = new std::vector< std::vector< float > > ();
   }
 
+  if ( m_infoSwitch.m_recoparams ) {
+    m_author = new std::vector<int> ();
+    m_OQ     = new std::vector<int> ();
+  }
+
   if ( m_infoSwitch.m_trackparams ) {
     m_trkd0           = new std::vector<float> ();
     m_trkd0sig        = new std::vector<float> ();
@@ -154,6 +159,11 @@ ElectronContainer::~ElectronContainer()
     delete m_PIDEff_SF  ;
     delete m_IsoEff_SF  ;
     delete m_RecoEff_SF ;
+  }
+
+  if ( m_infoSwitch.m_recoparams ) {
+    delete m_author   ;
+    delete m_OQ       ;
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -267,6 +277,11 @@ void ElectronContainer::setTree(TTree *tree)
     connectBranch<std::vector<float> >(tree, "RecoEff_SF"  ,                &m_RecoEff_SF  );
   }
 
+  if ( m_infoSwitch.m_recoparams ) {
+    connectBranch<int>(tree, "author",   &m_author);
+    connectBranch<int>(tree, "OQ",       &m_OQ);
+  }
+
   if ( m_infoSwitch.m_trackparams ) {
     connectBranch<float>(tree, "trkd0",          &m_trkd0);
     connectBranch<float>(tree, "trkd0sig",       &m_trkd0sig);
@@ -374,6 +389,12 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
 
   }
 
+  // reco parameters
+  if ( m_infoSwitch.m_recoparams ) {
+    elec.author      = m_author     ->at(idx);
+    elec.OQ          = m_OQ         ->at(idx);
+  }
+
   // track parameters
   if ( m_infoSwitch.m_trackparams ) {
     elec.trkd0             = m_trkd0            ->at(idx);
@@ -478,6 +499,11 @@ void ElectronContainer::setBranches(TTree *tree)
     setBranch<vector<float> >(tree, "RecoEff_SF"  ,                m_RecoEff_SF  );
   }
 
+  if ( m_infoSwitch.m_recoparams ) {
+    setBranch<int>(tree, "author",   m_author);
+    setBranch<int>(tree, "OQ",       m_OQ);
+  }
+
   if ( m_infoSwitch.m_trackparams ) {
     setBranch<float>(tree, "trkd0",          m_trkd0);
     setBranch<float>(tree, "trkd0sig",       m_trkd0sig);
@@ -578,6 +604,11 @@ void ElectronContainer::clear()
 
     m_RecoEff_SF->clear();
 
+  }
+
+  if ( m_infoSwitch.m_recoparams ) {
+    m_author    -> clear();
+    m_OQ        -> clear();
   }
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -712,6 +743,11 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
         }
       }
     }
+  }
+
+  if ( m_infoSwitch.m_recoparams ) {
+    m_author -> push_back(elec->author());
+    m_OQ     -> push_back(elec->isGoodOQ(xAOD::EgammaParameters::BADCLUSELECTRON));
   }
 
   if ( m_infoSwitch.m_trackparams ) {
