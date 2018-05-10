@@ -243,6 +243,7 @@ namespace HelperClasses {
         m_isolation            isolation            exact
         m_isolationKinematics  isolationKinematics  exact
         m_quality              quality              exact
+        m_recoparams           recoparams           exact
         m_trackparams          trackparams          exact
         m_trackhitcont         trackhitcont         exact
         m_effSF                effSF                exact
@@ -343,6 +344,7 @@ namespace HelperClasses {
     bool m_isolationKinematics;
     bool m_quality;
     bool m_PID;
+    bool m_recoparams;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
