@@ -23,6 +23,7 @@
 #include "xAODAnaHelpers/JetTriggerEfficiencies.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
+#include "xAODAnaHelpers/TreeReader.h"
 
 // external tools include(s):
 #include "JetJvtEfficiency/JetJvtEfficiency.h"
@@ -78,8 +79,10 @@ EL::StatusCode JetTriggerEfficiencies :: setupJob (EL::Job& job)
 
   ANA_MSG_DEBUG( "Calling setupJob");
 
-  job.useXAOD ();
-  xAOD::Init( "JetTriggerEfficiencies" ).ignore(); // call before opening first file
+  if(!m_fromNTUP) {
+    job.useXAOD ();
+    xAOD::Init( "JetTriggerEfficiencies" ).ignore(); // call before opening first file
+  }
 
   return EL::StatusCode::SUCCESS;
 }
@@ -217,7 +220,15 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     m_probeTriggerInfo.push_back(thisJetTriggerInfo);
   }
 
-
+  
+  // parse selection info
+  if(m_splitValuesStr != "") {
+    std::vector<std::string> splitValuesVec = splitListString(m_splitValuesStr);
+    for(auto valStr : splitValuesVec ) {
+      m_splitValues.push_back(std::stof(valStr));
+    }
+  }
+  
   
   // create the histograms
 
@@ -278,28 +289,36 @@ EL::StatusCode JetTriggerEfficiencies :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
-  ANA_MSG_DEBUG( "Calling initialize");
+  ANA_MSG_INFO( "Calling initialize");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
+  // don't have xaodEvent in NTUP
+  if(!m_fromNTUP) {
+    m_event = wk()->xaodEvent();
+    m_store = wk()->xaodStore();
+  }
+  else {
+    m_event = NULL; // set NULL for xAH::HelperFunctions::retrieve()
+  }
 
+  ANA_MSG_INFO( "Have store");
   
   if ( m_offlineContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
     return EL::StatusCode::FAILURE;
   }
 
-
-  // Grab the TrigDecTool from the ToolStore
-  if(!m_trigDecTool_handle.isUserConfigured()){
-    ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Double-check the name of the tool." );
-    return EL::StatusCode::FAILURE;
+  if(!m_fromNTUP){
+    // Grab the TrigDecTool from the ToolStore
+    if(!m_trigDecTool_handle.isUserConfigured()){
+      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Double-check the name of the tool." );
+      return EL::StatusCode::FAILURE;
+    }
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
   }
-  ANA_CHECK( m_trigDecTool_handle.retrieve());
-  ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
   
   ANA_MSG_DEBUG( "JetTriggerEfficiencies Interface succesfully initialized!" );
-
+  
   return EL::StatusCode::SUCCESS;
 }
 
@@ -313,59 +332,114 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   // code will go.
 
   ANA_MSG_DEBUG( "Getting jet trigger efficiencies... " << m_name);
+  
+  
 
-  // retrieve event
+  // event info and MC weight
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
-
-  // MC event weight
   float mcEvtWeight(1.0);
-  if(eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ){
-    static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
-    if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-      ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-      return EL::StatusCode::FAILURE;
+  if(m_fromNTUP) {
+    // global_eventInfo already defined
+    // MC event weight
+    // to implement
+    ;
+  }
+  else {
+    // retrieve event
+    ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+    // MC event weight
+    if(eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ){
+      static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
+      if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
+        ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
+        return EL::StatusCode::FAILURE;
+      }
+      mcEvtWeight = mcEvtWeightAcc( *eventInfo );
     }
-    mcEvtWeight = mcEvtWeightAcc( *eventInfo );
   }
 
-  // get offline jet collection on which to do event selection and whih is going to be source of the quantity the efficiency is plotted as a function of
+  ANA_MSG_DEBUG("retrieved event");
+
+  // offline jets
   const xAOD::JetContainer* offlineJets(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(offlineJets, m_offlineContainerName, m_event, m_store, msg()) );
+  JetInfo offlineJetsInfo;
 
+  if(m_fromNTUP) {
+    ANA_CHECK( JetTriggerEfficiencies::retrieveJetInfo(offlineJetsInfo, m_offlineContainerName) );
+  }
+  else {
+    ANA_CHECK( HelperFunctions::retrieve(offlineJets, m_offlineContainerName, m_event, m_store, msg()) );
+  }
 
+  ANA_MSG_DEBUG("got offline jets");
+  
   // iterate over turnons
   for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+    ANA_MSG_DEBUG("turnon " << i_turnon);
 
     // get the reference trigger info
     std::string refChainName = m_referenceTriggers[i_turnon];
-    bool passedRefTrigger = m_trigDecTool_handle->isPassed(refChainName);
+    bool passedRefTrigger;
+    if(m_fromNTUP) {
+      passedRefTrigger = (std::find(global_eventInfo.passedTriggers->begin(), global_eventInfo.passedTriggers->end(), refChainName) != global_eventInfo.passedTriggers->end());
+    }
+    else {
+      passedRefTrigger = m_trigDecTool_handle->isPassed(refChainName);
+    }
+
+    ANA_MSG_DEBUG("got ref trigger info for " << refChainName);
+
     // no point doing anything else if the reference trigger failed
     if(!passedRefTrigger)
       continue;
 
+    ANA_MSG_DEBUG("passed ref trigger " << refChainName);
+    
     // get the probe trigger info
     TriggerDecision probeDecision;
     if(m_TDT) {
       std::string probeChainName = m_probeTriggers[i_turnon];
-      probeDecision.passedTrigger = m_trigDecTool_handle->isPassed(probeChainName);
-      const unsigned int probeBits = m_trigDecTool_handle->isPassedBits(probeChainName);
-      probeDecision.fillFromBits(probeBits);
+      ANA_MSG_DEBUG("getting TDT probe info for " << probeChainName);
+      if(m_fromNTUP) {
+        probeDecision.passedTrigger = (std::find(global_eventInfo.passedTriggers->begin(), global_eventInfo.passedTriggers->end(), probeChainName) != global_eventInfo.passedTriggers->end());
+        auto index = std::find(global_eventInfo.isPassBitsNames->begin(), global_eventInfo.isPassBitsNames->end(), probeChainName);
+        if (index == global_eventInfo.isPassBitsNames->end()) {
+          ANA_MSG_ERROR("failed to find trigger bits for " + probeChainName);
+          return EL::StatusCode::FAILURE;
+        }
+        int atIndex = index - global_eventInfo.isPassBitsNames->begin();
+        probeDecision.fillFromBits(global_eventInfo.isPassBits->at(atIndex));
+      }
+      else {
+        probeDecision.passedTrigger = m_trigDecTool_handle->isPassed(probeChainName);
+        const unsigned int probeBits = m_trigDecTool_handle->isPassedBits(probeChainName);
+        probeDecision.fillFromBits(probeBits);
+      }
     }
 
     // emulate trigger
     TriggerDecision probeDecisionEmulated;
     if(m_emulate) {
+      ANA_MSG_DEBUG("emulating trigger decisions");
       this->emulateTriggerDecision(m_probeTriggerInfo[i_turnon], probeDecisionEmulated);
+      ANA_MSG_DEBUG("emulation done");
     }
+
+
+
+    Long64_t eventNumber = m_fromNTUP ? global_eventInfo.eventNumber : eventInfo->eventNumber();
     if(m_TDT) {
       if(probeDecisionEmulated.passedTrigger != probeDecision.passedTrigger) {
         // if TDT failed, maybe it's because of prescales. Only worry about it if it is not - ie the trigger fails but was not prescaled out at L1 or HLT
         if( probeDecision.passedTrigger || (!probeDecision.passedTrigger && probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut)) {
-          ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + " in event " << eventInfo->eventNumber());
+          // Long64_t eventNumber = m_fromNTUP ? global_eventInfo.eventNumber : eventInfo->eventNumber();
+          ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + " in event " << eventNumber);
           std::cout << "  emulated passed? " << probeDecisionEmulated.passedTrigger << std::endl;
           std::cout << "  TDT passed?      " << probeDecision.passedTrigger << std::endl;
         }
+      }
+      else {
+        std::cout << "  yay they agree for " << m_probeTriggers[i_turnon] << " in event " << eventNumber << std::endl;
       }
     }
     
@@ -379,30 +453,24 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
 
     // apply selections
+    ANA_MSG_DEBUG("applying offline selections");
     int multiplicity_required = m_probeTriggerInfo[i_turnon].getMultiplicity();
     std::vector<int> good_indices;
-    bool passSelections = this->applySelections(m_probeTriggerInfo[i_turnon].offlineSelection, offlineJets, multiplicity_required, good_indices);
+    bool passSelections;
+    ANA_CHECK( this->applySelections(passSelections, m_probeTriggerInfo[i_turnon].offlineSelection, offlineJets, offlineJetsInfo, multiplicity_required, good_indices) );
     if (!passSelections)
       continue;
 
 
-
+    // maybe define get_var(stringVarName, xAOD::JetContainer jet, JetInfo jetInfo, isFromNTUP)?
 
     // get the relevant variable
     int index = m_variables_index[i_turnon];
     std::string variable = m_variables_var[i_turnon];
-    float var_to_fill = -1;
-    if(variable=="pt") {
-      var_to_fill = offlineJets->at(good_indices[index])->pt() / 1000.;
-    }
-    else if(variable=="m") {
-      var_to_fill = offlineJets->at(good_indices[index])->m() / 1000.;
-    }
-    else {
-      ANA_MSG_ERROR("don't know how to interpret the variable "+ variable);
-      return EL::StatusCode::FAILURE;
-    }
-
+    std::vector<float> var_vec;
+    ANA_CHECK (this->get_variable(var_vec, variable, offlineJets, offlineJetsInfo, m_fromNTUP) );
+    float var_to_fill = var_vec[index];
+    
 
     // fill hists
     // TDT needs to account for probe L1 and prescale
@@ -529,90 +597,92 @@ std::vector<std::string> splitListString(std::string parentString) {
 }
 
 
-bool JetTriggerEfficiencies :: applySelections(std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel) {
- 
-    for(unsigned int i=0; i<jets->size(); i++){
-      good_indices.push_back(i);
-    }
+EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel) {
+  
+  passSelections = false;
 
-    for(auto selection : selections) {
-      // if already failed, don't waste time calculating things
-      if(good_indices.size() < multiplicity_required)
-        return false;
-
-      // get the indices that pass this selection
-      std::vector<int> passed_indices = this->applySelection(selection, jets, good_indices, isHLTpresel);
-
-      // carry forward only the good ones
-      good_indices = passed_indices;
-    }
-    
+  unsigned int nJets = m_fromNTUP ? jetsInfo.pt->size() : jets->size();
+  for(unsigned int i=0; i<nJets; i++){
+    good_indices.push_back(i);
+  }
+  ANA_MSG_DEBUG("applying selections on " << nJets << " jets");
+  
+  for(auto selection : selections) {
+    // if already failed, don't waste time calculating things
     if(good_indices.size() < multiplicity_required)
-      return false;
+      return EL::StatusCode::SUCCESS;
     
-    return true;
+    // get the indices that pass this selection
+    std::vector<int> passed_indices;
+    ANA_MSG_DEBUG("about to apply selection on " << selection.first);
+    ANA_CHECK( this->applySelection(passed_indices, selection, jets, jetsInfo, good_indices, isHLTpresel) );
+    ANA_MSG_DEBUG("applied selection");
+
+    // carry forward only the good ones
+    good_indices = passed_indices;
+  }
+  
+  if(good_indices.size() < multiplicity_required)
+    return EL::StatusCode::SUCCESS;
+  
+  passSelections = true;
+  return EL::StatusCode::SUCCESS;
 }
 
 
-std::vector<int> JetTriggerEfficiencies :: applySelection(std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, std::vector<int> good_indices, bool isHLTpresel) {
-
-  std::vector<int> passed_indices;
+EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed_indices, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices, bool isHLTpresel) {
 
   // ignore multiplicity
   if(selection.first == "multiplicity") {
-    return good_indices;
+    passed_indices = good_indices;
+    return EL::StatusCode::SUCCESS;
   }
 
   // if preselection, ignore ET, if not ignore ET_preselection
   if(isHLTpresel) {
-    if(selection.first == "ET")
-      return good_indices;
+    if(selection.first == "ET") {
+      passed_indices = good_indices;
+      return EL::StatusCode::SUCCESS;
+    }
   }
   else {
-    if(selection.first == "ET_preselection")
-      return good_indices;
+    if(selection.first == "ET_preselection") {
+      passed_indices = good_indices;
+      return EL::StatusCode::SUCCESS;
+    }
   }
+
+  ANA_MSG_DEBUG("about to apply an actual selection");
+
+  // get variable
+  std::vector<float> thisvar_vec;
+  ANA_CHECK (this->get_variable(thisvar_vec, selection.first, jets, jetsInfo, m_fromNTUP) );
 
   // eta
   if(selection.first == "eta") {
     for(auto index : good_indices) {
-      if( fabs(jets->at(index)->eta()) > selection.second.first && fabs(jets->at(index)->eta()) < selection.second.second )
+      if( fabs(thisvar_vec.at(index)) > selection.second.first && fabs(thisvar_vec.at(index)) < selection.second.second )
         passed_indices.push_back(index);
     }
   }
   
-  // m
-  else if(selection.first == "m") {
+  // m, pt, ET
+  else if(selection.first == "m" || selection.first == "pt" || selection.first == "ET" || selection.first == "ET_preselection") {
     for(auto index : good_indices) {
-      if( jets->at(index)->m()/1000. > selection.second.first)
+      if( thisvar_vec.at(index) > selection.second.first)
         passed_indices.push_back(index);
     }
   }
   
-  // pt
-  else if(selection.first == "pt") {
-    for(auto index : good_indices) {
-      if( jets->at(index)->pt()/1000. > selection.second.first)
-        passed_indices.push_back(index);
-    }
-  }
   
-  // ET - try et(), else .p4().Et()
-  else if(selection.first == "ET" || selection.first == "ET_preselection") {
-    for(auto index : good_indices) {
-      if( jets->at(index)->p4().Et()/1000. > selection.second.first)
-        passed_indices.push_back(index);
-    }
-  }
-  
-
   // else complain
   else {
     ANA_MSG_ERROR("do not recognise selection " + selection.first + " - not applying");
-    return good_indices;
+    passed_indices = good_indices;
+    return EL::StatusCode::SUCCESS;
   }
   
-  return passed_indices;
+  return EL::StatusCode::SUCCESS;
   
 }
 
@@ -625,21 +695,43 @@ EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &
 
   // check for preselection
   if(triggerInfo.HLTjetContainerPreselection != "") {
-    const xAOD::JetContainer* HLTpreselJets(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(HLTpreselJets, triggerInfo.HLTjetContainerPreselection, m_event, m_store, msg()) );
-    
+
+    // define empty things
     std::vector<int> good_indices;
-    bool passSelections = this->applySelections(triggerInfo.HLTselection, HLTpreselJets, multiplicity_required, good_indices, true); // isHLTpresel=true
+    bool passSelections = false;
+    const xAOD::JetContainer* HLTpreselJets(nullptr);
+    JetInfo HLTpreselJetsInfo;
+
+    // if from NTUP, get right JetsInfo from global vector
+    if(m_fromNTUP) {
+      ANA_CHECK( JetTriggerEfficiencies::retrieveJetInfo(HLTpreselJetsInfo, triggerInfo.HLTjetContainerPreselection) );
+    }
+    // if not, retrieve xAOD jet container
+    else {
+      ANA_CHECK( HelperFunctions::retrieve(HLTpreselJets, triggerInfo.HLTjetContainerPreselection, m_event, m_store, msg()) );
+    }
+
+    ANA_MSG_DEBUG("about to apply emulation preselections");
+    ANA_CHECK( this->applySelections(passSelections, triggerInfo.HLTselection, HLTpreselJets, HLTpreselJetsInfo, multiplicity_required, good_indices, true) ); // isHLTpresel=true
+
     if (!passSelections)
       passed = false;
   }
 
   // main HLT selection
   const xAOD::JetContainer* HLTjets(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(HLTjets, triggerInfo.HLTjetContainer, m_event, m_store, msg()) );
+  JetInfo HLTjetsInfo;
+  if(m_fromNTUP) {
+    ANA_CHECK( JetTriggerEfficiencies::retrieveJetInfo(HLTjetsInfo, triggerInfo.HLTjetContainer) );
+  }
+  else {
+    ANA_CHECK( HelperFunctions::retrieve(HLTjets, triggerInfo.HLTjetContainer, m_event, m_store, msg()) );
+  }
   
   std::vector<int> good_indices;
-  bool passSelections = this->applySelections(triggerInfo.HLTselection, HLTjets, multiplicity_required, good_indices, false); // isHLTpresel=false
+  bool passSelections = false;
+  ANA_MSG_DEBUG("about to apply emulation selections");
+  ANA_CHECK( this->applySelections(passSelections, triggerInfo.HLTselection, HLTjets, HLTjetsInfo, multiplicity_required, good_indices, false) ); // isHLTpresel=false
   if (!passSelections)
     passed = false;
   
@@ -648,4 +740,68 @@ EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &
 
   return EL::StatusCode::SUCCESS;
 
+}
+
+
+EL::StatusCode JetTriggerEfficiencies::retrieveJetInfo(JetInfo &jetInfo, std::string jetCollectionName) {
+  bool found = false;
+  for(auto jetCollectionInfo : global_jetCollectionInfos) {
+    if(jetCollectionInfo.xAODname == jetCollectionName) {
+      jetInfo = jetCollectionInfo;
+      found = true;
+      break;
+    }
+  }
+  if(!found) {
+    ANA_MSG_ERROR("do not have necessary jet collection, xAODname " << jetCollectionName);
+    return EL::StatusCode::FAILURE;
+  }
+  return EL::StatusCode::SUCCESS;
+}
+
+
+
+EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec, std::string varName, const xAOD::JetContainer* jets, JetInfo &jetsInfo, bool fromNTUP) {
+
+  ANA_MSG_DEBUG("getting variable " << varName);
+
+  unsigned int nJets = fromNTUP ? jetsInfo.pt->size() : jets->size();
+
+  for( unsigned int index = 0; index < nJets; index++ ) {
+    if(varName == "eta") {
+      if(fromNTUP)
+        var_vec.push_back(jetsInfo.eta->at(index));
+      else
+        var_vec.push_back(jets->at(index)->eta());
+    }
+
+    else if(varName == "pt") {
+      if(fromNTUP)
+        var_vec.push_back(jetsInfo.pt->at(index));
+      else
+        var_vec.push_back(jets->at(index)->pt()/1000.);
+    }
+
+    else if(varName == "m") {
+      if(fromNTUP)
+        var_vec.push_back(jetsInfo.tlv.at(index).M());
+      else
+        var_vec.push_back(jets->at(index)->m()/1000.);
+    }
+
+    else if(varName == "ET" || varName == "ET_preselection") {
+      if(fromNTUP)
+        var_vec.push_back(jetsInfo.tlv.at(index).Et());
+      else
+        var_vec.push_back(jets->at(index)->p4().Et()/1000.);
+    }
+
+    else {
+      ANA_MSG_ERROR("do not recognise variable " + varName);
+      return EL::StatusCode::FAILURE;
+    }
+ 
+  }
+
+  return EL::StatusCode::SUCCESS;
 }

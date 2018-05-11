@@ -20,6 +20,9 @@
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
+// for JetInfo
+#include "xAODAnaHelpers/TreeReader.h"
+
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
 #include "JetJvtEfficiency/IJetJvtEfficiency.h"
@@ -273,7 +276,12 @@ public:
   /** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */
   std::string m_trigDecTool_name{"TDT:JetTriggerEfficiencies"};
   
+
   // configuration variables
+  
+  /// @brief 
+  bool m_fromNTUP = false;
+  
   /// @brief container to use as offline reference (ie efficiencies are made as a function of this)
   std::string m_offlineContainerName = "";
   
@@ -289,6 +297,11 @@ public:
   // modified from HistogramManager
   /// @brief generically the main name assigned to all histograms
   std::string m_mainHistName = "effHists";
+
+  /// @brief split by selection on this variable
+  std::string m_splitBy = "";
+  std::string m_splitValuesStr = "";
+
 
   /// @ brief path where jet trigger info script lives - needs to be part of this code so grid knows about it
   std::string m_jetTriggerInfoPath = "xAODAnaHelpers/menu";
@@ -318,6 +331,9 @@ private:
   std::vector<std::string> m_variables; //!
   std::vector<std::string> m_variables_var; //!
   std::vector<int> m_variables_index; //!
+
+  /// @brief vector of the split values to use
+  std::vector<float> m_splitValues; //!
 
   /// @brief vector of histograms - one for each turnon - that will be numerators (ie pass ref and probe) and denominators (ie pass ref) in the efficiencies
   std::vector<TH1F*> m_numeratorHistsTDT; //!
@@ -359,9 +375,13 @@ public:
   /* virtual int PassCuts( const xAOD::Jet* jet ); */
 
   virtual EL::StatusCode emulateTriggerDecision(JetTriggerInfo &triggerInfo, TriggerDecision &triggerDecision);
-  virtual bool applySelections(std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel=false);
-  virtual std::vector<int> applySelection(std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, std::vector<int> good_indices, bool isHLTpresel);
+  virtual EL::StatusCode applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel=false);
+  virtual EL::StatusCode applySelection(std::vector<int> &passed_indices, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices, bool isHLTpresel);
 
+  virtual EL::StatusCode retrieveJetInfo(JetInfo &jetInfo, std::string jetCollectionName);
+
+  // gets a variable by its string name, from the relevant one of xAOD jet container and NTUP's JetInfo
+  virtual EL::StatusCode get_variable(std::vector<float> &var_vec, std::string varName, const xAOD::JetContainer* jets, JetInfo &jetsInfo, bool fromNTUP);
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

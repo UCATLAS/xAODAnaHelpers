@@ -23,7 +23,20 @@
 #include <fstream>
 #include <map>
 
+// for adding to tstore?
+#include "xAODJet/JetContainer.h"
+#include "xAODCore/AuxContainerBase.h"
+// #include "xAODJet/versions/Jet_v1.h"
+// #include <IParticle.h>
+// #include "xAODBase/IParticle.h"
+#include <xAODAnaHelpers/JetContainer.h>
+
 using namespace std;
+
+
+// global variables
+std::vector< JetInfo > global_jetCollectionInfos;
+EventInfo global_eventInfo;
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(TreeReader)
@@ -89,6 +102,8 @@ EL::StatusCode TreeReader :: histInitialize ()
     std::cout << "  filled jet collection info with " << m_NTUPjetContainerNames.at(i) << ", " << m_xAODjetContainerNames.at(i) << std::endl;
   }
 
+
+  ANA_MSG_DEBUG("returning SUCCESS from histInitialize()");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -98,7 +113,7 @@ EL::StatusCode TreeReader :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-
+  ANA_MSG_DEBUG("calling fileExecute()");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -129,26 +144,26 @@ EL::StatusCode TreeReader :: changeInput (bool firstFile)
   tree->SetBranchStatus ("*", 0);
 
   //event-level variables
-  this->SetBranchStatusAndAddress(tree, "runNumber",         m_runNumber);
-  this->SetBranchStatusAndAddress(tree, "eventNumber",       m_eventNumber);
-  this->SetBranchStatusAndAddress(tree, "lumiBlock",         m_lumiBlock);
+  this->SetBranchStatusAndAddress(tree, "runNumber",         m_eventInfo.runNumber);
+  this->SetBranchStatusAndAddress(tree, "eventNumber",       m_eventInfo.eventNumber);
+  this->SetBranchStatusAndAddress(tree, "lumiBlock",         m_eventInfo.lumiBlock);
 
-  this->SetBranchStatusAndAddress(tree, "bcid",              m_bcid);
-  // this->SetBranchStatusAndAddress(tree, "timeStamp",         m_timeStamp);
-  // this->SetBranchStatusAndAddress(tree, "timeStampNSOffset", m_timeStampNSOffset);
-  // this->SetBranchStatusAndAddress(tree, "LArError",          m_LArError);
-  // this->SetBranchStatusAndAddress(tree, "LArFlags",          m_LArFlags);
+  this->SetBranchStatusAndAddress(tree, "bcid",              m_eventInfo.bcid);
+  // this->SetBranchStatusAndAddress(tree, "timeStamp",         m_eventInfo.timeStamp);
+  // this->SetBranchStatusAndAddress(tree, "timeStampNSOffset", m_eventInfo.timeStampNSOffset);
+  // this->SetBranchStatusAndAddress(tree, "LArError",          m_eventInfo.LArError);
+  // this->SetBranchStatusAndAddress(tree, "LArFlags",          m_eventInfo.LArFlags);
 
-  this->SetBranchStatusAndAddress(tree, "NPV",                            m_NPV);
-  this->SetBranchStatusAndAddress(tree, "averageInteractionsPerCrossing", m_avgIntPerX);
-  this->SetBranchStatusAndAddress(tree, "actualInteractionsPerCrossing",  m_actIntPerX);
-  this->SetBranchStatusAndAddress(tree, "correct_mu",                     m_correct_mu);
-  this->SetBranchStatusAndAddress(tree, "weight_pileup",                  m_pileupWeight);
+  this->SetBranchStatusAndAddress(tree, "NPV",                            m_eventInfo.NPV);
+  this->SetBranchStatusAndAddress(tree, "averageInteractionsPerCrossing", m_eventInfo.avgIntPerX);
+  this->SetBranchStatusAndAddress(tree, "actualInteractionsPerCrossing",  m_eventInfo.actIntPerX);
+  this->SetBranchStatusAndAddress(tree, "correct_mu",                     m_eventInfo.correct_mu);
+  this->SetBranchStatusAndAddress(tree, "weight_pileup",                  m_eventInfo.pileupWeight);
 
-  this->SetBranchStatusAndAddress(tree, "passedTriggers",   m_passedTriggers);
-  this->SetBranchStatusAndAddress(tree, "triggerPrescales", m_triggerPrescales);
-  this->SetBranchStatusAndAddress(tree, "isPassBitsNames",  m_isPassBitsNames);
-  this->SetBranchStatusAndAddress(tree, "isPassBits",       m_isPassBits);
+  this->SetBranchStatusAndAddress(tree, "passedTriggers",   m_eventInfo.passedTriggers);
+  this->SetBranchStatusAndAddress(tree, "triggerPrescales", m_eventInfo.triggerPrescales);
+  this->SetBranchStatusAndAddress(tree, "isPassBitsNames",  m_eventInfo.isPassBitsNames);
+  this->SetBranchStatusAndAddress(tree, "isPassBits",       m_eventInfo.isPassBits);
 
 
   for(unsigned int i = 0; i < m_jetCollectionInfos.size(); i++) {
@@ -217,7 +232,10 @@ EL::StatusCode TreeReader :: initialize ()
   // input events.
 
 
-  // Info("initialize()", "Calling initialize \n");
+  Info("initialize()", "Calling initialize \n");
+  // m_event = wk()->xaodEvent();
+  // m_store = wk()->xaodStore();
+
   // Info("initialize()", "Succesfully initialized! \n");
 
 
@@ -234,24 +252,66 @@ EL::StatusCode TreeReader :: execute ()
 
   ++m_eventCounter;
 
-  ANA_MSG_INFO("about to get entry " << wk()->treeEntry() << " of tree");
+  ANA_MSG_DEBUG("about to get entry " << wk()->treeEntry() << " of tree");
   wk()->tree()->GetEntry (wk()->treeEntry());
-  ANA_MSG_INFO("entry got successfully");
+  ANA_MSG_DEBUG("entry got successfully");
 
 
-  if(m_eventCounter % 10000 == 0) cout << "executing event " << m_eventCounter << endl;
-  // else if(m_debug) cout << "executing event " << m_eventCounter << endl;
+  // xAOD::TEvent* event = wk()->xaodEvent();
+  // ANA_MSG_INFO("got xaodEvent");
+  // xAOD::TStore* store = wk()->xaodStore();
+  // ANA_MSG_INFO("got xaodStore");
 
-  // std::cout << "this event has runNum, LB, evtNum = " << m_runNumber << ", " << m_lumiBlock << ", " << m_eventNumber << std::endl;
-  for(auto jetInfo : m_jetCollectionInfos) {
-    unsigned int nJets = jetInfo.pt->size();
-    float jetPt0 = 0;
-    if(nJets > 0)
-      jetPt0 = jetInfo.pt->at(0);
+
+  if(m_eventCounter % 10000 == 0)
+    ANA_MSG_INFO("executing event " << m_eventCounter);
+  else
+    ANA_MSG_DEBUG("executing event " << m_eventCounter);
+
+  ANA_MSG_DEBUG("this event has runNum, LB, evtNum = " << m_eventInfo.runNumber << ", " << m_eventInfo.lumiBlock << ", " << m_eventInfo.eventNumber);
+  
+  
+    
+  // https://gitlab.cern.ch/atlas/athena/blob/21.2/Event/xAOD/xAODJet/Root/Jet_v1.cxx#L184
+  for(unsigned int i = 0; i < m_jetCollectionInfos.size(); i++) {
+    ANA_MSG_DEBUG("setting TLV for " << m_jetCollectionInfos.at(i).NTUPname);
+    m_jetCollectionInfos.at(i).setTLV();
+    ANA_MSG_DEBUG("there are " << m_jetCollectionInfos.at(i).pt->size() << " " << m_jetCollectionInfos.at(i).NTUPname << " jets");
+    
+
+    /*
+    xAOD::JetContainer* goodJets = new xAOD::JetContainer();
+    xAOD::AuxContainerBase* goodJetsAux = new xAOD::AuxContainerBase();
+    goodJets->setStore( goodJetsAux ); //< Connect the two
+
+    for(unsigned int i = 0; i < jetInfo.pt->size(); i++) {
+
+        xAOD::Jet* jet = new xAOD::Jet();
+        goodJets->push_back( jet ); // jet acquires the goodJets auxstore
+        // jet->setJetP4(jetInfo.tlv->at(i));
+        // jet->setPxPyPzE(jetInfo.tlv->at(i).Px(), jetInfo.tlv->at(i).Py(), jetInfo.tlv->at(i).Pz(), jetInfo.tlv->at(i).E());
+        // IParticle::FourMom_t fourMom;
+        xAOD::JetFourMom_t fourMom;
+        // const xAOD::Jet::JetFourMom_t fourMom;
+        fourMom.SetPxPyPzE(jetInfo.tlv->at(i).Px(), jetInfo.tlv->at(i).Py(), jetInfo.tlv->at(i).Pz(), jetInfo.tlv->at(i).E());
+        jet->setJetP4(fourMom);
+
+        // now to add any/all aux data I want???
+        // ->auxdata< int >( "mySignal" ) = 1
+      }
+
+    ANA_CHECK(m_store->record( goodJets, jetInfo.xAODname ));
+    ANA_CHECK(m_store->record( goodJetsAux, jetInfo.xAODname+"Aux." ));
+    // of course this doesn't work
+    */
+
   }
 
-
-
+  // set global variables for use by other algorithms
+  global_jetCollectionInfos = m_jetCollectionInfos;
+  global_eventInfo = m_eventInfo;
+  
+  ANA_MSG_DEBUG("done with execute");
   return EL::StatusCode::SUCCESS;
 }
 
