@@ -40,6 +40,8 @@ class JetInfo {
   vector<float>* phi = nullptr;
   vector<float>* E = nullptr;
 
+  vector<TLorentzVector> tlv;
+
   vector<float>* muonSegments = nullptr;
   vector<float>* EMFrac = nullptr;
   vector<float>* HECFrac = nullptr;
@@ -69,6 +71,48 @@ class JetInfo {
   vector<float>* gscScalePt = nullptr;
   vector<float>* insituScalePt = nullptr;
 
+  void setTLV() {
+    for(unsigned int i = 0; i < pt->size(); i++){
+      TLorentzVector this_tlv;
+      this_tlv.SetPtEtaPhiE(pt->at(i), eta->at(i), phi->at(i), E->at(i));
+      tlv.push_back(this_tlv);
+    }
+  }
+
+};
+
+class EventInfo {
+ public:
+  
+  // event level quantities
+  Int_t     runNumber; //!
+  Long64_t  eventNumber; //!
+  int       lumiBlock; //!
+
+  int       bcid; //!
+
+  uint32_t  timeStamp; //!
+  uint32_t  timeStampNSOffset; //!
+  uint32_t  coreFlags; //!
+  bool      LArError; //!
+  uint32_t  LArFlags; //!
+
+  bool      TileError; //!
+  uint32_t  TileFlags; //!
+  bool      SCTError; //!
+  uint32_t  SCTFlags; //!
+
+  int       NPV = -1; //!  
+  float     avgIntPerX = -1; //!
+  float     actIntPerX = -1; //!
+  float     correct_mu = -1; //!
+  float     pileupWeight = -1; //!
+
+  vector<std::string>*  passedTriggers = nullptr; //!
+  vector<float>*        triggerPrescales = nullptr; //!
+  vector<std::string>*  isPassBitsNames = nullptr;  //!
+  vector<unsigned int>* isPassBits = nullptr;  //!
+
 };
 
 
@@ -83,40 +127,8 @@ class TreeReader : public xAH::Algorithm
 
 
  private:
-
   int m_eventCounter = 0; //!
-  
-  // event level quantities
-  Int_t     m_runNumber; //!
-  Long64_t  m_eventNumber; //!
-  int       m_lumiBlock; //!
 
-  int       m_bcid; //!
-
-  //uint32_t  m_timeStamp; //!
-  //uint32_t  m_timeStampNSOffset; //!
-  //bool      m_LArError; //!
-  //uint32_t  m_LArFlags; //!
-  // coreFlags
-  // TileError
-  // SCTError
-  // TileFlags
-  // SCTFlags
-
-  int       m_NPV = -1; //!  
-  float     m_avgIntPerX = -1; //!
-  float     m_actIntPerX = -1; //!
-  float     m_correct_mu = -1; //!
-  float     m_pileupWeight = -1; //!
-
-  vector<std::string>*  m_passedTriggers = nullptr; //!
-  vector<float>*        m_triggerPrescales = nullptr; //!
-  vector<std::string>*  m_isPassBitsNames = nullptr;  //!
-  vector<unsigned int>* m_isPassBits = nullptr;  //!
-
-
-
-  
   // list of branches in tree
   std::vector<string> m_branchesInTree; //!
 
@@ -124,7 +136,7 @@ class TreeReader : public xAH::Algorithm
   std::vector<std::string> m_NTUPjetContainerNames; //!
   std::vector<std::string> m_xAODjetContainerNames; //!
   std::vector< JetInfo >   m_jetCollectionInfos; //!
-
+  EventInfo m_eventInfo; //!
   
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -163,6 +175,7 @@ class TreeReader : public xAH::Algorithm
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector<std::string>* &m_var);
   void SetBranchStatusAndAddress(TTree* &tree, std::string branchName, std::vector< std::vector<float> >* &m_var);
 
+
   
   
   // this is needed to distribute the algorithm to the workers
@@ -170,5 +183,8 @@ class TreeReader : public xAH::Algorithm
   
   
 };
+
+extern std::vector< JetInfo > global_jetCollectionInfos;
+extern EventInfo global_eventInfo;
 
 #endif
