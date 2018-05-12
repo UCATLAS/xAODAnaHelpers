@@ -313,10 +313,9 @@ EL::StatusCode JetTriggerEfficiencies :: initialize ()
     m_store = wk()->xaodStore();
   }
   else {
-    m_event = NULL; // set NULL for xAH::HelperFunctions::retrieve()
+    m_event = NULL; // set NULL for xAH::HelperFunctions::retrieve() (not that I use that currently)
   }
 
-  ANA_MSG_INFO( "Have store");
   
   if ( m_offlineContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
@@ -404,8 +403,7 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     ANA_MSG_ERROR("I don't know what to do with m_splitBy = " << m_splitBy);
   }
   
-  std::cout << "the value of " << m_splitBy << " is " << splitVal << std::endl;
-  
+  ANA_MSG_DEBUG("the value of " << m_splitBy << " is " << splitVal);
   
   
   // iterate over turnons
@@ -709,7 +707,7 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
   }
   
   // m, pt, ET
-  else if(selection.first == "m" || selection.first == "pt" || selection.first == "ET" || selection.first == "ET_preselection") {
+  else if(selection.first == "m" || selection.first == "singlejetmass" || selection.first == "pt" || selection.first == "ET" || selection.first == "ET_preselection") {
     for(auto index : good_indices) {
       if( thisvar_vec.at(index) > selection.second.first)
         passed_indices.push_back(index);
@@ -763,15 +761,18 @@ EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &
   // main HLT selection
   const xAOD::JetContainer* HLTjets(nullptr);
   JetInfo HLTjetsInfo;
+  ANA_MSG_DEBUG("about to retrieve HLT jet collection");
   if(m_fromNTUP) {
     ANA_CHECK( JetTriggerEfficiencies::retrieveJetInfo(HLTjetsInfo, triggerInfo.HLTjetContainer) );
-    // ANA_MSG_DEBUG("lead ntup jet 4-vec and ET: (" << HLTjetsInfo.pt->at(0) << ", " << HLTjetsInfo.eta->at(0) << ", " << HLTjetsInfo.phi->at(0) << ", " << HLTjetsInfo.E->at(0) << ") " << HLTjetsInfo.tlv.at(0).Et() << "now tlv pt = "  << HLTjetsInfo.tlv.at(0).Pt() << " new tlv " << HLTjetsInfo.TLV(0).Et());
-    ANA_MSG_DEBUG("lead ntup jet 4-vec and ET: (" << HLTjetsInfo.pt->at(0) << ", " << HLTjetsInfo.eta->at(0) << ", " << HLTjetsInfo.phi->at(0) << ", " << HLTjetsInfo.E->at(0) << ") " << HLTjetsInfo.TLV(0).Et() );
-    ANA_MSG_DEBUG("em const pu etaJES gsc insit " << HLTjetsInfo.emScalePt->at(0) << ", " << HLTjetsInfo.constScalePt->at(0) << ", " << HLTjetsInfo.pileupScalePt->at(0) << ", " << HLTjetsInfo.etaJESScalePt->at(0) << ", " << HLTjetsInfo.gscScalePt->at(0) << ", " << HLTjetsInfo.insituScalePt->at(0) ); 
+    if(HLTjetsInfo.pt->size() > 0) {
+      ANA_MSG_DEBUG("lead ntup jet 4-vec and ET: (" << HLTjetsInfo.pt->at(0) << ", " << HLTjetsInfo.eta->at(0) << ", " << HLTjetsInfo.phi->at(0) << ", " << HLTjetsInfo.E->at(0) << ") " << HLTjetsInfo.TLV(0).Et() );
+    }
   }
   else {
     ANA_CHECK( HelperFunctions::retrieve(HLTjets, triggerInfo.HLTjetContainer, m_event, m_store, msg()) );
-    ANA_MSG_DEBUG("lead xaod jet 4-vec and ET: (" << HLTjets->at(0)->pt()/1000. << ", " << HLTjets->at(0)->eta() << ", " << HLTjets->at(0)->phi() << ", " << HLTjets->at(0)->p4().E()/1000. << ") " << HLTjets->at(0)->p4().Et()/1000. );
+    if(HLTjets->size() > 0) {
+      ANA_MSG_DEBUG("lead xaod jet 4-vec and ET: (" << HLTjets->at(0)->pt()/1000. << ", " << HLTjets->at(0)->eta() << ", " << HLTjets->at(0)->phi() << ", " << HLTjets->at(0)->p4().E()/1000. << ") " << HLTjets->at(0)->p4().Et()/1000. );
+    }
   }
   
   std::vector<int> good_indices;
@@ -831,7 +832,7 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
         var_vec.push_back(jets->at(index)->pt()/1000.);
     }
 
-    else if(varName == "m") {
+    else if(varName == "m" || varName == "singlejetmass") {
       if(fromNTUP)
         var_vec.push_back(jetsInfo.TLV(index).M());
       else
