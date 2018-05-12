@@ -274,8 +274,8 @@ EL::StatusCode TreeReader :: execute ()
     
   // https://gitlab.cern.ch/atlas/athena/blob/21.2/Event/xAOD/xAODJet/Root/Jet_v1.cxx#L184
   for(unsigned int i = 0; i < m_jetCollectionInfos.size(); i++) {
-    ANA_MSG_DEBUG("setting TLV for " << m_jetCollectionInfos.at(i).NTUPname);
-    m_jetCollectionInfos.at(i).setTLV();
+    // ANA_MSG_DEBUG("setting TLV for " << m_jetCollectionInfos.at(i).NTUPname);
+    // m_jetCollectionInfos.at(i).setTLV();
     ANA_MSG_DEBUG("there are " << m_jetCollectionInfos.at(i).pt->size() << " " << m_jetCollectionInfos.at(i).NTUPname << " jets");
     
 

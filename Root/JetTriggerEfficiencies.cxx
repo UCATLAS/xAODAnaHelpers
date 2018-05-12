@@ -358,7 +358,8 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     }
   }
 
-  ANA_MSG_DEBUG("retrieved event");
+  Long64_t eventNumber = m_fromNTUP ? global_eventInfo.eventNumber : eventInfo->eventNumber();
+  ANA_MSG_DEBUG("retrieved event with eventNumber " << eventNumber);
 
   // offline jets
   const xAOD::JetContainer* offlineJets(nullptr);
@@ -427,19 +428,18 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
 
 
-    Long64_t eventNumber = m_fromNTUP ? global_eventInfo.eventNumber : eventInfo->eventNumber();
     if(m_TDT) {
       if(probeDecisionEmulated.passedTrigger != probeDecision.passedTrigger) {
         // if TDT failed, maybe it's because of prescales. Only worry about it if it is not - ie the trigger fails but was not prescaled out at L1 or HLT
         if( probeDecision.passedTrigger || (!probeDecision.passedTrigger && probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut)) {
-          // Long64_t eventNumber = m_fromNTUP ? global_eventInfo.eventNumber : eventInfo->eventNumber();
+
           ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + " in event " << eventNumber);
           std::cout << "  emulated passed? " << probeDecisionEmulated.passedTrigger << std::endl;
           std::cout << "  TDT passed?      " << probeDecision.passedTrigger << std::endl;
         }
       }
       else {
-        std::cout << "  yay they agree for " << m_probeTriggers[i_turnon] << " in event " << eventNumber << std::endl;
+        ANA_MSG_DEBUG("they agree for " << m_probeTriggers[i_turnon] << " in event " << eventNumber << " - both " << probeDecision.passedTrigger);
       }
     }
     
@@ -723,9 +723,13 @@ EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &
   JetInfo HLTjetsInfo;
   if(m_fromNTUP) {
     ANA_CHECK( JetTriggerEfficiencies::retrieveJetInfo(HLTjetsInfo, triggerInfo.HLTjetContainer) );
+    // ANA_MSG_DEBUG("lead ntup jet 4-vec and ET: (" << HLTjetsInfo.pt->at(0) << ", " << HLTjetsInfo.eta->at(0) << ", " << HLTjetsInfo.phi->at(0) << ", " << HLTjetsInfo.E->at(0) << ") " << HLTjetsInfo.tlv.at(0).Et() << "now tlv pt = "  << HLTjetsInfo.tlv.at(0).Pt() << " new tlv " << HLTjetsInfo.TLV(0).Et());
+    ANA_MSG_DEBUG("lead ntup jet 4-vec and ET: (" << HLTjetsInfo.pt->at(0) << ", " << HLTjetsInfo.eta->at(0) << ", " << HLTjetsInfo.phi->at(0) << ", " << HLTjetsInfo.E->at(0) << ") " << HLTjetsInfo.TLV(0).Et() );
+    ANA_MSG_DEBUG("em const pu etaJES gsc insit " << HLTjetsInfo.emScalePt->at(0) << ", " << HLTjetsInfo.constScalePt->at(0) << ", " << HLTjetsInfo.pileupScalePt->at(0) << ", " << HLTjetsInfo.etaJESScalePt->at(0) << ", " << HLTjetsInfo.gscScalePt->at(0) << ", " << HLTjetsInfo.insituScalePt->at(0) ); 
   }
   else {
     ANA_CHECK( HelperFunctions::retrieve(HLTjets, triggerInfo.HLTjetContainer, m_event, m_store, msg()) );
+    ANA_MSG_DEBUG("lead xaod jet 4-vec and ET: (" << HLTjets->at(0)->pt()/1000. << ", " << HLTjets->at(0)->eta() << ", " << HLTjets->at(0)->phi() << ", " << HLTjets->at(0)->p4().E()/1000. << ") " << HLTjets->at(0)->p4().Et()/1000. );
   }
   
   std::vector<int> good_indices;
@@ -756,7 +760,10 @@ EL::StatusCode JetTriggerEfficiencies::retrieveJetInfo(JetInfo &jetInfo, std::st
     ANA_MSG_ERROR("do not have necessary jet collection, xAODname " << jetCollectionName);
     return EL::StatusCode::FAILURE;
   }
-  return EL::StatusCode::SUCCESS;
+  else {
+    ANA_MSG_DEBUG("retrieved " << jetCollectionName << " from ntup");
+    return EL::StatusCode::SUCCESS;
+  }
 }
 
 
@@ -784,14 +791,14 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
 
     else if(varName == "m") {
       if(fromNTUP)
-        var_vec.push_back(jetsInfo.tlv.at(index).M());
+        var_vec.push_back(jetsInfo.TLV(index).M());
       else
         var_vec.push_back(jets->at(index)->m()/1000.);
     }
 
     else if(varName == "ET" || varName == "ET_preselection") {
       if(fromNTUP)
-        var_vec.push_back(jetsInfo.tlv.at(index).Et());
+        var_vec.push_back(jetsInfo.TLV(index).Et());
       else
         var_vec.push_back(jets->at(index)->p4().Et()/1000.);
     }

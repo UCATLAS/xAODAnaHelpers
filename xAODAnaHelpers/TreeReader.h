@@ -71,14 +71,12 @@ class JetInfo {
   vector<float>* gscScalePt = nullptr;
   vector<float>* insituScalePt = nullptr;
 
-  void setTLV() {
-    for(unsigned int i = 0; i < pt->size(); i++){
-      TLorentzVector this_tlv;
-      this_tlv.SetPtEtaPhiE(pt->at(i), eta->at(i), phi->at(i), E->at(i));
-      tlv.push_back(this_tlv);
-    }
+  TLorentzVector TLV(int i) {
+    TLorentzVector this_tlv;
+    this_tlv.SetPtEtaPhiE(pt->at(i), eta->at(i), phi->at(i), E->at(i));
+    return this_tlv;
   }
-
+  
 };
 
 class EventInfo {
