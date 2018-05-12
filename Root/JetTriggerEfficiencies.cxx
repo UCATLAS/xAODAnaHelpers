@@ -221,28 +221,44 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
   }
 
   
-  // parse selection info
-  if(m_splitValuesStr != "") {
-    std::vector<std::string> splitValuesVec = splitListString(m_splitValuesStr);
+  // parse the split selection info
+  std::vector<std::string> splitValuesVec;
+  if(m_splitBy != "") {
+    ANA_MSG_INFO("decoding splitValuesStr " << m_splitValuesStr);
+    // this should be in a format like "["1","2","3"]"
+    splitValuesVec = splitListString(m_splitValuesStr);
     for(auto valStr : splitValuesVec ) {
       m_splitValues.push_back(std::stof(valStr));
     }
   }
-  
-  
-  // create the histograms
+  else {
+    m_splitValues.push_back(-999);
+    m_splitValues.push_back(999);
+  }
 
-  for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
-    std::string histname = m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_"+m_variables[i_turnon];
-    std::string xaxistitle = m_offlineContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString;
+  
+  // create the histograms  
+  for (unsigned int i_split = 0; i_split < m_splitValues.size()-1; i_split++) {
 
-    if(m_TDT) {
-      m_numeratorHistsTDT.push_back( book(m_mainHistName, histname + "_numTDT", xaxistitle, 1000, 0, 1000, wk()) );
-      m_denominatorHistsTDT.push_back( book(m_mainHistName, histname + "_denomTDT", xaxistitle, 1000, 0, 1000, wk()) );
+    std::string thisHistNameSplit = "";
+    std::string thisHistXaxisSplit = "";
+    if(m_splitBy != "") {
+      thisHistNameSplit = splitValuesVec[i_split] + m_splitBy + splitValuesVec[i_split+1] + "/";
+      thisHistXaxisSplit = ", " + splitValuesVec[i_split] + " #leq " + m_splitBy + " < " + splitValuesVec[i_split+1];
     }
-    if(m_emulate) {
-      m_numeratorHistsEmulated.push_back( book(m_mainHistName, histname + "_numEmulated", xaxistitle, 1000, 0, 1000, wk()) );
-      m_denominatorHistsEmulated.push_back( book(m_mainHistName, histname + "_denomEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+
+    for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+      std::string histname = m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_"+m_variables[i_turnon];
+      std::string xaxistitle = m_offlineContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString + thisHistXaxisSplit;
+
+      if(m_TDT) {
+        m_numeratorHistsTDT.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_numTDT", xaxistitle, 1000, 0, 1000, wk()) );
+        m_denominatorHistsTDT.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_denomTDT", xaxistitle, 1000, 0, 1000, wk()) );
+      }
+      if(m_emulate) {
+        m_numeratorHistsEmulated.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_numEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+        m_denominatorHistsEmulated.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_denomEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+      }
     }
   }
 
@@ -373,6 +389,24 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   }
 
   ANA_MSG_DEBUG("got offline jets");
+
+
+  // get split value
+  float splitVal;
+  if(m_splitBy == "") {
+    // m_splitVals is {-999,999}
+    splitVal = 0;
+  }
+  else if (m_splitBy == "avgIntPerX") {
+    ANA_CHECK (this->get_event_variable(splitVal, m_splitBy, eventInfo, global_eventInfo, m_fromNTUP) );
+  }
+  else {
+    ANA_MSG_ERROR("I don't know what to do with m_splitBy = " << m_splitBy);
+  }
+  
+  std::cout << "the value of " << m_splitBy << " is " << splitVal << std::endl;
+  
+  
   
   // iterate over turnons
   for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
@@ -462,8 +496,6 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       continue;
 
 
-    // maybe define get_var(stringVarName, xAOD::JetContainer jet, JetInfo jetInfo, isFromNTUP)?
-
     // get the relevant variable
     int index = m_variables_index[i_turnon];
     std::string variable = m_variables_var[i_turnon];
@@ -472,22 +504,32 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     float var_to_fill = var_vec[index];
     
 
-    // fill hists
-    // TDT needs to account for probe L1 and prescale
-    if(m_TDT) {
-      if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
-        m_denominatorHistsTDT.at(i_turnon)->Fill(var_to_fill);
-        if(probeDecision.passedTrigger){
-          m_numeratorHistsTDT.at(i_turnon)->Fill(var_to_fill);
+    
+    // iterate over selections
+    for (unsigned int i_split = 0; i_split < m_splitValues.size()-1; i_split++) {
+
+      int histNum = i_split*m_probeTriggers.size() + i_turnon;
+
+      if(splitVal < m_splitValues[i_split] || splitVal >= m_splitValues[i_split+1])
+        continue;
+
+      // fill hists
+      // TDT needs to account for probe L1 and prescale
+      if(m_TDT) {
+        if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
+          m_denominatorHistsTDT.at(histNum)->Fill(var_to_fill);
+          if(probeDecision.passedTrigger){
+            m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
+          }
         }
       }
-    }
-    // emulated doesn't need to worry about probe L1 or prescale
-    // currently not emulating L1 in order to compare, add as option?
-    if(m_emulate) {
-      m_denominatorHistsEmulated.at(i_turnon)->Fill(var_to_fill);
-      if(probeDecisionEmulated.passedTrigger){
-        m_numeratorHistsEmulated.at(i_turnon)->Fill(var_to_fill);
+      // emulated doesn't need to worry about probe L1 or prescale
+      // currently not emulating L1 in order to compare, add as option?
+      if(m_emulate) {
+        m_denominatorHistsEmulated.at(histNum)->Fill(var_to_fill);
+        if(probeDecisionEmulated.passedTrigger){
+          m_numeratorHistsEmulated.at(histNum)->Fill(var_to_fill);
+        }
       }
     }
   }
@@ -657,8 +699,8 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
   // get variable
   std::vector<float> thisvar_vec;
   ANA_CHECK (this->get_variable(thisvar_vec, selection.first, jets, jetsInfo, m_fromNTUP) );
-
-  // eta
+ 
+ // eta
   if(selection.first == "eta") {
     for(auto index : good_indices) {
       if( fabs(thisvar_vec.at(index)) > selection.second.first && fabs(thisvar_vec.at(index)) < selection.second.second )
@@ -811,4 +853,26 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
   }
 
   return EL::StatusCode::SUCCESS;
+}
+
+
+
+EL::StatusCode JetTriggerEfficiencies::get_event_variable(float &var, std::string varName, const xAOD::EventInfo* eventInfo_xAOD, EventInfo &eventInfo_ntup, bool fromNTUP) {
+
+  ANA_MSG_DEBUG("getting event variable " << varName);
+
+  if(varName == "avgIntPerX") {
+    if(fromNTUP)
+      var = eventInfo_ntup.avgIntPerX;
+    else
+      var = eventInfo_xAOD->averageInteractionsPerCrossing();
+  }
+  
+  else {
+    ANA_MSG_ERROR("do not recognise variable " + varName);
+    return EL::StatusCode::FAILURE;
+  }
+
+  return EL::StatusCode::SUCCESS;
+
 }

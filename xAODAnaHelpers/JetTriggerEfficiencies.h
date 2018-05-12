@@ -383,6 +383,8 @@ public:
   // gets a variable by its string name, from the relevant one of xAOD jet container and NTUP's JetInfo
   virtual EL::StatusCode get_variable(std::vector<float> &var_vec, std::string varName, const xAOD::JetContainer* jets, JetInfo &jetsInfo, bool fromNTUP);
 
+  virtual EL::StatusCode get_event_variable(float &var, std::string varName, const xAOD::EventInfo* eventInfo_xAOD, EventInfo &eventInfo_ntup, bool fromNTUP);
+
   /// @cond
   // this is needed to distribute the algorithm to the workers
   ClassDef(JetTriggerEfficiencies, 1);
