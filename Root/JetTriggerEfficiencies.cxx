@@ -102,9 +102,10 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
 
   // if last character of name is a alphanumeric add a / so that
   // in the output file, a TDirectory is created with the histograms inside
-  if( isalnum( m_mainHistName.back() ) && !ispunct( m_mainHistName.back() ) ) {
-    m_mainHistName += "/";
-  }
+  // if( isalnum( m_mainHistName.back() ) && !ispunct( m_mainHistName.back() ) ) {
+    // m_mainHistName += "/";
+  // }
+  m_mainHistName = m_mainHistName + "_" + m_name + "/";
 
   // decode the turnon string
   // each turnon is of the form "probeTrigger/refTrigger" and they are split by "|"
@@ -262,6 +263,45 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     }
   }
 
+  // have a set with no splitting, nosel
+  if(m_splitBy != "") {
+    for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
+      std::string histname = m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_"+m_variables[i_turnon];
+      std::string xaxistitle = m_offlineContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString;
+
+      if(m_TDT) {
+        m_numeratorHistsTDT.push_back( book(m_mainHistName, histname + "_numTDT", xaxistitle, 1000, 0, 1000, wk()) );
+        m_denominatorHistsTDT.push_back( book(m_mainHistName, histname + "_denomTDT", xaxistitle, 1000, 0, 1000, wk()) );
+      }
+      if(m_emulate) {
+        m_numeratorHistsEmulated.push_back( book(m_mainHistName, histname + "_numEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+        m_denominatorHistsEmulated.push_back( book(m_mainHistName, histname + "_denomEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+      }
+    }
+    
+  }
+  
+  
+  // create histograms of the variable I'm cutting on
+  if(m_splitBy != "") {
+    std::string tdirname = "splitVar/";
+    std::string hname = m_name+"_"+m_splitBy;
+    std::string xaxistitle = m_splitBy;
+    int nBins = 100;
+    float xMin = 0;
+    float xMax = 100;
+
+    // if(m_split == "something") {
+      // nBins = 0;
+      // xMin = 0;
+      // xMax = 0;
+    // }
+
+    m_splitVarHist = book(tdirname, hname , xaxistitle, nBins, xMin, xMax, wk());
+  }
+
+  
+
   std::cout << "histInitialise is done!" << std::endl;
 
   return EL::StatusCode::SUCCESS;
@@ -402,6 +442,9 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   else {
     ANA_MSG_ERROR("I don't know what to do with m_splitBy = " << m_splitBy);
   }
+
+  if(m_splitBy != "")
+    m_splitVarHist->Fill(splitVal);
   
   ANA_MSG_DEBUG("the value of " << m_splitBy << " is " << splitVal);
   
@@ -490,34 +533,51 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     std::vector<int> good_indices;
     bool passSelections;
     ANA_CHECK( this->applySelections(passSelections, m_probeTriggerInfo[i_turnon].offlineSelection, offlineJets, offlineJetsInfo, multiplicity_required, good_indices) );
-    if (!passSelections)
+    if (!passSelections) {
+      ANA_MSG_DEBUG("failed selection");
       continue;
-
-
+    }
+    ANA_MSG_DEBUG("passed selection");
+    
+    
     // get the relevant variable
+    ANA_MSG_DEBUG("getting variable to fill turnon with");
     int index = m_variables_index[i_turnon];
     std::string variable = m_variables_var[i_turnon];
     std::vector<float> var_vec;
     ANA_CHECK (this->get_variable(var_vec, variable, offlineJets, offlineJetsInfo, m_fromNTUP) );
     float var_to_fill = var_vec[index];
-    
+    ANA_MSG_DEBUG("set variable to fill turnon with");
 
     
-    // iterate over selections
+    // iterate over split selection
+    ANA_MSG_DEBUG("iterating over split selections");
     for (unsigned int i_split = 0; i_split < m_splitValues.size()-1; i_split++) {
 
-      int histNum = i_split*m_probeTriggers.size() + i_turnon;
+      ANA_MSG_DEBUG("this is split " << i_split);
 
-      if(splitVal < m_splitValues[i_split] || splitVal >= m_splitValues[i_split+1])
+      // used to be:
+      // int histNum = i_split*m_probeTriggers.size() + i_turnon;
+      // then I added an extra one on the end for each probeTrigger
+      // this is like i_split = m_splitVaues().size() - 1
+
+      int histNum = i_split*m_probeTriggers.size() + i_turnon;
+      int noSelHistNum = (m_splitValues.size()-1)*m_probeTriggers.size() + i_turnon;
+
+      if(splitVal < m_splitValues[i_split] || splitVal >= m_splitValues[i_split+1]) {
+        ANA_MSG_DEBUG("failed split " << i_split);
         continue;
+      }
 
       // fill hists
       // TDT needs to account for probe L1 and prescale
       if(m_TDT) {
         if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
           m_denominatorHistsTDT.at(histNum)->Fill(var_to_fill);
+          m_denominatorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
           if(probeDecision.passedTrigger){
             m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
+            m_numeratorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
           }
         }
       }
@@ -529,7 +589,9 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
           m_numeratorHistsEmulated.at(histNum)->Fill(var_to_fill);
         }
       }
+      ANA_MSG_DEBUG("done with split " << i_split);
     }
+    ANA_MSG_DEBUG("finished turnon " << i_turnon);
   }
 
   ANA_MSG_DEBUG( "Leaving jet trigger efficiencies... ");
@@ -853,6 +915,7 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
  
   }
 
+  ANA_MSG_DEBUG("   successfully got");
   return EL::StatusCode::SUCCESS;
 }
 

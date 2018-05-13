@@ -344,6 +344,7 @@ private:
   std::vector<JetTriggerInfo> m_referenceTriggerInfo; //!
   std::vector<JetTriggerInfo> m_probeTriggerInfo; //!
 
+  TH1F* m_splitVarHist; //!
 
 public:
 
