@@ -321,7 +321,7 @@ def add_jet_trigger_info(item, EDMpath, containerList, year):
         item['clustering'] = 'radius 1.0 anti-kt'
         containerName += 'a10'
     elif '_a10r_' in name:
-        item['clustering'] = 'radius 0.4 anti-kt, reclustered to readius 1.0'
+        item['clustering'] = 'radius 0.4 anti-kt, reclustered to radius 1.0'
         containerName += 'a10r_'
     elif '_a10t_' in name:
         item['clustering'] = 'radius 1.0 anti-kt, trimmed'
@@ -540,7 +540,7 @@ def add_jet_trigger_info(item, EDMpath, containerList, year):
 
     # for now, just eta because easy...
     etaRange = item['HLT selection']['eta']
-    jetRadius = float(item['clustering'].split('radius ')[1].split()[0])
+    jetRadius = float(item['clustering'].split('radius ')[-1].split()[0])
 
     offlineEtaRange = copy.deepcopy(etaRange)
     if etaRange[0] == 0:
@@ -570,6 +570,7 @@ def print_item(item, onlyPrint=None):
         'L1',
         'L1 too Complicated',
         'L1 multiplicity', 'L1 ET', 'L1 eta', 'L1 extra',
+        'L1 selection',
         'HLT too Complicated',
         'HLT multiplicity',
         'HLT jet container preselection',
@@ -577,6 +578,8 @@ def print_item(item, onlyPrint=None):
         'HLT jet container',
         'topocluster formation', 'clusters', 'clustering', 'calibration steps',
         'ET', 'eta', 'HT', 'single jet mass',
+        'HLT selection',
+        'offline selection recommended',
         'comment',
         'rulebook entry',
         ]
