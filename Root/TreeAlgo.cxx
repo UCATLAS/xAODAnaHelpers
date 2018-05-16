@@ -296,6 +296,7 @@ EL::StatusCode TreeAlgo :: execute ()
       }
     }
 
+
     if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr, m_truthFatJetBranchName);               }
     if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
@@ -472,6 +473,7 @@ EL::StatusCode TreeAlgo :: execute ()
         const xAOD::JetContainer* inFatJets(nullptr);
         ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll), m_event, m_store, msg()) );
         helpTree->FillFatJets( inFatJets, m_fatJetBranches.at(ll) );
+
       }
 
       if ( reject ) {
