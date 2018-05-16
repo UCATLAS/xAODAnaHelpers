@@ -93,6 +93,10 @@ protected:
   std::vector<std::string> m_clusterContainers; //!
   std::vector<std::string> m_clusterBranches; //!
 
+  std::vector<std::string> m_clusterDetails; //!
+  std::vector<std::string> m_clusterContainers; //!
+  std::vector<std::string> m_clusterBranches; //!
+
   std::map<std::string, HelpTreeBase*> m_trees;            //!
 
 public:
