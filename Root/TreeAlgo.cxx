@@ -83,6 +83,7 @@ EL::StatusCode TreeAlgo :: initialize ()
     ANA_MSG_ERROR( "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
     return EL::StatusCode::FAILURE;
   }
+
   std::istringstream ss_fat_containers(m_fatJetContainerName);
   while ( std::getline(ss_fat_containers, token, ' ') ){
     m_fatJetContainers.push_back(token);
@@ -130,6 +131,7 @@ EL::StatusCode TreeAlgo :: initialize ()
     ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
+
   std::istringstream ss_fat_details(m_fatJetDetailStr);
   while ( std::getline(ss_fat_details, token, '|') ){
     m_fatJetDetails.push_back(token);
@@ -138,6 +140,7 @@ EL::StatusCode TreeAlgo :: initialize ()
     ANA_MSG_ERROR( "The size of m_fatJetContainers should be equal to the size of m_fatJetDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
+
   std::istringstream ss_cluster_details(m_clusterDetailStr);
   while ( std::getline(ss_cluster_details, token, '|') ){
     m_clusterDetails.push_back(token);
