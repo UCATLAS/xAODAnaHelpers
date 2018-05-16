@@ -299,7 +299,6 @@ EL::StatusCode TreeAlgo :: execute ()
       }
     }
 
-
     if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr, m_truthFatJetBranchName);               }
     if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
