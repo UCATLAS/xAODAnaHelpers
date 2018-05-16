@@ -33,7 +33,6 @@ public:
   std::string m_clusterDetailStr = "";
   std::string m_truthParticlesDetailStr = "";
   std::string m_trackParticlesDetailStr = "";
-  std::string m_clusterDetailStr = "";
 
   std::string m_evtContainerName = "";
   std::string m_muContainerName = "";
@@ -53,10 +52,9 @@ public:
   std::string m_METReferenceContainerName = "";
   std::string m_photonContainerName = "";
   std::string m_clusterContainerName = "";
+  std::string m_clusterBranchName = "CaloCalTopoClusters";
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
-  std::string m_clusterContainerName = "";
-  std::string m_clusterBranchName = "CaloCalTopoClusters";
   std::string m_l1JetContainerName = "";
   bool m_sortL1Jets = false;
   bool m_retrievePV = true;

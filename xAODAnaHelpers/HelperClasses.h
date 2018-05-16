@@ -594,56 +594,6 @@ namespace HelperClasses {
 
   /**
     @rst
-        The :cpp:class:`HelperClasses::IParticleInfoSwitch` struct for Cluster Information.
-
-        ================ ============== =======
-        Parameter        Pattern        Match
-        ================ ============== =======
-        m_trigger        trigger        exact
-        m_JetID          JetID          exact
-        ================ ============== =======
-
-
-    @endrst
-   */
-
-  class ClusterInfoSwitch : public IParticleInfoSwitch {
-  public:
-    bool m_rapidity;
-    bool m_clean;
-    ClusterInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
-    virtual ~ClusterInfoSwitch() {}
-  protected:
-    virtual void initialize();
-  };
-
-  /**
-    @rst
-        The :cpp:class:`HelperClasses::IParticleInfoSwitch` struct for Tau Information.
-
-        ================ ============== =======
-        Parameter        Pattern        Match
-        ================ ============== =======
-        m_trigger        trigger        exact
-        m_JetID          JetID          exact
-        ================ ============== =======
-
-
-    @endrst
-   */
-
-  class ClusterInfoSwitch : public IParticleInfoSwitch {
-  public:
-    bool m_rapidity;
-    bool m_clean;
-    ClusterInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
-    virtual ~ClusterInfoSwitch() {}
-  protected:
-    virtual void initialize();
-  };
-
-  /**
-    @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` struct for Tau Information.
 
         ================== ================ =======

@@ -468,11 +468,6 @@ namespace HelperClasses{
     m_useTheS       = has_exact("useTheS");
   }
 
-  void ClusterInfoSwitch::initialize(){
-    m_rapidity      = has_exact("rapidity");
-    m_clean         = has_exact("clean");
-  }
-
   void TauInfoSwitch::initialize(){
     m_trigger        = has_exact("trigger");
     m_JetID          = has_exact("JetID");
