@@ -104,6 +104,10 @@ HelpTreeBase::~HelpTreeBase() {
     for (auto track: m_tracks)
       delete track.second;
 
+    //cluster
+    for (auto cluster: m_clusters)
+      delete cluster.second;
+
 }
 
 
@@ -833,6 +837,62 @@ void HelpTreeBase::ClearTracks(const std::string trackName) {
   this->ClearTracksUser(trackName);
 
 }
+
+/*********************
+ *
+ *   CLUSTERS
+ *
+ ********************/
+
+void HelpTreeBase::AddClusters(const std::string detailStr, const std::string clusterName)
+{
+
+  if(m_debug) Info("AddClusters()", "Adding cluster %s with variables: %s", clusterName.c_str(), detailStr.c_str());
+
+  m_clusters[clusterName] = new xAH::ClusterContainer(clusterName, detailStr);
+  m_clusters[clusterName]->m_debug = m_debug;
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+  thisCluster->setBranches(m_tree);
+  this->AddClustersUser(detailStr, clusterName);
+
+}
+
+
+void HelpTreeBase::FillClusters( const xAOD::CaloClusterContainer* clusters, const std::string clusterName ) {
+
+  this->ClearClusters(clusterName);
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+
+  for( auto cluster_itr : *clusters ) {
+    this->FillCluster(cluster_itr, clusterName);
+  }
+
+}
+
+
+
+void HelpTreeBase::FillCluster( const xAOD::CaloCluster* cluster_itr, const std::string clusterName ) {
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+
+  thisCluster->FillCluster(cluster_itr);
+
+  this->FillClustersUser(cluster_itr, clusterName);
+
+  return;
+}
+
+void HelpTreeBase::ClearClusters(const std::string clusterName) {
+
+  xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
+  thisCluster->clear();
+
+  this->ClearClustersUser(clusterName);
+
+}
+
 
 /*********************
  *

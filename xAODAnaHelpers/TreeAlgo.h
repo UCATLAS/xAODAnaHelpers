@@ -33,6 +33,7 @@ public:
   std::string m_clusterDetailStr = "";
   std::string m_truthParticlesDetailStr = "";
   std::string m_trackParticlesDetailStr = "";
+  std::string m_clusterDetailStr = "";
 
   std::string m_evtContainerName = "";
   std::string m_muContainerName = "";
@@ -55,6 +56,8 @@ public:
   std::string m_clusterBranchName = "CaloCalTopoClusters";
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
+  std::string m_clusterContainerName = "";
+  std::string m_clusterBranchName = "CaloCalTopoClusters";
   std::string m_l1JetContainerName = "";
   bool m_sortL1Jets = false;
   bool m_retrievePV = true;
@@ -85,6 +88,10 @@ protected:
   std::vector<std::string> m_truthJetBranches; //!
   std::vector<std::string> m_trigJetBranches; //!
   std::vector<std::string> m_fatJetBranches; //!
+
+  std::vector<std::string> m_clusterDetails; //!
+  std::vector<std::string> m_clusterContainers; //!
+  std::vector<std::string> m_clusterBranches; //!
 
   std::vector<std::string> m_clusterDetails; //!
   std::vector<std::string> m_clusterContainers; //!

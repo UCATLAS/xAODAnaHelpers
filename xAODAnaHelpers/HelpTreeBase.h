@@ -28,6 +28,7 @@
 #include "xAODTau/TauJetContainer.h"
 #include "xAODMissingET/MissingETContainer.h"
 #include "xAODTracking/TrackParticleContainer.h"
+#include "xAODCaloEvent/CaloClusterContainer.h" // do I need CaloCluster.h as well?
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/EventInfo.h"
@@ -39,6 +40,7 @@
 #include "xAODAnaHelpers/FatJetContainer.h"
 #include "xAODAnaHelpers/TruthContainer.h"
 #include "xAODAnaHelpers/TrackContainer.h"
+#include "xAODAnaHelpers/ClusterContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODAnaHelpers/TauContainer.h"
 #include "xAODRootAccess/TEvent.h"
@@ -80,6 +82,7 @@ public:
   void AddL1Jets      ();
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
   void AddTrackParts  (const std::string trackName,	 const std::string detailStr = "");
+  void AddClusters    (const std::string detailStr = "", const std::string clusterName = "cluster");
 
   /**
    *  @brief  Declare a new collection of fatjets to be written to the output tree.
@@ -144,6 +147,10 @@ public:
   void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
 
+  void FillClusters( const xAOD::CaloClusterContainer* clusters, const std::string clusterName = "cluster" );
+  void FillCluster( const xAOD::CaloCluster* cluster_itr, const std::string clusterName = "cluster" );
+
+
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
    *          container name and suffix should be declared beforehand using `AddFatJets()`.
@@ -175,6 +182,7 @@ public:
   void ClearL1Jets      ();
   void ClearTruth       (const std::string truthName);
   void ClearTracks	(const std::string trackName);
+  void ClearClusters    (const std::string clusterName = "cluster");
   void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
   void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
   void ClearTaus        (const std::string tauName = "tau" );
@@ -232,6 +240,11 @@ public:
     return;
   };
 
+  virtual void AddClustersUser(const std::string detailStr = "", const std::string clusterName = "cluster")       {
+    if(m_debug) Info("AddClustersUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(), clusterName.c_str());
+    return;
+  };
+
   /**
    *  @brief  Declare a new fat jet collection. Automatically called once per call to `AddFatJets()`;
    *          override this if you want to provide your own additional branches for fatjets.
@@ -272,6 +285,7 @@ public:
   virtual void ClearTruthFatJetsUser(const std::string /*truthFatJetName = "truth_fatjet"*/)   { return; };
   virtual void ClearTausUser        (const std::string /*tauName = "tau"*/) 	    { return; };
   virtual void ClearMETUser         (const std::string /*metName = "met"*/)       { return; };
+  virtual void ClearClustersUser    (const std::string /*clusterName = "cluster"*/ ) 	    { return; };
 
   virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
   virtual void FillMuonsUser    ( const xAOD::Muon*,        const std::string /*muonName = "muon"*/  )             { return; };
@@ -281,6 +295,7 @@ public:
   virtual void FillJetsUser     ( const xAOD::Jet*,         const std::string /*jetName = "jet"*/  )               { return; };
   virtual void FillTruthUser    ( const std::string /*truthName*/, const xAOD::TruthParticle*  )               { return; };
   virtual void FillTracksUser   ( const std::string /*trackName*/, const xAOD::TrackParticle*  )               { return; };
+  virtual void FillClustersUser ( const xAOD::CaloCluster*,      const std::string /*clusterName = "cluster"*/  )               { return; };
   /**
    *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
    *          information to your jet collection.
@@ -360,6 +375,11 @@ protected:
   // Tracks
   //
   std::map<std::string, xAH::TrackContainer*> m_tracks;
+
+  //
+  //  Clusters
+  //
+  std::map<std::string, xAH::ClusterContainer*> m_clusters;
 
   //
   // fat jets
