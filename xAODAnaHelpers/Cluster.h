@@ -3,19 +3,10 @@
 
 #include "xAODAnaHelpers/Particle.h"
 
+
 namespace xAH {
 
-  class Cluster : public Particle
-    {
-    public:
-
-      Cluster();
-      float rapidity;
-
-      // clean
-      float Timing;
-      
-    };
+  class Cluster : public Particle { };
 
 }//xAH
 #endif // xAODAnaHelpers_Cluster_H
