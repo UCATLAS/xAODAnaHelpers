@@ -28,7 +28,6 @@
 #include "xAODTau/TauJetContainer.h"
 #include "xAODMissingET/MissingETContainer.h"
 #include "xAODTracking/TrackParticleContainer.h"
-#include "xAODCaloEvent/CaloClusterContainer.h" // do I need CaloCluster.h as well?
 
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/EventInfo.h"
@@ -40,7 +39,6 @@
 #include "xAODAnaHelpers/FatJetContainer.h"
 #include "xAODAnaHelpers/TruthContainer.h"
 #include "xAODAnaHelpers/TrackContainer.h"
-#include "xAODAnaHelpers/ClusterContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODAnaHelpers/TauContainer.h"
 #include "xAODRootAccess/TEvent.h"
@@ -145,7 +143,6 @@ public:
 
   void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
-
 
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
