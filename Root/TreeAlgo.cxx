@@ -389,12 +389,14 @@ EL::StatusCode TreeAlgo :: execute ()
         const xAOD::JetContainer* inJets(nullptr);
         if ( ll==0 ) {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining fat jet collections");
             reject = true;
             break;
           }
           ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
         } else {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll), m_event, m_store, msg()) ) {
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll) + " is not available. Skipping all remaining fat jet collections");
             reject = true;
             break;
           }
@@ -404,7 +406,10 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_l1JetContainerName.empty() ){
@@ -419,6 +424,7 @@ EL::StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for(unsigned int ll=0;ll<m_trigJetContainers.size();++ll){
         if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The trigger jet container " + m_trigJetContainers.at(ll) + " is not available. Skipping all remaining trigger jet collections");
           reject = true;
           break;
         }
@@ -428,13 +434,17 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_trigJetBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a trigger jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_truthJetContainerName.empty() ) {
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_truthJetContainers.size(); ++ll) {
         if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthJetContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The truth jet container " + m_truthJetContainers.at(ll) + " is not available. Skipping all remaining truth jet collections");
           reject = true;
           break;
         }
@@ -444,7 +454,10 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthJetBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a truth jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_fatJetContainerName.empty() ) {
@@ -552,6 +565,7 @@ EL::StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for(unsigned int ll=0;ll<m_clusterContainers.size();++ll){
         if ( !HelperFunctions::isAvailable<xAOD::CaloClusterContainer>(m_clusterContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The cluster container " + m_clusterContainers.at(ll) + " is not available. Skipping all remaining cluster collections");
           reject = true;
           break;
         }
@@ -561,7 +575,10 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillClusters( inClusters, m_clusterBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a cluster container priblem - not writing the event");
+        continue;
+      }
     }
 
     // fill the tree
