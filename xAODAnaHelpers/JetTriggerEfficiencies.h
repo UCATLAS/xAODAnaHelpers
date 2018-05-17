@@ -48,6 +48,7 @@ class RulebookEntry {
 class TriggerDecision {
  public:
   bool passedTrigger = false;
+  bool isDisabled = false;
   bool L1_isPassedBeforePrescale = false;
   bool L1_isPassedAfterPrescale = false;
   bool L1_isPassedAfterVeto = false;
@@ -293,6 +294,7 @@ public:
   /// @brief emulate the turnon?
   bool m_TDT = true;
   bool m_emulate = false;
+  bool m_skipCompare = false; // unless true, will compare TDT and emulation and complain if they are not the same. Emulation not implemented for everything, though, so set true if konw this to be the case to avoid drowning in warnings.
 
   // modified from HistogramManager
   /// @brief generically the main name assigned to all histograms

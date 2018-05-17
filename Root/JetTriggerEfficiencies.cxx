@@ -414,7 +414,8 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   }
 
   Long64_t eventNumber = m_fromNTUP ? global_eventInfo.eventNumber : eventInfo->eventNumber();
-  ANA_MSG_DEBUG("retrieved event with eventNumber " << eventNumber);
+  int lumiBlock = m_fromNTUP ? global_eventInfo.lumiBlock : eventInfo->lumiBlock();
+  ANA_MSG_DEBUG("retrieved event with eventNumber " << eventNumber << " from lumi block " << lumiBlock);
 
   // offline jets
   const xAOD::JetContainer* offlineJets(nullptr);
@@ -448,6 +449,19 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   
   ANA_MSG_DEBUG("the value of " << m_splitBy << " is " << splitVal);
   
+
+  // get list of disabled triggers from AOD
+  std::vector<std::string> disabledTriggers;
+  if(!m_fromNTUP) {
+    static SG::AuxElement::ConstAccessor< std::vector< std::string > > acc_disabledTriggers("disabledTriggers");
+    if( acc_disabledTriggers.isAvailable( *eventInfo ) ) {
+      disabledTriggers = acc_disabledTriggers( *eventInfo );
+    }
+    else {
+      ANA_MSG_WARNING("cannot access disabledTriggers in eventInfo, need this for accurate trigger efficiencies");
+    }
+  }
+  
   
   // iterate over turnons
   for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggers.size(); i_turnon++) {
@@ -466,8 +480,10 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     ANA_MSG_DEBUG("got ref trigger info for " << refChainName);
 
     // no point doing anything else if the reference trigger failed
-    if(!passedRefTrigger)
+    if(!passedRefTrigger) {
+      ANA_MSG_DEBUG("failed ref trigger " << refChainName);
       continue;
+    }
 
     ANA_MSG_DEBUG("passed ref trigger " << refChainName);
     
@@ -485,11 +501,17 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
         }
         int atIndex = index - global_eventInfo.isPassBitsNames->begin();
         probeDecision.fillFromBits(global_eventInfo.isPassBits->at(atIndex));
+
+        probeDecision.isDisabled = (std::find(global_eventInfo.disabledTriggers->begin(), global_eventInfo.disabledTriggers->end(), probeChainName) != global_eventInfo.disabledTriggers->end());
       }
       else {
-        probeDecision.passedTrigger = m_trigDecTool_handle->isPassed(probeChainName);
+        probeDecision.passedTrigger = m_trigDecTool_handle->isPassed(probeChainName);        
+
         const unsigned int probeBits = m_trigDecTool_handle->isPassedBits(probeChainName);
         probeDecision.fillFromBits(probeBits);
+
+        probeDecision.isDisabled = (std::find(disabledTriggers.begin(), disabledTriggers.end(), probeChainName) != disabledTriggers.end());
+        
       }
     }
 
@@ -500,21 +522,20 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       this->emulateTriggerDecision(m_probeTriggerInfo[i_turnon], probeDecisionEmulated);
       ANA_MSG_DEBUG("emulation done");
     }
-
-
-
-    if(m_TDT) {
+    
+    // if do them both, check agreement
+    if(m_TDT && !m_skipCompare) {
+      ANA_MSG_DEBUG("comparing emulation and trigger decision tool");
       if(probeDecisionEmulated.passedTrigger != probeDecision.passedTrigger) {
-        // if TDT failed, maybe it's because of prescales. Only worry about it if it is not - ie the trigger fails but was not prescaled out at L1 or HLT
-        if( probeDecision.passedTrigger || (!probeDecision.passedTrigger && probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut)) {
-
-          ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + " in event " << eventNumber);
+        // if TDT failed, maybe it's because of prescales. Only worry about it if it is not - ie the trigger fails but was not prescaled out at L1 or HLT, and was not disabled
+        if( probeDecision.passedTrigger || (!probeDecision.passedTrigger && probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut && !probeDecision.isDisabled)) {
+          ANA_MSG_WARNING("emulation and TDT disagree for " + m_probeTriggers[i_turnon] + " in event " << eventNumber << " from lumi block " << lumiBlock);
           std::cout << "  emulated passed? " << probeDecisionEmulated.passedTrigger << std::endl;
           std::cout << "  TDT passed?      " << probeDecision.passedTrigger << std::endl;
         }
       }
       else {
-        ANA_MSG_DEBUG("they agree for " << m_probeTriggers[i_turnon] << " in event " << eventNumber << " - both " << probeDecision.passedTrigger);
+        ANA_MSG_DEBUG("they agree for " << m_probeTriggers[i_turnon] << " in event " << eventNumber << " from lumi block " << lumiBlock << " - both " << probeDecision.passedTrigger);
       }
     }
     
@@ -554,7 +575,7 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     ANA_MSG_DEBUG("iterating over split selections");
     for (unsigned int i_split = 0; i_split < m_splitValues.size()-1; i_split++) {
 
-      ANA_MSG_DEBUG("this is split " << i_split);
+      ANA_MSG_DEBUG("  this is split " << i_split);
 
       // used to be:
       // int histNum = i_split*m_probeTriggers.size() + i_turnon;
@@ -563,21 +584,30 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
       int histNum = i_split*m_probeTriggers.size() + i_turnon;
       int noSelHistNum = (m_splitValues.size()-1)*m_probeTriggers.size() + i_turnon;
-
+      
       if(splitVal < m_splitValues[i_split] || splitVal >= m_splitValues[i_split+1]) {
-        ANA_MSG_DEBUG("failed split " << i_split);
+        ANA_MSG_DEBUG("  failed split " << i_split);
         continue;
       }
+      ANA_MSG_DEBUG("  passed split " << i_split);
 
       // fill hists
-      // TDT needs to account for probe L1 and prescale
+      // TDT needs to account for probe L1 and prescale, and whether trigger is disabled
       if(m_TDT) {
         if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
+          // std::cout << "trying to fill denom hists " << histNum << ", it has size" << m_denominatorHistsTDT.size() << std::endl;
           m_denominatorHistsTDT.at(histNum)->Fill(var_to_fill);
-          m_denominatorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
+          if(m_splitBy != "") {
+            // std::cout << "trying to fill denom hists " << noSelHistNum << ", it has size" << m_denominatorHistsTDT.size() << std::endl;
+            m_denominatorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
+          }
+          std::cout << "filling reference for " << m_probeTriggerInfo[i_turnon].chainName << ", is it disabled? " << probeDecision.isDisabled << std::endl;
           if(probeDecision.passedTrigger){
+            std::cout << "   it passed!" << std::endl;
             m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
-            m_numeratorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
+            if(m_splitBy != "") {
+              m_numeratorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
+            }
           }
         }
       }
@@ -585,11 +615,17 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       // currently not emulating L1 in order to compare, add as option?
       if(m_emulate) {
         m_denominatorHistsEmulated.at(histNum)->Fill(var_to_fill);
+        if(m_splitBy != "") {
+          m_denominatorHistsEmulated.at(noSelHistNum)->Fill(var_to_fill);
+        }
         if(probeDecisionEmulated.passedTrigger){
           m_numeratorHistsEmulated.at(histNum)->Fill(var_to_fill);
+          if(m_splitBy != "") {
+            m_numeratorHistsEmulated.at(noSelHistNum)->Fill(var_to_fill);
+          }
         }
       }
-      ANA_MSG_DEBUG("done with split " << i_split);
+      ANA_MSG_DEBUG("  done with split " << i_split);
     }
     ANA_MSG_DEBUG("finished turnon " << i_turnon);
   }

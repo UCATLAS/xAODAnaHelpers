@@ -161,6 +161,7 @@ EL::StatusCode TreeReader :: changeInput (bool firstFile)
   this->SetBranchStatusAndAddress(tree, "weight_pileup",                  m_eventInfo.pileupWeight);
 
   this->SetBranchStatusAndAddress(tree, "passedTriggers",   m_eventInfo.passedTriggers);
+  this->SetBranchStatusAndAddress(tree, "disabledTriggers", m_eventInfo.disabledTriggers);
   this->SetBranchStatusAndAddress(tree, "triggerPrescales", m_eventInfo.triggerPrescales);
   this->SetBranchStatusAndAddress(tree, "isPassBitsNames",  m_eventInfo.isPassBitsNames);
   this->SetBranchStatusAndAddress(tree, "isPassBits",       m_eventInfo.isPassBits);
