@@ -107,6 +107,7 @@ class EventInfo {
   float     pileupWeight = -1; //!
 
   vector<std::string>*  passedTriggers = nullptr; //!
+  vector<std::string>*  disabledTriggers = nullptr; //!
   vector<float>*        triggerPrescales = nullptr; //!
   vector<std::string>*  isPassBitsNames = nullptr;  //!
   vector<unsigned int>* isPassBits = nullptr;  //!
