@@ -595,15 +595,13 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       // TDT needs to account for probe L1 and prescale, and whether trigger is disabled
       if(m_TDT) {
         if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
-          // std::cout << "trying to fill denom hists " << histNum << ", it has size" << m_denominatorHistsTDT.size() << std::endl;
           m_denominatorHistsTDT.at(histNum)->Fill(var_to_fill);
           if(m_splitBy != "") {
-            // std::cout << "trying to fill denom hists " << noSelHistNum << ", it has size" << m_denominatorHistsTDT.size() << std::endl;
             m_denominatorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
           }
-          std::cout << "filling reference for " << m_probeTriggerInfo[i_turnon].chainName << ", is it disabled? " << probeDecision.isDisabled << std::endl;
+          ANA_MSG_DEBUG("filling reference for " << m_probeTriggerInfo[i_turnon].chainName << ", is it disabled? " << probeDecision.isDisabled);
           if(probeDecision.passedTrigger){
-            std::cout << "   it passed!" << std::endl;
+            ANA_MSG_DEBUG("   it passed!");
             m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
             if(m_splitBy != "") {
               m_numeratorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
