@@ -69,7 +69,17 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_originConstitScalePt    = new std::vector<float>();
     m_etaJESScalePt	    = new std::vector<float>();
     m_gscScalePt		    = new std::vector<float>();
+    m_jmsScalePt		 = new std::vector<float>();
     m_insituScalePt	    = new std::vector<float>();
+
+    m_emScaleM               = new std::vector<float>();
+    m_constScaleM          = new std::vector<float>();
+    m_pileupScaleM                 = new std::vector<float>();
+    m_originConstitScaleM    = new std::vector<float>();
+    m_etaJESScaleM         = new std::vector<float>();
+    m_gscScaleM                    = new std::vector<float>();
+    m_jmsScaleM                 = new std::vector<float>();
+    m_insituScaleM         = new std::vector<float>();
   }
 
   // constscale eta
@@ -484,7 +494,17 @@ JetContainer::~JetContainer()
     delete m_originConstitScalePt  ;
     delete m_etaJESScalePt	   ;
     delete m_gscScalePt		   ;
+    delete m_jmsScalePt            ;
     delete m_insituScalePt	   ;
+
+    delete m_emScaleM             ;
+    delete m_constScaleM          ;
+    delete m_pileupScaleM                 ;
+    delete m_originConstitScaleM  ;
+    delete m_etaJESScaleM         ;
+    delete m_gscScaleM            ;
+    delete m_jmsScaleM            ;
+    delete m_insituScaleM         ;
   }
 
   // constscale eta
@@ -1572,7 +1592,17 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"originConstitScalePt",   m_originConstitScalePt );
     setBranch<float>(tree,"etaJESScalePt",          m_etaJESScalePt        );
     setBranch<float>(tree,"gscScalePt",             m_gscScalePt           );
+    setBranch<float>(tree,"jmsScalePt",             m_jmsScalePt           );
     setBranch<float>(tree,"insituScalePt",          m_insituScalePt        );
+
+    setBranch<float>(tree,"emScaleM",              m_emScaleM            );
+    setBranch<float>(tree,"constScaleM",           m_constScaleM         );
+    setBranch<float>(tree,"pileupScaleM",          m_pileupScaleM        );
+    setBranch<float>(tree,"originConstitScaleM",   m_originConstitScaleM );
+    setBranch<float>(tree,"etaJESScaleM",          m_etaJESScaleM        );
+    setBranch<float>(tree,"gscScaleM",             m_gscScaleM           );
+    setBranch<float>(tree,"jmsScaleM",             m_jmsScaleM           );
+    setBranch<float>(tree,"insituScaleM",          m_insituScaleM        );
   }
 
   if ( m_infoSwitch.m_constscaleEta ) {
@@ -1950,7 +1980,17 @@ void JetContainer::clear()
     m_originConstitScalePt  ->clear();
     m_etaJESScalePt	    ->clear();
     m_gscScalePt	    ->clear();
+    m_jmsScalePt            ->clear();
     m_insituScalePt	    ->clear();
+
+    m_emScaleM             ->clear();
+    m_constScaleM          ->clear();
+    m_pileupScaleM         ->clear();
+    m_originConstitScaleM  ->clear();
+    m_etaJESScaleM         ->clear();
+    m_gscScaleM            ->clear();
+    m_jmsScaleM            ->clear();
+    m_insituScaleM         ->clear();
   }
 
   // eta at constScale
@@ -2399,39 +2439,90 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   } // energy
 
-
   // each step of the calibration sequence
   if ( m_infoSwitch.m_scales ) {
     xAOD::JetFourMom_t fourVec;
     bool status(false);
     // EM Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum", fourVec );
-    if( status ) { m_emScalePt->push_back( fourVec.Pt() / m_units ); }
-    else { m_emScalePt->push_back( -999 ); }
+    if( status ) { 
+      m_emScalePt->push_back( fourVec.Pt() / m_units );
+      m_emScaleM->push_back( fourVec.M() / m_units );
+    }
+    else { 
+      m_emScalePt->push_back( -999 ); 
+      m_emScaleM->push_back( -999 ); 
+    }
     // Constit Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetConstitScaleMomentum", fourVec );
-    if( status ) { m_constScalePt->push_back( fourVec.Pt() / m_units ); }
-    else { m_constScalePt->push_back( -999 ); }
+    if( status ) { 
+      m_constScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_constScaleM->push_back( fourVec.M() / m_units ); 
+    }
+    else { 
+      m_constScalePt->push_back( -999 ); 
+      m_constScaleM->push_back( -999 ); 
+    }
     // Pileup Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum", fourVec );
-    if( status ) { m_pileupScalePt->push_back( fourVec.Pt() / m_units ); }
-    else { m_pileupScalePt->push_back( -999 ); }
+    if( status ) { 
+      m_pileupScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_pileupScaleM->push_back( fourVec.M() / m_units ); 
+    }
+    else { 
+      m_pileupScalePt->push_back( -999 ); 
+      m_pileupScaleM->push_back( -999 ); 
+    }
     // OriginConstit Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetOriginConstitScaleMomentum", fourVec );
-    if( status ) { m_originConstitScalePt->push_back( fourVec.Pt() / m_units ); }
-    else { m_originConstitScalePt->push_back( -999 ); }
+    if( status ) {
+      m_originConstitScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_originConstitScaleM->push_back( fourVec.M() / m_units ); 
+    }
+    else { 
+      m_originConstitScalePt->push_back( -999 ); 
+      m_originConstitScaleM->push_back( -999 ); 
+    }
     // EtaJES Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetEtaJESScaleMomentum", fourVec );
-    if( status ) { m_etaJESScalePt->push_back( fourVec.Pt() / m_units ); }
-    else { m_etaJESScalePt->push_back( -999 ); }
+    if( status ) { 
+      m_etaJESScalePt->push_back( fourVec.Pt() / m_units );
+      m_etaJESScaleM->push_back( fourVec.M() / m_units );
+    }
+    else { 
+      m_etaJESScalePt->push_back( -999 ); 
+      m_etaJESScaleM->push_back( -999 ); 
+    }
     // GSC Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetGSCScaleMomentum", fourVec );
-    if( status ) { m_gscScalePt->push_back( fourVec.Pt() / m_units ); }
-    else { m_gscScalePt->push_back( -999 ); }
+    if( status ) { 
+      m_gscScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_gscScaleM->push_back( fourVec.M() / m_units ); 
+    }
+    else {
+      m_gscScalePt->push_back( -999 ); 
+      m_gscScaleM->push_back( -999 ); 
+    }
+    // EtaJES Scale
+    status = jet->getAttribute<xAOD::JetFourMom_t>( "JetJMSScaleMomentum", fourVec );
+    if( status ) {
+      m_jmsScalePt->push_back( fourVec.Pt() / m_units );
+      m_jmsScaleM->push_back( fourVec.M() / m_units );
+    }
+    else {
+      m_jmsScalePt->push_back( -999 );
+      m_jmsScaleM->push_back( -999 );
+    }
     // only available in data
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", fourVec );
-    if(status) { m_insituScalePt->push_back( fourVec.Pt() / m_units ); }
-    else { m_insituScalePt->push_back( -999 ); }
+    if(status) { 
+      m_insituScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_insituScaleM->push_back( fourVec.M() / m_units ); 
+    }
+    else { 
+      m_insituScalePt->push_back( -999 ); 
+      m_insituScaleM->push_back( -999 ); 
+    }
   }
 
   if ( m_infoSwitch.m_constscaleEta ) {
