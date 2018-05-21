@@ -803,13 +803,12 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
   }
   
   // m, pt, ET
-  else if(selection.first == "m" || selection.first == "singlejetmass" || selection.first == "pt" || selection.first == "ET" || selection.first == "ET_preselection") {
+  else if(selection.first == "m" || selection.first == "singlejetmass" || selection.first == "pt" || selection.first == "ET" || selection.first == "ET_preselection" || selection.first == "m/pt") {
     for(auto index : good_indices) {
       if( thisvar_vec.at(index) > selection.second.first)
         passed_indices.push_back(index);
     }
   }
-  
   
   // else complain
   else {
@@ -940,6 +939,13 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
         var_vec.push_back(jetsInfo.TLV(index).Et());
       else
         var_vec.push_back(jets->at(index)->p4().Et()/1000.);
+    }
+
+    else if(varName == "m/pt") {
+      if(fromNTUP)
+        var_vec.push_back(jetsInfo.TLV(index).M() / jetsInfo.pt->at(index));
+      else
+        var_vec.push_back(jets->at(index)->m() / jets->at(index)->pt());
     }
 
     else {
