@@ -35,7 +35,7 @@
 #include <regex>
 std::vector<std::string> splitString(std::string parentString, std::string sep);
 std::vector<std::string> splitListString(std::string parentString);
-
+static inline void ReplaceAll(std::string &str, const std::string& from, const std::string& to);
 
 class RulebookEntry {
  public:
@@ -290,6 +290,7 @@ public:
   std::string m_turnonString = "";
   std::string m_selectionString = "auto";
   std::string m_variableString = "pt";
+  bool m_plotSelectionVars = false;
 
   /// @brief emulate the turnon?
   bool m_TDT = true;
@@ -348,6 +349,12 @@ private:
 
   TH1F* m_splitVarHist; //!
 
+  std::vector< std::vector<TH1F*> > m_preSelHistsSelections; //!
+  std::vector< std::vector<TH1F*> > m_numeratorHistsSelectionsTDT; //!
+  std::vector< std::vector<TH1F*> > m_denominatorHistsSelectionsTDT; //!
+  std::vector< std::vector<TH1F*> > m_numeratorHistsSelectionsEmulated; //!
+  std::vector< std::vector<TH1F*> > m_denominatorHistsSelectionsEmulated; //!
+
 public:
 
   // this is a standard constructor
@@ -380,6 +387,8 @@ public:
   virtual EL::StatusCode emulateTriggerDecision(JetTriggerInfo &triggerInfo, TriggerDecision &triggerDecision);
   virtual EL::StatusCode applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel=false);
   virtual EL::StatusCode applySelection(std::vector<int> &passed_indices, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices, bool isHLTpresel);
+
+  virtual EL::StatusCode FillSelectionVarHists(JetTriggerInfo &probeTriggerInfo, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<TH1F*> &histsVec, int jet_index);
 
   virtual EL::StatusCode retrieveJetInfo(JetInfo &jetInfo, std::string jetCollectionName);
 

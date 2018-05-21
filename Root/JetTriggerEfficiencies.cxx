@@ -282,7 +282,7 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
   }
   
   
-  // create histograms of the variable I'm cutting on
+  // create histograms of the offline variable I'm splitting on
   if(m_splitBy != "") {
     std::string tdirname = "splitVar/";
     std::string hname = m_name+"_"+m_splitBy;
@@ -300,9 +300,85 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     m_splitVarHist = book(tdirname, hname , xaxistitle, nBins, xMin, xMax, wk());
   }
 
-  
 
-  std::cout << "histInitialise is done!" << std::endl;
+  // create histograms of the offline variables I'm selecting on
+  if(m_plotSelectionVars) {
+    ANA_MSG_INFO("defining histograms of selection variables");
+    for ( unsigned int i_turnon = 0; i_turnon < m_probeTriggerInfo.size(); i_turnon++) {
+      ANA_MSG_INFO("turnon " << i_turnon << " - " << m_probeTriggerInfo[i_turnon].chainName);
+
+      std::vector<TH1F*> this_preSelHistsSelections;
+      std::vector<TH1F*> this_numeratorHistsSelectionsTDT;
+      std::vector<TH1F*> this_denominatorHistsSelectionsTDT;
+      std::vector<TH1F*> this_numeratorHistsSelectionsEmulated;
+      std::vector<TH1F*> this_denominatorHistsSelectionsEmulated;
+
+      // std::vector< std::pair<std::string, std::pair<float, float> > > extraSelection = decodeSelection(extraPart);
+      for( unsigned int i_sel = 0; i_sel < m_probeTriggerInfo[i_turnon].offlineSelection.size(); i_sel++) {
+        std::string sel_name = m_probeTriggerInfo[i_turnon].offlineSelection[i_sel].first;
+
+        if(sel_name == "multiplicity")
+          continue;
+
+        float sel_low = m_probeTriggerInfo[i_turnon].offlineSelection[i_sel].second.first;
+        float sel_high = m_probeTriggerInfo[i_turnon].offlineSelection[i_sel].second.second;
+
+        ANA_MSG_INFO("  selection " << i_sel << " on " << sel_name << ", " << sel_low << " - " << sel_high);
+
+        std::string tdirname = "selectionHists_" + m_name + "/";
+
+        std::string sel_name_sanitised = sel_name;
+        ReplaceAll(sel_name_sanitised, std::string("/"), std::string("-"));
+
+        std::string histname = m_probeTriggers[i_turnon]+"-"+m_referenceTriggers[i_turnon]+"_"+m_variables[i_turnon]+"_"+sel_name_sanitised;
+        std::string xaxistitle = m_offlineContainerName + " " + sel_name + " " + std::to_string(sel_low)+" - "+std::to_string(sel_high);
+
+        int nbins = 1000;
+        float low_x = 0.0;
+        float high_x = 1000.0;
+        if(sel_name == "eta") {
+          nbins = 100;
+          low_x = -5.0;
+          high_x = 5.0;
+        }
+        else if(sel_name == "pt") {
+          ;
+        }
+        else if(sel_name == "m") {
+          nbins = 100;
+          low_x = 0;
+          high_x = 100;
+        }
+        else if(sel_name == "m/pt") {
+          nbins = 200;
+          low_x = 0;
+          high_x = 2;
+        }
+        else {
+          ANA_MSG_ERROR("Don't recgnise selection hist variable, you need to define histogram binning");
+          return EL::StatusCode::FAILURE;
+        }
+
+        this_preSelHistsSelections.push_back( book(tdirname, histname + "_preSel", xaxistitle, nbins, low_x, high_x, wk()) );
+        if(m_TDT) {
+          this_numeratorHistsSelectionsTDT.push_back( book(tdirname, histname + "_numTDT", xaxistitle, nbins, low_x, high_x, wk()) );
+          this_denominatorHistsSelectionsTDT.push_back( book(tdirname, histname + "_denomTDT", xaxistitle, nbins, low_x, high_x, wk()) );
+        }
+        if(m_emulate) {
+          this_numeratorHistsSelectionsEmulated.push_back( book(tdirname, histname + "_numEmulated", xaxistitle, nbins, low_x, high_x, wk()) );
+          this_denominatorHistsSelectionsEmulated.push_back( book(tdirname, histname + "_denomEmulated", xaxistitle, nbins, low_x, high_x, wk()) );
+        }
+      }
+
+      m_preSelHistsSelections.push_back(this_preSelHistsSelections);
+      m_numeratorHistsSelectionsTDT.push_back(this_numeratorHistsSelectionsTDT);
+      m_denominatorHistsSelectionsTDT.push_back(this_denominatorHistsSelectionsTDT);
+      m_numeratorHistsSelectionsEmulated.push_back(this_numeratorHistsSelectionsEmulated);
+      m_denominatorHistsSelectionsEmulated.push_back(this_denominatorHistsSelectionsEmulated);
+    }
+  }
+
+  ANA_MSG_INFO("histInitialise is done!");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -554,6 +630,11 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     std::vector<int> good_indices;
     bool passSelections;
     ANA_CHECK( this->applySelections(passSelections, m_probeTriggerInfo[i_turnon].offlineSelection, offlineJets, offlineJetsInfo, multiplicity_required, good_indices) );
+
+
+    int jet_index = good_indices[m_variables_index[i_turnon]];
+    ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_preSelHistsSelections[i_turnon], jet_index) );
+
     if (!passSelections) {
       ANA_MSG_DEBUG("failed selection");
       continue;
@@ -563,11 +644,10 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     
     // get the relevant variable
     ANA_MSG_DEBUG("getting variable to fill turnon with");
-    int index = m_variables_index[i_turnon];
     std::string variable = m_variables_var[i_turnon];
     std::vector<float> var_vec;
     ANA_CHECK (this->get_variable(var_vec, variable, offlineJets, offlineJetsInfo, m_fromNTUP) );
-    float var_to_fill = var_vec[index];
+    float var_to_fill = var_vec[jet_index];
     ANA_MSG_DEBUG("set variable to fill turnon with");
 
     
@@ -596,6 +676,8 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       if(m_TDT) {
         if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
           m_denominatorHistsTDT.at(histNum)->Fill(var_to_fill);
+          ANA_MSG_DEBUG("about to fill selection hist");
+          ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_denominatorHistsSelectionsTDT[i_turnon], jet_index) );
           if(m_splitBy != "") {
             m_denominatorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
           }
@@ -603,6 +685,7 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
           if(probeDecision.passedTrigger){
             ANA_MSG_DEBUG("   it passed!");
             m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
+            ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_numeratorHistsSelectionsTDT[i_turnon], jet_index) );
             if(m_splitBy != "") {
               m_numeratorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
             }
@@ -613,11 +696,13 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       // currently not emulating L1 in order to compare, add as option?
       if(m_emulate) {
         m_denominatorHistsEmulated.at(histNum)->Fill(var_to_fill);
+        ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_denominatorHistsSelectionsEmulated[i_turnon], jet_index) );
         if(m_splitBy != "") {
           m_denominatorHistsEmulated.at(noSelHistNum)->Fill(var_to_fill);
         }
         if(probeDecisionEmulated.passedTrigger){
           m_numeratorHistsEmulated.at(histNum)->Fill(var_to_fill);
+          ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_numeratorHistsSelectionsEmulated[i_turnon], jet_index) );
           if(m_splitBy != "") {
             m_numeratorHistsEmulated.at(noSelHistNum)->Fill(var_to_fill);
           }
@@ -700,37 +785,6 @@ TH1F* JetTriggerEfficiencies::book(std::string name, std::string title, std::str
 
 
 
-std::vector<std::string> splitString(std::string parentString, std::string sep) {
-  std::size_t start = 0, end = 0;
-  std::vector<std::string> splitVec;
-  while ((end = parentString.find(sep, start)) != std::string::npos) {
-    splitVec.push_back(parentString.substr(start, end - start));
-    start = end + sep.size();
-  }
-  splitVec.push_back(parentString.substr(start));
-  return splitVec;
-}
-
-
-// decodes a python list
-std::vector<std::string> splitListString(std::string parentString) {
-  // step 1: strip whitespace
-  std::string tempString = regex_replace(parentString, std::regex("^ +| +$|( ) +"), "$1");
-
-  // step 2: remove [ and ] (first and last, given whitespace stripping)
-  tempString = tempString.substr(1,tempString.size()-2);
-  
-  // step 3: split into vector of strings
-  std::vector<std::string> splitVec = splitString(tempString, ",");
-
-  // step 4: remove quotation marks and whitespace
-  for(unsigned int i = 0; i<splitVec.size(); i++) {
-    splitVec[i] = regex_replace(splitVec[i], std::regex("^ +| +$|( ) +"), "$1");
-    splitVec[i] = splitVec[i].substr(1,splitVec[i].size()-2);
-  }
-
-  return splitVec;
-}
 
 
 EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel) {
@@ -979,4 +1033,91 @@ EL::StatusCode JetTriggerEfficiencies::get_event_variable(float &var, std::strin
 
   return EL::StatusCode::SUCCESS;
 
+}
+
+
+
+EL::StatusCode JetTriggerEfficiencies::FillSelectionVarHists(JetTriggerInfo &probeTriggerInfo, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<TH1F*> &histsVec, int jet_index) {
+
+  ANA_MSG_DEBUG("FillSelectionVars: filling hists for " << probeTriggerInfo.chainName);
+  
+  int offset = 0;
+  for(unsigned int i_sel = 0; i_sel < probeTriggerInfo.offlineSelection.size(); i_sel++){
+
+    std::string variable = probeTriggerInfo.offlineSelection[i_sel].first;
+    
+    if(variable == "multiplicity") {
+      offset += 1;
+      continue;
+    }
+
+    ANA_MSG_DEBUG("  selection " << i_sel << " on " << variable);
+
+    std::vector<float> var_vec;
+    ANA_CHECK (this->get_variable(var_vec, variable, jets, jetsInfo, m_fromNTUP) );
+
+    if(var_vec.size() < jet_index) {
+      ANA_MSG_DEBUG("FillSelectionVars: require jet index " << jet_index << " but only have " << var_vec.size());
+      continue;
+    }
+
+    float var_to_fill = var_vec[jet_index];
+
+    ANA_MSG_DEBUG("  nth = " << jet_index << " jet has value " << var_to_fill);
+
+    if(i_sel-offset >= histsVec.size()) {
+      ANA_MSG_ERROR("histsVec has size " << histsVec.size() << " but trying to fill index " << i_sel-offset);
+      return EL::StatusCode::FAILURE;
+    }
+
+    histsVec[i_sel-offset]->Fill(var_to_fill);
+  }
+
+  return EL::StatusCode::SUCCESS;
+}
+
+
+
+
+
+std::vector<std::string> splitString(std::string parentString, std::string sep) {
+  std::size_t start = 0, end = 0;
+  std::vector<std::string> splitVec;
+  while ((end = parentString.find(sep, start)) != std::string::npos) {
+    splitVec.push_back(parentString.substr(start, end - start));
+    start = end + sep.size();
+  }
+  splitVec.push_back(parentString.substr(start));
+  return splitVec;
+}
+
+
+// decodes a python list
+std::vector<std::string> splitListString(std::string parentString) {
+  // step 1: strip whitespace
+  std::string tempString = regex_replace(parentString, std::regex("^ +| +$|( ) +"), "$1");
+
+  // step 2: remove [ and ] (first and last, given whitespace stripping)
+  tempString = tempString.substr(1,tempString.size()-2);
+  
+  // step 3: split into vector of strings
+  std::vector<std::string> splitVec = splitString(tempString, ",");
+
+  // step 4: remove quotation marks and whitespace
+  for(unsigned int i = 0; i<splitVec.size(); i++) {
+    splitVec[i] = regex_replace(splitVec[i], std::regex("^ +| +$|( ) +"), "$1");
+    splitVec[i] = splitVec[i].substr(1,splitVec[i].size()-2);
+  }
+
+  return splitVec;
+}
+
+
+// https://stackoverflow.com/questions/2896600/how-to-replace-all-occurrences-of-a-character-in-string
+static inline void ReplaceAll(std::string &str, const std::string& from, const std::string& to) {
+  size_t start_pos = 0;
+  while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+    str.replace(start_pos, from.length(), to);
+    start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+  }
 }
