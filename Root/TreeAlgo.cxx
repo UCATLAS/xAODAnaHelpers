@@ -84,7 +84,37 @@ EL::StatusCode TreeAlgo :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // allow to store different variables for each jet collection (reco and trig only, default: store the same)
+  std::istringstream ss_fat_containers(m_fatJetContainerName);
+  while ( std::getline(ss_fat_containers, token, ' ') ){
+    m_fatJetContainers.push_back(token);
+  }
+  std::istringstream ss_fat_names(m_fatJetBranchName);
+  while ( std::getline(ss_fat_names, token, ' ') ){
+    m_fatJetBranches.push_back(token);
+  }
+  if( m_fatJetBranches.size() == 0 ) {
+    for(auto fatJetContainer : m_fatJetContainers) {
+      m_fatJetBranches.push_back(fatJetContainer);
+    }
+  }
+  if( !m_fatJetContainerName.empty() && m_fatJetContainers.size()!=m_fatJetBranches.size()){
+    ANA_MSG_ERROR( "The number of fat jet containers must be equal to the number of fat jet name branches. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+  std::istringstream ss_cluster_containers(m_clusterContainerName);
+  while ( std::getline(ss_cluster_containers, token, ' ') ){
+    m_clusterContainers.push_back(token);
+  }
+  std::istringstream ss_cluster_names(m_clusterBranchName);
+  while ( std::getline(ss_cluster_names, token, ' ') ){
+    m_clusterBranches.push_back(token);
+  }
+  if( !m_clusterContainerName.empty() && m_clusterContainers.size()!=m_clusterBranches.size()){
+    ANA_MSG_ERROR( "The number of cluster containers must be equal to the number of cluster name branches. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+
+  // allow to store different variables for each jet collection (reco, trig, fat only, default: store the same)
   std::istringstream ss(m_jetDetailStr);
   while ( std::getline(ss, token, '|') ){
     m_jetDetails.push_back(token);
@@ -99,6 +129,24 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_trigJetDetails.size()!=1  && m_trigJetContainers.size()!=m_trigJetDetails.size()){
     ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+
+  std::istringstream ss_fat_details(m_fatJetDetailStr);
+  while ( std::getline(ss_fat_details, token, '|') ){
+    m_fatJetDetails.push_back(token);
+  }
+  if( m_fatJetDetails.size()!=1  && m_fatJetContainers.size()!=m_fatJetDetails.size()){
+    ANA_MSG_ERROR( "The size of m_fatJetContainers should be equal to the size of m_fatJetDetailStr. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+
+  std::istringstream ss_cluster_details(m_clusterDetailStr);
+  while ( std::getline(ss_cluster_details, token, '|') ){
+    m_clusterDetails.push_back(token);
+  }
+  if( m_clusterDetails.size()!=1  && m_clusterContainers.size()!=m_clusterDetails.size()){
+    ANA_MSG_ERROR( "The size of m_clusterContainers should be equal to the size of m_clusterDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
 
@@ -240,20 +288,33 @@ EL::StatusCode TreeAlgo :: execute ()
       }
     }
     if ( !m_fatJetContainerName.empty() ) {
-	    std::string token;
-  	  std::istringstream ss(m_fatJetContainerName);
-    	while ( std::getline(ss, token, ' ') ){
-      	  helpTree->AddFatJets(m_fatJetDetailStr, token);
-			}
-		}
-    if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr);               }
+      // std::string token;
+      // std::istringstream ss(m_fatJetContainerName);
+      // while ( std::getline(ss, token, ' ') ){
+        // helpTree->AddFatJets(m_fatJetDetailStr, token);
+      // }
+      for(unsigned int ll=0; ll<m_fatJetContainers.size();++ll){
+        if(m_fatJetDetails.size()==1) helpTree->AddFatJets       (m_fatJetDetailStr, m_fatJetBranches.at(ll).c_str());
+	else{ helpTree->AddFatJets       (m_fatJetDetails.at(ll), m_fatJetBranches.at(ll).c_str()); }
+      }
+    }
+
+    if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr, m_truthFatJetBranchName);               }
     if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
     if (!m_METReferenceContainerName.empty() )  { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
     if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
-    if (!m_clusterContainerName.empty() )       { helpTree->AddClusters(m_clusterDetailStr);                         }
     if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
     if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesContainerName, m_trackParticlesDetailStr); }
+    if (!m_clusterContainerName.empty() )      {
+      for(unsigned int ll=0; ll<m_clusterContainers.size();++ll){
+        if(m_clusterDetails.size()==1)
+          helpTree->AddClusters (m_clusterDetailStr, m_clusterBranches.at(ll).c_str());
+	else
+          helpTree->AddClusters (m_clusterDetails.at(ll), m_clusterBranches.at(ll).c_str());
+      }
+    }
+
   }
 
   /* THIS IS WHERE WE START PROCESSING THE EVENT AND PLOTTING THINGS */
@@ -327,12 +388,14 @@ EL::StatusCode TreeAlgo :: execute ()
         const xAOD::JetContainer* inJets(nullptr);
         if ( ll==0 ) {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining fat jet collections");
             reject = true;
             break;
           }
           ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
         } else {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll), m_event, m_store, msg()) ) {
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll) + " is not available. Skipping all remaining fat jet collections");
             reject = true;
             break;
           }
@@ -342,7 +405,10 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_l1JetContainerName.empty() ){
@@ -357,6 +423,7 @@ EL::StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for(unsigned int ll=0;ll<m_trigJetContainers.size();++ll){
         if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The trigger jet container " + m_trigJetContainers.at(ll) + " is not available. Skipping all remaining trigger jet collections");
           reject = true;
           break;
         }
@@ -366,13 +433,17 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_trigJetBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a trigger jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_truthJetContainerName.empty() ) {
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_truthJetContainers.size(); ++ll) {
         if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthJetContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The truth jet container " + m_truthJetContainers.at(ll) + " is not available. Skipping all remaining truth jet collections");
           reject = true;
           break;
         }
@@ -382,25 +453,47 @@ EL::StatusCode TreeAlgo :: execute ()
         helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthJetBranches.at(ll) );
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a truth jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_fatJetContainerName.empty() ) {
+      // bool reject = false;
+      // std::string token;
+      // std::istringstream ss(m_fatJetContainerName);
+      // while ( std::getline(ss, token, ' ') ){
+        // if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(token+fatJetSuffix, m_event, m_store, msg()) ) {
+          // reject = true;
+          // break;
+        // }
+
+      	// const xAOD::JetContainer* inFatJets(nullptr);
+	// ANA_CHECK( HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, msg()) );
+      	// helpTree->FillFatJets( inFatJets, token );
+      // }
+      
+      // if ( reject ) continue;
+
       bool reject = false;
-      std::string token;
-      std::istringstream ss(m_fatJetContainerName);
-      while ( std::getline(ss, token, ' ') ){
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(token+fatJetSuffix, m_event, m_store, msg()) ) {
+      for(unsigned int ll=0;ll<m_fatJetContainers.size();++ll){
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll) + " was not retrieved. Skipping all remaining fat jet collections");
           reject = true;
           break;
         }
 
-      	const xAOD::JetContainer* inFatJets(nullptr);
-	ANA_CHECK( HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, msg()) );
-      	helpTree->FillFatJets( inFatJets, token );
+        const xAOD::JetContainer* inFatJets(nullptr);
+        ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll), m_event, m_store, msg()) );
+        helpTree->FillFatJets( inFatJets, m_fatJetBranches.at(ll) );
+
       }
 
-      if ( reject ) continue;
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a fat jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_truthFatJetContainerName.empty() ) {
@@ -408,7 +501,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
       const xAOD::JetContainer* inTruthFatJets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, msg()) );
-      helpTree->FillTruthFatJets( inTruthFatJets );
+      helpTree->FillTruthFatJets( inTruthFatJets, m_truthFatJetBranchName );
     }
 
     if ( !m_tauContainerName.empty() ) {
@@ -443,14 +536,6 @@ EL::StatusCode TreeAlgo :: execute ()
       helpTree->FillPhotons( inPhotons );
     }
 
-    if ( !m_clusterContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::CaloClusterContainer>(m_clusterContainerName + clusterSuffix, m_event, m_store, msg()) ) continue;
-
-      const xAOD::CaloClusterContainer* inClusters(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inClusters, m_clusterContainerName+clusterSuffix, m_event, m_store, msg()) );
-      helpTree->FillClusters( inClusters );
-    }
-
     if ( !m_truthParticlesContainerName.empty() ) {
       if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainerName, m_event, m_store, msg()) ) continue;
 
@@ -465,6 +550,26 @@ EL::StatusCode TreeAlgo :: execute ()
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));
       helpTree->FillTracks(m_trackParticlesContainerName, inTrackParticles);
+    }
+
+    if ( !m_clusterContainerName.empty() ) {
+      bool reject = false;
+      for(unsigned int ll=0;ll<m_clusterContainers.size();++ll){
+        if ( !HelperFunctions::isAvailable<xAOD::CaloClusterContainer>(m_clusterContainers.at(ll), m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The cluster container " + m_clusterContainers.at(ll) + " is not available. Skipping all remaining cluster collections");
+          reject = true;
+          break;
+        }
+
+        const xAOD::CaloClusterContainer* inClusters(nullptr);
+        ANA_CHECK( HelperFunctions::retrieve(inClusters, m_clusterContainers.at(ll), m_event, m_store, msg()) );
+        helpTree->FillClusters( inClusters, m_clusterBranches.at(ll) );
+      }
+
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a cluster container problem - not writing the event");
+        continue;
+      }
     }
 
     // fill the tree

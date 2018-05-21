@@ -44,12 +44,15 @@ public:
   std::string m_trigJetContainerName = "";
   std::string m_trigJetBranchName = "trigJet";
   std::string m_fatJetContainerName = "";
+  std::string m_fatJetBranchName = ""; // default is to use container name
   std::string m_truthFatJetContainerName = "";
+  std::string m_truthFatJetBranchName = "truth_fatjet";
   std::string m_tauContainerName = "";
   std::string m_METContainerName = "";
   std::string m_METReferenceContainerName = "";
   std::string m_photonContainerName = "";
   std::string m_clusterContainerName = "";
+  std::string m_clusterBranchName = "CaloCalTopoClusters";
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
   std::string m_l1JetContainerName = "";
@@ -70,14 +73,21 @@ public:
 protected:
   std::vector<std::string> m_jetDetails; //!
   std::vector<std::string> m_trigJetDetails; //!
+  std::vector<std::string> m_fatJetDetails; //!
 
   std::vector<std::string> m_jetContainers; //!
   std::vector<std::string> m_truthJetContainers; //!
   std::vector<std::string> m_trigJetContainers; //!
+  std::vector<std::string> m_fatJetContainers; //!
 
   std::vector<std::string> m_jetBranches; //!
   std::vector<std::string> m_truthJetBranches; //!
   std::vector<std::string> m_trigJetBranches; //!
+  std::vector<std::string> m_fatJetBranches; //!
+
+  std::vector<std::string> m_clusterDetails; //!
+  std::vector<std::string> m_clusterContainers; //!
+  std::vector<std::string> m_clusterBranches; //!
 
   std::map<std::string, HelpTreeBase*> m_trees;            //!
 
