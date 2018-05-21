@@ -304,7 +304,6 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
     if (!m_METReferenceContainerName.empty() )  { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
     if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
-    if (!m_clusterContainerName.empty() )       { helpTree->AddClusters(m_clusterDetailStr);                         }
     if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
     if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesContainerName, m_trackParticlesDetailStr); }
     if (!m_clusterContainerName.empty() )      {
@@ -537,14 +536,6 @@ EL::StatusCode TreeAlgo :: execute ()
       helpTree->FillPhotons( inPhotons );
     }
 
-    if ( !m_clusterContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::CaloClusterContainer>(m_clusterContainerName + clusterSuffix, m_event, m_store, msg()) ) continue;
-
-      const xAOD::CaloClusterContainer* inClusters(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inClusters, m_clusterContainerName+clusterSuffix, m_event, m_store, msg()) );
-      helpTree->FillClusters( inClusters );
-    }
-
     if ( !m_truthParticlesContainerName.empty() ) {
       if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainerName, m_event, m_store, msg()) ) continue;
 
@@ -576,7 +567,7 @@ EL::StatusCode TreeAlgo :: execute ()
       }
 
       if ( reject ) {
-        ANA_MSG_DEBUG( "There was a cluster container priblem - not writing the event");
+        ANA_MSG_DEBUG( "There was a cluster container problem - not writing the event");
         continue;
       }
     }
