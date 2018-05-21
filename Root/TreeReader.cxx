@@ -257,17 +257,12 @@ EL::StatusCode TreeReader :: execute ()
   wk()->tree()->GetEntry (wk()->treeEntry());
   ANA_MSG_DEBUG("entry got successfully");
 
-
   // xAOD::TEvent* event = wk()->xaodEvent();
   // ANA_MSG_INFO("got xaodEvent");
   // xAOD::TStore* store = wk()->xaodStore();
   // ANA_MSG_INFO("got xaodStore");
 
-
-  if(m_eventCounter % 10000 == 0)
-    ANA_MSG_INFO("executing event " << m_eventCounter);
-  else
-    ANA_MSG_DEBUG("executing event " << m_eventCounter);
+  ANA_MSG_DEBUG("executing event " << m_eventCounter);
 
   ANA_MSG_DEBUG("this event has runNum, LB, evtNum = " << m_eventInfo.runNumber << ", " << m_eventInfo.lumiBlock << ", " << m_eventInfo.eventNumber);
   
@@ -275,10 +270,12 @@ EL::StatusCode TreeReader :: execute ()
     
   // https://gitlab.cern.ch/atlas/athena/blob/21.2/Event/xAOD/xAODJet/Root/Jet_v1.cxx#L184
   for(unsigned int i = 0; i < m_jetCollectionInfos.size(); i++) {
+    ANA_MSG_DEBUG( "this is jet collection " << i );
+    ANA_MSG_DEBUG( "  collection name: " << m_jetCollectionInfos.at(i).NTUPname );
+    ANA_MSG_DEBUG( "  number of jets in this event: " << m_jetCollectionInfos.at(i).pt->size() );
+    
     // ANA_MSG_DEBUG("setting TLV for " << m_jetCollectionInfos.at(i).NTUPname);
     // m_jetCollectionInfos.at(i).setTLV();
-    ANA_MSG_DEBUG("there are " << m_jetCollectionInfos.at(i).pt->size() << " " << m_jetCollectionInfos.at(i).NTUPname << " jets");
-    
 
     /*
     xAOD::JetContainer* goodJets = new xAOD::JetContainer();
