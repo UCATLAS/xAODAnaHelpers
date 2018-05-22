@@ -174,6 +174,7 @@ EL::StatusCode TreeAlgo :: execute ()
   std::vector<std::string> event_systNames({""});
   std::vector<std::string> muSystNames;
   std::vector<std::string> elSystNames;
+  std::vector<std::string> tauSystNames;
   std::vector<std::string> jetSystNames;
   std::vector<std::string> photonSystNames;
   std::vector<std::string> fatJetSystNames;
@@ -202,6 +203,15 @@ EL::StatusCode TreeAlgo :: execute ()
     }
   }
 
+  if(!m_tauSystsVec.empty()){
+    ANA_CHECK( HelperFunctions::retrieve(systNames, m_tauSystsVec, 0, m_store, msg()) );
+    for(const auto& systName: *systNames){
+      tauSystNames.push_back(systName);
+      if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
+      event_systNames.push_back(systName);
+    }
+  }
+  
   if(!m_jetSystsVec.empty()){
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_jetSystsVec, 0, m_store, msg()) );
     for(const auto& systName: *systNames){
@@ -334,6 +344,7 @@ EL::StatusCode TreeAlgo :: execute ()
     // assume the nominal container by default
     std::string muSuffix("");
     std::string elSuffix("");
+    std::string tauSuffix("");
     std::string jetSuffix("");
     std::string photonSuffix("");
     std::string clusterSuffix("");
@@ -348,6 +359,7 @@ EL::StatusCode TreeAlgo :: execute ()
     */
     if (std::find(muSystNames.begin(), muSystNames.end(), systName) != muSystNames.end()) muSuffix = systName;
     if (std::find(elSystNames.begin(), elSystNames.end(), systName) != elSystNames.end()) elSuffix = systName;
+    if (std::find(tauSystNames.begin(), tauSystNames.end(), systName) != tauSystNames.end()) tauSuffix = systName;
     if (std::find(jetSystNames.begin(), jetSystNames.end(), systName) != jetSystNames.end()) jetSuffix = systName;
     if (std::find(photonSystNames.begin(), photonSystNames.end(), systName) != photonSystNames.end()) photonSuffix = systName;
     if (std::find(fatJetSystNames.begin(), fatJetSystNames.end(), systName) != fatJetSystNames.end()) fatJetSuffix = systName;
