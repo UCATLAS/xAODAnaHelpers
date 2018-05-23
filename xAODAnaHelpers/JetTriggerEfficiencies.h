@@ -313,6 +313,9 @@ public:
   /// @ brief menu set to use
   std::string m_jetTriggerMenuSet = "2018";
 
+  /// @ brief require probe triggers to be an exact match to a menu item
+  bool m_requireTriggerInfoMatch = true;
+
   /// @brief use of Good Runs List
   bool m_applyGRLCut = false;
   std::string m_GRLxml = "xAODAnaHelpers/data17_13TeV.periodAllYear_DetStatus-v97-pro21-13_Unknown_PHYS_StandardGRL_All_Good_25ns_JetHLT_Normal2017.xml";
