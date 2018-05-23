@@ -361,6 +361,7 @@ private:
   TH1F* m_splitVarHist; //!
 
   std::vector< std::vector<TH1F*> > m_preSelHistsSelections; //!
+  std::vector< std::vector<TH1F*> > m_postSelHistsSelections; //!
   std::vector< std::vector<TH1F*> > m_numeratorHistsSelectionsTDT; //!
   std::vector< std::vector<TH1F*> > m_denominatorHistsSelectionsTDT; //!
   std::vector< std::vector<TH1F*> > m_numeratorHistsSelectionsEmulated; //!

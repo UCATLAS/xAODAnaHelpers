@@ -320,6 +320,7 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
       ANA_MSG_INFO("turnon " << i_turnon << " - " << m_probeTriggerInfo[i_turnon].chainName);
 
       std::vector<TH1F*> this_preSelHistsSelections;
+      std::vector<TH1F*> this_postSelHistsSelections;
       std::vector<TH1F*> this_numeratorHistsSelectionsTDT;
       std::vector<TH1F*> this_denominatorHistsSelectionsTDT;
       std::vector<TH1F*> this_numeratorHistsSelectionsEmulated;
@@ -372,6 +373,7 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
         }
 
         this_preSelHistsSelections.push_back( book(tdirname, histname + "_preSel", xaxistitle, nbins, low_x, high_x, wk()) );
+        this_postSelHistsSelections.push_back( book(tdirname, histname + "_postSel", xaxistitle, nbins, low_x, high_x, wk()) );
         if(m_TDT) {
           this_numeratorHistsSelectionsTDT.push_back( book(tdirname, histname + "_numTDT", xaxistitle, nbins, low_x, high_x, wk()) );
           this_denominatorHistsSelectionsTDT.push_back( book(tdirname, histname + "_denomTDT", xaxistitle, nbins, low_x, high_x, wk()) );
@@ -383,6 +385,7 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
       }
 
       m_preSelHistsSelections.push_back(this_preSelHistsSelections);
+      m_postSelHistsSelections.push_back(this_postSelHistsSelections);
       m_numeratorHistsSelectionsTDT.push_back(this_numeratorHistsSelectionsTDT);
       m_denominatorHistsSelectionsTDT.push_back(this_denominatorHistsSelectionsTDT);
       m_numeratorHistsSelectionsEmulated.push_back(this_numeratorHistsSelectionsEmulated);
@@ -671,6 +674,11 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
         continue;
     }
 
+    int jet_index = -1;
+    if(m_plotSelectionVars) {
+      jet_index = m_variables_index[i_turnon];
+      ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_preSelHistsSelections[i_turnon], jet_index) );
+    }
 
     // apply selections
     ANA_MSG_DEBUG("applying offline selections");
@@ -680,17 +688,17 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     ANA_CHECK( this->applySelections(passSelections, m_probeTriggerInfo[i_turnon].offlineSelection, offlineJets, offlineJetsInfo, multiplicity_required, good_indices) );
 
 
-    int jet_index = good_indices[m_variables_index[i_turnon]];
-    if(m_plotSelectionVars)
-      ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_preSelHistsSelections[i_turnon], jet_index) );
-
     if (!passSelections) {
       ANA_MSG_DEBUG("failed selection");
       continue;
     }
     ANA_MSG_DEBUG("passed selection");
     
-    
+    if(m_plotSelectionVars) {
+      jet_index = good_indices[m_variables_index[i_turnon]];
+      ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_postSelHistsSelections[i_turnon], jet_index) );
+    }
+
     // get the relevant variable
     ANA_MSG_DEBUG("getting variable to fill turnon with");
     std::string variable = m_variables_var[i_turnon];
