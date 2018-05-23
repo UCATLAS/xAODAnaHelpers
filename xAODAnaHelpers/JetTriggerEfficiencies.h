@@ -25,6 +25,7 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
+#include "AsgAnalysisInterfaces/IGoodRunsListSelectionTool.h"
 #include "JetJvtEfficiency/IJetJvtEfficiency.h"
 #include "JetInterface/IJetModifier.h"
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
@@ -312,6 +313,10 @@ public:
   /// @ brief menu set to use
   std::string m_jetTriggerMenuSet = "2018";
 
+  /// @brief use of Good Runs List
+  bool m_applyGRLCut = false;
+  std::string m_GRLxml = "xAODAnaHelpers/data17_13TeV.periodAllYear_DetStatus-v97-pro21-13_Unknown_PHYS_StandardGRL_All_Good_25ns_JetHLT_Normal2017.xml";
+
 
 private:
   // variables that don't get filled at submission time should be
@@ -324,6 +329,9 @@ private:
   */
   asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; //!
   asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle{"Trig::MatchingTool/MatchingTool", this}; //!
+
+  /// @brief GRL tool
+  asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle{"GoodRunsListSelectionTool", this}; //!
 
   /// @brief vectors reference and probe trigger names, decoded from m_turnonString
   std::vector<std::string> m_referenceTriggers; //!
@@ -354,6 +362,8 @@ private:
   std::vector< std::vector<TH1F*> > m_denominatorHistsSelectionsTDT; //!
   std::vector< std::vector<TH1F*> > m_numeratorHistsSelectionsEmulated; //!
   std::vector< std::vector<TH1F*> > m_denominatorHistsSelectionsEmulated; //!
+  
+
 
 public:
 

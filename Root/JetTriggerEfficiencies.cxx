@@ -26,6 +26,7 @@
 #include "xAODAnaHelpers/TreeReader.h"
 
 // external tools include(s):
+#include "GoodRunsLists/GoodRunsListSelectionTool.h"
 #include "JetJvtEfficiency/JetJvtEfficiency.h"
 #include "JetMomentTools/JetForwardJvtTool.h"
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
@@ -448,6 +449,27 @@ EL::StatusCode JetTriggerEfficiencies :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
   }
   
+  
+  // get GRL tool
+  if(m_applyGRLCut){
+    std::vector<std::string> vecStringGRL;
+
+    std::string grl;
+    std::istringstream ss(m_GRLxml);
+    while ( std::getline(ss, grl, ',') ) {
+        std::string file = PathResolverFindCalibFile(grl);
+        ANA_MSG_DEBUG("Found GRL: " << file);
+        vecStringGRL.push_back(file);
+    }
+
+    ANA_CHECK( m_grl_handle.setProperty("GoodRunsListVec", vecStringGRL));
+    ANA_CHECK( m_grl_handle.setProperty("PassThrough", false));
+    ANA_CHECK( m_grl_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_grl_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_grl_handle);
+  }
+
+
   ANA_MSG_DEBUG( "JetTriggerEfficiencies Interface succesfully initialized!" );
   
   return EL::StatusCode::SUCCESS;
@@ -491,7 +513,22 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
   Long64_t eventNumber = m_fromNTUP ? global_eventInfo.eventNumber : eventInfo->eventNumber();
   int lumiBlock = m_fromNTUP ? global_eventInfo.lumiBlock : eventInfo->lumiBlock();
+  int runNumber = m_fromNTUP ? global_eventInfo.runNumber : eventInfo->runNumber();
   ANA_MSG_DEBUG("retrieved event with eventNumber " << eventNumber << " from lumi block " << lumiBlock);
+
+
+  // GRL
+  if ( m_applyGRLCut ) {
+    ANA_MSG_DEBUG("applying GRL");
+    if ( !m_grl_handle->passRunLB( runNumber, lumiBlock ) ) {
+      ANA_MSG_DEBUG("  failed GRL");
+      return EL::StatusCode::SUCCESS;
+    }
+    else {
+      ANA_MSG_DEBUG("  passed GRL");
+    }
+  }
+
 
   // offline jets
   const xAOD::JetContainer* offlineJets(nullptr);
@@ -600,7 +637,7 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     }
     
     // if do them both, check agreement
-    if(m_TDT && !m_skipCompare) {
+    if(m_TDT && m_emulate && !m_skipCompare) {
       ANA_MSG_DEBUG("comparing emulation and trigger decision tool");
       if(probeDecisionEmulated.passedTrigger != probeDecision.passedTrigger) {
         // if TDT failed, maybe it's because of prescales. Only worry about it if it is not - ie the trigger fails but was not prescaled out at L1 or HLT, and was not disabled
@@ -633,7 +670,8 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
 
     int jet_index = good_indices[m_variables_index[i_turnon]];
-    ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_preSelHistsSelections[i_turnon], jet_index) );
+    if(m_plotSelectionVars)
+      ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_preSelHistsSelections[i_turnon], jet_index) );
 
     if (!passSelections) {
       ANA_MSG_DEBUG("failed selection");
@@ -674,10 +712,12 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       // fill hists
       // TDT needs to account for probe L1 and prescale, and whether trigger is disabled
       if(m_TDT) {
-        if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut) {
+        if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut && !probeDecision.isDisabled) {
           m_denominatorHistsTDT.at(histNum)->Fill(var_to_fill);
-          ANA_MSG_DEBUG("about to fill selection hist");
-          ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_denominatorHistsSelectionsTDT[i_turnon], jet_index) );
+          if(m_plotSelectionVars) {
+            ANA_MSG_DEBUG("about to fill selection hist (passed ref and relevant prescale / disabled) for TDT");
+            ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_denominatorHistsSelectionsTDT[i_turnon], jet_index) );
+          }
           if(m_splitBy != "") {
             m_denominatorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
           }
@@ -685,7 +725,10 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
           if(probeDecision.passedTrigger){
             ANA_MSG_DEBUG("   it passed!");
             m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
-            ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_numeratorHistsSelectionsTDT[i_turnon], jet_index) );
+            if(m_plotSelectionVars) {
+              ANA_MSG_DEBUG("about to fill selection hist (passed ref and probe) for TDT");
+              ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_numeratorHistsSelectionsTDT[i_turnon], jet_index) );
+            }
             if(m_splitBy != "") {
               m_numeratorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
             }
@@ -696,13 +739,19 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       // currently not emulating L1 in order to compare, add as option?
       if(m_emulate) {
         m_denominatorHistsEmulated.at(histNum)->Fill(var_to_fill);
-        ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_denominatorHistsSelectionsEmulated[i_turnon], jet_index) );
+        if(m_plotSelectionVars) {
+          ANA_MSG_DEBUG("about to fill selection hist (passed ref and relevant prescale / disabled) for emulation");
+          ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_denominatorHistsSelectionsEmulated[i_turnon], jet_index) );
+        }
         if(m_splitBy != "") {
           m_denominatorHistsEmulated.at(noSelHistNum)->Fill(var_to_fill);
         }
         if(probeDecisionEmulated.passedTrigger){
           m_numeratorHistsEmulated.at(histNum)->Fill(var_to_fill);
-          ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_numeratorHistsSelectionsEmulated[i_turnon], jet_index) );
+          if(m_plotSelectionVars) {
+            ANA_MSG_DEBUG("about to fill selection hist (passed ref and probe) for emulation");
+            ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_numeratorHistsSelectionsEmulated[i_turnon], jet_index) );
+          }
           if(m_splitBy != "") {
             m_numeratorHistsEmulated.at(noSelHistNum)->Fill(var_to_fill);
           }
@@ -962,7 +1011,7 @@ EL::StatusCode JetTriggerEfficiencies::retrieveJetInfo(JetInfo &jetInfo, std::st
 
 EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec, std::string varName, const xAOD::JetContainer* jets, JetInfo &jetsInfo, bool fromNTUP) {
 
-  ANA_MSG_DEBUG("getting variable " << varName);
+  ANA_MSG_DEBUG("get_variable: getting variable " << varName);
 
   unsigned int nJets = fromNTUP ? jetsInfo.pt->size() : jets->size();
 
@@ -1009,7 +1058,7 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
  
   }
 
-  ANA_MSG_DEBUG("   successfully got");
+  ANA_MSG_DEBUG("  successfully got");
   return EL::StatusCode::SUCCESS;
 }
 
@@ -1057,7 +1106,7 @@ EL::StatusCode JetTriggerEfficiencies::FillSelectionVarHists(JetTriggerInfo &pro
     ANA_CHECK (this->get_variable(var_vec, variable, jets, jetsInfo, m_fromNTUP) );
 
     if(var_vec.size() < jet_index) {
-      ANA_MSG_DEBUG("FillSelectionVars: require jet index " << jet_index << " but only have " << var_vec.size());
+      ANA_MSG_DEBUG("  FillSelectionVars: require jet index " << jet_index << " but only have " << var_vec.size());
       continue;
     }
 
@@ -1066,13 +1115,16 @@ EL::StatusCode JetTriggerEfficiencies::FillSelectionVarHists(JetTriggerInfo &pro
     ANA_MSG_DEBUG("  nth = " << jet_index << " jet has value " << var_to_fill);
 
     if(i_sel-offset >= histsVec.size()) {
-      ANA_MSG_ERROR("histsVec has size " << histsVec.size() << " but trying to fill index " << i_sel-offset);
+      ANA_MSG_ERROR("  histsVec has size " << histsVec.size() << " but trying to fill index " << i_sel-offset);
       return EL::StatusCode::FAILURE;
     }
-
+    
+    ANA_MSG_DEBUG("  about to fill hist " << variable << "(number " << i_sel - offset << " of " << histsVec.size() << ") with " << var_to_fill);
     histsVec[i_sel-offset]->Fill(var_to_fill);
+    ANA_MSG_DEBUG("  successfully filled hist for " << variable);
   }
 
+  ANA_MSG_DEBUG("leaving FillSelectionVarHists successfully");
   return EL::StatusCode::SUCCESS;
 }
 
