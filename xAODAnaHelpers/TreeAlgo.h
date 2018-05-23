@@ -62,6 +62,7 @@ public:
   // if these are set, assume systematics are being processed over
   std::string m_muSystsVec = "";
   std::string m_elSystsVec = "";
+  std::string m_tauSystsVec = "";
   std::string m_jetSystsVec = "";
   std::string m_photonSystsVec = "";
   std::string m_fatJetSystsVec = "";
