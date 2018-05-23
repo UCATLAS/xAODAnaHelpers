@@ -194,6 +194,17 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     JetTriggerInfo thisJetTriggerInfo;
     thisJetTriggerInfo.fillInfo(result, m_selections[i_turnon]);
 
+    if(m_probeTriggers[i_turnon] != thisJetTriggerInfo.chainName) {
+      if(m_requireTriggerInfoMatch) {
+        ANA_MSG_ERROR("Asked for " << m_probeTriggers[i_turnon] << " but found " << thisJetTriggerInfo.chainName);
+        return EL::StatusCode::FAILURE;
+      }
+      else {
+        ANA_MSG_WARNING("Asked for " << m_probeTriggers[i_turnon] << " but found " << thisJetTriggerInfo.chainName);
+        ANA_MSG_INFO("continuing anyway, things might go wrong");
+      }
+    }
+
 
     // set the index in m_variables[i_turnon], adjust multiplicity reuirement if necessary
     if (m_variables[i_turnon].find("[") == std::string::npos) {
