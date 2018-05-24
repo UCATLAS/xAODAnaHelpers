@@ -710,7 +710,18 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     std::string variable = m_variables_var[i_turnon];
     std::vector<float> var_vec;
     ANA_CHECK (this->get_variable(var_vec, variable, offlineJets, offlineJetsInfo, m_fromNTUP) );
+
+    // order by variable - eg for mass
+    if(m_orderByVariable) {
+      std::sort(var_vec.begin(), var_vec.end());
+    }
+
     float var_to_fill = var_vec[jet_index];
+
+
+
+
+
     ANA_MSG_DEBUG("set variable to fill turnon with");
 
     
