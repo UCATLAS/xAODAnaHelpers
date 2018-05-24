@@ -291,7 +291,10 @@ public:
   std::string m_turnonString = "";
   std::string m_selectionString = "auto";
   std::string m_variableString = "pt";
+  bool m_orderByVariable = false; // eg for mass turnons plot nth mass not mass of nth pt
+
   bool m_plotSelectionVars = false;
+
 
   /// @brief emulate the turnon?
   bool m_TDT = true;
