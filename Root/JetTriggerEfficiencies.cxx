@@ -693,9 +693,15 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       continue;
     }
     ANA_MSG_DEBUG("passed selection");
-    
+
+    if(good_indices.size() <= m_variables_index[i_turnon]) {
+      ANA_MSG_ERROR("I am looking for index " << m_variables_index[i_turnon] << " of good_indices with size " << good_indices.size());
+      ANA_MSG_ERROR("This shouldn't be possible now I've passed selections");
+      return EL::StatusCode::FAILURE;
+    }
+    jet_index = good_indices[m_variables_index[i_turnon]];    
+
     if(m_plotSelectionVars) {
-      jet_index = good_indices[m_variables_index[i_turnon]];
       ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_postSelHistsSelections[i_turnon], jet_index) );
     }
 
