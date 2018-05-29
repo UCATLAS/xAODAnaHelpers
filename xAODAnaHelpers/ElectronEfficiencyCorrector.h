@@ -55,7 +55,7 @@ public:
   bool m_writeSystToMetadata = false;
 
   /** @brief Force AFII flag in calibration, in case metadata is broken */
-  bool m_setAFII = false;
+  bool m_setAFII;
 
   float m_systValPID = 0.0;
   float m_systValIso = 0.0;
