@@ -238,7 +238,8 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   std::string token;
   std::istringstream ss(m_MuTrigLegs);
   while ( std::getline(ss, token, ',') ) {
-    m_SingleMuTriggers.push_back(token);
+    size_t pos = token.find(":");
+    m_SingleMuTriggerMap[token.substr(0,pos)] = token.substr(pos+1);
   }
 
   // Remember base output syst. names container
@@ -439,7 +440,7 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
+EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
 {
 
   //
@@ -660,7 +661,17 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*e
   //
   if ( !isToolAlreadyUsed(m_trigEffSF_tool_name) ) {
 
-    for ( const auto& trig_it : m_SingleMuTriggers ) {
+    static const SG::AuxElement::ConstAccessor<unsigned int> acc_rnd("RandomRunNumber");
+    unsigned int run=0;
+    if (acc_rnd.isAvailable(*eventInfo)){
+      run = acc_rnd(*eventInfo);
+    }
+
+    for (auto const& trig : m_SingleMuTriggerMap) {
+
+      auto trig_it = trig.second;
+      if (trig.first.find("2015")!=std::string::npos && run>284484) continue;
+      else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos) && run<=284484) continue;
 
       std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig = nullptr;
       if ( writeSystNames ) sysVariationNamesTrig = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
