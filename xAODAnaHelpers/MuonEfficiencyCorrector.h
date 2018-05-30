@@ -99,7 +99,7 @@ private:
   std::string m_trigEffSF_tool_name;                                       //!
   CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               //!
   std::string m_TTVAEffSF_tool_name;                                       //!
-  std::vector<std::string> m_SingleMuTriggers;                             //!
+  std::map<std::string, std::string> m_SingleMuTriggerMap; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
