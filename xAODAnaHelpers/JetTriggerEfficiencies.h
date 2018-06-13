@@ -69,6 +69,7 @@ class JetTriggerInfo {
  public:
   std::string chainName;
   std::string L1;
+  bool isL1;
   std::string HLTjetContainer;
   std::string HLTjetContainerPreselection;
   std::string topoclusterFormation;
@@ -104,7 +105,7 @@ class JetTriggerInfo {
     std::vector< std::pair<std::string, std::pair<float, float> > > selection;
     
     // if empty (eg RD0_FILLED) then return empty selection vector
-    if(selectionString == "{}")
+    if(selectionString == "{}" || selectionString == "" )
       return selection;
 
     // trim { and }
@@ -162,9 +163,16 @@ class JetTriggerInfo {
       return;
     }
 
-    // get chain name. Later: build protection for the case it's not in the menu
-    chainName = splitInfoString.at(0);
+    // get chain name. Ignore empty lines that come first.
+    int i = 0;
+    chainName = "";
+    while(chainName.size() == 0) {
+      chainName = splitInfoString.at(i);
+      i++;
+    }
 
+    isL1 = (chainName.substr(0,3) == "L1_");
+    
     // easy ones - just strings
     L1                          = find_and_strip(infoString, "   L1:");
     HLTjetContainer             = find_and_strip(infoString, "   HLT jet container:");
@@ -173,6 +181,7 @@ class JetTriggerInfo {
     clusters                    = find_and_strip(infoString, "   clusters:");
     clustering                  = find_and_strip(infoString, "   clustering:");
     comment                     = find_and_strip(infoString, "   comment:");
+
 
     // get calibration steps: python list of strings -> vector of strings
     calibrationSteps = splitListString( find_and_strip(infoString, "   calibration steps:") );
@@ -281,9 +290,13 @@ public:
 
   // configuration variables
   
-  /// @brief 
+  /// @brief am I reading from an NTUP via TreeReader?
   bool m_fromNTUP = false;
+
+  /// @brief proceed even if disabledTriggers branch isn't present in NTUP? If trigger was disabled this will cause incorrect turnons
+  bool m_acceptNoDisabled = false;
   
+
   /// @brief container to use as offline reference (ie efficiencies are made as a function of this)
   std::string m_offlineContainerName = "";
   

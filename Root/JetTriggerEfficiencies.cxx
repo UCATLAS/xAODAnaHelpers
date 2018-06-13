@@ -196,7 +196,7 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
 
     if(m_probeTriggers[i_turnon] != thisJetTriggerInfo.chainName) {
       if(m_requireTriggerInfoMatch) {
-        ANA_MSG_ERROR("Asked for " << m_probeTriggers[i_turnon] << " but found " << thisJetTriggerInfo.chainName);
+        ANA_MSG_ERROR("Asked for '" << m_probeTriggers[i_turnon] << "' but found '" << thisJetTriggerInfo.chainName << "'");
         return EL::StatusCode::FAILURE;
       }
       else {
@@ -446,7 +446,6 @@ EL::StatusCode JetTriggerEfficiencies :: initialize ()
   else {
     m_event = NULL; // set NULL for xAH::HelperFunctions::retrieve() (not that I use that currently)
   }
-
   
   if ( m_offlineContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
@@ -462,7 +461,6 @@ EL::StatusCode JetTriggerEfficiencies :: initialize ()
     ANA_CHECK( m_trigDecTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
   }
-  
   
   // get GRL tool
   if(m_applyGRLCut){
@@ -629,7 +627,18 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
         int atIndex = index - global_eventInfo.isPassBitsNames->begin();
         probeDecision.fillFromBits(global_eventInfo.isPassBits->at(atIndex));
 
-        probeDecision.isDisabled = (std::find(global_eventInfo.disabledTriggers->begin(), global_eventInfo.disabledTriggers->end(), probeChainName) != global_eventInfo.disabledTriggers->end());
+        if(global_eventInfo.disabledTriggers == NULL) {
+          if(m_acceptNoDisabled) {
+            probeDecision.isDisabled = false;
+          }
+          else {
+            ANA_MSG_ERROR("failed to find trigger bits for " + probeChainName);
+            return EL::StatusCode::FAILURE;            
+          }
+        }
+        else {
+          probeDecision.isDisabled = (std::find(global_eventInfo.disabledTriggers->begin(), global_eventInfo.disabledTriggers->end(), probeChainName) != global_eventInfo.disabledTriggers->end());
+        }
       }
       else {
         probeDecision.passedTrigger = m_trigDecTool_handle->isPassed(probeChainName);        
@@ -720,8 +729,6 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
 
 
-
-
     ANA_MSG_DEBUG("set variable to fill turnon with");
 
     
@@ -748,7 +755,19 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       // fill hists
       // TDT needs to account for probe L1 and prescale, and whether trigger is disabled
       if(m_TDT) {
-        if(probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut && !probeDecision.isDisabled) {
+        bool goodForDenominator = false;
+        bool goodForNumerator = false;
+        if(m_probeTriggerInfo[i_turnon].isL1) {
+          goodForDenominator = passedRefTrigger;
+          goodForNumerator = probeDecision.L1_isPassedBeforePrescale;
+        }
+        else {
+          goodForDenominator = passedRefTrigger && probeDecision.L1_isPassedAfterVeto && !probeDecision.HLT_isPrescaledOut && !probeDecision.isDisabled;
+          goodForNumerator = probeDecision.passedTrigger;
+        }
+
+
+        if(goodForDenominator) {
           m_denominatorHistsTDT.at(histNum)->Fill(var_to_fill);
           if(m_plotSelectionVars) {
             ANA_MSG_DEBUG("about to fill selection hist (passed ref and relevant prescale / disabled) for TDT");
@@ -758,7 +777,9 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
             m_denominatorHistsTDT.at(noSelHistNum)->Fill(var_to_fill);
           }
           ANA_MSG_DEBUG("filling reference for " << m_probeTriggerInfo[i_turnon].chainName << ", is it disabled? " << probeDecision.isDisabled);
-          if(probeDecision.passedTrigger){
+          if(goodForNumerator){
+            std::cout << m_probeTriggerInfo[i_turnon].chainName << " passed with ref " << refChainName << std::endl;
+            std::cout << "passedTrigger? " << probeDecision.passedTrigger << std::endl;
             ANA_MSG_DEBUG("   it passed!");
             m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
             if(m_plotSelectionVars) {
@@ -1184,6 +1205,12 @@ std::vector<std::string> splitString(std::string parentString, std::string sep) 
 std::vector<std::string> splitListString(std::string parentString) {
   // step 1: strip whitespace
   std::string tempString = regex_replace(parentString, std::regex("^ +| +$|( ) +"), "$1");
+
+  // return if empty
+  if(tempString.size() == 0) {
+    std::vector<std::string> splitVec;
+    return splitVec;
+  }
 
   // step 2: remove [ and ] (first and last, given whitespace stripping)
   tempString = tempString.substr(1,tempString.size()-2);
