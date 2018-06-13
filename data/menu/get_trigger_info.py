@@ -33,8 +33,16 @@ def main():
     # control print output. If 'rulebook' then only that entry
     printOutput =  get_commandLine_option(sys.argv, '--print', 'all')
 
-    # control print output. If 'rulebook' then only that entry
+    # force an exact match, don't accept partial. Default False
     forceExact = bool(int(get_commandLine_option(sys.argv, '--forceExact', '0')))
+
+    # look through menu for a match. Default True
+    seekMatch = bool(int(get_commandLine_option(sys.argv, '--seekMatch', '1')))
+
+    # only print if unprescaled at this lumi point. Default 1.7
+    unPS = ('--unPS' in sys.argv)
+    unPSlumi = float(get_commandLine_option(sys.argv, '--unPSlumi', '1.7'))
+    lowestUnPS = ('--lowestUnPS' in sys.argv)
     
 
     # set print output
@@ -87,13 +95,47 @@ def main():
 
 
     # check trigger name
-    HLT_names = check_trigger_name(triggerName, menuList, verbosity=verbosity, forceExact=forceExact)
-    
+    HLT_names = check_trigger_name(triggerName, menuList, verbosity=verbosity, forceExact=forceExact, seekMatch=seekMatch)
+
+        
     # get the actual result
+    passed_HLT_names = []
     for item_exact in HLT_names:
         add_jet_trigger_info(item_exact, EDMpath, containerList, year)
+
+        # get rulebook info, check whether it is prescaled at the given lumi point (default unPSlumi=1.7)
+        pass_prescale_requirement = True
         if rulebookpath != None:
             add_rulebook_info(item_exact, rulebookDict)
+            if unPS:
+                pass_prescale_requirement = not is_prescaled(item_exact['rulebook entry'], unPSlumi, verbosity)
+
+        if pass_prescale_requirement:            
+            passed_HLT_names.append(item_exact)
+            
+
+    if lowestUnPS:
+        lowest_unPS_HLT_names = []
+        for item_exact in passed_HLT_names:
+            matched_jX = similar_threshold(item_exact, passed_HLT_names, verbosity) # should return at least item_exact in this dictionary
+            lowest_unPS = matched_jX[sorted(matched_jX.keys())[0]] # this is a list of all that matched (might have eg different L1s)
+            for item_lowUnPS in lowest_unPS:
+                if item_lowUnPS not in lowest_unPS_HLT_names:
+                    lowest_unPS_HLT_names.append(item_lowUnPS)
+
+        passed_HLT_names = lowest_unPS_HLT_names
+
+
+        
+    print ''
+    if unPS:
+        print "the following triggers are unprescaled at an instantaneous luminosity of", unPSlumi, "10^34 cm-2 s-1"
+        if lowestUnPS:
+            print "these are the lowest unprescaled ones at that lumi point"
+        print ''
+        
+        
+    for item_exact in passed_HLT_names:
         print_item(item_exact, onlyPrint)
     
 
@@ -160,32 +202,50 @@ def get_EDM_rulebook_paths(menu_EDM_rulebook_set, path=thispath+'menu_rulebook_E
 
 
 
-def check_trigger_name(triggerName, menuList, verbosity=2, forceExact=False):
-    if 'j' not in triggerName and 'ht' not in triggerName:
+def check_trigger_name(triggerName, menuList, verbosity=2, forceExact=False, seekMatch=True):
+
+    isL1 = triggerName.startswith('L1_')        
+    if not isL1 and ('j' not in triggerName and 'ht' not in triggerName):
         sys.exit("you provided the trigger name " + triggerName + " which does not contain the required 'j' or 'ht' for an HLT jet trigger")
 
     if verbosity >= 2:
         print "I am getting info for", triggerName
 
+    if isL1:
+        seekMatch = False
+    
     item_exact = None
     items_partial = []
-    triggerNameParts = triggerName.split('*')
-    for item in menuList:
-        if triggerName == item['HLT']:
-            item_exact = item
-        else:
-            remnant = item['HLT']
-            matches = True
-            for i in range(len(triggerNameParts)):
-                if triggerNameParts[i] not in remnant:
-                    matches = False
-                    break
-                else:
-                    remnant = triggerNameParts[i].join(remnant.split(triggerNameParts[i])[1:])
-                    
-            if matches:
-                items_partial.append(item)
 
+    if seekMatch:
+        triggerNameParts = triggerName.split('*')
+        for item in menuList:
+            if triggerName == item['HLT']:
+                item_exact = item
+            else:
+                remnant = item['HLT']
+                matches = True
+                for i in range(len(triggerNameParts)):
+                    if triggerNameParts[i] not in remnant:
+                        matches = False
+                        break
+                    else:
+                        remnant = triggerNameParts[i].join(remnant.split(triggerNameParts[i])[1:])
+
+                if matches:
+                    items_partial.append(item)
+
+    else:
+        # set manual item for L1 and eg things want to emulate
+        if isL1:
+            item_exact = {'comment': 'Manual L1', 'signature': 'Jet', 'L1': triggerName}
+        else:
+            L1name = None
+            if '_L1' in triggerName:
+                L1name = 'L1_'+triggerName.split('_L1')
+            item_exact = {'comment': 'Manual L1', 'signature': 'Jet', 'L1': L1Name, 'HLT': triggerName}
+
+            
     if item_exact == None:
         if verbosity >= 1: print "I found no exact matches",
         if forceExact:
@@ -220,7 +280,10 @@ def check_trigger_name(triggerName, menuList, verbosity=2, forceExact=False):
 
     else:
         if verbosity >= 2:
-            print "I found an exact match"
+            if seekMatch:
+                print "I found an exact match"
+            else:
+                print "I am taking what I was given"
     if item_exact == None:
         return items_partial
     else:
@@ -228,194 +291,200 @@ def check_trigger_name(triggerName, menuList, verbosity=2, forceExact=False):
 
         
 def add_jet_trigger_info(item, EDMpath, containerList, year):
-    # item is a dictionary containing at least 'HLT'
-    name = item['HLT']
-    item['HLT selection'] = {}
-    item['L1 selection'] = {}
+    # item is a dictionary containing at least 'HLT' (or 'L1')
 
-    # HT?
-    if 'ht' in name:
-        item['HT'] = int(name.split('ht')[1].split('_')[0])
-    
-    # does it have multiple thresholds?
-    if name.count('j') > 1:
-        following_chars = [substr[0] for substr in name.split('j')[1:]]
-        following_ints = []
-        for c in following_chars:
-            try:
-                following_ints.append(int(c))
-            except:
-                pass
+    if 'HLT' in item:
+        name = item['HLT']
+        item['HLT selection'] = {}
+        # HT?
+        if 'ht' in name:
+            item['HT'] = int(name.split('ht')[1].split('_')[0])
 
-        # if it's complicated, maybe I can trim it for now
-        if len(following_ints) > 1:
-            failed = False
-            segment = 2
-            while not failed:
-                newname = 'j'.join(name.split('j')[:segment])
+        # does it have multiple thresholds?
+        if name.count('j') > 1:
+            following_chars = [substr[0] for substr in name.split('j')[1:]]
+            following_ints = []
+            for c in following_chars:
                 try:
-                    i = int(name.split('j')[segment][0])
-                    failed = True
+                    following_ints.append(int(c))
                 except:
-                    segment += 1
                     pass
 
-            newname = '_'.join(newname.split('_')[:-1]) # remove trailing "_" or "_2" from "..._j..." or "..._2j..."
-            item['HLT too Complicated'] = 'there is more, I chopped off ' + name.split(newname)[1]
-            name = newname
+            # if it's complicated, maybe I can trim it for now
+            if len(following_ints) > 1:
+                failed = False
+                segment = 2
+                while not failed:
+                    newname = 'j'.join(name.split('j')[:segment])
+                    try:
+                        i = int(name.split('j')[segment][0])
+                        failed = True
+                    except:
+                        segment += 1
+                        pass
 
-    # HLT multiplicity
-    try:
-        item['HLT selection']['multiplicity'] = int(name.split('HLT_')[1].split('j')[0])
-    except:
-        if 'HLT_j' in name:
-            item['HLT selection']['multiplicity'] = 1
-        else:
+                newname = '_'.join(newname.split('_')[:-1]) # remove trailing "_" or "_2" from "..._j..." or "..._2j..."
+                item['HLT too Complicated'] = 'there is more, I chopped off ' + name.split(newname)[1]
+                name = newname
+
+        # HLT multiplicity
+        try:
+            item['HLT selection']['multiplicity'] = int(name.split('HLT_')[1].split('j')[0])
+        except:
+            if 'HLT_j' in name:
+                item['HLT selection']['multiplicity'] = 1
+            else:
+                if 'ht' in name:
+                    pass
+                else:
+                    print "can't decipher HLT multiplicity for", name
+                    pass
+
+
+        # ET
+        try:
+            item['HLT selection']['ET'] = int(name.split('j')[1].split('_')[0])
+        except:
             if 'ht' in name:
                 pass
             else:
                 print "can't decipher HLT multiplicity for", name
                 pass
 
-    # ET
-    try:
-        item['HLT selection']['ET'] = int(name.split('j')[1].split('_')[0])
-    except:
-        if 'ht' in name:
-            pass
+        if 'gsc' in name:
+            item['HLT selection']['ET_preselection'] = item['HLT selection']['ET']
+            item['HLT selection']['ET'] = int(name.split('gsc')[1].split('_')[0])
+
+        # eta
+        if 'eta' in name:
+            etalow = float(int(name.split('eta')[0].split('_')[-1])/100.0)
+            etahigh = float(int(name.split('eta')[1].split('_')[0])/100.0)
         else:
-            print "can't decipher HLT multiplicity for", name
-            pass
-        
-    if 'gsc' in name:
-        item['HLT selection']['ET_preselection'] = item['HLT selection']['ET']
-        item['HLT selection']['ET'] = int(name.split('gsc')[1].split('_')[0])
+            etalow = 0.0
+            etahigh = 3.2
+        item['HLT selection']['eta'] = [etalow, etahigh]
 
-    # eta
-    if 'eta' in name:
-        etalow = float(int(name.split('eta')[0].split('_')[-1])/100.0)
-        etahigh = float(int(name.split('eta')[1].split('_')[0])/100.0)
-    else:
-        etalow = 0.0
-        etahigh = 3.2
-    item['HLT selection']['eta'] = [etalow, etahigh]
-
-    # mass
-    if 'smc' in name:
-        masslow = int(name.split('smc')[0].split('_')[-1])
-        masshigh = name.split('smc')[1].split('_')[0]
-        if masshigh == 'INF':
-            masshigh = float("inf")
-        else:
-            masshigh = int(masshigh)
-        item['HLT selection']['single jet mass'] = [masslow, masshigh]
-
-
-    # calibration and container name - https://twiki.cern.ch/twiki/bin/viewauth/Atlas/JetTriggerNames
-
-    containerName = 'HLT_xAOD__JetContainer_'
-
-        
-    # clustering algorithm
-    if '_a10_' in name:
-        item['clustering'] = 'radius 1.0 anti-kt'
-        containerName += 'a10'
-    elif '_a10r_' in name:
-        item['clustering'] = 'radius 0.4 anti-kt, reclustered to radius 1.0'
-        containerName += 'a10r_'
-    elif '_a10t_' in name:
-        item['clustering'] = 'radius 1.0 anti-kt, trimmed'
-        containerName += 'a10t'
-    else:
-        item['clustering'] = 'radius 0.4 anti-kt'
-        containerName += 'a4'
-
-    # clustering inputs
-    if 'lcw' in name:
-        item['clusters'] = 'lcw topoclusters'
-        containerName += 'tclcw'
-    elif 'TT' in name:
-        item['clusters'] = 'trigger towers'
-        containerName += 'TTem' # also TThad
-    else:
-        item['clusters'] = 'em topoclusters'
-        containerName += 'tcem'
-
-        
-    # calibration    
-    default = True
-    if 'nojcalib' in name or 'TT' in name:
-        item['calibration steps'] = 'None'
-        containerName += 'nojcalib'
-        default = False
-    else:
-        item['calibration steps'] = []
-        if 'sub' in name:
-            default = False
-            item['calibration steps'].append('pileup subtraction')
-            containerName += 'sub'
-        if 'jes' in name:
-            default = False
-            item['calibration steps'].append('Jet Energy Scale correction')
-            containerName += 'jes'
-        if 'IS' in name:
-            default = False
-            item['calibration steps'].append('eta and JES in-situ corrections')
-            item['calibration steps'].append('calorimeter parts of GSC')
-            containerName += 'IS'
-
-        if default: # varies by year
-            if year < 2017:
-                item['calibration steps'].append('pileup subtraction')
-                item['calibration steps'].append('Jet Energy Scale correction')
-                containerName += 'subjes'
+        # mass
+        if 'smc' in name:
+            masslow = int(name.split('smc')[0].split('_')[-1])
+            masshigh = name.split('smc')[1].split('_')[0]
+            if masshigh == 'INF':
+                masshigh = float("inf")
             else:
+                masshigh = int(masshigh)
+            item['HLT selection']['single jet mass'] = [masslow, masshigh]
+
+
+        # calibration and container name - https://twiki.cern.ch/twiki/bin/viewauth/Atlas/JetTriggerNames
+
+        containerName = 'HLT_xAOD__JetContainer_'
+
+
+        # clustering algorithm
+        if '_a10_' in name:
+            item['clustering'] = 'radius 1.0 anti-kt'
+            containerName += 'a10'
+        elif '_a10r_' in name:
+            item['clustering'] = 'radius 0.4 anti-kt, reclustered to radius 1.0'
+            containerName += 'a10r_'
+        elif '_a10t_' in name:
+            item['clustering'] = 'radius 1.0 anti-kt, trimmed'
+            containerName += 'a10t'
+        else:
+            item['clustering'] = 'radius 0.4 anti-kt'
+            containerName += 'a4'
+
+        # clustering inputs
+        if 'lcw' in name:
+            item['clusters'] = 'lcw topoclusters'
+            containerName += 'tclcw'
+        elif 'TT' in name:
+            item['clusters'] = 'trigger towers'
+            containerName += 'TTem' # also TThad
+        else:
+            item['clusters'] = 'em topoclusters'
+            containerName += 'tcem'
+
+
+        # calibration    
+        default = True
+        if 'nojcalib' in name or 'TT' in name:
+            item['calibration steps'] = 'None'
+            containerName += 'nojcalib'
+            default = False
+        else:
+            item['calibration steps'] = []
+            if 'sub' in name:
+                default = False
                 item['calibration steps'].append('pileup subtraction')
+                containerName += 'sub'
+            if 'jes' in name:
+                default = False
                 item['calibration steps'].append('Jet Energy Scale correction')
+                containerName += 'jes'
+            if 'IS' in name:
+                default = False
                 item['calibration steps'].append('eta and JES in-situ corrections')
                 item['calibration steps'].append('calorimeter parts of GSC')
-                containerName += 'subjesIS'
+                containerName += 'IS'
+
+            if default: # varies by year
+                if year < 2017:
+                    item['calibration steps'].append('pileup subtraction')
+                    item['calibration steps'].append('Jet Energy Scale correction')
+                    containerName += 'subjes'
+                else:
+                    item['calibration steps'].append('pileup subtraction')
+                    item['calibration steps'].append('Jet Energy Scale correction')
+                    item['calibration steps'].append('eta and JES in-situ corrections')
+                    item['calibration steps'].append('calorimeter parts of GSC')
+                    containerName += 'subjesIS'
 
 
-                
+
+            if 'gsc' in name:
+                item['calibration steps'].append('ID track parts of GSC')
+
+
+        # full or partial topoclustering
+        if 'PS' in name:
+            item['topocluster formation'] = 'partial scan'
+            containerName += 'PS'
+        else:
+            item['topocluster formation'] = 'full scan'
+            containerName += 'FS'
+
+        # finalise container name
         if 'gsc' in name:
-            item['calibration steps'].append('ID track parts of GSC')
+            item['HLT jet container'] = 'HLT_xAOD__JetContainer_GSCJet'
+            item['HLT jet container preselection'] = 'HLT_xAOD__JetContainer_a4tcemsubjesISFS'
+        elif 'ds1' in name:
+            item['HLT jet container'] = 'HLT_xAOD__JetContainer_TrigHLTJetDSSelectorCollection'
+            item['HLT jet container preselection'] = 'HLT_xAOD__JetContainer_a4tcemsubjesISFS'
+        else:
+            item['HLT jet container'] = containerName
 
+        # check container name against the EDM
+        EDMcontainerName = item['HLT jet container'].replace('xAOD__JetContainer_','')
+        if EDMcontainerName not in containerList:
+            print "For the trigger", name, "I thought the container name should be", item['HLT jet container'],
+            print "but this (" + EDMcontainerName + ") is not in the EDM at", EDMpath
+            sys.exit()
 
-    # full or partial topoclustering
-    if 'PS' in name:
-        item['topocluster formation'] = 'partial scan'
-        containerName += 'PS'
-    else:
-        item['topocluster formation'] = 'full scan'
-        containerName += 'FS'
-
-    # finalise container name
-    if 'gsc' in name:
-        item['HLT jet container'] = 'HLT_xAOD__JetContainer_GSCJet'
-        item['HLT jet container preselection'] = 'HLT_xAOD__JetContainer_a4tcemsubjesISFS'
-    elif 'ds1' in name:
-        item['HLT jet container'] = 'HLT_xAOD__JetContainer_TrigHLTJetDSSelectorCollection'
-        item['HLT jet container preselection'] = 'HLT_xAOD__JetContainer_a4tcemsubjesISFS'
-    else:
-        item['HLT jet container'] = containerName
-
-    # check container name against the EDM
-    EDMcontainerName = item['HLT jet container'].replace('xAOD__JetContainer_','')
-    if EDMcontainerName not in containerList:
-        print "For the trigger", name, "I thought the container name should be", item['HLT jet container'],
-        print "but this (" + EDMcontainerName + ") is not in the EDM at", EDMpath
-        sys.exit()
-            
 
 
     # L1 information
     # this isn't very debugged
     name = item['L1']
+    item['L1 selection'] = {}
 
     # does it have multiple thresholds?
-    if 'MJJ' not in name and name.count('J') > 1:
-        following_chars = [substr[0] for substr in name.split('J')[1:]]
+    if 'MJJ' not in name and '-J50J' not in name and name.count('J') > 1:
+        try:
+            following_chars = [substr[0] for substr in name.split('J')[1:]]
+        except:
+            print name, name.split('J')
+            sys.exit()
         following_ints = []
         for c in following_chars:
             try:
@@ -525,7 +594,10 @@ def add_jet_trigger_info(item, EDMpath, containerList, year):
         
     # eta
     if not ignoreeta:
-        if 'ETA' in name:
+        if 'DETA' in name:
+            deta = float(int(name.split('DETA')[1].split('-')[0])/10.0)
+            item['L1 selection']['delta eta'] = [deta]
+        elif 'ETA' in name:
             etalow = float(int(name.split('ETA')[0].split('.')[-1])/10.0)
             etahigh = float(int(name.split('ETA')[1].split('.')[0])/10.0)
             item['L1 selection']['eta'] = [etalow, etahigh]
@@ -539,9 +611,14 @@ def add_jet_trigger_info(item, EDMpath, containerList, year):
     # fill recommendations
 
     # for now, just eta because easy...
-    etaRange = item['HLT selection']['eta']
-    jetRadius = float(item['clustering'].split('radius ')[-1].split()[0])
-
+    if 'HLT' in item:
+        selectionType = 'HLT selection'
+        jetRadius = float(item['clustering'].split('radius ')[-1].split()[0])
+    else:
+        selectionType = 'L1 selection'
+        jetRadius = 0.4
+        
+    etaRange = item[selectionType]['eta']        
     offlineEtaRange = copy.deepcopy(etaRange)
     if etaRange[0] == 0:
         offlineEtaRange[0] = 0
@@ -549,16 +626,18 @@ def add_jet_trigger_info(item, EDMpath, containerList, year):
         offlineEtaRange[0] = etaRange[0]+jetRadius
     offlineEtaRange[1] = etaRange[1]-jetRadius
 
-    item['offline selection recommended'] = {'multiplicity': item['HLT selection']['multiplicity'], 'eta': offlineEtaRange}
+    item['offline selection recommended'] = {'multiplicity': item[selectionType]['multiplicity'], 'eta': offlineEtaRange}
+
 
 
 def add_rulebook_info(item_exact, rulebookDict):
-    trigger = item_exact['HLT']
-    try:
-        rulebookEntry = rulebookDict[trigger]
-    except:
-        rulebookEntry = 'NOT IN RULEBOOK'
-
+    rulebookEntry = 'NOT IN RULEBOOK'
+    if 'HLT' in item_exact:
+        trigger = item_exact['HLT']
+        try:
+            rulebookEntry = rulebookDict[trigger]
+        except:
+            rulebookEntry = 'NOT IN RULEBOOK'
     item_exact['rulebook entry'] = rulebookEntry
 
 
@@ -584,7 +663,12 @@ def print_item(item, onlyPrint=None):
         'rulebook entry',
         ]
 
-    print item['HLT']
+    if 'HLT' in item:
+        print item['HLT']
+    else:
+        print item['L1']
+        printorder.remove('L1')
+                
     if onlyPrint == None:
         for thing in printorder:
             if thing in item:
@@ -597,10 +681,106 @@ def print_item(item, onlyPrint=None):
     # print anything not in above order that - ie added elsewhere and forgotten about
     for thing in sorted(item):
         if thing not in printorder and thing != 'HLT':
+            if 'HLT' not in item and thing == 'L1':
+                continue
             print '  ', thing+':', ' '*(25-len(thing)), item[thing]
             
 
+def is_prescaled(rulebook_entry, lumi, verbosity):
+    if verbosity >= 3:
+        print 'is this unPS at', lumi
+        print rulebook_entry
 
+    if rulebook_entry == 'NOT IN RULEBOOK':
+        if verbosity >= 3:
+            print 'not in rulebook'
+        return True
+    
+    lowest_unprescaled_lumi = 0
+    prescaled_at_lumi = 9999999999999
+    
+    for lumiPoint in sorted(rulebook_entry):
+        if verbosity >= 3:
+            print lumiPoint
+            print '   ', rulebook_entry[lumiPoint]
+
+        isPS = True
+
+        if 'PS' in rulebook_entry[lumiPoint]:
+            if rulebook_entry[lumiPoint]['PS'] == 1:
+                isPS = False
+
+        if verbosity >= 3:
+            print '   isPS?', isPS
+
+        if not isPS:
+            lowest_unprescaled_lumi = lumiPoint
+        else:
+            prescaled_at_lumi = lumiPoint
+            break
+
+    if verbosity >= 3:
+        print lowest_unprescaled_lumi, prescaled_at_lumi
+
+    if lumi < prescaled_at_lumi*0.0001:
+        return False
+    else:
+        return True
+    
+
+def similar_threshold(item, passed_HLT_names, verbosity):
+    # get things in passed_HLT_names that differ only by threshold
+    matched = {}
+
+    to_match = ['signature', 'HLT jet container', 'topocluster formation', 'clusters', 'clustering', 'calibration steps', 'HLT too Complicated'] # if "HLT too Complicated" then everything is suspect
+    HLT_match = ['multiplicity', 'eta', 'single jet mass']
+
+    if verbosity >= 3:
+        print "looking for matches to", item['HLT']
+    
+    for possible_match in passed_HLT_names:
+        passed = True
+        for thing in to_match:
+            if thing not in item:
+                if thing in possible_match:
+                    passed = False
+                    break
+                else:
+                    continue
+            if thing not in possible_match:
+                passed = False
+                break
+            
+            if possible_match[thing] != item[thing]:
+                passed = False
+                break
+
+        for HLTthing in HLT_match:
+            if HLTthing not in item['HLT selection']:
+                if HLTthing in possible_match['HLT selection']:
+                    passed = False
+                    break
+                else:
+                    continue
+            if HLTthing not in possible_match['HLT selection']:
+                passed = False
+                break
+            if possible_match['HLT selection'][HLTthing] != item['HLT selection'][HLTthing]:
+                passed = False
+                break
+
+        if passed:
+            ETthreshold = possible_match['HLT selection']['ET']
+            if verbosity >= 3:
+                print 'found possible match', possible_match['HLT'], 'with threshold', ETthreshold
+            if ETthreshold in matched:
+                matched[possible_match['HLT selection']['ET']].append(possible_match)
+            else:
+                matched[possible_match['HLT selection']['ET']] = [possible_match]
+            
+    return matched
+
+    
         
 if __name__ == '__main__':
     main()
