@@ -227,6 +227,9 @@ StatusCode JetHists::initialize() {
       // counts (e.g. numbers of jets) vs. proton-proton Interactions
       m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 50, 0, 100);
 
+      // counts (e.g. numbers of jets) vs. proton-proton Interactions
+      m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 80, 0, 80);
+
     }
 
     if(m_infoSwitch->m_vsLumiBlock){
@@ -966,6 +969,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   //   if(m_debug) std::cout << "JetHists: m_JVC " << std::endl;
   //   m_JVC->Fill(jet->JVC, eventWeight);
   // }
+
+// Pileup
+if (m_infoSwitch->m_vsActualMu) {
+  float actualMu = eventInfo->actualInteractionsPerCrossing();
+  m_actualMu->Fill(actualMu, eventWeight);
+}
 
   //
   // BTagging
@@ -1718,6 +1727,13 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     {
       m_JVC->Fill(jet->JVC, eventWeight);
     }
+
+    // Pileup
+    if (m_infoSwitch->m_vsActualMu) {
+      float actualMu = eventInfo->m_lumiBlock;
+      m_actualMu->Fill(actualMu, eventWeight);
+    }
+
 
 
   if(m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT)
