@@ -631,6 +631,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     m_actualMu->Fill(actualMu, eventWeight);
   }
 
+  if (m_infoSwitch->m_byAverageMu)
+  {
+    float averageMu = eventInfo->averageInteractionsPerCrossing();
+    m_avgMu->Fill(averageMu, eventWeight);
+  }
+
   // energy
   if( m_infoSwitch->m_energy ) {
     if(m_debug) std::cout << "JetHists: m_energy " <<std::endl;
