@@ -217,15 +217,15 @@ StatusCode JetHists::initialize() {
     //m_IP3DvsMV2c20  = book(m_name, "IP3DvsMV2c20",      m_titlePrefix+" jet MV2c20"       , 100,   -1  ,  1,
 
     if(m_infoSwitch->m_vsActualMu){
-      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c1040_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1040", 0, 1);
-      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c1050_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1050", 0, 1);
-      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c1060_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1060", 0, 1);
-      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c1070_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1070", 0, 1);
-      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c1077_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1077", 0, 1);
-      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c1085_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1085", 0, 1);
+      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c1040_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1040", 0, 1);
+      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c1050_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1050", 0, 1);
+      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c1060_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1060", 0, 1);
+      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c1070_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1070", 0, 1);
+      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c1077_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1077", 0, 1);
+      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c1085_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1085", 0, 1);
 
       // counts (e.g. numbers of jets) vs. proton-proton Interactions
-      m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 80, 0, 80);
+      m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 50, 0, 100);
 
     }
 
@@ -2105,7 +2105,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
     if (m_infoSwitch->m_vsActualMu) 
       {
-	float actualMu = eventInfo->actualInteractionsPerCrossing();
+	float actualMu = eventInfo->m_actualMu;
 	m_actualMu->Fill(actualMu, eventWeight);
       }
 
