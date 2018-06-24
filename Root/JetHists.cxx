@@ -625,6 +625,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   } // fillClean
 
+  // Pileup
+  if(m_infoSwitch->m_vsActualMu){
+    float actualMu = eventInfo->actualInteractionsPerCrossing();
+    m_actualMu->Fill(actualMu, eventWeight);
+  }
+
   // energy
   if( m_infoSwitch->m_energy ) {
     if(m_debug) std::cout << "JetHists: m_energy " <<std::endl;
@@ -1707,13 +1713,6 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_JVC->Fill(jet->JVC, eventWeight);
     }
 
-    // Pileup
-    if (m_infoSwitch->m_vsActualMu) {
-      float actualMu = eventInfo->m_lumiBlock;
-      m_actualMu->Fill(actualMu, eventWeight);
-    }
-
-
 
   if(m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT)
     {
@@ -2103,11 +2102,11 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
     }
 
-    if (m_infoSwitch->m_vsActualMu) 
-      {
-	float actualMu = eventInfo->m_actualMu;
-	m_actualMu->Fill(actualMu, eventWeight);
-      }
+  if (m_infoSwitch->m_vsActualMu)
+    {
+	     float actualMu = eventInfo->m_actualMu;
+	      m_actualMu->Fill(actualMu, eventWeight);
+    }
 
 
   if(m_infoSwitch->m_etaPhiMap)
