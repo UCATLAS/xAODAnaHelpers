@@ -1725,13 +1725,6 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_JVC->Fill(jet->JVC, eventWeight);
     }
 
-    // Pileup
-    if (m_infoSwitch->m_vsActualMu) {
-      float actualMu = eventInfo->m_lumiBlock;
-      m_actualMu->Fill(actualMu, eventWeight);
-    }
-
-
 
   if(m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT)
     {
