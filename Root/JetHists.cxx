@@ -970,12 +970,6 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   //   m_JVC->Fill(jet->JVC, eventWeight);
   // }
 
-// Pileup
-if (m_infoSwitch->m_vsActualMu) {
-  float actualMu = eventInfo->actualInteractionsPerCrossing();
-  m_actualMu->Fill(actualMu, eventWeight);
-}
-
   //
   // BTagging
   //
