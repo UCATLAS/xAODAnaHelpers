@@ -171,7 +171,6 @@ class JetHists : public IParticleHists
     TProfile* m_vtxEff1_raw_vs_lBlock; //!
     TProfile* m_vtxEff10_noDummy_vs_lBlock; //!
     TProfile* m_vtxEff1_noDummy_vs_lBlock; //!
-    TH1F     *m_actualMu;                   // !
     TProfile* m_frac_MV240_vs_actMu; //!
     TProfile* m_frac_MV250_vs_actMu; //!
     TProfile* m_frac_MV260_vs_actMu; //!
@@ -372,6 +371,7 @@ class JetHists : public IParticleHists
     // charge
     //TH1F *m_charge;
 
+    TH1F* m_actualMu;                   // !
     TH1F* m_avgMu;
     TH1F* m_jetPt_avgMu_00_15;
     TH1F* m_jetPt_avgMu_15_25;

@@ -523,7 +523,7 @@ StatusCode JetHists::initialize() {
 
   // Average Mu
   if(m_infoSwitch->m_byAverageMu){
-    m_avgMu               = book(m_name, "avgMu",  "Average Mu", 51, -0.5, 50);
+    m_avgMu               = book(m_name, "avgMu",  "Average Mu", 101, -0.5, 100);
     m_jetPt_avgMu_00_15   = book(m_name, "jetPt_avgMu_00_15",  "jet p_{T} [GeV]", 120, 0, 600);
     m_jetPt_avgMu_15_25   = book(m_name, "jetPt_avgMu_15_25",  "jet p_{T} [GeV]", 120, 0, 600);
     m_jetPt_avgMu_25      = book(m_name, "jetPt_avgMu_25",     "jet p_{T} [GeV]", 120, 0, 600);
@@ -954,12 +954,6 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
   //   if(m_debug) std::cout << "JetHists: m_JVC " << std::endl;
   //   m_JVC->Fill(jet->JVC, eventWeight);
   // }
-
-// Pileup
-if (m_infoSwitch->m_vsActualMu) {
-  float actualMu = eventInfo->actualInteractionsPerCrossing();
-  m_actualMu->Fill(actualMu, eventWeight);
-}
 
   //
   // BTagging
@@ -2108,6 +2102,13 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_avgMu_vs_jetPt->Fill(jet->p4.Pt(), avg_mu, eventWeight);
 
     }
+
+    if (m_infoSwitch->m_vsActualMu) 
+      {
+	float actualMu = eventInfo->actualInteractionsPerCrossing();
+	m_actualMu->Fill(actualMu, eventWeight);
+      }
+
 
   if(m_infoSwitch->m_etaPhiMap)
     {
