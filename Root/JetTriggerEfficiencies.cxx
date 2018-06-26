@@ -562,8 +562,16 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     // m_splitVals is {-999,999}
     splitVal = 0;
   }
-  else if (m_splitBy == "avgIntPerX") {
+  else if (m_splitBy == "avgIntPerX" || m_splitBy == "actIntPerX") {
     ANA_CHECK (this->get_event_variable(splitVal, m_splitBy, eventInfo, global_eventInfo, m_fromNTUP) );
+  }
+  else if (m_splitBy == "phi") {
+    std::vector<float> thisvar_vec;
+    ANA_CHECK (this->get_variable(thisvar_vec, "phi", offlineJets, offlineJetsInfo, m_fromNTUP) );
+    if(thisvar_vec.size() == 0) 
+      splitVal = -9;
+    else
+      splitVal = thisvar_vec.at(0);
   }
   else {
     ANA_MSG_ERROR("I don't know what to do with m_splitBy = " << m_splitBy);
@@ -1073,18 +1081,25 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
   unsigned int nJets = fromNTUP ? jetsInfo.pt->size() : jets->size();
 
   for( unsigned int index = 0; index < nJets; index++ ) {
-    if(varName == "eta") {
+    if(varName == "pt") {
+      if(fromNTUP)
+        var_vec.push_back(jetsInfo.pt->at(index));
+      else
+        var_vec.push_back(jets->at(index)->pt()/1000.);
+    }
+
+    else if(varName == "eta") {
       if(fromNTUP)
         var_vec.push_back(jetsInfo.eta->at(index));
       else
         var_vec.push_back(jets->at(index)->eta());
     }
 
-    else if(varName == "pt") {
+    else if(varName == "phi") {
       if(fromNTUP)
-        var_vec.push_back(jetsInfo.pt->at(index));
+        var_vec.push_back(jetsInfo.phi->at(index));
       else
-        var_vec.push_back(jets->at(index)->pt()/1000.);
+        var_vec.push_back(jets->at(index)->phi());
     }
 
     else if(varName == "m" || varName == "singlejetmass") {
@@ -1130,6 +1145,13 @@ EL::StatusCode JetTriggerEfficiencies::get_event_variable(float &var, std::strin
       var = eventInfo_ntup.avgIntPerX;
     else
       var = eventInfo_xAOD->averageInteractionsPerCrossing();
+  }
+
+  else if(varName == "actIntPerX") {
+    if(fromNTUP)
+      var = eventInfo_ntup.actIntPerX;
+    else
+      var = eventInfo_xAOD->actualInteractionsPerCrossing();
   }
   
   else {
