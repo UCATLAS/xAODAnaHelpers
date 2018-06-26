@@ -46,6 +46,7 @@ public:
   bool	     	 m_vetoCrack = true;
   bool           m_doAuthorCut = true;
   bool           m_doOQCut = true;
+  bool           m_readOQFromDerivation = false;
 
   /* photon PID */
   /** Name of ID variable to cut */
