@@ -200,7 +200,7 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
         return EL::StatusCode::FAILURE;
       }
       else {
-        ANA_MSG_WARNING("Asked for " << m_probeTriggers[i_turnon] << " but found " << thisJetTriggerInfo.chainName);
+        ANA_MSG_WARNING("Asked for '" << m_probeTriggers[i_turnon] << "' but found '" << thisJetTriggerInfo.chainName << "'");
         ANA_MSG_INFO("continuing anyway, things might go wrong");
       }
     }
@@ -786,8 +786,8 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
           }
           ANA_MSG_DEBUG("filling reference for " << m_probeTriggerInfo[i_turnon].chainName << ", is it disabled? " << probeDecision.isDisabled);
           if(goodForNumerator){
-            std::cout << m_probeTriggerInfo[i_turnon].chainName << " passed with ref " << refChainName << std::endl;
-            std::cout << "passedTrigger? " << probeDecision.passedTrigger << std::endl;
+            // std::cout << m_probeTriggerInfo[i_turnon].chainName << " passed with ref " << refChainName << std::endl;
+            // std::cout << "passedTrigger? " << probeDecision.passedTrigger << std::endl;
             ANA_MSG_DEBUG("   it passed!");
             m_numeratorHistsTDT.at(histNum)->Fill(var_to_fill);
             if(m_plotSelectionVars) {
@@ -1184,7 +1184,7 @@ EL::StatusCode JetTriggerEfficiencies::FillSelectionVarHists(JetTriggerInfo &pro
     std::vector<float> var_vec;
     ANA_CHECK (this->get_variable(var_vec, variable, jets, jetsInfo, m_fromNTUP) );
 
-    if(var_vec.size() < jet_index) {
+    if(var_vec.size() <= jet_index) {
       ANA_MSG_DEBUG("  FillSelectionVars: require jet index " << jet_index << " but only have " << var_vec.size());
       continue;
     }
