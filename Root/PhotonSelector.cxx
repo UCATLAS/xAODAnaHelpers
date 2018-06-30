@@ -402,11 +402,6 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   //
   float eta   = ( photon->caloCluster() ) ? photon->caloCluster()->etaBE(2) : -999.0;
 
-  float reta = photon->showerShapeValue(xAOD::EgammaParameters::Reta);
-  float f1   = photon->showerShapeValue(xAOD::EgammaParameters::f1);
-
-  uint32_t oq= photon->auxdata<uint32_t>("OQ");
-
   // photon ID key name set
   std::string photonIDKeyName = "PhotonID_"+m_photonIdCut;
   if (  (!(photon->isAvailable< bool >( photonIDKeyName ) )) and (m_photonIdCut != "None") ) {
@@ -432,10 +427,18 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
   // Object Quality cut
   //
   if ( m_doOQCut ) {
-    if ( (oq & 1073741824)!=0 ||
-	 ( (oq&134217728)!=0 && (reta >0.98 || f1 > 0.4 || (oq & 67108864) != 0) ) ) {
-      ANA_MSG_DEBUG( "Electron failed Object Quality cut." );
-      return 0;
+    if (m_readOQFromDerivation){
+      if (!(*photon).isGoodOQ(xAOD::EgammaParameters::BADCLUSPHOTON))
+	return 0;
+    }else{
+      uint32_t oq= photon->auxdata<uint32_t>("OQ");
+      float reta = photon->showerShapeValue(xAOD::EgammaParameters::Reta);
+      float f1   = photon->showerShapeValue(xAOD::EgammaParameters::f1);
+      if ( (oq & 1073741824)!=0 ||
+	   ( (oq&134217728)!=0 && (reta >0.98 || f1 > 0.4 || (oq & 67108864) != 0) ) ) {
+	ANA_MSG_DEBUG( "Electron failed Object Quality cut." );
+	return 0;
+      }
     }
   }
   if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_OQ_cut, 1 );

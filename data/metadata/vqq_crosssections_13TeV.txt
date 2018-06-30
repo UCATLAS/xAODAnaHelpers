@@ -1,0 +1,11 @@
+304673   Herwigpp_UEEE5CTEQ6L1_Wjhadronic_280_500   13.501  1.   1.0  1.
+304674   Herwigpp_UEEE5CTEQ6L1_Wjhadronic_500_700   0.91739  1.   1.0  1.
+304675   Herwigpp_UEEE5CTEQ6L1_Wjhadronic_700_1000   0.17448  1.   1.0  1.
+304676   Herwigpp_UEEE5CTEQ6L1_Wjhadronic_1000_1400   0.021892  1.   1.0  1.
+304677   Herwigpp_UEEE5CTEQ6L1_Wjhadronic_1400   0.002257  1.   1.0  1.
+304678   Herwigpp_UEEE5CTEQ6L1_Zjhadronic_280_500   5.4672  1.   1.0  1.
+304679   Herwigpp_UEEE5CTEQ6L1_Zjhadronic_500_700   0.37032  1.   1.0  1.
+304680   Herwigpp_UEEE5CTEQ6L1_Zjhadronic_700_1000   0.070961  1.   1.0  1.
+304681   Herwigpp_UEEE5CTEQ6L1_Zjhadronic_1000_1400   0.0087931  1.   1.0  1.
+304682   Herwigpp_UEEE5CTEQ6L1_Zjhadronic_1400   0.00089549  1.   1.0  1.
+

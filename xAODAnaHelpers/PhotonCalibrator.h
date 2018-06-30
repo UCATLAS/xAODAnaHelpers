@@ -68,6 +68,9 @@ public:
   std::string m_decorrelationModel = "";
   int m_randomRunNumber = -1;
 
+  /** @brief To read PID decision from DAOD, rather than recalculate with tool */
+  bool           m_readIDFlagsFromDerivation = false;
+
 private:
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;

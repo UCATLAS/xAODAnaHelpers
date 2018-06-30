@@ -584,7 +584,10 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       m_C2->push_back( acc_ECF3(*fatjet)*acc_ECF1(*fatjet)/pow(acc_ECF2(*fatjet),2.0));
     } else{ m_C2->push_back(-999); }
 
-    m_nTracks->push_back( fatjet->auxdata<int>("GhostTrackCount"));
+    static SG::AuxElement::ConstAccessor<int> acc_GhostTrackCount("GhostTrackCount");
+    if( acc_GhostTrackCount.isAvailable( *fatjet ) ) {
+      m_nTracks->push_back( acc_GhostTrackCount( *fatjet ));
+    } else { m_nTracks->push_back(-999); }
 
   }
 

@@ -83,14 +83,24 @@ namespace xAH {
       std::vector<float> *m_GhostMuonSegmentCount;
       std::vector<float> *m_Width;
 
-      // sclaes
+      // scales
       std::vector<float> *m_emScalePt;
       std::vector<float> *m_constScalePt;
       std::vector<float> *m_pileupScalePt;
       std::vector<float> *m_originConstitScalePt;
       std::vector<float> *m_etaJESScalePt;
       std::vector<float> *m_gscScalePt;
+      std::vector<float> *m_jmsScalePt;
       std::vector<float> *m_insituScalePt;
+
+      std::vector<float> *m_emScaleM;
+      std::vector<float> *m_constScaleM;
+      std::vector<float> *m_pileupScaleM;
+      std::vector<float> *m_originConstitScaleM;
+      std::vector<float> *m_etaJESScaleM;
+      std::vector<float> *m_gscScaleM;
+      std::vector<float> *m_jmsScaleM;
+      std::vector<float> *m_insituScaleM;
 
       // constScale Eta
       std::vector<float> *m_constScaleEta;

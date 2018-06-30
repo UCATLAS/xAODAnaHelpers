@@ -511,18 +511,31 @@ EL::StatusCode PhotonCalibrator :: histFinalize ()
 
 EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 {
-  // (1) apply fudge factors
-  if(!m_useAFII && isMC()){
-    if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
-      ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
-      return EL::StatusCode::FAILURE;
+  // (1) apply fudge factors and (2) evaluate the ID quality
+  bool isTight(false);
+  bool isMedium(false);
+  bool isLoose(false);
+  if (m_readIDFlagsFromDerivation){
+    static SG::AuxElement::ConstAccessor< char > LHDecisionTight(  "DFCommonPhotonsIsEMTight" );
+    static SG::AuxElement::ConstAccessor< char > LHDecisionMedium( "DFCommonPhotonsIsEMMedium" );
+    static SG::AuxElement::ConstAccessor< char > LHDecisionLoose(  "DFCommonPhotonsIsEMLoose" );
+    if (LHDecisionTight.isAvailable( *photon ))
+      isTight = LHDecisionTight( *photon );
+    if (LHDecisionMedium.isAvailable( *photon ))
+      isMedium = LHDecisionMedium( *photon );
+    if (LHDecisionLoose.isAvailable( *photon ))
+      isLoose =  LHDecisionLoose( *photon );
+  } else {
+    if(!m_useAFII && isMC()){
+      if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
+	ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
+	return EL::StatusCode::FAILURE;
+      }
     }
+    isTight  = m_photonTightIsEMSelector->accept(photon);
+    isMedium = m_photonMediumIsEMSelector->accept(photon);
+    isLoose  = m_photonLooseIsEMSelector->accept(photon);
   }
-
-  // (2) evaluate the ID quality
-  const bool isTight  = m_photonTightIsEMSelector->accept(photon);
-  const bool isMedium = m_photonMediumIsEMSelector->accept(photon);
-  const bool isLoose  = m_photonLooseIsEMSelector->accept(photon);
   photon->auxdecor< bool >( "PhotonID_Tight"    ) = isTight;
   photon->auxdecor< bool >( "PhotonID_Medium"   ) = isMedium;
   photon->auxdecor< bool >( "PhotonID_Loose"    ) = isLoose;

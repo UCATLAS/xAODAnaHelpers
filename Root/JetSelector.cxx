@@ -416,7 +416,7 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( isMC() && m_doJVT ) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
+  if ( isMC() && m_doJVT && m_haveTruthJets) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -426,7 +426,7 @@ EL::StatusCode JetSelector :: execute ()
     ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
     // decorate inJets with truth info
-    if ( isMC() && m_doJVT ) {
+    if ( isMC() && m_doJVT && m_haveTruthJets ) {
       static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
       static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
       for(const auto& jet : *inJets) {
@@ -457,7 +457,7 @@ EL::StatusCode JetSelector :: execute ()
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
       // decorate inJets with truth info
-      if ( isMC() && m_doJVT ) {
+      if ( isMC() && m_doJVT && m_haveTruthJets ) {
         static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
         static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
         for(const auto& jet : *inJets) {
@@ -586,7 +586,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
-  if ( isMC() && m_doJVT ) {
+  if ( isMC() && m_doJVT && m_haveTruthJets ) {
 
     std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
 
