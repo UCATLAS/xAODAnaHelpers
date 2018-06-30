@@ -371,6 +371,7 @@ class JetHists : public IParticleHists
     // charge
     //TH1F *m_charge;
 
+    TH1F* m_actualMu;                   // !
     TH1F* m_avgMu;
     TH1F* m_jetPt_avgMu_00_15;
     TH1F* m_jetPt_avgMu_15_25;

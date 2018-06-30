@@ -217,12 +217,15 @@ StatusCode JetHists::initialize() {
     //m_IP3DvsMV2c20  = book(m_name, "IP3DvsMV2c20",      m_titlePrefix+" jet MV2c20"       , 100,   -1  ,  1,
 
     if(m_infoSwitch->m_vsActualMu){
-      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c1040_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1040", 0, 1);
-      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c1050_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1050", 0, 1);
-      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c1060_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1060", 0, 1);
-      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c1070_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1070", 0, 1);
-      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c1077_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1077", 0, 1);
-      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c1085_vs_actMu",  "actualMu",  40, 0, 80, "frac. pass MV2c1085", 0, 1);
+      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c1040_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1040", 0, 1);
+      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c1050_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1050", 0, 1);
+      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c1060_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1060", 0, 1);
+      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c1070_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1070", 0, 1);
+      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c1077_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1077", 0, 1);
+      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c1085_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1085", 0, 1);
+
+      // counts (e.g. numbers of jets) vs. proton-proton Interactions
+      m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 50, 0, 100);
 
     }
 
@@ -520,7 +523,7 @@ StatusCode JetHists::initialize() {
 
   // Average Mu
   if(m_infoSwitch->m_byAverageMu){
-    m_avgMu               = book(m_name, "avgMu",  "Average Mu", 51, -0.5, 50);
+    m_avgMu               = book(m_name, "avgMu",  "Average Mu", 101, -0.5, 100);
     m_jetPt_avgMu_00_15   = book(m_name, "jetPt_avgMu_00_15",  "jet p_{T} [GeV]", 120, 0, 600);
     m_jetPt_avgMu_15_25   = book(m_name, "jetPt_avgMu_15_25",  "jet p_{T} [GeV]", 120, 0, 600);
     m_jetPt_avgMu_25      = book(m_name, "jetPt_avgMu_25",     "jet p_{T} [GeV]", 120, 0, 600);
@@ -621,6 +624,18 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
  // 0066       OotFracCells10,
 
   } // fillClean
+
+  // Pileup
+  if(m_infoSwitch->m_vsActualMu){
+    float actualMu = eventInfo->actualInteractionsPerCrossing();
+    m_actualMu->Fill(actualMu, eventWeight);
+  }
+
+  if (m_infoSwitch->m_byAverageMu)
+  {
+    float averageMu = eventInfo->averageInteractionsPerCrossing();
+    m_avgMu->Fill(averageMu, eventWeight);
+  }
 
   // energy
   if( m_infoSwitch->m_energy ) {
@@ -1704,6 +1719,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_JVC->Fill(jet->JVC, eventWeight);
     }
 
+
   if(m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT)
     {
 //      h_SV0                       ->Fill(jet->SV0                  , eventWeight);
@@ -2091,6 +2107,13 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_avgMu_vs_jetPt->Fill(jet->p4.Pt(), avg_mu, eventWeight);
 
     }
+
+  if (m_infoSwitch->m_vsActualMu)
+    {
+	     float actualMu = eventInfo->m_actualMu;
+	      m_actualMu->Fill(actualMu, eventWeight);
+    }
+
 
   if(m_infoSwitch->m_etaPhiMap)
     {
