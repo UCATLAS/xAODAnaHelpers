@@ -1016,7 +1016,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";
-  
+
   uint32_t runNum = eventInfo->runNumber();
 
   switch(runNum)
@@ -1108,7 +1108,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   for(const auto& mcCampaign : mcCampaignList)
     ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
 
-  // 
+  //
   float dsid = -999;
   dsid = eventInfo->mcChannelNumber();
   int DSID_INT = (int) dsid;
@@ -1116,13 +1116,13 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   std::vector<std::string> prwConfigFiles;
   for(const auto& mcCampaign : mcCampaignList)
     {
-      std::string prwConfigFile = PathResolverFindCalibFile("/dev/SUSYTools/PRW_AUTOCONFIG/files/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root");
+      std::string prwConfigFile = PathResolverFindCalibFile("/dev/SUSYTools/PRW_AUTOCONFIG_SIM/files/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root");
       std::cout << prwConfigFile << std::endl;
       TFile testF(prwConfigFile.data(),"read");
       if(testF.IsZombie())
 	ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
       else
-	{	  
+	{
 	  TFile testF(prwConfigFile.data(),"read");
 	  if(testF.IsZombie())
 	    ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
