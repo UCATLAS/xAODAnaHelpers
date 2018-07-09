@@ -1014,9 +1014,17 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   const xAOD::EventInfo* eventInfo = 0;
   ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
 
+  // Determine simulation flavour
+  const std::string SimulationFlavour = wk()->metaData()->castString("SimulationFlavour");
+  if(SimulationFlavour.empty())
+    {
+      ANA_MSG_ERROR( "Need to set SimulationFlavour metaString of sample for BasicEventSelection::autoconfigurePileupRWTool to work. Aborting." );
+      return StatusCode::FAILURE;
+    }
+
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";
-  
+
   uint32_t runNum = eventInfo->runNumber();
 
   switch(runNum)
@@ -1026,7 +1034,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       break;
       // This should be switched to mc16d once it is available.
     case 300000 :
-      mcCampaignMD="mc16c";
+      mcCampaignMD="mc16d";
       break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autocongigure PRW. Aborting." );
@@ -1116,19 +1124,15 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   std::vector<std::string> prwConfigFiles;
   for(const auto& mcCampaign : mcCampaignList)
     {
-      std::string prwConfigFile = PathResolverFindCalibFile("/dev/SUSYTools/PRW_AUTOCONFIG/files/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + ".root");
-      std::cout << prwConfigFile << std::endl;
+      std::string prwConfigFile = PathResolverFindCalibFile("/dev/SUSYTools/PRW_AUTOCONFIG_SIM/files/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
       TFile testF(prwConfigFile.data(),"read");
       if(testF.IsZombie())
-	ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
-      else
-	{	  
-	  TFile testF(prwConfigFile.data(),"read");
-	  if(testF.IsZombie())
-	    ANA_MSG_WARNING("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
-	  else
-	    prwConfigFiles.push_back( prwConfigFile );
+	{
+	  ANA_MSG_ERROR("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
+	  return StatusCode::FAILURE;
 	}
+      else
+	prwConfigFiles.push_back( prwConfigFile );
     }
 
   // also need to handle lumicalc files: only use 2015+2016 with mc16a
