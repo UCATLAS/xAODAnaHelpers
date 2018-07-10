@@ -22,6 +22,8 @@ import subprocess
 import sys
 import datetime
 import time
+import fnmatch
+import re
 
 # if we want multiple custom formatters, use inheriting
 class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
@@ -456,6 +458,24 @@ if __name__ == "__main__":
     xAH_logger.info("reading all metadata in {0}".format(path_metadata))
     ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
+    # read pmg cross-sections
+    pmgxstool = ROOT.PMGTools.PMGCrossSectionTool('PMGCrossSectionTool')
+    pmgxstool.readInfosFromDir(ROOT.PathResolverFindCalibFile("dev/PMGTools/PMGxsecDB_mc16.txt"))
+    pmgxstool.readInfosFromDir(ROOT.PathResolverFindCalibDirectory("dev/xAODAnaHelpers/xsecdb"))
+    re_mcsample=re.compile('mc16_13TeV\.([0-9]+)\.[a-zA-Z0-9\_]+\.[a-z]+\.[A-Z0-9\_]+\.[a-z0-9\_]+')
+    for sample in sh_all:
+      print(sample.name())
+      match=re_mcsample.match(sample.name())
+      if match!=None: # This is a valid DS name
+        sample_id=int(match.group(1))
+        xsec   =pmgxstool.getSampleXsection(sample_id)
+        filteff=pmgxstool.getFilterEff(sample_id)
+        kfactor=pmgxstool.getKfactor(sample_id)
+
+        if xsec>0:    sample.setDouble(ROOT.SH.MetaFields.crossSection    ,xsec   )
+        if filteff>0: sample.setDouble(ROOT.SH.MetaFields.filterEfficiency,filteff)
+        if kfactor>0: sample.setDouble(ROOT.SH.MetaFields.numEvents       ,kfactor)
+
     # this is the basic description of our job
     xAH_logger.info("creating new job")
     job = ROOT.EL.Job()
@@ -521,7 +541,7 @@ if __name__ == "__main__":
       found_matching_sample = False
       xAH_logger.debug("Looking for sample(s) that matches pattern {0}".format(pattern))
       for sample in sh_all:
-        if pattern in sample.name():
+        if pattern in sample.name() or fnmatch.fnmatch(sample.name(),pattern):
           found_matching_sample = True
           xAH_logger.info("Setting sample metadata for {0:s}".format(sample.name()))
           for k,t,v in ((k, type(v), v) for k,v in metadata.iteritems()):
@@ -535,8 +555,8 @@ if __name__ == "__main__":
               setter = 'setString'
             getattr(sample.meta(), setter)(k, v)
             xAH_logger.info("\t - sample.meta().{0:s}({1:s}, {2})".format(setter, k, v))
-        if not found_matching_sample:
-          xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
+      if not found_matching_sample:
+        xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service
