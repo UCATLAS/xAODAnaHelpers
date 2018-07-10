@@ -1015,12 +1015,13 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
 
   // Determine simulation flavour
-  const std::string SimulationFlavour = wk()->metaData()->castString("SimulationFlavour");
+  std::string SimulationFlavour;
+  if( m_setAFII )
+    SimulationFlavour="AFII";
+  else
+    SimulationFlavour = wk()->metaData()->castString("SimulationFlavour");
   if(SimulationFlavour.empty())
-    {
-      ANA_MSG_ERROR( "Need to set SimulationFlavour metaString of sample for BasicEventSelection::autoconfigurePileupRWTool to work. Aborting." );
-      return StatusCode::FAILURE;
-    }
+    SimulationFlavour="FS";
 
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";
@@ -1037,7 +1038,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       mcCampaignMD="mc16d";
       break;
     default :
-      ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autocongigure PRW. Aborting." );
+      ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
       return StatusCode::FAILURE;
       break;
     }
@@ -1099,7 +1100,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	  std::string NoMetadataButPropertyOK("");
 	  NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
 	  NoMetadataButPropertyOK += m_mcCampaign;
-	  NoMetadataButPropertyOK += "'. Autocongiguring PRW accordingly.";
+	  NoMetadataButPropertyOK += "'. Autoconfiguring PRW accordingly.";
 	  ANA_MSG_WARNING( NoMetadataButPropertyOK );
 	  // ::
 	}
