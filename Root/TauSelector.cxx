@@ -77,6 +77,12 @@ EL::StatusCode TauSelector :: histInitialize ()
 
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
+
+  if ( this->numInstances() > 1 ) {
+    m_isUsedBefore = true;
+    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -127,10 +133,6 @@ EL::StatusCode TauSelector :: initialize ()
   // preselecting objects, and then again for the final selection
   //
   ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
-  if ( this->numInstances() > 0 ) {
-    m_isUsedBefore = true;
-    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
-  }
 
   if ( m_useCutFlow ) {
 
@@ -650,7 +652,7 @@ EL::StatusCode TauSelector :: histFinalize ()
 int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
 
   // fill cutflow bin 'all' before any cut
-  if(m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
+  if(!m_isUsedBefore && m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_all, 1 ); }
 
   // **********************************************************************************************************
@@ -690,7 +692,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
     return 0;
   }
 
-  if(m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_selected, 1 );
+  if( !m_isUsedBefore && m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_selected, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_selected, 1 ); }
 
   return 1;
