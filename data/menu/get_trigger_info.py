@@ -43,7 +43,9 @@ def main():
     unPS = ('--unPS' in sys.argv)
     unPSlumi = float(get_commandLine_option(sys.argv, '--unPSlumi', '1.7'))
     lowestUnPS = ('--lowestUnPS' in sys.argv)
-    
+
+    if lowestUnPS:
+        unPS = True
 
     # set print output
     if printOutput == 'all':
@@ -292,13 +294,15 @@ def check_trigger_name(triggerName, menuList, verbosity=2, forceExact=False, see
         
 def add_jet_trigger_info(item, EDMpath, containerList, year):
     # item is a dictionary containing at least 'HLT' (or 'L1')
-
+    # print item
+    
     if 'HLT' in item:
         name = item['HLT']
         item['HLT selection'] = {}
         # HT?
         if 'ht' in name:
-            item['HT'] = int(name.split('ht')[1].split('_')[0])
+            item['HLT selection']['HT'] = int(name.split('ht')[1].split('_')[0])
+            item['HLT selection']['ET'] = 30
 
         # does it have multiple thresholds?
         if name.count('j') > 1:
@@ -541,6 +545,7 @@ def add_jet_trigger_info(item, EDMpath, containerList, year):
         ignoreMult = True
         ignoreET = True
         ignoreeta = True
+        print name
         item['L1 selection']['TE'] = int(name.split('TE')[1].split('_')[0].split('-')[0])
         if 'L1_extra' in item:
             item['L1 extra'] += ' - '
@@ -626,8 +631,10 @@ def add_jet_trigger_info(item, EDMpath, containerList, year):
         offlineEtaRange[0] = etaRange[0]+jetRadius
     offlineEtaRange[1] = etaRange[1]-jetRadius
 
-    item['offline selection recommended'] = {'multiplicity': item[selectionType]['multiplicity'], 'eta': offlineEtaRange}
-
+    if 'multiplicity' in item[selectionType]:
+        item['offline selection recommended'] = {'multiplicity': item[selectionType]['multiplicity'], 'eta': offlineEtaRange}
+    else:
+        item['offline selection recommended'] = {}
 
 
 def add_rulebook_info(item_exact, rulebookDict):

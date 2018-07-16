@@ -205,9 +205,13 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
       }
     }
 
-
-    // set the index in m_variables[i_turnon], adjust multiplicity reuirement if necessary
-    if (m_variables[i_turnon].find("[") == std::string::npos) {
+    
+    // set the index in m_variables[i_turnon], adjust multiplicity requirement if necessary
+    if (m_variables[i_turnon]=="ht") {
+      // don't do anything - there isn't a multiplicity involved
+      m_variables_var.push_back(m_variables[i_turnon]);
+    }
+    else if (m_variables[i_turnon].find("[") == std::string::npos) {
       int mult = thisJetTriggerInfo.getMultiplicity();
       if(mult==-1) {
         ANA_MSG_ERROR( "failed to get multiplicity for " + m_probeTriggers[i_turnon] );

@@ -270,6 +270,15 @@ class JetTriggerInfo {
         }
       }
     }
+    if(!found) {
+      /* std::vector< std::pair<std::string, std::pair<float, float> > > offlineSelection; */
+      std::pair<std::string, std::pair<float, float> > thisMult;
+      thisMult.first = "multiplicity";
+      thisMult.second.first = mult;
+      thisMult.second.second = mult;
+      offlineSelection.push_back(thisMult);
+      found = true;
+    }
     return found;
   }
 
