@@ -210,6 +210,7 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     if (m_variables[i_turnon]=="ht") {
       // don't do anything - there isn't a multiplicity involved
       m_variables_var.push_back(m_variables[i_turnon]);
+      m_variables_index.push_back(-1);
     }
     else if (m_variables[i_turnon].find("[") == std::string::npos) {
       int mult = thisJetTriggerInfo.getMultiplicity();
@@ -253,8 +254,15 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     m_splitValues.push_back(999);
   }
 
-  
   // create the histograms  
+  int nBins = 1000;
+  float min = 0;
+  float max = 1000;
+  
+  if (m_variableString == "ht") {
+    max = 2000;
+  }
+
   for (unsigned int i_split = 0; i_split < m_splitValues.size()-1; i_split++) {
 
     std::string thisHistNameSplit = "";
@@ -269,12 +277,12 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
       std::string xaxistitle = m_offlineContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString + thisHistXaxisSplit;
 
       if(m_TDT) {
-        m_numeratorHistsTDT.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_numTDT", xaxistitle, 1000, 0, 1000, wk()) );
-        m_denominatorHistsTDT.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_denomTDT", xaxistitle, 1000, 0, 1000, wk()) );
+        m_numeratorHistsTDT.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_numTDT", xaxistitle, nBins, min, max, wk()) );
+        m_denominatorHistsTDT.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_denomTDT", xaxistitle, nBins, min, max, wk()) );
       }
       if(m_emulate) {
-        m_numeratorHistsEmulated.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_numEmulated", xaxistitle, 1000, 0, 1000, wk()) );
-        m_denominatorHistsEmulated.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_denomEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+        m_numeratorHistsEmulated.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_numEmulated", xaxistitle, nBins, min, max, wk()) );
+        m_denominatorHistsEmulated.push_back( book(m_mainHistName+thisHistNameSplit, histname + "_denomEmulated", xaxistitle, nBins, min, max, wk()) );
       }
     }
   }
@@ -286,12 +294,12 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
       std::string xaxistitle = m_offlineContainerName + " " + m_variables[i_turnon] + " " + m_probeTriggerInfo[i_turnon].offlineSelectionString;
 
       if(m_TDT) {
-        m_numeratorHistsTDT.push_back( book(m_mainHistName, histname + "_numTDT", xaxistitle, 1000, 0, 1000, wk()) );
-        m_denominatorHistsTDT.push_back( book(m_mainHistName, histname + "_denomTDT", xaxistitle, 1000, 0, 1000, wk()) );
+        m_numeratorHistsTDT.push_back( book(m_mainHistName, histname + "_numTDT", xaxistitle, nBins, min, max, wk()) );
+        m_denominatorHistsTDT.push_back( book(m_mainHistName, histname + "_denomTDT", xaxistitle, nBins, min, max, wk()) );
       }
       if(m_emulate) {
-        m_numeratorHistsEmulated.push_back( book(m_mainHistName, histname + "_numEmulated", xaxistitle, 1000, 0, 1000, wk()) );
-        m_denominatorHistsEmulated.push_back( book(m_mainHistName, histname + "_denomEmulated", xaxistitle, 1000, 0, 1000, wk()) );
+        m_numeratorHistsEmulated.push_back( book(m_mainHistName, histname + "_numEmulated", xaxistitle, nBins, min, max, wk()) );
+        m_denominatorHistsEmulated.push_back( book(m_mainHistName, histname + "_denomEmulated", xaxistitle, nBins, min, max, wk()) );
       }
     }
     
@@ -500,7 +508,8 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   // histograms and trees.  This is where most of your actual analysis
   // code will go.
 
-  ANA_MSG_DEBUG( "Getting jet trigger efficiencies... " << m_name);
+
+  ANA_MSG_DEBUG( "\n\nGetting jet trigger efficiencies... " << m_name);
   
   
 
@@ -581,11 +590,10 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     ANA_MSG_ERROR("I don't know what to do with m_splitBy = " << m_splitBy);
   }
 
-  if(m_splitBy != "")
+  if(m_splitBy != "") {
     m_splitVarHist->Fill(splitVal);
-  
-  ANA_MSG_DEBUG("the value of " << m_splitBy << " is " << splitVal);
-  
+    ANA_MSG_DEBUG("the value of " << m_splitBy << " is " << splitVal);
+  }
 
   // get list of disabled triggers from AOD
   std::vector<std::string> disabledTriggers;
@@ -715,29 +723,45 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     }
     ANA_MSG_DEBUG("passed selection");
 
-    if(good_indices.size() <= m_variables_index[i_turnon]) {
+
+    // get the nth jet index from the good ones
+    jet_index = -1;
+    if(int(good_indices.size()) <= m_variables_index[i_turnon]) {
       ANA_MSG_ERROR("I am looking for index " << m_variables_index[i_turnon] << " of good_indices with size " << good_indices.size());
       ANA_MSG_ERROR("This shouldn't be possible now I've passed selections");
       return EL::StatusCode::FAILURE;
     }
-    jet_index = good_indices[m_variables_index[i_turnon]];    
+    if(m_variables_index[i_turnon] != -1)
+      jet_index = good_indices[m_variables_index[i_turnon]];    
 
     if(m_plotSelectionVars) {
       ANA_CHECK( this->FillSelectionVarHists(m_probeTriggerInfo[i_turnon], offlineJets, offlineJetsInfo, m_postSelHistsSelections[i_turnon], jet_index) );
     }
 
-    // get the relevant variable
+    // get the relevant offline variable
     ANA_MSG_DEBUG("getting variable to fill turnon with");
     std::string variable = m_variables_var[i_turnon];
     std::vector<float> var_vec;
-    ANA_CHECK (this->get_variable(var_vec, variable, offlineJets, offlineJetsInfo, m_fromNTUP) );
+    float var = 0;
+
+    if(variable == "HT" || variable == "ht") {
+      ANA_CHECK (this->get_multijet_variable(var, variable, offlineJets, offlineJetsInfo, good_indices, m_fromNTUP) );
+    }
+    else {      
+      ANA_CHECK (this->get_variable(var_vec, variable, offlineJets, offlineJetsInfo, m_fromNTUP) );
+    }
 
     // order by variable - eg for mass
     if(m_orderByVariable) {
       std::sort(var_vec.begin(), var_vec.end());
     }
 
-    float var_to_fill = var_vec[jet_index];
+    // set var_to_fill
+    float var_to_fill;
+    if(jet_index == -1) // if it's HT or something that doesn't have an index in this way
+      var_to_fill = var_vec[0];
+    else
+      var_to_fill = var_vec[jet_index];
 
 
 
@@ -905,7 +929,7 @@ TH1F* JetTriggerEfficiencies::book(std::string name, std::string title, std::str
 
 
 
-EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel) {
+EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel) {
   
   passSelections = false;
 
@@ -913,12 +937,15 @@ EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, s
   for(unsigned int i=0; i<nJets; i++){
     good_indices.push_back(i);
   }
-  ANA_MSG_DEBUG("applying selections on " << nJets << " jets");
-  
+
+  ANA_MSG_DEBUG("I need " << multiplicity_required << " to pass, out of " << good_indices.size() << " available");
+
   for(auto selection : selections) {
     // if already failed, don't waste time calculating things
-    if(good_indices.size() < multiplicity_required)
+    if(int(good_indices.size()) < multiplicity_required) {
+      ANA_MSG_DEBUG("failing selection");
       return EL::StatusCode::SUCCESS;
+    }
     
     // get the indices that pass this selection
     std::vector<int> passed_indices;
@@ -929,10 +956,25 @@ EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, s
     // carry forward only the good ones
     good_indices = passed_indices;
   }
-  
-  if(good_indices.size() < multiplicity_required)
+
+  ANA_MSG_DEBUG("I need " << multiplicity_required << " to pass, and " << good_indices.size() << " did");
+
+  if(int(good_indices.size()) < multiplicity_required)
     return EL::StatusCode::SUCCESS;
   
+
+  // now for multi-jet selections, eg HT, on the good_indices jets
+  for(auto selection : selections) {    
+    if(selection.first == "ht" || selection.first == "HT") {
+      ANA_MSG_DEBUG("applying multi-jet selection " << selection.first);
+      bool passThisSelection = false;
+      ANA_CHECK( this->applyMultiJetSelection(passThisSelection, selection, jets, jetsInfo, good_indices));
+      ANA_MSG_DEBUG("applied selection: pass? " << passThisSelection);
+      if(!passThisSelection)
+        return EL::StatusCode::SUCCESS;
+    }
+  }
+
   passSelections = true;
   return EL::StatusCode::SUCCESS;
 }
@@ -964,7 +1006,13 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
 
   // get variable
   std::vector<float> thisvar_vec;
-  ANA_CHECK (this->get_variable(thisvar_vec, selection.first, jets, jetsInfo, m_fromNTUP) );
+  float thisvar = 0;
+  if(selection.first=="HT" || selection.first=="ht") {
+    ANA_CHECK (this->get_multijet_variable(thisvar, selection.first, jets, jetsInfo, good_indices, m_fromNTUP) );
+  }
+  else {
+    ANA_CHECK (this->get_variable(thisvar_vec, selection.first, jets, jetsInfo, m_fromNTUP) );
+  }
  
  // eta
   if(selection.first == "eta") {
@@ -981,7 +1029,12 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
         passed_indices.push_back(index);
     }
   }
-  
+
+  // multi-jet selections - don't do here
+  else if(selection.first == "HT" || selection.first == "ht") {
+    passed_indices = good_indices;
+  }
+
   // else complain
   else {
     ANA_MSG_ERROR("do not recognise selection " + selection.first + " - not applying");
@@ -989,6 +1042,21 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
     return EL::StatusCode::SUCCESS;
   }
   
+  return EL::StatusCode::SUCCESS;
+  
+}
+
+
+EL::StatusCode JetTriggerEfficiencies :: applyMultiJetSelection(bool &passSel, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices) {
+
+  ANA_MSG_DEBUG("about to apply a multi-jet selection");
+
+  // get variable
+  float thisvar;
+  ANA_MSG_DEBUG("getting " << selection.first);
+  ANA_CHECK (this->get_multijet_variable(thisvar, selection.first, jets, jetsInfo, good_indices, m_fromNTUP) );
+  
+
   return EL::StatusCode::SUCCESS;
   
 }
@@ -1138,6 +1206,32 @@ EL::StatusCode JetTriggerEfficiencies::get_variable(std::vector<float> &var_vec,
   return EL::StatusCode::SUCCESS;
 }
 
+
+EL::StatusCode JetTriggerEfficiencies::get_multijet_variable(float &var, std::string varName, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices, bool fromNTUP) {
+
+  ANA_MSG_DEBUG("get_multijet_variable: getting " << varName);
+
+  if(varName == "HT" || varName == "ht") {
+    float ht = 0;
+    ANA_MSG_DEBUG("getting HT for " << good_indices.size() << "jets");
+    for(auto index : good_indices) {
+      if(fromNTUP) {
+        ht += jetsInfo.TLV(index).Et();
+      }
+      else {
+        ht += jets->at(index)->p4().Et()/1000.;
+      }
+    }
+    var = ht;
+    ANA_MSG_DEBUG("got " << varName << " = " << var);
+    return EL::StatusCode::SUCCESS;
+  }
+
+  else {
+    ANA_MSG_ERROR("I don't know what to do with " << varName);
+    return EL::StatusCode::FAILURE;
+  }
+}
 
 
 EL::StatusCode JetTriggerEfficiencies::get_event_variable(float &var, std::string varName, const xAOD::EventInfo* eventInfo_xAOD, EventInfo &eventInfo_ntup, bool fromNTUP) {
