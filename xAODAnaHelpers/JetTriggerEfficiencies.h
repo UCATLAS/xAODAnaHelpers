@@ -424,8 +424,10 @@ public:
   /* virtual int PassCuts( const xAOD::Jet* jet ); */
 
   virtual EL::StatusCode emulateTriggerDecision(JetTriggerInfo &triggerInfo, TriggerDecision &triggerDecision);
-  virtual EL::StatusCode applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, unsigned int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel=false);
+
+  virtual EL::StatusCode applySelections(bool &passSelections, std::vector< std::pair<std::string, std::pair<float, float> > > selections, const xAOD::JetContainer* jets, JetInfo &jetsInfo, int multiplicity_required, std::vector<int> &good_indices, bool isHLTpresel=false);
   virtual EL::StatusCode applySelection(std::vector<int> &passed_indices, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices, bool isHLTpresel);
+  virtual EL::StatusCode applyMultiJetSelection(bool &passSel, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices);
 
   virtual EL::StatusCode FillSelectionVarHists(JetTriggerInfo &probeTriggerInfo, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<TH1F*> &histsVec, int jet_index);
 
@@ -433,6 +435,8 @@ public:
 
   // gets a variable by its string name, from the relevant one of xAOD jet container and NTUP's JetInfo
   virtual EL::StatusCode get_variable(std::vector<float> &var_vec, std::string varName, const xAOD::JetContainer* jets, JetInfo &jetsInfo, bool fromNTUP);
+
+  virtual EL::StatusCode get_multijet_variable(float &var_vec, std::string varName, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices, bool fromNTUP);
 
   virtual EL::StatusCode get_event_variable(float &var, std::string varName, const xAOD::EventInfo* eventInfo_xAOD, EventInfo &eventInfo_ntup, bool fromNTUP);
 
