@@ -741,29 +741,31 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
     // get the relevant offline variable
     ANA_MSG_DEBUG("getting variable to fill turnon with");
     std::string variable = m_variables_var[i_turnon];
-    std::vector<float> var_vec;
-    float var = 0;
+    float var_to_fill = -1;
 
-    if(variable == "HT" || variable == "ht") {
+    // treat differently according to whether it's:
+    //    per-jet: get a vector of that quantity, pick out the relevant entry
+    //    per-event: get the single number and use that
+
+
+    if( ! isPerJetVariable(variable) ) {
+      float var = 0;
       ANA_CHECK (this->get_multijet_variable(var, variable, offlineJets, offlineJetsInfo, good_indices, m_fromNTUP) );
+      var_to_fill = var;
     }
-    else {      
+    
+    else {
+      std::vector<float> var_vec;
       ANA_CHECK (this->get_variable(var_vec, variable, offlineJets, offlineJetsInfo, m_fromNTUP) );
-    }
 
-    // order by variable - eg for mass
-    if(m_orderByVariable) {
-      std::sort(var_vec.begin(), var_vec.end());
-    }
+      // order by variable - eg for mass
+      if(m_orderByVariable) {
+        std::sort(var_vec.begin(), var_vec.end());
+      }
 
-    // set var_to_fill
-    float var_to_fill;
-    if(jet_index == -1) // if it's HT or something that doesn't have an index in this way
-      var_to_fill = var_vec[0];
-    else
       var_to_fill = var_vec[jet_index];
-
-
+      
+    }
 
     ANA_MSG_DEBUG("set variable to fill turnon with");
 
@@ -947,6 +949,11 @@ EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, s
       return EL::StatusCode::SUCCESS;
     }
     
+    // only apply per-jer selections here; the jets that pass are used to get the jets used for making the per-event quantities
+    if( ! isPerJetVariable(selection.first) ) {
+      continue;
+    }
+
     // get the indices that pass this selection
     std::vector<int> passed_indices;
     ANA_MSG_DEBUG("about to apply selection on " << selection.first);
@@ -965,7 +972,7 @@ EL::StatusCode JetTriggerEfficiencies :: applySelections(bool &passSelections, s
 
   // now for multi-jet selections, eg HT, on the good_indices jets
   for(auto selection : selections) {    
-    if(selection.first == "ht" || selection.first == "HT") {
+    if ( ! isPerJetVariable(selection.first) ) {
       ANA_MSG_DEBUG("applying multi-jet selection " << selection.first);
       bool passThisSelection = false;
       ANA_CHECK( this->applyMultiJetSelection(passThisSelection, selection, jets, jetsInfo, good_indices));
@@ -1007,7 +1014,7 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
   // get variable
   std::vector<float> thisvar_vec;
   float thisvar = 0;
-  if(selection.first=="HT" || selection.first=="ht") {
+  if( ! isPerJetVariable(selection.first) ) {
     ANA_CHECK (this->get_multijet_variable(thisvar, selection.first, jets, jetsInfo, good_indices, m_fromNTUP) );
   }
   else {
@@ -1031,7 +1038,7 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
   }
 
   // multi-jet selections - don't do here
-  else if(selection.first == "HT" || selection.first == "ht") {
+  else if( ! isPerJetVariable(selection.first) ) {
     passed_indices = good_indices;
   }
 
@@ -1047,15 +1054,25 @@ EL::StatusCode JetTriggerEfficiencies :: applySelection(std::vector<int> &passed
 }
 
 
-EL::StatusCode JetTriggerEfficiencies :: applyMultiJetSelection(bool &passSel, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices) {
+EL::StatusCode JetTriggerEfficiencies :: applyMultiJetSelection(bool &passThisSelection, std::pair<std::string, std::pair<float, float> > selection, const xAOD::JetContainer* jets, JetInfo &jetsInfo, std::vector<int> good_indices) {
 
   ANA_MSG_DEBUG("about to apply a multi-jet selection");
 
   // get variable
-  float thisvar;
+  float thisVar;
   ANA_MSG_DEBUG("getting " << selection.first);
-  ANA_CHECK (this->get_multijet_variable(thisvar, selection.first, jets, jetsInfo, good_indices, m_fromNTUP) );
+  ANA_CHECK (this->get_multijet_variable(thisVar, selection.first, jets, jetsInfo, good_indices, m_fromNTUP) );
   
+  // compare thisVar to selection.second.first
+  ANA_MSG_DEBUG("selection on " << selection.first << ": " << selection.second.first << " - " << selection.second.second);
+  if(selection.second.first == selection.second.second) {
+    passThisSelection = (thisVar > selection.second.first);
+  }
+  else {
+    passThisSelection = (thisVar > selection.second.first && thisVar < selection.second.second);
+  }
+
+  // maybe at some point will have to implement different behaviour for each variable, but HT and mjj both want to be var > selection or sel1 < var < sel2
 
   return EL::StatusCode::SUCCESS;
   
@@ -1064,6 +1081,8 @@ EL::StatusCode JetTriggerEfficiencies :: applyMultiJetSelection(bool &passSel, s
 
 
 EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &triggerInfo, TriggerDecision &triggerDecision) {
+
+  ANA_MSG_DEBUG("emulateTriggerDecision start");
 
   int multiplicity_required = triggerInfo.getMultiplicity();
   bool passed = true;
@@ -1086,7 +1105,7 @@ EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &
       ANA_CHECK( HelperFunctions::retrieve(HLTpreselJets, triggerInfo.HLTjetContainerPreselection, m_event, m_store, msg()) );
     }
 
-    ANA_MSG_DEBUG("about to apply emulation preselections");
+    ANA_MSG_DEBUG("  about to apply emulation preselections");
     ANA_CHECK( this->applySelections(passSelections, triggerInfo.HLTselection, HLTpreselJets, HLTpreselJetsInfo, multiplicity_required, good_indices, true) ); // isHLTpresel=true
 
     if (!passSelections)
@@ -1096,17 +1115,17 @@ EL::StatusCode JetTriggerEfficiencies :: emulateTriggerDecision(JetTriggerInfo &
   // main HLT selection
   const xAOD::JetContainer* HLTjets(nullptr);
   JetInfo HLTjetsInfo;
-  ANA_MSG_DEBUG("about to retrieve HLT jet collection");
+  ANA_MSG_DEBUG("  about to retrieve HLT jet collection");
   if(m_fromNTUP) {
     ANA_CHECK( JetTriggerEfficiencies::retrieveJetInfo(HLTjetsInfo, triggerInfo.HLTjetContainer) );
     if(HLTjetsInfo.pt->size() > 0) {
-      ANA_MSG_DEBUG("lead ntup jet 4-vec and ET: (" << HLTjetsInfo.pt->at(0) << ", " << HLTjetsInfo.eta->at(0) << ", " << HLTjetsInfo.phi->at(0) << ", " << HLTjetsInfo.E->at(0) << ") " << HLTjetsInfo.TLV(0).Et() );
+      ANA_MSG_DEBUG("  lead ntup jet 4-vec and ET: (" << HLTjetsInfo.pt->at(0) << ", " << HLTjetsInfo.eta->at(0) << ", " << HLTjetsInfo.phi->at(0) << ", " << HLTjetsInfo.E->at(0) << ") " << HLTjetsInfo.TLV(0).Et() );
     }
   }
   else {
     ANA_CHECK( HelperFunctions::retrieve(HLTjets, triggerInfo.HLTjetContainer, m_event, m_store, msg()) );
     if(HLTjets->size() > 0) {
-      ANA_MSG_DEBUG("lead xaod jet 4-vec and ET: (" << HLTjets->at(0)->pt()/1000. << ", " << HLTjets->at(0)->eta() << ", " << HLTjets->at(0)->phi() << ", " << HLTjets->at(0)->p4().E()/1000. << ") " << HLTjets->at(0)->p4().Et()/1000. );
+      ANA_MSG_DEBUG("  lead xaod jet 4-vec and ET: (" << HLTjets->at(0)->pt()/1000. << ", " << HLTjets->at(0)->eta() << ", " << HLTjets->at(0)->phi() << ", " << HLTjets->at(0)->p4().E()/1000. << ") " << HLTjets->at(0)->p4().Et()/1000. );
     }
   }
   
@@ -1211,9 +1230,9 @@ EL::StatusCode JetTriggerEfficiencies::get_multijet_variable(float &var, std::st
 
   ANA_MSG_DEBUG("get_multijet_variable: getting " << varName);
 
-  if(varName == "HT" || varName == "ht") {
+  if( ! isPerJetVariable(varName) ) {
     float ht = 0;
-    ANA_MSG_DEBUG("getting HT for " << good_indices.size() << "jets");
+    ANA_MSG_DEBUG("getting hT for " << good_indices.size() << " jets");
     for(auto index : good_indices) {
       if(fromNTUP) {
         ht += jetsInfo.TLV(index).Et();
@@ -1355,4 +1374,14 @@ static inline void ReplaceAll(std::string &str, const std::string& from, const s
     str.replace(start_pos, from.length(), to);
     start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
   }
+}
+
+bool isPerJetVariable(std::string variable) {
+  std::string perEventVariables[] = {"HT", "ht", "mjj", "MJJ"};
+  for (std::string var : perEventVariables){
+    if(variable == var) {
+      return false;
+    }
+  }
+  return true;
 }

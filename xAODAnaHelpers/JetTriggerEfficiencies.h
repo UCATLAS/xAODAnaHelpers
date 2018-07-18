@@ -37,6 +37,7 @@
 std::vector<std::string> splitString(std::string parentString, std::string sep);
 std::vector<std::string> splitListString(std::string parentString);
 static inline void ReplaceAll(std::string &str, const std::string& from, const std::string& to);
+bool isPerJetVariable(std::string variable);
 
 class RulebookEntry {
  public:
