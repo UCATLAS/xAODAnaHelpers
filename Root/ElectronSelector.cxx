@@ -74,6 +74,11 @@ EL::StatusCode ElectronSelector :: histInitialize ()
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
+  if ( this->numInstances() > 1 ) { // 1 for this instance
+    m_isUsedBefore = true;
+    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -124,10 +129,6 @@ EL::StatusCode ElectronSelector :: initialize ()
   // preselecting objects, and then again for the final selection
   //
   ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
-  if ( this->numInstances() > 0 ) {
-    m_isUsedBefore = true;
-    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
-  }
 
   if ( m_useCutFlow ) {
 
@@ -780,7 +781,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   float eta   = ( electron->caloCluster() ) ? electron->caloCluster()->etaBE(2) : -999.0;
 
   // fill cutflow bin 'all' before any cut
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_all, 1 );
+  if( !m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_all, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_all, 1 ); }
 
   // *********************************************************************************************************************************************************************
@@ -793,7 +794,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_author_cut, 1 );
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_author_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_author_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
@@ -806,7 +807,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_OQ_cut, 1 );
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_OQ_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_OQ_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
@@ -819,7 +820,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_ptmax_cut, 1 );
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_ptmax_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_ptmax_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
@@ -832,7 +833,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_ptmin_cut, 1 );
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_ptmin_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_ptmin_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
@@ -856,7 +857,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_eta_cut, 1 );
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_eta_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_eta_cut, 1 ); }
 
 
@@ -890,7 +891,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_z0sintheta_cut, 1 );
+  if ( !m_isUsedBefore && m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_z0sintheta_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_z0sintheta_cut, 1 ); }
 
   // decorate electron w/ z0*sin(theta) info
@@ -905,7 +906,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_d0_cut, 1 );
+  if ( !m_isUsedBefore && m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_d0_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0_cut, 1 ); }
 
   // d0sig cut
@@ -916,7 +917,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
   }
-  if ( m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_d0sig_cut, 1 );
+  if ( !m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_d0sig_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_d0sig_cut, 1 ); }
 
   // decorate electron w/ d0sig info
@@ -945,7 +946,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       return 0;
     }
 
-    if ( m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_BL_cut, 1 );
+    if ( !m_isUsedBefore && m_useCutFlow ) m_el_cutflowHist_1->Fill( m_el_cutflow_BL_cut, 1 );
     if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_BL_cut, 1 ); }
   }
 
@@ -1084,7 +1085,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
     }
   }// if m_doCutBasedPID
 
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_PID_cut, 1 );
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_PID_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_PID_cut, 1 ); }
 
 
@@ -1115,7 +1116,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
     ANA_MSG_DEBUG( "Electron failed isolation cut " << m_MinIsoWPCut );
     return 0;
   }
-  if(m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_iso_cut, 1 );
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_iso_cut, 1 ); }
 
   return 1;
