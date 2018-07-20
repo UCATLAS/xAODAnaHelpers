@@ -639,6 +639,7 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
       ANA_MSG_DEBUG("getting TDT probe info for " << probeChainName);
       if(m_fromNTUP) {
         probeDecision.passedTrigger = (std::find(global_eventInfo.passedTriggers->begin(), global_eventInfo.passedTriggers->end(), probeChainName) != global_eventInfo.passedTriggers->end());
+        ANA_MSG_DEBUG("  did it pass? " << probeDecision.passedTrigger);
         auto index = std::find(global_eventInfo.isPassBitsNames->begin(), global_eventInfo.isPassBitsNames->end(), probeChainName);
         if (index == global_eventInfo.isPassBitsNames->end()) {
           ANA_MSG_ERROR("failed to find trigger bits for " + probeChainName);
@@ -698,9 +699,11 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
 
     // only fill denominator hist if the L1 of the HLT passed and it was not prescaled out
     // need to do something different if it's an L1 turnon
-    if(!m_emulate) {
-      if(!probeDecision.L1_isPassedAfterVeto || probeDecision.HLT_isPrescaledOut)
+    if(!m_emulate && !m_probeTriggerInfo[i_turnon].isL1) {
+      if(!probeDecision.L1_isPassedAfterVeto || probeDecision.HLT_isPrescaledOut) {
+        ANA_MSG_DEBUG("  probe decision prescaled out");
         continue;
+      }
     }
 
     int jet_index = -1;
