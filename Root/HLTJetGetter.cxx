@@ -82,6 +82,7 @@ EL::StatusCode HLTJetGetter :: initialize ()
     // Grab the TrigDecTool from the ToolStore
     //
 
+    /*
     if ( asg::ToolStore::contains<Trig::TrigDecisionTool>( "TrigDecisionTool" ) ) {
         m_trigDecTool = asg::ToolStore::get<Trig::TrigDecisionTool>("TrigDecisionTool");
     } else {
@@ -98,6 +99,12 @@ EL::StatusCode HLTJetGetter :: initialize ()
         ANA_CHECK( m_trigDecTool->setProperty( "OutputLevel", MSG::ERROR));
         ANA_CHECK( m_trigDecTool->initialize());
         ANA_MSG_INFO( "Successfully configured Trig::TrigDecisionTool!");
+    }
+    */
+
+    if(!m_trigDecTool_handle.isUserConfigured()){
+      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+      return EL::StatusCode::FAILURE;
     }
 
     // If there is no InputContainer we must stop
@@ -122,7 +129,7 @@ EL::StatusCode HLTJetGetter :: execute ()
     hltJets->setStore( hltJetsAux ); //< Connect the two
 
     //Retrieving jets via trigger decision tool:
-    const Trig::ChainGroup * chainGroup = m_trigDecTool->getChainGroup(m_triggerList.c_str()); //Trigger list:
+    const Trig::ChainGroup * chainGroup = m_trigDecTool_handle->getChainGroup(m_triggerList.c_str()); //Trigger list:
     auto chainFeatures = chainGroup->features(); //Gets features associated to chain defined above
     auto JetFeatureContainers = chainFeatures.containerFeature<xAOD::JetContainer>(m_inContainerName.c_str());
 
@@ -159,7 +166,8 @@ EL::StatusCode HLTJetGetter :: finalize ()
     // this is necessary because in most cases the pointer will be set to null
     // after deletion in BasicEventSelection, but it will not propagate here
     if ( m_ownTDTAndTCT ) {
-      if ( m_trigDecTool )  { delete m_trigDecTool; m_trigDecTool = nullptr;  }
+      //if ( m_trigDecTool_handle )  { delete m_trigDecTool_handle; m_trigDecTool_handle = nullptr;  }
+      if ( m_trigDecTool_handle.isInitialized() )  m_trigDecTool_handle->finalize();
       if ( m_trigConfTool ) {  delete m_trigConfTool; m_trigConfTool = nullptr; }
     }
 
