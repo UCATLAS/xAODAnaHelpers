@@ -1,0 +1,4 @@
+410646	PowhegPythia8EvtGen_A14_Wt_DR_inclusive_top	3.793700e+01	1.	1.000000e+00	1.
+410647	PowhegPythia8EvtGen_A14_Wt_DR_inclusive_antitop	3.790700e+01	1.	1.000000e+00	1.
+410658	PhPy8EG_A14_tchan_BW50_lept_top	3.699300e+01	1.	1.000000e+00	1.
+410659	PhPy8EG_A14_tchan_BW50_lept_antitop	2.217500e+01	1.	1.000000e+00	1.

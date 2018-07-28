@@ -241,6 +241,33 @@ if __name__ == "__main__":
         if os.getenv(env_var) is None:
           raise EnvironmentError('Panda client is not setup. Run localSetupPandaClient.')
 
+      isSLC6 = True
+      # check that we're not submitting to grid from CC7 machines
+      try:
+        xAH_logger.debug('Running lsb_release -d.')
+        lsb_release = subprocess.check_output(["lsb_release", "-d"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
+        xAH_logger.debug('  - command output: {}'.format(lsb_release))
+        slc6_release_names = ['Scientific Linux release 6', 'Scientific Linux CERN SLC release 6']
+        if not any(name in lsb_release for name in slc6_release_names):
+          xAH_logger.debug('  - did not find SLC6 in output.')
+          isSLC6 = False
+        else:
+          xAH_logger.debug('  - found SLC6 in output.')
+
+      except:
+        xAH_logger.debug('Previous command could not run correctly. Searching through env. variables.')
+        # there was a problem trying to get lsb_release, search through env variables
+        lsb_release = None
+        env_vars = [(k,v) for k,v in os.environ.iteritems() if k.endswith('_PLATFORM') and k != 'Analysis'+ASG_framework_type+'_PLATFORM']
+        xAH_logger.debug('Relevant environment variables found:')
+        for (k,v) in env_vars: xAH_logger.debug('  - {0} = {1}'.format(k, v))
+        if any(['centos7' in v for (k,v) in env_vars]):
+          xAH_logger.debug('Found CC7 in environment variable, cannot submit from this machine.')
+          isSLC6 = False
+
+      if not isSLC6:
+        raise EnvironmentError('We think you\'re not running on SLC6. Grid jobs cannot be submitted from this machine.')
+
     # check submission directory
     if args.force_overwrite:
       xAH_logger.info("removing {0:s}".format(args.submit_dir))

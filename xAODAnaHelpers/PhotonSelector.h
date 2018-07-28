@@ -46,6 +46,8 @@ public:
   bool	     	 m_vetoCrack = true;
   bool           m_doAuthorCut = true;
   bool           m_doOQCut = true;
+  /** read object quality from derivation, rather than calculating it on the fly */
+  bool           m_readOQFromDerivation = false;
 
   /* photon PID */
   /** Name of ID variable to cut */
