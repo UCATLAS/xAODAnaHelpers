@@ -223,12 +223,6 @@ StatusCode JetHists::initialize() {
       m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c1070_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1070", 0, 1);
       m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c1077_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1077", 0, 1);
       m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c1085_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1085", 0, 1);
-<<<<<<< 01702d30e9f0e8d97ab0d563d6e09783228bbd20
-
-      // counts (e.g. numbers of jets) vs. proton-proton Interactions
-      m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 50, 0, 100);
-=======
->>>>>>> Correct eventInfo call to get actualInteractionsPerCrossing; expand actualMu range
 
       // counts (e.g. numbers of jets) vs. proton-proton Interactions
       m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 50, 0, 100);
