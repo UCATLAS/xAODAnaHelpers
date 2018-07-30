@@ -129,8 +129,12 @@ EL::StatusCode HLTJetGetter :: execute ()
     hltJets->setStore( hltJetsAux ); //< Connect the two
 
     //Retrieving jets via trigger decision tool:
-    const Trig::ChainGroup * chainGroup = m_trigDecTool_handle->getChainGroup(m_triggerList.c_str()); //Trigger list:
+    const Trig::ChainGroup * chainGroup = m_trigDecTool_handle->getChainGroup(m_triggerList); //Trigger list:
+    
+    std::vector<std::string> trigger_list = chainGroup->getListOfTriggers();
+
     auto chainFeatures = chainGroup->features(); //Gets features associated to chain defined above
+
     auto JetFeatureContainers = chainFeatures.containerFeature<xAOD::JetContainer>(m_inContainerName.c_str());
 
     ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
@@ -143,7 +147,7 @@ EL::StatusCode HLTJetGetter :: execute ()
             hltJets->push_back( Jet );
         }//end trigJet loop
     }//end feature container loop
-
+    
     if(msgLvl(MSG::VERBOSE)) m_store->print();
 
     return EL::StatusCode::SUCCESS;
