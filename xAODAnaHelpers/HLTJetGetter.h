@@ -41,7 +41,8 @@ public:
 
 private:
 
-  Trig::TrigDecisionTool*        m_trigDecTool = nullptr;   //!
+  //Trig::TrigDecisionTool*        m_trigDecTool = nullptr;   //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //! 
   TrigConf::xAODConfigTool*      m_trigConfTool = nullptr;   //!
   /// @brief flag to own TDT and TCT
   bool                           m_ownTDTAndTCT = false;   //!
