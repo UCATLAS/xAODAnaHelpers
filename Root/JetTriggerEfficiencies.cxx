@@ -315,11 +315,11 @@ EL::StatusCode JetTriggerEfficiencies :: histInitialize ()
     float xMin = 0;
     float xMax = 100;
 
-    // if(m_split == "something") {
-      // nBins = 0;
-      // xMin = 0;
-      // xMax = 0;
-    // }
+    if(m_splitBy == "eta") {
+      nBins = 100;
+      xMin = -5;
+      xMax = 5;
+    }
 
     m_splitVarHist = book(tdirname, hname , xaxistitle, nBins, xMin, xMax, wk());
   }
@@ -578,13 +578,13 @@ EL::StatusCode JetTriggerEfficiencies :: execute ()
   else if (m_splitBy == "avgIntPerX" || m_splitBy == "actIntPerX") {
     ANA_CHECK (this->get_event_variable(splitVal, m_splitBy, eventInfo, global_eventInfo, m_fromNTUP) );
   }
-  else if (m_splitBy == "phi") {
+  else if (m_splitBy == "phi" || m_splitBy == "eta") {
     std::vector<float> thisvar_vec;
-    ANA_CHECK (this->get_variable(thisvar_vec, "phi", offlineJets, offlineJetsInfo, m_fromNTUP) );
+    ANA_CHECK (this->get_variable(thisvar_vec, m_splitBy, offlineJets, offlineJetsInfo, m_fromNTUP) );
     if(thisvar_vec.size() == 0) 
       splitVal = -9;
     else
-      splitVal = thisvar_vec.at(0);
+      splitVal = thisvar_vec.at(0); // lead jet always - need to fix probably
   }
   else {
     ANA_MSG_ERROR("I don't know what to do with m_splitBy = " << m_splitBy);
