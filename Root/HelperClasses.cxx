@@ -153,6 +153,7 @@ namespace HelperClasses{
       }
 
     m_useTheS   = has_exact("useTheS");
+    m_noCounter = has_exact("noCounter");
   }
 
   void MuonInfoSwitch::initialize(){
@@ -466,6 +467,7 @@ namespace HelperClasses{
     m_numbers	    = has_exact("numbers");
     m_vertex	    = has_exact("vertex");
     m_useTheS       = has_exact("useTheS");
+    m_noCounter     = has_exact("noCounter");
   }
 
   void TauInfoSwitch::initialize(){
