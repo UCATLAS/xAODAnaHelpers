@@ -188,6 +188,7 @@ EL::StatusCode TauSelector :: initialize ()
   //
   // ********************************
 
+  // IMPORTANT: if no working point is specified the one in this configuration will be used
   ANA_CHECK( m_tauSelTool_handle.setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()));
   if (!m_JetIDWP.empty()) {
     

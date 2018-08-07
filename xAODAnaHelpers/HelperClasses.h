@@ -602,6 +602,7 @@ namespace HelperClasses {
         m_trigger          trigger          exact
         m_effSF            effSF            exact
         m_JetID            JetID            exact
+        m_EleVeto          EleVeto          exact
         m_trackparams      trackparams      exact
         m_trackhitcont     trackhitcont     exact
         m_tauEffWP         TAUEFF_XYZ       pattern
@@ -625,6 +626,7 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_JetID;
+    bool m_EleVeto;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
