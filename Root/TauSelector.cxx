@@ -211,6 +211,25 @@ EL::StatusCode TauSelector :: initialize ()
     }
   }
 
+  if (!m_EleBDTWP.empty()) {
+    
+    std::map <std::string, int> elebdt_wp_map;
+    
+    elebdt_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
+    elebdt_wp_map["ELEIDBDTLOOSE"] = int(TauAnalysisTools::ELEIDBDTLOOSE);
+    elebdt_wp_map["ELEIDBDTMEDIUM"] = int(TauAnalysisTools::ELEIDBDTMEDIUM);
+    elebdt_wp_map["ELEIDBDTTIGHT"] = int(TauAnalysisTools::ELEIDBDTTIGHT);
+    
+    if (elebdt_wp_map.count(m_EleBDTWP) != 0 ) {
+      ANA_CHECK( m_tauSelTool_handle.setProperty("EleBDTWP", elebdt_wp_map[m_EleBDTWP]));
+    } else {
+      ANA_MSG_ERROR( "Unknown requested tau EleBDTWP " << m_EleBDTWP);
+      return EL::StatusCode::FAILURE; 
+    }
+  }
+
+  ANA_CHECK( m_tauSelTool_handle.setProperty("EleOLR", m_EleOLR));
+
   ANA_CHECK(m_tauSelTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
 
@@ -661,6 +680,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   //
 
   // JetBDTSigID decoration
+  // ----------------------
   static SG::AuxElement::Decorator< int > isJetBDTSigVeryLoose("isJetBDTSigVeryLoose");
   static SG::AuxElement::Decorator< int > isJetBDTSigLoose("isJetBDTSigLoose");
   static SG::AuxElement::Decorator< int > isJetBDTSigMedium("isJetBDTSigMedium");
@@ -669,7 +689,6 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   static SG::AuxElement::Decorator< float > JetBDTScore("JetBDTScore");
   static SG::AuxElement::Decorator< float > JetBDTScoreSigTrans("JetBDTScoreSigTrans");
   
-  ANA_MSG_DEBUG( "Got the decors" );
 
   isJetBDTSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigVeryLoose));
   isJetBDTSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
@@ -678,6 +697,29 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
 
   JetBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScore));
   JetBDTScoreSigTrans( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScoreSigTrans));
+
+  // EleBDT decoration
+  // -----------------
+  static SG::AuxElement::Decorator< int > isEleBDTLoose("isEleBDTLoose");
+  static SG::AuxElement::Decorator< int > isEleBDTMedium("isEleBDTMedium");
+  static SG::AuxElement::Decorator< int > isEleBDTTight("isEleBDTTight");
+
+  static SG::AuxElement::Decorator< float > EleBDTScore("EleBDTScore");
+  
+
+  isEleBDTLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTLoose));
+  isEleBDTMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTMedium));
+  isEleBDTTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTTight));
+
+  EleBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTEleScore));
+
+
+  // EleOLR decoration
+  // -----------------
+  static SG::AuxElement::Decorator< int > passEleOLR("passEleOLR");
+  
+  passEleOLR( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::PassEleOLR));
+
 
   ANA_MSG_DEBUG( "Got decoration values" );
 
