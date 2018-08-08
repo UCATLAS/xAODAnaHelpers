@@ -122,13 +122,13 @@ void TauContainer::setTree(TTree *tree)
       tree->SetBranchStatus ( (m_name + "_TauEff_SF_" + taueff).c_str() , 1);
       tree->SetBranchAddress( (m_name + "_TauEff_SF_" + taueff).c_str() , & (*m_TauEff_SF)[ taueff ] );
 
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        tree->SetBranchStatus ( (m_name + "_TauTrigEff_SF_" + trig + "_" + taueff).c_str() , 1 );
-        tree->SetBranchAddress( (m_name + "_TauTrigEff_SF_" + trig + "_" + taueff).c_str() , & (*m_TauTrigEff_SF)[ trig+taueff ] );
-
-      }
     }
-    
+
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      tree->SetBranchStatus ( (m_name + "_TauTrigEff_SF_" + trig).c_str() , 1 );
+      tree->SetBranchAddress( (m_name + "_TauTrigEff_SF_" + trig).c_str() , & (*m_TauTrigEff_SF)[ trig ] );
+
+    }
   }
 
   // might need to delete these 
@@ -173,12 +173,11 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       tau.TauEff_SF[ taueff ] = (*m_TauEff_SF)[ taueff ].at(idx);
-
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        tau.TauTrigEff_SF[ trig+taueff ] = (*m_TauTrigEff_SF)[ trig+taueff ].at(idx);
-      }
     }
     
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      tau.TauTrigEff_SF[ trig ] = (*m_TauTrigEff_SF)[ trig ].at(idx);
+    }
   }
 
   //  might need to delete these
@@ -229,13 +228,11 @@ void TauContainer::setBranches(TTree *tree)
     
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       tree->Branch( (m_name + "_TauEff_SF_" + taueff).c_str() , & (*m_TauEff_SF)[ taueff ] );
-      
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        tree->Branch( (m_name + "_TauTrigEff_SF_" + trig + "_" + taueff).c_str() , & (*m_TauTrigEff_SF)[ trig+taueff ] );
-      }
     }
     
-    
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      tree->Branch( (m_name + "_TauTrigEff_SF_" + trig).c_str() , & (*m_TauTrigEff_SF)[ trig ] );
+    }
   }
 
   // might need to delete these
@@ -285,12 +282,11 @@ void TauContainer::clear()
     
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       (*m_TauEff_SF)[ taueff ].clear();
-
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        (*m_TauTrigEff_SF)[ trig+taueff ].clear();
-      }
     }
 
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      (*m_TauTrigEff_SF)[ trig ].clear();
+    }
   }
 
   // might need to delete these
