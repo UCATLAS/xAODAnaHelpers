@@ -143,7 +143,9 @@ void TauContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_EleVeto ){
-    connectBranch<int>    (tree, "isEleBDLoose",   &m_isEleBDTLoose);
+    connectBranch<int>    (tree, "isEleBDTLoose",    &m_isEleBDTLoose);
+    connectBranch<int>    (tree, "isEleBDTMedium",   &m_isEleBDTMedium);
+    connectBranch<int>    (tree, "isEleBDTTight",    &m_isEleBDTTight);
     
     connectBranch<float>  (tree, "EleBDTScore",    &m_EleBDTScore);
     connectBranch<int>    (tree, "passEleOLR",     &m_passEleOLR);
