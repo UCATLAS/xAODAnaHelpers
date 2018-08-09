@@ -742,7 +742,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   //------------------------------------------------------------------------------------------
   if ( m_doPUreweighting ) {
     m_pileup_tool_handle->applySystematicVariation(CP::SystematicSet()).ignore();
-    m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
+    ANA_CHECK(m_pileup_tool_handle->apply( *eventInfo )); // NB: this call automatically decorates eventInfo with:
                                                  //  1.) the PU weight ("PileupWeight")
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
@@ -1117,7 +1117,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   for(const auto& mcCampaign : mcCampaignList)
     ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
 
-  // 
+  //
   float dsid = -999;
   dsid = eventInfo->mcChannelNumber();
   int DSID_INT = (int) dsid;
