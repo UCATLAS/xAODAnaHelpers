@@ -33,6 +33,15 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
     m_JetBDTScoreSigTrans  = new  std::vector<float>   ();
   }
 
+  if( m_infoSwitch.m_EleVeto) {
+    m_isEleBDTLoose  = new  std::vector<int>   ();
+    m_isEleBDTMedium = new  std::vector<int>   ();
+    m_isEleBDTTight  = new  std::vector<int>   ();
+    
+    m_EleBDTScore    = new  std::vector<float> ();
+    m_passEleOLR     = new  std::vector<int>   ();
+  }
+
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -79,6 +88,15 @@ TauContainer::~TauContainer()
     delete m_JetBDTScoreSigTrans;
   }
 
+  if( m_infoSwitch.m_EleVeto) {
+    delete m_isEleBDTLoose;
+    delete m_isEleBDTMedium;
+    delete m_isEleBDTTight;
+    
+    delete m_EleBDTScore;
+
+    delete m_passEleOLR;
+  }
 }
 
 void TauContainer::setTree(TTree *tree)
@@ -104,13 +122,13 @@ void TauContainer::setTree(TTree *tree)
       tree->SetBranchStatus ( (m_name + "_TauEff_SF_" + taueff).c_str() , 1);
       tree->SetBranchAddress( (m_name + "_TauEff_SF_" + taueff).c_str() , & (*m_TauEff_SF)[ taueff ] );
 
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        tree->SetBranchStatus ( (m_name + "_TauTrigEff_SF_" + trig + "_" + taueff).c_str() , 1 );
-        tree->SetBranchAddress( (m_name + "_TauTrigEff_SF_" + trig + "_" + taueff).c_str() , & (*m_TauTrigEff_SF)[ trig+taueff ] );
-
-      }
     }
-    
+
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      tree->SetBranchStatus ( (m_name + "_TauTrigEff_SF_" + trig).c_str() , 1 );
+      tree->SetBranchAddress( (m_name + "_TauTrigEff_SF_" + trig).c_str() , & (*m_TauTrigEff_SF)[ trig ] );
+
+    }
   }
 
   // might need to delete these 
@@ -123,6 +141,16 @@ void TauContainer::setTree(TTree *tree)
     connectBranch<float>  (tree, "JetBDTScore",         &m_JetBDTScore);
     connectBranch<float>  (tree, "JetBDTScoreSigTrans", &m_JetBDTScoreSigTrans);
   }
+
+  if ( m_infoSwitch.m_EleVeto ){
+    connectBranch<int>    (tree, "isEleBDTLoose",    &m_isEleBDTLoose);
+    connectBranch<int>    (tree, "isEleBDTMedium",   &m_isEleBDTMedium);
+    connectBranch<int>    (tree, "isEleBDTTight",    &m_isEleBDTTight);
+    
+    connectBranch<float>  (tree, "EleBDTScore",    &m_EleBDTScore);
+    connectBranch<int>    (tree, "passEleOLR",     &m_passEleOLR);
+  }
+
 }
 
 void TauContainer::updateParticle(uint idx, Tau& tau)
@@ -147,12 +175,11 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       tau.TauEff_SF[ taueff ] = (*m_TauEff_SF)[ taueff ].at(idx);
-
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        tau.TauTrigEff_SF[ trig+taueff ] = (*m_TauTrigEff_SF)[ trig+taueff ].at(idx);
-      }
     }
     
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      tau.TauTrigEff_SF[ trig ] = (*m_TauTrigEff_SF)[ trig ].at(idx);
+    }
   }
 
   //  might need to delete these
@@ -164,6 +191,16 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     
     tau.JetBDTScore         =   m_JetBDTScore         ->at(idx);
     tau.JetBDTScoreSigTrans =   m_JetBDTScoreSigTrans ->at(idx);
+  }
+
+  if ( m_infoSwitch.m_EleVeto ) {
+    tau.isEleBDTLoose   =  m_isEleBDTLoose   ->at(idx);
+    tau.isEleBDTMedium  =  m_isEleBDTMedium  ->at(idx);
+    tau.isEleBDTTight   =  m_isEleBDTTight   ->at(idx);
+    
+    tau.EleBDTScore     =  m_EleBDTScore     ->at(idx);
+    
+    tau.passEleOLR      =  m_passEleOLR      ->at(idx);
   }
 
 }
@@ -193,13 +230,11 @@ void TauContainer::setBranches(TTree *tree)
     
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       tree->Branch( (m_name + "_TauEff_SF_" + taueff).c_str() , & (*m_TauEff_SF)[ taueff ] );
-      
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        tree->Branch( (m_name + "_TauTrigEff_SF_" + trig + "_" + taueff).c_str() , & (*m_TauTrigEff_SF)[ trig+taueff ] );
-      }
     }
     
-    
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      tree->Branch( (m_name + "_TauTrigEff_SF_" + trig).c_str() , & (*m_TauTrigEff_SF)[ trig ] );
+    }
   }
 
   // might need to delete these
@@ -212,6 +247,16 @@ void TauContainer::setBranches(TTree *tree)
     setBranch<float> (tree,"JetBDTScore", m_JetBDTScore);
     setBranch<float> (tree,"JetBDTScoreSigTrans", m_JetBDTScoreSigTrans);
 
+  }
+  
+  if ( m_infoSwitch.m_EleVeto ){
+    setBranch<int>   (tree,"isEleBDTLoose", m_isEleBDTLoose);
+    setBranch<int>   (tree,"isEleBDTMedium", m_isEleBDTMedium);
+    setBranch<int>   (tree,"isEleBDTTight", m_isEleBDTTight);
+    
+    setBranch<float> (tree,"EleBDTScore", m_EleBDTScore);
+
+    setBranch<int>   (tree,"passEleOLR", m_passEleOLR);
   }
   
   return;
@@ -239,12 +284,11 @@ void TauContainer::clear()
     
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       (*m_TauEff_SF)[ taueff ].clear();
-
-      for (auto& trig : m_infoSwitch.m_trigWPs) {
-        (*m_TauTrigEff_SF)[ trig+taueff ].clear();
-      }
     }
 
+    for (auto& trig : m_infoSwitch.m_trigWPs) {
+      (*m_TauTrigEff_SF)[ trig ].clear();
+    }
   }
 
   // might need to delete these
@@ -256,6 +300,15 @@ void TauContainer::clear()
     
     m_JetBDTScore->clear();
     m_JetBDTScoreSigTrans->clear();
+  }
+
+  if ( m_infoSwitch.m_EleVeto ) {
+    m_isEleBDTLoose->clear();
+    m_isEleBDTMedium->clear();
+    m_isEleBDTTight->clear();
+    
+    m_EleBDTScore->clear();
+    m_passEleOLR->clear();
   }
 
 }
@@ -348,6 +401,24 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
     static SG::AuxElement::Accessor<float> JetBDTScoreSigTransAcc ("JetBDTScoreSigTrans");
     safeFill<float, float, xAOD::TauJet>(tau, JetBDTScoreSigTransAcc, m_JetBDTScoreSigTrans, -999.);
   }
-  
+
+  if ( m_infoSwitch.m_EleVeto ) {
+    
+    static SG::AuxElement::Accessor<int> isEleBDTLooseAcc ("isEleBDTLoose");
+    safeFill<int, int, xAOD::TauJet>(tau, isEleBDTLooseAcc, m_isEleBDTLoose, -1);
+
+    static SG::AuxElement::Accessor<int> isEleBDTMediumAcc ("isEleBDTMedium");
+    safeFill<int, int, xAOD::TauJet>(tau, isEleBDTMediumAcc, m_isEleBDTMedium, -1);
+
+    static SG::AuxElement::Accessor<int> isEleBDTTightAcc ("isEleBDTTight");
+    safeFill<int, int, xAOD::TauJet>(tau, isEleBDTTightAcc, m_isEleBDTTight, -1);
+
+    static SG::AuxElement::Accessor<float> EleBDTScoreAcc ("EleBDTScore");
+    safeFill<float, float, xAOD::TauJet>(tau, EleBDTScoreAcc, m_EleBDTScore, -999.);
+
+    static SG::AuxElement::Accessor<int> passEleOLRAcc ("passEleOLR");
+    safeFill<int, int, xAOD::TauJet>(tau, passEleOLRAcc, m_passEleOLR, -1);
+  }
+
   return;
 }

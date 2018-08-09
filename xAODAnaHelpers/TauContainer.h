@@ -47,7 +47,6 @@ namespace xAH {
       std::map< std::string, std::vector< std::vector< float > > >* m_TauEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TauTrigEff_SF;
       
-      
       // might need to delete these
       std::vector<int>   *m_isJetBDTSigVeryLoose;
       std::vector<int>   *m_isJetBDTSigLoose;
@@ -57,6 +56,13 @@ namespace xAH {
       std::vector<float>   *m_JetBDTScore;
       std::vector<float>   *m_JetBDTScoreSigTrans;
 
+      std::vector<int>   *m_isEleBDTLoose;
+      std::vector<int>   *m_isEleBDTMedium;
+      std::vector<int>   *m_isEleBDTTight;
+
+      std::vector<float>   *m_EleBDTScore;
+
+      std::vector<int>   *m_passEleOLR;
     };
 }
 #endif // xAODAnaHelpers_TauContainer_H

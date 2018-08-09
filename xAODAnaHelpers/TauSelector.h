@@ -50,10 +50,14 @@ public:
   /* maximum number of objects passing cuts */
   int            m_pass_max = -1;
   /* path to config file for the TauSelectionTool */
+
+  // IMPORTANT: if no working point is specified the one in this configuration will be used
   std::string    m_ConfigPath = "xAODAnaHelpers/TauConf/00-01-19/Selection/recommended_selection_mc15.conf";
   /* a minimal pT threshold b/c some derivations may apply a thinning on tau tracks' features needed by the TauSelectionTool, which would cause a crash at runtime */
   float          m_minPtDAOD = 15e3;
   std::string    m_JetIDWP = "";
+  std::string    m_EleBDTWP = "";
+  bool           m_EleOLR = true;
 
   /* trigger matching */
   

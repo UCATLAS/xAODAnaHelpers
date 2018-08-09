@@ -29,6 +29,15 @@ namespace xAH {
 
     float             JetBDTScore;
     float             JetBDTScoreSigTrans;
+
+    int               isEleBDTLoose;
+    int               isEleBDTMedium;
+    int               isEleBDTTight;
+ 
+    float             EleBDTScore;
+
+    int               passEleOLR;
+
   };
 
 }//xAH
