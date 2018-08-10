@@ -146,6 +146,9 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
 
+  m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
+  m_cutflowHistW->GetXaxis()->FindBin("init");
+
   if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
     m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
     m_cutflowHistW->GetXaxis()->FindBin("Duplicates");
@@ -708,6 +711,9 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_histEventCount -> Fill(5, mcEvtWeight*mcEvtWeight);
       m_histEventCount -> Fill(6, mcEvtWeight*mcEvtWeight);
     }
+
+  m_cutflowHist ->Fill( m_cutflow_init, 1 );
+  m_cutflowHistW->Fill( m_cutflow_init, mcEvtWeight);
 
   //--------------------------------------------------------------------------------------------------------
   // Check current event is not a duplicate
