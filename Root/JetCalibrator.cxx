@@ -16,6 +16,7 @@
 #include <EventLoop/Worker.h>
 
 // EDM include(s):
+#include "xAODMuon/MuonContainer.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/Jet.h"
 #include "xAODBase/IParticleHelpers.h"
@@ -40,6 +41,7 @@
 #include "JetSelectorTools/JetCleaningTool.h"
 #include "JetMomentTools/JetVertexTaggerTool.h"
 #include "JetTileCorrection/JetTileCorrectionTool.h"
+#include "METUtilities/METHelpers.h"
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(JetCalibrator)
@@ -409,6 +411,13 @@ EL::StatusCode JetCalibrator :: execute ()
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
   // ConstDataVector<xAOD::JetContainer>* calibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
   // calibJetsCDV->reserve( calibJetsSC.first->size() );
+
+  if ( m_addGhostMuonsToJets ) {
+    ANA_MSG_VERBOSE("Run muon-to-jet ghost association");
+    const xAOD::MuonContainer* muons(nullptr);
+    ANA_CHECK( HelperFunctions::retrieve(muons, "Muons", m_event, m_store, msg()) );
+    met::addGhostMuonsToJets( *muons, *calibJetsSC.first );
+  }
 
   std::string outSCContainerName=m_outContainerName+"ShallowCopy";
   std::string outSCAuxContainerName=m_outContainerName+"ShallowCopyAux.";
