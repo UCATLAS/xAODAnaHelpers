@@ -215,6 +215,7 @@ class BasicEventSelection : public xAH::Algorithm
     TH1D* m_cutflowHist = nullptr;      //!
     TH1D* m_cutflowHistW = nullptr;     //!
     int m_cutflow_all;        //!
+    int m_cutflow_init;       //!
     int m_cutflow_duplicates; //!
     int m_cutflow_grl;        //!
     int m_cutflow_lar;        //!
