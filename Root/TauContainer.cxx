@@ -361,7 +361,7 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
-    std::vector<float> junkSF(1,1.0);
+    std::vector<float> junkSF(1,-1.0);
 
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTauEffSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTauTrigSF;

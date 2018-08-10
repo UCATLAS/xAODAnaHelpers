@@ -402,10 +402,10 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
           sfVec( *tau_itr ) = std::vector<float>();
   	}
 
-  	double tauEffSF(1.0);
+  	double tauEffSF(-1.0);
   	if ( m_tauEffCorrTool_handle->getEfficiencyScaleFactor( *tau_itr, tauEffSF ) != CP::CorrectionCode::Ok ) {
   	  ANA_MSG_WARNING( "Problem in getEfficiencyScaleFactor");
-  	  tauEffSF = 1.0;
+  	  tauEffSF = -1.0;
   	}
   	//
   	// Add it to decoration vector
