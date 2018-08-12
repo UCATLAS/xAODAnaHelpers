@@ -13,8 +13,16 @@ env:
   matrix:
     - RELEASE=AnalysisBase,21.2.39
     - RELEASE=AnalysisTop,21.2.39
-    - RELEASE=AnalysisBase,21.2.33
-    - RELEASE=AnalysisTop,21.2.33
+    - RELEASE=AnalysisBase,21.2.38
+    - RELEASE=AnalysisTop,21.2.38
+    - RELEASE=AnalysisBase,21.2.37
+    - RELEASE=AnalysisTop,21.2.37
+    - RELEASE=AnalysisBase,21.2.36
+    - RELEASE=AnalysisTop,21.2.36
+    - RELEASE=AnalysisBase,21.2.35
+    - RELEASE=AnalysisTop,21.2.35
+    - RELEASE=AnalysisBase,21.2.34
+    - RELEASE=AnalysisTop,21.2.34
 
 script:
   - export RELEASE_TYPE=${RELEASE%%,*}
