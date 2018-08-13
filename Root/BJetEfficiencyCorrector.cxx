@@ -328,7 +328,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
 	// get the scale factor
-	float SF(1.0);
+	float SF(-1.0);
 	// if only decorator with decision because OP is not calibrated, set SF to 1
 	if ( fabs(jet_itr->eta()) < 2.5 ) {
 
@@ -342,7 +342,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	  }
 	  if (BJetEffCode == CP::CorrectionCode::Error){
 	    ANA_MSG_WARNING( "Error in getEfficiencyScaleFactor");
-	    SF = -2;
+	    SF = -1.0;
 	    //return EL::StatusCode::FAILURE;
 	  }
 	  // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
