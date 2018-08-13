@@ -845,8 +845,8 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
-    std::vector<float> junkSF(1,1.0);
-    std::vector<float> junkEff(1,0.0);
+    std::vector<float> junkSF(1,-1.0);
+    std::vector<float> junkEff(1,-1.0);
 
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accPIDSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
