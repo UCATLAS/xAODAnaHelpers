@@ -176,7 +176,8 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   }
 
   if (!m_TriggerName.empty()) {
-    configVec.push_back({TauAnalysisTools::SFTriggerHadTau});
+    // We always want trigger to be individual
+    configVec = {TauAnalysisTools::SFTriggerHadTau};
      
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("TriggerName", m_TriggerName));
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("PileupReweightingTool",m_pileup_tool_handle));

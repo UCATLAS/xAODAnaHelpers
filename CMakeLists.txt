@@ -56,6 +56,7 @@ atlas_depends_on_subdirs( PUBLIC
                           PhysicsAnalysis/ElectronPhotonID/PhotonEfficiencyCorrection
                           PhysicsAnalysis/JetMissingEtID/JetSelectorTools
                           PhysicsAnalysis/Interfaces/FTagAnalysisInterfaces
+                          PhysicsAnalysis/Interfaces/JetAnalysisInterfaces
                           PhysicsAnalysis/Interfaces/MuonAnalysisInterfaces
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonMomentumCorrections
                           PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections
@@ -99,7 +100,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    ElectronEfficiencyCorrectionLib ElectronPhotonSelectorToolsLib
                    IsolationSelectionLib IsolationCorrectionsLib
                    ElectronPhotonShowerShapeFudgeToolLib
-                   FTagAnalysisInterfacesLib MuonAnalysisInterfacesLib
+                   FTagAnalysisInterfacesLib JetAnalysisInterfacesLib MuonAnalysisInterfacesLib
                    PhotonEfficiencyCorrectionLib METUtilitiesLib METInterface
                    TauAnalysisToolsLib AsgTools xAODMissingET JetResolutionLib
                    AssociationUtilsLib JetEDM JetUncertaintiesLib
