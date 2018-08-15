@@ -97,85 +97,6 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
-  ANA_MSG_INFO( "Setting up histograms");
-
-  // write the cutflows to this file so algos downstream can pick up the pointer
-  //
-  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
-  fileCF->cd();
-
-  // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
-  // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
-
-  //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
-  //
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
-
-  // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  //
-  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
-  m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
-  m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
-  m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
-  m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
-  m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
-  m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
-  m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
-  m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
-  m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
-  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-
-  // start labelling the bins for the event cutflow
-  //
-  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
-  m_cutflowHistW->GetXaxis()->FindBin("all");
-
-  m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
-  m_cutflowHistW->GetXaxis()->FindBin("init");
-
-  if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
-    m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
-    m_cutflowHistW->GetXaxis()->FindBin("Duplicates");
-  }
-
-  if ( !isMC() ) {
-    if ( m_applyGRLCut ) {
-      m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
-      m_cutflowHistW->GetXaxis()->FindBin("GRL");
-    }
-    m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
-    m_cutflowHistW->GetXaxis()->FindBin("LAr");
-    m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
-    m_cutflowHistW->GetXaxis()->FindBin("tile");
-    m_cutflow_SCT = m_cutflowHist->GetXaxis()->FindBin("SCT");
-    m_cutflowHistW->GetXaxis()->FindBin("SCT");
-    m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
-    m_cutflowHistW->GetXaxis()->FindBin("core");
-  }
-  m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
-  m_cutflowHistW->GetXaxis()->FindBin("NPV");
-  if ( !m_triggerSelection.empty() && m_applyTriggerCut ) {
-    m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
-    m_cutflowHistW->GetXaxis()->FindBin("Trigger");
-  }
-
-
   ANA_MSG_INFO( "Histograms initialized!");
 
   return EL::StatusCode::SUCCESS;
@@ -321,9 +242,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       ANA_MSG_INFO( "Initial  sum of weights squared = " << m_MD_initialSumWSquared);
       ANA_MSG_INFO( "Selected sum of weights squared = " << m_MD_finalSumWSquared);
 
-      m_cutflowHist ->Fill(m_cutflow_all, m_MD_initialNevents);
-      m_cutflowHistW->Fill(m_cutflow_all, m_MD_initialSumW);
-
       m_histEventCount -> Fill(1, m_MD_initialNevents);
       m_histEventCount -> Fill(2, m_MD_finalNevents);
       m_histEventCount -> Fill(3, m_MD_initialSumW);
@@ -426,6 +344,82 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
     }
   }//if isMC and a Sherpa 2.2 sample
+
+
+  ANA_MSG_INFO( "Setting up histograms");
+
+  // write the cutflows to this file so algos downstream can pick up the pointer
+  //
+  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
+  fileCF->cd();
+
+  // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
+  // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
+
+  //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
+  //
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  //
+  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
+  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  //
+  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
+  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
+
+  // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
+  //
+  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
+  m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
+  m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
+  m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
+  m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
+  m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
+  m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
+  m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
+  m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
+  m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
+  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+
+  // start labelling the bins for the event cutflow
+  //
+  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
+  m_cutflowHistW->GetXaxis()->FindBin("all");
+
+  if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
+    m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
+    m_cutflowHistW->GetXaxis()->FindBin("Duplicates");
+  }
+
+  if ( !isMC() ) {
+    if ( m_applyGRLCut ) {
+      m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
+      m_cutflowHistW->GetXaxis()->FindBin("GRL");
+    }
+    m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
+    m_cutflowHistW->GetXaxis()->FindBin("LAr");
+    m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
+    m_cutflowHistW->GetXaxis()->FindBin("tile");
+    m_cutflow_SCT = m_cutflowHist->GetXaxis()->FindBin("SCT");
+    m_cutflowHistW->GetXaxis()->FindBin("SCT");
+    m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
+    m_cutflowHistW->GetXaxis()->FindBin("core");
+  }
+  m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
+  m_cutflowHistW->GetXaxis()->FindBin("NPV");
+  if ( !m_triggerSelection.empty() && m_applyTriggerCut ) {
+    m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
+    m_cutflowHistW->GetXaxis()->FindBin("Trigger");
+  }
 
   // -------------------------------------------------------------------------------------------------
 
@@ -699,11 +693,11 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Fill initial bin of cutflow
   //------------------------------------------------------------------------------------------
 
+  m_cutflowHist ->Fill( m_cutflow_all, 1 );
+  m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
+
   if( !m_useMetaData )
     {
-      m_cutflowHist ->Fill( m_cutflow_all, 1 );
-      m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
-
       m_histEventCount -> Fill(1, 1);
       m_histEventCount -> Fill(2, 1);
       m_histEventCount -> Fill(3, mcEvtWeight);
@@ -711,9 +705,6 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_histEventCount -> Fill(5, mcEvtWeight*mcEvtWeight);
       m_histEventCount -> Fill(6, mcEvtWeight*mcEvtWeight);
     }
-
-  m_cutflowHist ->Fill( m_cutflow_init, 1 );
-  m_cutflowHistW->Fill( m_cutflow_init, mcEvtWeight);
 
   //--------------------------------------------------------------------------------------------------------
   // Check current event is not a duplicate
