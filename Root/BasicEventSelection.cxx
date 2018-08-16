@@ -97,8 +97,6 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
-  ANA_MSG_INFO( "Histograms initialized!");
-
   return EL::StatusCode::SUCCESS;
 }
 
@@ -242,6 +240,9 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       ANA_MSG_INFO( "Initial  sum of weights squared = " << m_MD_initialSumWSquared);
       ANA_MSG_INFO( "Selected sum of weights squared = " << m_MD_finalSumWSquared);
 
+      m_cutflowHist ->Fill(m_cutflow_all, m_MD_initialNevents);
+      m_cutflowHistW->Fill(m_cutflow_all, m_MD_initialSumW);
+
       m_histEventCount -> Fill(1, m_MD_initialNevents);
       m_histEventCount -> Fill(2, m_MD_finalNevents);
       m_histEventCount -> Fill(3, m_MD_initialSumW);
@@ -345,7 +346,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
   }//if isMC and a Sherpa 2.2 sample
 
-
   ANA_MSG_INFO( "Setting up histograms");
 
   // write the cutflows to this file so algos downstream can pick up the pointer
@@ -395,6 +395,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
 
+  m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
+  m_cutflowHistW->GetXaxis()->FindBin("init");
+
   if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
     m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
     m_cutflowHistW->GetXaxis()->FindBin("Duplicates");
@@ -420,6 +423,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
+
+
+  ANA_MSG_INFO( "Histograms initialized!");
 
   // -------------------------------------------------------------------------------------------------
 
@@ -693,11 +699,11 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Fill initial bin of cutflow
   //------------------------------------------------------------------------------------------
 
-  m_cutflowHist ->Fill( m_cutflow_all, 1 );
-  m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
-
   if( !m_useMetaData )
     {
+      m_cutflowHist ->Fill( m_cutflow_all, 1 );
+      m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
+
       m_histEventCount -> Fill(1, 1);
       m_histEventCount -> Fill(2, 1);
       m_histEventCount -> Fill(3, mcEvtWeight);
@@ -705,6 +711,9 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_histEventCount -> Fill(5, mcEvtWeight*mcEvtWeight);
       m_histEventCount -> Fill(6, mcEvtWeight*mcEvtWeight);
     }
+
+  m_cutflowHist ->Fill( m_cutflow_init, 1 );
+  m_cutflowHistW->Fill( m_cutflow_init, mcEvtWeight);
 
   //--------------------------------------------------------------------------------------------------------
   // Check current event is not a duplicate
