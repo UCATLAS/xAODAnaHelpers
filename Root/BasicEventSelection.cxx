@@ -97,6 +97,60 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
+  ANA_MSG_INFO( "Creating histograms");
+
+  // write the cutflows to this file so algos downstream can pick up the pointer
+  //
+  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
+  fileCF->cd();
+
+  // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
+  // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
+
+  //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
+  //
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  //
+  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
+  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  //
+  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
+  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
+
+  // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
+  //
+  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
+  m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
+  m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
+  m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
+  m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
+  m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
+  m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
+  m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
+  m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
+  m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
+  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+
+  // start labelling the bins for the event cutflow
+  //
+  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
+  m_cutflowHistW->GetXaxis()->FindBin("all");
+
+  m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
+  m_cutflowHistW->GetXaxis()->FindBin("init");
+
+  ANA_MSG_INFO( "Finished creating histograms");
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -346,57 +400,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
   }//if isMC and a Sherpa 2.2 sample
 
-  ANA_MSG_INFO( "Setting up histograms");
-
-  // write the cutflows to this file so algos downstream can pick up the pointer
-  //
-  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
-  fileCF->cd();
-
-  // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
-  // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
-
-  //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
-  //
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
-
-  // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  //
-  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
-  m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
-  m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
-  m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
-  m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
-  m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
-  m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
-  m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
-  m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
-  m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
-  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-
-  // start labelling the bins for the event cutflow
-  //
-  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
-  m_cutflowHistW->GetXaxis()->FindBin("all");
-
-  m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
-  m_cutflowHistW->GetXaxis()->FindBin("init");
+  ANA_MSG_INFO( "Setting up histograms based on isMC()");
 
   if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
     m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
@@ -425,7 +429,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
   }
 
 
-  ANA_MSG_INFO( "Histograms initialized!");
+  ANA_MSG_INFO( "Histograms set up!");
 
   // -------------------------------------------------------------------------------------------------
 
