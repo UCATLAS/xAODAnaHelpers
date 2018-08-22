@@ -247,7 +247,7 @@ if __name__ == "__main__":
         xAH_logger.debug('Running lsb_release -d.')
         lsb_release = subprocess.check_output(["lsb_release", "-d"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
         xAH_logger.debug('  - command output: {}'.format(lsb_release))
-        slc6_release_names = ['Scientific Linux release 6', 'Scientific Linux CERN SLC release 6']
+        slc6_release_names = ['Scientific Linux release 6', 'Scientific Linux CERN SLC release 6', 'Red Hat Enterprise Linux Server release 6']
         if not any(name in lsb_release for name in slc6_release_names):
           xAH_logger.debug('  - did not find SLC6 in output.')
           isSLC6 = False
