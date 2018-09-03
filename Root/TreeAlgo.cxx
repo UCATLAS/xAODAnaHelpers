@@ -101,36 +101,6 @@ EL::StatusCode TreeAlgo :: initialize ()
     ANA_MSG_ERROR( "The number of fat jet containers must be equal to the number of fat jet name branches. Exiting");
     return EL::StatusCode::FAILURE;
   }
-  std::istringstream ss_cluster_containers(m_clusterContainerName);
-  while ( std::getline(ss_cluster_containers, token, ' ') ){
-    m_clusterContainers.push_back(token);
-  }
-  std::istringstream ss_cluster_names(m_clusterBranchName);
-  while ( std::getline(ss_cluster_names, token, ' ') ){
-    m_clusterBranches.push_back(token);
-  }
-  if( !m_clusterContainerName.empty() && m_clusterContainers.size()!=m_clusterBranches.size()){
-    ANA_MSG_ERROR( "The number of cluster containers must be equal to the number of cluster name branches. Exiting");
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::istringstream ss_fat_containers(m_fatJetContainerName);
-  while ( std::getline(ss_fat_containers, token, ' ') ){
-    m_fatJetContainers.push_back(token);
-  }
-  std::istringstream ss_fat_names(m_fatJetBranchName);
-  while ( std::getline(ss_fat_names, token, ' ') ){
-    m_fatJetBranches.push_back(token);
-  }
-  if( m_fatJetBranches.size() == 0 ) {
-    for(auto fatJetContainer : m_fatJetContainers) {
-      m_fatJetBranches.push_back(fatJetContainer);
-    }
-  }
-  if( !m_fatJetContainerName.empty() && m_fatJetContainers.size()!=m_fatJetBranches.size()){
-    ANA_MSG_ERROR( "The number of fat jet containers must be equal to the number of fat jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
-  }
 
   std::istringstream ss_cluster_containers(m_clusterContainerName);
   while ( std::getline(ss_cluster_containers, token, ' ') ){
@@ -160,24 +130,6 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_trigJetDetails.size()!=1  && m_trigJetContainers.size()!=m_trigJetDetails.size()){
     ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::istringstream ss_fat_details(m_fatJetDetailStr);
-  while ( std::getline(ss_fat_details, token, '|') ){
-    m_fatJetDetails.push_back(token);
-  }
-  if( m_fatJetDetails.size()!=1  && m_fatJetContainers.size()!=m_fatJetDetails.size()){
-    ANA_MSG_ERROR( "The size of m_fatJetContainers should be equal to the size of m_fatJetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
-  }
-
-  std::istringstream ss_cluster_details(m_clusterDetailStr);
-  while ( std::getline(ss_cluster_details, token, '|') ){
-    m_clusterDetails.push_back(token);
-  }
-  if( m_clusterDetails.size()!=1  && m_clusterContainers.size()!=m_clusterDetails.size()){
-    ANA_MSG_ERROR( "The size of m_clusterContainers should be equal to the size of m_clusterDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
 
