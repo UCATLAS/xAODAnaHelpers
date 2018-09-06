@@ -138,7 +138,7 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   
   // initialise reco and EleOLRHadTau SF no matter what 
   std::vector<int> configVec;
-  configVec.push_back({TauAnalysisTools::SFJetIDHadTau});
+  configVec.push_back({TauAnalysisTools::SFRecoHadTau});
   configVec.push_back({TauAnalysisTools::SFEleOLRHadTau});
   
   if ( !m_WorkingPointTauID.empty() ) {
