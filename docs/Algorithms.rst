@@ -208,6 +208,10 @@ TauCalibrator
 
 TauSelector
 ~~~~~~~~~~~
+Similar to other selectors. Tau identification/selection algorithms working points are 
+decorated onto the tau automatically. Tha flag m_decorateWithTracks controls the decoration
+of the tau track information. It can be dumped in the ntuples by specifying the trackparams
+flag in the tau details string of the TreeAlgo.
 
 TauEfficiencyCorrector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
