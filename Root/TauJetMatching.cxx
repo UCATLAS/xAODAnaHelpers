@@ -223,7 +223,6 @@ EL::StatusCode TauJetMatching :: execute ()
 
 bool TauJetMatching :: executeDecoration ( std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > > match_map, const xAOD::TauJetContainer* inTaus)
 {
-  std::cout << "THIS IS A DEBUG STRING FROM TAUJETMATCHING" << std::endl;
   static SG::AuxElement::Decorator< float > JetWidthDecor("JetWidth");
   static SG::AuxElement::ConstAccessor<float> jetWidthAcc("Width");
 
