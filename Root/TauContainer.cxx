@@ -40,6 +40,27 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
     
     m_EleBDTScore    = new  std::vector<float> ();
     m_passEleOLR     = new  std::vector<int>   ();
+
+    std::cout << "THIS IS A DEBUG STRING FROM TRKPARAMS" << m_infoSwitch.m_trackparams << std::endl;   
+
+  }
+
+  if( m_infoSwitch.m_trackparams) {
+    std::cout << "THIS IS A DEBUG STRING FROM TAUCONTAINER" << std::endl;   
+    m_tau_matchedJetWidth = new  std::vector<float>   ();
+    m_tau_tracks_pt       = new  std::vector< std::vector<float> > ();
+    m_tau_tracks_eta      = new  std::vector< std::vector<float> > ();
+    m_tau_tracks_phi      = new  std::vector< std::vector<float> > ();
+
+    m_tau_tracks_isCore          = new  std::vector< std::vector<int> > ();
+    m_tau_tracks_isWide          = new  std::vector< std::vector<int> > ();
+    m_tau_tracks_failTrackFilter = new  std::vector< std::vector<int> > ();
+    m_tau_tracks_passTrkSel      = new  std::vector< std::vector<int> > ();
+    m_tau_tracks_isClCharged     = new  std::vector< std::vector<int> > ();
+    m_tau_tracks_isClIso         = new  std::vector< std::vector<int> > ();
+    m_tau_tracks_isClConv        = new  std::vector< std::vector<int> > ();
+    m_tau_tracks_isClFake        = new  std::vector< std::vector<int> > ();
+  
   }
 
   // scale factors w/ sys
@@ -97,6 +118,25 @@ TauContainer::~TauContainer()
 
     delete m_passEleOLR;
   }
+
+  if( m_infoSwitch.m_trackparams) {
+    
+    delete m_tau_matchedJetWidth; 
+    delete m_tau_tracks_pt;
+    delete m_tau_tracks_eta;
+    delete m_tau_tracks_phi;
+
+    delete m_tau_tracks_isCore;
+    delete m_tau_tracks_isWide;
+    delete m_tau_tracks_failTrackFilter;
+    delete m_tau_tracks_passTrkSel;
+    delete m_tau_tracks_isClCharged;
+    delete m_tau_tracks_isClIso;
+    delete m_tau_tracks_isClConv;
+    delete m_tau_tracks_isClFake;
+  
+  }
+
 }
 
 void TauContainer::setTree(TTree *tree)
@@ -151,6 +191,46 @@ void TauContainer::setTree(TTree *tree)
     connectBranch<int>    (tree, "passEleOLR",     &m_passEleOLR);
   }
 
+
+  if( m_infoSwitch.m_trackparams) {
+
+    connectBranch<float>  (tree, "matchedJetWidth",    &m_tau_matchedJetWidth);
+    
+    tree->SetBranchStatus ( (m_name + "_tracks_pt").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_pt").c_str() , &m_tau_tracks_pt );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_eta").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_eta").c_str() , &m_tau_tracks_eta );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_phi").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_phi").c_str() , &m_tau_tracks_phi );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_isCore").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_isCore").c_str() , &m_tau_tracks_isCore );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_isWide").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_isWide").c_str() , &m_tau_tracks_isWide );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_failTrackFilter").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_failTrackFilter").c_str() , &m_tau_tracks_failTrackFilter );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_passTrkSel").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_passTrkSel").c_str() , &m_tau_tracks_passTrkSel );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_isClCharged").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_isClCharged").c_str() , &m_tau_tracks_isClCharged );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_isClIso").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_isClIso").c_str() , &m_tau_tracks_isClIso );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_isClConv").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_isClConv").c_str() , &m_tau_tracks_isClConv );
+
+    tree->SetBranchStatus ( (m_name + "_tracks_isClFake").c_str() , 1 );
+    tree->SetBranchAddress( (m_name + "_tracks_isClFake").c_str() , &m_tau_tracks_isClFake );
+
+  }
+
 }
 
 void TauContainer::updateParticle(uint idx, Tau& tau)
@@ -201,6 +281,25 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     tau.EleBDTScore     =  m_EleBDTScore     ->at(idx);
     
     tau.passEleOLR      =  m_passEleOLR      ->at(idx);
+  }
+
+  if( m_infoSwitch.m_trackparams) {
+
+    tau.matchedJetWidth  = m_tau_matchedJetWidth ->at(idx);
+    
+    tau.tracks_pt  = m_tau_tracks_pt  ->at(idx);
+    tau.tracks_eta = m_tau_tracks_eta ->at(idx);
+    tau.tracks_phi = m_tau_tracks_phi ->at(idx);
+
+    tau.tracks_isCore           = m_tau_tracks_isCore           ->at(idx);
+    tau.tracks_isWide           = m_tau_tracks_isWide           ->at(idx);
+    tau.tracks_failTrackFilter  = m_tau_tracks_failTrackFilter  ->at(idx);
+    tau.tracks_passTrkSel       = m_tau_tracks_passTrkSel       ->at(idx);
+    tau.tracks_isClCharged      = m_tau_tracks_isClCharged      ->at(idx);
+    tau.tracks_isClIso          = m_tau_tracks_isClIso          ->at(idx);
+    tau.tracks_isClConv         = m_tau_tracks_isClConv         ->at(idx);
+    tau.tracks_isClFake         = m_tau_tracks_isClFake         ->at(idx);
+
   }
 
 }
@@ -258,7 +357,26 @@ void TauContainer::setBranches(TTree *tree)
 
     setBranch<int>   (tree,"passEleOLR", m_passEleOLR);
   }
-  
+ 
+  if( m_infoSwitch.m_trackparams) {
+
+    setBranch<float>  (tree, "matchedJetWidth",    m_tau_matchedJetWidth);
+    
+    tree->Branch( (m_name + "_tracks_pt").c_str() , &m_tau_tracks_pt );
+    tree->Branch( (m_name + "_tracks_eta").c_str() , &m_tau_tracks_eta );
+    tree->Branch( (m_name + "_tracks_phi").c_str() , &m_tau_tracks_phi );
+    
+    tree->Branch( (m_name + "_tracks_isCore").c_str() , &m_tau_tracks_isCore );
+    tree->Branch( (m_name + "_tracks_isWide").c_str() , &m_tau_tracks_isWide );
+    tree->Branch( (m_name + "_tracks_failTrackFilter").c_str() , &m_tau_tracks_failTrackFilter );
+    tree->Branch( (m_name + "_tracks_passTrkSel").c_str() , &m_tau_tracks_passTrkSel );
+    tree->Branch( (m_name + "_tracks_isClCharged").c_str() , &m_tau_tracks_isClCharged );
+    tree->Branch( (m_name + "_tracks_isClIso").c_str() , &m_tau_tracks_isClIso );
+    tree->Branch( (m_name + "_tracks_isClConv").c_str() , &m_tau_tracks_isClConv );
+    tree->Branch( (m_name + "_tracks_isClFake").c_str() , &m_tau_tracks_isClFake );
+
+  }
+
   return;
 }
 
@@ -309,6 +427,25 @@ void TauContainer::clear()
     
     m_EleBDTScore->clear();
     m_passEleOLR->clear();
+  }
+
+  if( m_infoSwitch.m_trackparams) {
+
+    m_tau_matchedJetWidth->clear();
+    
+    m_tau_tracks_pt->clear();
+    m_tau_tracks_eta->clear();
+    m_tau_tracks_phi->clear();
+
+    m_tau_tracks_isCore->clear();
+    m_tau_tracks_isWide->clear();
+    m_tau_tracks_failTrackFilter->clear();
+    m_tau_tracks_passTrkSel->clear();
+    m_tau_tracks_isClCharged->clear();
+    m_tau_tracks_isClIso->clear();
+    m_tau_tracks_isClConv->clear();
+    m_tau_tracks_isClFake->clear();
+
   }
 
 }
@@ -418,6 +555,49 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
 
     static SG::AuxElement::Accessor<int> passEleOLRAcc ("passEleOLR");
     safeFill<int, int, xAOD::TauJet>(tau, passEleOLRAcc, m_passEleOLR, -1);
+  }
+
+
+  if( m_infoSwitch.m_trackparams) {
+
+    static SG::AuxElement::Accessor< float > jetWidthAcc("JetWidth");
+    safeFill<float, float, xAOD::TauJet>(tau, jetWidthAcc, m_tau_matchedJetWidth, -1.);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<float>   >   tauTrackPtAcc("trackPt");
+    safeVecFill<float, float, xAOD::TauJet>(tau, tauTrackPtAcc, m_tau_tracks_pt);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<float>   >   tauTrackEtaAcc("trackEta");
+    safeVecFill<float, float, xAOD::TauJet>(tau, tauTrackEtaAcc, m_tau_tracks_eta);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<float>   >   tauTrackPhiAcc("trackPhi");
+    safeVecFill<float, float, xAOD::TauJet>(tau, tauTrackPhiAcc, m_tau_tracks_phi);
+    
+    
+    // track classification
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsCoreAcc("trackIsCore");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsCoreAcc, m_tau_tracks_isCore);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsWideAcc("trackIsWide");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsWideAcc, m_tau_tracks_isWide);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackFailTrackFilterAcc("trackFailTrackFilter");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackFailTrackFilterAcc, m_tau_tracks_failTrackFilter);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackPassTrkSelAcc("trackPassTrkSel");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackPassTrkSelAcc, m_tau_tracks_passTrkSel);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClChargedAcc("trackIsClCharged");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClChargedAcc, m_tau_tracks_isClCharged);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClIsoAcc("trackIsClIso");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClIsoAcc, m_tau_tracks_isClIso);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClConvAcc("trackIsClConv");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClConvAcc, m_tau_tracks_isClConv);
+    
+    static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClFakeAcc("trackIsClFake");
+    safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClFakeAcc, m_tau_tracks_isClFake);
+
   }
 
   return;

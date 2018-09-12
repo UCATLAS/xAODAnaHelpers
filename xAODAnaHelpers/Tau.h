@@ -38,7 +38,7 @@ namespace xAH {
 
     int                 passEleOLR;
 
-    std::vector<float>  matchedJetWidth;
+    float               matchedJetWidth;
     
     std::vector<float>  tracks_pt;
     std::vector<float>  tracks_eta;
@@ -52,16 +52,6 @@ namespace xAH {
     std::vector< int >  tracks_isClIso;
     std::vector< int >  tracks_isClConv;
     std::vector< int >  tracks_isClFake;
-
-
-
-
-
-
-
-
-
-
 
   };
 
