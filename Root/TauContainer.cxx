@@ -41,12 +41,10 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
     m_EleBDTScore    = new  std::vector<float> ();
     m_passEleOLR     = new  std::vector<int>   ();
 
-    std::cout << "THIS IS A DEBUG STRING FROM TRKPARAMS" << m_infoSwitch.m_trackparams << std::endl;   
-
   }
 
   if( m_infoSwitch.m_trackparams) {
-    std::cout << "THIS IS A DEBUG STRING FROM TAUCONTAINER" << std::endl;   
+    
     m_tau_matchedJetWidth = new  std::vector<float>   ();
     m_tau_tracks_pt       = new  std::vector< std::vector<float> > ();
     m_tau_tracks_eta      = new  std::vector< std::vector<float> > ();
