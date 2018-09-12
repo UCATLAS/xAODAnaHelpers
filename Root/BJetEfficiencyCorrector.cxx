@@ -16,6 +16,8 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+#include <SampleHandler/MetaFields.h>
+
 //EDM
 #include "xAODJet/JetAuxContainer.h"
 
@@ -179,6 +181,40 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
+
+    if(isMC() && !m_EfficiencyCalibration.empty())
+      {
+	std::string calibration=m_EfficiencyCalibration;
+	if(m_EfficiencyCalibration=="auto")
+	  {
+	    std::string sampleName=wk()->metaData()->castString(SH::MetaFields::sampleName);
+
+	    switch(getMCShowerType(sampleName))
+	      {
+	      case Pythia8:
+		calibration="410501";
+		break;
+	      case Herwig7:
+		calibration="410558";
+		break;
+	      case Sherpa21:
+		calibration="426131";
+		break;
+	      case Sherpa22:
+		calibration="410250";
+	      break;
+	      case Unknown:
+		ANA_MSG_WARNING("Cannot determine MC shower type for sample " << sampleName << ", assuming Pythia8 (default).");
+		calibration="410501";
+		break;
+	      }
+	  }
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
+      }
+
     ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
 
@@ -412,4 +448,24 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;
+}
+
+BJetEfficiencyCorrector::ShowerType BJetEfficiencyCorrector :: getMCShowerType(const std::string& sample_name) const
+{
+  //
+  //pre-process sample name
+  TString tmp_name(sample_name);
+  tmp_name.ReplaceAll("Py8EG","PYTHIA8EVTGEN");
+  if(tmp_name.Contains("Pythia") && !tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia","PYTHIA8EVTGEN");
+  if(tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia8","PYTHIA8EVTGEN");
+  //capitalize the entire sample name
+  tmp_name.ToUpper();
+
+  //
+  // Determine shower type by looking for keywords in name
+  if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
+  else if(tmp_name.Contains("HERWIG")) return Herwig7;
+  else if(tmp_name.Contains("SHERPA_CT")) return Sherpa21;
+  else if(tmp_name.Contains("SHERPA")) return Sherpa22;
+  else return Unknown;
 }
