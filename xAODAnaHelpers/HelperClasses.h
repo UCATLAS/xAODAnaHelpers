@@ -629,6 +629,8 @@ namespace HelperClasses {
     bool m_trigger;
     bool m_JetID;
     bool m_EleVeto;
+    bool m_xahTauJetMatching;
+    bool m_trackAll;         
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
