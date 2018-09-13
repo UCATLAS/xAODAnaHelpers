@@ -596,18 +596,20 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::IParticleInfoSwitch` struct for Tau Information.
 
-        ================== ================ =======
-        Parameter          Pattern          Match
-        ================== ================ =======
-        m_trigger          trigger          exact
-        m_effSF            effSF            exact
-        m_JetID            JetID            exact
-        m_EleVeto          EleVeto          exact
-        m_trackparams      trackparams      exact
-        m_trackhitcont     trackhitcont     exact
-        m_tauEffWP         TAUEFF_XYZ       pattern
-        m_trigWP           TRIG_XYZ         pattern
-        ================== ================ =======
+        ==================  ================  =======
+        Parameter           Pattern           Match
+        ==================  ================  =======
+        m_trigger           trigger           exact
+        m_effSF             effSF             exact
+        m_JetID             JetID             exact
+        m_EleVeto           EleVeto           exact
+        m_trackparams       trackparams       exact
+        m_xahTauJetMatching xahTauJetMatching exact
+        m_trackAll          trackAll          exact
+        m_trackhitcont      trackhitcont      exact
+        m_tauEffWP          TAUEFF_XYZ        pattern
+        m_trigWP            TRIG_XYZ          pattern
+        ==================  ================  =======
 
         .. note::
 
@@ -627,6 +629,8 @@ namespace HelperClasses {
     bool m_trigger;
     bool m_JetID;
     bool m_EleVeto;
+    bool m_xahTauJetMatching;
+    bool m_trackAll;         
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
