@@ -4,6 +4,7 @@
 // EDM include(s):
 #include "xAODTau/TauJet.h"
 #include "xAODTau/TauJetContainer.h"
+#include "xAODTau/TauTrack.h"
 
 // ROOT include(s):
 #include "TH1D.h"
@@ -39,6 +40,8 @@ public:
   std::string    m_outAuxContainerName;
   std::string    m_inputAlgoSystNames = "";
   std::string    m_outputAlgoSystNames = "TauSelector_Syst";
+  /* decorate selected taus with tracks */
+  bool       	 m_decorateWithTracks = false;
   /* decorate selected objects - default "passSel" */
   bool       	 m_decorateSelectedObjects = true;
   /* fill using SG::VIEW_ELEMENTS to be light weight */

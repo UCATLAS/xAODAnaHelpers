@@ -721,7 +721,58 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   
   passEleOLR( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::PassEleOLR));
 
+  if (m_decorateWithTracks) {
 
+     // TauTracks decoration
+     // --------------------
+     SG::AuxElement::Decorator< std::vector<float> > tauTrackPt( "trackPt" );
+     SG::AuxElement::Decorator< std::vector<float> > tauTrackEta( "trackEta" );
+     SG::AuxElement::Decorator< std::vector<float> > tauTrackPhi( "trackPhi" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsCore( "trackIsCore" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsWide( "trackIsWide" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackFailTrackFilter( "trackFailTrackFilter" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackPassTrkSel( "trackPassTrkSel" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClCharged( "trackIsClCharged" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClIso( "trackIsClIso" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClConv( "trackIsClConv" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClFake( "trackIsClFake" );
+     
+     
+     for (const xAOD::TauTrack* trk : tau->allTracks()){
+      
+        tauTrackPt( *tau ).push_back(trk->pt());
+        tauTrackEta( *tau ).push_back(trk->eta());
+        tauTrackPhi( *tau ).push_back(trk->phi());
+     
+     
+        if (!trk->flag(xAOD::TauJetParameters::coreTrack)) tauTrackIsCore(*tau).push_back(1);
+        else tauTrackIsCore(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::wideTrack)) tauTrackIsWide(*tau).push_back(1);
+        else tauTrackIsWide(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::failTrackFilter)) tauTrackFailTrackFilter(*tau).push_back(1);
+        else tauTrackFailTrackFilter(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::passTrkSelector)) tauTrackPassTrkSel(*tau).push_back(1);
+        else tauTrackPassTrkSel(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedCharged)) tauTrackIsClCharged(*tau).push_back(1);
+        else tauTrackIsClCharged(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedIsolation)) tauTrackIsClIso(*tau).push_back(1);
+        else tauTrackIsClIso(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedConversion)) tauTrackIsClConv(*tau).push_back(1);
+        else tauTrackIsClConv(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedFake)) tauTrackIsClFake(*tau).push_back(1);
+        else tauTrackIsClFake(*tau).push_back(0);
+     
+     }
+
+  } // if decorate with tracks
+  
   ANA_MSG_DEBUG( "Got decoration values" );
 
 
