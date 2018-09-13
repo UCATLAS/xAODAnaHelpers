@@ -1046,9 +1046,12 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     case 284500 :
       mcCampaignMD="mc16a";
       break;
-      // This should be switched to mc16d once it is available.
     case 300000 :
       mcCampaignMD="mc16d";
+      break;
+    // This should be switched to mc16f once it is available.
+    case 310000 :
+      mcCampaignMD="mc16e";
       break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
@@ -1079,15 +1082,15 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   // Sanity checks
   bool mc16X_GoodFromProperty = !mcCampaignList.empty();
   bool mc16X_GoodFromMetadata = false;
-  for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d");
-  if( mcCampaignMD == "mc16a" || mcCampaignMD == "mc16c" || mcCampaignMD == "mc16d") mc16X_GoodFromMetadata = true;
+  for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d" || mcCampaignP == "mc16e" || mcCampaignP == "mc16f");
+  if( mcCampaignMD == "mc16a" || mcCampaignMD == "mc16c" || mcCampaignMD == "mc16d" || mcCampaignMD == "mc16e" || mcCampaignMD == "mc16f") mc16X_GoodFromMetadata = true;
 
   if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
     {
       // ::
       std::string MetadataAndPropertyBAD("");
       MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc16a', 'mc16c' or 'mc16d' and restart your job. If you set it to any other string, you will still incur in this error.";
+      MetadataAndPropertyBAD += "'mc16a', 'mc16c', 'mc16d', 'mc16e', or 'mc16f' and restart your job. If you set it to any other string, you will still incur in this error.";
       ANA_MSG_ERROR( MetadataAndPropertyBAD );
       return StatusCode::FAILURE;
       // ::
@@ -1184,6 +1187,10 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    }
 	  } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
 	    if (year == "17") {
+	      lumiCalcFiles.push_back(filename);
+	    }
+	  } else if (mcCampaign == "mc16e" || mcCampaign == "mc16f") {
+	    if (year == "18") {
 	      lumiCalcFiles.push_back(filename);
 	    }
 	  } else {
