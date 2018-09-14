@@ -483,6 +483,13 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
     ANA_CHECK( m_trigDecTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
+    // parse extra triggers list and split by comma
+    std::string token;
+    std::istringstream ss(m_extraTriggerSelection);
+    while (std::getline(ss, token, ',')) {
+      m_extraTriggerSelectionList.push_back(token);
+    }
   }//end trigger configuration
 
   // 3.
@@ -628,10 +635,15 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if ( m_eventCounter == 0 && !m_extraTriggerSelection.empty() ) {
     ANA_MSG_INFO( "*** Extra Trigger Info Saved are :\n");
-    auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
-    std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
-    for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
-      printf("    %s\n", triggersUsed.at(iTrigger).c_str());
+    for ( const std::string &trigName : m_extraTriggerSelectionList ) {
+      printf("    %s\n", trigName.c_str());
+
+      printf("      Evaluates to:\n");
+      auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(trigName);
+      std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();		 
+      for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {		
+        printf("        %s\n", triggersUsed.at(iTrigger).c_str());
+      }
     }
     printf("\n");
   }
@@ -901,7 +913,8 @@ EL::StatusCode BasicEventSelection :: execute ()
           passedTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
 
-          if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
+          bool doLumiPrescale = std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end();
+          if ( doLumiPrescale ) {
             triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
           } else {
             triggerPrescalesLumi.push_back( -1 );
@@ -916,19 +929,21 @@ EL::StatusCode BasicEventSelection :: execute ()
       //
       if ( !m_extraTriggerSelection.empty() ) {
 
-	auto extraTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
-
-	for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
+	for ( const std::string &trigName : m_extraTriggerSelectionList ) {
 	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
 	  if ( trigChain->isPassed() ) {
 	    passedTriggers.push_back( trigName );
 	    triggerPrescales.push_back( trigChain->getPrescale() );
 
-	    if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
-	      triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
-	    } else {
-	      triggerPrescalesLumi.push_back( -1 );
-	    }
+      bool doLumiPrescale = true;
+      for ( const std::string &trigPart : trigChain->getListOfTriggers() ) {
+        if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigPart) == m_triggerUnprescaleList.end()) doLumiPrescale = false;
+      }
+      if ( doLumiPrescale ) {
+        triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+      } else {
+        triggerPrescalesLumi.push_back( -1 );
+      }
 	  }
 	  isPassedBitsNames.push_back( trigName );
 	  isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
