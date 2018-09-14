@@ -543,3 +543,23 @@ bool HelperFunctions::has_exact(const std::string input, const std::string flag)
 
   return inputSet.find(flag) != inputSet.end();
 }
+
+HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& sample_name)
+{
+  //
+  //pre-process sample name
+  TString tmp_name(sample_name);
+  tmp_name.ReplaceAll("Py8EG","PYTHIA8EVTGEN");
+  if(tmp_name.Contains("Pythia") && !tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia","PYTHIA8EVTGEN");
+  if(tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia8","PYTHIA8EVTGEN");
+  //capitalize the entire sample name
+  tmp_name.ToUpper();
+
+  //
+  // Determine shower type by looking for keywords in name
+  if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
+  else if(tmp_name.Contains("HERWIG")) return Herwig7;
+  else if(tmp_name.Contains("SHERPA_CT")) return Sherpa21;
+  else if(tmp_name.Contains("SHERPA")) return Sherpa22;
+  else return Unknown;
+}

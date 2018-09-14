@@ -189,21 +189,21 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	  {
 	    std::string sampleName=wk()->metaData()->castString(SH::MetaFields::sampleName);
 
-	    switch(getMCShowerType(sampleName))
+	    switch(HelperFunctions::getMCShowerType(sampleName))
 	      {
-	      case Pythia8:
+	      case HelperFunctions::Pythia8:
 		calibration="410501";
 		break;
-	      case Herwig7:
+	      case HelperFunctions::Herwig7:
 		calibration="410558";
 		break;
-	      case Sherpa21:
+	      case HelperFunctions::Sherpa21:
 		calibration="426131";
 		break;
-	      case Sherpa22:
+	      case HelperFunctions::Sherpa22:
 		calibration="410250";
 	      break;
-	      case Unknown:
+	      case HelperFunctions::Unknown:
 		ANA_MSG_WARNING("Cannot determine MC shower type for sample " << sampleName << ", assuming Pythia8 (default).");
 		calibration="410501";
 		break;
@@ -448,24 +448,4 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
   return EL::StatusCode::SUCCESS;
-}
-
-BJetEfficiencyCorrector::ShowerType BJetEfficiencyCorrector :: getMCShowerType(const std::string& sample_name) const
-{
-  //
-  //pre-process sample name
-  TString tmp_name(sample_name);
-  tmp_name.ReplaceAll("Py8EG","PYTHIA8EVTGEN");
-  if(tmp_name.Contains("Pythia") && !tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia","PYTHIA8EVTGEN");
-  if(tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia8","PYTHIA8EVTGEN");
-  //capitalize the entire sample name
-  tmp_name.ToUpper();
-
-  //
-  // Determine shower type by looking for keywords in name
-  if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
-  else if(tmp_name.Contains("HERWIG")) return Herwig7;
-  else if(tmp_name.Contains("SHERPA_CT")) return Sherpa21;
-  else if(tmp_name.Contains("SHERPA")) return Sherpa22;
-  else return Unknown;
 }

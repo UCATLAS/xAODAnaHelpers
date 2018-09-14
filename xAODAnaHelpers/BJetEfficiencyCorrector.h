@@ -62,10 +62,6 @@ public:
   std::string m_EfficiencyCalibration = "";
 
 private:
-  /// @brief The different supported shower types
-  enum ShowerType {Unknown, Pythia8, Herwig7, Sherpa21, Sherpa22};
-
-  ShowerType getMCShowerType(const std::string& sample_name) const;
 
   /// @brief The decoration key written to passing objects
   std::string m_decorSF = "";
