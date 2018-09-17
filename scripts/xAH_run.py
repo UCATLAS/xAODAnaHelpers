@@ -281,11 +281,7 @@ if __name__ == "__main__":
     # they will need it to get it working for rel 20
     needXRD = ( args.use_scanRucio ) and (args.driver!='prun')
     if needXRD:
-      if xAODAnaHelpers.utils.is_release20():
-        if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
-          raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
-      else:
-        xAH_logger.warning("Make sure rucio is setup (lsetup \"rucio\" or lsetup \"rucio -w\")")
+      xAH_logger.warning("Make sure rucio is setup (lsetup \"rucio\" or lsetup \"rucio -w\")")
 
     use_scanEOS = (args.use_scanEOS)
 
