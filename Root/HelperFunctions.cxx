@@ -530,64 +530,6 @@ std::size_t HelperFunctions::string_pos( const std::string& haystack, const std:
   return pos;
 }
 
-
-std::string HelperFunctions::parse_wp( const std::string& type, const std::string& config_name, MsgStream& msg )
-{
-  std::string funcName{"in parse_wp(): "};
-  std::string wp("");
-  // let's split the path up into pieces we understand
-  std::size_t last_path = config_name.find_last_of("/\\");
-  std::string basename = config_name.substr(last_path + 1);
-  std::string dirpath = config_name.substr(0, last_path);
-  std::string dirname = dirpath.substr(dirpath.find_last_of("/\\") + 1);
-  // the path we search on
-  std::string path = dirname + "/" + basename;
-
-  std::size_t found_substr;
-  // for string_pos
-  std::string needle = ".";
-
-  msg << MSG::INFO << funcName << type << " " << path << endmsg;
-
-  std::size_t init;
-  std::size_t end;
-
-  if ( type.compare("ISO") == 0 ) {
-    found_substr = path.find("_isol");
-    if ( found_substr == std::string::npos ) { return wp; }
-
-    init = found_substr + 5;
-    end  = path.find(".root");
-
-  } else if ( type.compare("ID") == 0 ) {
-    found_substr = path.find("LLH");
-    if ( found_substr == std::string::npos ) { return wp; }
-
-    init = string_pos( path, needle, 2 ) + 1;
-    end  = found_substr + 3;
-
-  } else if ( type.compare("TRIG") == 0 ) {
-    found_substr = path.find("trigger");
-    if ( found_substr == std::string::npos ) { return wp; }
-
-    init = string_pos( path, needle, 1 ) + 1;
-    end  = string_pos( path, needle, 2 );
-
-  } else {
-    msg << MSG::WARNING << funcName << "WP type can be either 'ISO' or 'ID'. Please check passed parameters of this function. Returning empty WP." << endmsg;
-    return wp;
-  }
-
-  if(end == std::string::npos)
-    wp = path.substr( init );
-  else
-    wp = path.substr( init, (end - init) );
-
-  msg << MSG::INFO << funcName << type << " (init, end)=(" << init << "," << end << ") " << wp << endmsg;
-
-  return wp;
-}
-
 bool HelperFunctions::has_exact(const std::string input, const std::string flag)
 {
   std::set<std::string> inputSet;
