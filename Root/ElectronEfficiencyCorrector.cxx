@@ -576,7 +576,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     	 ANA_MSG_DEBUG( "Applying PID efficiency SF" );
 
-    	 bool isBadElectron(false);
+       // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
+       //
+       if ( !el_itr->caloCluster() ) {
+         ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
+         continue;
+       }
 
     	 //
     	 // obtain PID efficiency SF as a float (to be stored away separately)
@@ -588,32 +593,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	   sfVecPID ( *el_itr ) = std::vector<float>();
     	 }
 
-    	 // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
-    	 //
-    	 if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster or trackParticle info");
-    	   isBadElectron = true;
-    	 }
-    	 //
-    	 // skip electron if outside acceptance for SF calculation
-    	 //
-    	 if ( el_itr->pt() < m_ptThreshold ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
-    	   isBadElectron = true;
-    	 }
-    	 if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside |eta| acceptance");
-    	   isBadElectron = true;
-    	 }
-
     	 //
     	 // obtain efficiency SF's for PID
     	 //
     	 double pidEffSF(-1.0); // tool wants a double
-    	 if ( !isBadElectron &&  m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidEffSF ) != CP::CorrectionCode::Ok ) {
-    	   ANA_MSG_WARNING( "Problem in PID getEfficiencyScaleFactor Tool");
-  	   pidEffSF = -1.0;
-    	 }
+       CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidEffSF );
+    	 if ( status == CP::CorrectionCode::Error ) {
+    	   ANA_MSG_ERROR( "Problem in PID getEfficiencyScaleFactor Tool");
+         return EL::StatusCode::FAILURE;
+    	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
+         ANA_MSG_DEBUG( "Electron of of PID efficiency validity range");
+       }
     	 //
     	 // Add it to decoration vector
     	 //
@@ -679,7 +669,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     	 ANA_MSG_DEBUG( "Applying Iso efficiency SF" );
 
-    	 bool isBadElectron(false);
+       // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
+       //
+       if ( !el_itr->caloCluster() ) {
+         ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
+         continue;
+       }
 
     	 //
     	 // obtain Iso efficiency SF as a float (to be stored away separately)
@@ -691,32 +686,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	   sfVecIso ( *el_itr ) = std::vector<float>();
     	 }
 
-    	 // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
-    	 //
-    	 if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster or trackParticle info");
-    	   isBadElectron = true;
-    	 }
-    	 //
-    	 // skip electron if outside acceptance for SF calculation
-    	 //
-    	 if ( el_itr->pt() < m_ptThreshold ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
-    	   isBadElectron = true;
-    	 }
-    	 if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside |eta| acceptance");
-    	   isBadElectron = true;
-    	 }
-
     	 //
     	 // obtain efficiency SF's for Iso
     	 //
     	 double IsoEffSF(-1.0); // tool wants a double
-    	 if ( !isBadElectron &&  m_asgElEffCorrTool_elSF_Iso->getEfficiencyScaleFactor( *el_itr, IsoEffSF ) != CP::CorrectionCode::Ok ) {
-    	   ANA_MSG_WARNING( "Problem in Iso getEfficiencyScaleFactor Tool");
-  	   IsoEffSF = -1.0;
-    	 }
+       CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Iso->getEfficiencyScaleFactor( *el_itr, IsoEffSF );
+    	 if ( status == CP::CorrectionCode::Error ) {
+    	   ANA_MSG_ERROR( "Problem in Iso getEfficiencyScaleFactor Tool");
+         return EL::StatusCode::FAILURE;
+    	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
+         ANA_MSG_DEBUG( "Electron of of Iso efficiency validity range");
+       }
     	 //
     	 // Add it to decoration vector
     	 //
@@ -782,7 +762,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     	 ANA_MSG_DEBUG( "Applying Reco efficiency SF" );
 
-    	 bool isBadElectron(false);
+       // NB: derivations might remove CaloCluster for low pt electrons: add a safety check!
+       if ( !el_itr->caloCluster() ) {
+         ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
+         continue;
+       }
 
     	 //
     	 // obtain Reco efficiency SF as a float (to be stored away separately)
@@ -794,32 +778,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	   sfVecReco ( *el_itr ) = std::vector<float>();
     	 }
 
-    	 // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
-    	 //
-    	 if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster or trackParticle info");
-  	   isBadElectron = true;
-    	 }
-    	 //
-    	 // skip electron if outside acceptance for SF calculation
-    	 //
-    	 if ( el_itr->pt() < m_ptThreshold ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
-  	   isBadElectron = true;
-    	 }
-    	 if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside |eta| acceptance");
-  	   isBadElectron = true;
-    	 }
-
     	 //
     	 // obtain efficiency SF's for Reco
     	 //
     	 double recoEffSF(-1.0); // tool wants a double
-    	 if ( !isBadElectron && m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
-    	   ANA_MSG_WARNING( "Problem in Reco getEfficiencyScaleFactor Tool");
-  	   recoEffSF = -1.0;
-    	 }
+       CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF );
+    	 if ( status == CP::CorrectionCode::Error ) {
+    	   ANA_MSG_ERROR( "Problem in Reco getEfficiencyScaleFactor Tool");
+         return EL::StatusCode::FAILURE;
+    	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
+         ANA_MSG_DEBUG( "Electron of of Reco efficiency validity range");
+       }
     	 //
     	 // Add it to decoration vector
     	 //
@@ -901,7 +870,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     	 ANA_MSG_DEBUG( "Applying Trigger efficiency SF" );
 
-    	 bool isBadElectron(false);
+       // NB: derivations might remove CaloCluster and tracks for low pt electrons: add a safety check!
+       if ( !el_itr->caloCluster() ) {
+         ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
+         continue;
+       }
 
     	 //
     	 // obtain Trigger efficiency SF as a float (to be stored away separately)
@@ -923,42 +896,28 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
          effVecTrig ( *el_itr ) = std::vector<float>();
        }
 
-    	 // NB: derivations might remove CC and tracks for low pt electrons: add a safety check!
-    	 //
-    	 if ( !( el_itr->caloCluster() && el_itr->trackParticle() ) ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster or trackParticle info");
-  	   isBadElectron = true;
-    	 }
-    	 //
-    	 // skip electron if outside acceptance for SF calculation
-    	 //
-    	 if ( el_itr->pt() < m_ptThresholdTrigger ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside pT acceptance ( currently SF available for pT > 15 GeV )");
-  	   isBadElectron = true;
-    	 }
-    	 if ( fabs( el_itr->caloCluster()->eta() ) > 2.47 ) {
-    	   ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", is outside |eta| acceptance");
-  	   isBadElectron = true;
-    	 }
-
     	 //
     	 // obtain efficiency SF for Trig
     	 //
     	 double trigEffSF(-1.0); // tool wants a double
-    	 if ( !isBadElectron && m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF ) != CP::CorrectionCode::Ok ) {
-    	   ANA_MSG_WARNING( "Problem in Trig getEfficiencyScaleFactor Tool");
-  	   isBadElectron = true;
-  	   trigEffSF = -1.0;
-    	 }
+       CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF );
+    	 if ( status == CP::CorrectionCode::Error ) {
+    	   ANA_MSG_ERROR( "Problem in Trig getEfficiencyScaleFactor Tool");
+         return EL::StatusCode::FAILURE;
+    	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
+         ANA_MSG_DEBUG( "Electron of of Trig efficiency validity range");
+       }
 
        //
        // obtain Trig MC efficiency
        //
        double trigMCEff(-1.0); // tool wants a double
-       if ( !isBadElectron && m_asgElEffCorrTool_elSF_TrigMCEff->getEfficiencyScaleFactor( *el_itr, trigMCEff ) != CP::CorrectionCode::Ok ) {
-         ANA_MSG_WARNING( "Problem in TrigMCEff getEfficiencyScaleFactor Tool");
-       isBadElectron = true;
-       trigMCEff = -1.0;
+       CP::CorrectionCode::ErrorCode statusEff = m_asgElEffCorrTool_elSF_TrigMCEff->getEfficiencyScaleFactor( *el_itr, trigMCEff );
+       if ( statusEff == CP::CorrectionCode::Error ) {
+         ANA_MSG_ERROR( "Problem in TrigMCEff getEfficiencyScaleFactor Tool");
+         return EL::StatusCode::FAILURE;
+       } else if ( statusEff == CP::CorrectionCode::OutOfValidityRange ) {
+         ANA_MSG_DEBUG( "Electron of of TrigMCEff efficiency validity range");
        }
 
     	 //

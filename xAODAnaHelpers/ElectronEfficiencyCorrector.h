@@ -88,12 +88,6 @@ public:
   /// @brief Override corrections map file (not recommended)
   std::string m_overrideMapFilePath = "";
 
-  /// @brief Defines the acceptance region for calculating scale factors
-  float m_ptThreshold = 4.5e3;
-
-  /// @brief Defines the acceptance region for calculating trigger scale factors
-  float m_ptThresholdTrigger = 7e3;
-
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
