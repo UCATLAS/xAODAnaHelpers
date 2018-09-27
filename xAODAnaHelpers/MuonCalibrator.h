@@ -1,7 +1,7 @@
 #ifndef xAODAnaHelpers_MuonCalibrator_H
 #define xAODAnaHelpers_MuonCalibrator_H
 
-#include "MuonMomentumCorrections/MuonCalibrationAndSmearingTool.h"
+#include "MuonMomentumCorrections/MuonCalibrationPeriodTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -20,16 +20,17 @@ public:
   std::string m_inContainerName = "";
   std::string m_outContainerName = "";
 
-  std::string m_release = "Recs2017_08_02";
-  /// @brief comma-separated list of years
-  std::string m_Years = "Data17,Data16,Data15";
+  /// @brief Recommendations release (not recommended to change)
+  std::string m_overrideRelease = "";
+  /// @brief Recommendations saggita release for 2015 & 2016 (not recommended to change)
+  std::string m_overrideSagittaRelease1516 = "";
+  /// @brief Recommendations saggita release for 2017 (not recommended to change)
+  std::string m_overrideSagittaRelease17 = "";
+  /// @brief Recommendations saggita release for 2018 (not recommended to change)
+  std::string m_overrideSagittaRelease18 = "";
 
   // sort after calibration
-  bool    m_sort = true;
-
-  bool         m_do_sagittaCorr = true;
-  std::string  m_sagittaRelease = "sagittaBiasDataAll_25_07_17";
-  bool         m_do_sagittaMCDistortion = false;
+  bool m_sort = true;
 
   // systematics
   /// @brief this is the name of the vector of names of the systematically varied containers produced by the upstream algo (e.g., the SC containers with calibration systematics)
@@ -44,7 +45,7 @@ public:
 
   /**
       @rst
-          Force ``MuonCalibrationAndSmearingTool`` to calibrate data.
+          Force ``MuonCalibrationPeriodTool.h`` to calibrate data.
 
           ``MuonSelectorTool`` depends on a specific decoration existing on Muons, namely ``MuonSpectrometerPt``. This is decorated by the ``MuonCalibrationAndSmearingTool``. However, you do not calibrate data by default so this tool would not be run on data.
 
@@ -66,10 +67,7 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-  std::map<std::string, CP::MuonCalibrationAndSmearingTool*>  m_muonCalibrationAndSmearingTools;           //!
-  std::map<std::string, std::string> m_muonCalibrationAndSmearingTool_names;                               //!
-  std::vector<std::string> m_YearsList;                                                                    //!
+  asg::AnaToolHandle<CP::MuonCalibrationPeriodTool> m_muonCalibrationTool_handle{"CP::MuonCalibrationPeriodTool/MuonCalibrationAndSmearingTool", this}; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
