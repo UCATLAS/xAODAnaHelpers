@@ -145,7 +145,10 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   } else {
     m_muRecoSF_tool = new CP::MuonEfficiencyScaleFactors( m_recoEffSF_tool_name );
     ANA_CHECK( m_muRecoSF_tool->setProperty("WorkingPoint", m_WorkingPointReco ));
-    ANA_CHECK( m_muRecoSF_tool->setProperty("CalibrationRelease", m_calibRelease ));
+    if ( !m_overrideCalibRelease.empty() ) {
+      ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
+      ANA_CHECK( m_muRecoSF_tool->setProperty("CalibrationRelease", m_overrideCalibRelease ));
+    }
     ANA_CHECK( m_muRecoSF_tool->initialize());
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
@@ -186,7 +189,10 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   } else {
     m_muIsoSF_tool = new CP::MuonEfficiencyScaleFactors( m_isoEffSF_tool_name );
     ANA_CHECK( m_muIsoSF_tool->setProperty("WorkingPoint", iso_WP ));
-    ANA_CHECK( m_muIsoSF_tool->setProperty("CalibrationRelease", m_calibRelease ));
+    if ( !m_overrideCalibRelease.empty() ) {
+      ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
+      ANA_CHECK( m_muIsoSF_tool->setProperty("CalibrationRelease", m_overrideCalibRelease ));
+    }
     ANA_CHECK( m_muIsoSF_tool->initialize());
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
@@ -280,7 +286,10 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   } else {
     m_muTTVASF_tool = new CP::MuonEfficiencyScaleFactors( m_TTVAEffSF_tool_name );
     ANA_CHECK( m_muTTVASF_tool->setProperty("WorkingPoint", m_WorkingPointTTVA ));
-    ANA_CHECK( m_muTTVASF_tool->setProperty("CalibrationRelease", m_calibRelease ));
+    if ( !m_overrideCalibRelease.empty() ) {
+      ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
+      ANA_CHECK( m_muTTVASF_tool->setProperty("CalibrationRelease", m_overrideCalibRelease ));
+    }
     ANA_CHECK( m_muTTVASF_tool->initialize());
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
@@ -374,7 +383,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
       }
 
       // decorate muons w/ SF - there will be a decoration w/ different name for each syst!
-      this->executeSF( eventInfo, inputMuons, systName.empty(), writeSystNames );
+      ANA_CHECK( this->executeSF( eventInfo, inputMuons, systName.empty(), writeSystNames ) );
 
       writeSystNames = false;
 
@@ -516,8 +525,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     	 float recoEffSF(-1.0);
     	 if ( m_muRecoSF_tool->getEfficiencyScaleFactor( *mu_itr, recoEffSF ) != CP::CorrectionCode::Ok ) {
-    	   ANA_MSG_WARNING( "Problem in getEfficiencyScaleFactor");
-    	   recoEffSF = -1.0;
+         if ( m_AllowZeroSF ) {
+  	       ANA_MSG_WARNING( "Problem in Reco getEfficiencyScaleFactor");
+           recoEffSF = -1.0;
+         } else {
+           ANA_MSG_ERROR( "Could not get Reco efficiency scale factors");
+           return EL::StatusCode::FAILURE;
+         }
     	 }
     	 //
     	 // Add it to decoration vector
@@ -615,8 +629,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     	 float IsoEffSF(-1.0);
     	 if ( m_muIsoSF_tool->getEfficiencyScaleFactor( *mu_itr, IsoEffSF ) != CP::CorrectionCode::Ok ) {
-    	   ANA_MSG_WARNING( "Problem in getEfficiencyScaleFactor");
-  	   IsoEffSF = -1.0;
+         if ( m_AllowZeroSF ) {
+  	       ANA_MSG_WARNING( "Problem in Iso getEfficiencyScaleFactor");
+           IsoEffSF = -1.0;
+         } else {
+           ANA_MSG_ERROR( "Could not get Iso efficiency scale factors");
+           return EL::StatusCode::FAILURE;
+         }
     	 }
     	 //
     	 // Add it to decoration vector
@@ -739,8 +758,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
            double triggerMCEff(-1.0); // tool wants a double
            if ( m_muTrigSF_tool->getTriggerEfficiency( *mu_itr, triggerMCEff, trig_it, !isMC() ) != CP::CorrectionCode::Ok ) {
-             ANA_MSG_WARNING( "Problem in getTriggerEfficiency - single muon trigger(s)");
-             triggerMCEff = -1.0;
+             if ( m_AllowZeroSF ) {
+               ANA_MSG_WARNING( "Problem in getTriggerEfficiency - trigger: " << trig_it);
+               triggerMCEff = -1.0;
+             } else {
+               ANA_MSG_ERROR( "Could not get trigger efficiency - trigger: " << trig_it);
+               return EL::StatusCode::FAILURE;
+             }
            }
            // Add it to decoration vector
            //
@@ -751,16 +775,26 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            double triggerDataEff(-1.0); // tool wants a double
            if ( trig_it == full_scan_chain ) {
              if ( m_muTrigSF_tool->getTriggerEfficiency( *mu_itr, triggerDataEff, trig_it, isMC() ) != CP::CorrectionCode::Ok ) {
-               ANA_MSG_WARNING( "Problem in getTriggerEfficiency - single muon trigger(s)");
-               triggerDataEff = -1.0;
+               if ( m_AllowZeroSF ) {
+                 ANA_MSG_WARNING( "Problem in getTriggerEfficiency - trigger: " << trig_it);
+                 triggerDataEff = -1.0;
+               } else {
+                 ANA_MSG_ERROR( "Could not get trigger efficiency - trigger: " << trig_it);
+                 return EL::StatusCode::FAILURE;
+               }
              }
            }
 
            double triggerEffSF(1.0); // tool wants a double
            if ( trig_it != full_scan_chain ) {
              if ( m_muTrigSF_tool->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, trig_it ) != CP::CorrectionCode::Ok ) {
-               ANA_MSG_WARNING( "Problem in getTriggerScaleFactor - single muon trigger(s)");
-               triggerEffSF = -1.0;
+               if ( m_AllowZeroSF ) {
+                 ANA_MSG_WARNING( "Problem in getTriggerScaleFactor - trigger: " << trig_it);
+                 triggerEffSF = -1.0;
+               } else {
+                 ANA_MSG_ERROR( "Could not get trigger efficiency scale factor - trigger: " << trig_it);
+                 return EL::StatusCode::FAILURE;
+               }
              }
            } else {
              if ( triggerMCEff > 0.0 ) {
@@ -863,8 +897,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
     	 float TTVAEffSF(-1.0);
     	 if ( m_muTTVASF_tool->getEfficiencyScaleFactor( *mu_itr, TTVAEffSF ) != CP::CorrectionCode::Ok ) {
-    	   ANA_MSG_WARNING( "Problem in getEfficiencyScaleFactor");
-  	   TTVAEffSF = -1.0;
+         if ( m_AllowZeroSF ) {
+  	       ANA_MSG_WARNING( "Problem in TTVA getEfficiencyScaleFactor");
+           TTVAEffSF = -1.0;
+         } else {
+           ANA_MSG_ERROR( "Could not get TTVA efficiency scale factors");
+           return EL::StatusCode::FAILURE;
+         }
     	 }
     	 //
     	 // Add it to decoration vector

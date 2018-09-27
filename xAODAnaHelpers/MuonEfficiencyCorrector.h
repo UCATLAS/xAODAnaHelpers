@@ -37,7 +37,8 @@ public:
   // configuration variables
   std::string   m_inContainerName = "";
 
-  std::string   m_calibRelease = "Data15_allPeriods_241115";
+  /// @brief Recommendations release (not recommended to change)
+  std::string   m_overrideCalibRelease = "";
 
   // Reco efficiency SF
   std::string   m_WorkingPointReco = "Loose";
