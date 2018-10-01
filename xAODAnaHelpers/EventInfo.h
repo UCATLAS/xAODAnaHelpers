@@ -19,7 +19,7 @@ namespace xAH {
     void setTree    (TTree *tree);
     void setBranches(TTree *tree);
     void clear();
-    void FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* event = nullptr);
+    void FillEvent( const xAOD::EventInfo* eventInfo, const xAOD::TEvent* event = nullptr, const xAOD::VertexContainer* vertices = nullptr);
     template <typename T_BR>
       void connectBranch(TTree *tree, std::string name, T_BR *variable);
 
