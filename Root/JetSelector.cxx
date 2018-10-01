@@ -1096,32 +1096,26 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   }//do forward JVT
 
   // JVT pileup cut
-  //
   if ( m_doJVT ) {
-    ANA_MSG_DEBUG("Checking JVT cut...");
-    if ( m_JVTCut > 0 && jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) { ANA_MSG_DEBUG( " pt/eta = "<<jet->pt()<<"/" << jet->eta() ); }
+    // NB: origin-correction is applied at constituent level. Eta for Jvt needs to be the DetectorEta explicitly.
+    float jet_pt = jet->pt();
+    float jet_eta = jet->getAttribute<float>("DetectorEta");
+    float jet_jvt = jet->getAttribute<float>("Jvt");
+    ANA_MSG_DEBUG("Checking Jvt cut for jet pT=" << jet_pt << " MeV, DetectorEta=" << jet_eta <<", and Jvt="<< jet_jvt );
+    bool result = false;
 
-    // Old usage: check manually whether this jet passes JVT cut
-    //
-    if ( m_JVTCut > 0 ) {
-      if ( jet->pt() < m_pt_max_JVT ) {
-        ANA_MSG_DEBUG("Pass JVT-pT Cut");
-        xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
-        if ( fabs(jetScaleP4.eta()) < m_eta_max_JVT ){
-          ANA_MSG_DEBUG(" Pass JVT-Eta Cut " );
-          ANA_MSG_DEBUG(" JVT = " << jet->getAttribute< float >( "Jvt" ) );
-          if ( jet->getAttribute< float >( "Jvt" ) < m_JVTCut ) {
-            ANA_MSG_DEBUG(" upper JVTCut is " << m_JVTCut << " - cutting this jet!!" );
-            return 0;
-          } else {
-            ANA_MSG_DEBUG(" upper JVTCut is " << m_JVTCut << " - jet passes JVT ");
-          }
-        }
-      }
+    // if non-negative, the user wants to apply a custom jvt cut
+    if( m_JVTCut > 0 ){
+      ANA_MSG_DEBUG("Custom JVT working point with pT<" << m_pt_max_JVT << ", |eta|<" << m_eta_max_JVT << ", Jvt<" << m_JVTCut);
+      result = (jet_pt < m_pt_max_JVT && std::fabs(jet_eta) < m_eta_max_JVT && jet_jvt < m_JVTCut);
     } else {
-      if ( !m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) { return 0; }
+      result = m_JVT_tool_handle->passesJvtCut(*jet);
     }
-  } // m_doJVT
+
+    if(result) ANA_MSG_DEBUG(" ... jet passes Jvt cut");
+    else       ANA_MSG_DEBUG(" ... jet does not pass Jvt cut");
+    if ( !m_noJVTVeto && !result ) return 0;
+  }
   if ( m_useCutFlow ) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
 
   //
