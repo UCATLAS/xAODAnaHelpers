@@ -5,6 +5,7 @@
 #include <string>
 
 #include "xAODEventInfo/EventInfo.h"
+#include "xAODTracking/VertexContainer.h"
 
 #include <xAODAnaHelpers/HelperClasses.h>
 
