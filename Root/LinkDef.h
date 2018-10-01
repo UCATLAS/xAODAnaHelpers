@@ -111,4 +111,5 @@
 #pragma link C++ class TauJetMatching+;
 #pragma link C++ class Writer+;
 #pragma link C++ class MessagePrinterAlgo+;
+
 #endif
