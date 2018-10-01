@@ -399,14 +399,14 @@ EL::StatusCode TreeAlgo :: execute ()
         const xAOD::JetContainer* inJets(nullptr);
         if ( ll==0 ) {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
-            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining fat jet collections");
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining jet collections");
             reject = true;
             break;
           }
           ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
         } else {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll), m_event, m_store, msg()) ) {
-            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll) + " is not available. Skipping all remaining fat jet collections");
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll) + " is not available. Skipping all remaining jet collections");
             reject = true;
             break;
           }
