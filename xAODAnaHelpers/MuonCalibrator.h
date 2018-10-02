@@ -1,14 +1,13 @@
 #ifndef xAODAnaHelpers_MuonCalibrator_H
 #define xAODAnaHelpers_MuonCalibrator_H
 
-#include "MuonMomentumCorrections/MuonCalibrationPeriodTool.h"
-
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
 
 // external tools include(s):
 #include <AsgTools/AnaToolHandle.h>
 #include <AsgAnalysisInterfaces/IPileupReweightingTool.h>
+#include <MuonAnalysisInterfaces/IMuonCalibrationAndSmearingTool.h>
 
 class MuonCalibrator : public xAH::Algorithm
 {
@@ -67,7 +66,7 @@ private:
   std::vector<CP::SystematicSet> m_systList; //!
 
   // tools
-  asg::AnaToolHandle<CP::MuonCalibrationPeriodTool> m_muonCalibrationTool_handle{"CP::MuonCalibrationPeriodTool/MuonCalibrationAndSmearingTool", this}; //!
+  asg::AnaToolHandle<CP::IMuonCalibrationAndSmearingTool> m_muonCalibrationTool_handle{"CP::MuonCalibrationPeriodTool/MuonCalibrationAndSmearingTool", this}; //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
