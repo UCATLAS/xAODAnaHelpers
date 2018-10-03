@@ -133,7 +133,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
   this->AddEventUser();
 }
 
-void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, const xAOD::TEvent* /*event*/, const xAOD::VertexContainer* vertices ) {
+void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/, const xAOD::VertexContainer* vertices ) {
 
   this->ClearEvent();
 
