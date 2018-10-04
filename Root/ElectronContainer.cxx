@@ -100,7 +100,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     if ( !m_infoSwitch.m_PIDWPs.size() ) m_infoSwitch.m_PIDWPs = {"LHLoose","LHLooseBL","LHMedium","LHTight"};
 
     // default PID SF working points if no user input
-    if ( !m_infoSwitch.m_PIDSFWPs.size() ) m_infoSwitch.m_PIDSFWPs = {"LooseAndBLayerLLH","MediumLLH","TightLLH"};
+    if ( !m_infoSwitch.m_PIDSFWPs.size() ) m_infoSwitch.m_PIDSFWPs = {"LooseBLayer","Medium","Tight"};
 
     // default isolation working points if no user input
     if ( !m_infoSwitch.m_isolWPs.size() ) m_infoSwitch.m_isolWPs = {"","Gradient","Loose","Tight"};
@@ -881,7 +881,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       }
     }
 
-   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElRecoEff_SF_syst");
+   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElRecoEff_SF_syst_Reconstruction");
    safeSFVecFill<float, xAOD::Electron>( elec, accRecoSF, m_RecoEff_SF, junkSF );
  }
 

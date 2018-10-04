@@ -101,6 +101,7 @@ EL::StatusCode TreeAlgo :: initialize ()
     ANA_MSG_ERROR( "The number of fat jet containers must be equal to the number of fat jet name branches. Exiting");
     return EL::StatusCode::FAILURE;
   }
+
   std::istringstream ss_cluster_containers(m_clusterContainerName);
   while ( std::getline(ss_cluster_containers, token, ' ') ){
     m_clusterContainers.push_back(token);
@@ -149,8 +150,6 @@ EL::StatusCode TreeAlgo :: initialize ()
     ANA_MSG_ERROR( "The size of m_clusterContainers should be equal to the size of m_clusterDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
-
-
 
   return EL::StatusCode::SUCCESS;
 }
@@ -400,14 +399,14 @@ EL::StatusCode TreeAlgo :: execute ()
         const xAOD::JetContainer* inJets(nullptr);
         if ( ll==0 ) {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
-            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining fat jet collections");
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining jet collections");
             reject = true;
             break;
           }
           ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
         } else {
           if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll), m_event, m_store, msg()) ) {
-            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll) + " is not available. Skipping all remaining fat jet collections");
+            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll) + " is not available. Skipping all remaining jet collections");
             reject = true;
             break;
           }

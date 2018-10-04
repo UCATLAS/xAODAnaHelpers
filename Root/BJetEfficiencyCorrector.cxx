@@ -329,25 +329,20 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 	// get the scale factor
 	float SF(-1.0);
-	// if only decorator with decision because OP is not calibrated, set SF to 1
-	if ( fabs(jet_itr->eta()) < 2.5 ) {
-
-	  CP::CorrectionCode BJetEffCode;
-	  // if passes cut take the efficiency scale factor
-	  // if failed cut take the inefficiency scale factor
-	  if( tagged ) {
-	    BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-	  } else {
-	    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-	  }
-	  if (BJetEffCode == CP::CorrectionCode::Error){
-	    ANA_MSG_WARNING( "Error in getEfficiencyScaleFactor");
-	    SF = -1.0;
-	    //return EL::StatusCode::FAILURE;
-	  }
-	  // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
-	  //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
-	} // eta < 2.5
+  CP::CorrectionCode BJetEffCode;
+  // if passes cut take the efficiency scale factor
+  // if failed cut take the inefficiency scale factor
+  if( tagged ) {
+    BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+  } else {
+    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+  }
+  if (BJetEffCode == CP::CorrectionCode::Error) {
+    ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
+    return EL::StatusCode::FAILURE;
+  } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
+    ANA_MSG_DEBUG( "Jet is out of validity range");
+  }
 
 	// Add it to vector
 	sfVec.push_back(SF);
