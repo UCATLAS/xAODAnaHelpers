@@ -16,6 +16,8 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+#include <SampleHandler/MetaFields.h>
+
 //EDM
 #include "xAODJet/JetAuxContainer.h"
 
@@ -179,6 +181,40 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
+
+    if(isMC() && !m_EfficiencyCalibration.empty())
+      {
+	std::string calibration=m_EfficiencyCalibration;
+	if(m_EfficiencyCalibration=="auto")
+	  {
+	    std::string sampleName=wk()->metaData()->castString(SH::MetaFields::sampleName);
+
+	    switch(HelperFunctions::getMCShowerType(sampleName))
+	      {
+	      case HelperFunctions::Pythia8:
+		calibration="410501";
+		break;
+	      case HelperFunctions::Herwig7:
+		calibration="410558";
+		break;
+	      case HelperFunctions::Sherpa21:
+		calibration="426131";
+		break;
+	      case HelperFunctions::Sherpa22:
+		calibration="410250";
+	      break;
+	      case HelperFunctions::Unknown:
+		ANA_MSG_WARNING("Cannot determine MC shower type for sample " << sampleName << ", assuming Pythia8 (default).");
+		calibration="410501";
+		break;
+	      }
+	  }
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
+      }
+
     ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
 
