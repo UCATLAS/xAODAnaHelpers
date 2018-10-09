@@ -110,6 +110,9 @@ public:
   xAOD::TEvent* m_event;
   xAOD::TStore* m_store;
 
+  /// @brief Name of vertex container
+  std::string m_vertexContainerName = "PrimaryVertices";
+
   // control which branches are filled
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
 
@@ -117,7 +120,7 @@ public:
   TrigConf::xAODConfigTool*    m_trigConfTool;
   Trig::TrigDecisionTool*      m_trigDecTool;
 
-  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr );
+  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr, const xAOD::VertexContainer* vertices = nullptr );
 
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();

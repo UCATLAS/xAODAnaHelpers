@@ -640,8 +640,8 @@ EL::StatusCode BasicEventSelection :: execute ()
 
       printf("      Evaluates to:\n");
       auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(trigName);
-      std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();		 
-      for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {		
+      std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
+      for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
         printf("        %s\n", triggersUsed.at(iTrigger).c_str());
       }
     }
