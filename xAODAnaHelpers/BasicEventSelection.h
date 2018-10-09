@@ -191,6 +191,8 @@ class BasicEventSelection : public xAH::Algorithm
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
     // trigger unprescale chains
     std::vector<std::string> m_triggerUnprescaleList; //!
+    // decisions of triggers which are saved but not cut on, converted into a list
+    std::vector<std::string> m_extraTriggerSelectionList; //!
 
     // tools
     asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; //!
@@ -215,6 +217,7 @@ class BasicEventSelection : public xAH::Algorithm
     TH1D* m_cutflowHist = nullptr;      //!
     TH1D* m_cutflowHistW = nullptr;     //!
     int m_cutflow_all;        //!
+    int m_cutflow_init;       //!
     int m_cutflow_duplicates; //!
     int m_cutflow_grl;        //!
     int m_cutflow_lar;        //!

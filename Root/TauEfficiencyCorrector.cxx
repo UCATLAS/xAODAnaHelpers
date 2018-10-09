@@ -138,7 +138,7 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   
   // initialise reco and EleOLRHadTau SF no matter what 
   std::vector<int> configVec;
-  configVec.push_back({TauAnalysisTools::SFJetIDHadTau});
+  configVec.push_back({TauAnalysisTools::SFRecoHadTau});
   configVec.push_back({TauAnalysisTools::SFEleOLRHadTau});
   
   if ( !m_WorkingPointTauID.empty() ) {
@@ -176,7 +176,8 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   }
 
   if (!m_TriggerName.empty()) {
-    configVec.push_back({TauAnalysisTools::SFTriggerHadTau});
+    // We always want trigger to be individual
+    configVec = {TauAnalysisTools::SFTriggerHadTau};
      
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("TriggerName", m_TriggerName));
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("PileupReweightingTool",m_pileup_tool_handle));
@@ -402,10 +403,10 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
           sfVec( *tau_itr ) = std::vector<float>();
   	}
 
-  	double tauEffSF(1.0);
+  	double tauEffSF(-1.0);
   	if ( m_tauEffCorrTool_handle->getEfficiencyScaleFactor( *tau_itr, tauEffSF ) != CP::CorrectionCode::Ok ) {
   	  ANA_MSG_WARNING( "Problem in getEfficiencyScaleFactor");
-  	  tauEffSF = 1.0;
+  	  tauEffSF = -1.0;
   	}
   	//
   	// Add it to decoration vector

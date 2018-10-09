@@ -26,7 +26,6 @@ class NameGenerator(object):
   def __str__(self):
     return self.__repr__()
 
-
 def is_release21():
   return True
 

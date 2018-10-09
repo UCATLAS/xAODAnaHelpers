@@ -77,6 +77,12 @@ EL::StatusCode TauSelector :: histInitialize ()
 
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
+
+  if ( this->numInstances() > 1 ) {
+    m_isUsedBefore = true;
+    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -127,10 +133,6 @@ EL::StatusCode TauSelector :: initialize ()
   // preselecting objects, and then again for the final selection
   //
   ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
-  if ( this->numInstances() > 0 ) {
-    m_isUsedBefore = true;
-    ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
-  }
 
   if ( m_useCutFlow ) {
 
@@ -186,6 +188,7 @@ EL::StatusCode TauSelector :: initialize ()
   //
   // ********************************
 
+  // IMPORTANT: if no working point is specified the one in this configuration will be used
   ANA_CHECK( m_tauSelTool_handle.setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()));
   if (!m_JetIDWP.empty()) {
     
@@ -208,6 +211,25 @@ EL::StatusCode TauSelector :: initialize ()
       return EL::StatusCode::FAILURE; 
     }
   }
+
+  if (!m_EleBDTWP.empty()) {
+    
+    std::map <std::string, int> elebdt_wp_map;
+    
+    elebdt_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
+    elebdt_wp_map["ELEIDBDTLOOSE"] = int(TauAnalysisTools::ELEIDBDTLOOSE);
+    elebdt_wp_map["ELEIDBDTMEDIUM"] = int(TauAnalysisTools::ELEIDBDTMEDIUM);
+    elebdt_wp_map["ELEIDBDTTIGHT"] = int(TauAnalysisTools::ELEIDBDTTIGHT);
+    
+    if (elebdt_wp_map.count(m_EleBDTWP) != 0 ) {
+      ANA_CHECK( m_tauSelTool_handle.setProperty("EleBDTWP", elebdt_wp_map[m_EleBDTWP]));
+    } else {
+      ANA_MSG_ERROR( "Unknown requested tau EleBDTWP " << m_EleBDTWP);
+      return EL::StatusCode::FAILURE; 
+    }
+  }
+
+  ANA_CHECK( m_tauSelTool_handle.setProperty("EleOLR", m_EleOLR));
 
   ANA_CHECK(m_tauSelTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
@@ -650,7 +672,7 @@ EL::StatusCode TauSelector :: histFinalize ()
 int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
 
   // fill cutflow bin 'all' before any cut
-  if(m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
+  if(!m_isUsedBefore && m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_all, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_all, 1 ); }
 
   // **********************************************************************************************************
@@ -659,6 +681,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   //
 
   // JetBDTSigID decoration
+  // ----------------------
   static SG::AuxElement::Decorator< int > isJetBDTSigVeryLoose("isJetBDTSigVeryLoose");
   static SG::AuxElement::Decorator< int > isJetBDTSigLoose("isJetBDTSigLoose");
   static SG::AuxElement::Decorator< int > isJetBDTSigMedium("isJetBDTSigMedium");
@@ -667,7 +690,6 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   static SG::AuxElement::Decorator< float > JetBDTScore("JetBDTScore");
   static SG::AuxElement::Decorator< float > JetBDTScoreSigTrans("JetBDTScoreSigTrans");
   
-  ANA_MSG_DEBUG( "Got the decors" );
 
   isJetBDTSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigVeryLoose));
   isJetBDTSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
@@ -677,6 +699,80 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   JetBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScore));
   JetBDTScoreSigTrans( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScoreSigTrans));
 
+  // EleBDT decoration
+  // -----------------
+  static SG::AuxElement::Decorator< int > isEleBDTLoose("isEleBDTLoose");
+  static SG::AuxElement::Decorator< int > isEleBDTMedium("isEleBDTMedium");
+  static SG::AuxElement::Decorator< int > isEleBDTTight("isEleBDTTight");
+
+  static SG::AuxElement::Decorator< float > EleBDTScore("EleBDTScore");
+  
+
+  isEleBDTLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTLoose));
+  isEleBDTMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTMedium));
+  isEleBDTTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTTight));
+
+  EleBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTEleScore));
+
+
+  // EleOLR decoration
+  // -----------------
+  static SG::AuxElement::Decorator< int > passEleOLR("passEleOLR");
+  
+  passEleOLR( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::PassEleOLR));
+
+  if (m_decorateWithTracks) {
+
+     // TauTracks decoration
+     // --------------------
+     SG::AuxElement::Decorator< std::vector<float> > tauTrackPt( "trackPt" );
+     SG::AuxElement::Decorator< std::vector<float> > tauTrackEta( "trackEta" );
+     SG::AuxElement::Decorator< std::vector<float> > tauTrackPhi( "trackPhi" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsCore( "trackIsCore" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsWide( "trackIsWide" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackFailTrackFilter( "trackFailTrackFilter" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackPassTrkSel( "trackPassTrkSel" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClCharged( "trackIsClCharged" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClIso( "trackIsClIso" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClConv( "trackIsClConv" );
+     SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClFake( "trackIsClFake" );
+     
+     
+     for (const xAOD::TauTrack* trk : tau->allTracks()){
+      
+        tauTrackPt( *tau ).push_back(trk->pt());
+        tauTrackEta( *tau ).push_back(trk->eta());
+        tauTrackPhi( *tau ).push_back(trk->phi());
+     
+     
+        if (!trk->flag(xAOD::TauJetParameters::coreTrack)) tauTrackIsCore(*tau).push_back(1);
+        else tauTrackIsCore(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::wideTrack)) tauTrackIsWide(*tau).push_back(1);
+        else tauTrackIsWide(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::failTrackFilter)) tauTrackFailTrackFilter(*tau).push_back(1);
+        else tauTrackFailTrackFilter(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::passTrkSelector)) tauTrackPassTrkSel(*tau).push_back(1);
+        else tauTrackPassTrkSel(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedCharged)) tauTrackIsClCharged(*tau).push_back(1);
+        else tauTrackIsClCharged(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedIsolation)) tauTrackIsClIso(*tau).push_back(1);
+        else tauTrackIsClIso(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedConversion)) tauTrackIsClConv(*tau).push_back(1);
+        else tauTrackIsClConv(*tau).push_back(0);
+     
+        if (!trk->flag(xAOD::TauJetParameters::classifiedFake)) tauTrackIsClFake(*tau).push_back(1);
+        else tauTrackIsClFake(*tau).push_back(0);
+     
+     }
+
+  } // if decorate with tracks
+  
   ANA_MSG_DEBUG( "Got decoration values" );
 
 
@@ -690,7 +786,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
     return 0;
   }
 
-  if(m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_selected, 1 );
+  if( !m_isUsedBefore && m_useCutFlow) m_tau_cutflowHist_1->Fill( m_tau_cutflow_selected, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_tau_cutflowHist_2->Fill( m_tau_cutflow_selected, 1 ); }
 
   return 1;

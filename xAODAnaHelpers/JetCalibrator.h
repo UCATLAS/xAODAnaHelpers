@@ -100,6 +100,9 @@ public:
   /// @brief Apply nominal smearing
   bool m_JERApplyNominal = false;
 
+  /// @brief Run muon-to-jet ghost association (recommended for MET)
+  bool m_addGhostMuonsToJets = false;
+
   /// @brief enable to apply jet cleaning decoration
   bool m_doCleaning = true;
   /// @brief Cut Level

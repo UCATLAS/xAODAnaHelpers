@@ -47,7 +47,6 @@ namespace xAH {
       std::map< std::string, std::vector< std::vector< float > > >* m_TauEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TauTrigEff_SF;
       
-      
       // might need to delete these
       std::vector<int>   *m_isJetBDTSigVeryLoose;
       std::vector<int>   *m_isJetBDTSigLoose;
@@ -56,6 +55,29 @@ namespace xAH {
     
       std::vector<float>   *m_JetBDTScore;
       std::vector<float>   *m_JetBDTScoreSigTrans;
+
+      std::vector<int>   *m_isEleBDTLoose;
+      std::vector<int>   *m_isEleBDTMedium;
+      std::vector<int>   *m_isEleBDTTight;
+
+      std::vector<float>   *m_EleBDTScore;
+
+      std::vector<int>   *m_passEleOLR;
+
+      std::vector< float > *m_tau_matchedJetWidth;
+      
+      std::vector< std::vector< float > > *m_tau_tracks_pt;
+      std::vector< std::vector< float > > *m_tau_tracks_eta;
+      std::vector< std::vector< float > > *m_tau_tracks_phi;
+  
+      std::vector< std::vector< int > > *m_tau_tracks_isCore;
+      std::vector< std::vector< int > > *m_tau_tracks_isWide;
+      std::vector< std::vector< int > > *m_tau_tracks_failTrackFilter;
+      std::vector< std::vector< int > > *m_tau_tracks_passTrkSel;
+      std::vector< std::vector< int > > *m_tau_tracks_isClCharged;
+      std::vector< std::vector< int > > *m_tau_tracks_isClIso;
+      std::vector< std::vector< int > > *m_tau_tracks_isClConv;
+      std::vector< std::vector< int > > *m_tau_tracks_isClFake;       
 
     };
 }

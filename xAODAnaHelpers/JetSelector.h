@@ -25,7 +25,7 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
-#include "JetJvtEfficiency/IJetJvtEfficiency.h"
+#include "JetAnalysisInterfaces/IJetJvtEfficiency.h"
 #include "JetInterface/IJetModifier.h"
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"

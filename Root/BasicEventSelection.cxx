@@ -97,7 +97,59 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
-  ANA_MSG_INFO( "Histograms initialized!");
+  ANA_MSG_INFO( "Creating histograms");
+
+  // write the cutflows to this file so algos downstream can pick up the pointer
+  //
+  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
+  fileCF->cd();
+
+  // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
+  // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
+
+  //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
+  //
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  //
+  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
+  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
+  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
+  //
+  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
+  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
+
+  // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
+  //
+  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
+  m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
+  m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
+  m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
+  m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
+  m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
+  m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
+  m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
+  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
+  m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
+  m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
+  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
+
+  // start labelling the bins for the event cutflow
+  //
+  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
+  m_cutflowHistW->GetXaxis()->FindBin("all");
+
+  m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
+  m_cutflowHistW->GetXaxis()->FindBin("init");
+
+  ANA_MSG_INFO( "Finished creating histograms");
 
   return EL::StatusCode::SUCCESS;
 }
@@ -242,6 +294,9 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       ANA_MSG_INFO( "Initial  sum of weights squared = " << m_MD_initialSumWSquared);
       ANA_MSG_INFO( "Selected sum of weights squared = " << m_MD_finalSumWSquared);
 
+      m_cutflowHist ->Fill(m_cutflow_all, m_MD_initialNevents);
+      m_cutflowHistW->Fill(m_cutflow_all, m_MD_initialSumW);
+
       m_histEventCount -> Fill(1, m_MD_initialNevents);
       m_histEventCount -> Fill(2, m_MD_finalNevents);
       m_histEventCount -> Fill(3, m_MD_initialSumW);
@@ -345,55 +400,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
     }
   }//if isMC and a Sherpa 2.2 sample
 
-
-  ANA_MSG_INFO( "Setting up histograms");
-
-  // write the cutflows to this file so algos downstream can pick up the pointer
-  //
-  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
-  fileCF->cd();
-
-  // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
-  // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
-
-  //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
-  //
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
-
-  // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  //
-  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
-  m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
-  m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
-  m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
-  m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
-  m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
-  m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
-  m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
-  m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
-  m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
-  m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-
-  // start labelling the bins for the event cutflow
-  //
-  m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
-  m_cutflowHistW->GetXaxis()->FindBin("all");
+  ANA_MSG_INFO( "Setting up histograms based on isMC()");
 
   if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
     m_cutflow_duplicates  = m_cutflowHist->GetXaxis()->FindBin("Duplicates");
@@ -420,6 +427,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
+
+
+  ANA_MSG_INFO( "Histograms set up!");
 
   // -------------------------------------------------------------------------------------------------
 
@@ -473,6 +483,13 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
     ANA_CHECK( m_trigDecTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
+    // parse extra triggers list and split by comma
+    std::string token;
+    std::istringstream ss(m_extraTriggerSelection);
+    while (std::getline(ss, token, ',')) {
+      m_extraTriggerSelectionList.push_back(token);
+    }
   }//end trigger configuration
 
   // 3.
@@ -618,10 +635,15 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if ( m_eventCounter == 0 && !m_extraTriggerSelection.empty() ) {
     ANA_MSG_INFO( "*** Extra Trigger Info Saved are :\n");
-    auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
-    std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
-    for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
-      printf("    %s\n", triggersUsed.at(iTrigger).c_str());
+    for ( const std::string &trigName : m_extraTriggerSelectionList ) {
+      printf("    %s\n", trigName.c_str());
+
+      printf("      Evaluates to:\n");
+      auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(trigName);
+      std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();		 
+      for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {		
+        printf("        %s\n", triggersUsed.at(iTrigger).c_str());
+      }
     }
     printf("\n");
   }
@@ -693,11 +715,11 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Fill initial bin of cutflow
   //------------------------------------------------------------------------------------------
 
-  m_cutflowHist ->Fill( m_cutflow_all, 1 );
-  m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
-
   if( !m_useMetaData )
     {
+      m_cutflowHist ->Fill( m_cutflow_all, 1 );
+      m_cutflowHistW->Fill( m_cutflow_all, mcEvtWeight);
+
       m_histEventCount -> Fill(1, 1);
       m_histEventCount -> Fill(2, 1);
       m_histEventCount -> Fill(3, mcEvtWeight);
@@ -705,6 +727,9 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_histEventCount -> Fill(5, mcEvtWeight*mcEvtWeight);
       m_histEventCount -> Fill(6, mcEvtWeight*mcEvtWeight);
     }
+
+  m_cutflowHist ->Fill( m_cutflow_init, 1 );
+  m_cutflowHistW->Fill( m_cutflow_init, mcEvtWeight);
 
   //--------------------------------------------------------------------------------------------------------
   // Check current event is not a duplicate
@@ -742,7 +767,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   //------------------------------------------------------------------------------------------
   if ( m_doPUreweighting ) {
     m_pileup_tool_handle->applySystematicVariation(CP::SystematicSet()).ignore();
-    m_pileup_tool_handle->apply( *eventInfo ); // NB: this call automatically decorates eventInfo with:
+    ANA_CHECK(m_pileup_tool_handle->apply( *eventInfo )); // NB: this call automatically decorates eventInfo with:
                                                  //  1.) the PU weight ("PileupWeight")
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
@@ -888,7 +913,8 @@ EL::StatusCode BasicEventSelection :: execute ()
           passedTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
 
-          if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
+          bool doLumiPrescale = std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end();
+          if ( doLumiPrescale ) {
             triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
           } else {
             triggerPrescalesLumi.push_back( -1 );
@@ -903,19 +929,21 @@ EL::StatusCode BasicEventSelection :: execute ()
       //
       if ( !m_extraTriggerSelection.empty() ) {
 
-	auto extraTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_extraTriggerSelection);
-
-	for ( auto &trigName : extraTriggerChainGroup->getListOfTriggers() ) {
+	for ( const std::string &trigName : m_extraTriggerSelectionList ) {
 	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
 	  if ( trigChain->isPassed() ) {
 	    passedTriggers.push_back( trigName );
 	    triggerPrescales.push_back( trigChain->getPrescale() );
 
-	    if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigName) != m_triggerUnprescaleList.end()) {
-	      triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
-	    } else {
-	      triggerPrescalesLumi.push_back( -1 );
-	    }
+      bool doLumiPrescale = true;
+      for ( const std::string &trigPart : trigChain->getListOfTriggers() ) {
+        if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigPart) == m_triggerUnprescaleList.end()) doLumiPrescale = false;
+      }
+      if ( doLumiPrescale ) {
+        triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+      } else {
+        triggerPrescalesLumi.push_back( -1 );
+      }
 	  }
 	  isPassedBitsNames.push_back( trigName );
 	  isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
@@ -1033,9 +1061,12 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     case 284500 :
       mcCampaignMD="mc16a";
       break;
-      // This should be switched to mc16d once it is available.
     case 300000 :
       mcCampaignMD="mc16d";
+      break;
+    // This should be switched to mc16f once it is available.
+    case 310000 :
+      mcCampaignMD="mc16e";
       break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
@@ -1066,15 +1097,15 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   // Sanity checks
   bool mc16X_GoodFromProperty = !mcCampaignList.empty();
   bool mc16X_GoodFromMetadata = false;
-  for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d");
-  if( mcCampaignMD == "mc16a" || mcCampaignMD == "mc16c" || mcCampaignMD == "mc16d") mc16X_GoodFromMetadata = true;
+  for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d" || mcCampaignP == "mc16e" || mcCampaignP == "mc16f");
+  if( mcCampaignMD == "mc16a" || mcCampaignMD == "mc16c" || mcCampaignMD == "mc16d" || mcCampaignMD == "mc16e" || mcCampaignMD == "mc16f") mc16X_GoodFromMetadata = true;
 
   if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
     {
       // ::
       std::string MetadataAndPropertyBAD("");
       MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc16a', 'mc16c' or 'mc16d' and restart your job. If you set it to any other string, you will still incur in this error.";
+      MetadataAndPropertyBAD += "'mc16a', 'mc16c', 'mc16d', 'mc16e', or 'mc16f' and restart your job. If you set it to any other string, you will still incur in this error.";
       ANA_MSG_ERROR( MetadataAndPropertyBAD );
       return StatusCode::FAILURE;
       // ::
@@ -1117,7 +1148,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   for(const auto& mcCampaign : mcCampaignList)
     ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
 
-  // 
+  //
   float dsid = -999;
   dsid = eventInfo->mcChannelNumber();
   int DSID_INT = (int) dsid;
@@ -1171,6 +1202,10 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    }
 	  } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
 	    if (year == "17") {
+	      lumiCalcFiles.push_back(filename);
+	    }
+	  } else if (mcCampaign == "mc16e" || mcCampaign == "mc16f") {
+	    if (year == "18") {
 	      lumiCalcFiles.push_back(filename);
 	    }
 	  } else {

@@ -208,9 +208,30 @@ TauCalibrator
 
 TauSelector
 ~~~~~~~~~~~
+Similar to other selectors. Tau identification/selection algorithms working points are 
+decorated onto the tau automatically. Tha flag m_decorateWithTracks controls the decoration
+of the tau track information. It can be dumped in the ntuples by specifying the trackparams
+flag in the tau details string of the TreeAlgo.
 
 TauEfficiencyCorrector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The TauEfficientyCorrector provides one cumulative decoration with one SF corresponding to
+the combination of working points used for the tau selection/identification algorithms.
+Several initialisations of the algorithm are needed with different combinations in order 
+to dump in the ntuples different combined working points. Tau trigger SFs are saved separately
+and wrt said cumulative working point which has to be specified in the initialisation of a new
+instance of the algorithm together with the trigger menu.
+
+
+TauJetMatching
+~~~~~~~~~~~~~~
+This algorithm is introduced to match an arbitrary and configurable collection of jets 
+with the TauJet object. This is useful for cases where the tau seedJet (LC topo jet) 
+is not available in xAOD but one would need to get a handle on some original jet info. 
+The algorithm has a configurable DeltaR matching criterion and for now decorates taus 
+with the matched jet width. It should be executed before OLR. It can be used
+before tau selection and after tau calibration.
+
 
 HelperFunctions
 ---------------

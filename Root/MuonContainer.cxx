@@ -834,8 +834,8 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
-    std::vector<float> junkSF(1,1.0);
-    std::vector<float> junkEff(1,0.0);
+    std::vector<float> junkSF(1,-1.0);
+    std::vector<float> junkEff(1,-1.0);
 
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accRecoSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;

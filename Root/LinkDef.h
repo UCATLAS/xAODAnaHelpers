@@ -51,6 +51,7 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/TrigMatcher.h>
+#include <xAODAnaHelpers/TauJetMatching.h>
 #include <xAODAnaHelpers/Writer.h>
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 
@@ -107,6 +108,8 @@
 
 #pragma link C++ class OverlapRemover+;
 #pragma link C++ class TrigMatcher+;
+#pragma link C++ class TauJetMatching+;
 #pragma link C++ class Writer+;
 #pragma link C++ class MessagePrinterAlgo+;
+
 #endif

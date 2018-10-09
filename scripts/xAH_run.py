@@ -249,7 +249,7 @@ if __name__ == "__main__":
         xAH_logger.debug('Running lsb_release -d.')
         lsb_release = subprocess.check_output(["lsb_release", "-d"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
         xAH_logger.debug('  - command output: {}'.format(lsb_release))
-        slc6_release_names = ['Scientific Linux release 6', 'Scientific Linux CERN SLC release 6']
+        slc6_release_names = ['Scientific Linux release 6', 'Scientific Linux CERN SLC release 6', 'Red Hat Enterprise Linux Server release 6']
         if not any(name in lsb_release for name in slc6_release_names):
           xAH_logger.debug('  - did not find SLC6 in output.')
           isSLC6 = False
@@ -283,8 +283,7 @@ if __name__ == "__main__":
     # they will need it to get it working for rel 20
     needXRD = ( args.use_scanRucio ) and (args.driver!='prun')
     if needXRD:
-      if os.getenv('XRDSYS') is None and os.getenv('RUCIO_HOME') is None:
-        raise EnvironmentError('xrootd client is not setup. Run localSetupFAX or equivalent.')
+      xAH_logger.warning("Make sure rucio is setup (lsetup \"rucio\" or lsetup \"rucio -w\")")
 
     use_scanEOS = (args.use_scanEOS)
 

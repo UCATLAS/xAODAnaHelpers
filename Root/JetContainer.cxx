@@ -2555,7 +2555,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
   }
 
-  if ( m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV ) {
+  if ( m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
 
     // several moments calculated from all verticies
     // one accessor for each and just use appropiately in the following
@@ -2610,58 +2610,58 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
     } // trackAll
 
-    if ( m_infoSwitch.m_trackPV && pvLocation >= 0 ) {
+    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
 
-      if ( nTrk1000.isAvailable( *jet ) ) {
-        m_NumTrkPt1000PV->push_back( nTrk1000( *jet )[pvLocation] );
-      } else { m_NumTrkPt1000PV->push_back( -999 ); }
+      if ( m_infoSwitch.m_trackPV && pvLocation >= 0 ) {
 
-      if ( sumPt1000.isAvailable( *jet ) ) {
-        m_SumPtTrkPt1000PV->push_back( sumPt1000( *jet )[pvLocation] / m_units );
-      } else { m_SumPtTrkPt1000PV->push_back( -999 ); }
+        if ( nTrk1000.isAvailable( *jet ) ) {
+          m_NumTrkPt1000PV->push_back( nTrk1000( *jet )[pvLocation] );
+        } else { m_NumTrkPt1000PV->push_back( -999 ); }
 
-      if ( trkWidth1000.isAvailable( *jet ) ) {
-        m_TrackWidthPt1000PV->push_back( trkWidth1000( *jet )[pvLocation] );
-      } else { m_TrackWidthPt1000PV->push_back( -999 ); }
+        if ( sumPt1000.isAvailable( *jet ) ) {
+          m_SumPtTrkPt1000PV->push_back( sumPt1000( *jet )[pvLocation] / m_units );
+        } else { m_SumPtTrkPt1000PV->push_back( -999 ); }
 
-      if ( nTrk500.isAvailable( *jet ) ) {
-        m_NumTrkPt500PV->push_back( nTrk500( *jet )[pvLocation] );
-      } else { m_NumTrkPt500PV->push_back( -999 ); }
+        if ( trkWidth1000.isAvailable( *jet ) ) {
+          m_TrackWidthPt1000PV->push_back( trkWidth1000( *jet )[pvLocation] );
+        } else { m_TrackWidthPt1000PV->push_back( -999 ); }
 
-      if ( sumPt500.isAvailable( *jet ) ) {
-        m_SumPtTrkPt500PV->push_back( sumPt500( *jet )[pvLocation] / m_units );
-      } else { m_SumPtTrkPt500PV->push_back( -999 ); }
+        if ( nTrk500.isAvailable( *jet ) ) {
+          m_NumTrkPt500PV->push_back( nTrk500( *jet )[pvLocation] );
+        } else { m_NumTrkPt500PV->push_back( -999 ); }
 
-      if ( trkWidth500.isAvailable( *jet ) ) {
-        m_TrackWidthPt500PV->push_back( trkWidth500( *jet )[pvLocation] );
-      } else { m_TrackWidthPt500PV->push_back( -999 ); }
+        if ( sumPt500.isAvailable( *jet ) ) {
+          m_SumPtTrkPt500PV->push_back( sumPt500( *jet )[pvLocation] / m_units );
+        } else { m_SumPtTrkPt500PV->push_back( -999 ); }
 
-      if ( jvf.isAvailable( *jet ) ) {
-        m_JVFPV->push_back( jvf( *jet )[pvLocation] );
-      } else { m_JVFPV->push_back( -999 ); }
+        if ( trkWidth500.isAvailable( *jet ) ) {
+          m_TrackWidthPt500PV->push_back( trkWidth500( *jet )[pvLocation] );
+        } else { m_TrackWidthPt500PV->push_back( -999 ); }
+
+        if ( jvf.isAvailable( *jet ) ) {
+          m_JVFPV->push_back( jvf( *jet )[pvLocation] );
+        } else { m_JVFPV->push_back( -999 ); }
+
+        static SG::AuxElement::ConstAccessor< float > jvtJvfcorr ("JvtJvfcorr");
+        safeFill<float, float, xAOD::Jet>(jet, jvtJvfcorr, m_JvtJvfcorr, -999);
+
+        static SG::AuxElement::ConstAccessor< float > jvtRpt ("JvtRpt");
+        safeFill<float, float, xAOD::Jet>(jet, jvtRpt, m_JvtRpt, -999);
+
+      } // trackPV
 
       static SG::AuxElement::ConstAccessor< float > jvt ("Jvt");
       safeFill<float, float, xAOD::Jet>(jet, jvt, m_Jvt, -999);
-
-      static SG::AuxElement::ConstAccessor< float > jvtJvfcorr ("JvtJvfcorr");
-      safeFill<float, float, xAOD::Jet>(jet, jvtJvfcorr, m_JvtJvfcorr, -999);
-
-      static SG::AuxElement::ConstAccessor< float > jvtRpt ("JvtRpt");
-      safeFill<float, float, xAOD::Jet>(jet, jvtRpt, m_JvtRpt, -999);
+      std::cout<<"jet index = "<<jet->index()<<std::endl;
 
       //      static SG::AuxElement::ConstAccessor<float> ghostTrackAssFrac("GhostTrackAssociationFraction");
       //      if ( ghostTrackAssFrac.isAvailable( *jet) ) {
       //        m_ghostTrackAssFrac->push_back( ghostTrackAssFrac( *jet) );
       //      } else { m_ghostTrackAssFrac->push_back( -999 ) ; }
 
-    } // trackPV
+    } // trackPV || JVT
 
-  }
-
-  if ( m_infoSwitch.m_jvt ) {
-      static SG::AuxElement::ConstAccessor< float > jvt2 ("Jvt");
-      safeFill<float, float, xAOD::Jet>(jet, jvt2, m_Jvt, -999);
-  }
+  } // trackAll || trackPV || JVT
 
   static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
   static SG::AuxElement::ConstAccessor< char > jvtPass_Medium("JetJVT_Passed_Medium");

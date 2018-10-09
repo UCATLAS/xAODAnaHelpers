@@ -469,11 +469,14 @@ namespace HelperClasses{
   }
 
   void TauInfoSwitch::initialize(){
-    m_trigger        = has_exact("trigger");
-    m_JetID          = has_exact("JetID");
-    m_effSF          = has_exact("effSF");
-    m_trackparams    = has_exact("trackparams");
-    m_trackhitcont   = has_exact("trackhitcont");
+    m_trigger           = has_exact("trigger");
+    m_JetID             = has_exact("JetID");
+    m_EleVeto           = has_exact("EleVeto");
+    m_trackAll          = has_exact("trackAll");
+    m_xahTauJetMatching = has_exact("xahTauJetMatching");
+    m_effSF             = has_exact("effSF");
+    m_trackparams       = has_exact("trackparams");
+    m_trackhitcont      = has_exact("trackhitcont");
 
     // working points combinations for trigger corrections
     std::string token;
