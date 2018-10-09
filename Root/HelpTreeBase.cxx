@@ -137,6 +137,11 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*
 
   this->ClearEvent();
 
+  // only retrieve the vertex container if it's not set and the user asks for that information
+  if( m_eventInfo->m_infoSwitch.m_pileup && !vertices ) {
+    HelperFunctions::retrieve( vertices, m_vertexContainerName, m_event, 0);
+  }
+
   m_eventInfo->FillEvent(eventInfo, m_event, vertices);
 
   this->FillEventUser(eventInfo);
