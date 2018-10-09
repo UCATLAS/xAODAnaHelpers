@@ -114,8 +114,6 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_calcBCIDInfo = false;
 
     // Primary Vertex
-    /// @brief Name of vertex container
-    std::string m_vertexContainerName = "PrimaryVertices";
     /// @brief Enable to apply a primary vertex cut
     bool m_applyPrimaryVertexCut = false;
     /// @brief Minimum number of tracks from **the** primary vertex (Harmonized Cut)

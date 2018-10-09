@@ -210,7 +210,7 @@ EL::StatusCode TreeAlgo :: execute ()
       event_systNames.push_back(systName);
     }
   }
-  
+
   if(!m_jetSystsVec.empty()){
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_jetSystsVec, 0, m_store, msg()) );
     for(const auto& systName: *systNames){
@@ -262,6 +262,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
     m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
     const auto& helpTree = m_trees[systName];
+    helpTree->m_vertexContainerName = m_vertexContainerName;
 
     // tell the tree to go into the file
     outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
@@ -328,12 +329,11 @@ EL::StatusCode TreeAlgo :: execute ()
 
   /* THIS IS WHERE WE START PROCESSING THE EVENT AND PLOTTING THINGS */
 
-  // Get EventInfo and the PrimaryVertices
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   const xAOD::VertexContainer* vertices(nullptr);
   if (m_retrievePV) {
-    ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
+    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
   }
   const xAOD::Vertex* primaryVertex = m_retrievePV ? HelperFunctions::getPrimaryVertex( vertices , msg() ) : nullptr;
 
@@ -364,7 +364,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if (std::find(fatJetSystNames.begin(), fatJetSystNames.end(), systName) != fatJetSystNames.end()) fatJetSuffix = systName;
     if (std::find(metSystNames.begin(), metSystNames.end(), systName) != metSystNames.end()) metSuffix = systName;
 
-    helpTree->FillEvent( eventInfo, m_event );
+    helpTree->FillEvent( eventInfo, m_event, vertices );
 
     // Fill trigger information
     if ( !m_trigDetailStr.empty() )    {
@@ -484,7 +484,7 @@ EL::StatusCode TreeAlgo :: execute ()
 	// ANA_CHECK( HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, msg()) );
       	// helpTree->FillFatJets( inFatJets, token );
       // }
-      
+
       // if ( reject ) continue;
 
       bool reject = false;

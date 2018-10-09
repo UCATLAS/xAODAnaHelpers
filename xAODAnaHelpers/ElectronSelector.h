@@ -254,7 +254,7 @@ private:
   asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
   asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle {"Trig::MatchingTool/MatchingTool"                  , this}; //!
 
-  /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing 
+  /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true;
 
   /* PID manager(s) */

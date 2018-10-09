@@ -519,7 +519,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // if doing JVF or JVT get PV location
   if ( m_doJVF ) {
     const xAOD::VertexContainer* vertices(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
+    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices, msg() );
   }
 

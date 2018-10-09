@@ -246,7 +246,7 @@ void EventInfo::clear()
   return;
 }
 
-void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* event) {
+void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event, const xAOD::VertexContainer* vertices) {
 
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
@@ -297,13 +297,8 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo,  xAOD::TEvent* even
 
   if ( m_infoSwitch.m_pileup ) {
 
-    if ( event ) {
-      const xAOD::VertexContainer* vertices(nullptr);
-      HelperFunctions::retrieve( vertices, "PrimaryVertices", event, 0 );
-      m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
-    } else {
-      m_npv = -1;
-    }
+    m_npv = -1;
+    if(vertices) m_npv = HelperFunctions::countPrimaryVertices(vertices, 2);
 
     m_actualMu  = eventInfo->actualInteractionsPerCrossing();
     m_averageMu = eventInfo->averageInteractionsPerCrossing();
