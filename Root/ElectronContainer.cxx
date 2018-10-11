@@ -46,6 +46,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_TrigMCEff  = new std::map< std::string, std::vector< std::vector< float > > >();
     m_PIDEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
     m_IsoEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
+    m_ChflipEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
 
     m_RecoEff_SF = new std::vector< std::vector< float > > ();
   }
@@ -158,6 +159,7 @@ ElectronContainer::~ElectronContainer()
     delete m_TrigMCEff  ;
     delete m_PIDEff_SF  ;
     delete m_IsoEff_SF  ;
+    delete m_ChflipEff_SF ;
     delete m_RecoEff_SF ;
   }
 
@@ -271,6 +273,10 @@ void ElectronContainer::setTree(TTree *tree)
           tree->SetBranchStatus ( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , 1 );
           tree->SetBranchAddress( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
         }
+        if (m_infoSwitch.m_chflipSF) {
+          tree->SetBranchStatus ( (m_name+"_ChflipEff_SF_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , 1 );
+          tree->SetBranchAddress( (m_name+"_ChflipEff_SF_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_ChflipEff_SF)[ PID+isol ] );
+        }
       }
     }
 
@@ -382,6 +388,8 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
           elec.TrigEff_SF[ trig+PID+iso ] = (*m_TrigEff_SF)[ trig+PID+iso ].at(idx);
           elec.TrigMCEff [ trig+PID+iso ] = (*m_TrigMCEff )[ trig+PID+iso ].at(idx);
         }
+        if(m_infoSwitch.m_chflipSF)
+          elec.ChflipEff_SF[ PID+iso ] =  (*m_ChflipEff_SF) [ PID+iso ].at(idx);
       }
     }
 
@@ -493,6 +501,8 @@ void ElectronContainer::setBranches(TTree *tree)
           tree->Branch( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigEff_SF)[ trig+PID+isol ] );
           tree->Branch( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
         }
+        if (m_infoSwitch.m_chflipSF)
+          tree->Branch( (m_name+"_ChflipEff_SF_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_ChflipEff_SF)[ PID+isol ] );
       }
     }
 
@@ -599,6 +609,8 @@ void ElectronContainer::clear()
           (*m_TrigEff_SF)[ trig+PID+isol ].clear();
           (*m_TrigMCEff)[ trig+PID+isol ].clear();
         }
+        if(m_infoSwitch.m_chflipSF)
+          (*m_ChflipEff_SF)[ PID+isol ].clear();
       }
     }
 
@@ -852,6 +864,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accChflipSF;
 
     for (auto& PID : m_infoSwitch.m_PIDSFWPs) {
       std::string PIDSF = "ElPIDEff_SF_syst_" + PID;
@@ -878,6 +891,11 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
         }
 
+        if(m_infoSwitch.m_chflipSF) {
+          std::string ChflipSF = "ElChflipEff_SF_syst_" + PID + (!isol.empty() ? "_isol" + isol : "");
+          accChflipSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID+isol , SG::AuxElement::Accessor< std::vector< float > >( ChflipSF ) ) );
+          safeSFVecFill<float, xAOD::Electron>( elec, accChflipSF.at( PID+isol ), &m_ChflipEff_SF->at( PID+isol ), junkSF );
+        }
       }
     }
 

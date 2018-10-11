@@ -387,6 +387,75 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   }
 
+  // 5.
+  // initialize the ElectronChargeEfficiencyCorrectionTool
+  //
+  if ( !m_WorkingPointPID.empty() && !m_ChflipCorrectionPath.empty() ) {
+
+    std::string file = m_ChflipCorrectionPath + "/chargeEfficiencySF.";
+    if (m_WorkingPointPID == "LooseBLayer") {
+      file += "LooseAndBLayerLLH";
+    } else {
+      file += m_WorkingPointPID + "LLH";
+    }
+    file += "_d0z0_v13";
+    if ( !m_WorkingPointIso.empty() ) {
+      file += "_" + m_WorkingPointIso;
+    }
+    file += ".root";
+
+    ANA_MSG_INFO("Electron charge-flip correction path: " << m_ChflipCorrectionPath);
+    ANA_MSG_INFO("Electron charge-flip correction file: " << file);
+
+    m_ChflipEffSF_tool_name = "ElectronChargeEfficiencyCorrectionTool_effSF_" + m_WorkingPointPID;
+    if ( !m_WorkingPointIso.empty() ) {
+      m_ChflipEffSF_tool_name += ( "_isol" + m_WorkingPointIso );
+    }
+
+    ANA_CHECK( checkToolStore<CP::ElectronChargeEfficiencyCorrectionTool>(m_ChflipEffSF_tool_name));
+
+    if ( asg::ToolStore::contains<CP::ElectronChargeEfficiencyCorrectionTool>(m_ChflipEffSF_tool_name) ) {
+      m_elChflipEffCorrTool = asg::ToolStore::get<CP::ElectronChargeEfficiencyCorrectionTool>(m_ChflipEffSF_tool_name);
+    } else {
+      m_elChflipEffCorrTool = new CP::ElectronChargeEfficiencyCorrectionTool(m_ChflipEffSF_tool_name);
+      m_elChflipEffCorrTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
+      ANA_CHECK( m_elChflipEffCorrTool->setProperty("ForceDataType",sim_flav));
+      ANA_CHECK( m_elChflipEffCorrTool->setProperty("CorrectionFileName", file));
+      ANA_CHECK( m_elChflipEffCorrTool->initialize());
+    }
+
+
+    // Get a list of affecting systematics
+    //
+    CP::SystematicSet affectSystsChflip = m_elChflipEffCorrTool->affectingSystematics();
+    //
+    // Convert into a simple list
+    //
+    for ( const auto& syst_it : affectSystsChflip ) { ANA_MSG_DEBUG("ElectronChargeEfficiencyCorrectionTool can be affected by efficiency systematic: " << syst_it.name()); }
+
+    //
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
+    //
+    const CP::SystematicSet recSystsChflip = m_elChflipEffCorrTool->recommendedSystematics();
+    m_systListChflip = HelperFunctions::getListofSystematics( recSystsChflip, m_systNameChflip, m_systValChflip, msg() );
+
+    ANA_MSG_INFO("Will be using ElectronChargeEfficiencyCorrectionTool efficiency systematic:");
+    for ( const auto& syst_it : m_systListChflip ) {
+      if ( m_systNameChflip.empty() ) {
+    	ANA_MSG_INFO("\t Running w/ nominal configuration only!");
+    	break;
+      }
+      ANA_MSG_INFO("\t " << syst_it.name());
+    }
+
+    //  Add the chosen WP to the string labelling the vector<SF> decoration
+    m_outputSystNamesChflip = m_outputSystNamesChflip + "_" + m_WorkingPointPID;
+    if ( !m_WorkingPointIso.empty() ) {
+      m_outputSystNamesChflip += ( "_isol" + m_WorkingPointIso );
+    }
+  }
+
   // Write output sys names
   if ( m_writeSystToMetadata ) {
     TFile *fileMD = wk()->getOutputFile ("metadata");
@@ -394,6 +463,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     HelperFunctions::writeSystematicsListHist(m_systListIso, m_outputSystNamesIso, fileMD);
     HelperFunctions::writeSystematicsListHist(m_systListReco, m_outputSystNamesReco, fileMD);
     HelperFunctions::writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig, fileMD);
+    HelperFunctions::writeSystematicsListHist(m_systListChflip, m_outputSystNamesChflip, fileMD);
   }
 
   // *********************************************************************************
@@ -537,6 +607,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   std::unique_ptr< std::vector< std::string > > sysVariationNamesIso       = nullptr;
   std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig      = nullptr;
   std::unique_ptr< std::vector< std::string > > sysVariationNamesTrigMCEff = nullptr;
+  std::unique_ptr< std::vector< std::string > > sysVariationNamesChflip    = nullptr;
 
   // 1.
   // PID efficiency SFs - this is a per-ELECTRON weight
@@ -947,6 +1018,105 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     // We only do this once per event if the list does not exist yet
     if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTrig ) ) {
       ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
+    }
+
+  }
+  
+  // 5.
+  // Charge flip efficiency SFs (eff_data/eff_MC) - this is a per-ELECTRON weight
+  //
+  // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
+  // Every systematic will correspond to a different SF!
+  //
+
+  // NB: calculation of the event SF is up to the analyzer
+
+  // Do it only if a tool with *this* name hasn't already been used, and has been previously initialised
+  //
+
+  if ( !m_WorkingPointPID.empty() && !m_ChflipCorrectionPath.empty() && !isToolAlreadyUsed(m_ChflipEffSF_tool_name) ) {
+
+    if ( writeSystNames ) sysVariationNamesChflip = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+
+    // Create the names of the SF weights to be recorded
+    std::string sfName = "ElChflipEff_SF_syst_" + m_WorkingPointPID;
+    if ( !m_WorkingPointIso.empty() ) {
+      sfName += ( "_isol" + m_WorkingPointIso );
+    }
+
+    for ( const auto& syst_it : m_systListChflip ) {
+
+      if ( !syst_it.name().empty() && !nominal ) continue;
+
+      ANA_MSG_DEBUG("Electron charge-flip efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name());
+      if ( writeSystNames ) sysVariationNamesChflip->push_back(syst_it.name());
+
+      // apply syst
+      //
+      if ( m_elChflipEffCorrTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    	ANA_MSG_ERROR("Failed to configure ElectronChargeEfficiencyCorrectionTool for systematic " << syst_it.name());
+    	return EL::StatusCode::FAILURE;
+      }
+      ANA_MSG_DEBUG( "Successfully applied systematics: " << m_elChflipEffCorrTool->appliedSystematics().name() );
+
+      // and now apply charge-flip efficiency SF!
+      //
+      unsigned int idx(0);
+      for ( auto el_itr : *(inputElectrons) ) {
+
+    	 ANA_MSG_DEBUG( "Applying Charge-flip efficiency SF" );
+
+       // NB: derivations might remove CaloCluster and tracks for low pt electrons: add a safety check!
+       if ( !el_itr->caloCluster() ) {
+         ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
+         continue;
+       }
+
+    	 //
+    	 // obtain charge-flip efficiency SF as a float (to be stored away separately)
+    	 //
+    	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
+    	 //
+    	 SG::AuxElement::Decorator< std::vector<float> > sfVecChflip ( sfName  );
+    	 if ( !sfVecChflip.isAvailable( *el_itr )  ) {
+    	   sfVecChflip ( *el_itr ) = std::vector<float>();
+       }
+
+    	 //
+    	 // obtain efficiency SF for charge-flip
+    	 //
+    	 double chflipEffSF(-1.0); // tool wants a double
+       CP::CorrectionCode::ErrorCode status = m_elChflipEffCorrTool->getEfficiencyScaleFactor( *el_itr, chflipEffSF );
+    	 if ( status == CP::CorrectionCode::Error ) {
+    	   ANA_MSG_ERROR( "Problem in charge-flip getEfficiencyScaleFactor Tool");
+         return EL::StatusCode::FAILURE;
+    	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
+         ANA_MSG_DEBUG( "Electron of of charge-flip efficiency validity range");
+       }
+
+    	 //
+    	 // Add them to decoration vectors
+    	 //
+       sfVecChflip( *el_itr ).push_back( chflipEffSF );
+
+       ANA_MSG_DEBUG( "===>>>");
+       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
+       ANA_MSG_DEBUG( "Charge-flip efficiency SF decoration: " << sfName );
+       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+       ANA_MSG_DEBUG( "Charge-flip efficiency SF:");
+       ANA_MSG_DEBUG( "\t " << chflipEffSF << "(from getEfficiencyScaleFactor())" );
+       ANA_MSG_DEBUG( "--------------------------------------");
+
+    	 ++idx;
+
+      } // close electron loop
+
+    }  // close loop on charge-flip efficiency SF systematics
+
+    // Add list of systematics names to TStore
+    // We only do this once per event if the list does not exist yet
+    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesChflip ) ) {
+      ANA_CHECK( m_store->record( std::move(sysVariationNamesChflip), m_outputSystNamesChflip ));
     }
 
   }

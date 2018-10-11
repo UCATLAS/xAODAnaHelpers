@@ -66,6 +66,7 @@ namespace xAH {
       std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
+      std::map< std::string, std::vector< std::vector< float > > >* m_ChflipEff_SF;
 
       // reco parameters
       std::vector<int>* m_author;
