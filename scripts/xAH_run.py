@@ -584,6 +584,8 @@ if __name__ == "__main__":
 
     elif (args.driver == "prun"):
       driver = ROOT.EL.PrunDriver()
+      if args.optGridNGBPerJob is None:
+        xAH_logger.warning("optGridNGBPerJob is not set. This will let the scout jobs figure out a limit for your jobs but may not be optimal. If you find your jobs are exhausted, increase the limit. A sensible limit is somewhere between 4GB and 12GB.")
       for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
         if getattr(args, opt) is None: continue  # skip if not set
         if opt in ['help', 'optGridOutputSampleName', 'singleTask', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options
