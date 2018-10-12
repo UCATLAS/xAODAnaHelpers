@@ -130,7 +130,7 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   m_eventInfo       = new xAH::EventInfo(detailStr, m_units, m_isMC, m_nominalTree);
   m_eventInfo -> setBranches(m_tree);
-  this->AddEventUser();
+  this->AddEventUser(detailStr);
 }
 
 void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/, const xAOD::VertexContainer* vertices ) {
