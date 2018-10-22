@@ -537,6 +537,10 @@ if __name__ == "__main__":
         if not found_matching_sample:
           xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
+    for output in configurator._outputs:
+      xAH_logger.info('Creating output stream "{}"'.format(output))
+      job.outputAdd(ROOT.EL.OutputStream(output))
+
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service
     if hasattr(ROOT.EL, 'NTupleSvc'):

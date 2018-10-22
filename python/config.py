@@ -18,6 +18,7 @@ class Config(object):
   def __init__(self):
     self._algorithms = []
     self._samples    = {}
+    self._outputs    = set([])
     self._log        = []
 
   def setalg(self, className, options):
@@ -117,3 +118,6 @@ class Config(object):
       self._samples[pattern].update(kwargs)
     except KeyError:
       self._samples[pattern] = kwargs
+
+  def output(self, name):
+    self._outputs.add(str(name))
