@@ -208,6 +208,7 @@ namespace HelperClasses{
     m_trackhitcont  = has_exact("trackhitcont");
     m_effSF         = has_exact("effSF");
     m_chflipSF      = has_exact("chflipSF");
+    m_chflipBDT     = has_exact("chflipBDT");
     m_promptlepton  = has_exact("promptlepton");
     // working points for scale-factors
 

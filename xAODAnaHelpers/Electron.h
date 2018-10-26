@@ -86,6 +86,9 @@ namespace xAH {
     float PromptLeptonIso;
     float PromptLeptonVeto;
 
+    // charge-flip BDT
+    int   ECIDSPassed;
+    float ECIDSResult;
   };
 
 }//xAH

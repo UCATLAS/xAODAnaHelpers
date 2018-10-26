@@ -94,6 +94,11 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_PromptLeptonIso                   = new std::vector<float> ();
     m_PromptLeptonVeto                  = new std::vector<float> ();
   }
+  
+  if ( m_infoSwitch.m_chflipBDT ) {
+    m_ECIDSPassed = new std::vector<int> ();
+    m_ECIDSResult = new std::vector<float> ();
+  }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
@@ -205,6 +210,11 @@ ElectronContainer::~ElectronContainer()
     delete m_PromptLeptonInput_sv1_jf_ntrkv    ;
     delete m_PromptLeptonIso                   ;
     delete m_PromptLeptonVeto                  ;
+  }
+
+  if ( m_infoSwitch.m_chflipBDT ) {
+    delete m_ECIDSPassed;
+    delete m_ECIDSResult;
   }
 
 }
@@ -327,6 +337,10 @@ void ElectronContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "PromptLeptonVeto",                 &m_PromptLeptonVeto);
   }
 
+  if ( m_infoSwitch.m_chflipBDT ) {
+    connectBranch<int>  (tree, "ECIDSPassed", &m_ECIDSPassed);
+    connectBranch<float>(tree, "ECIDSResult", &m_ECIDSResult);
+  }
 }
 
 void ElectronContainer::updateParticle(uint idx, Electron& elec)
@@ -445,6 +459,11 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.PromptLeptonVeto                  = m_PromptLeptonVeto                  ->at(idx);
   }
 
+  // charge-flip BDT
+  if ( m_infoSwitch.m_chflipBDT ) {
+    elec.ECIDSPassed = m_ECIDSPassed->at(idx);
+    elec.ECIDSResult = m_ECIDSResult->at(idx);
+  }
 }
 
 
@@ -551,6 +570,11 @@ void ElectronContainer::setBranches(TTree *tree)
     setBranch<int>  (tree, "PromptLeptonInput_sv1_jf_ntrkv",    m_PromptLeptonInput_sv1_jf_ntrkv);
     setBranch<float>(tree, "PromptLeptonIso",                   m_PromptLeptonIso);
     setBranch<float>(tree, "PromptLeptonVeto",                  m_PromptLeptonVeto);
+  }
+
+  if ( m_infoSwitch.m_chflipBDT ) {
+    setBranch<int>  (tree, "ECIDSPassed", m_ECIDSPassed);
+    setBranch<float>(tree, "ECIDSResult", m_ECIDSResult);
   }
 
   return;
@@ -660,6 +684,11 @@ void ElectronContainer::clear()
     m_PromptLeptonInput_sv1_jf_ntrkv     -> clear();
     m_PromptLeptonIso                    -> clear();
     m_PromptLeptonVeto                   -> clear();
+  }
+
+  if ( m_infoSwitch.m_chflipBDT ) {
+    m_ECIDSPassed->clear();
+    m_ECIDSResult->clear();
   }
 
 }
@@ -853,6 +882,14 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     m_PromptLeptonInput_sv1_jf_ntrkv   ->push_back( acc_sv1_jf_ntrkv   .isAvailable(*elec) ? acc_sv1_jf_ntrkv(*elec)   : -100);
     m_PromptLeptonIso                  ->push_back( acc_Iso            .isAvailable(*elec) ? acc_Iso(*elec)            : -100);
     m_PromptLeptonVeto                 ->push_back( acc_Veto           .isAvailable(*elec) ? acc_Veto(*elec)           : -100);
+  }
+
+  if ( m_infoSwitch.m_chflipBDT ) {
+    static SG::AuxElement::ConstAccessor<char>  acc_ECIDSPassed("DFCommonElectronsECIDS");
+    static SG::AuxElement::ConstAccessor<float> acc_ECIDSResult("DFCommonElectronsECIDSResult");
+
+    safeFill<char,  int,   xAOD::Electron>( elec, acc_ECIDSPassed, m_ECIDSPassed, -1    );
+    safeFill<float, float, xAOD::Electron>( elec, acc_ECIDSResult, m_ECIDSResult, -9999 );
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {

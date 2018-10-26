@@ -370,6 +370,25 @@ EL::StatusCode ElectronSelector :: initialize ()
     ANA_MSG_WARNING("However, if you really didn't want to do the matching now, it's all good!");
     ANA_MSG_WARNING("***********************************************************");
   }
+  
+  // *************************************
+  //
+  // Initialise AsgElectronChargeIDSelectorTool
+  //
+  // *************************************
+
+  // Do this only if requested
+  if ( m_recalculateECIDS ) {
+    if ( m_ECIDSTrainingFile.empty() ) {
+      ANA_MSG_ERROR("ECIDS training file needs to be set!");
+      return EL::StatusCode::FAILURE;
+    }
+
+    ANA_CHECK( m_electronChargeIDSelectorTool_handle.setProperty("TrainingFile", m_ECIDSTrainingFile));
+    ANA_CHECK( m_electronChargeIDSelectorTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK( m_electronChargeIDSelectorTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_electronChargeIDSelectorTool_handle);
+  }
 
   // **********************************************************************************************
 
@@ -1118,6 +1137,21 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   }
   if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_iso_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  //
+  // charge-flip
+  //
+  if ( m_recalculateECIDS ) {
+    static SG::AuxElement::Decorator<char>  acc_ECIDSPassed("DFCommonElectronsECIDS");
+    static SG::AuxElement::Decorator<float> acc_ECIDSResult("DFCommonElectronsECIDSResult");
+
+    auto passed = m_electronChargeIDSelectorTool_handle->accept(electron);
+    auto result = m_electronChargeIDSelectorTool_handle->calculate(electron);
+
+    acc_ECIDSPassed( *electron ) = static_cast<char>(passed);
+    acc_ECIDSResult( *electron ) = static_cast<float>(result);
+  }
 
   return 1;
 }

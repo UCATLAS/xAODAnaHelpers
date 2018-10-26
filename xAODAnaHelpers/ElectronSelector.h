@@ -20,6 +20,7 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
+#include "EgammaAnalysisInterfaces/IAsgElectronLikelihoodTool.h"
 #include "IsolationSelection/IIsolationSelectionTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
@@ -185,6 +186,12 @@ public:
   /// Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.07;
 
+/* charge-flip */
+  /** @brief Recalculate charge-flip ECIDS BDT, not needed by default */
+  bool m_recalculateECIDS = false;
+  /** @brief ECIDS training file */
+  std::string m_ECIDSTrainingFile = "";
+
 private:
 
   /**
@@ -253,6 +260,7 @@ private:
   CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                                                                 //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
   asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle {"Trig::MatchingTool/MatchingTool"                  , this}; //!
+  asg::AnaToolHandle<IAsgElectronLikelihoodTool> m_electronChargeIDSelectorTool_handle{"AsgElectronChargeIDSelectorTool/AsgElectronChargeIDSelectorTool", this}; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true;

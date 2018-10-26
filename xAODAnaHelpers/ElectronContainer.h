@@ -108,6 +108,9 @@ namespace xAH {
       std::vector<float>* m_PromptLeptonIso;
       std::vector<float>* m_PromptLeptonVeto;
 
+      // charge-flip BDT
+      std::vector<int>*   m_ECIDSPassed;
+      std::vector<float>* m_ECIDSResult;
     };
 }
 #endif // xAODAnaHelpers_ElectronContainer_H
