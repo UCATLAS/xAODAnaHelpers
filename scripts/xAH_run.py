@@ -220,7 +220,13 @@ if __name__ == "__main__":
   except: pass
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
+  
+  # Import ROOT to properly set batch mode
+  import ROOT
+  ROOT.PyConfig.IgnoreCommandLineOptions = True
+  ROOT.gROOT.SetBatch(True)
 
+  # import xAH
   import xAODAnaHelpers
   import logging
   xAH_logger = logging.getLogger("xAH.run")
@@ -290,9 +296,6 @@ if __name__ == "__main__":
     if singleTask and (not args.use_inputFileList and not args.use_scanRucio):
       xAH_logger.warning("--singleTask requires both --inputList and --inputRucio to have an effect")
 
-
-    # at this point, we should import ROOT and do stuff
-    import ROOT
     ## Determine which ASG framework using env var for CMAKE setup
     ASG_framework_list = ['Base', 'Top']
     ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
