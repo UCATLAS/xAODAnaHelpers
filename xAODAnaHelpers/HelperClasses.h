@@ -140,6 +140,7 @@ namespace HelperClasses {
         m_pileup         pileup         exact
         m_pileupsys      pileupsys      exact
         m_shapeEM        shapeEM        exact
+        m_shapeEMPFLOW   shapeEMPFLOW   exact
         m_shapeLC        shapeLC        exact
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
@@ -155,6 +156,7 @@ namespace HelperClasses {
     bool m_pileup;
     bool m_pileupsys;
     bool m_shapeEM;
+    bool m_shapeEMPFLOW;
     bool m_shapeLC;
     bool m_truth;
     bool m_caloClus;
