@@ -644,10 +644,18 @@ void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jet
       L1jet_Et.push_back( jet_itr->et8x8() );
       L1jet_Et_sorted.push_back( jet_itr->et8x8() );
     }
-    std::sort(L1jet_Et_sorted.begin(), L1jet_Et_sorted.end(), std::greater<float>());
 
-    for( unsigned int i = 0; i < L1jet_Et.size(); i++) {
-      int index = std::find (L1jet_Et.begin(), L1jet_Et.end(), L1jet_Et_sorted.at(i)) - L1jet_Et.begin();
+    // std::sort(L1jet_Et_sorted.begin(), L1jet_Et_sorted.end(), std::greater<float>());
+    // sort L1jet_Et_sorted and create an indices vector with the sorted indices
+    std::vector<size_t> indices(L1jet_Et_sorted.size());
+    for(size_t j = 0; j < L1jet_Et.size(); j++) { indices.push_back(j); }
+    std::sort(
+              begin(indices), end(indices),
+              [&](size_t a, size_t b) { return L1jet_Et_sorted[a] < L1jet_Et_sorted[b]; }
+              );
+
+    for(int i = int(indices.size()) - 1; i >= 0; i--) { // reverse order, sort is low to high and we want high to low
+      size_t index = indices.at(i);
       m_l1Jet_et8x8.push_back ( jets->at(index)->et8x8() / m_units );
       m_l1Jet_eta.push_back( jets->at(index)->eta() );
       m_l1Jet_phi.push_back( jets->at(index)->phi() );
