@@ -2652,7 +2652,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       static SG::AuxElement::ConstAccessor< float > jvt ("Jvt");
       safeFill<float, float, xAOD::Jet>(jet, jvt, m_Jvt, -999);
-      std::cout<<"jet index = "<<jet->index()<<std::endl;
 
       //      static SG::AuxElement::ConstAccessor<float> ghostTrackAssFrac("GhostTrackAssociationFraction");
       //      if ( ghostTrackAssFrac.isAvailable( *jet) ) {
