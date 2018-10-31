@@ -620,6 +620,10 @@ void HelpTreeBase::AddL1Jets()
 
 }
 
+bool sortFunction(const std::vector<float> a, const std::vector<float> b) {
+  return (a.at(0) < b.at(0));
+}
+
 void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jets ) {
 
   this->ClearL1Jets();
@@ -634,22 +638,27 @@ void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jet
   }
 
   else {
-    std::vector< float > L1jet_Et, L1jet_Et_sorted;
+    std::vector< std::vector<float> > vec;
     for( auto jet_itr : *jets ) {
-      L1jet_Et.push_back( jet_itr->et8x8() );
-      L1jet_Et_sorted.push_back( jet_itr->et8x8() );
+      std::vector<float> row;
+      row.clear();
+      row.push_back(jet_itr->et8x8());
+      row.push_back(jet_itr->eta());
+      row.push_back(jet_itr->phi());
+      vec.push_back(row);
     }
-    std::sort(L1jet_Et_sorted.begin(), L1jet_Et_sorted.end(), std::greater<float>());
-
-    for( unsigned int i = 0; i < L1jet_Et.size(); i++) {
-      int index = std::find (L1jet_Et.begin(), L1jet_Et.end(), L1jet_Et_sorted.at(i)) - L1jet_Et.begin();
-      m_l1Jet_et8x8.push_back ( jets->at(index)->et8x8() / m_units );
-      m_l1Jet_eta.push_back( jets->at(index)->eta() );
-      m_l1Jet_phi.push_back( jets->at(index)->phi() );
-      m_nL1Jet++;
+    
+    std::sort(vec.begin(), vec.end(), sortFunction);
+      for (int i = int(vec.size())-1; i >= 0; i--) {
+	m_l1Jet_et8x8.push_back((vec.at(i)).at(0) / m_units);
+	m_l1Jet_eta.push_back((vec.at(i)).at(1));
+	m_l1Jet_phi.push_back((vec.at(i)).at(2));
+	m_nL1Jet++;
+      }
+      vec.clear();
     }
-  }
 }
+
 
 void HelpTreeBase::ClearL1Jets() {
   m_nL1Jet = 0;
