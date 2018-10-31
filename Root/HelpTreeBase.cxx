@@ -625,6 +625,10 @@ void HelpTreeBase::AddL1Jets()
 
 }
 
+bool sortFunction(const std::vector<float> a, const std::vector<float> b) {
+  return (a.at(0) < b.at(0));
+}
+
 void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jets ) {
 
   this->ClearL1Jets();
@@ -639,30 +643,27 @@ void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jet
   }
 
   else {
-    std::vector< float > L1jet_Et, L1jet_Et_sorted;
+    std::vector< std::vector<float> > vec;
     for( auto jet_itr : *jets ) {
-      L1jet_Et.push_back( jet_itr->et8x8() );
-      L1jet_Et_sorted.push_back( jet_itr->et8x8() );
+      std::vector<float> row;
+      row.clear();
+      row.push_back(jet_itr->et8x8());
+      row.push_back(jet_itr->eta());
+      row.push_back(jet_itr->phi());
+      vec.push_back(row);
     }
-
-    // std::sort(L1jet_Et_sorted.begin(), L1jet_Et_sorted.end(), std::greater<float>());
-    // sort L1jet_Et_sorted and create an indices vector with the sorted indices
-    std::vector<size_t> indices(L1jet_Et_sorted.size());
-    for(size_t j = 0; j < L1jet_Et.size(); j++) { indices.push_back(j); }
-    std::sort(
-              begin(indices), end(indices),
-              [&](size_t a, size_t b) { return L1jet_Et_sorted[a] < L1jet_Et_sorted[b]; }
-              );
-
-    for(int i = int(indices.size()) - 1; i >= 0; i--) { // reverse order, sort is low to high and we want high to low
-      size_t index = indices.at(i);
-      m_l1Jet_et8x8.push_back ( jets->at(index)->et8x8() / m_units );
-      m_l1Jet_eta.push_back( jets->at(index)->eta() );
-      m_l1Jet_phi.push_back( jets->at(index)->phi() );
-      m_nL1Jet++;
+    
+    std::sort(vec.begin(), vec.end(), sortFunction);
+      for (int i = int(vec.size())-1; i >= 0; i--) {
+	m_l1Jet_et8x8.push_back((vec.at(i)).at(0) / m_units);
+	m_l1Jet_eta.push_back((vec.at(i)).at(1));
+	m_l1Jet_phi.push_back((vec.at(i)).at(2));
+	m_nL1Jet++;
+      }
+      vec.clear();
     }
-  }
 }
+
 
 void HelpTreeBase::ClearL1Jets() {
   m_nL1Jet = 0;
