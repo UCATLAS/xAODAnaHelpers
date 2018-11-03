@@ -61,8 +61,6 @@ namespace Trig {
 
 typedef SG::AuxElement::Accessor< std::vector< float > > floatAccessor ;
 
-bool sortFunction(const std::vector<float> a, const std::vector<float> b);
-
 class HelpTreeBase {
 
 public:
@@ -139,7 +137,6 @@ public:
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
   void FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jets = false );
-  //void sortFunction(const std::vector<float> a, const std::vector<float> b);
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
