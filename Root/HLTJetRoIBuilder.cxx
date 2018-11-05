@@ -212,10 +212,8 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   ANA_MSG_VERBOSE("Getting the PV ");
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
-  if(HelperFunctions::isAvailable<xAOD::VertexContainer>("PrimaryVertices", m_event, m_store, msg())){
-    ANA_CHECK( HelperFunctions::retrieve(offline_vertices, "PrimaryVertices", m_event, m_store, msg()) );
-    offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices, msg());
-  }
+  ANA_CHECK( HelperFunctions::retrieve(offline_vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices, msg());
 
   //
   // get event info
@@ -344,7 +342,7 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
       for( const xAOD::Jet* previousJet : *hltJets){
 	if(previousJet->p4().DeltaR(hlt_jet->p4()) < 0.1){
 	  const xAOD::BTagging *p_btag_info = previousJet->auxdata< const xAOD::BTagging* >("HLTBTag");
-	  double p_mv2c10 = -99; 
+	  double p_mv2c10 = -99;
 	  p_btag_info->MVx_discriminant("MV2c10", p_mv2c10);
 
 	  double this_mv2c10 = -99;

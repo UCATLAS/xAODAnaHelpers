@@ -130,14 +130,19 @@ void HelpTreeBase::AddEvent( const std::string detailStr ) {
 
   m_eventInfo       = new xAH::EventInfo(detailStr, m_units, m_isMC, m_nominalTree);
   m_eventInfo -> setBranches(m_tree);
-  this->AddEventUser();
+  this->AddEventUser(detailStr);
 }
 
-void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/ ) {
+void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/, const xAOD::VertexContainer* vertices ) {
 
   this->ClearEvent();
 
-  m_eventInfo->FillEvent(eventInfo, m_event);
+  // only retrieve the vertex container if it's not set and the user asks for that information
+  if( m_eventInfo->m_infoSwitch.m_pileup && !vertices ) {
+    HelperFunctions::retrieve( vertices, m_vertexContainerName, m_event, 0);
+  }
+
+  m_eventInfo->FillEvent(eventInfo, m_event, vertices);
 
   this->FillEventUser(eventInfo);
 }
@@ -645,8 +650,6 @@ void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jet
     }
     
     std::sort(vec.begin(), vec.end(), [&](const std::vector<float> a, const std::vector<float> b) { return a.at(0) < b.at(0);});
-    
-    std::cout << std::endl << std::endl;
     for (int i = int(vec.size())-1; i >= 0; i--) {
       m_l1Jet_et8x8.push_back((vec.at(i)).at(0) / m_units);
       m_l1Jet_eta.push_back((vec.at(i)).at(1));
@@ -697,7 +700,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
   xAH::JetContainer* thisJet = m_jets[jetName];
 
   if( thisJet->m_infoSwitch.m_trackPV || thisJet->m_infoSwitch.m_allTrack ) {
-    HelperFunctions::retrieve( vertices, "PrimaryVertices", m_event, 0);
+    HelperFunctions::retrieve( vertices, m_vertexContainerName, m_event, 0);
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
     if ( pvLocation >= 0 ) pv = vertices->at( pvLocation );
   }
@@ -964,9 +967,9 @@ void HelpTreeBase::AddTaus(const std::string detailStr, const std::string tauNam
   if ( m_debug )  Info("AddTaus()", "Adding tau variables: %s", detailStr.c_str());
 
   m_taus[tauName] = new xAH::TauContainer(tauName, detailStr, m_units, m_isMC, m_nominalTree);
-  
+
   xAH::TauContainer* thisTau = m_taus[tauName];
-  
+
   thisTau->setBranches(m_tree);
   this->AddTausUser();
 }

@@ -82,14 +82,6 @@ namespace HelperFunctions {
   */
   std::size_t string_pos( const std::string& haystack, const std::string& needle, unsigned int N );
 
-  /**
-    Function which returns the WP for ISO/ID from a config file.
-    Returns empty string if no WP is found.
-
-  */
-  std::string parse_wp( const std::string& type, const std::string& config_name, MsgStream& msg );
-  inline std::string parse_wp( const std::string& type, const std::string& config_name ) { return parse_wp(type, config_name, msg()); }
-
   /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
   |                                                                            |
   |   Author  : Marco Milesi                                                   |
@@ -526,6 +518,25 @@ namespace HelperFunctions {
     std::sort(vec.begin(), vec.end());
     vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
   }
+
+  /// @brief The different supported shower types
+  enum ShowerType {Unknown, Pythia8, Herwig7, Sherpa21, Sherpa22};
+
+  /**
+    @brief Determines the type of generator used for the shower from the sample name
+    @param sample_name      The name of the sample, usualy the dataset name
+
+    @rst
+    The name of the generator is determined using some common definitions in the ATLAS MC dataset naming scheme. The 
+    case independent strings that are searched for are:
+     * PYTHIA8EVTGEN or Py8EG or PYTHIA : Pythia8
+     * HERWIG : Herwig7
+     * SHERPA_CT : Sherpa21
+     * SHERPA : Sherpa22 (if not Sherpa 21)
+    @endrst
+   */
+  ShowerType getMCShowerType(const std::string& sample_name);
+
 
 } // close namespace HelperFunctions
 

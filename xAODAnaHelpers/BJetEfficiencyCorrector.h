@@ -58,6 +58,9 @@ public:
   /// @brief The decoration key written to passing objects
   std::string m_decor = "BTag";
 
+  /// @brief Calibration to use for MC (EfficiencyB/C/T/LightCalibrations), "auto" to determine from sample name
+  std::string m_EfficiencyCalibration = "";
+
 private:
 
   /// @brief The decoration key written to passing objects

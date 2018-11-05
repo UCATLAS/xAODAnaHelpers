@@ -61,46 +61,41 @@ public:
   float m_systValIso = 0.0;
   float m_systValReco = 0.0;
   float m_systValTrig = 0.0;
-  float m_systValTrigMCEff = 0.0;
   std::string m_systNamePID = "";
   std::string m_systNameIso = "";
   std::string m_systNameReco = "";
   std::string m_systNameTrig = "";
-  std::string m_systNameTrigMCEff = "";
   std::string m_outputSystNamesPID = "EleEffCorr_PIDSyst";
   std::string m_outputSystNamesIso = "EleEffCorr_IsoSyst";
   std::string m_outputSystNamesReco = "EleEffCorr_RecoSyst";
   std::string m_outputSystNamesTrig = "EleEffCorr_TrigSyst";
-  std::string m_outputSystNamesTrigMCEff = "EleEffCorr_TrigMCEffSyst";
+
+  /// @brief Systematic correlation model
   std::string m_correlationModel = "FULL";
 
-  std::string m_corrFileNamePID = "";
-  std::string m_corrFileNameIso = "";
-  std::string m_corrFileNameReco = "";
-  std::string m_corrFileNameTrig = "";
-  std::string m_corrFileNameTrigMCEff = "";
+  /// @brief PID working point (LooseBLayer, Medium, Tight)
+  std::string m_WorkingPointPID = "";
 
-  /// @brief Defines the acceptance region for calculating scale factors
-  float m_ptThreshold = 4.5e3;
-  float m_ptThresholdTrigger = 7e3;
+  /// @brief Isolation working point
+  std::string m_WorkingPointIso = "";
+
+  /// @brief Reconstruction working point (Reconstruction only)
+  std::string m_WorkingPointReco = "";
+
+  /// @brief Trigger working point
+  std::string m_WorkingPointTrig = "";
+
+  /// @brief Override corrections map file (not recommended)
+  std::string m_overrideMapFilePath = "";
 
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
-  std::string m_PID_WP;    //!
-  std::string m_Iso_WP;    //!
-  std::string m_IsoPID_WP; //!
-
-  std::string m_WorkingPointIDTrig;  //!
-  std::string m_WorkingPointIsoTrig; //!
-  std::string m_WorkingPointTrigTrig; //!
-
   std::vector<CP::SystematicSet> m_systListPID;  //!
   std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
-  std::vector<CP::SystematicSet> m_systListTrigMCEff; //!
 
   // tools
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  //!

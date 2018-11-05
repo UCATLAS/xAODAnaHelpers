@@ -16,6 +16,8 @@
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
 
+#include <SampleHandler/MetaFields.h>
+
 //EDM
 #include "xAODJet/JetAuxContainer.h"
 
@@ -179,6 +181,40 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
+
+    if(isMC() && !m_EfficiencyCalibration.empty())
+      {
+	std::string calibration=m_EfficiencyCalibration;
+	if(m_EfficiencyCalibration=="auto")
+	  {
+	    std::string sampleName=wk()->metaData()->castString(SH::MetaFields::sampleName);
+
+	    switch(HelperFunctions::getMCShowerType(sampleName))
+	      {
+	      case HelperFunctions::Pythia8:
+		calibration="410501";
+		break;
+	      case HelperFunctions::Herwig7:
+		calibration="410558";
+		break;
+	      case HelperFunctions::Sherpa21:
+		calibration="426131";
+		break;
+	      case HelperFunctions::Sherpa22:
+		calibration="410250";
+	      break;
+	      case HelperFunctions::Unknown:
+		ANA_MSG_WARNING("Cannot determine MC shower type for sample " << sampleName << ", assuming Pythia8 (default).");
+		calibration="410501";
+		break;
+	      }
+	  }
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
+      }
+
     ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
 
@@ -329,25 +365,20 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 	// get the scale factor
 	float SF(-1.0);
-	// if only decorator with decision because OP is not calibrated, set SF to 1
-	if ( fabs(jet_itr->eta()) < 2.5 ) {
-
-	  CP::CorrectionCode BJetEffCode;
-	  // if passes cut take the efficiency scale factor
-	  // if failed cut take the inefficiency scale factor
-	  if( tagged ) {
-	    BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-	  } else {
-	    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-	  }
-	  if (BJetEffCode == CP::CorrectionCode::Error){
-	    ANA_MSG_WARNING( "Error in getEfficiencyScaleFactor");
-	    SF = -1.0;
-	    //return EL::StatusCode::FAILURE;
-	  }
-	  // if it is out of validity range (jet pt > 1200 GeV), the tools just applies the SF at 200 GeV
-	  //if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
-	} // eta < 2.5
+  CP::CorrectionCode BJetEffCode;
+  // if passes cut take the efficiency scale factor
+  // if failed cut take the inefficiency scale factor
+  if( tagged ) {
+    BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+  } else {
+    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+  }
+  if (BJetEffCode == CP::CorrectionCode::Error) {
+    ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
+    return EL::StatusCode::FAILURE;
+  } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
+    ANA_MSG_DEBUG( "Jet is out of validity range");
+  }
 
 	// Add it to vector
 	sfVec.push_back(SF);

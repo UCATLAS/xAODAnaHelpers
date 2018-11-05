@@ -124,6 +124,7 @@ namespace HelperClasses{
     m_eventCleaning = has_exact("eventCleaning");
     m_bcidInfo      = has_exact("bcidInfo");
     m_shapeEM       = has_exact("shapeEM");
+    m_shapeEMPFLOW  = has_exact("shapeEMPFLOW");
     m_shapeLC       = has_exact("shapeLC");
     m_truth         = has_exact("truth");
     m_caloClus      = has_exact("caloClusters");

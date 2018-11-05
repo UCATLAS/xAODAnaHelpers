@@ -175,7 +175,7 @@ prun.add_argument('--optGridDestSE',           metavar='', type=str, required=Fa
 prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default='2')
+prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default=None)
 prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
 prun.add_argument('--optGridNFiles',           metavar='', type=float, required=False, default=None)
@@ -537,6 +537,10 @@ if __name__ == "__main__":
         if not found_matching_sample:
           xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
+    for output in configurator._outputs:
+      xAH_logger.info('Creating output stream "{}"'.format(output))
+      job.outputAdd(ROOT.EL.OutputStream(output))
+
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service
     if hasattr(ROOT.EL, 'NTupleSvc'):
@@ -584,6 +588,8 @@ if __name__ == "__main__":
 
     elif (args.driver == "prun"):
       driver = ROOT.EL.PrunDriver()
+      if args.optGridNGBPerJob is None:
+        xAH_logger.warning("optGridNGBPerJob is not set. This will let the scout jobs figure out a limit for your jobs but may not be optimal. If you find your jobs are exhausted, increase the limit. A sensible limit is somewhere between 4GB and 12GB.")
       for opt, t in map(lambda x: (x.dest, x.type), prun._actions):
         if getattr(args, opt) is None: continue  # skip if not set
         if opt in ['help', 'optGridOutputSampleName', 'singleTask', 'optBatchWait', 'optBatchShellInit']: continue  # skip some options

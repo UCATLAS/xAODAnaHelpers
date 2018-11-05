@@ -165,7 +165,7 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
+  ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
 
@@ -244,7 +244,7 @@ EL::StatusCode TrackSelector :: executeTracksInJets ()
 
   //// get primary vertex
   //const xAOD::VertexContainer *vertices(nullptr);
-  //ANA_CHECK( HelperFunctions::retrieve(vertices, "PrimaryVertices", m_event, m_store, msg()) );
+  //ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
   //const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
