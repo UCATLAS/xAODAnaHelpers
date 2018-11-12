@@ -57,24 +57,22 @@ public:
   std::string m_outputAlgo = "";
   /// @brief Write systematics names to metadata
   bool        m_writeSystToMetadata = false;
+
   /// @brief config for JetCalibrationTool for Data
-  std::string m_calibConfigData = "JES_MC15Prerecommendation_April2015.config";
+  std::string m_calibConfigData = "JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config";
   /// @brief config for JetCalibrationTool for Full Sim MC
-  std::string m_calibConfigFullSim = "JES_MC15Prerecommendation_April2015.config";
+  std::string m_calibConfigFullSim = "JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config";
   /// @brief config for JetCalibrationTool for AFII MC
-  std::string m_calibConfigAFII = "JES_Prerecommendation2015_AFII_Apr2015.config";
-  /// @brief config files actually passed to JetCalibrationTool chosen from the above depending on what information stored in the input file
-  std::string m_calibConfig = "";
-  /// @brief List of calibration steps. "Insitu" added automatically if running on data
-  std::string m_calibSequence = "JetArea_Residual_Origin_EtaJES_GSC";
-  /// @brief CalibArea tag on CVMFS (for pointing at an area outside of the current release)
-  std::string m_calibArea = "00-04-81"; // current as of 19/11/17
-  /// @brief config for JES Uncertainty Tool
-  std::string m_JESUncertConfig = "";
-  /// @brief JetUncertaintiesTool parameter
-  std::string m_JESUncertMCType = "MC16";
-  /// @brief JES CalibArea tag
-  std::string m_JESCalibArea = "CalibArea-02";
+  std::string m_calibConfigAFII = "JES_MC16Recommendation_AFII_EMTopo_April2018_rel21.config";
+  /// @brief List of calibration steps. "Insitu" added automatically if running on data and "Smear" if running on FullSim MC
+  std::string m_calibSequence = "JetArea_Residual_EtaJES_GSC";
+  /// @brief config for Jet Uncertainty Tool
+  std::string m_uncertConfig = "";
+  /// @brief Override CalibArea tag (default recommended)
+  std::string m_overrideCalibArea = "";
+  /// @brief Override uncertainties CalibArea tag (default recommended)
+  std::string m_overrideUncertCalibArea = "";
+
   /** @rst
     If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.
 
@@ -88,17 +86,12 @@ public:
 
   @endrst */
   bool m_setAFII = false;
-  /// @brief when running data "_Insitu" is appended to this string
+  /// @brief when running data "_Insitu" is appended to calibration sequence
   bool m_forceInsitu = true;
+  /// @brief when running FullSim "_Smear" is appended to calibration sequence
+  bool m_forceSmear = true;
   /// @brief when using DEV mode of JetCalibTools
   bool m_jetCalibToolsDEV = false;
-
-  // @brief Config for JER Uncert Tool. If not empty the tool will run
-  std::string m_JERUncertConfig = "";
-  /// @brief Set systematic mode as Full (true) or Simple (false)
-  bool m_JERFullSys = false;
-  /// @brief Apply nominal smearing
-  bool m_JERApplyNominal = false;
 
   /// @brief Run muon-to-jet ghost association (recommended for MET)
   bool m_addGhostMuonsToJets = false;
@@ -133,18 +126,6 @@ public:
   /// @brief jet tile correction
   bool m_doJetTileCorr = false;
 
-  /** If running systematics, the name of the systematic */
-  std::string m_systNameJES = "";
-  /** If running systematics, the value to set the systematic to
-      @rst
-          .. note:: This will set the systematic to the value :math:`\pm x`.
-      @endrst
-   */
-  float m_systValJES = 0.0;
-
-  /** If running systematics, the name of the systematic */
-  std::string m_systNameJER = "";
-
 private:
   /// @brief set to true if systematics asked for and exist
   bool m_runSysts = false; //!
@@ -154,14 +135,14 @@ private:
 
   bool m_isFullSim;       //!
 
+  std::string m_calibConfig; //!
+  std::string m_uncertMCType; //!
+
   std::vector<CP::SystematicSet> m_systList; //!
-  std::vector<int> m_systType; //!
 
   // tools
   asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
-  asg::AnaToolHandle<IJERTool>                   m_JERTool_handle              {"JERTool"              , this}; //!
-  asg::AnaToolHandle<IJERSmearingTool>           m_JERSmearingTool_handle      {"JERSmearingTool"      , this}; //!
   asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , this}; //!
   asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!

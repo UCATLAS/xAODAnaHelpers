@@ -9,6 +9,7 @@
 #include "METUtilities/CutsMETMaker.h"
 #include "PATInterfaces/SystematicVariation.h"
 
+#include "xAODEventInfo/EventInfo.h"
 #include "xAODEgamma/PhotonContainer.h"
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODMuon/MuonContainer.h"
@@ -185,6 +186,8 @@ EL::StatusCode METConstructor :: execute ()
    m_numEvent ++ ;
    //ANA_MSG_DEBUG("number of processed events now is : "<< m_numEvent);
 
+   const xAOD::EventInfo* eventInfo(nullptr);
+   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()));
 
    const xAOD::MissingETContainer* coreMet(0);
    ANA_CHECK( HelperFunctions::retrieve(coreMet, m_coreName, m_event, m_store, msg()));
@@ -525,9 +528,9 @@ EL::StatusCode METConstructor :: execute ()
        for ( const std::string &name : totalMETNames ) {
          // Calculate MET significance
          if ( !m_rebuildUsingTracksInJets ) {
-           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, "RefJet", "PVSoftTrk", name) );
+           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, eventInfo->averageInteractionsPerCrossing(), "RefJet", "PVSoftTrk", name) );
          } else {
-           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, "RefJetTrk", "PVSoftTrk", name) );
+           ANA_CHECK( m_metSignificance_handle->varianceMET(newMet, eventInfo->averageInteractionsPerCrossing(), "RefJetTrk", "PVSoftTrk", name) );
          }
 
          // Decorate MET object with results

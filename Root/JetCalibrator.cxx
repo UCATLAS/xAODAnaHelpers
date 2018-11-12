@@ -36,8 +36,6 @@
 // tools
 #include "JetCalibTools/JetCalibrationTool.h"
 #include "JetUncertainties/JetUncertaintiesTool.h"
-#include "JetResolution/JERTool.h"
-#include "JetResolution/JERSmearingTool.h"
 #include "JetSelectorTools/JetCleaningTool.h"
 #include "JetMomentTools/JetVertexTaggerTool.h"
 #include "JetTileCorrection/JetTileCorrectionTool.h"
@@ -135,17 +133,24 @@ EL::StatusCode JetCalibrator :: initialize ()
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
-  if ( m_forceInsitu && !isMC() && m_calibSequence.find("Insitu") == std::string::npos && m_inContainerName.find("AntiKt10LCTopoTrimmedPtFrac5SmallR20") == std::string::npos) m_calibSequence += "_Insitu";
-
-  if( isMC() && m_calibSequence.find("Insitu") != std::string::npos){
+  if( isMC() && m_calibSequence.find("_Insitu") != std::string::npos){
     ANA_MSG_ERROR( "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
     return EL::StatusCode::FAILURE;
   }
 
+  if( !isMC() && m_calibSequence.find("_Smear") != std::string::npos){
+    ANA_MSG_ERROR( "Attempting to use an Smear calibration sequence on data.  Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+
+  m_uncertMCType = "MC16";
+
   if ( !isMC() ) {
+    // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
+    if ( m_forceInsitu && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
+
     m_calibConfig = m_calibConfigData;
-  }else{
+  } else {
     m_calibConfig = m_calibConfigFullSim;
     // treat as fullsim by default
     m_isFullSim = true;
@@ -163,13 +168,17 @@ EL::StatusCode JetCalibrator :: initialize ()
     if ( m_setAFII ) {
       ANA_MSG_INFO( "Setting simulation flavour to AFII");
       m_isFullSim = false;
-    }else if ( stringMeta.empty() ) {
+    } else if ( stringMeta.empty() ) {
       ANA_MSG_WARNING( "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
     } else {
       m_isFullSim = (stringMeta == "AFII") ? false : true;
     }
     if ( !m_isFullSim ) {
       m_calibConfig = m_calibConfigAFII;
+      m_uncertMCType = "AFII";
+    } else {
+      // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
+      if ( m_forceSmear && m_calibSequence.find("Smear") == std::string::npos) m_calibSequence += "_Smear";
     }
   }
 
@@ -178,7 +187,10 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
-  ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibArea",m_calibArea));
+  if ( !m_overrideCalibArea.empty() ) {
+    ANA_MSG_WARNING("Overriding jet calibration area to " << m_overrideCalibArea);
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibArea", m_overrideCalibArea));
+  }
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("IsData",!isMC()));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("OutputLevel", msg().level()));
   if ( m_jetCalibToolsDEV ) {
@@ -227,67 +239,50 @@ EL::StatusCode JetCalibrator :: initialize ()
     }//If save all cleaning decisions
   }// if m_doCleaning
 
-  //
-  // Get a list of recommended systematics for this tool
-  //
-  const CP::SystematicSet recSyst = CP::SystematicSet();
-  ANA_MSG_INFO(" Initializing Jet Calibrator Systematics :");
-
-  // Backwards compatibility
-  if ( !m_systName.empty() ) {
-    if ( m_systNameJES.empty() ) {
-        m_systNameJES = m_systName;
-        m_systValJES = m_systVal;
-    }
-    if ( m_systNameJER.empty() ) {
-        m_systNameJER = m_systName;
-    }
-  }
-
-  //
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
-  //
+  // Generate nominal systematic
+  const CP::SystematicSet recSyst = CP::SystematicSet();;
   m_systList = HelperFunctions::getListofSystematics( recSyst, "", 0, msg() ); // Generate nominal
-  for(unsigned int i=0; i<m_systList.size(); i++)
-    m_systType.insert(m_systType.begin(), 0); // Push systType nominal for this case
-
-  ANA_MSG_INFO("Will be using JetCalibrationTool systematic:");
 
   // initialize and configure the jet uncertainity tool
   // only initialize if a config file has been given
   //------------------------------------------------
-  if ( !m_JESUncertConfig.empty() && !m_systNameJES.empty() && m_systNameJES != "None" ) {
+  if ( !m_uncertConfig.empty() && !m_systName.empty() && m_systName != "None" ) {
 
-    ANA_MSG_INFO("Initialize JES UNCERT with " << m_JESUncertConfig);
+    ANA_MSG_INFO("Initialize Jet Uncertainties Tool with " << m_uncertConfig);
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("MCType",m_JESUncertMCType));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", m_JESUncertConfig));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("CalibArea", m_JESCalibArea));
+    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("MCType",m_uncertMCType));
+    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("IsData",!isMC()));
+    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", m_uncertConfig));
+    if ( !m_overrideUncertCalibArea.empty() ) {
+      ANA_MSG_WARNING("Overriding jet uncertainties calibration area to " << m_overrideUncertCalibArea);
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("CalibArea", m_overrideUncertCalibArea));
+    }
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetUncertaintiesTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_JetUncertaintiesTool_handle);
 
+    //
+    // Get a list of recommended systematics for this tool
+    //
     ANA_MSG_INFO(" Initializing Jet Systematics :");
     const CP::SystematicSet recSysts = m_JetUncertaintiesTool_handle->recommendedSystematics();
 
     //If just one systVal, then push it to the vector
     ANA_CHECK( this->parseSystValVector());
     if( m_systValVector.size() == 0) {
-      ANA_MSG_DEBUG("Pushing the following systVal to m_systValVector: " << m_systValJES );
-      m_systValVector.push_back(m_systValJES);
+      ANA_MSG_DEBUG("Pushing the following systVal to m_systValVector: " << m_systVal );
+      m_systValVector.push_back(m_systVal);
     }
 
     for(unsigned int iSyst=0; iSyst < m_systValVector.size(); ++iSyst){
-      std::vector<CP::SystematicSet> JESSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJES, m_systValVector.at(iSyst), msg() );
+      std::vector<CP::SystematicSet> sysList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systValVector.at(iSyst), msg() );
 
-      for(unsigned int i=0; i < JESSysList.size(); ++i){
+      for(unsigned int i=0; i < sysList.size(); ++i){
         // do not add another nominal syst to the list!!
         // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
-        if (JESSysList.at(i).empty() || JESSysList.at(i) == CP::SystematicSet() ) { ANA_MSG_INFO("JESSysList Empty at index " << i); continue; }
-        m_systList.push_back(  JESSysList.at(i) );
-        m_systType.push_back(1);
+        if (sysList.at(i).empty() || sysList.at(i) == CP::SystematicSet() ) { ANA_MSG_INFO("sysList Empty at index " << i); continue; }
+        m_systList.push_back( sysList.at(i) );
       }
     }
 
@@ -297,53 +292,13 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_runSysts = true;
       // setup uncertainity tool for systematic evaluation
       if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
-        ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJES);
+        ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
         return EL::StatusCode::FAILURE;
       }
     }
   } // running systematics
   else {
-    ANA_MSG_INFO( "No JES Uncertainities considered");
-  }
-
-  // initialize and configure the JET Smearing tool
-  if ( !m_JERUncertConfig.empty() ) {
-
-    // Instantiate the JER tool
-    ANA_CHECK( m_JERTool_handle.setProperty("PlotFileName", m_JERUncertConfig.c_str()));
-    ANA_CHECK( m_JERTool_handle.setProperty("CollectionName", m_jetAlgo));
-    ANA_CHECK( m_JERTool_handle.setProperty("OutputLevel", msg().level() ));
-    ANA_CHECK( m_JERTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_JERTool_handle);
-
-    // Instantiate the JER Smearing tool
-    ANA_CHECK( m_JERSmearingTool_handle.setProperty("JERTool", m_JERTool_handle.getHandle()));
-    ANA_CHECK( m_JERSmearingTool_handle.setProperty("isMC", isMC()));
-    ANA_CHECK( m_JERSmearingTool_handle.setProperty("ApplyNominalSmearing", m_JERApplyNominal));
-    ANA_CHECK( m_JERSmearingTool_handle.setProperty("SystematicMode", (m_JERFullSys)?"Full":"Simple"));
-    ANA_CHECK( m_JERSmearingTool_handle.setProperty("OutputLevel", msg().level() ));
-    ANA_CHECK( m_JERSmearingTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_JERSmearingTool_handle);
-
-    const CP::SystematicSet recSysts = m_JERSmearingTool_handle->recommendedSystematics();
-    ANA_MSG_INFO( " Initializing JER Systematics :");
-
-    std::vector<CP::SystematicSet> JERSysList = HelperFunctions::getListofSystematics( recSysts, m_systNameJER, 1, msg() ); //Only 1 sys allowed
-    for(unsigned int i=0; i < JERSysList.size(); ++i){
-      // do not add another nominal syst to the list!!
-      // CP::SystematicSet() creates an empty systematic set, compared to the set at index i
-      if (JERSysList.at(i).empty() || JERSysList.at(i) == CP::SystematicSet() ) { ANA_MSG_INFO("JERSysList Empty at index " << i); continue; }
-      m_systList.push_back(  JERSysList.at(i) );
-      m_systType.push_back(2);
-    }
-
-    if (!m_systList.empty()){
-      m_runSysts = true;
-    }
-
-  }
-  else {
-    ANA_MSG_INFO( "No JER Uncertainities considered");
+    ANA_MSG_INFO( "No Jet Uncertainities considered");
   }
 
   // initialize and configure the JVT correction tool
@@ -371,7 +326,7 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
   for ( const auto& syst_it : m_systList ) {
-    if ( m_systName.empty() && m_systNameJES.empty() && m_systNameJER.empty() ) {
+    if ( m_systName.empty() && m_systName.empty() ) {
       ANA_MSG_INFO("\t Running w/ nominal configuration only!");
       break;
     }
@@ -386,6 +341,8 @@ EL::StatusCode JetCalibrator :: initialize ()
     TFile *fileMD = wk()->getOutputFile ("metadata");
     HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
   }
+
+  ANA_MSG_INFO( "JetCalibrator Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -427,7 +384,7 @@ EL::StatusCode JetCalibrator :: execute ()
   for ( auto jet_itr : *(calibJetsSC.first) ) {
     m_numObject++;
 
-    //Set isBjet for JES Systematics
+    //Set isBjet for Jet Systematics
     if(isMC() && m_runSysts){
 
       int this_TruthLabel = 0;
@@ -470,8 +427,8 @@ EL::StatusCode JetCalibrator :: execute ()
 
   //std::vector< int >
   for ( const auto& syst_it : m_systList ) {
-    unsigned int sysIndex = (&syst_it - &m_systList[0]);
-    int thisSysType = m_systType.at(sysIndex);
+
+    bool nominal = syst_it.name().empty();
 
     // always append the name of the variation, including nominal which is an empty string
     outSCContainerName   =m_outContainerName+syst_it.name()+"ShallowCopy";
@@ -481,56 +438,32 @@ EL::StatusCode JetCalibrator :: execute ()
     vecOutContainerNames->push_back( syst_it.name() );
 
     // create shallow copy;
-    std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > uncertCalibJetsSC = (thisSysType==0)? calibJetsSC : xAOD::shallowCopyContainer( *calibJetsSC.first );
+    std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > uncertCalibJetsSC = nominal ? calibJetsSC : xAOD::shallowCopyContainer( *calibJetsSC.first );
     ConstDataVector<xAOD::JetContainer>* uncertCalibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
     uncertCalibJetsCDV->reserve( uncertCalibJetsSC.first->size() );
 
     //Apply Uncertainties
     if ( m_runSysts ) {
-      if ( thisSysType == 1 ){
-        // JES Uncertainty Systematic
-        ANA_MSG_DEBUG("Configure JES for systematic variation : " << syst_it.name());
-        if ( m_JetUncertaintiesTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-          ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJES);
-          return EL::StatusCode::FAILURE;
+      // Jet Uncertainty Systematic
+      ANA_MSG_DEBUG("Configure for systematic variation : " << syst_it.name());
+      if ( m_JetUncertaintiesTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+        ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
+        return EL::StatusCode::FAILURE;
+      }
+
+      for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
+        if (m_applyFatJetPreSel) {
+          bool validForJES = (jet_itr->pt() >= 150e3 && jet_itr->pt() < 3000e3);
+          validForJES &= (jet_itr->m()/jet_itr->pt() >= 0 && jet_itr->m()/jet_itr->pt() < 1);
+          validForJES &= (fabs(jet_itr->eta()) < 2);
+          if (!validForJES) continue;
         }
 
-        for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-          if (m_applyFatJetPreSel) {
-            bool validForJES = (jet_itr->pt() >= 150e3 && jet_itr->pt() < 3000e3);
-            validForJES &= (jet_itr->m()/jet_itr->pt() >= 0 && jet_itr->m()/jet_itr->pt() < 1);
-            validForJES &= (fabs(jet_itr->eta()) < 2);
-            if (!validForJES) continue;
-          }
-
-          if ( m_JetUncertaintiesTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-            ANA_MSG_ERROR( "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
-            ANA_MSG_ERROR( m_name );
-          }
-        }//for jets
-      }//JES
-
-      if ( thisSysType == 2 || m_JERApplyNominal){
-        ANA_MSG_DEBUG("Configure JER for systematic variation : " << syst_it.name());
-        if( thisSysType == 2){ //apply this systematic
-          if ( m_JERSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-            ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJER);
-            return EL::StatusCode::FAILURE;
-          }
-        }else{ //apply nominal, which is always first element of m_systList
-          if ( m_JERSmearingTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
-            ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systNameJER);
-            return EL::StatusCode::FAILURE;
-          }
+        if ( m_JetUncertaintiesTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+          ANA_MSG_ERROR( "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
+          ANA_MSG_ERROR( m_name );
         }
-        // JER Uncertainty Systematic
-        for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-          if ( m_JERSmearingTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-            ANA_MSG_ERROR( "JERSmearTool tool reported a CP::CorrectionCode::Error");
-            ANA_MSG_ERROR( m_name );
-          }
-        }//for jets
-      }//JER
+      }
 
     }// if m_runSysts
 
@@ -587,7 +520,7 @@ EL::StatusCode JetCalibrator :: execute ()
     }
 
     // add shallow copy to TStore
-    if(thisSysType!=0) { // nominal is always saved outside of loop
+    if ( !nominal ) { // nominal is always saved outside of loop
       ANA_CHECK( m_store->record( uncertCalibJetsSC.first, outSCContainerName));
       ANA_CHECK( m_store->record( uncertCalibJetsSC.second, outSCAuxContainerName));
     }
