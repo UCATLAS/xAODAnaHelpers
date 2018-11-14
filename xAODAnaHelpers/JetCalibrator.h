@@ -68,6 +68,8 @@ public:
   std::string m_calibSequence = "JetArea_Residual_EtaJES_GSC";
   /// @brief config for Jet Uncertainty Tool
   std::string m_uncertConfig = "";
+  /// @brief MC type for Jet Uncertainty Tool
+  std::string m_uncertMCType = "MC16";
   /// @brief Override CalibArea tag (default recommended)
   std::string m_overrideCalibArea = "";
   /// @brief Override uncertainties CalibArea tag (default recommended)
@@ -89,7 +91,7 @@ public:
   /// @brief when running data "_Insitu" is appended to calibration sequence
   bool m_forceInsitu = true;
   /// @brief when running FullSim "_Smear" is appended to calibration sequence
-  bool m_forceSmear = true;
+  bool m_forceSmear = false;
   /// @brief when using DEV mode of JetCalibTools
   bool m_jetCalibToolsDEV = false;
 
@@ -136,7 +138,6 @@ private:
   bool m_isFullSim;       //!
 
   std::string m_calibConfig; //!
-  std::string m_uncertMCType; //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 
