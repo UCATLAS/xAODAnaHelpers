@@ -179,6 +179,8 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
+  if(m_uncertMCType.empty()) m_uncertMCType = m_isFullSim ? "MC16" : "AFII";
+
   // initialize jet calibration tool
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
