@@ -56,7 +56,6 @@ EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 
 
 
-
 EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());
@@ -326,6 +325,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
   SG::AuxElement::Decorator< char > dec_isBTag( m_decor );
   SG::AuxElement::Decorator< std::vector<float> > dec_sfBTag( m_decorSF );
+
+  SG::AuxElement::Decorator< char > dec_isBTagOR( m_decor+"OR" );
   //
   // run the btagging decision and get scale factors
   //
@@ -341,6 +342,15 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     else {
       dec_isBTag( *jet_itr ) = 0;
       tagged = false;
+    }
+
+    // Add pT-dependent b-tag decision decorator (intended for use in OR)
+    if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
+	&& m_BJetSelectTool_handle->accept( *jet_itr ) ) {
+      dec_isBTagOR( *jet_itr ) = 1;
+    }
+    else {
+      dec_isBTagOR( *jet_itr ) = 0;
     }
 
     // Create Scale Factor aux for all jets
@@ -379,6 +389,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
     ANA_MSG_DEBUG( "Jet is out of validity range");
   }
+
 	// Add it to vector
 	sfVec.push_back(SF);
 
