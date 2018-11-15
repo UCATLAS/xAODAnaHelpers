@@ -58,6 +58,9 @@ public:
   /// @brief The decoration key written to passing objects
   std::string m_decor = "BTag";
 
+  /// @brief upper pt threshold of b-jet in OR in unit of GeV, negative value means no pt threshold
+  float m_orBJetPtUpperThres=-1;
+
   /// @brief Calibration to use for MC (EfficiencyB/C/T/LightCalibrations), "auto" to determine from sample name
   std::string m_EfficiencyCalibration = "";
 
