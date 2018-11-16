@@ -12,6 +12,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
 
   if ( m_infoSwitch.m_kinematic ) {
     m_caloCluster_eta = new std::vector<float> ();
+    m_charge          = new std::vector<float> ();
   }
 
   if ( m_infoSwitch.m_trigger ){
@@ -124,6 +125,7 @@ ElectronContainer::~ElectronContainer()
 {
   if ( m_infoSwitch.m_kinematic ) {
     delete m_caloCluster_eta;
+    delete m_charge;
   }
 
   if ( m_infoSwitch.m_trigger ){
@@ -215,6 +217,7 @@ void ElectronContainer::setTree(TTree *tree)
 
   if ( m_infoSwitch.m_kinematic ) {
     connectBranch<float>(tree,"caloCluster_eta", &m_caloCluster_eta);
+    connectBranch<float>(tree,"charge",          &m_charge);
   }
 
   if ( m_infoSwitch.m_trigger ){
@@ -329,6 +332,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
 
   if ( m_infoSwitch.m_kinematic ) {
     elec.caloCluster_eta = m_caloCluster_eta -> at(idx);
+    elec.charge          = m_charge          -> at(idx);
   }
 
   // trigger
@@ -446,6 +450,7 @@ void ElectronContainer::setBranches(TTree *tree)
 
   if ( m_infoSwitch.m_kinematic ) {
     setBranch<float>(tree,"caloCluster_eta", m_caloCluster_eta);
+    setBranch<float>(tree,"charge",          m_charge);
   }
 
   if ( m_infoSwitch.m_trigger ){
@@ -555,6 +560,7 @@ void ElectronContainer::clear()
 
   if ( m_infoSwitch.m_kinematic ) {
     m_caloCluster_eta ->clear();
+    m_charge          ->clear();
   }
 
   if ( m_infoSwitch.m_trigger ){
@@ -669,6 +675,8 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
   if ( m_infoSwitch.m_kinematic ) {
     float calo_eta   = ( elec->caloCluster() ) ? elec->caloCluster()->etaBE(2) : -999.0;
     m_caloCluster_eta->push_back( calo_eta );
+
+    m_charge->push_back( elec->charge() );
   }
 
   if ( m_infoSwitch.m_trigger ) {

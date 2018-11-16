@@ -10,6 +10,10 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
   : ParticleContainer(name, detailStr, units, mc, true, storeSystSFs)
 {
 
+  if ( m_infoSwitch.m_kinematic ) {
+    m_charge          = new std::vector<float> ();
+  }
+
   // trigger
   if ( m_infoSwitch.m_trigger ) {
     m_isTrigMatched          = new     vector<int>               ();
@@ -107,6 +111,9 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
 
 MuonContainer::~MuonContainer()
 {
+  if ( m_infoSwitch.m_kinematic ) {
+    delete m_charge;
+  }
 
   // trigger
   if ( m_infoSwitch.m_trigger ) {
@@ -208,6 +215,10 @@ void MuonContainer::setTree(TTree *tree)
   //
   // Connect branches
   ParticleContainer::setTree(tree);
+
+  if ( m_infoSwitch.m_kinematic ) {
+    connectBranch<float>(tree, "charge", &m_charge);
+  }
 
   if ( m_infoSwitch.m_trigger ){
     connectBranch<int>         (tree, "isTrigMatched",        &m_isTrigMatched);
@@ -324,6 +335,10 @@ void MuonContainer::setTree(TTree *tree)
 void MuonContainer::updateParticle(uint idx, Muon& muon)
 {
   ParticleContainer::updateParticle(idx,muon);  
+
+  if ( m_infoSwitch.m_kinematic ) {
+    muon.charge = m_charge->at(idx);
+  }
 
   // trigger
   if ( m_infoSwitch.m_trigger ) {
@@ -442,6 +457,10 @@ void MuonContainer::setBranches(TTree *tree)
 
   ParticleContainer::setBranches(tree);
 
+  if ( m_infoSwitch.m_kinematic ) {
+    setBranch<float>(tree, "charge", m_charge);
+  }
+
   if ( m_infoSwitch.m_trigger ){
     // this is true if there's a match for at least one trigger chain
     setBranch<int>(tree,"isTrigMatched", m_isTrigMatched);
@@ -558,6 +577,10 @@ void MuonContainer::clear()
   
   ParticleContainer::clear();
 
+  if ( m_infoSwitch.m_kinematic ) {
+    m_charge->clear();
+  }
+
   if ( m_infoSwitch.m_trigger ) {
     m_isTrigMatched->clear();
     m_isTrigMatchedToChain->clear();
@@ -670,6 +693,10 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
   ParticleContainer::FillParticle(particle);
 
   const xAOD::Muon* muon=dynamic_cast<const xAOD::Muon*>(particle);
+
+  if ( m_infoSwitch.m_kinematic ) {
+    m_charge->push_back( muon->charge() );
+  }
 
   if ( m_infoSwitch.m_trigger ) {
 

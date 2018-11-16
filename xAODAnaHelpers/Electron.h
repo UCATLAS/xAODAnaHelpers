@@ -12,6 +12,7 @@ namespace xAH {
 
     // kinematics
     float  caloCluster_eta;
+    float  charge;
 
     // trigger
     int               isTrigMatched;
