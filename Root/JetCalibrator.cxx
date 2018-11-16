@@ -143,8 +143,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  m_uncertMCType = "MC16";
-
   if ( !isMC() ) {
     // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
     if ( m_forceInsitu && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
@@ -175,12 +173,13 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
     if ( !m_isFullSim ) {
       m_calibConfig = m_calibConfigAFII;
-      m_uncertMCType = "AFII";
     } else {
       // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
       if ( m_forceSmear && m_calibSequence.find("Smear") == std::string::npos) m_calibSequence += "_Smear";
     }
   }
+
+  if(m_uncertMCType.empty()) m_uncertMCType = m_isFullSim ? "MC16" : "AFII";
 
   // initialize jet calibration tool
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
