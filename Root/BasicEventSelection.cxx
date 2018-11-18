@@ -772,7 +772,14 @@ EL::StatusCode BasicEventSelection :: execute ()
                                                  //  2.) the corrected mu ("corrected_averageInteractionsPerCrossing")
                                                  //  3.) the random run number ("RandomRunNumber")
                                                  //  4.) the random lumiblock number ("RandomLumiBlockNumber")
-    static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
+    // static SG::AuxElement::Decorator< float >  correctedAvgMu("corrected_averageInteractionsPerCrossing");
+    static SG::AuxElement::Decorator< float >  correctedAndScaledAvgMu("correctedScaled_averageInteractionsPerCrossing");
+    static SG::AuxElement::Decorator< float >  correctedMu("corrected_actualInteractionsPerCrossing");
+    static SG::AuxElement::Decorator< float >  correctedAndScaledMu("correctedScaled_actualInteractionsPerCrossing");
+
+    correctedAndScaledAvgMu( *eventInfo ) = m_pileup_tool_handle->getCorrectedAverageInteractionsPerCrossing( *eventInfo, true );
+    correctedMu( *eventInfo ) = m_pileup_tool_handle->getCorrectedActualInteractionsPerCrossing( *eventInfo );
+    correctedAndScaledMu( *eventInfo ) = m_pileup_tool_handle->getCorrectedActualInteractionsPerCrossing( *eventInfo, true );
 
       if ( isMC() && m_doPUreweightingSys ) {
        	CP::SystematicSet tmpSet;tmpSet.insert(CP::SystematicVariation("PRW_DATASF",1));

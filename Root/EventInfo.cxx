@@ -58,7 +58,10 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<float>(tree, "actualInteractionsPerCrossing",    &m_actualMu);
     connectBranch<float>(tree, "averageInteractionsPerCrossing",   &m_averageMu);
     connectBranch<float>(tree, "weight_pileup",                    &m_weight_pileup);
-    connectBranch<float>(tree, "correct_mu",                 &m_correct_mu);
+    connectBranch<float>(tree, "correctedAverageMu",               &m_correctedAvgMu);
+    connectBranch<float>(tree, "correctedAndScaledAverageMu",      &m_correctedAndScaledAvgMu);
+    connectBranch<float>(tree, "correctedActualMu",                &m_correctedMu);
+    connectBranch<float>(tree, "correctedAndScaledActualMu",       &m_correctedAndScaledMu);
     if ( m_infoSwitch.m_pileupsys ) {
       connectBranch<float>(tree, "weight_pileup_up",               &m_weight_pileup_up);
       connectBranch<float>(tree, "weight_pileup_down",             &m_weight_pileup_down);
@@ -155,7 +158,10 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("actualInteractionsPerCrossing",  &m_actualMu,  "actualInteractionsPerCrossing/F");
     tree->Branch("averageInteractionsPerCrossing", &m_averageMu, "averageInteractionsPerCrossing/F");
     tree->Branch("weight_pileup",      &m_weight_pileup,  "weight_pileup/F");
-    tree->Branch("correct_mu"       ,          &m_correct_mu       ,"correct_mu/F"       );
+    tree->Branch("correctedAverageMu",          &m_correctedAvgMu, "correctedAverageMu/F" );
+    tree->Branch("correctedAndScaledAverageMu", &m_correctedAndScaledAvgMu, "correctedAndScaledAverageMu/F" );
+    tree->Branch("correctedActualMu",           &m_correctedMu, "correctedActualMu/F"     );
+    tree->Branch("correctedAndScaledActualMu",  &m_correctedAndScaledMu, "correctedAndScaledActualMu/F"     );
     if ( m_infoSwitch.m_pileupsys ) {
       tree->Branch("weight_pileup_up",      &m_weight_pileup_up,  "weight_pileup_up/F");
       tree->Branch("weight_pileup_down",    &m_weight_pileup_down,"weight_pileup_down/F");
@@ -313,8 +319,30 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
     m_actualMu  = eventInfo->actualInteractionsPerCrossing();
     m_averageMu = eventInfo->averageInteractionsPerCrossing();
 
-    static SG::AuxElement::ConstAccessor< float >  correct_mu("corrected_averageInteractionsPerCrossing");
-    if ( correct_mu.isAvailable( *eventInfo ) )	 { m_correct_mu = correct_mu( *eventInfo ); }		    else { m_correct_mu = -1.0; }
+    static SG::AuxElement::ConstAccessor< float >  correctedAvgMu("corrected_averageInteractionsPerCrossing");
+    static SG::AuxElement::ConstAccessor< float >  correctedAndScaledAvgMu("correctedScaled_averageInteractionsPerCrossing");
+    static SG::AuxElement::ConstAccessor< float >  correctedMu("corrected_actualInteractionsPerCrossing");
+    static SG::AuxElement::ConstAccessor< float >  correctedAndScaledMu("correctedScaled_actualInteractionsPerCrossing");
+    if ( correctedAvgMu.isAvailable( *eventInfo ) )	{
+      m_correctedAvgMu = correctedAvgMu( *eventInfo );
+    }	else {
+      m_correctedAvgMu = -1.0;
+    }
+    if ( correctedAndScaledAvgMu.isAvailable( *eventInfo ) )	{
+      m_correctedAndScaledAvgMu = correctedAndScaledAvgMu( *eventInfo );
+    }	else {
+      m_correctedAndScaledAvgMu = -1.0;
+    }
+    if ( correctedMu.isAvailable( *eventInfo ) )	{
+      m_correctedMu = correctedMu( *eventInfo );
+    }	else {
+      m_correctedMu = -1.0;
+    }
+    if ( correctedAndScaledMu.isAvailable( *eventInfo ) )	{
+      m_correctedAndScaledMu = correctedAndScaledMu( *eventInfo );
+    }	else {
+      m_correctedAndScaledMu = -1.0;
+    }
 
     if ( m_mc ) {
 
