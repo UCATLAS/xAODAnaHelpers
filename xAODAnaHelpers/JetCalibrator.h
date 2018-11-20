@@ -64,8 +64,8 @@ public:
   std::string m_calibConfigFullSim = "JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config";
   /// @brief config for JetCalibrationTool for AFII MC
   std::string m_calibConfigAFII = "JES_MC16Recommendation_AFII_EMTopo_April2018_rel21.config";
-  /// @brief List of calibration steps. "Insitu" added automatically if running on data and "Smear" if running on FullSim MC
-  std::string m_calibSequence = "JetArea_Residual_EtaJES_GSC";
+  /// @brief List of calibration steps. Auto-configured to the Jet/Etmiss recommendation if left blank.
+  std::string m_calibSequence = "";
   /// @brief config for Jet Uncertainty Tool
   std::string m_uncertConfig = "";
   /// @brief MC type for Jet Uncertainty Tool
