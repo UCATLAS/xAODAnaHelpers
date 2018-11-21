@@ -36,6 +36,7 @@ namespace xAH {
 
       // kinematics
       std::vector<float>*  m_caloCluster_eta;
+      std::vector<float>* m_charge;
 
       // trigger
       std::vector<int>*  m_isTrigMatched;

@@ -34,6 +34,9 @@ namespace xAH {
     
     private:
 
+      // kinematic
+      std::vector<float> *m_charge;
+
       // trigger
       std::vector<int>               *m_isTrigMatched;
       std::vector<std::vector<int> > *m_isTrigMatchedToChain;

@@ -13,6 +13,9 @@ namespace xAH {
     //Muon() {};
     //virtual ~Muon() { };
 
+    // kinematics
+    float charge;
+
     // trigger
     int               isTrigMatched;
     std::vector<int>  isTrigMatchedToChain;
