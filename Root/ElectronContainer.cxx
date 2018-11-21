@@ -94,30 +94,6 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_PromptLeptonVeto                  = new std::vector<float> ();
   }
 
-  if ( m_infoSwitch.m_effSF && m_mc ) {
-
-    // default PID working points if no user input
-    if ( !m_infoSwitch.m_PIDWPs.size() ) m_infoSwitch.m_PIDWPs = {"LHLoose","LHLooseBL","LHMedium","LHTight"};
-
-    // default PID SF working points if no user input
-    if ( !m_infoSwitch.m_PIDSFWPs.size() ) m_infoSwitch.m_PIDSFWPs = {"LooseBLayer","Medium","Tight"};
-
-    // default isolation working points if no user input
-    if ( !m_infoSwitch.m_isolWPs.size() ) m_infoSwitch.m_isolWPs = {"","Gradient","Loose","Tight"};
-
-    // default trigger working points if no user input
-    if ( !m_infoSwitch.m_trigWPs.size() ) m_infoSwitch.m_trigWPs = {"SINGLE_E_2015_e24_lhmedium_L1EM20VH_OR_e60_lhmedium_OR_e120_lhloose_2016_e24_lhtight_nod0_ivarloose_OR_e60_lhmedium_nod0_OR_e140_lhloose_nod0"};
-
-    //for (auto& PID : m_infoSwitch.m_PIDWPs) {
-    //  for (auto& isol : m_infoSwitch.m_isolWPs) {
-    //    for (auto& trig : m_infoSwitch.m_trigWPs) {
-    //      Info("ElectronConainer()", "Used working points: %s_%s_%s", trig.c_str(), PID.c_str(), isol.c_str() );
-    //    }
-    //  }
-    //}
-  }
-
-
 }
 
 ElectronContainer::~ElectronContainer()
