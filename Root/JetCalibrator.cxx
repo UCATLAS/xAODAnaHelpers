@@ -143,9 +143,8 @@ EL::StatusCode JetCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  m_uncertMCType = "MC16";
-
   if ( !isMC() ) {
+    m_isFullSim = false;
     // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
     if ( m_forceInsitu && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
 
@@ -175,11 +174,45 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
     if ( !m_isFullSim ) {
       m_calibConfig = m_calibConfigAFII;
-      m_uncertMCType = "AFII";
     } else {
       // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
       if ( m_forceSmear && m_calibSequence.find("Smear") == std::string::npos) m_calibSequence += "_Smear";
     }
+  }
+
+  if(m_uncertMCType.empty()) m_uncertMCType = m_isFullSim ? "MC16" : "AFII";
+
+  // Autoconfigure calibration sequence if the user didn't do it.
+  // Recommended strings taken from ApplyJetCalibrationR21 Twiki.
+  if(m_calibSequence.empty()){
+    // Standard R=0.4 jets
+    if(m_inContainerName.find("AntiKt4EM") != std::string::npos){
+      if(!isMC())          m_calibSequence = "JetArea_Residual_EtaJES_GSC_Insitu";
+      else if(m_isFullSim) m_calibSequence = "JetArea_Residual_EtaJES_GSC_Smear";
+      else /*AFII*/        m_calibSequence = "JetArea_Residual_EtaJES_GSC";
+    }
+    // R-scan jets
+    else if(m_inContainerName.find("AntiKt2LCTopo") != std::string::npos ||
+            m_inContainerName.find("AntiKt6LCTopo") != std::string::npos)
+      m_calibSequence = "JetArea_Residual_EtaJES_GSC";
+    // R=1.0 jets
+    else if(m_inContainerName.find("AntiKt10LCTopo")           != std::string::npos ||
+            m_inContainerName.find("AntiKt10TrackCaloCluster") != std::string::npos)
+      m_calibSequence = "EtaJES_JMS";
+    // Anything else is unrecognized
+    else{
+      ANA_MSG_ERROR( "Cannot autoconfigure jet calibration sequence for collection " << m_systName);
+      ANA_MSG_ERROR( "JetCalibrator::m_calibSequence needs to be set manually in configuration.");
+      return EL::StatusCode::FAILURE;
+    }
+  }
+
+  // Warn user if they're running standard jets without in-situ in data or smearing in MC
+  if(m_inContainerName.find("AntiKt4EM") != std::string::npos){
+    if(!isMC() && m_calibSequence.find("_Insitu") == std::string::npos)
+      ANA_MSG_WARNING("Calibrating AntiKt4EM jets in data without the in-situ step. This is not recommended, make sure it's really what you want!");
+    else if(m_isFullSim && m_calibSequence.find("_Smear") == std::string::npos)
+      ANA_MSG_WARNING("Calibrating AntiKt4EM jets in fullsim without the smearing step. This is not recommended, make sure it's really what you want!");
   }
 
   // initialize jet calibration tool

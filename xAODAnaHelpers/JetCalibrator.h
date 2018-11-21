@@ -64,10 +64,12 @@ public:
   std::string m_calibConfigFullSim = "JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config";
   /// @brief config for JetCalibrationTool for AFII MC
   std::string m_calibConfigAFII = "JES_MC16Recommendation_AFII_EMTopo_April2018_rel21.config";
-  /// @brief List of calibration steps. "Insitu" added automatically if running on data and "Smear" if running on FullSim MC
-  std::string m_calibSequence = "JetArea_Residual_EtaJES_GSC";
+  /// @brief List of calibration steps. Auto-configured to the Jet/Etmiss recommendation if left blank.
+  std::string m_calibSequence = "";
   /// @brief config for Jet Uncertainty Tool
   std::string m_uncertConfig = "";
+  /// @brief MC type for Jet Uncertainty Tool
+  std::string m_uncertMCType = "";
   /// @brief Override CalibArea tag (default recommended)
   std::string m_overrideCalibArea = "";
   /// @brief Override uncertainties CalibArea tag (default recommended)
@@ -87,9 +89,9 @@ public:
   @endrst */
   bool m_setAFII = false;
   /// @brief when running data "_Insitu" is appended to calibration sequence
-  bool m_forceInsitu = true;
+  bool m_forceInsitu = false;
   /// @brief when running FullSim "_Smear" is appended to calibration sequence
-  bool m_forceSmear = true;
+  bool m_forceSmear = false;
   /// @brief when using DEV mode of JetCalibTools
   bool m_jetCalibToolsDEV = false;
 
@@ -136,7 +138,6 @@ private:
   bool m_isFullSim;       //!
 
   std::string m_calibConfig; //!
-  std::string m_uncertMCType; //!
 
   std::vector<CP::SystematicSet> m_systList; //!
 
