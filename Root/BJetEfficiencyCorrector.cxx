@@ -118,15 +118,17 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "HybBEff_85")  { opOK = true; m_getScaleFactors =  true; }
 
   // Only DL1 and MV2c10 are calibrated
-  if (m_taggerName == "MV2c10")    { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "MV2c10rnn") { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "MV2c10mu")  { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "DL1")       { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1rnn")    { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "DL1mu")     { taggerOK = true; m_getScaleFactors =  false; }
+  // Available taggers (>=21.2.51):
+  // https://gitlab.cern.ch/atlas/athena/blob/21.2/PhysicsAnalysis/JetTagging/JetTagPerformanceCalibration/xAODBTaggingEfficiency/Root/BTaggingSelectionTool.cxx#L89-95
+  if (m_taggerName == "DL1")                  { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "DL1r")                 { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1rmu")               { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "MV2c10")               { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "MV2r")                 { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "MV2rmu")               { taggerOK = true; m_getScaleFactors =  false; }
 
   if( !opOK || !taggerOK ) {
-    ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
+    ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" <<  m_operatingPt);
     return EL::StatusCode::FAILURE;
   }
 
