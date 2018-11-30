@@ -1107,7 +1107,12 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     // if non-negative, the user wants to apply a custom jvt cut
     if( m_JVTCut > 0 ){
       ANA_MSG_DEBUG("Custom JVT working point with pT<" << m_pt_max_JVT << ", |eta|<" << m_eta_max_JVT << ", Jvt<" << m_JVTCut);
-      result = (jet_pt < m_pt_max_JVT && std::fabs(jet_eta) < m_eta_max_JVT && jet_jvt < m_JVTCut);
+      // JVT should only be applied at low pt and central eta. If outside this, result = true.
+      if (jet_pt < m_pt_max_JVT && std::fabs(jet_eta) < m_eta_max_JVT) {
+        result = (jet_jvt > m_JVTCut);
+      } else {
+        result = true;
+      }
     } else {
       result = m_JVT_tool_handle->passesJvtCut(*jet);
     }
