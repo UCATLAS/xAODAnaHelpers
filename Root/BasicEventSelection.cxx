@@ -879,7 +879,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Trigger decision cut
   //---------------------
 
-  if ( !m_triggerSelection.empty() ) {
+  if ( !m_triggerSelection.empty() || m_storeTrigDecisions ) {
 
     auto triggerChainGroup = m_trigDecTool_handle->getChainGroup(m_triggerSelection);
 
