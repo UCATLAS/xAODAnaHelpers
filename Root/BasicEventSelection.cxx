@@ -553,14 +553,14 @@ EL::StatusCode BasicEventSelection :: initialize ()
         if ( isMC() ) {
           ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
           for( unsigned int i=0; i < PRWFiles.size(); ++i){
-            printf( "\t %s \n", PRWFiles.at(i).c_str() );
+            ANA_MSG_INFO( "\t- " << PRWFiles.at(i).c_str());
           }
           ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", PRWFiles));
         }
 
         ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
         for( unsigned int i=0; i < lumiCalcFiles.size(); ++i){
-          printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
+          ANA_MSG_INFO( "\t- " << lumiCalcFiles.at(i).c_str());
         }
         ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
       }
@@ -626,7 +626,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(m_triggerSelection);
       std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
       for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
-        if (m_eventCounter == 0) printf("    %s\n", triggersUsed.at(iTrigger).c_str());
+        if (m_eventCounter == 0) ANA_MSG_INFO("\t" << triggersUsed.at(iTrigger).c_str());
         TriggerExpression.append(triggersUsed.at(iTrigger).c_str());
         if ( iTrigger != triggersUsed.size() - 1) TriggerExpression.append(" || ");
       }
@@ -636,16 +636,15 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( m_eventCounter == 0 && !m_extraTriggerSelection.empty() ) {
     ANA_MSG_INFO( "*** Extra Trigger Info Saved are :\n");
     for ( const std::string &trigName : m_extraTriggerSelectionList ) {
-      printf("    %s\n", trigName.c_str());
+      ANA_MSG_INFO("\t" << trigName.c_str());
 
-      printf("      Evaluates to:\n");
+      ANA_MSG_INFO("\tEvaluates to:");
       auto printingTriggerChainGroup = m_trigDecTool_handle->getChainGroup(trigName);
       std::vector<std::string> triggersUsed = printingTriggerChainGroup->getListOfTriggers();
       for ( unsigned int iTrigger = 0; iTrigger < triggersUsed.size(); ++iTrigger ) {
-        printf("        %s\n", triggersUsed.at(iTrigger).c_str());
+        ANA_MSG_INFO("\t- "<< triggersUsed.at(iTrigger).c_str());
       }
     }
-    printf("\n");
   }
 
 
@@ -1217,13 +1216,13 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   // Set everything and report on it.
   ANA_MSG_INFO( "Adding Pileup files for CP::PileupReweightingTool:");
   for( unsigned int i=0; i < prwConfigFiles.size(); ++i) {
-    printf( "\t %s \n", prwConfigFiles.at(i).c_str() );
+    ANA_MSG_INFO("\t- " << prwConfigFiles.at(i).c_str());
   }
   ANA_CHECK( m_pileup_tool_handle.setProperty("ConfigFiles", prwConfigFiles));
 
   ANA_MSG_INFO( "Adding LumiCalc files for CP::PileupReweightingTool:");
   for( unsigned int i=0; i < lumiCalcFiles.size(); ++i) {
-    printf( "\t %s \n", lumiCalcFiles.at(i).c_str() );
+    ANA_MSG_INFO("\t- " << lumiCalcFiles.at(i).c_str());
   }
   ANA_CHECK( m_pileup_tool_handle.setProperty("LumiCalcFiles", lumiCalcFiles));
 
