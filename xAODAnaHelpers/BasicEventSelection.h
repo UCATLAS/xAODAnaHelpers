@@ -70,7 +70,7 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief Apply GRL selection
     bool m_applyGRLCut = false;
     /// @brief Path to GRL XML file
-    std::string m_GRLxml = "xAODAnaHelpers/data15_13TeV.periodAllYear_HEAD_DQDefects-00-01-02_PHYS_StandardGRL_Atlas_Ready.xml";
+    std::string m_GRLxml = "";
     /// @brief Run numbers to skip in GRL
     std::string m_GRLExcludeList = "";
 
@@ -95,6 +95,12 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_PRWFileNames = "";
     /// @brief Automatically configure PRW using config files from SUSYTools instead of using m_PRWFileNames.
     bool m_autoconfigPRW = false;
+    /// @brief actualMu configuration file for the MC16a campaign (2015/2016). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2016File = "";
+    /// @brief actualMu configuration file for the MC16d campaign (2017). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2017File = "";
+    /// @brief actualMu configuration file for the MC16e campaign (2018). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2018File = "";
     /**
       @rst
       mc16(acd) to bypass the automatic campaign determination from AMI, several campaigns can be separated by a comma. Only used

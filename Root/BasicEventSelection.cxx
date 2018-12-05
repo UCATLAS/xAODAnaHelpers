@@ -1167,6 +1167,17 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	prwConfigFiles.push_back( prwConfigFile );
     }
 
+  // Add actualMu config files
+  for(const auto& mcCampaign : mcCampaignList)
+    {
+      if( !m_prwActualMu2016File.empty() && mcCampaign == "mc16a" )
+	prwConfigFiles.push_back(m_prwActualMu2016File);
+      if( !m_prwActualMu2017File.empty() && (mcCampaign == "mc16c" || mcCampaign=="mc16d") )
+	prwConfigFiles.push_back(m_prwActualMu2017File);
+      if( !m_prwActualMu2018File.empty() && (mcCampaign == "mc16e" || mcCampaign=="mc16f") )
+	prwConfigFiles.push_back(m_prwActualMu2018File);
+    }
+
   // also need to handle lumicalc files: only use 2015+2016 with mc16a
   // and only use 2017 with mc16c
   // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
