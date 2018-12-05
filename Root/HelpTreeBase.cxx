@@ -360,7 +360,7 @@ void HelpTreeBase::AddMuons(const std::string detailStr, const std::string muonN
   }
 
   thisMuon->setBranches(m_tree);
-  this->AddMuonsUser();
+  this->AddMuonsUser(detailStr, muonName);
 }
 
 void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex, const std::string muonName ) {
@@ -478,7 +478,7 @@ void HelpTreeBase::AddElectrons(const std::string detailStr, const std::string e
   xAH::ElectronContainer* thisElec = m_elecs[elecName];
 
   thisElec->setBranches(m_tree);
-  this->AddElectronsUser(elecName);
+  this->AddElectronsUser(detailStr, elecName);
 }
 
 
@@ -526,7 +526,7 @@ void HelpTreeBase::AddPhotons(const std::string detailStr, const std::string pho
   xAH::PhotonContainer* thisPhoton = m_photons[photonName];
 
   thisPhoton->setBranches(m_tree);
-  this->AddPhotonsUser(photonName);
+  this->AddPhotonsUser(detailStr, photonName);
 }
 
 
@@ -574,7 +574,7 @@ void HelpTreeBase::AddClusters(const std::string detailStr, const std::string cl
   xAH::ClusterContainer* thisCluster = m_clusters[clusterName];
 
   thisCluster->setBranches(m_tree);
-  this->AddClustersUser(clusterName);
+  this->AddClustersUser(detailStr, clusterName);
 }
 
 
@@ -747,7 +747,7 @@ void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string 
 
   xAH::TruthContainer* thisTruth = m_truth[truthName];
   thisTruth->setBranches(m_tree);
-  this->AddTruthUser(truthName);
+  this->AddTruthUser(truthName, detailStr);
 }
 
 void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truthParts ) {
@@ -802,7 +802,7 @@ void HelpTreeBase::AddTrackParts(const std::string trackName, const std::string 
 
   xAH::TrackContainer* thisTrack = m_tracks[trackName];
   thisTrack->setBranches(m_tree);
-  this->AddTracksUser(trackName);
+  this->AddTracksUser(trackName, detailStr);
 }
 
 void HelpTreeBase::FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* trackParts ) {
@@ -971,7 +971,7 @@ void HelpTreeBase::AddTaus(const std::string detailStr, const std::string tauNam
   xAH::TauContainer* thisTau = m_taus[tauName];
 
   thisTau->setBranches(m_tree);
-  this->AddTausUser();
+  this->AddTausUser(detailStr, tauName);
 }
 
 void HelpTreeBase::FillTaus( const xAOD::TauJetContainer* taus, const std::string tauName ) {
@@ -1018,7 +1018,7 @@ void HelpTreeBase::AddMET( const std::string detailStr, const std::string metNam
   xAH::MetContainer* thisMet = m_met[metName];
 
   thisMet->setBranches(m_tree);
-  this->AddMETUser(metName);
+  this->AddMETUser(detailStr, metName);
 }
 
 void HelpTreeBase::FillMET( const xAOD::MissingETContainer* met, const std::string metName ) {

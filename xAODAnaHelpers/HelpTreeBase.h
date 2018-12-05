@@ -200,23 +200,23 @@ public:
     return;
   };
 
-  virtual void AddMuonsUser(const std::string detailStr = "")      {
-    if(m_debug) Info("AddMuonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+  virtual void AddMuonsUser(const std::string detailStr = "", const std::string muonName="muon"){
+    if(m_debug) Info("AddMuonsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),muonName.c_str());
+    return;
+    };
+
+  virtual void AddElectronsUser(const std::string detailStr = "", const std::string elecName="el"){
+    if(m_debug) Info("AddElectronsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),elecName.c_str());
     return;
   };
 
-  virtual void AddElectronsUser(const std::string detailStr = "")  {
-    if(m_debug) Info("AddElectronsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+  virtual void AddPhotonsUser(const std::string detailStr = "", const std::string photonName="ph"){
+    if(m_debug) Info("AddPhotonsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),photonName.c_str());
     return;
   };
 
-  virtual void AddPhotonsUser(const std::string detailStr = "")  {
-    if(m_debug) Info("AddPhotonsUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
-    return;
-  };
-
-  virtual void AddClustersUser(const std::string detailStr = "")  {
-    if(m_debug) Info("AddClustersUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+  virtual void AddClustersUser(const std::string detailStr = "", const std::string clusterName="cl"){
+    if(m_debug) Info("AddClustersUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),clusterName.c_str());
     return;
   };
 
@@ -252,8 +252,8 @@ public:
     return;
   };
 
-  virtual void AddTausUser(const std::string detailStr = "")       {
-    if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+  virtual void AddTausUser(const std::string detailStr = "", const std::string tauName="tau")   {
+    if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),tauName.c_str());
     return;
   };
 
