@@ -1269,7 +1269,12 @@ EL::StatusCode BasicEventSelection :: finalize ()
 
   m_RunNr_VS_EvtNr.clear();
 
-  if ( m_trigDecTool_handle.isInitialized() )  m_trigDecTool_handle->finalize();
+  if ( m_trigDecTool_handle.isInitialized() ){
+    if (asg::ToolStore::contains<Trig::TrigDecisionTool>("ToolSvc.TrigDecisionTool") ){
+      m_trigDecTool_handle->finalize();
+      asg::ToolStore::remove("ToolSvc.TrigDecisionTool").ignore();
+    }
+  }
 
   //after execution loop
   if(m_printBranchList){
