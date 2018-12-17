@@ -37,17 +37,12 @@ public:
   // Calibration information
   // Tool recommends using map, rather than setting individual calib paths.
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommendations_for_full_2015_an
-  std::string m_photonCalibMap = "PhotonEfficiencyCorrection/2015_2016/rel20.7/Moriond2017_v1/map0.txt";
-
-  // recommended files here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhotonEfficiencyRun2#Recommended_input_files
-  std::string m_conEffCalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.con.v00.root";
-  std::string m_uncEffCalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2016.13TeV.rel20.7.25ns.unc.v00.root";
-  std::string m_conEffAFIICalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.con.v01.root";
-  std::string m_uncEffAFIICalibPath = "PhotonEfficiencyCorrection/efficiencySF.offline.Tight.2015.13TeV.rel20.AFII.unc.v01.root";
+  // recommendation is set by tool
+  std::string m_overridePhotonCalibMap = "";
 
   // ID information
   // recommended files here: ElectronLikelihoodLooseOfflineConfig2016_Smooth.conf
-  std::string m_tightIDConfigPath = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMTightSelectorCutDefs.conf";
+  std::string m_tightIDConfigPath = "ElectronPhotonSelectorTools/offline/20180825/PhotonIsEMTightSelectorCutDefs.conf";
   std::string m_mediumIDConfigPath = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMMediumSelectorCutDefs.conf";
   std::string m_looseIDConfigPath = "ElectronPhotonSelectorTools/offline/mc15_20150712/PhotonIsEMLooseSelectorCutDefs.conf";
 
@@ -64,7 +59,7 @@ public:
   float       m_systVal = 0.0;
   std::string m_systName = "";
 
-  std::string m_esModel = "es2016data_mc15c";
+  std::string m_esModel = "es2017_R21_v1";
   std::string m_decorrelationModel = "";
   int m_randomRunNumber = -1;
 
