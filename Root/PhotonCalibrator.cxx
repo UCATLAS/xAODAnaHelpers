@@ -257,25 +257,11 @@ EL::StatusCode PhotonCalibrator :: initialize ()
     //----------------------------------
     //create the tools
 
-    std::string conEffCalibPath  = PathResolverFindCalibFile(m_conEffCalibPath );
-    std::string uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffCalibPath );
-    if(m_useAFII){
-      conEffCalibPath  = PathResolverFindCalibFile(m_conEffAFIICalibPath );
-      uncEffCalibPath  = PathResolverFindCalibFile(m_uncEffAFIICalibPath );
-    }
-
-    // if m_photonCalibMap is set, use it instead of correction files
-    if( m_photonCalibMap.size() > 0 ){
-      ANA_CHECK( m_photonTightEffTool_handle .setProperty("MapFilePath", m_photonCalibMap) );
-      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("MapFilePath", m_photonCalibMap) );
-      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("MapFilePath", m_photonCalibMap) );
-    } else {
-      ANA_CHECK( m_photonTightEffTool_handle .setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
-      ANA_CHECK( m_photonTightEffTool_handle .setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
-      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
-      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
-      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("CorrectionFileNameConv"  ,conEffCalibPath));
-      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("CorrectionFileNameUnconv",uncEffCalibPath));
+    if( !m_overridePhotonCalibMap.empty() ){
+      ANA_MSG_WARNING("Overriding photon calibration map to " << m_overridePhotonCalibMap);
+      ANA_CHECK( m_photonTightEffTool_handle .setProperty("MapFilePath", m_overridePhotonCalibMap) );
+      ANA_CHECK( m_photonMediumEffTool_handle.setProperty("MapFilePath", m_overridePhotonCalibMap) );
+      ANA_CHECK( m_photonLooseEffTool_handle .setProperty("MapFilePath", m_overridePhotonCalibMap) );
     }
 
     // set data type
