@@ -130,7 +130,10 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_applyCoreFlagsCut = false;
 
     // Jet Cleaning
+    // Jet Cleaning (see also https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017)
+    /// recommended way to clean all jets, but especially collections other than EMTopo ... equivalent to "loose" jet-by-jet cleaning! 
     bool m_applyJetCleaningEventFlag = false;
+    /// should only ever be used in 2015 and 2016 data, for analyses which may be of interest for analyses where fake MET can be an issue
     bool m_applyIsBadBatmanFlag = false;
 
     // Print Branch List
