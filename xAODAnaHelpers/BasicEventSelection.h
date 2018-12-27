@@ -129,6 +129,10 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_applyEventCleaningCut = false;
     bool m_applyCoreFlagsCut = false;
 
+    // Jet Cleaning
+    bool m_applyJetCleaningEventFlag = false;
+    bool m_applyIsBadBatmanFlag = false;
+
     // Print Branch List
     bool m_printBranchList = false;
 
@@ -228,6 +232,8 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_tile;       //!
     int m_cutflow_SCT;        //!
     int m_cutflow_core;       //!
+    int m_cutflow_jetcleaning; //!
+    int m_cutflow_isbadbatman; //!
     int m_cutflow_npv;        //!
     int m_cutflow_trigger;    //!
 
