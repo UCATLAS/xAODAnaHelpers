@@ -279,12 +279,6 @@ EL::StatusCode ElectronSelector :: initialize ()
     }
 
     if ( m_readIDFlagsFromDerivation ) {
-      // LooseBL is not in Derivations, so choose Loose and do BLayer cut locally
-      if( m_LHOperatingPoint == "LooseBL" ){
-        m_LHOperatingPoint = "Loose";
-        m_doBLTrackQualityCut = true;
-      }
-
       ANA_MSG_INFO( "Reading Electron LH ID from DAODs ..." );
       ANA_CHECK( m_el_LH_PIDManager->setupWPs( false ));
     } else {
