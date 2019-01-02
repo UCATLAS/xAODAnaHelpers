@@ -949,5 +949,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
     }
 
+  }
+
   return EL::StatusCode::SUCCESS;
 }
