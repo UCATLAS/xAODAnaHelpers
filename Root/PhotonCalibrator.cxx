@@ -166,12 +166,12 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   ANA_MSG_INFO("Will be using EgammaCalibrationAndSmearingTool systematic:");
 
-  std::vector< std::string >* SystPhotonsNames = new std::vector< std::string >;
+  auto SystPhotonsNames = std::make_unique< std::vector< std::string > >();
   for ( const auto& syst_it : m_systList ) {
     SystPhotonsNames->push_back(syst_it.name());
     ANA_MSG_INFO("\t " << syst_it.name());
   }
-    ANA_CHECK(m_store->record(SystPhotonsNames, "photons_Syst"+m_name ));
+    ANA_CHECK(m_store->record(std::move(SystPhotonsNames), "photons_Syst"+m_name ));
 
   //isEM selector tools
   //------------------
@@ -313,7 +313,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
   // prepare a vector of the names of CDV containers
   // must be a pointer to be recorded in TStore
   //
-  std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+  auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
 
   for ( const auto& syst_it : m_systList ) {
     ANA_MSG_DEBUG("Systematic Loop for m_systList=" << syst_it.name() );
@@ -410,7 +410,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
   // add vector<string container_names_syst> to TStore
   //
-  ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
+  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
@@ -591,4 +591,3 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 
   return EL::StatusCode::SUCCESS;
 }
-

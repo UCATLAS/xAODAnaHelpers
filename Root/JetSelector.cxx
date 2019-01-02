@@ -450,7 +450,7 @@ EL::StatusCode JetSelector :: execute ()
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
 
     // loop over systematics
-    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+    auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
     bool passOne(false);
     for ( auto systName : *systNames ) {
 
@@ -483,7 +483,7 @@ EL::StatusCode JetSelector :: execute ()
     }
 
     // save list of systs that should be considered down stream
-    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgo));
+    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgo));
     //delete vecOutContainerNames;
 
   }
@@ -588,7 +588,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   if ( isMC() && m_doJVT && m_haveTruthJets ) {
 
-    std::vector< std::string >* sysVariationNamesJVT  = new std::vector< std::string >;
+    auto sysVariationNamesJVT = std::make_unique< std::vector< std::string > >();
 
     // Do it only if a tool with *this* name hasn't already been used
     //
@@ -686,7 +686,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // This will be the case when this executeSelection() function gets called for every syst varied input container,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( m_store->record( sysVariationNamesJVT, m_outputSystNamesJVT)); }
+    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( m_store->record( std::move(sysVariationNamesJVT), m_outputSystNamesJVT)); }
   } else if ( !isMC() && m_doJVT ) {
     // Loop over selected jets and decorate with JVT passed status
     for ( auto jet : *(selectedJets) ) {
@@ -709,7 +709,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   if ( isMC() && m_dofJVT ) {
 
-    std::vector< std::string >* sysVariationNamesfJVT  = new std::vector< std::string >;
+    auto sysVariationNamesfJVT = std::make_unique< std::vector< std::string > >();
 
     // Do it only if a tool with *this* name hasn't already been used
     //
@@ -800,7 +800,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // This will be the case when this executeSelection() function gets called for every syst varied input container,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( m_store->record( sysVariationNamesfJVT, m_outputSystNamesfJVT)); }
+    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( m_store->record( std::move(sysVariationNamesfJVT), m_outputSystNamesfJVT)); }
   } else if ( !isMC() && m_dofJVT ) {
     // Loop over selected jets and decorate with fJVT passed status
     for ( auto jet : *(selectedJets) ) {

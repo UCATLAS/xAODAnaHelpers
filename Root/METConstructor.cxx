@@ -196,7 +196,7 @@ EL::StatusCode METConstructor :: execute ()
    ANA_CHECK( HelperFunctions::retrieve(metMap, m_mapName, m_event, m_store, msg()));
 
    std::vector<CP::SystematicSet>::const_iterator sysListItr;
-   std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+   auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
 
    //
    // get vector of string giving the Systematic names:
@@ -584,7 +584,7 @@ EL::StatusCode METConstructor :: execute ()
    // might have already been stored by another execution of this algo
    // or by a previous iteration of the same
    if ( !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) {
-      ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
+      ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
    }
 
    if(msgLvl(MSG::VERBOSE)) m_store->print();

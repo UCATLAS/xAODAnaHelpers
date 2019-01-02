@@ -190,10 +190,6 @@ EL::StatusCode TauJetMatching :: execute ()
     std::vector< std::string >* systNames(nullptr);
     ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
 
-    // prepare a vector of the names of CDV containers for usage by downstream algos
-    // must be a pointer to be recorded in TStore
-    //
-    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
     ANA_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
     // loop over systematic sets

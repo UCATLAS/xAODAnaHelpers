@@ -364,7 +364,7 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
   
   std::unique_ptr< std::vector< std::string > > sysVariationNames = nullptr;
   
-  if ( writeSystNames ) sysVariationNames = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+  if ( writeSystNames ) sysVariationNames = std::make_unique< std::vector< std::string > >();
 
   for ( const auto& syst_it : m_systList ) {
     if ( !syst_it.name().empty() && !nominal ) continue;
