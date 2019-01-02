@@ -549,9 +549,6 @@ EL::StatusCode METConstructor :: execute ()
        }
      }
 
-     ANA_CHECK( m_store->record( std::move(newMet), (m_outputContainer + systName) ));
-     ANA_CHECK( m_store->record( std::move(metAuxCont), (m_outputContainer + systName + "Aux.")));
-
      ANA_MSG_DEBUG(" FinalClus met, for syst " << systName << " is = " << (*newMet->find("FinalClus"))->met());
      ANA_MSG_DEBUG(" FinalTrk met, for syst " << systName << " is = " << (*newMet->find("FinalTrk"))->met());
      ANA_MSG_DEBUG("storing met container :  " << (m_outputContainer + systName));
@@ -578,6 +575,10 @@ EL::StatusCode METConstructor :: execute ()
        ANA_MSG_INFO( "FinalTrk:     old=" << (*oldMet->find("FinalTrk"))->met() << " \tnew" << (*newMet->find("FinalTrk"))->met());
        ANA_MSG_INFO( "       >>>>> R=" << (*oldMet->find("FinalTrk"))->met()/ (*newMet->find("FinalTrk"))->met());
      }
+
+     // Store MET
+     ANA_CHECK( m_store->record( std::move(newMet), (m_outputContainer + systName) ));
+     ANA_CHECK( m_store->record( std::move(metAuxCont), (m_outputContainer + systName + "Aux.")));
 
    } //end loop over systematics
 

@@ -427,10 +427,10 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       sysVariationNames->push_back("");
     }
 
-    ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystName));
-
     ANA_MSG_DEBUG("Size is " << sysVariationNames->size());
     for(auto sysName : *sysVariationNames) ANA_MSG_DEBUG(sysName);
+
+    ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystName));
   }
 
   return EL::StatusCode::SUCCESS;
