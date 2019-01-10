@@ -426,7 +426,7 @@ EL::StatusCode MuonSelector :: execute ()
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
     //
-    std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+    auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
     ANA_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
     // loop over systematic sets
@@ -478,7 +478,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
+    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   }
 

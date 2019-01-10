@@ -476,7 +476,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
   if ( !isToolAlreadyUsed(m_recoEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesReco = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+    if ( writeSystNames ) sysVariationNamesReco = std::make_unique< std::vector< std::string > >();
 
     for ( const auto& syst_it : m_systListReco ) {
       if ( !syst_it.name().empty() && !nominal ) continue;
@@ -581,7 +581,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
   if ( !isToolAlreadyUsed(m_isoEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesIso = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+    if ( writeSystNames ) sysVariationNamesIso = std::make_unique< std::vector< std::string > >();
 
     for ( const auto& syst_it : m_systListIso ) {
       if ( !syst_it.name().empty() && !nominal ) continue;
@@ -693,7 +693,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos) && run<=284484) continue;
 
       std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig = nullptr;
-      if ( writeSystNames ) sysVariationNamesTrig = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+      if ( writeSystNames ) sysVariationNamesTrig = std::make_unique< std::vector< std::string > >();
       // this is used to put the list of sys strings in the store.
       // The original string needs to be updated with the name of
       // the trigger for every item in the trigger loop.
@@ -845,7 +845,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
   //
   if ( !isToolAlreadyUsed(m_TTVAEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesTTVA = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+    if ( writeSystNames ) sysVariationNamesTTVA = std::make_unique< std::vector< std::string > >();
 
     for ( const auto& syst_it : m_systListTTVA ) {
       if ( !syst_it.name().empty() && !nominal ) continue;

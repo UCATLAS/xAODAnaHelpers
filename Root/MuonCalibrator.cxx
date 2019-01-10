@@ -158,7 +158,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
 
   ANA_MSG_INFO("Will be using MuonCalibrationAndSmearingTool systematic:");
-  std::vector< std::string >* SystMuonsNames = new std::vector< std::string >;
+  auto SystMuonsNames = std::make_unique< std::vector< std::string > >();
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
       ANA_MSG_INFO("\t Running w/ nominal configuration only!");
@@ -168,7 +168,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(SystMuonsNames, "muons_Syst"+m_name ));
+  ANA_CHECK(m_store->record(std::move(SystMuonsNames), "muons_Syst"+m_name ));
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -210,7 +210,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // prepare a vector of the names of CDV containers
   // must be a pointer to be recorded in TStore
   //
-  std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+  auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
 
   for ( const auto& syst_it : m_systList ) {
 
@@ -294,7 +294,7 @@ EL::StatusCode MuonCalibrator :: execute ()
   // add vector<string container_names_syst> to TStore
   //
   ANA_MSG_DEBUG( "record m_outputAlgoSystNames");
-  ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
+  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   //

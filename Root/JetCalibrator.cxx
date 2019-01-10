@@ -357,7 +357,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_MSG_DEBUG("Retrieved tool: " << m_fJVTTool_handle);
   }
 
-  std::vector< std::string >* SystJetsNames = new std::vector< std::string >;
+  auto SystJetsNames = std::make_unique< std::vector< std::string > >();
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() && m_systName.empty() ) {
       ANA_MSG_INFO("\t Running w/ nominal configuration only!");
@@ -367,7 +367,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(SystJetsNames, "jets_Syst"+m_name ));
+  ANA_CHECK(m_store->record(std::move(SystJetsNames), "jets_Syst"+m_name ));
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -456,7 +456,7 @@ EL::StatusCode JetCalibrator :: execute ()
   }//for jets
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
-  std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+  auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
 
   //std::vector< int >
   for ( const auto& syst_it : m_systList ) {
@@ -562,7 +562,7 @@ EL::StatusCode JetCalibrator :: execute ()
     ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
   }
   // add vector of systematic names to TStore
-  ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgo));
+  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgo));
 
   // look what do we have in TStore
 

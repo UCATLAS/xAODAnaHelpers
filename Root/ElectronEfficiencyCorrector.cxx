@@ -549,7 +549,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_WorkingPointPID.empty() && !isToolAlreadyUsed(m_pidEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesPID = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+    if ( writeSystNames ) sysVariationNamesPID = std::make_unique< std::vector< std::string > >();
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElPIDEff_SF_syst_" + m_WorkingPointPID;
@@ -642,7 +642,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_WorkingPointPID.empty() && !m_WorkingPointIso.empty() && !isToolAlreadyUsed(m_IsoEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesIso = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+    if ( writeSystNames ) sysVariationNamesIso = std::make_unique< std::vector< std::string > >();
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElIsoEff_SF_syst_" + m_WorkingPointPID + "_isol" + m_WorkingPointIso;
@@ -735,7 +735,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
   //
   if ( !m_WorkingPointReco.empty() && !isToolAlreadyUsed(m_RecoEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesReco = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+    if ( writeSystNames ) sysVariationNamesReco = std::make_unique< std::vector< std::string > >();
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElRecoEff_SF_syst_" + m_WorkingPointReco;
@@ -830,7 +830,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   if ( !m_WorkingPointPID.empty() && !m_WorkingPointTrig.empty() && !isToolAlreadyUsed(m_TrigEffSF_tool_name) ) {
 
-    if ( writeSystNames ) sysVariationNamesTrig = std::unique_ptr<std::vector<std::string>>(new std::vector<std::string>);
+    if ( writeSystNames ) sysVariationNamesTrig = std::make_unique< std::vector< std::string > >();
 
     // Create the names of the SF weights to be recorded
     std::string sfName = "ElTrigEff_SF_syst_" + m_WorkingPointTrig + "_" + m_WorkingPointPID;

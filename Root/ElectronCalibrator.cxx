@@ -178,7 +178,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_systList = HelperFunctions::getListofSystematics( recSyst, m_systName, m_systVal, msg() );
 
   ANA_MSG_INFO("Will be using EgammaCalibrationAndSmearingTool systematic:");
-  std::vector< std::string >* SystElectronsNames = new std::vector< std::string >;
+  auto SystElectronsNames = std::make_unique< std::vector< std::string > >();
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
       ANA_MSG_INFO("\t Running w/ nominal configuration only!");
@@ -188,7 +188,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(SystElectronsNames, "ele_Syst"+m_name ));
+  ANA_CHECK(m_store->record(std::move(SystElectronsNames), "ele_Syst"+m_name ));
 
   // ***********************************************************
 
@@ -242,7 +242,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // prepare a vector of the names of CDV containers
   // must be a pointer to be recorded in TStore
   //
-  std::vector< std::string >* vecOutContainerNames = new std::vector< std::string >;
+  auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
 
   for ( const auto& syst_it : m_systList ) {
 
@@ -335,7 +335,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
   // add vector<string container_names_syst> to TStore
   //
-  ANA_CHECK( m_store->record( vecOutContainerNames, m_outputAlgoSystNames));
+  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   if(msgLvl(MSG::VERBOSE)) m_store->print();

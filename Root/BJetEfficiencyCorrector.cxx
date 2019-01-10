@@ -418,7 +418,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   // Store list of available systematics
   //
   if(doNominal){
-    std::vector< std::string >* sysVariationNames = new std::vector< std::string >;
+    auto sysVariationNames = std::make_unique< std::vector< std::string > >();
     if(m_getScaleFactors) {
       for(const auto& syst_it : m_systList)
 	sysVariationNames->push_back(syst_it.name());
@@ -427,10 +427,10 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       sysVariationNames->push_back("");
     }
 
-    ANA_CHECK( m_store->record( sysVariationNames, m_outputSystName));
-
     ANA_MSG_DEBUG("Size is " << sysVariationNames->size());
     for(auto sysName : *sysVariationNames) ANA_MSG_DEBUG(sysName);
+
+    ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystName));
   }
 
   return EL::StatusCode::SUCCESS;

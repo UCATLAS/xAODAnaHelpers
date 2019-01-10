@@ -154,8 +154,6 @@ class OverlapRemover : public xAH::Algorithm
   int m_weightNumEventPass; //!
   /** @brief A counter for the number of passed objects */
   int m_numObjectPass;      //!
-  /** @brief Container to be filled by executeOR with combined systematics */
-  std::vector<std::string> *m_vecOutContainerNames; //!
 
   /**
      @brief Consider electrons in the OLR
@@ -280,7 +278,8 @@ public:
 				    const xAOD::PhotonContainer* inPhotons,
 				    const xAOD::TauJetContainer* inTaus,
 				    SystType syst_type = NOMINAL,
-				    std::vector<std::string>* sysVec = nullptr);
+				    std::vector<std::string>* sysVec = nullptr,
+            std::vector<std::string>* sysVecOut = nullptr);
 
   /** @brief Setup cutflow histograms */
   EL::StatusCode setCutFlowHist();
