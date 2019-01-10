@@ -118,15 +118,15 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "HybBEff_85")  { opOK = true; m_getScaleFactors =  true; }
 
   // Only DL1 and MV2c10 are calibrated
-  if (m_taggerName == "MV2c10")    { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "MV2c10rnn") { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "MV2c10mu")  { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "DL1")       { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1rnn")    { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "DL1mu")     { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "MV2c10") { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "MV2r")   { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "MV2rmu") { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1")    { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  false; }
 
   if( !opOK || !taggerOK ) {
-    ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
+    ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
     return EL::StatusCode::FAILURE;
   }
 
@@ -273,7 +273,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
-  ANA_MSG_DEBUG( "Applying BJet Efficency Corrector... ");
+  ANA_MSG_DEBUG( "Applying BJetEfficiencyCorrector for " << m_taggerName << " tagger... ");
 
   //
   // retrieve event
@@ -303,7 +303,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
       // Check the existence of the container
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
 
-      executeEfficiencyCorrection( inJets, eventInfo, doNominal );
+      ANA_CHECK( executeEfficiencyCorrection( inJets, eventInfo, doNominal ) );
     }
 
   }
@@ -375,20 +375,20 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 	// get the scale factor
 	float SF(-1.0);
-  CP::CorrectionCode BJetEffCode;
-  // if passes cut take the efficiency scale factor
-  // if failed cut take the inefficiency scale factor
-  if( tagged ) {
-    BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-  } else {
-    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-  }
-  if (BJetEffCode == CP::CorrectionCode::Error) {
-    ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
-    return EL::StatusCode::FAILURE;
-  } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
-    ANA_MSG_DEBUG( "Jet is out of validity range");
-  }
+	CP::CorrectionCode BJetEffCode;
+	// if passes cut take the efficiency scale factor
+	// if failed cut take the inefficiency scale factor
+	if( tagged ) {
+	  BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+	} else {
+	  BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+	}
+	if (BJetEffCode == CP::CorrectionCode::Error) {
+	  ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
+	  return EL::StatusCode::FAILURE;
+	} else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
+	  ANA_MSG_DEBUG( "Jet is out of validity range");
+	}
 
 	// Add it to vector
 	sfVec.push_back(SF);
