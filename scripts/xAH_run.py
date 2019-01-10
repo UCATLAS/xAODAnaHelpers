@@ -17,11 +17,12 @@ from __future__ import print_function
 import argparse
 try: import argcomplete
 except: pass
-import os
+import os, os.path
 import subprocess
 import sys
 import datetime
 import time
+import ConfigParser
 
 try:
     import xAODAnaHelpers
@@ -35,6 +36,35 @@ except ImportError:
     import python.cli_options as xAH_cli_options
     import python.utils as xAH_utils
 
+#
+# Load default options configuration
+userconfigpath = os.path.expanduser("~/.xAH")
+config = ConfigParser.ConfigParser()
+config.read(userconfigpath)
+
+# 
+for option,optdata in xAH_cli_options.standard.iteritems():
+    if config.has_option('standard',option): optdata['default']=config.get('standard', option)
+
+for option,optdata in xAH_cli_options.drivers_common.iteritems():
+    if config.has_option('drivers',option): optdata['default']=config.get('drivers', option)
+
+for option,optdata in xAH_cli_options.drivers_prooflite.iteritems():
+    if config.has_option('prooflite',option): optdata['default']=config.get('prooflite', option)
+
+for option,optdata in xAH_cli_options.drivers_prun.iteritems():
+    if config.has_option('prun',option): optdata['default']=config.get('prun', option)
+
+for option,optdata in xAH_cli_options.drivers_condor.iteritems():
+    if config.has_option('condor',option): optdata['default']=config.get('condor', option)
+
+for option,optdata in xAH_cli_options.drivers_lsf.iteritems():
+    if config.has_option('lsf',option): optdata['default']=config.get('lsf', option)
+
+for option,optdata in xAH_cli_options.drivers_slurm.iteritems():
+    if config.has_option('slurm',option): optdata['default']=config.get('slurm', option)
+
+#
 # if we want multiple custom formatters, use inheriting
 class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
   pass
@@ -579,8 +609,8 @@ if __name__ == "__main__":
       driver.SetAccount         (args.optSlurmAccount             )
       driver.SetPartition       (args.optSlurmPartition           )
       driver.SetRunTime         (args.optSlurmRunTime             )
-      driver.SetMemory          (args.optSlurmMemory              )
-      driver.SetConstrain       (args.optSlurmConstrain           )
+      if args.optSlurmMemory:    driver.SetMemory          (args.optSlurmMemory              )
+      if args.optSlurmConstrain: driver.SetConstrain       (args.optSlurmConstrain           )
       for opt, t in map(lambda x: (x.dest, x.type), slurm._actions):
         if getattr(args, opt) is None: continue  # skip if not set
         if opt in ['help', 'optBatchWait', 'optBatchShellInit', 'optSlurmAccount', 'optSlurmPartition', 'optSlurmRunTime', 'optSlurmMemory', 'optSlurmConstrain']: continue  # skip some options
