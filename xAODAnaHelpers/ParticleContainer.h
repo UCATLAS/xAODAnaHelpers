@@ -13,25 +13,26 @@
 #include <xAODAnaHelpers/Particle.h>
 #include <xAODBase/IParticle.h>
 
-namespace xAH {
+namespace xAH
+{
 
-    template <class T_PARTICLE, class T_INFOSWITCH>
-    class ParticleContainer
-    {
-    public:
+  template <class T_PARTICLE, class T_INFOSWITCH>
+  class ParticleContainer
+  {
+  public:
     ParticleContainer(const std::string& name,
 		      const std::string& detailStr="",
 		      float units = 1e3,
 		      bool mc = false,
 		      bool useMass=false,
-          bool storeSystSFs = true,
+		      bool storeSystSFs = true,
 		      const std::string& suffix="")
       : m_name(name),
 	m_infoSwitch(detailStr),
 	m_mc(mc),
 	m_debug(false),
 	m_units(units),
-  m_storeSystSFs(storeSystSFs),
+	m_storeSystSFs(storeSystSFs),
 	m_useMass(useMass),
 	m_suffix(suffix)
       {
@@ -118,7 +119,7 @@ namespace xAH {
 	m_n++;
 
 	if( m_infoSwitch.m_kinematic ){
-	  m_pt  -> push_back ( particle->pt() / m_units );
+	  m_pt  -> push_back( particle->pt() / m_units );
 	  m_eta -> push_back( particle->eta() );
 	  m_phi -> push_back( particle->phi() );
 	  if(m_useMass) m_M->push_back  ( particle->m() / m_units );
@@ -128,18 +129,17 @@ namespace xAH {
 
       void updateEntry()
       {
-        m_particles.clear();
+        m_particles.resize(m_n);
 
         for(int i=0;i<m_n;i++)
-          {
-	    T_PARTICLE particle;
-	    updateParticle(i,particle);
-	    m_particles.push_back(particle);
-          }
+	  updateParticle(i,m_particles[i]);
       }
+      
+      std::vector<T_PARTICLE>& particles()
+      { return m_particles; }
 
       T_PARTICLE& at_nonConst(uint idx)
-	{ return m_particles[idx]; }
+      { return m_particles[idx]; }
 
       const T_PARTICLE& at(uint idx) const
       { return m_particles[idx]; }
