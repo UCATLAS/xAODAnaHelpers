@@ -59,7 +59,6 @@ int HelperFunctions::countPrimaryVertices(const xAOD::VertexContainer* vertexCon
 
 int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer, MsgStream& msg)
 {
-  msg.setName(msg.name()+".getPrimaryVertexLocation");
   int location(0);
 
   if(vertexContainer == nullptr) {
@@ -340,7 +339,6 @@ TLorentzVector HelperFunctions::jetTrimming(
 
 const xAOD::Vertex* HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer* vertexContainer, MsgStream& msg)
 {
-  msg.setName(msg.name()+".getPrimaryVertex");
 
   // vertex types are listed on L328 of
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODTracking/trunk/xAODTracking/TrackingPrimitives.h
@@ -373,7 +371,6 @@ bool HelperFunctions::sort_pt(const xAOD::IParticle* partA, const xAOD::IParticl
 // prune down to 1 systematic if only request that one.  It does however include the
 // nominal case as a null SystematicSet
 std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP::SystematicSet inSysts, std::string systNames, float systVal, MsgStream& msg ) {
-  msg.setName(msg.name()+".getListofSystematics");
 
   std::vector< CP::SystematicSet > outSystList;
 
