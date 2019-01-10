@@ -53,7 +53,10 @@ namespace xAH {
     float    m_weight_pileup;
     float    m_weight_pileup_up;
     float    m_weight_pileup_down;
-    float    m_correct_mu;
+    float    m_correctedAvgMu;
+    float    m_correctedAndScaledAvgMu;
+    float    m_correctedMu;
+    float    m_correctedAndScaledMu;
     int      m_rand_run_nr;
     int      m_rand_lumiblock_nr;
     int      m_bcid;
