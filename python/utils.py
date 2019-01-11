@@ -5,8 +5,6 @@ from __future__ import print_function
 import logging
 logger = logging.getLogger("xAH.utils")
 
-from PathResolver import PathResolver
-
 import json
 import os
 import random
@@ -16,10 +14,11 @@ class NameGenerator(object):
   adjectives = None
   animals = None
   def __init__(self):
+    import PathResolver
     if self.__class__.adjectives is None:
-      self.__class__.adjectives = file(PathResolver.FindCalibFile("xAODAnaHelpers/xAH_adjectives")).read().splitlines()
+      self.__class__.adjectives = file(PathResolver.PathResolver.FindCalibFile("xAODAnaHelpers/xAH_adjectives")).read().splitlines()
     if self.__class__.animals is None:
-      self.__class__.animals = file(PathResolver.FindCalibFile("xAODAnaHelpers/xAH_animals")).read().splitlines()
+      self.__class__.animals = file(PathResolver.PathResolver.FindCalibFile("xAODAnaHelpers/xAH_animals")).read().splitlines()
   def __repr__(self):
     return "{0:s}{1:s}".format(random.choice(self.__class__.adjectives).capitalize(), random.choice(self.__class__.animals).capitalize())
 
@@ -106,3 +105,9 @@ def parse_json(filename):
     # Return json file
     return json.loads(content)
 
+# this registers the provided dictionary of cli-options on an argparse.ArgumentParser object
+def register_on_parser(cli_options, parser):
+    for optName, optConfig in cli_options.iteritems():
+        # no flags specified? that's fine, use '--{optName}' as default
+        flags = optConfig.pop("flags", ["--{0:s}".format(optName)])
+        parser.add_argument(*flags, **optConfig)
