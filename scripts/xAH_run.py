@@ -23,9 +23,17 @@ import sys
 import datetime
 import time
 
-import xAODAnaHelpers
-import xAODAnaHelpers.cli_options
-import xAODAnaHelpers.utils
+try:
+    import xAODAnaHelpers
+    import xAODAnaHelpers.cli_options
+    import xAODAnaHelpers.utils
+
+# this is the situation when you're running xAH_run.py without having installed xAODAnaHelpers
+# mostly needed to build documentation
+except ImportError:
+    import python as xAODAnaHelpers
+    import python.cli_options as xAH_cli_options
+    import python.utils as xAH_utils
 
 # if we want multiple custom formatters, use inheriting
 class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
@@ -82,11 +90,11 @@ parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='fil
 parser_requiredNamed.add_argument('--config', metavar='', type=str, required=True, help='configuration for the algorithms. This tells the script which algorithms to load, configure, run, and in which order. Without it, it becomes a headless chicken.')
 
 parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='{version}'.format(version=__version__))
-xAODAnaHelpers.utils.register_on_parser(xAODAnaHelpers.cli_options.standard, parser)
+xAH_utils.register_on_parser(xAH_cli_options.standard, parser)
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
-xAODAnaHelpers.utils.register_on_parser(xAODAnaHelpers.cli_options.drivers_common, drivers_common)
+xAH_utils.register_on_parser(xAH_cli_options.drivers_common, drivers_common)
 
 # then the drivers we provide support for
 drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
@@ -101,35 +109,35 @@ prooflite = drivers_parser.add_parser('prooflite',
                                       usage=baseUsageStr.format('prooflite'),
                                       formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                       parents=[drivers_common])
-xAODAnaHelpers.utils.register_on_parser(xAODAnaHelpers.cli_options.drivers_prooflite, prooflite)
+xAH_utils.register_on_parser(xAH_cli_options.drivers_prooflite, prooflite)
 
 prun = drivers_parser.add_parser('prun',
                                  help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.',
                                  usage=baseUsageStr.format('prun'),
                                  formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                  parents=[drivers_common])
-xAODAnaHelpers.utils.register_on_parser(xAODAnaHelpers.cli_options.drivers_prun, prun)
+xAH_utils.register_on_parser(xAH_cli_options.drivers_prun, prun)
 
 condor = drivers_parser.add_parser('condor',
                                    help='Flock your jobs to condor',
                                    usage=baseUsageStr.format('condor'),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                    parents=[drivers_common])
-xAODAnaHelpers.utils.register_on_parser(xAODAnaHelpers.cli_options.drivers_condor, condor)
+xAH_utils.register_on_parser(xAH_cli_options.drivers_condor, condor)
 
 lsf = drivers_parser.add_parser('lsf',
                                 help='Flock your jobs to lsf',
                                 usage=baseUsageStr.format('lsf'),
                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                 parents=[drivers_common])
-xAODAnaHelpers.utils.register_on_parser(xAODAnaHelpers.cli_options.drivers_lsf, lsf)
+xAH_utils.register_on_parser(xAH_cli_options.drivers_lsf, lsf)
 
 slurm = drivers_parser.add_parser('slurm',
                                    help='Flock your jobs to SLURM',
                                    usage=baseUsageStr.format('slurm'),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                    parents=[drivers_common])
-xAODAnaHelpers.utils.register_on_parser(xAODAnaHelpers.cli_options.drivers_slurm, slurm)
+xAH_utils.register_on_parser(xAH_cli_options.drivers_slurm, slurm)
 
 local = drivers_parser.add_parser('local',
                                   help='Run using the LocalDriver',
@@ -219,7 +227,7 @@ if __name__ == "__main__":
     import ROOT
     ## Determine which ASG framework using env var for CMAKE setup
     ASG_framework_list = ['Base', 'Top']
-    ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
+    ASG_framework_type = xAH_utils.findFrameworkTypeFromList(ASG_framework_list)
     if( ASG_framework_type == None ):
       arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
       raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
@@ -420,7 +428,7 @@ if __name__ == "__main__":
 
     if ".json" in args.config:
       # parse_json is json.load + stripping comments
-      from xAODAnaHelpers.utils import parse_json
+      from xAH_utils import parse_json
       xAH_logger.debug("Loading json files")
       algConfigs = parse_json(args.config)
       xAH_logger.debug("loaded the json configurations")
