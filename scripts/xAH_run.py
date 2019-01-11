@@ -25,8 +25,8 @@ import time
 
 try:
     import xAODAnaHelpers
-    import xAODAnaHelpers.cli_options
-    import xAODAnaHelpers.utils
+    import xAODAnaHelpers.cli_options as xAH_cli_options
+    import xAODAnaHelpers.utils as xAH_utils
 
 # this is the situation when you're running xAH_run.py without having installed xAODAnaHelpers
 # mostly needed to build documentation
