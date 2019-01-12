@@ -866,8 +866,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   // more info: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017
-  if ( m_applyJetCleaningEventFlag && eventInfo->isAvailable<Char_t>("DFCommonJets_eventClean_LooseBad") ) {
-    if(eventInfo->auxdataConst<Char_t>("DFCommonJets_eventClean_LooseBad")<1) {
+  if ( m_applyJetCleaningEventFlag && eventInfo->isAvailable<char>("DFCommonJets_eventClean_LooseBad") ) {
+    if(eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad")<1) {
 	wk()->skipEvent();
 	return EL::StatusCode::SUCCESS;
       }
@@ -877,8 +877,8 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   // n.b. this cut should only be applied in 2015+16 data, and not to MC!
   // details here: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017#IsBadBatMan_Event_Flag_and_EMEC
-  if ( m_applyIsBadBatmanFlag && eventInfo->isAvailable<Char_t>("DFCommonJets_isBadBatman") &&  !isMC() ) {
-    if(eventInfo->auxdataConst<Char_t>("DFCommonJets_isBadBatman")>0) {
+  if ( m_applyIsBadBatmanFlag && eventInfo->isAvailable<char>("DFCommonJets_isBadBatman") &&  !isMC() ) {
+    if(eventInfo->auxdataConst<char>("DFCommonJets_isBadBatman")>0) {
       wk()->skipEvent();
       return EL::StatusCode::SUCCESS;
     }
