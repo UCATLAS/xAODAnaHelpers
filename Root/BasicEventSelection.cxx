@@ -412,6 +412,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
       m_cutflowHistW->GetXaxis()->FindBin("GRL");
     }
+    if ( m_applyIsBadBatmanFlag ) {
+      m_cutflow_isbadbatman =  m_cutflowHist->GetXaxis()->FindBin("IsBadBatman");
+      m_cutflowHistW->GetXaxis()->FindBin("IsBadBatman");
+    }
     m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
     m_cutflowHistW->GetXaxis()->FindBin("LAr");
     m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
@@ -427,7 +431,10 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
   }
-
+  if ( m_applyJetCleaningEventFlag ) {
+    m_cutflow_jetcleaning = m_cutflowHist->GetXaxis()->FindBin("JetCleaning");
+    m_cutflowHistW->GetXaxis()->FindBin("JetCleaning");
+  }
 
   ANA_MSG_INFO( "Histograms set up!");
 
@@ -864,6 +871,27 @@ EL::StatusCode BasicEventSelection :: execute ()
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
 
   }
+
+  // more info: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017
+  if ( m_applyJetCleaningEventFlag && eventInfo->isAvailable<char>("DFCommonJets_eventClean_LooseBad") ) {
+    if(eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad")<1) {
+	wk()->skipEvent();
+	return EL::StatusCode::SUCCESS;
+      }
+  }
+  m_cutflowHist ->Fill( m_cutflow_jetcleaning, 1 );
+  m_cutflowHistW->Fill( m_cutflow_jetcleaning, mcEvtWeight);
+
+  // n.b. this cut should only be applied in 2015+16 data, and not to MC!
+  // details here: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017#IsBadBatMan_Event_Flag_and_EMEC
+  if ( m_applyIsBadBatmanFlag && eventInfo->isAvailable<char>("DFCommonJets_isBadBatman") &&  !isMC() ) {
+    if(eventInfo->auxdataConst<char>("DFCommonJets_isBadBatman")>0) {
+      wk()->skipEvent();
+      return EL::StatusCode::SUCCESS;
+    }
+  }
+  m_cutflowHist ->Fill( m_cutflow_isbadbatman, 1 );
+  m_cutflowHistW->Fill( m_cutflow_isbadbatman, mcEvtWeight);
 
   //-----------------------------
   // Primary Vertex 'quality' cut
