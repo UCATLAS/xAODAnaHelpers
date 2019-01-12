@@ -23,6 +23,18 @@ import sys
 import datetime
 import time
 
+try:
+    import xAODAnaHelpers
+    import xAODAnaHelpers.cli_options as xAH_cli_options
+    import xAODAnaHelpers.utils as xAH_utils
+
+# this is the situation when you're running xAH_run.py without having installed xAODAnaHelpers
+# mostly needed to build documentation
+except ImportError:
+    import python as xAODAnaHelpers
+    import python.cli_options as xAH_cli_options
+    import python.utils as xAH_utils
+
 # if we want multiple custom formatters, use inheriting
 class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter):
   pass
@@ -76,51 +88,13 @@ parser._optionals.title = "optional"
 # positional argument, require the first argument to be the input filename
 parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read. This gives all the input files for the script to use. Depending on the other options specified, these could be rucio sample names, local paths, or text files containing a list of filenames/paths.')
 parser_requiredNamed.add_argument('--config', metavar='', type=str, required=True, help='configuration for the algorithms. This tells the script which algorithms to load, configure, run, and in which order. Without it, it becomes a headless chicken.')
-parser.add_argument('--submitDir', dest='submit_dir', metavar='<directory>', type=str, required=False, help='Output directory to store the output.', default='submitDir')
-parser.add_argument('--nevents', dest='num_events', metavar='<n>', type=int, help='Number of events to process for all datasets. (0 = no limit)', default=0)
-parser.add_argument('--skip', dest='skip_events', metavar='<n>', type=int, help='Number of events to skip at start for all datasets. (0 = no limit)', default=0)
-parser.add_argument('-f', '--force', dest='force_overwrite', action='store_true', help='Overwrite previous directory if it exists.')
 
 parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='{version}'.format(version=__version__))
-parser.add_argument('--mode', dest='access_mode', type=str, metavar='{class, branch, athena}', choices=['class', 'branch', 'athena'], default='class', help='run using class access mode, branch access mode, or athena access mode')
-parser.add_argument('--treeName', dest="treeName",     default="CollectionTree", help="Tree Name to run on")
-parser.add_argument('--isMC',     action="store_true", dest="is_MC",    default=False, help="Running MC")
-parser.add_argument('--isAFII',   action="store_true", dest="is_AFII",  default=False, help="Running on AFII")
-parser.add_argument('--extraOptions', dest="extra_options", metavar="[param=val]", type=str, required=False, help='Pass in extra options straight into the python config file. These can be accessed by using argparse: `parser.parse_args(shlex.split(args.extra_options))`.', default='')
-
-parser.add_argument('--inputList', dest='use_inputFileList', action='store_true', help='If enabled, will read in a text file containing a list of paths/filenames.')
-parser.add_argument('--inputTag', dest='inputTag', default="", help='A wildcarded name of input files to run on.')
-parser.add_argument('--inputRucio', dest='use_scanRucio', action='store_true', help='If enabled, will search using Rucio. Can be combined with `--inputList`.')
-parser.add_argument('--inputEOS', action='store_true', dest='use_scanEOS', default=False, help='If enabled, will search using EOS. Can be combined with `--inputList and inputTag`.')
-parser.add_argument('--inputSH', action='store_true', dest='use_SH', default=False, help='If enabled, will assume the input file is a directory of ROOT files of saved SH instances to use. Call SH::SampleHandler::load() on it.')
-parser.add_argument('--scanXRD', action='store_true', dest='use_scanXRD', default=False, help='If enabled, will search the xrootd server for the given pattern')
-parser.add_argument('-l', '--log-level', type=str, default='info', help='Logging level. See https://docs.python.org/3/howto/logging.html for more info.')
-parser.add_argument('--stats', action='store_true', dest='variable_stats', default=False, help='If enabled, will variable usage statistics.')
+xAH_utils.register_on_parser(xAH_cli_options.standard, parser)
 
 # first is the driver common arguments
 drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
-drivers_common.add_argument('--optSubmitFlags', metavar='', type=str, required=False, default=None, help='the name of the option for supplying extra submit parameters to batch systems')
-drivers_common.add_argument('--optEventsPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of events per batch job.  (only BatchDriver and derived drivers). warning: this option will be ignored unless you have called SH::scanNEvents first.')
-drivers_common.add_argument('--optFilesPerWorker', metavar='', type=float, required=False, default=None, help='the name of the option for selecting the number of files per batch job.  (only BatchDriver and derived drivers).')
-drivers_common.add_argument('--optDisableMetrics', metavar='', type=int, required=False, default=None, help='the option to turn off collection of performance data')
-drivers_common.add_argument('--optPrintPerFileStats', metavar='', type=int, required=False, default=None, help='the option to turn on printing of i/o statistics at the end of each file. warning: this is not supported for all drivers.')
-drivers_common.add_argument('--optRemoveSubmitDir', metavar='', type=int, required=False, default=None, help='the name of the option for overwriting the submission directory.  if you set this to a non-zero value it will remove any existing submit-directory before tryingto create a new one. You can also use -f/--force as well in xAH_run.py.')
-drivers_common.add_argument('--optBatchSharedFileSystem', type=bool, required=False, default=False, help='enable to signify whether your batch driver is running on a shared filesystem')
-drivers_common.add_argument('--optBatchWait', action='store_true', required=False, help='submit using the submit() command. This causes the code to wait until all jobs are finished and then merge all of the outputs automatically')
-drivers_common.add_argument('--optBatchShellInit', metavar='', type=str, required=False, default='', help='extra code to execute on each batch node before starting EventLoop')
-
-# These are handled by xAH_run.py at the top level instead of down by drivers
-#.add_argument('--optMaxEvents', type=str, required=False, default=None)
-#.add_argument('--optSkipEvents', type=str, required=False, default=None)
-#.add_argument('--optXaodAccessMode', type=str, required=False, default=None)
-#.add_argument('--optXaodAccessMode_branch', type=str, required=False, default=None)
-#.add_argument('--optXaodAccessMode_class', type=str, required=False, default=None)
-
-# standard options for other drivers -- not used because they're only for performance-tuning
-#.add_argument('--optCacheLearnEntries', type=str, required=False, default=None)
-#.add_argument('--optCacheSize', type=str, required=False, default=None)
-#.add_argument('--optXAODPerfStats', type=str, required=False, default=None)
-#.add_argument('--optXAODReadStats', type=str, required=False, default=None)
+xAH_utils.register_on_parser(xAH_cli_options.drivers_common, drivers_common)
 
 # then the drivers we provide support for
 drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
@@ -135,82 +109,41 @@ prooflite = drivers_parser.add_parser('prooflite',
                                       usage=baseUsageStr.format('prooflite'),
                                       formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                       parents=[drivers_common])
+xAH_utils.register_on_parser(xAH_cli_options.drivers_prooflite, prooflite)
 
 prun = drivers_parser.add_parser('prun',
                                  help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.',
                                  usage=baseUsageStr.format('prun'),
                                  formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                  parents=[drivers_common])
+xAH_utils.register_on_parser(xAH_cli_options.drivers_prun, prun)
 
 condor = drivers_parser.add_parser('condor',
                                    help='Flock your jobs to condor',
                                    usage=baseUsageStr.format('condor'),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                    parents=[drivers_common])
+xAH_utils.register_on_parser(xAH_cli_options.drivers_condor, condor)
 
 lsf = drivers_parser.add_parser('lsf',
                                 help='Flock your jobs to lsf',
                                 usage=baseUsageStr.format('lsf'),
                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                 parents=[drivers_common])
+xAH_utils.register_on_parser(xAH_cli_options.drivers_lsf, lsf)
 
 slurm = drivers_parser.add_parser('slurm',
                                    help='Flock your jobs to SLURM',
                                    usage=baseUsageStr.format('slurm'),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                    parents=[drivers_common])
+xAH_utils.register_on_parser(xAH_cli_options.drivers_slurm, slurm)
 
 local = drivers_parser.add_parser('local',
                                   help='Run using the LocalDriver',
                                   usage=baseUsageStr.format('local'),
                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
                                   parents=[drivers_common])
-
-# define arguments for prooflite driver
-prooflite.add_argument('--optPerfTree',          metavar='', type=int, required=False, default=None, help='the option to turn on the performance tree in PROOF.  if this is set to 1, it will write out the tree')
-prooflite.add_argument('--optBackgroundProcess', metavar='', type=int, required=False, default=None, help='the option to do processing in a background process in PROOF')
-
-# define arguments for prun driver
-prun.add_argument('--optGridDestSE',           metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridSite',             metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridCloud',            metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridExcludedSite',     metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridNGBPerJob',        metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridMemory',           metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridMaxCpuCount',      metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridNFiles',           metavar='', type=float, required=False, default=None)
-prun.add_argument('--optGridNFilesPerJob',     metavar='', type=float, required=False, default=None)
-prun.add_argument('--optGridNJobs',            metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridMaxFileSize',      metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridMaxNFilesPerJob',  metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridUseChirpServer',   metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridExpress',          metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridNoSubmit',         metavar='', type=int, required=False, default=None)
-prun.add_argument('--optGridMergeOutput',      metavar='', type=float, required=False, default=None)
-prun.add_argument('--optTmpDir',               metavar='', type=str, required=False, default=None)
-prun.add_argument('--optRootVer',              metavar='', type=str, required=False, default=None)
-prun.add_argument('--optCmtConfig',            metavar='', type=str, required=False, default=None)
-prun.add_argument('--optGridDisableAutoRetry', metavar='', type=int, required=False, default=None)
-prun.add_argument('--optOfficial',             metavar='', type=int, required=False, default=None)
-prun.add_argument('--optVoms',                 metavar='', type=int, required=False, default=None)
-# the following is not technically supported by Job.h but it is a valid option for prun, emailed pathelp about it
-prun.add_argument('--optGridOutputSampleName', metavar='', type=str, required=False, help='Define output grid sample name', default='user.%nickname%.%in:name[2]%.%in:name[3]%.%in:name[6]%.%in:name[7]%_xAH')
-prun.add_argument('--singleTask',              action='store_true',  required= False, default=False, help='Submit all input datasets under a single task.')
-
-# define arguments for condor driver
-condor.add_argument('--optCondorConf', metavar='', type=str, required=False, default='stream_output = true', help='the name of the option for supplying extra parameters for condor systems')
-
-# define arguments for lsf driver
-lsf.add_argument('--optResetShell', metavar='', type=bool, required=False, default=False, help='the option to reset the shell on the worker nodes')
-
-# define arguments for slurm driver
-slurm.add_argument('--optSlurmAccount'         , metavar='', type=str, required=False, default='atlas'      , help='the name of the account to use')
-slurm.add_argument('--optSlurmPartition'       , metavar='', type=str, required=False, default='shared-chos', help='the name of the partition to use')
-slurm.add_argument('--optSlurmRunTime'         , metavar='', type=str, required=False, default='24:00:00'   , help='the maximum runtime')
-slurm.add_argument('--optSlurmMemory'          , metavar='', type=str, required=False, default='1800'       , help='the maximum memory usage of the job (MB)')
-slurm.add_argument('--optSlurmConstrain'       , metavar='', type=str, required=False, default=''           , help='the extra constrains on the nodes')
-slurm.add_argument('--optSlurmExtraConfigLines', metavar='', type=str, required=False, default=''           , help='the extra config lines to pass to SLURM')
-slurm.add_argument('--optSlurmWrapperExec'     , metavar='', type=str, required=False, default=''           , help='the wrapper around the run script')
 
 # start the script
 if __name__ == "__main__":
@@ -221,7 +154,6 @@ if __name__ == "__main__":
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
 
-  import xAODAnaHelpers
   import logging
   xAH_logger = logging.getLogger("xAH.run")
 
@@ -295,7 +227,7 @@ if __name__ == "__main__":
     import ROOT
     ## Determine which ASG framework using env var for CMAKE setup
     ASG_framework_list = ['Base', 'Top']
-    ASG_framework_type = xAODAnaHelpers.utils.findFrameworkTypeFromList(ASG_framework_list)
+    ASG_framework_type = xAH_utils.findFrameworkTypeFromList(ASG_framework_list)
     if( ASG_framework_type == None ):
       arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
       raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
@@ -496,7 +428,7 @@ if __name__ == "__main__":
 
     if ".json" in args.config:
       # parse_json is json.load + stripping comments
-      from xAODAnaHelpers.utils import parse_json
+      from xAH_utils import parse_json
       xAH_logger.debug("Loading json files")
       algConfigs = parse_json(args.config)
       xAH_logger.debug("loaded the json configurations")
