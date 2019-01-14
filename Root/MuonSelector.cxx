@@ -192,6 +192,8 @@ EL::StatusCode MuonSelector :: initialize ()
   muonQualitySet.insert(1);
   muonQualitySet.insert(2);
   muonQualitySet.insert(3);
+  muonQualitySet.insert(4);
+  muonQualitySet.insert(5);
   if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
     ANA_MSG_ERROR( "Unknown muon quality requested: " << m_muonQuality);
     return EL::StatusCode::FAILURE;
