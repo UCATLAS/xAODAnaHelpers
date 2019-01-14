@@ -383,7 +383,7 @@ if __name__ == "__main__":
       sh_all.setMetaString("nc_cmtConfig", os.getenv('Analysis'+ASG_framework_type+'_PLATFORM'))
 
     # read susy meta data (should be configurable)
-    path_metadata=ROOT.PathResolverFindCalibDirectory("xAODAnaHelpers/metadata")
+    path_metadata=ROOT.PathResolver.FindCalibDirectory("xAODAnaHelpers/metadata")
     xAH_logger.info("reading all metadata in {0}".format(path_metadata))
     ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
