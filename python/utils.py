@@ -14,11 +14,11 @@ class NameGenerator(object):
   adjectives = None
   animals = None
   def __init__(self):
-    import PathResolver
+    from PathResolver import PathResolver
     if self.__class__.adjectives is None:
-      self.__class__.adjectives = file(PathResolver.PathResolver.FindCalibFile("xAODAnaHelpers/xAH_adjectives")).read().splitlines()
+      self.__class__.adjectives = file(PathResolver.FindCalibFile("xAODAnaHelpers/xAH_adjectives")).read().splitlines()
     if self.__class__.animals is None:
-      self.__class__.animals = file(PathResolver.PathResolver.FindCalibFile("xAODAnaHelpers/xAH_animals")).read().splitlines()
+      self.__class__.animals = file(PathResolver.FindCalibFile("xAODAnaHelpers/xAH_animals")).read().splitlines()
   def __repr__(self):
     return "{0:s}{1:s}".format(random.choice(self.__class__.adjectives).capitalize(), random.choice(self.__class__.animals).capitalize())
 
