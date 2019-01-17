@@ -13,6 +13,8 @@ env:
   matrix:
     - RELEASE=AnalysisBase,21.2.51
     - RELEASE=AnalysisTop,21.2.51
+    - RELEASE=AnalysisBase,21.2.56
+    - RELEASE=AnalysisTop,21.2.56
 
 script:
   - export RELEASE_TYPE=${RELEASE%%,*}
