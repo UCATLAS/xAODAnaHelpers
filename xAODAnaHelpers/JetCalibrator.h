@@ -126,7 +126,7 @@ public:
   /// @brief jet tile correction
   bool m_doJetTileCorr = false;
 
-  // needed in case want to treat MC as pseudoData for JER uncertainty propagation
+  /// @brief needed in case want to treat MC as pseudoData for JER uncertainty propagation
   bool m_pseudoData = false;
 
 private:
