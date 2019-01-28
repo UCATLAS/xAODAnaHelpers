@@ -285,7 +285,12 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("MCType",m_uncertMCType));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("IsData",!isMC()));
+    if(m_pseudoData) {
+      ANA_MSG_INFO("Input treated as pseudo-data");
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("IsData",true));
+    }
+    else
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("IsData",!isMC()));
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", m_uncertConfig));
     if ( !m_overrideUncertCalibArea.empty() ) {
       ANA_MSG_WARNING("Overriding jet uncertainties calibration area to " << m_overrideUncertCalibArea);
