@@ -72,6 +72,8 @@ public:
   std::string m_overrideCalibArea = "";
   /// @brief Override uncertainties CalibArea tag (default recommended)
   std::string m_overrideUncertCalibArea = "";
+  /// @brief Set analysis-specific jet flavour composition file for JetUncertainties (default: unknown comp.)
+  std::string m_overrideAnalysisFile = "";
 
   /** @rst
     If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.

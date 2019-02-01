@@ -297,6 +297,10 @@ EL::StatusCode JetCalibrator :: initialize ()
       ANA_MSG_WARNING("Overriding jet uncertainties calibration area to " << m_overrideUncertCalibArea);
       ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("CalibArea", m_overrideUncertCalibArea));
     }
+    if( !m_overrideAnalysisFile.empty() ) {
+      ANA_MSG_WARNING("Overriding jet uncertainties analysis file to " << m_overrideAnalysisFile);
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("AnalysisFile", m_overrideAnalysisFile));
+    }
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetUncertaintiesTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_JetUncertaintiesTool_handle);
