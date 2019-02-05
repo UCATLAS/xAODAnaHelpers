@@ -544,7 +544,7 @@ StatusCode JetHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-void JetHists::record(EL::Worker* wk) {
+void JetHists::record(EL::IWorker* wk) {
   HistogramManager::record(wk);
 
   if(m_infoSwitch->m_tracksInJet){

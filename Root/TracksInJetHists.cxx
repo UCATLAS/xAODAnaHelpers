@@ -53,7 +53,7 @@ StatusCode TracksInJetHists::initialize() {
 }
 
 
-void TracksInJetHists::record(EL::Worker* wk) {
+void TracksInJetHists::record(EL::IWorker* wk) {
   HistogramManager::record(wk);
   m_trkPlots -> record( wk );
 }

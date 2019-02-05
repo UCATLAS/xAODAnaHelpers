@@ -152,7 +152,7 @@ void HistogramManager::record(TH1* hist) {
   m_allHists.push_back( hist );
 }
 
-void HistogramManager::record(EL::Worker* wk) {
+void HistogramManager::record(EL::IWorker* wk) {
   for( auto hist : m_allHists ){
     wk->addOutput(hist);
   }
