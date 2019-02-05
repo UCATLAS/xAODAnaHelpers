@@ -13,7 +13,7 @@
 #include <TH2F.h>
 #include <TH3F.h>
 #include <TProfile.h>
-#include <EventLoop/Worker.h>
+#include <EventLoop/IWorker.h>
 #include <xAODRootAccess/TEvent.h>
 
 // for StatusCode::isSuccess
@@ -192,7 +192,7 @@ class HistogramManager {
     /**
      * @brief record all histograms from HistogramManager#m_allHists to the worker
      */
-    void record(EL::Worker* wk);
+    void record(EL::IWorker* wk);
 
     /**
       * @brief the standard message stream for this algorithm
