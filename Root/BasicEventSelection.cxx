@@ -346,6 +346,11 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_doPUreweightingSys = false;
   }
 
+  // get TEvent and TStore
+  //
+  m_event = wk()->xaodEvent();
+  m_store = wk()->xaodStore();
+
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
 
