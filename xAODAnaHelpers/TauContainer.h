@@ -65,6 +65,7 @@ namespace xAH {
       std::vector<int>   *m_passEleOLR;
 
       std::vector< float > *m_tau_matchedJetWidth;
+      std::vector< float > *m_tau_matchedJetJvt;
       
       std::vector< std::vector< float > > *m_tau_tracks_pt;
       std::vector< std::vector< float > > *m_tau_tracks_eta;

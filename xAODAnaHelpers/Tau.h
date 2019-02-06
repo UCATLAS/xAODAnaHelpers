@@ -39,6 +39,7 @@ namespace xAH {
     int                 passEleOLR;
 
     float               matchedJetWidth;
+    float               matchedJetJvt;
     
     std::vector<float>  tracks_pt;
     std::vector<float>  tracks_eta;
