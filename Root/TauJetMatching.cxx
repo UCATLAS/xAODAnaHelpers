@@ -222,6 +222,9 @@ bool TauJetMatching :: executeDecoration ( std::unordered_map<int, std::pair<con
   static SG::AuxElement::Decorator< float > JetWidthDecor("JetWidth");
   static SG::AuxElement::ConstAccessor<float> jetWidthAcc("Width");
 
+  static SG::AuxElement::Decorator< float > JetJvtDecor("JetJvt");
+  static SG::AuxElement::ConstAccessor<float> jetJvtAcc("Jvt");
+
   ANA_MSG_DEBUG( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) );
   
   int iTau = -1;
@@ -233,14 +236,24 @@ bool TauJetMatching :: executeDecoration ( std::unordered_map<int, std::pair<con
 
     if (it_map != match_map.end()) {
       
+      // jet width      
       if (jetWidthAcc.isAvailable(*match_map[iTau].second)) {
         JetWidthDecor(*tau_itr) = static_cast<float>( jetWidthAcc(*match_map[iTau].second) );
       } else { 
         JetWidthDecor(*tau_itr) = -1.;
       } 
-    
+   
+      // jet jvt    
+      if (jetJvtAcc.isAvailable(*match_map[iTau].second)) {
+        JetJvtDecor(*tau_itr) = static_cast<float>( jetJvtAcc(*match_map[iTau].second) );
+      } else { 
+        JetJvtDecor(*tau_itr) = -1.;
+      } 
+
+
     } else {
       JetWidthDecor(*tau_itr) = -1.;
+      JetJvtDecor(*tau_itr) = -1.;
     }
   }
 

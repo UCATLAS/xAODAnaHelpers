@@ -44,6 +44,7 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
 
   if( m_infoSwitch.m_xahTauJetMatching) {
     m_tau_matchedJetWidth = new  std::vector<float>   ();
+    m_tau_matchedJetJvt   = new  std::vector<float>   ();
   }
 
   if( m_infoSwitch.m_trackAll) {
@@ -119,6 +120,7 @@ TauContainer::~TauContainer()
 
   if( m_infoSwitch.m_xahTauJetMatching) {
     delete m_tau_matchedJetWidth; 
+    delete m_tau_matchedJetJvt; 
   }
 
   if( m_infoSwitch.m_trackAll) {
@@ -192,6 +194,7 @@ void TauContainer::setTree(TTree *tree)
 
   if( m_infoSwitch.m_xahTauJetMatching) {
     connectBranch<float>  (tree, "matchedJetWidth",    &m_tau_matchedJetWidth);
+    connectBranch<float>  (tree, "matchedJetJvt",    &m_tau_matchedJetJvt);
   }
 
   if( m_infoSwitch.m_trackAll) {
@@ -283,6 +286,7 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
 
   if( m_infoSwitch.m_xahTauJetMatching) {
     tau.matchedJetWidth  = m_tau_matchedJetWidth ->at(idx);
+    tau.matchedJetJvt    = m_tau_matchedJetJvt ->at(idx);
   }
 
   if( m_infoSwitch.m_trackAll) {
@@ -358,6 +362,7 @@ void TauContainer::setBranches(TTree *tree)
  
   if( m_infoSwitch.m_xahTauJetMatching) {
     setBranch<float>  (tree, "matchedJetWidth",    m_tau_matchedJetWidth);
+    setBranch<float>  (tree, "matchedJetJvt",    m_tau_matchedJetJvt);
   } 
   
   if( m_infoSwitch.m_trackAll) {
@@ -429,6 +434,7 @@ void TauContainer::clear()
 
   if( m_infoSwitch.m_xahTauJetMatching) {
     m_tau_matchedJetWidth->clear();
+    m_tau_matchedJetJvt->clear();
   }
 
   if( m_infoSwitch.m_trackAll) {
@@ -558,6 +564,8 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
   if( m_infoSwitch.m_xahTauJetMatching) {
     static SG::AuxElement::Accessor< float > jetWidthAcc("JetWidth");
     safeFill<float, float, xAOD::TauJet>(tau, jetWidthAcc, m_tau_matchedJetWidth, -1.);
+    static SG::AuxElement::Accessor< float > jetJvtAcc("JetJvt");
+    safeFill<float, float, xAOD::TauJet>(tau, jetJvtAcc, m_tau_matchedJetJvt, -1.);
   }
 
   if( m_infoSwitch.m_trackAll) {
