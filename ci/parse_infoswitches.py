@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
 import clang.cindex
 import json
 
