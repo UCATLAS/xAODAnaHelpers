@@ -87,8 +87,7 @@ matrix:
         apt:
           packages: libclang-dev
       before_script:
-        - sudo find /usr/lib -name "libclang*.so"
-        - sudo ln -s /usr/lib/x86_64-linux-gnu/libclang-6.0.so /usr/lib/libclang.so
+        - sudo ln -s /usr/lib/x86_64-linux-gnu/libclang-3.8.so /usr/lib/libclang.so
       install:
         - pip install clang
       script:
