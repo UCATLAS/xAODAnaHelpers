@@ -75,4 +75,4 @@ for infoswitch, tokens in infoswitches.items():
   for var, match_type, match_string in tokens:
     print('  -',var, match_type, match_string)
 
-json.dump(infoswitches, file('data/xAH_infoswitches.json', 'w+'), sort_keys=True, indent=4)
+json.dump(infoswitches, open('data/xAH_infoswitches.json', 'w+'), sort_keys=True, indent=4)
