@@ -89,6 +89,7 @@ matrix:
         - pip install clang
       script:
         - python3 ci/parse_infoswitches.py
+        - git diff --no-prefix -- data/xAH_infoswitches.json
         - git diff --exit-code --name-only -- data/xAH_infoswitches.json
 
 notifications:
