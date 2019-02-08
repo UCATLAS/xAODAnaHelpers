@@ -1,10 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ Usage: call with <filename>
 """
 
 import sys
 import clang.cindex
-from itertools import izip
 import json
 
 def infoswitch_parser(node, index=0):
@@ -28,7 +27,7 @@ def infoswitch_parser(node, index=0):
           match_index = tokens.index(match_type)
           identifier = tokens[match_index-1]
           rest = iter(tokens[match_index:])
-          for match_type, match_string in izip(rest,rest):
+          for match_type, match_string in zip(rest,rest):
             yield [identifier, match_type, match_string]
           tokens = []
     else:
@@ -51,17 +50,17 @@ def find_infoswitches(infoswitches, node):
   for child in node.get_children():
     find_infoswitches(infoswitches, child)
 
-clang.cindex.Config.set_library_path('/usr/local/opt/llvm/lib')
+clang.cindex.Config.set_library_path('/usr/lib')
 index = clang.cindex.Index.create()
 tu = index.parse(sys.argv[1], args=['-x', 'c++'])
-print 'Translation unit:', tu.spelling
+print('Translation unit:', tu.spelling)
 
 infoswitches = {}
 find_infoswitches(infoswitches, tu.cursor)
 
-for infoswitch, tokens in infoswitches.iteritems():
-  print 'Tokens for {}'.format(infoswitch)
+for infoswitch, tokens in infoswitches.items():
+  print('Tokens for {}'.format(infoswitch))
   for var, match_type, match_string in tokens:
-    print '  -',var, match_type, match_string
+    print('  -',var, match_type, match_string)
 
-print json.dumps(infoswitches, sort_keys=True, indent=4)
+json.dump(infoswitches, file('data/xAH_infoswitches.json', 'w+'), sort_keys=True, indent=4)
