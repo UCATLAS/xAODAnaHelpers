@@ -85,7 +85,7 @@ matrix:
       sudo: true
       addons:
         apt:
-          packages: libclang-dev
+          packages: libclang-6.0-dev
       before_script:
         - sudo ln -s /usr/lib/x86_64-linux-gnu/libclang-3.8.so /usr/lib/libclang.so
       install:
