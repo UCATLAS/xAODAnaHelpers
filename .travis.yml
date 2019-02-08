@@ -78,6 +78,19 @@ matrix:
       script:
         - docker run -it -v "$(pwd)":/workdir -w /workdir unibeautify/uncrustify -c ci/uncrustify.cfg --check **/**.cxx || exit 0
 
+    - language: python
+      python: "3.7"
+      addons:
+        apt:
+          packages: libclang-dev
+      before_script:
+        - sudo ln -s /usr/lib/x86_64-linux-gnu/libclang-6.0.so /usr/lib/libclang.so
+      install:
+        - pip install clang
+      script:
+        - python3 ci/parse_infoswitches.py
+        - git diff --exit-code --name-only -- data/xAH_infoswitches.json
+
 notifications:
   email:
     on_success: never

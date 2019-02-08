@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
-""" Usage: call with <filename>
-"""
 
 import sys
 import clang.cindex
 import json
 
+def find_inheritance(node):
+  """
+  If given a class declaration, will grab the inheritance of the class if one exists.
+  Returns None if no class inheritance.
+  """
+  if node.kind != clang.cindex.CursorKind.CLASS_DECL: return
+  for c in node.get_children():
+    if c.kind != clang.cindex.CursorKind.CXX_BASE_SPECIFIER: continue
+    children = list(c.get_children())
+    if children[0].get_definition():
+      return children[0].get_definition().spelling
+
 def infoswitch_parser(node, index=0):
+  """
+  Given a node that is believed to be the initialize() of an InfoSwitch struct,
+  parse all the tokens, and extract the relevant information for pattern
+  matching, and yield it back.
+  """
   tokens = []
   for token in node.get_tokens():
     if token.spelling == node.spelling: continue
@@ -36,15 +51,12 @@ def infoswitch_parser(node, index=0):
       tokens.append(spelling)
   yield []
 
-def find_inheritance(node):
-  if node.kind != clang.cindex.CursorKind.CLASS_DECL: return
-  for c in node.get_children():
-    if c.kind != clang.cindex.CursorKind.CXX_BASE_SPECIFIER: continue
-    children = list(c.get_children())
-    if children[0].get_definition():
-      return children[0].get_definition().spelling
-
 def find_infoswitches(infoswitches, node):
+  """
+  This top-level entry recursive function goes through all children provided to
+  identify nodes which are to contain an InfoSwitch struct and then parse out
+  the appropriate tokens from that node.
+  """
   if node.spelling == 'initialize' and node.kind == clang.cindex.CursorKind.CXX_METHOD:
     infoswitches[node.semantic_parent.spelling] = [token for token in infoswitch_parser(node) if token]
   for child in node.get_children():
@@ -52,7 +64,7 @@ def find_infoswitches(infoswitches, node):
 
 clang.cindex.Config.set_library_path('/usr/lib')
 index = clang.cindex.Index.create()
-tu = index.parse(sys.argv[1], args=['-x', 'c++'])
+tu = index.parse("xAODAnaHelpers/HelperClasses.h", args=['-x', 'c++'])
 print('Translation unit:', tu.spelling)
 
 infoswitches = {}
