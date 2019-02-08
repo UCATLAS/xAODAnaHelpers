@@ -81,6 +81,8 @@ matrix:
     - language: python
       python: "3.7"
       env: JOB="Parsing xAODAnaHelpers/HelperClasses.h for InfoSwitches"
+      dist: xenial
+      sudo: true
       addons:
         apt:
           packages: libclang-dev
