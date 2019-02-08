@@ -2,6 +2,7 @@
 
 import clang.cindex
 import json
+import tempfile
 
 def find_inheritance(node):
   """
@@ -63,7 +64,12 @@ def find_infoswitches(infoswitches, node):
 
 clang.cindex.Config.set_library_path('/usr/lib')
 index = clang.cindex.Index.create()
-tu = index.parse("xAODAnaHelpers/HelperClasses.h", args=['-x', 'c++'])
+
+f = tempfile.NamedTemporaryFile(mode='w+', delete=False)
+for fname in ['xAODAnaHelpers/HelperClasses.h', 'Root/HelperClasses.cxx']:
+  with open(fname) as infile:
+    f.write(infile.read())
+tu = index.parse(f.name, args=['-x', 'c++'])
 print('Translation unit:', tu.spelling)
 
 infoswitches = {}
