@@ -428,9 +428,8 @@ if __name__ == "__main__":
 
     if ".json" in args.config:
       # parse_json is json.load + stripping comments
-      from xAH_utils import parse_json
       xAH_logger.debug("Loading json files")
-      algConfigs = parse_json(args.config)
+      algConfigs = xAH_utils.parse_json(args.config)
       xAH_logger.debug("loaded the json configurations")
       # add our algorithm to the job
       configurator = Config()
