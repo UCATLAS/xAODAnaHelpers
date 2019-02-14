@@ -218,6 +218,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize jet calibration tool
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
+  if(!m_calibConfigDir.empty()){
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigDir",m_calibConfigDir));
+  }
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
   if ( !m_overrideCalibArea.empty() ) {
