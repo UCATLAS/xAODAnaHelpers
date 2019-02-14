@@ -133,6 +133,9 @@ public:
   /** @brief To read electron PID decision from DAOD, rather than recalculate with tool */
   bool           m_readIDFlagsFromDerivation = false;
 
+  /** @brief To correct egamma bug, see ATLSUSYSW-445 */
+  bool          m_doModifiedEleId = false;
+
 //// likelihood-based  ////
   /** @brief Instantiate and perform the electron Likelihood PID */
   bool           m_doLHPID = true;

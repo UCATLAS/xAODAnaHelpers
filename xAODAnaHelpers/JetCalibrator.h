@@ -56,6 +56,8 @@ public:
   /// @brief Write systematics names to metadata
   bool        m_writeSystToMetadata = false;
 
+  /// @brief config for JetCalibrationTool ConfigDir, set it to override tool defaults
+  std::string m_calibConfigDir = "";
   /// @brief config for JetCalibrationTool for Data
   std::string m_calibConfigData = "JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config";
   /// @brief config for JetCalibrationTool for Full Sim MC
