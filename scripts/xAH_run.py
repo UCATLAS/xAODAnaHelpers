@@ -39,30 +39,25 @@ except ImportError:
 #
 # Load default options configuration
 userconfigpath = os.path.expanduser("~/.xAH")
-config = ConfigParser.ConfigParser()
-config.read(userconfigpath)
+dotconfig={}
+with open(userconfigpath) as fh :
+    for line in fh:
+        line=line.strip()
+        if line=='': continue
+        if line[0]=='#': continue
+        parts=line.split('=')
+        key=parts[0].strip()
+        value='='.join(parts[1:]).strip()
+        dotconfig[key]=value
 
-# 
-for option,optdata in xAH_cli_options.standard.iteritems():
-    if config.has_option('standard',option): optdata['default']=config.get('standard', option)
-
-for option,optdata in xAH_cli_options.drivers_common.iteritems():
-    if config.has_option('drivers',option): optdata['default']=config.get('drivers', option)
-
-for option,optdata in xAH_cli_options.drivers_prooflite.iteritems():
-    if config.has_option('prooflite',option): optdata['default']=config.get('prooflite', option)
-
-for option,optdata in xAH_cli_options.drivers_prun.iteritems():
-    if config.has_option('prun',option): optdata['default']=config.get('prun', option)
-
-for option,optdata in xAH_cli_options.drivers_condor.iteritems():
-    if config.has_option('condor',option): optdata['default']=config.get('condor', option)
-
-for option,optdata in xAH_cli_options.drivers_lsf.iteritems():
-    if config.has_option('lsf',option): optdata['default']=config.get('lsf', option)
-
-for option,optdata in xAH_cli_options.drivers_slurm.iteritems():
-    if config.has_option('slurm',option): optdata['default']=config.get('slurm', option)
+# Apply the configuration defaults
+xAH_cli_options.update_defaults(xAH_cli_options.standard         , dotconfig)
+xAH_cli_options.update_defaults(xAH_cli_options.drivers_common   , dotconfig)
+xAH_cli_options.update_defaults(xAH_cli_options.drivers_prooflite, dotconfig)
+xAH_cli_options.update_defaults(xAH_cli_options.drivers_prun     , dotconfig)
+xAH_cli_options.update_defaults(xAH_cli_options.drivers_condor   , dotconfig)
+xAH_cli_options.update_defaults(xAH_cli_options.drivers_lsf      , dotconfig)
+xAH_cli_options.update_defaults(xAH_cli_options.drivers_slurm    , dotconfig)
 
 #
 # if we want multiple custom formatters, use inheriting
