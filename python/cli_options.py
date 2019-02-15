@@ -4,16 +4,6 @@ from __future__ import absolute_import
 from __future__ import print_function
 import logging
 
-#
-# Update the default fields of an argument definition dictionary
-#
-# argdict: reference to the argument definitions
-# newvalues: dictionary with the argument name as key and new default value as value
-def update_defaults(argdict, newvalues):
-    for option,optdata in argdict.iteritems():
-        if option in newvalues: optdata['default']=newvalues[option]
-
-
 logger = logging.getLogger("xAH.cli_options")
 
 

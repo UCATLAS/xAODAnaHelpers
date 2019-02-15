@@ -39,24 +39,25 @@ except ImportError:
 # Load default options configuration
 userconfigpath = os.path.expanduser("~/.xah")
 dotconfig={}
-with open(userconfigpath) as fh :
-    for line in fh:
-        line=line.strip()
-        if line=='': continue
-        if line[0]=='#': continue
-        parts=line.split('=')
-        key=parts[0].strip()
-        value='='.join(parts[1:]).strip()
-        dotconfig[key]=value
+if os.path.exists(userconfigpath):
+    with open(userconfigpath) as fh :
+        for line in fh:
+            line=line.strip()
+            if line=='': continue
+            if line[0]=='#': continue
+            parts=line.split('=')
+            key=parts[0].strip()
+            value='='.join(parts[1:]).strip()
+            dotconfig[key]=value
 
 # Apply the configuration defaults
-xAH_cli_options.update_defaults(xAH_cli_options.standard         , dotconfig)
-xAH_cli_options.update_defaults(xAH_cli_options.drivers_common   , dotconfig)
-xAH_cli_options.update_defaults(xAH_cli_options.drivers_prooflite, dotconfig)
-xAH_cli_options.update_defaults(xAH_cli_options.drivers_prun     , dotconfig)
-xAH_cli_options.update_defaults(xAH_cli_options.drivers_condor   , dotconfig)
-xAH_cli_options.update_defaults(xAH_cli_options.drivers_lsf      , dotconfig)
-xAH_cli_options.update_defaults(xAH_cli_options.drivers_slurm    , dotconfig)
+xAH_utils.update_clioption_defaults(xAH_cli_options.standard         , dotconfig)
+xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_common   , dotconfig)
+xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prooflite, dotconfig)
+xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prun     , dotconfig)
+xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_condor   , dotconfig)
+xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_lsf      , dotconfig)
+xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_slurm    , dotconfig)
 
 #
 # if we want multiple custom formatters, use inheriting

@@ -111,3 +111,12 @@ def register_on_parser(cli_options, parser):
         # no flags specified? that's fine, use '--{optName}' as default
         flags = optConfig.pop("flags", ["--{0:s}".format(optName)])
         parser.add_argument(*flags, **optConfig)
+
+#
+# Update the default fields of an argument definition dictionary from cli-options
+#
+# argdict: reference to the argument definitions
+# newvalues: dictionary with the argument name as key and new default value as value
+def update_clioption_defaults(argdict, newvalues):
+    for option,optdata in argdict.iteritems():
+        if option in newvalues: optdata['default']=newvalues[option]
