@@ -135,5 +135,5 @@ def read_dotfile(dotpath):
         key,value=line.split('=',1)
         dotconfig[key]=value
 
-    return dotconfig
+  return dotconfig
 
