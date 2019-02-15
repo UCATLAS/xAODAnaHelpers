@@ -22,7 +22,6 @@ import subprocess
 import sys
 import datetime
 import time
-import ConfigParser
 
 try:
     import xAODAnaHelpers
