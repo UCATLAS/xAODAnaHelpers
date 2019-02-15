@@ -171,7 +171,7 @@ API Reference
 
     eval "$(register-python-argcomplete xAH_run.py)"
 
-.. note:: All of the following properties can be set in a user-specific dotfile located at ``${HOME}/.xah``. It is a simple ``key=value`` per-line format, where the `key` is the argument being set without the preceeding dashes. There is no separation of the arguments to the different drivers.
+.. note:: All of the following properties can be set in a user-specific dotfile located at ``${HOME}/.xah``. It is a simple ``key=value`` per-line format, where the `key` is the argument being set without the preceeding dashes. There is no separation of the arguments to the different drivers. All lines starting with # are ignored.
 
 
 .. argparse::
