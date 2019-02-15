@@ -112,11 +112,31 @@ def register_on_parser(cli_options, parser):
         flags = optConfig.pop("flags", ["--{0:s}".format(optName)])
         parser.add_argument(*flags, **optConfig)
 
-#
-# Update the default fields of an argument definition dictionary from cli-options
-#
-# argdict: reference to the argument definitions
-# newvalues: dictionary with the argument name as key and new default value as value
 def update_clioption_defaults(argdict, newvalues):
-    for option,optdata in argdict.iteritems():
-        if option in newvalues: optdata['default']=newvalues[option]
+  """Update the default fields of an argument definition dictionary from cli-options.
+
+  Keyword arguments:
+  argdict -- reference to the argument definitions
+  newvalues -- dictionary with the argument name as key and new default value as value
+  """
+
+  for option,optdata in argdict.iteritems():
+    if option in newvalues: optdata['default']=newvalues[option]
+
+def read_dotfile(dotpath):
+  """Return the contents of dotpath configuration file as a dictionary."""
+
+  dotconfig={}
+  if os.path.exists(dotpath):
+    with open(dotpath) as fh :
+      for line in fh:
+        line=line.strip()
+        if line=='': continue
+        if line[0]=='#': continue
+        parts=line.split('=')
+        key=parts[0].strip()
+        value='='.join(parts[1:]).strip()
+        dotconfig[key]=value
+
+    return dotconfig
+

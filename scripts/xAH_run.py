@@ -37,18 +37,8 @@ except ImportError:
 
 #
 # Load default options configuration
-userconfigpath = os.path.expanduser("~/.xah")
 dotconfig={}
-if os.path.exists(userconfigpath):
-    with open(userconfigpath) as fh :
-        for line in fh:
-            line=line.strip()
-            if line=='': continue
-            if line[0]=='#': continue
-            parts=line.split('=')
-            key=parts[0].strip()
-            value='='.join(parts[1:]).strip()
-            dotconfig[key]=value
+dotconfig.update(xAH_utils.read_dotfile(os.path.expanduser("~/.xah")))
 
 # Apply the configuration defaults
 xAH_utils.update_clioption_defaults(xAH_cli_options.standard         , dotconfig)
