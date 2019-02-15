@@ -131,11 +131,8 @@ def read_dotfile(dotpath):
     with open(dotpath) as fh :
       for line in fh:
         line=line.strip()
-        if line=='': continue
-        if line[0]=='#': continue
-        parts=line.split('=')
-        key=parts[0].strip()
-        value='='.join(parts[1:]).strip()
+        if line=='' or line[0]=='#': continue
+        key,value=line.split('=',1)
         dotconfig[key]=value
 
     return dotconfig
