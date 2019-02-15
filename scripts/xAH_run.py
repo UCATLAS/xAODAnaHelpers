@@ -17,7 +17,7 @@ from __future__ import print_function
 import argparse
 try: import argcomplete
 except: pass
-import os, os.path
+import os
 import subprocess
 import sys
 import datetime
@@ -37,7 +37,7 @@ except ImportError:
 
 #
 # Load default options configuration
-userconfigpath = os.path.expanduser("~/.xAH")
+userconfigpath = os.path.expanduser("~/.xah")
 dotconfig={}
 with open(userconfigpath) as fh :
     for line in fh:
