@@ -85,7 +85,7 @@ public:
   /** reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_MinIsoWPCut = "";
   /** decorate objects with 'isIsolated_*' flag for each WP in this input list - default = all current ASG WPs */
-  std::string    m_IsoWPList = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  std::string    m_IsoWPList = "FCTightTrackOnly_FixedRad,FCLoose_FixedRad,FCTight_FixedRad,FixedCutPflowTight,FixedCutPflowLoose";
   /** to define a custom WP - make sure "UserDefined" is added in the above input list! */
   std::string    m_CaloIsoEff = "0.1*x+90";
   /** to define a custom WP - make sure "UserDefined" is added in the above input list! */
