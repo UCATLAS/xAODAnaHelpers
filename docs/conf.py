@@ -89,6 +89,7 @@ try:
     travis_env.sort(key=lambda s: map(int, s['RELEASE'].split(',')[1].split('.')), reverse=True)
     latest_release = travis_env[0].get('RELEASE', 'unknown')
 except:
+    travis_env = []
     latest_release = 'unknown'
 
 def release_to_color(release):

@@ -171,8 +171,20 @@ API Reference
 
     eval "$(register-python-argcomplete xAH_run.py)"
 
-.. note:: All of the following properties can be set in a user-specific dotfile located at ``${HOME}/.xah``. It is a simple ``key=value`` per-line format, where the `key` is the argument being set without the preceeding dashes. There is no separation of the arguments to the different drivers. All lines starting with # are ignored.
+All of the following properties can be set in a user-specific dotfile located at ``${HOME}/.xah``. It is an `INI file <https://en.wikipedia.org/wiki/INI_file>`_, with the `general` section used for the generic options and other sections named after sub-commands. The keys in each section are the options without the preceeding dashes.
 
+The following example configures the Slurm driver for NERCS' Cori and records usage statistics:
+::
+   
+   [general]
+   stats=1
+
+   [slurm]
+   optBatchSharedFileSystem=1
+   optBatchWait=1
+   optSlurmRunTime=5:00:00
+   optSlurmExtraConfigLines=#SBATCH --qos=shared --tasks-per-node=1 --constraint=haswell --image=centos:centos7 --export=NONE
+   optSlurmWrapperExec=export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/global/project/projectdirs/atlas/scripts/extra_libs_180822; hostname; shifter --module=cvmfs /bin/
 
 .. argparse::
    :ref: xAH_run.parser
