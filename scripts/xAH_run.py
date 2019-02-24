@@ -22,7 +22,11 @@ import subprocess
 import sys
 import datetime
 import time
-import ConfigParser
+
+try:
+    import configparser
+except ImportError: # Python 2.x fallback
+    import ConfigParser as configparser
 
 try:
     import xAODAnaHelpers
@@ -38,7 +42,7 @@ except ImportError:
 
 #
 # Load default options configuration
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.optionxform = str
 config.read(os.path.expanduser("~/.xah"))
 

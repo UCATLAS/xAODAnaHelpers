@@ -120,5 +120,5 @@ def update_clioption_defaults(argdict, newvalues):
   newvalues -- dictionary with the argument name as key and new default value as value
   """
 
-  for key,value in newvalues.iteritems():
+  for key,value in newvalues.items():
     if key in argdict: argdict[key]['default']=value
