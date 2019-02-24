@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import logging
+import copy
 
 logger = logging.getLogger("xAH.cli_options")
 
@@ -193,7 +194,9 @@ drivers_common = {
 }
 
 # define arguments for prooflite driver
-drivers_prooflite = {
+drivers_prooflite = {}
+drivers_prooflite.update(copy.deepcopy(drivers_common))
+drivers_prooflite.update({
     "optPerfTree": {
         "metavar": "",
         "type": int,
@@ -208,10 +211,12 @@ drivers_prooflite = {
         "default": None,
         "help": "the option to do processing in a background process in PROOF",
     },
-}
+})
 
 # define arguments for prun driver
-drivers_prun = {
+drivers_prun = {}
+drivers_prun.update(copy.deepcopy(drivers_common))
+drivers_prun.update({
     "optGridDestSE": {"metavar": "", "type": str, "required": False, "default": None},
     "optGridSite": {"metavar": "", "type": str, "required": False, "default": None},
     "optGridCloud": {"metavar": "", "type": str, "required": False, "default": None},
@@ -293,9 +298,11 @@ drivers_prun = {
         "default": False,
         "help": "Submit all input datasets under a single task.",
     },
-}
+})
 
-drivers_condor = {
+drivers_condor = {}
+drivers_condor.update(copy.deepcopy(drivers_common))
+drivers_condor.update({
     "optCondorConf": {
         "metavar": "",
         "type": str,
@@ -303,9 +310,11 @@ drivers_condor = {
         "default": "stream_output = true",
         "help": "the name of the option for supplying extra parameters for condor systems",
     }
-}
+})
 
-drivers_lsf = {
+drivers_lsf = {}
+drivers_lsf.update(copy.deepcopy(drivers_common))
+drivers_lsf.update({
     "optResetShell": {
         "metavar": "",
         "type": bool,
@@ -313,9 +322,11 @@ drivers_lsf = {
         "default": False,
         "help": "the option to reset the shell on the worker nodes",
     }
-}
+})
 
-drivers_slurm = {
+drivers_slurm = {}
+drivers_slurm.update(copy.deepcopy(drivers_common))
+drivers_slurm.update({
     "optSlurmAccount": {
         "metavar": "",
         "type": str,
@@ -365,4 +376,4 @@ drivers_slurm = {
         "default": "",
         "help": "the wrapper around the run script",
     },
-}
+})

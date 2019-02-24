@@ -22,6 +22,7 @@ import subprocess
 import sys
 import datetime
 import time
+import ConfigParser
 
 try:
     import xAODAnaHelpers
@@ -37,17 +38,17 @@ except ImportError:
 
 #
 # Load default options configuration
-dotconfig={}
-dotconfig.update(xAH_utils.read_dotfile(os.path.expanduser("~/.xah")))
+config = ConfigParser.ConfigParser()
+config.optionxform = str
+config.read(os.path.expanduser("~/.xah"))
 
 # Apply the configuration defaults
-xAH_utils.update_clioption_defaults(xAH_cli_options.standard         , dotconfig)
-xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_common   , dotconfig)
-xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prooflite, dotconfig)
-xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prun     , dotconfig)
-xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_condor   , dotconfig)
-xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_lsf      , dotconfig)
-xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_slurm    , dotconfig)
+if config.has_section('general'  ): xAH_utils.update_clioption_defaults(xAH_cli_options.standard         , dict(config.items('general'  )))
+if config.has_section('prooflite'): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prooflite, dict(config.items('prooflite')))
+if config.has_section('prun'     ): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prun     , dict(config.items('prun'     )))
+if config.has_section('condor'   ): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_condor   , dict(config.items('condor'   )))
+if config.has_section('lsf'      ): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_lsf      , dict(config.items('lsf'      )))
+if config.has_section('slurm'    ): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_slurm    , dict(config.items('slurm'    )))
 
 #
 # if we want multiple custom formatters, use inheriting
@@ -107,58 +108,48 @@ parser_requiredNamed.add_argument('--config', metavar='', type=str, required=Tru
 parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='{version}'.format(version=__version__))
 xAH_utils.register_on_parser(xAH_cli_options.standard, parser)
 
-# first is the driver common arguments
-drivers_common = argparse.ArgumentParser(add_help=False, description='Common Driver Arguments')
-xAH_utils.register_on_parser(xAH_cli_options.drivers_common, drivers_common)
-
-# then the drivers we provide support for
+# drivers we provide support for
 drivers_parser = parser.add_subparsers(prog='xAH_run.py', title='drivers', dest='driver', description='specify where to run jobs')
 direct = drivers_parser.add_parser('direct',
                                    help='Run your jobs locally.',
                                    usage=baseUsageStr.format('direct'),
-                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
-                                   parents=[drivers_common])
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 
 prooflite = drivers_parser.add_parser('prooflite',
                                       help='Run your jobs using ProofLite',
                                       usage=baseUsageStr.format('prooflite'),
-                                      formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
-                                      parents=[drivers_common])
+                                      formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 xAH_utils.register_on_parser(xAH_cli_options.drivers_prooflite, prooflite)
 
 prun = drivers_parser.add_parser('prun',
                                  help='Run your jobs on the grid using prun. Use prun --help for descriptions of the options.',
                                  usage=baseUsageStr.format('prun'),
-                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
-                                 parents=[drivers_common])
+                                 formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 xAH_utils.register_on_parser(xAH_cli_options.drivers_prun, prun)
 
 condor = drivers_parser.add_parser('condor',
                                    help='Flock your jobs to condor',
                                    usage=baseUsageStr.format('condor'),
-                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
-                                   parents=[drivers_common])
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 xAH_utils.register_on_parser(xAH_cli_options.drivers_condor, condor)
 
 lsf = drivers_parser.add_parser('lsf',
                                 help='Flock your jobs to lsf',
                                 usage=baseUsageStr.format('lsf'),
-                                formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
-                                parents=[drivers_common])
+                                formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
 xAH_utils.register_on_parser(xAH_cli_options.drivers_lsf, lsf)
 
 slurm = drivers_parser.add_parser('slurm',
                                    help='Flock your jobs to SLURM',
                                    usage=baseUsageStr.format('slurm'),
-                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
-                                   parents=[drivers_common])
-xAH_utils.register_on_parser(xAH_cli_options.drivers_slurm, slurm)
+                                   formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+xAH_utils.register_on_parser(xAH_cli_options.drivers_slurm , slurm)
 
 local = drivers_parser.add_parser('local',
                                   help='Run using the LocalDriver',
                                   usage=baseUsageStr.format('local'),
-                                  formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30),
-                                  parents=[drivers_common])
+                                  formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+
 
 # start the script
 if __name__ == "__main__":

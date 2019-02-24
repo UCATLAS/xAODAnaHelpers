@@ -120,20 +120,5 @@ def update_clioption_defaults(argdict, newvalues):
   newvalues -- dictionary with the argument name as key and new default value as value
   """
 
-  for option,optdata in argdict.iteritems():
-    if option in newvalues: optdata['default']=newvalues[option]
-
-def read_dotfile(dotpath):
-  """Return the contents of dotpath configuration file as a dictionary."""
-
-  dotconfig={}
-  if os.path.exists(dotpath):
-    with open(dotpath) as fh :
-      for line in fh:
-        line=line.strip()
-        if line=='' or line[0]=='#': continue
-        key,value=line.split('=',1)
-        dotconfig[key]=value
-
-  return dotconfig
-
+  for key,value in newvalues.iteritems():
+    if key in argdict: argdict[key]['default']=value
