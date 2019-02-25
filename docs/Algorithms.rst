@@ -41,7 +41,7 @@ algorithm does not apply any selection to the jets.
 
 The parameters to control the Algorithm are described in the header
 documentation:
-https://github.com/UCATLAS/xAODAnaHelpers/wiki/xAH\_JetCalibrator.h
+https://xaodanahelpers.readthedocs.io/en/latest/JetCalibrator.html
 
 Calibration
 ^^^^^^^^^^^
