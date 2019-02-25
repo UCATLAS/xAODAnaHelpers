@@ -215,7 +215,7 @@ EL::StatusCode MuonSelector :: initialize ()
   // Make sure it's not empty!
   //
   if ( m_IsoWPList.empty() ) {
-    m_IsoWPList	= "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+    ANA_MSG_ERROR("Empty isolation WP list");
   }
   std::string token;
   std::istringstream ss(m_IsoWPList);
@@ -245,7 +245,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
-  ANA_CHECK( m_muonSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
+  ANA_CHECK( m_muonSelectionTool_handle.setProperty( "OutputLevel", msg().level() ));
   ANA_CHECK( m_muonSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonSelectionTool_handle);
 
