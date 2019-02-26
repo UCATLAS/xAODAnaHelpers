@@ -126,6 +126,8 @@ public:
   float m_pt_max_JVT = 60e3;
   /// @brief detector eta cut
   float m_eta_max_JVT = 2.4;
+  /// @brief was JVT already run in an earlier instance of JetSelector?
+  bool m_jvtUsedBefore=false;
   /// @brief Does the input have truth jets? If not, cannot decorate with true hard scatter / pileup info
   bool m_haveTruthJets = true;
 
@@ -203,6 +205,8 @@ public:
 
   float         m_systValfJVT = 0.0;
   std::string   m_systNamefJVT = "";
+  /// @brief was fJVT already run in an earlier instance of JetSelector?
+  bool m_fjvtUsedBefore=false;
 
   /// @brief Flag to apply btagging cut, if false just decorate decisions
   bool  m_doBTagCut = false;

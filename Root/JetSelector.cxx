@@ -592,55 +592,55 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Do it only if a tool with *this* name hasn't already been used
     //
-    if ( m_JVT_tool_handle.isInitialized() ) {
+    if ( m_JVT_tool_handle.isInitialized() && !m_jvtUsedBefore) {
+      //
+      //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
+      //
+      static const SG::AuxElement::Decorator< std::vector<float> > dec_sfJVT( m_outputSystNamesJVT );
 
+      // Create the name of the SF weight to be recorded
+      //   template:  SYSNAME_JVTEff_SF
+      //   Only need to do it once per call of executeSelection()
       for ( const auto& syst_it : m_systListJVT ) {
+	std::string sfName = "JVTEff_SF_" + m_WorkingPointJVT;
+	if ( !syst_it.name().empty() ) {
+	  std::string prepend = syst_it.name() + "_";
+	  sfName.insert( 0, prepend );
+	}
+	ANA_MSG_DEBUG("JVT SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
+	sysVariationNamesJVT->push_back(sfName);
+      }
 
-        // we do not need all SF for non-nominal trees
-        if ( !syst_it.name().empty() && !isNominal )
-            continue;
+      unsigned int idx(0);
+      for ( auto jet : *(selectedJets) ) {
+	// Create Scale Factor aux for all jets
+	std::vector<float > sfVecJVT;
 
-        // Create the name of the SF weight to be recorded
-        //   template:  SYSNAME_JVTEff_SF
-        //
-        std::string sfName = "JVTEff_SF_" + m_WorkingPointJVT;
-        if ( !syst_it.name().empty() ) {
-           std::string prepend = syst_it.name() + "_";
-           sfName.insert( 0, prepend );
-        }
-        ANA_MSG_DEBUG("JVT SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
-        sysVariationNamesJVT->push_back(sfName);
+	for ( const auto& syst_it : m_systListJVT ) {
+	  // we do not need all SF for non-nominal trees
+	  if ( !syst_it.name().empty() && !isNominal )
+	    continue;
 
-        // apply syst
-        //
-        if ( m_JVT_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-          ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
-          return EL::StatusCode::FAILURE;
-        }
-        ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
+	  // apply syst
+	  //
+	  if ( m_JVT_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+	    ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
+	    return EL::StatusCode::FAILURE;
+	  }
+	  ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
 
-        // and now apply JVT SF!
-        //
-        unsigned int idx(0);
-        for ( auto jet : *(selectedJets) ) {
-
+	  // and now apply JVT SF!
+	  //
           ANA_MSG_DEBUG("Applying JVT SF" );
 
           // create passed JVT decorator
           static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
+
           if ( syst_it.name().empty() ) {
             passedJVT( *jet ) = 1; // passes by default
           }
 
           // obtain JVT SF as a float (to be stored away separately)
-          //
-          //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
-          //
-          static const SG::AuxElement::Decorator< std::vector<float> > sfVecJVT( m_outputSystNamesJVT );
-          if ( !sfVecJVT.isAvailable( *jet ) ) {
-            sfVecJVT( *jet ) = std::vector<float>();
-          }
-
           float jvtSF(1.0);
           if ( m_JVT_tool_handle->isInRange(*jet) ) {
             // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
@@ -662,10 +662,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               }
             }
           }
-          //
-          // Add it to decoration vector
-          //
-          sfVecJVT( *jet ).push_back( jvtSF );
+	  sfVecJVT.push_back(jvtSF);
 
           ANA_MSG_DEBUG( "===>>>");
           ANA_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
@@ -674,9 +671,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           ANA_MSG_DEBUG( "JVT SF:");
           ANA_MSG_DEBUG( "\t " << jvtSF << " (from getEfficiencyScaleFactor())" );
           ANA_MSG_DEBUG( "--------------------------------------");
-
-          ++idx;
-        }
+	}
+	++idx;
+	//
+	// Add it to decoration vector
+	//
+	dec_sfJVT( *jet ) = sfVecJVT;
       }
     }
 
@@ -713,17 +713,16 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Do it only if a tool with *this* name hasn't already been used
     //
-    if ( m_fJVT_eff_tool_handle.isInitialized() ) {
+    if ( m_fJVT_eff_tool_handle.isInitialized() && !m_fjvtUsedBefore) {
+      //
+      //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
+      //
+      static const SG::AuxElement::Decorator< std::vector<float> > dec_sffJVT( m_outputSystNamesfJVT );
 
+      // Create the name of the SF weight to be recorded
+      //   template:  SYSNAME_fJVTEff_SF
+      //   Only need to do it once per call of executeSelection()
       for ( const auto& syst_it : m_systListfJVT ) {
-
-        // we do not need all SF for non-nominal trees
-        if ( !syst_it.name().empty() && !isNominal )
-            continue;
-
-        // Create the name of the SF weight to be recorded
-        //   template:  SYSNAME_fJVTEff_SF
-        //
         std::string sfName = "fJVTEff_SF";
         if ( !syst_it.name().empty() ) {
            std::string prepend = syst_it.name() + "_";
@@ -731,34 +730,33 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
         }
         ANA_MSG_DEBUG("fJVT SF sys name (to be recorded in xAOD::TStore) is: " << sfName);
         sysVariationNamesfJVT->push_back(sfName);
+      }
 
-        // apply syst
-        //
-        if ( m_fJVT_eff_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-          ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
-          return EL::StatusCode::FAILURE;
-        }
-        ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
+      unsigned int idx(0);
+      for ( auto jet : *(selectedJets) ) {
+	// Create Scale Factor aux for all jets
+	std::vector<float > sfVecfJVT;
 
-        // and now apply fJVT SF!
-        //
-        unsigned int idx(0);
-        for ( auto jet : *(selectedJets) ) {
+	for ( const auto& syst_it : m_systListfJVT ) {
+	  // we do not need all SF for non-nominal trees
+	  if ( !syst_it.name().empty() && !isNominal )
+            continue;
 
+	  // apply syst
+	  //
+	  if ( m_fJVT_eff_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+	    ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
+	    return EL::StatusCode::FAILURE;
+	  }
+	  ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
+
+	  // and now apply fJVT SF!
+	  //
           ANA_MSG_DEBUG("Applying fJVT SF" );
 
           static const SG::AuxElement::Decorator<char> passedfJVT( m_outputfJVTPassed );
           if ( syst_it.name().empty() ) {
             passedfJVT( *jet ) = jet->auxdata<char>("passFJVT");
-          }
-
-          // obtain fJVT SF as a float (to be stored away separately)
-          //
-          //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
-          //
-          static const SG::AuxElement::Decorator< std::vector<float> > sfVecfJVT( m_outputSystNamesfJVT );
-          if ( !sfVecfJVT.isAvailable( *jet ) ) {
-            sfVecfJVT( *jet ) = std::vector<float>();
           }
 
           float fjvtSF(1.0);
@@ -776,10 +774,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               }
             }
           }
-          //
-          // Add it to decoration vector
-          //
-          sfVecfJVT( *jet ).push_back( fjvtSF );
+          sfVecfJVT.push_back( fjvtSF );
 
           ANA_MSG_DEBUG( "===>>>");
           ANA_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
@@ -788,9 +783,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           ANA_MSG_DEBUG( "fJVT SF:");
           ANA_MSG_DEBUG( "\t " << fjvtSF << " (from getEfficiencyScaleFactor())" );
           ANA_MSG_DEBUG( "--------------------------------------");
-
-          ++idx;
-        }
+	}
+	++idx;
+	//
+	// Add it to decoration vector
+	//
+	dec_sffJVT( *jet )= sfVecfJVT;
       }
     }
 

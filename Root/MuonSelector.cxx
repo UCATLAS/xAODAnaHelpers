@@ -183,7 +183,8 @@ EL::StatusCode MuonSelector :: initialize ()
 
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
   m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
-
+  if (m_muonQualityStr=="HighPt") m_muonQuality=4;
+  else if (m_muonQualityStr=="LowPt") m_muonQuality=5;
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
