@@ -48,6 +48,7 @@ config.read(os.path.expanduser("~/.xah"))
 
 # Apply the configuration defaults
 if config.has_section('general'  ): xAH_utils.update_clioption_defaults(xAH_cli_options.standard         , dict(config.items('general'  )))
+if config.has_section('direct'   ): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_direct   , dict(config.items('direct'   )))
 if config.has_section('prooflite'): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prooflite, dict(config.items('prooflite')))
 if config.has_section('prun'     ): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_prun     , dict(config.items('prun'     )))
 if config.has_section('condor'   ): xAH_utils.update_clioption_defaults(xAH_cli_options.drivers_condor   , dict(config.items('condor'   )))
@@ -118,6 +119,7 @@ direct = drivers_parser.add_parser('direct',
                                    help='Run your jobs locally.',
                                    usage=baseUsageStr.format('direct'),
                                    formatter_class=lambda prog: CustomFormatter(prog, max_help_position=30))
+xAH_utils.register_on_parser(xAH_cli_options.drivers_direct, direct)
 
 prooflite = drivers_parser.add_parser('prooflite',
                                       help='Run your jobs using ProofLite',

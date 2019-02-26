@@ -193,6 +193,10 @@ drivers_common = {
     },
 }
 
+# define arguments for direct driver
+drivers_direct = {}
+drivers_direct.update(copy.deepcopy(drivers_common))
+
 # define arguments for prooflite driver
 drivers_prooflite = {}
 drivers_prooflite.update(copy.deepcopy(drivers_common))
