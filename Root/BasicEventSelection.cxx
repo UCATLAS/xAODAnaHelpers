@@ -162,11 +162,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
-  //
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
-
   // get the MetaData tree once a new file is opened, with
   //
   TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
@@ -312,13 +307,18 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
 EL::StatusCode BasicEventSelection :: changeInput (bool /*firstFile*/)
 {
-  // Here you do everything you need to do when we change input files,
-  // e.g. resetting branch addresses on trees.  If you are using
-  // D3PDReader or a similar service this method is not needed.
+  // Here you do everything that needs to be done exactly once for every
+  // single file, e.g. collect a list of all lumi-blocks processed
+
+  ANA_MSG_INFO( "Calling changeInput");
+
+  // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
+  //
+  m_event = wk()->xaodEvent();
+  m_store = wk()->xaodStore();
+
   return EL::StatusCode::SUCCESS;
 }
-
-
 
 EL::StatusCode BasicEventSelection :: initialize ()
 {
