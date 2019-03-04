@@ -206,6 +206,8 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_MV2c10                            =new std::vector<float>();
     m_MV2c10mu                          =new std::vector<float>();
     m_MV2c10rnn                         =new std::vector<float>();
+    m_MV2rmu                            =new std::vector<float>();
+    m_MV2r                              =new std::vector<float>();
     m_MV2c20                            =new std::vector<float>();
     m_MV2c100                           =new std::vector<float>();
     m_DL1                               =new std::vector<float>();
@@ -220,6 +222,14 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_DL1rnn_pu                         =new std::vector<float>();
     m_DL1rnn_pc                         =new std::vector<float>();
     m_DL1rnn_pb                         =new std::vector<float>();
+    m_DL1rmu                            =new std::vector<float>();
+    m_DL1rmu_pu                         =new std::vector<float>();
+    m_DL1rmu_pc                         =new std::vector<float>();
+    m_DL1rmu_pb                         =new std::vector<float>();
+    m_DL1r                              =new std::vector<float>();
+    m_DL1r_pu                           =new std::vector<float>();
+    m_DL1r_pc                           =new std::vector<float>();
+    m_DL1r_pb                           =new std::vector<float>();
     m_HadronConeExclTruthLabelID        =new std::vector<int>();
     m_HadronConeExclExtendedTruthLabelID=new std::vector<int>();
 
@@ -634,6 +644,8 @@ JetContainer::~JetContainer()
     delete m_MV2c10;
     delete m_MV2c10mu;
     delete m_MV2c10rnn;
+    delete m_MV2rmu;
+    delete m_MV2r;
     delete m_MV2c20;
     delete m_MV2c100;
     delete m_DL1;
@@ -648,6 +660,14 @@ JetContainer::~JetContainer()
     delete m_DL1rnn_pu;
     delete m_DL1rnn_pc;
     delete m_DL1rnn_pb;
+    delete m_DL1rmu;
+    delete m_DL1rmu_pu;
+    delete m_DL1rmu_pc;
+    delete m_DL1rmu_pb;
+    delete m_DL1r;
+    delete m_DL1r_pu;
+    delete m_DL1r_pc;
+    delete m_DL1r_pb;
 
     delete m_HadronConeExclTruthLabelID;
     delete m_HadronConeExclExtendedTruthLabelID;
@@ -909,6 +929,8 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"MV2c10"                            ,&m_MV2c10);
       connectBranch<float>(tree,"MV2c10mu"                          ,&m_MV2c10mu);
       connectBranch<float>(tree,"MV2c10rnn"                         ,&m_MV2c10rnn);
+      connectBranch<float>(tree,"MV2rmu"                            ,&m_MV2rmu);
+      connectBranch<float>(tree,"MV2r"                              ,&m_MV2r);
       connectBranch<float>(tree,"MV2c20"                            ,&m_MV2c20);
       connectBranch<float>(tree,"MV2c100"                           ,&m_MV2c100);
       connectBranch<float>(tree,"DL1"                               ,&m_DL1      );
@@ -923,6 +945,14 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"DL1rnn_pu"                         ,&m_DL1rnn_pu);
       connectBranch<float>(tree,"DL1rnn_pc"                         ,&m_DL1rnn_pc);
       connectBranch<float>(tree,"DL1rnn_pb"                         ,&m_DL1rnn_pb);
+      connectBranch<float>(tree,"DL1rmu"                            ,&m_DL1rmu   );
+      connectBranch<float>(tree,"DL1rmu_pu"                         ,&m_DL1rmu_pu);
+      connectBranch<float>(tree,"DL1rmu_pc"                         ,&m_DL1rmu_pc);
+      connectBranch<float>(tree,"DL1rmu_pb"                         ,&m_DL1rmu_pb);
+      connectBranch<float>(tree,"DL1r"                              ,&m_DL1r     );
+      connectBranch<float>(tree,"DL1r_pu"                           ,&m_DL1r_pu  );
+      connectBranch<float>(tree,"DL1r_pc"                           ,&m_DL1r_pc  );
+      connectBranch<float>(tree,"DL1r_pb"                           ,&m_DL1r_pb  );
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID"        ,&m_HadronConeExclTruthLabelID);
       connectBranch<int>  (tree,"HadronConeExclExtendedTruthLabelID",&m_HadronConeExclExtendedTruthLabelID);
     }
@@ -1142,6 +1172,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.MV2c10                    =m_MV2c10               ->at(idx);
       if(m_MV2c10mu)  jet.MV2c10mu  =m_MV2c10mu             ->at(idx);
       if(m_MV2c10rnn) jet.MV2c10rnn =m_MV2c10rnn            ->at(idx);
+      if(m_MV2rmu)    jet.MV2rmu    =m_MV2rmu               ->at(idx);
+      if(m_MV2r)      jet.MV2r      =m_MV2r                 ->at(idx);
       jet.MV2c20                    =m_MV2c20               ->at(idx);
       jet.MV2c100                   =m_MV2c100              ->at(idx);
       if(m_DL1)       jet.DL1       =m_DL1                  ->at(idx);
@@ -1156,6 +1188,14 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_DL1rnn_pu) jet.DL1rnn_pu =m_DL1rnn_pu            ->at(idx);
       if(m_DL1rnn_pc) jet.DL1rnn_pc =m_DL1rnn_pc            ->at(idx);
       if(m_DL1rnn_pb) jet.DL1rnn_pb =m_DL1rnn_pb            ->at(idx);
+      if(m_DL1rmu)    jet.DL1rmu    =m_DL1rmu               ->at(idx);
+      if(m_DL1rmu_pu) jet.DL1rmu_pu =m_DL1rmu_pu            ->at(idx);
+      if(m_DL1rmu_pc) jet.DL1rmu_pc =m_DL1rmu_pc            ->at(idx);
+      if(m_DL1rmu_pb) jet.DL1rmu_pb =m_DL1rmu_pb            ->at(idx);
+      if(m_DL1r)      jet.DL1r      =m_DL1r                 ->at(idx);
+      if(m_DL1r_pu)   jet.DL1r_pu   =m_DL1r_pu              ->at(idx);
+      if(m_DL1r_pc)   jet.DL1r_pc   =m_DL1r_pc              ->at(idx);
+      if(m_DL1r_pb)   jet.DL1r_pb   =m_DL1r_pb              ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       if(m_HadronConeExclTruthLabelID)         jet.HadronConeExclTruthLabelID        =m_HadronConeExclTruthLabelID        ->at(idx);
       if(m_HadronConeExclExtendedTruthLabelID) jet.HadronConeExclExtendedTruthLabelID=m_HadronConeExclExtendedTruthLabelID->at(idx);
@@ -1332,6 +1372,70 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	  jet.is_DL1mu_HybBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
+    case Jet::BTaggerOP::DL1rmu_FixedCutBEff_60:
+	  jet.is_DL1rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_70:
+	  jet.is_DL1rmu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_77:
+	  jet.is_DL1rmu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_85:
+	  jet.is_DL1rmu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_60:
+	  jet.is_DL1rmu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_70:
+	  jet.is_DL1rmu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_77:
+	  jet.is_DL1rmu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_85:
+	  jet.is_DL1rmu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+    case Jet::BTaggerOP::DL1r_FixedCutBEff_60:
+	  jet.is_DL1r_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_FixedCutBEff_70:
+	  jet.is_DL1r_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_FixedCutBEff_77:
+	  jet.is_DL1r_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_FixedCutBEff_85:
+	  jet.is_DL1r_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_60:
+	  jet.is_DL1r_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_70:
+	  jet.is_DL1r_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_77:
+	  jet.is_DL1r_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_85:
+	  jet.is_DL1r_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
 	case Jet::BTaggerOP::DL1_FixedCutBEff_60:
 	  jet.is_DL1_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1427,6 +1531,70 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::MV2c10mu_HybBEff_85:
 	  jet.is_MV2c10mu_HybBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_MV2c10mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+    case Jet::BTaggerOP::MV2r_FixedCutBEff_60:
+	  jet.is_MV2r_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_FixedCutBEff_70:
+	  jet.is_MV2r_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_FixedCutBEff_77:
+	  jet.is_MV2r_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_FixedCutBEff_85:
+	  jet.is_MV2r_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_60:
+	  jet.is_MV2r_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_70:
+	  jet.is_MV2r_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_77:
+	  jet.is_MV2r_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_85:
+	  jet.is_MV2r_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_60:
+	  jet.is_MV2rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_70:
+	  jet.is_MV2rmu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_77:
+	  jet.is_MV2rmu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_85:
+	  jet.is_MV2rmu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_60:
+	  jet.is_MV2rmu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_70:
+	  jet.is_MV2rmu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_77:
+	  jet.is_MV2rmu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_85:
+	  jet.is_MV2rmu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
 	case Jet::BTaggerOP::MV2c10_FixedCutBEff_30:
 	  jet.is_MV2c10_FixedCutBEff_30=       btag->m_isTag->at(idx);
@@ -1723,12 +1891,14 @@ void JetContainer::setBranches(TTree *tree)
 
   if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
-    setBranch<float>(tree,"MV2c00",   m_MV2c00);
-    setBranch<float>(tree,"MV2c10",   m_MV2c10);
-    setBranch<float>(tree,"MV2c10mu", m_MV2c10mu);
-    setBranch<float>(tree,"MV2c10rnn",m_MV2c10rnn);
-    setBranch<float>(tree,"MV2c20",   m_MV2c20);
-    setBranch<float>(tree,"MV2c100",  m_MV2c100);
+    setBranch<float>(tree,"MV2c00",    m_MV2c00);
+    setBranch<float>(tree,"MV2c10",    m_MV2c10);
+    setBranch<float>(tree,"MV2c10mu",  m_MV2c10mu);
+    setBranch<float>(tree,"MV2c10rnn", m_MV2c10rnn);
+    setBranch<float>(tree,"MV2rmu",    m_MV2rmu);
+    setBranch<float>(tree,"MV2r",      m_MV2r);
+    setBranch<float>(tree,"MV2c20",    m_MV2c20);
+    setBranch<float>(tree,"MV2c100",   m_MV2c100);
     setBranch<float>(tree,"DL1",       m_DL1);
     setBranch<float>(tree,"DL1_pu",    m_DL1_pu);
     setBranch<float>(tree,"DL1_pc",    m_DL1_pc);
@@ -1741,6 +1911,14 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"DL1rnn_pu", m_DL1rnn_pu);
     setBranch<float>(tree,"DL1rnn_pc", m_DL1rnn_pc);
     setBranch<float>(tree,"DL1rnn_pb", m_DL1rnn_pb);
+    setBranch<float>(tree,"DL1rmu",     m_DL1rmu);
+    setBranch<float>(tree,"DL1rmu_pu",  m_DL1rmu_pu);
+    setBranch<float>(tree,"DL1rmu_pc",  m_DL1rmu_pc);
+    setBranch<float>(tree,"DL1rmu_pb",  m_DL1rmu_pb);
+    setBranch<float>(tree,"DL1r",    m_DL1r);
+    setBranch<float>(tree,"DL1r_pu", m_DL1r_pu);
+    setBranch<float>(tree,"DL1r_pc", m_DL1r_pc);
+    setBranch<float>(tree,"DL1r_pb", m_DL1r_pb);
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
     setBranch<int  >(tree,"HadronConeExclExtendedTruthLabelID", m_HadronConeExclExtendedTruthLabelID);
@@ -2111,6 +2289,8 @@ void JetContainer::clear()
     m_MV2c10                            ->clear();
     m_MV2c10mu                          ->clear();
     m_MV2c10rnn                         ->clear();
+    m_MV2rmu                            ->clear();
+    m_MV2r                              ->clear();
     m_MV2c20                            ->clear();
     m_MV2c100                           ->clear();
     m_DL1                               ->clear();
@@ -2125,6 +2305,14 @@ void JetContainer::clear()
     m_DL1rnn_pu                         ->clear();
     m_DL1rnn_pc                         ->clear();
     m_DL1rnn_pb                         ->clear();
+    m_DL1rmu                            ->clear();
+    m_DL1rmu_pu                         ->clear();
+    m_DL1rmu_pc                         ->clear();
+    m_DL1rmu_pb                         ->clear();
+    m_DL1r                              ->clear();
+    m_DL1r_pu                           ->clear();
+    m_DL1r_pc                           ->clear();
+    m_DL1r_pb                           ->clear();
     m_HadronConeExclTruthLabelID        ->clear();
     m_HadronConeExclExtendedTruthLabelID->clear();
 
@@ -2898,6 +3086,14 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     val=-999;
     myBTag->variable<double>("MV2c20"   , "discriminant", val);
     m_MV2c20   ->push_back( val );
+    
+    val=-999;
+    myBTag->variable<double>("MV2rmu" , "discriminant", val);
+    m_MV2rmu ->push_back( val );
+
+    val=-999;
+    myBTag->variable<double>("MV2r", "discriminant", val);
+    m_MV2r->push_back( val );
 
     val=-999;
     myBTag->variable<double>("MV2c100"  , "discriminant", val);
@@ -2935,6 +3131,26 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1rnn_pc->push_back(pc);
     m_DL1rnn_pb->push_back(pb);
     m_DL1rnn->push_back( score );
+    
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1rmu" , "pu", pu);
+    myBTag->variable<double>("DL1rmu" , "pc", pc);
+    myBTag->variable<double>("DL1rmu" , "pb", pb);
+    score=log( pb / (0.08*pc+0.92*pu) );
+    m_DL1rmu_pu->push_back(pu);
+    m_DL1rmu_pc->push_back(pc);
+    m_DL1rmu_pb->push_back(pb);
+    m_DL1rmu->push_back( score );
+
+    pu=0; pb=0; pc=0;
+    myBTag->variable<double>("DL1r" , "pu", pu);
+    myBTag->variable<double>("DL1r" , "pc", pc);
+    myBTag->variable<double>("DL1r" , "pb", pb);
+    score=log( pb / (0.03*pc+0.97*pu) );
+    m_DL1r_pu->push_back(pu);
+    m_DL1r_pc->push_back(pc);
+    m_DL1r_pb->push_back(pb);
+    m_DL1r->push_back( score );
 
     // flavor groups truth definition
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");

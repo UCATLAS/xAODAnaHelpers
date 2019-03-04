@@ -183,6 +183,8 @@ namespace xAH {
       std::vector<float> *m_MV2c10;
       std::vector<float> *m_MV2c10mu;
       std::vector<float> *m_MV2c10rnn;
+      std::vector<float> *m_MV2rmu;
+      std::vector<float> *m_MV2r;
       std::vector<float> *m_MV2c20;
       std::vector<float> *m_MV2c100;
       std::vector<float> *m_DL1;
@@ -202,6 +204,16 @@ namespace xAH {
       std::vector<int>   *m_HadronConeExclTruthLabelID;
       std::vector<int>   *m_HadronConeExclExtendedTruthLabelID;
 
+      std::vector<float> *m_DL1rmu;
+      std::vector<float> *m_DL1rmu_pu;
+      std::vector<float> *m_DL1rmu_pc;
+      std::vector<float> *m_DL1rmu_pb;
+
+      std::vector<float> *m_DL1r;
+      std::vector<float> *m_DL1r_pu;
+      std::vector<float> *m_DL1r_pc;
+      std::vector<float> *m_DL1r_pb;
+ 
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
       std::vector<float>  *m_JetFitter_nSingleTracks  ;
@@ -384,6 +396,38 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::DL1mu_HybBEff_77;
 	  else if(m_accessorName=="DL1mu_HybBEff_85")
 	    m_op=Jet::BTaggerOP::DL1mu_HybBEff_85;
+	  else if(m_accessorName=="DL1rmu_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_60;
+	  else if(m_accessorName=="DL1rmu_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_70;
+	  else if(m_accessorName=="DL1rmu_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_77;
+	  else if(m_accessorName=="DL1rmu_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_85;
+	  else if(m_accessorName=="DL1rmu_HybBEff_60")
+	    m_op=Jet::BTaggerOP::DL1rmu_HybBEff_60;
+	  else if(m_accessorName=="DL1rmu_HybBEff_70")
+	    m_op=Jet::BTaggerOP::DL1rmu_HybBEff_70;
+	  else if(m_accessorName=="DL1rmu_HybBEff_77")
+	    m_op=Jet::BTaggerOP::DL1rmu_HybBEff_77;
+	  else if(m_accessorName=="DL1rmu_HybBEff_85")
+	    m_op=Jet::BTaggerOP::DL1rmu_HybBEff_85;
+	  else if(m_accessorName=="DL1r_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_60;
+	  else if(m_accessorName=="DL1r_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_70;
+	  else if(m_accessorName=="DL1r_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_77;
+	  else if(m_accessorName=="DL1r_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_85;
+	  else if(m_accessorName=="DL1r_HybBEff_60")
+	    m_op=Jet::BTaggerOP::DL1r_HybBEff_60;
+	  else if(m_accessorName=="DL1r_HybBEff_70")
+	    m_op=Jet::BTaggerOP::DL1r_HybBEff_70;
+	  else if(m_accessorName=="DL1r_HybBEff_77")
+	    m_op=Jet::BTaggerOP::DL1r_HybBEff_77;
+	  else if(m_accessorName=="DL1r_HybBEff_85")
+	    m_op=Jet::BTaggerOP::DL1r_HybBEff_85;
 	  else if(m_accessorName=="DL1_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_60;
 	  else if(m_accessorName=="DL1_FixedCutBEff_70")
@@ -432,6 +476,38 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::MV2c10mu_HybBEff_77;
 	  else if(m_accessorName=="MV2c10mu_HybBEff_85")
 	    m_op=Jet::BTaggerOP::MV2c10mu_HybBEff_85;
+          else if(m_accessorName=="MV2r_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::MV2r_FixedCutBEff_60;
+	  else if(m_accessorName=="MV2r_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::MV2r_FixedCutBEff_70;
+	  else if(m_accessorName=="MV2r_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::MV2r_FixedCutBEff_77;
+	  else if(m_accessorName=="MV2r_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::MV2r_FixedCutBEff_85;
+	  else if(m_accessorName=="MV2r_HybBEff_60")
+	    m_op=Jet::BTaggerOP::MV2r_HybBEff_60;
+	  else if(m_accessorName=="MV2r_HybBEff_70")
+	    m_op=Jet::BTaggerOP::MV2r_HybBEff_70;
+	  else if(m_accessorName=="MV2r_HybBEff_77")
+	    m_op=Jet::BTaggerOP::MV2r_HybBEff_77;
+	  else if(m_accessorName=="MV2r_HybBEff_85")
+	    m_op=Jet::BTaggerOP::MV2r_HybBEff_85;
+	  else if(m_accessorName=="MV2rmu_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::MV2rmu_FixedCutBEff_60;
+	  else if(m_accessorName=="MV2rmu_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::MV2rmu_FixedCutBEff_70;
+	  else if(m_accessorName=="MV2rmu_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::MV2rmu_FixedCutBEff_77;
+	  else if(m_accessorName=="MV2rmu_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::MV2rmu_FixedCutBEff_85;
+	  else if(m_accessorName=="MV2rmu_HybBEff_60")
+	    m_op=Jet::BTaggerOP::MV2rmu_HybBEff_60;
+	  else if(m_accessorName=="MV2rmu_HybBEff_70")
+	    m_op=Jet::BTaggerOP::MV2rmu_HybBEff_70;
+	  else if(m_accessorName=="MV2rmu_HybBEff_77")
+	    m_op=Jet::BTaggerOP::MV2rmu_HybBEff_77;
+	  else if(m_accessorName=="MV2rmu_HybBEff_85")
+	    m_op=Jet::BTaggerOP::MV2rmu_HybBEff_85;
 	  else if(m_accessorName=="MV2c10_FixedCutBEff_30")
 	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_30;
 	  else if(m_accessorName=="MV2c10_FixedCutBEff_50")
