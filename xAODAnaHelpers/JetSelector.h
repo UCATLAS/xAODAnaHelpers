@@ -74,6 +74,9 @@ public:
 
    */
 
+  /** @brief Choose the scale at which the selection is performed (default "Final", i.e. default 4vector) */
+  std::string m_jetScale4Selection = "Final";
+
   bool m_cleanEvent = false;
   /** @brief Mark event with decorator if any passing jets are not clean */
   bool m_markCleanEvent = false;

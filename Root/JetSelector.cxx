@@ -1019,26 +1019,51 @@ EL::StatusCode JetSelector :: histFinalize ()
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   ANA_MSG_DEBUG("In pass cuts");
 
+  double jetPt       = 0;
+  double jetEta      = 0;
+  double jetPhi      = 0;
+  double jetM        = 0;
+  double jetRapidity = 0;
+  if(m_jetScale4Selection=="Final"){ // default
+    jetPt       = jet->pt();
+    jetEta      = jet->eta();
+    jetPhi      = jet->phi();
+    jetM        = jet->m();
+    jetRapidity = jet->rapidity();
+  } else { // retrieve chosen jet momentum scale
+    xAOD::JetFourMom_t tmp;
+    if(!jet->getAttribute<xAOD::JetFourMom_t>(m_jetScale4Selection.c_str(),tmp)){
+      ATH_MSG_ERROR("Jet does not have the requested momentum state: " << m_jetScale4Selection);
+      return 0;
+    } else {
+      jetPt       = jet->jetP4(m_jetScale4Selection.c_str()).Pt();
+      jetEta      = jet->jetP4(m_jetScale4Selection.c_str()).Eta();
+      jetPhi      = jet->jetP4(m_jetScale4Selection.c_str()).Phi();
+      jetM        = jet->jetP4(m_jetScale4Selection.c_str()).M();
+      jetRapidity = jet->jetP4(m_jetScale4Selection.c_str()).Rapidity();
+    }
+  }
+
   // fill cutflow bin 'all' before any cut
   if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_all, 1 );
 
   // pT
   if ( m_pT_max != 1e8 ) {
-    if ( jet->pt() > m_pT_max ) { return 0; }
+    if ( jetPt > m_pT_max ) { return 0; }
   }
   if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmax_cut, 1 );
 
   if ( m_pT_min != 1e8 ) {
-    if ( jet->pt() < m_pT_min ) { return 0; }
+    if ( jetPt < m_pT_min ) { return 0; }
   }
   if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmin_cut, 1 );
 
   // eta
   if ( m_eta_max != 1e8 ) {
-    if ( fabs(jet->eta()) > m_eta_max ) { return 0; }
+    if ( fabs(jetEta) > m_eta_max ) { return 0; }
   }
   if ( m_eta_min != 1e8 ) {
-    if ( fabs(jet->eta()) < m_eta_min ) { return 0; }
+    if ( fabs(jetEta) < m_eta_min ) { return 0; }
   }
   if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_eta_cut, 1 );
 
@@ -1052,25 +1077,25 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // mass
   if ( m_mass_max != 1e8 ) {
-    if ( jet->m() > m_mass_max ) { return 0; }
+    if ( jetM > m_mass_max ) { return 0; }
   }
   if ( m_mass_min != 1e8 ) {
-    if ( jet->m() < m_mass_min ) { return 0; }
+    if ( jetM < m_mass_min ) { return 0; }
   }
 
   // rapidity
   if ( m_rapidity_max != 1e8 ) {
-    if ( jet->rapidity() > m_rapidity_max ) { return 0; }
+    if ( jetRapidity > m_rapidity_max ) { return 0; }
   }
   if ( m_rapidity_min != 1e8 ) {
-    if ( jet->rapidity() < m_rapidity_min ) { return 0; }
+    if ( jetRapidity < m_rapidity_min ) { return 0; }
   }
 
   // JVF pileup cut
   if ( m_doJVF ){
     ANA_MSG_DEBUG("Doing JVF");
-    ANA_MSG_DEBUG("Jet Pt " << jet->pt());
-    if ( jet->pt() < m_pt_max_JVF ) {
+    ANA_MSG_DEBUG("Jet Pt " << jetPt);
+    if ( jetPt < m_pt_max_JVF ) {
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVF ){
         if ( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
@@ -1082,12 +1107,12 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   if(m_dofJVT){
     if(jet->auxdata<char>("passFJVT")!=1){
-      ANA_MSG_DEBUG("jet pt = "<<jet->pt()<<",eta = "<<jet->eta()<<",phi = "<<jet->phi());
+      ANA_MSG_DEBUG("jet pt = "<<jetPt<<",eta = "<<jetEta<<",phi = "<<jetPhi);
       ANA_MSG_DEBUG("Failed forward JVT");
       if(m_dofJVTVeto)return 0;
     }
     else if (TMath::Abs(jet->eta()>2.5) ) {
-      ANA_MSG_DEBUG("jet pt = " << jet->pt() << ",eta = "<<jet->eta()<<",phi = "<<jet->phi());
+      ANA_MSG_DEBUG("jet pt = " << jetPt << ",eta = "<<jetEta<<",phi = "<<jetPhi);
       ANA_MSG_DEBUG("Passed forward JVT");
     }
 
@@ -1096,17 +1121,16 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   // JVT pileup cut
   if ( m_doJVT ) {
     // NB: origin-correction is applied at constituent level. Eta for Jvt needs to be the DetectorEta explicitly.
-    float jet_pt = jet->pt();
     float jet_eta = jet->getAttribute<float>("DetectorEta");
     float jet_jvt = jet->getAttribute<float>("Jvt");
-    ANA_MSG_DEBUG("Checking Jvt cut for jet pT=" << jet_pt << " MeV, DetectorEta=" << jet_eta <<", and Jvt="<< jet_jvt );
+    ANA_MSG_DEBUG("Checking Jvt cut for jet pT=" << jetPt << " MeV, DetectorEta=" << jet_eta <<", and Jvt="<< jet_jvt );
     bool result = false;
 
     // if non-negative, the user wants to apply a custom jvt cut
     if( m_JVTCut > 0 ){
       ANA_MSG_DEBUG("Custom JVT working point with pT<" << m_pt_max_JVT << ", |eta|<" << m_eta_max_JVT << ", Jvt<" << m_JVTCut);
       // JVT should only be applied at low pt and central eta. If outside this, result = true.
-      if (jet_pt < m_pt_max_JVT && std::fabs(jet_eta) < m_eta_max_JVT) {
+      if (jetPt < m_pt_max_JVT && std::fabs(jet_eta) < m_eta_max_JVT) {
         result = (jet_jvt > m_JVTCut);
       } else {
         result = true;
