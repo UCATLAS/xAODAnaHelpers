@@ -427,6 +427,11 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
+  delete m_muRecoSF_tool;
+  delete m_muIsoSF_tool;
+  delete m_muTrigSF_tool;
+  delete m_muTTVASF_tool;
+
   return EL::StatusCode::SUCCESS;
 }
 
