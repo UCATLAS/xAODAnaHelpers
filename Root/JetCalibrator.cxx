@@ -256,6 +256,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     if( m_saveAllCleanDecisions ){
       m_decisionNames.push_back( "LooseBad" );
       m_decisionNames.push_back( "LooseBadUgly" );
+      m_decisionNames.push_back( "LooseBadTrigger" );
       m_decisionNames.push_back( "TightBad" );
       m_decisionNames.push_back( "TightBadUgly" );
 
