@@ -62,6 +62,7 @@ namespace xAH {
       float LeadingClusterSecondR;
       int   clean_passLooseBad;
       int   clean_passLooseBadTrigger;
+      int   clean_passLooseBadTriggerUgly;
       int   clean_passLooseBadUgly;
       int   clean_passTightBad;
       int   clean_passTightBadUgly;
