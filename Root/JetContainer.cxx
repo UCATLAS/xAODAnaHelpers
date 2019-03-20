@@ -44,6 +44,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_clean_passTightBadUgly    =new std::vector<int>();
     }
     m_clean_passLooseBad        =new std::vector<int>();
+    m_clean_passLooseBadTrigger =new std::vector<int>();
     m_clean_passTightBad        =new std::vector<int>();
   }
 
@@ -484,6 +485,7 @@ JetContainer::~JetContainer()
       delete m_clean_passTightBadUgly;
     }
     delete m_clean_passLooseBad;
+    delete m_clean_passLooseBadTrigger;
     delete m_clean_passTightBad;
   }
 
@@ -891,6 +893,7 @@ void JetContainer::setTree(TTree *tree)
         connectBranch<int>  (tree, "clean_passTightBadUgly",     &m_clean_passTightBadUgly);
       }
       connectBranch<int>  (tree, "clean_passLooseBad",         &m_clean_passLooseBad);
+      connectBranch<int>  (tree, "clean_passLooseBadTrigger",  &m_clean_passLooseBadTrigger);
       connectBranch<int>  (tree, "clean_passTightBad",         &m_clean_passTightBad);
     }
 
@@ -1135,6 +1138,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
         jet.clean_passTightBadUgly    =m_clean_passTightBadUgly    ->at(idx);
       }
       jet.clean_passLooseBad        =m_clean_passLooseBad        ->at(idx);
+      jet.clean_passLooseBadTrigger =m_clean_passLooseBadTrigger ->at(idx);
       jet.clean_passTightBad        =m_clean_passTightBad        ->at(idx);
     }
 
@@ -1753,6 +1757,7 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<int>  (tree,"clean_passTightBadUgly",        m_clean_passTightBadUgly         );
     }
     setBranch<int>  (tree,"clean_passLooseBad",            m_clean_passLooseBad             );
+    setBranch<int>  (tree,"clean_passLooseBadTrigger",     m_clean_passLooseBadTrigger             );
     setBranch<int>  (tree,"clean_passTightBad",            m_clean_passTightBad             );
   }
 
@@ -2153,6 +2158,7 @@ void JetContainer::clear()
       m_clean_passLooseBadUgly    ->clear();
     }
     m_clean_passLooseBad        ->clear();
+    m_clean_passLooseBadTrigger ->clear();
     m_clean_passTightBad        ->clear();
   }
 
@@ -2600,21 +2606,24 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       safeFill<float, float, xAOD::Jet>(jet, leadClusSecondR, m_LeadingClusterSecondR, -999);
 
       if(!m_infoSwitch.m_cleanNoSumm) {
-        static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
-        safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
+        static SG::AuxElement::ConstAccessor<int> clean_passLooseBadUgly ("clean_passLooseBadUgly");
+        safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
 
-        static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
-        safeFill<char, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
+        static SG::AuxElement::ConstAccessor<int> clean_passTightBadUgly ("clean_passTightBadUgly");
+        safeFill<int, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
       }
 
     }
 
     if(!m_infoSwitch.m_cleanNoSumm) {
-      static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
-      safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
+      static SG::AuxElement::ConstAccessor<int> clean_passLooseBad ("clean_passLooseBad");
+      safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
 
-      static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
-      safeFill<char, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
+      static SG::AuxElement::ConstAccessor<int> clean_passTightBad ("clean_passTightBad");
+      safeFill<int, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
+
+      static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTrigger ("clean_passLooseBadTrigger");
+      safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTrigger, m_clean_passLooseBadTrigger, -999);
     }
 
   } // clean
