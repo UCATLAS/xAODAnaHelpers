@@ -395,23 +395,14 @@ EL::StatusCode TreeAlgo :: execute ()
 
     if ( !m_jetContainerName.empty() ) {
       bool reject = false;
-      for ( unsigned int ll = 0; ll < m_jetContainers.size(); ++ll ) { // Systs only for first jet container
+      for ( unsigned int ll = 0; ll < m_jetContainers.size(); ++ll ) { // Systs for all jet containers
         const xAOD::JetContainer* inJets(nullptr);
-        if ( ll==0 ) {
-          if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
-            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining jet collections");
-            reject = true;
-            break;
-          }
-          ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
-        } else {
-          if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll), m_event, m_store, msg()) ) {
-            ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll) + " is not available. Skipping all remaining jet collections");
-            reject = true;
-            break;
-          }
-          ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll), m_event, m_store, msg()) );
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining jet collections");
+          reject = true;
+          break;
         }
+        ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
 
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
