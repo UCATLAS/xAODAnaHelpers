@@ -84,3 +84,16 @@ How do I...
    6. The tool associated to the handle will be automatically destroyed when appropriate. Hence, no need to call ``delete`` anywhere.
 
    If the same tool (identified by its name) needs to be used in another xAH algorithm downstream, just declare a tool handle member with the same ``IMyToolType``, call its constructor in the initialisation list and (if needed) change its tool name with ``make()``. Then in ``EL::initialize()`` simply call ``m_mytool_handle.initialize()``, without setting any property. It will automagically get the pointer to the correct tool from a registry, and all the tool properties will be preserved from the previous initialisation.
+
+SLC6 vs CC7
+-----------
+
+If you're running into issues with grid submission because of checks for SLC6-compatible machines in `xAH_run.py` preventing you from doing so, then you can either:
+
+- ssh into lxplus SLC6 (``lxplus6.cern.ch``)
+- run in a containerized SLC6 environment (``setupATLAS -c slc6``)
+
+If you think this message is happening in error, `file an issue <https://github.com/UCATLAS/xAODAnaHelpers/issues/new>`_ giving us the output from the following commands:
+
+- ``lsb_release -d``
+- ``printenv | grep _PLATFORM``
