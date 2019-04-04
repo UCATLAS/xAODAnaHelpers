@@ -90,7 +90,10 @@ SLC6 vs CC7
 
 If you're running into issues with grid submission because of checks for SLC6-compatible machines in `xAH_run.py` preventing you from doing so, then you can either:
 
-- ssh into lxplus SLC6 (`lxplus6.cern.ch`)
-- run in a containerized SLC6 environment (`setupATLAS -c slc6`)
+- ssh into lxplus SLC6 (``lxplus6.cern.ch``)
+- run in a containerized SLC6 environment (``setupATLAS -c slc6``)
 
+If you think this message is happening in error, `file an issue <https://github.com/UCATLAS/xAODAnaHelpers/issues/new>`_ giving us the output from the following commands:
 
+- ``lsb_release -d``
+- ``printenv | grep _PLATFORM``
