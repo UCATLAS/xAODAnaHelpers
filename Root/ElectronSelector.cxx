@@ -209,7 +209,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   // Make sure it's not empty!
   //
   if ( m_IsoWPList.empty() ) {
-    m_IsoWPList = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+      ANA_MSG_ERROR("Empty isolation WP list");
   }
   std::string token;
   std::istringstream ss(m_IsoWPList);

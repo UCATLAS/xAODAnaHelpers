@@ -156,7 +156,7 @@ public:
   /** @brief reject objects which do not pass this isolation cut - default = "" (no cut) */
   std::string    m_MinIsoWPCut = "";
   /** @brief decorate objects with ``isIsolated_*`` flag for each WP in this input list - default = all current ASG WPs */
-  std::string    m_IsoWPList = "LooseTrackOnly,Loose,Tight,Gradient,GradientLoose";
+  std::string    m_IsoWPList = "FCLoose,FCTight,Gradient,FCHighPtCaloOnly";
   /** @rst
      to define a custom WP - make sure ``"UserDefined"`` is added in :cpp:member:`~ElectronSelector::m_IsoWPList`
   @endrst */
