@@ -21,6 +21,11 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
     m_is_bhad   = new std::vector<int>();
   }
 
+  if(m_infoSwitch.m_type){
+    m_is_higgs  = new std::vector<int>();
+    m_is_bhad   = new std::vector<int>();
+  }
+
   if(m_infoSwitch.m_bVtx){
     m_Bdecay_x  = new std::vector<float>();
     m_Bdecay_y  = new std::vector<float>();
@@ -41,6 +46,12 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
     m_child_status   = new std::vector< std::vector<int> >();
   }
 
+  if(m_infoSwitch.m_dressed){
+    m_pt_dressed  = new std::vector<float>();
+    m_eta_dressed = new std::vector<float>();
+    m_phi_dressed = new std::vector<float>();
+    m_e_dressed   = new std::vector<float>();
+  }
 
 }
 
@@ -78,6 +89,13 @@ TruthContainer::~TruthContainer()
     delete m_child_status;
   }
 
+  if(m_infoSwitch.m_dressed){
+    delete m_pt_dressed;
+    delete m_eta_dressed;
+    delete m_phi_dressed;
+    delete m_e_dressed;
+  }
+
 }
 
 void TruthContainer::setTree(TTree *tree)
@@ -113,6 +131,13 @@ void TruthContainer::setTree(TTree *tree)
     connectBranch<std::vector<int> >(tree,"child_pdgId",   &m_child_pdgId);
     connectBranch<std::vector<int> >(tree,"child_barcode", &m_child_barcode);
     connectBranch<std::vector<int> >(tree,"child_status",  &m_child_status);
+  }
+
+  if(m_infoSwitch.m_dressed){
+    connectBranch<float> (tree,"pt_dressd",  &m_pt_dressed);
+    connectBranch<float> (tree,"eta_dressd", &m_eta_dressed);
+    connectBranch<float> (tree,"phi_dressd", &m_phi_dressed);
+    connectBranch<float> (tree,"e_dressd",   &m_e_dressed);
   }
 
 }
@@ -153,6 +178,12 @@ void TruthContainer::updateParticle(uint idx, TruthPart& truth)
     truth.child_status  = m_child_status ->at(idx);
   }
 
+  if(m_infoSwitch.m_dressed){
+    truth.pt_dressed  = m_pt_dressed->at(idx);
+    truth.eta_dressed = m_eta_dressed->at(idx);
+    truth.phi_dressed = m_phi_dressed->at(idx);
+    truth.e_dressed   = m_e_dressed->at(idx);
+  }
 
   if(m_debug) std::cout << "leave TruthContainer::updateParticle " << std::endl;
   return;
@@ -194,6 +225,12 @@ void TruthContainer::setBranches(TTree *tree)
     setBranch<std::vector<int> >(tree,"child_status",                 m_child_status         );
   }
 
+  if(m_infoSwitch.m_dressed){
+    setBranch<float> (tree,"pt_dressed", m_pt_dressed );
+    setBranch<float> (tree,"eta_dressed", m_eta_dressed );
+    setBranch<float> (tree,"phi_dressed", m_phi_dressed );
+    setBranch<float> (tree,"e_dressed", m_e_dressed );
+  }
 
   return;
 }
@@ -231,6 +268,13 @@ void TruthContainer::clear()
     m_child_pdgId->clear();
     m_child_barcode->clear();
     m_child_status->clear();
+  }
+
+  if(m_infoSwitch.m_dressed){
+    m_pt_dressed->clear();
+    m_eta_dressed->clear();
+    m_phi_dressed->clear();
+    m_e_dressed->clear();
   }
 
   return;
@@ -318,6 +362,32 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
     }
   }
 
+  if(m_infoSwitch.m_dressed){
+    if( truth->isAvailable<float>("pt_dressed") ){
+      float pt_dressed = truth->auxdata<float>("pt_dressed");
+      m_pt_dressed->push_back(pt_dressed / m_units);
+    } else {
+      m_pt_dressed->push_back(-999);
+    }
+    if( truth->isAvailable<float>("eta_dressed") ){
+      float eta_dressed = truth->auxdata<float>("eta_dressed");
+      m_eta_dressed->push_back(eta_dressed);
+    } else {
+      m_eta_dressed->push_back(-999);
+    }
+    if( truth->isAvailable<float>("phi_dressed") ){
+      float phi_dressed = truth->auxdata<float>("phi_dressed");
+      m_phi_dressed->push_back(phi_dressed);
+    } else {
+      m_phi_dressed->push_back(-999);
+    }
+    if( truth->isAvailable<float>("e_dressed") ){
+      float e_dressed = truth->auxdata<float>("e_dressed");
+      m_e_dressed->push_back(e_dressed / m_units);
+    } else {
+      m_e_dressed->push_back(-999);
+    }
+  }
 
   if(m_debug) std::cout << "Leave Fill Truth " << std::endl;
   return;

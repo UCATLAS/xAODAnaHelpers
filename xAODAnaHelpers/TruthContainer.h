@@ -67,6 +67,12 @@ namespace xAH {
       std::vector< std::vector<int> >* m_child_barcode;
       std::vector< std::vector<int> >* m_child_status;
 
+      // dressed
+      std::vector<float>* m_pt_dressed;
+      std::vector<float>* m_eta_dressed;
+      std::vector<float>* m_phi_dressed;
+      std::vector<float>* m_e_dressed;
+
     };
 }
 
