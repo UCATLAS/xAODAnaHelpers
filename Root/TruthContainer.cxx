@@ -15,12 +15,6 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
   m_status  = new std::vector<int>();
   m_barcode = new std::vector<int>();
 
-
-  if(m_infoSwitch.m_type){
-    m_is_higgs  = new std::vector<int>();
-    m_is_bhad   = new std::vector<int>();
-  }
-
   if(m_infoSwitch.m_type){
     m_is_higgs  = new std::vector<int>();
     m_is_bhad   = new std::vector<int>();
