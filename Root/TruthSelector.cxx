@@ -326,7 +326,7 @@ int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
     if ( truthPart->rapidity() < m_rapidity_min ) { return 0; }
   }
 
-  // selections for partiles from TruthClassifier
+  // selections for particles from MCTruthClassifier
 
   // type
   if ( m_type != 1000 ) {
