@@ -459,6 +459,7 @@ namespace HelperClasses{
     m_bVtx          = has_exact("bVtx");
     m_parents       = has_exact("parents");
     m_children      = has_exact("children");
+    m_dressed       = has_exact("dressed");
   }
 
   void TrackInfoSwitch::initialize(){

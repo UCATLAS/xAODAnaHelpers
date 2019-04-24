@@ -40,7 +40,7 @@ public:
   int m_pass_max = -1;
   /// @brief require pT < pt_max
   float m_pT_max = 1e8;
-  /// @brief require pT > pt_max
+  /// @brief require pT > pt_min
   float m_pT_min = 1e8;
   /// @brief require eta < eta_max
   float m_eta_max = 1e8;
@@ -54,6 +54,16 @@ public:
   float m_rapidity_max = 1e8;
   /// @brief require rapidity > rapidity_min
   float m_rapidity_min = 1e8;
+  /// @brief require classifierParticleType == type (defined by TruthClassifier: https://gitlab.cern.ch/atlas/athena/blob/21.2/PhysicsAnalysis/MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h)
+  unsigned int m_type = 1000; // this will apply no selection
+  /// @brief require classifierParticleOrigin == origin (defined by TruthClassifier: https://gitlab.cern.ch/atlas/athena/blob/21.2/PhysicsAnalysis/MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h)
+  unsigned int m_origin = 1000; // this will apply no selection
+  /// @brief require pt_dressed > pt_dressed_min
+  float m_pT_dressed_min = 1e8;
+  /// @brief require eta_dressed > eta_dressed_min
+  float m_eta_dressed_min = 1e8;
+  /// @brief require eta_dressed > eta_dressed_max
+  float m_eta_dressed_max = 1e8;
 
 private:
   int m_numEvent;         //!
