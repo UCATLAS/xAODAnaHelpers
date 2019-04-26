@@ -325,6 +325,7 @@ namespace HelperClasses{
     m_onlineBS            = has_exact("onlineBS");
     m_onlineBSTool        = has_exact("onlineBSTool");
 
+    m_passSel             = has_exact("passSel");
 
     m_charge              = has_exact("charge");
     m_etaPhiMap           = has_exact("etaPhiMap");

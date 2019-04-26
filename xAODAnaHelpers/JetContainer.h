@@ -639,6 +639,9 @@ namespace xAH {
 
       // charge
       std::vector<double> *m_charge;
+
+      // passSel
+      std::vector<char> *m_passSel;
     };
 }
 

@@ -427,6 +427,9 @@ namespace xAH {
       // charge
       double charge;
 
+      // passSel
+      char passSel;
+
       const Muon* matchedMuon;
       const Jet * matchedJet;
 
