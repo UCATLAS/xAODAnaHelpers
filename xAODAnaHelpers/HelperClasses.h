@@ -447,6 +447,7 @@ namespace HelperClasses {
         m_onlineBS       onlineBS       exact
         m_onlineBSTool   onlineBSTool   exact
         m_charge         charge         exact
+        m_passSel        passSel        exact
         m_vsLumiBlock    vsLumiBlock    exact
         m_vsActualMu     vsActualMu     exact
         m_lumiB_runN     lumiB_runN     exact
@@ -515,6 +516,7 @@ namespace HelperClasses {
     bool m_onlineBS;
     bool m_onlineBSTool;
     bool m_charge;
+    bool m_passSel;
     bool m_etaPhiMap;
     bool m_vsLumiBlock;
     bool m_vsActualMu;

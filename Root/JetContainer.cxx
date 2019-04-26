@@ -441,6 +441,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_charge   =new std::vector<double>();
   }
 
+  // passSel
+  if ( m_infoSwitch.m_passSel ) {
+    m_passSel  =new std::vector<char>();
+  }
+
 }
 
 JetContainer::~JetContainer()
@@ -839,6 +844,11 @@ JetContainer::~JetContainer()
     delete m_charge;
   }
 
+  // passSel
+  if ( m_infoSwitch.m_passSel ) {
+    delete m_passSel;
+  }
+
 }
 
 void JetContainer::setTree(TTree *tree)
@@ -1079,6 +1089,10 @@ void JetContainer::setTree(TTree *tree)
     {
       connectBranch<double>(tree,"charge", &m_charge);
     }
+
+  // passSel
+  if(m_infoSwitch.m_passSel) connectBranch<char>(tree,"passSel", &m_passSel);
+
 }
 
 void JetContainer::updateParticle(uint idx, Jet& jet)
@@ -1692,6 +1706,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.charge=m_charge->at(idx);
     }
 
+  // passSel
+  if(m_infoSwitch.m_passSel) jet.passSel=m_passSel->at(idx);
+
   if(m_debug) std::cout << "leave JetContainer::updateParticle " << std::endl;
   return;
 }
@@ -2089,6 +2106,10 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<double>(tree,"charge", m_charge);
   }
 
+  if ( m_infoSwitch.m_passSel ) {
+    setBranch<char>(tree,"passSel", m_passSel);
+  }
+
   return;
 }
 
@@ -2477,6 +2498,10 @@ void JetContainer::clear()
 
   if( m_infoSwitch.m_charge ) {
     m_charge->clear();
+  }
+
+  if( m_infoSwitch.m_passSel ) {
+    m_passSel->clear();
   }
 
   return;
@@ -3624,6 +3649,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_charge->push_back(-99);
     }
 
+  }
+
+  if ( m_infoSwitch.m_passSel ) {
+    char passSel;
+    bool status = jet->getAttribute<char>( "passSel", passSel );
+    if(status){
+      m_passSel->push_back(passSel);
+    }else{
+      m_passSel->push_back(-99);
+    }
   }
 
   return;
