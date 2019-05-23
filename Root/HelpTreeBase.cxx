@@ -192,7 +192,7 @@ void HelpTreeBase::AddTrigger( const std::string detailStr ) {
     m_tree->Branch("isPassBitsNames",      &m_isPassBitsNames     );
   }
 
-  //this->AddTriggerUser();
+  this->AddTriggerUser( detailStr );
 }
 
 // Fill the information in the trigger branches
