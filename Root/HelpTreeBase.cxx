@@ -275,7 +275,8 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     if( isPassBitsNames.isAvailable( *eventInfo ) ) { m_isPassBitsNames = isPassBitsNames( *eventInfo ); }
 
   }
-
+  
+  this->FillTriggerUser(eventInfo);
 }
 
 // Clear Trigger
