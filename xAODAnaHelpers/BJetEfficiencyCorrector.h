@@ -55,6 +55,8 @@ public:
   std::string m_operatingPtCDI = "";
   /// @brief will only get scale factors for calibrated working points
   bool m_getScaleFactors = false;
+  /// @brief will only get tagWeight and quantile
+  bool m_useContinuous = false;
   /// @brief The decoration key written to passing objects
   std::string m_decor = "BTag";
 
@@ -68,6 +70,8 @@ private:
 
   /// @brief The decoration key written to passing objects
   std::string m_decorSF = "";
+  std::string m_decorWeight = "";
+  std::string m_decorQuantile = "";
 
   std::vector<std::string> m_inputAlgoList; //!
 
