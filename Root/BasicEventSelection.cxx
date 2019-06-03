@@ -417,10 +417,6 @@ EL::StatusCode BasicEventSelection :: initialize ()
       m_cutflow_grl  = m_cutflowHist->GetXaxis()->FindBin("GRL");
       m_cutflowHistW->GetXaxis()->FindBin("GRL");
     }
-    if ( m_applyIsBadBatmanFlag ) {
-      m_cutflow_isbadbatman =  m_cutflowHist->GetXaxis()->FindBin("IsBadBatman");
-      m_cutflowHistW->GetXaxis()->FindBin("IsBadBatman");
-    }
     m_cutflow_lar  = m_cutflowHist->GetXaxis()->FindBin("LAr");
     m_cutflowHistW->GetXaxis()->FindBin("LAr");
     m_cutflow_tile = m_cutflowHist->GetXaxis()->FindBin("tile");
@@ -430,15 +426,21 @@ EL::StatusCode BasicEventSelection :: initialize ()
     m_cutflow_core = m_cutflowHist->GetXaxis()->FindBin("core");
     m_cutflowHistW->GetXaxis()->FindBin("core");
   }
+  if ( m_applyJetCleaningEventFlag ) {
+    m_cutflow_jetcleaning = m_cutflowHist->GetXaxis()->FindBin("JetCleaning");
+    m_cutflowHistW->GetXaxis()->FindBin("JetCleaning");
+  }
+  if ( !isMC() ) {
+    if ( m_applyIsBadBatmanFlag ) {
+      m_cutflow_isbadbatman =  m_cutflowHist->GetXaxis()->FindBin("IsBadBatman");
+      m_cutflowHistW->GetXaxis()->FindBin("IsBadBatman");
+    }
+  }
   m_cutflow_npv  = m_cutflowHist->GetXaxis()->FindBin("NPV");
   m_cutflowHistW->GetXaxis()->FindBin("NPV");
   if ( !m_triggerSelection.empty() && m_applyTriggerCut ) {
     m_cutflow_trigger  = m_cutflowHist->GetXaxis()->FindBin("Trigger");
     m_cutflowHistW->GetXaxis()->FindBin("Trigger");
-  }
-  if ( m_applyJetCleaningEventFlag ) {
-    m_cutflow_jetcleaning = m_cutflowHist->GetXaxis()->FindBin("JetCleaning");
-    m_cutflowHistW->GetXaxis()->FindBin("JetCleaning");
   }
 
   ANA_MSG_INFO( "Histograms set up!");
