@@ -70,8 +70,9 @@ private:
 
   /// @brief The decoration key written to passing objects
   std::string m_decorSF = "";
-  std::string m_decorWeight = "";
-  std::string m_decorQuantile = "";
+  std::string m_decorWeight = ""; // only for continuous b-tagging
+  std::string m_decorQuantile = ""; // only for continuous b-tagging
+  std::string m_decorInefficiencySF = ""; // only for continuous b-tagging
 
   std::vector<std::string> m_inputAlgoList; //!
 
