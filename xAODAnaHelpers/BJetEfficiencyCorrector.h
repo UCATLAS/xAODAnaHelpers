@@ -55,7 +55,7 @@ public:
   std::string m_operatingPtCDI = "";
   /// @brief will only get scale factors for calibrated working points
   bool m_getScaleFactors = false;
-  /// @brief will only get tagWeight and quantile
+  /// @brief will get tagWeight, quantile, SF and InefficiencySF
   bool m_useContinuous = false;
   /// @brief The decoration key written to passing objects
   std::string m_decor = "BTag";
