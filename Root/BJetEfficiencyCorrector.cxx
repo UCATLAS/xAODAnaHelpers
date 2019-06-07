@@ -100,9 +100,13 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   }
 
   m_decorSF = m_decor + "_SF";
+  m_decorWeight   = m_decor + "_Weight";
+  m_decorQuantile = m_decor + "_Quantile";
+  m_decorInefficiencySF  = m_decor + "_InefficiencySF";
 
   bool opOK(false),taggerOK(false);
   m_getScaleFactors = false;
+  m_useContinuous   = false;
   // not calibrated yet
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTagCalib2017
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/BTaggingBenchmarksRelease21
@@ -125,18 +129,31 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  false; }
 
+  // Continuous
+  if (m_operatingPt == "Continuous") { opOK = true; taggerOK = true; m_getScaleFactors =  true; m_useContinuous = true; ANA_MSG_DEBUG(" Using continuous b-tagging");}
+
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
     return EL::StatusCode::FAILURE;
   }
 
   // make unique name
-  m_decor           += "_" + m_taggerName + "_" + m_operatingPt;
-  m_decorSF         += "_" + m_taggerName + "_" + m_operatingPt;
-  m_outputSystName  += "_" + m_taggerName + "_" + m_operatingPt;
+  m_decor               += "_" + m_taggerName + "_" + m_operatingPt;
+  m_decorSF             += "_" + m_taggerName + "_" + m_operatingPt;
+  m_outputSystName      += "_" + m_taggerName + "_" + m_operatingPt;
+  m_decorWeight         += "_" + m_taggerName + "_" + m_operatingPt;
+  m_decorQuantile       += "_" + m_taggerName + "_" + m_operatingPt;
+  m_decorInefficiencySF += "_" + m_taggerName + "_" + m_operatingPt;
 
-  ANA_MSG_INFO( "Decision Decoration Name     : " << m_decor);
-  ANA_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
+  if(!m_useContinuous){
+    ANA_MSG_INFO( "Decision Decoration Name     : " << m_decor);
+    ANA_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
+  } else {
+    ANA_MSG_INFO( "Weight Decoration Name: "        << m_decorWeight);
+    ANA_MSG_INFO( "Quantile Decoration Name: "      << m_decorQuantile);
+    ANA_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
+    ANA_MSG_INFO( "Inefficiency Scale Factor Decoration Name : " << m_decorInefficiencySF);
+  }
 
   // now take this name and convert it to the cut value for the CDI file
   // if using the fixed efficiency points
@@ -150,7 +167,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  if ( !isMC() ) {
+  if ( !isMC() && m_getScaleFactors ) {
     ANA_MSG_WARNING( "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
     m_getScaleFactors = false;
   }
@@ -327,91 +344,127 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   SG::AuxElement::Decorator< std::vector<float> > dec_sfBTag( m_decorSF );
 
   SG::AuxElement::Decorator< char > dec_isBTagOR( m_decor+"OR" );
+
+  // for continuous b-tagging only
+  SG::AuxElement::Decorator< float > dec_Weight( m_decorWeight );
+  SG::AuxElement::Decorator< int > dec_Quantile( m_decorQuantile );
+  SG::AuxElement::Decorator< std::vector<float> > dec_ineffsfBTag( m_decorInefficiencySF );
+
   //
-  // run the btagging decision and get scale factors
+  // run the btagging decision and get scale factors (or get weight and quantile if running continuous)
   //
   unsigned int idx(0);
   for( auto jet_itr : *(inJets)) {
 
-    // Add decorator for decision
-    bool tagged;
-    if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
-      dec_isBTag( *jet_itr ) = 1;
-      tagged = true;
-    }
-    else {
-      dec_isBTag( *jet_itr ) = 0;
-      tagged = false;
-    }
+    bool tagged = true; // for continuous b-tagging will save Scale Factor and InefficiencyScaleFactor
+    if(!m_useContinuous){// get tagging decision
 
-    // Add pT-dependent b-tag decision decorator (intended for use in OR)
-    if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
-	&& m_BJetSelectTool_handle->accept( *jet_itr ) ) {
-      dec_isBTagOR( *jet_itr ) = 1;
-    }
-    else {
-      dec_isBTagOR( *jet_itr ) = 0;
+      ANA_MSG_DEBUG(" Getting tagging decision ");
+
+      // Add decorator for decision
+      if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
+        dec_isBTag( *jet_itr ) = 1;
+        tagged = true;
+      }
+      else {
+        dec_isBTag( *jet_itr ) = 0;
+        tagged = false;
+      }
+
+      // Add pT-dependent b-tag decision decorator (intended for use in OR)
+      if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
+          && m_BJetSelectTool_handle->accept( *jet_itr ) ) {
+        dec_isBTagOR( *jet_itr ) = 1;
+      }
+      else {
+        dec_isBTagOR( *jet_itr ) = 0;
+      }
+
+    } else { // continuous b-tagging
+
+      ANA_MSG_DEBUG(" Getting TaggerWeight and Quantile");
+
+      double tagWeight;
+      if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok ){
+        ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
+        return EL::StatusCode::FAILURE;
+      }
+      int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
+      ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
+      ANA_MSG_DEBUG( "quantile: " << quantile );
+      dec_Weight( *jet_itr)    = tagWeight;
+      dec_Quantile( *jet_itr ) = quantile;
+
     }
 
     // Create Scale Factor aux for all jets
     std::vector<float> sfVec;
+    std::vector<float> ineffsfVec;
 
     if(m_getScaleFactors) { // loop over available systematics
       for(const auto& syst_it : m_systList) {
-	//  If not nominal input jet collection, dont calculate systematics
-	if ( !doNominal ) {
-	  if( syst_it.name() != "" ) { // if not nominal btag decision
-	    ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
-	    continue;
-	  }
-	}
+        //  If not nominal input jet collection, dont calculate systematics
+        if ( !doNominal ) {
+          if( syst_it.name() != "" ) { // if not nominal btag decision
+            ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
+            continue;
+          }
+        }
 
-	// configure tool with syst variation
-	if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
-	  ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
-	  return EL::StatusCode::FAILURE;
-	}
-	ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
+        // configure tool with syst variation
+        if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
+          ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
+          return EL::StatusCode::FAILURE;
+        }
+        ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
-	// get the scale factor
-	float SF(-1.0);
-	CP::CorrectionCode BJetEffCode;
-	// if passes cut take the efficiency scale factor
-	// if failed cut take the inefficiency scale factor
-	if( tagged ) {
-	  BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-	} else {
-	  BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-	}
-	if (BJetEffCode == CP::CorrectionCode::Error) {
-	  ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
-	  return EL::StatusCode::FAILURE;
-	} else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
-	  ANA_MSG_DEBUG( "Jet is out of validity range");
-	}
+        // get the scale factor
+        float SF(-1.0);
+        float inefficiencySF(-1.0); // only for continuous b-tagging
+        CP::CorrectionCode BJetEffCode;
+        CP::CorrectionCode BJetIneEffCode = CP::CorrectionCode::Ok;
+        // if passes cut take the efficiency scale factor
+        // if failed cut take the inefficiency scale factor
+	// for continuous b-tagging save both
+        if( tagged ) {
+          BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+	  if(m_useContinuous) BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
+        } else {
+          BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+        }
+        if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error) {
+          ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
+          return EL::StatusCode::FAILURE;
+        } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
+          ANA_MSG_DEBUG( "Jet is out of validity range");
+        }
 
-	// Add it to vector
-	sfVec.push_back(SF);
+        // Add it to vector
+        sfVec.push_back(SF);
+	if(m_useContinuous) ineffsfVec.push_back(inefficiencySF);
 
-	ANA_MSG_DEBUG( "===>>>");
-	ANA_MSG_DEBUG( " ");
-	ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
-	ANA_MSG_DEBUG( " ");
-	ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
-	ANA_MSG_DEBUG( " ");
-	ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-	ANA_MSG_DEBUG( " ");
-	ANA_MSG_DEBUG( "BTag SF: " << SF);
-	ANA_MSG_DEBUG( "--------------------------------------");
+        ANA_MSG_DEBUG( "===>>>");
+        ANA_MSG_DEBUG( " ");
+        ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
+        ANA_MSG_DEBUG( " ");
+        ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
+        ANA_MSG_DEBUG( " ");
+        ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+        ANA_MSG_DEBUG( " ");
+        ANA_MSG_DEBUG( "BTag SF: " << SF);
+        ANA_MSG_DEBUG( "--------------------------------------");
       }
     }
     else { // no scale factors available, set to 1.
       sfVec.push_back(1.);
+      if(m_useContinuous) ineffsfVec.push_back(1.);
     }
 
     // save scale factors
     idx++;
     dec_sfBTag( *jet_itr ) = sfVec;
+    if(m_useContinuous) dec_ineffsfBTag( *jet_itr ) = ineffsfVec;
+
   }
 
   //
