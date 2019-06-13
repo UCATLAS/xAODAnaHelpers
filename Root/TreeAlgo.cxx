@@ -266,6 +266,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
     // tell the tree to go into the file
     outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
+    if(m_autoFlush != 0) outTree->SetAutoFlush(m_autoFlush);
     // choose if want to add tree to same directory as ouput histograms
     if ( m_outHistDir ) {
       if(m_trees.size() > 1) ANA_MSG_WARNING( "You're running systematics! You may find issues in writing all of the output TTrees to the output histogram file... Set `m_outHistDir = false` if you run into issues!");

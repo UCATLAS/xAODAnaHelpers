@@ -71,6 +71,9 @@ public:
   /// @brief unit conversion from MeV, default is GeV
   float m_units = 1e3;
 
+  /// @brief Set to a large negative number, such as -1000000, to ensure that the tree flushes memory after a reasonable amount of time. Otherwise, jobs with a lot of systematics use too much memory.
+  int m_autoFlush = 0;
+
 protected:
   std::vector<std::string> m_jetDetails; //!
   std::vector<std::string> m_trigJetDetails; //!
