@@ -413,7 +413,7 @@ namespace HelperClasses {
         m_rapidity       rapidity       exact
         m_clean          clean          exact
         m_cleanLight     cleanLight     exact
-        m_cleanNoSumm    cleanNoSumm    exact
+        m_cleanTrig      cleanTrig      exact
         m_energy         energy         exact
         m_energyLight    energyLight    exact
         m_scales         scales         exact
@@ -487,7 +487,7 @@ namespace HelperClasses {
     bool m_rapidity;
     bool m_clean;
     bool m_cleanLight;
-    bool m_cleanNoSumm;
+    bool m_cleanTrig;
     bool m_energy;
     bool m_energyLight;
     bool m_scales;
