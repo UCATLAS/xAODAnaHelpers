@@ -2669,9 +2669,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         
         static SG::AuxElement::ConstAccessor<int> clean_passTightBadUgly ("clean_passTightBadUgly");
         safeFill<int, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
-
-        static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTriggerUgly ("clean_passLooseBadTriggerUgly");
-        safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTriggerUgly, m_clean_passLooseBadTriggerUgly, -999);
       }
       else {
         static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTriggerUgly ("clean_passLooseBadTriggerUgly");
