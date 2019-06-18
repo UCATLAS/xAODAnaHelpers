@@ -518,7 +518,7 @@ EL::StatusCode JetCalibrator :: execute ()
       // decorate with cleaning decision
       for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
 
-        static SG::AuxElement::Decorator< char > isCleanDecor( "cleanJet" );
+        static SG::AuxElement::Decorator< int > isCleanDecor( "cleanJet" );
         const xAOD::Jet* jetToClean = jet_itr;
 
         if(m_cleanParent){
@@ -534,7 +534,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
         if( m_saveAllCleanDecisions ){
           for(unsigned int i=0; i < m_AllJetCleaningTool_handles.size() ; ++i){
-            jet_itr->auxdata< char >(("clean_pass"+m_decisionNames.at(i)).c_str()) = m_AllJetCleaningTool_handles.at(i)->keep(*jetToClean);
+            jet_itr->auxdata< int >(("clean_pass"+m_decisionNames.at(i)).c_str()) = m_AllJetCleaningTool_handles.at(i)->keep(*jetToClean);
           }
         }
       } //end cleaning decision

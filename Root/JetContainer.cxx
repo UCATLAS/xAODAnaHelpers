@@ -2612,29 +2612,29 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       safeFill<float, float, xAOD::Jet>(jet, leadClusSecondR, m_LeadingClusterSecondR, -999);
 
       if(!m_infoSwitch.m_cleanTrig) {
-        static SG::AuxElement::ConstAccessor<char> clean_passLooseBadUgly ("clean_passLooseBadUgly");
-        safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
+        static SG::AuxElement::ConstAccessor<int> clean_passLooseBadUgly ("clean_passLooseBadUgly");
+        safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
         
-        static SG::AuxElement::ConstAccessor<char> clean_passTightBadUgly ("clean_passTightBadUgly");
-        safeFill<char, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
+        static SG::AuxElement::ConstAccessor<int> clean_passTightBadUgly ("clean_passTightBadUgly");
+        safeFill<int, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
       }
       else {
-        static SG::AuxElement::ConstAccessor<char> clean_passLooseBadTriggerUgly ("clean_passLooseBadTriggerUgly");
-        safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadTriggerUgly, m_clean_passLooseBadTriggerUgly, -999);
+        static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTriggerUgly ("clean_passLooseBadTriggerUgly");
+        safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTriggerUgly, m_clean_passLooseBadTriggerUgly, -999);
       }
       
     }
 
     if(!m_infoSwitch.m_cleanTrig) {
-      static SG::AuxElement::ConstAccessor<char> clean_passLooseBad ("clean_passLooseBad");
-      safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
+      static SG::AuxElement::ConstAccessor<int> clean_passLooseBad ("clean_passLooseBad");
+      safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
 
-      static SG::AuxElement::ConstAccessor<char> clean_passTightBad ("clean_passTightBad");
-      safeFill<char, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
+      static SG::AuxElement::ConstAccessor<int> clean_passTightBad ("clean_passTightBad");
+      safeFill<int, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
     }
     else {
-      static SG::AuxElement::ConstAccessor<char> clean_passLooseBadTrigger ("clean_passLooseBadTrigger");
-      safeFill<char, int, xAOD::Jet>(jet, clean_passLooseBadTrigger, m_clean_passLooseBadTrigger, -999);
+      static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTrigger ("clean_passLooseBadTrigger");
+      safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTrigger, m_clean_passLooseBadTrigger, -999);
     }
 
   } // clean
