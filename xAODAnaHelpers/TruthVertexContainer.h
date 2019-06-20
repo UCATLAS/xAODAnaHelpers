@@ -1,5 +1,5 @@
-#ifndef EJsAnalysis_TruthVertexContainer_H
-#define EJsAnalysis_TruthVertexContainer_H
+#ifndef xAODAnaHelpers_TruthVertexContainer_H
+#define xAODAnaHelpers_TruthVertexContainer_H
 
 /* TruthVertexContainer is the truth-vertex-specific derived class
    of the VertexContainer base class, responsible for handling truth vertex
@@ -14,12 +14,12 @@
 
 #include <xAODTruth/TruthVertex.h>
 
-#include "EJsAnalysis/VertexContainer.h"
-#include "EJsAnalysis/EJsHelperClasses.h"
+#include "xAODAnaHelpers/VertexContainer.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 
-namespace EJs {
+namespace xAH {
 
-  class TruthVertexContainer : public VertexContainer < EJsHelperClasses::TruthVertexInfoSwitch >
+  class TruthVertexContainer : public VertexContainer < HelperClasses::TruthVertexInfoSwitch >
   {
   public:
     TruthVertexContainer ( const std::string& name = "truthVtx", const std::string& detailStr = "", float units = 1e3,
@@ -133,6 +133,6 @@ namespace EJs {
     
   };
   
-} // EJs
+} // xAH
 
-#endif // EJsAnalysis_TruthVertexContainer_H
+#endif // xAODAnaHelpers_TruthVertexContainer_H

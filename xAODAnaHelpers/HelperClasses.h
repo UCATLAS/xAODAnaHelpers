@@ -699,6 +699,39 @@ namespace HelperClasses {
     void initialize();
   };
 
+
+  class SecondaryVertexInfoSwitch : public HelperClasses::InfoSwitch
+  {
+  public:
+    bool m_tracks;
+    bool m_jets;
+    bool m_truth;
+    bool m_close;
+    bool m_linked;
+    bool m_jetMatched;
+    
+    SecondaryVertexInfoSwitch ( const std::string configStr ) : HelperClasses::InfoSwitch( configStr ) { initialize(); };
+    virtual ~SecondaryVertexInfoSwitch() {}
+    
+  protected:
+    void initialize();
+  };
+
+  
+  class TruthVertexInfoSwitch : public HelperClasses::InfoSwitch
+  {
+  public:
+    bool m_isMatched;
+    bool m_recoVerts;
+    bool m_jets;
+    
+    TruthVertexInfoSwitch ( const std::string configStr ) : HelperClasses::InfoSwitch( configStr ) { initialize(); };
+    virtual ~TruthVertexInfoSwitch() {}
+
+  protected:
+    void initialize();
+  };
+
 } // close namespace HelperClasses
 
 

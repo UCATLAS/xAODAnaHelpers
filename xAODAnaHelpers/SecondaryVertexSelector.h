@@ -1,5 +1,5 @@
-#ifndef EJsAnalysis_SecondaryVertexSelector_H
-#define EJsAnalysis_SecondaryVertexSelector_H
+#ifndef xAODAnaHelpers_SecondaryVertexSelector_H
+#define xAODAnaHelpers_SecondaryVertexSelector_H
 
 /* SecondaryVertexSelector is the algorithm responsible for
    selecting secondary vertices (primarily using the VsiBonsai toolkit);
@@ -11,7 +11,7 @@
 #include <xAODTracking/Vertex.h>
 
 #include <xAODAnaHelpers/Algorithm.h>
-#include "EJsAnalysis/VsiBonsaiTool.h"
+#include "xAODAnaHelpers/VsiBonsaiTool.h"
 
 
 class SecondaryVertexSelector : public xAH::Algorithm
@@ -84,4 +84,4 @@ class SecondaryVertexSelector : public xAH::Algorithm
   ClassDef ( SecondaryVertexSelector, 1 );
 };
 
-#endif // EJsAnalysis_SecondaryVertexSelector_H
+#endif // xAODAnaHelpers_SecondaryVertexSelector_H

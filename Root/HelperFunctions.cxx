@@ -560,3 +560,134 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
   else if(tmp_name.Contains("SHERPA")) return Sherpa22;
   else return Unknown;
 }
+
+void HelperFunctions::countReconstructibleDescendentParticles(const xAOD::TruthVertex* signalTruthVertex,
+                                               std::set<const xAOD::TruthParticle*>& set,
+                                               const bool doRecursive,
+                                               const double distanceCutoff,
+                                               const double pTthr)
+{
+    
+  if( signalTruthVertex->perp() > 563. )       return;
+  if( fabs( signalTruthVertex->z() ) > 2720. ) return;
+
+  for( size_t itrk=0; itrk<signalTruthVertex->nOutgoingParticles(); itrk++) {
+    
+    const auto* particle = signalTruthVertex->outgoingParticle( itrk );
+    
+    if( !particle ) continue;
+    
+    // Recursively add descendents
+    if( particle->hasDecayVtx() ) {
+      
+      TVector3 decayPos( particle->decayVtx()->x(), particle->decayVtx()->y(), particle->decayVtx()->z() );
+      TVector3 prodPos ( particle->prodVtx()->x(),  particle->prodVtx()->y(),  particle->prodVtx()->z()  );
+      
+      auto isInside  = []( TVector3& v ) { return ( v.Perp() < 300. && fabs( v.z() ) < 1500. ); };
+      auto isOutside = []( TVector3& v ) { return ( v.Perp() > 563. || fabs( v.z() ) > 2720. ); };
+      
+      const auto distance = (decayPos - prodPos).Mag();
+      
+      if( distance < distanceCutoff ) {
+        
+        if( doRecursive ) HelperFunctions::countReconstructibleDescendentParticles( particle->decayVtx(), set, doRecursive, distanceCutoff, pTthr );
+        
+      }
+      
+      else if( isInside ( prodPos  )  &&
+               isOutside( decayPos )  &&
+               particle->isCharged()  &&
+               particle->pt() > pTthr    ) {
+        
+        set.emplace( particle );
+          
+      } else if( particle->isElectron() || particle->isMuon() ) {
+        
+        set.emplace( particle );
+          
+      }
+      
+    } else {
+      
+      if( !(particle->isCharged()  && particle->pt() > pTthr) ) continue;
+      set.emplace( particle );
+      
+    }
+  }
+  
+  return;
+}
+
+void HelperFunctions::getFilteredTracks ( const xAOD::Vertex* vtx, std::vector<const xAOD::TrackParticle*>& filtTrks )
+{
+  for ( size_t itrk = 0; itrk != vtx->nTrackParticles(); ++itrk ) {
+    const auto* trk = vtx->trackParticle(itrk);
+    bool trk_isFilt = true;
+    if ( trk->isAvailable<char>("isFiltered") ) trk_isFilt = trk->auxdataConst<char>("isFiltered");
+    if ( trk_isFilt )                           filtTrks.push_back( trk );
+  }
+}
+
+  // from Reconstruction/Jet/JetSimTools/Root/JetTruthParticleSelectorTool.cxx
+bool HelperFunctions::isStable ( const xAOD::TruthParticle* tp )
+{
+  if ( tp->barcode() >= 200000 ) return false; // G4 particle
+  if ( tp->absPdgId() == 21 && tp->p4().E() == 0 ) return false; // zero-energy gluon
+  return ( ( tp->status() % 1000 == 1 ) || // fully stable
+       ( tp->status() % 1000 == 2 && tp->hasDecayVtx() && tp->decayVtx() != NULL && tp->decayVtx()->barcode() < -200000 ) ); // gen-stable
+}
+
+// from Reconstruction/Jet/JetSimTools/Root/JetTruthParticleSelectorTool.cxx
+bool HelperFunctions::isInteracting ( const xAOD::TruthParticle* tp )
+{
+  if ( !isStable( tp ) ) return false;
+  const int pid = tp->absPdgId();
+  if ( pid == 12 || pid == 14 || pid == 16 ) return false; // neutrinos
+  if ( ( tp->status() % 1000 == 1 ) &&
+   ( pid == 1000022 || pid == 1000024 || pid == 5100022 || pid == 39 || pid == 1000039 || pid == 5000039 ) ) return false; // susy
+  return true;
+}
+
+bool HelperFunctions::isReconstructible ( const xAOD::TruthParticle* tp )
+{
+  // FILL IN...
+  return true;
+}
+
+bool HelperFunctions::isDark ( const xAOD::TruthParticle* tp )
+{
+  return ( tp->absPdgId() > 4.9e6 && tp->absPdgId() < 5.0e6 );
+}
+
+const xAOD::TruthParticle* HelperFunctions::getTruthPart ( const xAOD::TrackParticle* trk )
+{
+  const xAOD::TruthParticle* tp = 0;
+  static SG::AuxElement::ConstAccessor<HelperFunctions::TruthParticleLink_t> tpAccess("truthParticleLink");
+  if ( !tpAccess.isAvailable( *trk ) ) return tp;
+  try {
+    const HelperFunctions::TruthParticleLink_t& tpLink = tpAccess( *trk );
+    tp = *tpLink;
+  } catch(...) {}
+  return tp;
+}
+
+const xAOD::TruthParticle* HelperFunctions::getParentTruthPart ( const xAOD::TrackParticle* trk )
+{
+  const xAOD::TruthParticle* tp = getTruthPart( trk );
+  if ( !tp ) return nullptr;
+  return tp->parent(0);
+}
+
+const xAOD::TruthVertex* HelperFunctions::getProdVtx ( const xAOD::TrackParticle* trk )
+{
+  const xAOD::TruthParticle* tp = getTruthPart( trk );
+  if ( !tp ) return nullptr;
+  return tp->prodVtx();
+}
+
+const xAOD::TruthVertex* HelperFunctions::getParentProdVtx ( const xAOD::TrackParticle* trk )
+{
+  const xAOD::TruthParticle* tp = getParentTruthPart( trk );
+  if ( !tp ) return nullptr;
+  return tp->prodVtx();
+}

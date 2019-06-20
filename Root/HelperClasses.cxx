@@ -516,4 +516,19 @@ namespace HelperClasses{
     m_softTrk   = has_exact("softTrk")  || has_exact("all");
   }
 
+  void SecondaryVertexInfoSwitch::initialize() {
+    m_tracks     = has_exact( "tracks"     );
+    m_jets       = has_exact( "jets"       );
+    m_truth      = has_exact( "truth"      );
+    m_close      = has_exact( "close"      );
+    m_linked     = has_exact( "linked"     );
+    m_jetMatched = has_exact( "jetMatched" );
+  }
+
+  void TruthVertexInfoSwitch::initialize() {
+    m_isMatched = has_exact( "isMatched" );
+    m_recoVerts = has_exact( "recoVerts" );
+    m_jets      = has_exact( "jets"      );
+  }
+
 } // close namespace HelperClasses

@@ -5,14 +5,14 @@
 #include <xAODTracking/VertexContainer.h>
 #include <xAODTruth/TruthVertexContainer.h>
 
-#include "EJsAnalysis/SecondaryVertexContainer.h"
-#include "EJsAnalysis/VsiBonsaiTool.h"
-#include "EJsAnalysis/EJsHelperFunctions.h"
+#include "xAODAnaHelpers/SecondaryVertexContainer.h"
+#include "xAODAnaHelpers/VsiBonsaiTool.h"
+#include "xAODAnaHelpers/HelperFunctions.h"
 
-using namespace EJs;
+using namespace xAH;
 
 SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, const std::string& detailStr, float units,
-						       bool mc, bool emtopo, bool pflow ) :
+                   bool mc, bool emtopo, bool pflow ) :
   VertexContainer ( name, detailStr, units, mc )
 {
   m_doEMTopo = emtopo;
@@ -101,10 +101,10 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
       m_trk_truthBarcode                    = new std::vector<std::vector<int>>;
       m_trk_truthPdgId                      = new std::vector<std::vector<int>>;
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_close )
-	m_trk_truthPointsToClosestTV        = new std::vector<std::vector<uint8_t>>;
+  m_trk_truthPointsToClosestTV        = new std::vector<std::vector<uint8_t>>;
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
-	m_trk_truthPointsToMaxlinkTV        = new std::vector<std::vector<uint8_t>>;
-	m_trk_truthParentPointsToMaxlinkPTV = new std::vector<std::vector<uint8_t>>;
+  m_trk_truthPointsToMaxlinkTV        = new std::vector<std::vector<uint8_t>>;
+  m_trk_truthParentPointsToMaxlinkPTV = new std::vector<std::vector<uint8_t>>;
       }
     }
   }
@@ -383,10 +383,10 @@ SecondaryVertexContainer :: ~SecondaryVertexContainer ()
       delete m_trk_truthBarcode;
       delete m_trk_truthPdgId;
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_close )
-	delete m_trk_truthPointsToClosestTV;
+        delete m_trk_truthPointsToClosestTV;
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
-	delete m_trk_truthPointsToMaxlinkTV;
-	delete m_trk_truthParentPointsToMaxlinkPTV;
+        delete m_trk_truthPointsToMaxlinkTV;
+        delete m_trk_truthParentPointsToMaxlinkPTV;
       }
     }
   }
@@ -666,10 +666,10 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
       connectBranch<std::vector<int>>       ( tree, "trk_truthBarcode",                  &m_trk_truthBarcode                  );
       connectBranch<std::vector<int>>       ( tree, "trk_truthPdgId",                    &m_trk_truthPdgId                    );
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_close )
-	connectBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToClosestTV",        &m_trk_truthPointsToClosestTV        );
+        connectBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToClosestTV",        &m_trk_truthPointsToClosestTV        );
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
-	connectBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToMaxlinkTV",        &m_trk_truthPointsToMaxlinkTV        );
-	connectBranch<std::vector<uint8_t>> ( tree, "trk_truthParentPointsToMaxlinkPTV", &m_trk_truthParentPointsToMaxlinkPTV );
+        connectBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToMaxlinkTV",        &m_trk_truthPointsToMaxlinkTV        );
+        connectBranch<std::vector<uint8_t>> ( tree, "trk_truthParentPointsToMaxlinkPTV", &m_trk_truthParentPointsToMaxlinkPTV );
       }
     }
   }
@@ -865,7 +865,7 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
 
 void SecondaryVertexContainer :: setBranches ( TTree* tree )
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::setBranches()", "setting branches" );
+  if ( m_debug ) Info( "SecondaryVertexContainer::setBranches()", "setting branches" );
   
   VertexContainer::setBranches ( tree );
 
@@ -947,10 +947,10 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
       setBranch<std::vector<int>>       ( tree, "trk_truthBarcode",                  m_trk_truthBarcode                  );
       setBranch<std::vector<int>>       ( tree, "trk_truthPdgId",                    m_trk_truthPdgId                    );
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_close )
-	setBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToClosestTV",        m_trk_truthPointsToClosestTV        );
+        setBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToClosestTV",        m_trk_truthPointsToClosestTV        );
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
-	setBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToMaxlinkTV",        m_trk_truthPointsToMaxlinkTV        );
-	setBranch<std::vector<uint8_t>> ( tree, "trk_truthParentPointsToMaxlinkPTV", m_trk_truthParentPointsToMaxlinkPTV );
+        setBranch<std::vector<uint8_t>> ( tree, "trk_truthPointsToMaxlinkTV",        m_trk_truthPointsToMaxlinkTV        );
+        setBranch<std::vector<uint8_t>> ( tree, "trk_truthParentPointsToMaxlinkPTV", m_trk_truthParentPointsToMaxlinkPTV );
       }
     }
   }
@@ -1231,10 +1231,10 @@ void SecondaryVertexContainer :: clear ()
       m_trk_truthBarcode                    ->clear();
       m_trk_truthPdgId                      ->clear();
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_close )
-	m_trk_truthPointsToClosestTV        ->clear();
+        m_trk_truthPointsToClosestTV        ->clear();
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
-	m_trk_truthPointsToMaxlinkTV        ->clear();
-	m_trk_truthParentPointsToMaxlinkPTV ->clear();
+        m_trk_truthPointsToMaxlinkTV        ->clear();
+        m_trk_truthParentPointsToMaxlinkPTV ->clear();
       }
     }
   }
@@ -1435,7 +1435,7 @@ void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVt
   
   // get vector of filtered tracks
   std::vector< const xAOD::TrackParticle* > filteredTracks;
-  EJsHelper::getFilteredTracks( secVtx, filteredTracks );
+  HelperFunctions::getFilteredTracks( secVtx, filteredTracks );
   
   if(filteredTracks.size() < 2) {
     return;
@@ -1446,7 +1446,6 @@ void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVt
 
   // // check if vertex passed selections ...
   bool pass_sel = secVtx->auxdataConst<char>("passSel");
-  std::cout << "SECONDARY VERTEX: passed selections ?? " << pass_sel << std::endl;
 
   // re-calculate vertex kinematic variables using filtered tracks
   const TLorentzVector& sumP4                  = VsiBonsai::sumP4       ( filteredTracks );
@@ -1721,11 +1720,11 @@ void SecondaryVertexContainer :: recordTracks ( const std::vector<const xAOD::Tr
     trk_radiusOfFirstHit   .push_back( trk->radiusOfFirstHit()         );
 
     const xAOD::TruthParticle* truthPart = 0;
-    static SG::AuxElement::ConstAccessor<EJsHelper::TruthParticleLink_t> truthAccess("truthParticleLink");
+    static SG::AuxElement::ConstAccessor<HelperFunctions::TruthParticleLink_t> truthAccess("truthParticleLink");
     if ( truthAccess.isAvailable( *trk ) ) {
       try {
-	const EJsHelper::TruthParticleLink_t& truthPartLink = truthAccess( *trk );
-	truthPart = *truthPartLink;
+        const HelperFunctions::TruthParticleLink_t& truthPartLink = truthAccess( *trk );
+        truthPart = *truthPartLink;
       } catch(...) {}
     }
     if ( truthPart ) {
@@ -1797,7 +1796,7 @@ void SecondaryVertexContainer :: recordTracks ( const std::vector<const xAOD::Tr
 
 
 void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
-						     const std::vector<const xAOD::TrackParticle*>& filteredTracks )
+                 const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
   if ( m_debug ) Info( "EJs::SecondaryVertexContainer::processCloseTruth()", "filling close truth vertex branches" );
 
@@ -1807,13 +1806,13 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
   std::vector<int>     close_barcode;
   
   // access close truth vertex links
-  static SG::AuxElement::ConstAccessor<EJsHelper::TruthVertexLinkVector_t> closeTVAccess("closeMatchedTruthVertexLinks");
+  static SG::AuxElement::ConstAccessor<HelperFunctions::TruthVertexLinkVector_t> closeTVAccess("closeMatchedTruthVertexLinks");
   if ( closeTVAccess.isAvailable( *secVtx ) ) {
-    const EJsHelper::TruthVertexLinkVector_t closeTVLinks = closeTVAccess( *secVtx );
+    const HelperFunctions::TruthVertexLinkVector_t closeTVLinks = closeTVAccess( *secVtx );
     for ( const auto& closelink : closeTVLinks ) {
       if ( !closelink.isValid() ) continue;
-      close_isPid    .push_back( EJsHelper::selectDarkPion(        (*closelink) ) );
-      close_isOffPid .push_back( EJsHelper::selectOffdiagDarkPion( (*closelink) ) );
+//      close_isPid    .push_back( HelperFunctions::selectDarkPion(        (*closelink) ) );
+//      close_isOffPid .push_back( HelperFunctions::selectOffdiagDarkPion( (*closelink) ) );
       close_ID       .push_back( AUXDYN( (*closelink), int, "ID" )                );
       close_barcode  .push_back( (*closelink)->barcode()                          );
     }
@@ -1828,10 +1827,10 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
   
   // access closest truth vertex link
   const xAOD::TruthVertex* closestTruthVertex = 0;
-  static SG::AuxElement::ConstAccessor<EJsHelper::TruthVertexLink_t> closestTVAccess("closestTruthVertexLink");
+  static SG::AuxElement::ConstAccessor<HelperFunctions::TruthVertexLink_t> closestTVAccess("closestTruthVertexLink");
   if ( closestTVAccess.isAvailable( *secVtx ) ) {
     try {
-      const EJsHelper::TruthVertexLink_t& closestTVLink = closestTVAccess( *secVtx );
+      const HelperFunctions::TruthVertexLink_t& closestTVLink = closestTVAccess( *secVtx );
       closestTruthVertex = *closestTVLink;
     } catch(...) {}
   }
@@ -1885,8 +1884,7 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
   std::vector<uint8_t> trk_truthPointsToTV;
 
   if ( closestTruthVertex ) {
-    isPid    = EJsHelper::selectLLP        ( closestTruthVertex );
-    isOffPid = EJsHelper::selectOffdiagDarkPion ( closestTruthVertex );
+//    isLLP    = HelperFunctions::selectLLP        ( closestTruthVertex, LLPpid );
 
     ID      = AUXDYN( closestTruthVertex, int, "ID" );
     x       = closestTruthVertex->x();
@@ -1945,26 +1943,26 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
       int     recoID      = AlgConsts::invalidUnsigned;
       uint8_t recoIsSel   = AlgConsts::invalidUnsigned;
       uint8_t recoIsAssoc = AlgConsts::invalidUnsigned;
-      static SG::AuxElement::ConstAccessor<EJsHelper::TrackLink_t> recoAccess("trackLink");
+      static SG::AuxElement::ConstAccessor<HelperFunctions::TrackLink_t> recoAccess("trackLink");
       if ( recoAccess.isAvailable( *outP ) ) {
-	try {
-	  const EJsHelper::TrackLink_t& recoLink = recoAccess( *outP );
-	  recoID      = AUXDYN( (*recoLink), int,  "ID"            );
-	  recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
-	  recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
-	} catch(...) {}
+  try {
+    const HelperFunctions::TrackLink_t& recoLink = recoAccess( *outP );
+    recoID      = AUXDYN( (*recoLink), int,  "ID"            );
+    recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
+    recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
+  } catch(...) {}
       }
       outP_recoID            .push_back( recoID                                );
       outP_recoIsSelected    .push_back( recoIsSel                             );
       outP_recoIsAssociated  .push_back( recoIsAssoc                           );
-      outP_isStable          .push_back( EJsHelper::isStable          ( outP ) );
-      outP_isInteracting     .push_back( EJsHelper::isInteracting     ( outP ) );
-      outP_isReconstructible .push_back( EJsHelper::isReconstructible ( outP ) );
-      outP_isDark            .push_back( EJsHelper::isDark            ( outP ) );
+      outP_isStable          .push_back( HelperFunctions::isStable          ( outP ) );
+      outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP ) );
+      outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP ) );
+      outP_isDark            .push_back( HelperFunctions::isDark            ( outP ) );
     }
 
     for ( const auto& trk : filteredTracks ) {
-      const auto* truthProdVtx = EJsHelper::getProdVtx( trk );
+      const auto* truthProdVtx = HelperFunctions::getProdVtx( trk );
       bool truthPointsToTV = false;
       if ( truthProdVtx ) truthPointsToTV = ( closestTruthVertex == truthProdVtx );
       trk_truthPointsToTV .push_back( truthPointsToTV );
@@ -2026,7 +2024,7 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
 
 
 void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx,
-						      const std::vector<const xAOD::TrackParticle*>& filteredTracks )
+                  const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
   if ( m_debug ) Info( "EJs::SecondaryVertexContainer::processLinkedTruth()", "filling linked truth vertex branches" );
 
@@ -2036,13 +2034,13 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   std::vector<int>     link_barcode;
   
   // access linked truth vertex links
-  static SG::AuxElement::ConstAccessor<EJsHelper::TruthVertexLinkVector_t> linkTVAccess("trackLinkedTruthVertexLinks");
+  static SG::AuxElement::ConstAccessor<HelperFunctions::TruthVertexLinkVector_t> linkTVAccess("trackLinkedTruthVertexLinks");
   if ( linkTVAccess.isAvailable( *secVtx ) ) {
-    const EJsHelper::TruthVertexLinkVector_t linkTVLinks = linkTVAccess( *secVtx );
+    const HelperFunctions::TruthVertexLinkVector_t linkTVLinks = linkTVAccess( *secVtx );
     for ( const auto& linklink : linkTVLinks ) {
       if ( !linklink.isValid() ) continue;
-      link_isPid    .push_back( EJsHelper::selectLLP(        (*linklink) ) );
-      link_isOffPid .push_back( EJsHelper::selectOffdiagDarkPion( (*linklink) ) );
+//      link_isPid    .push_back( HelperFunctions::selectLLP(        (*linklink) ) );
+//      link_isOffPid .push_back( HelperFunctions::selectOffdiagDarkPion( (*linklink) ) );
       link_ID       .push_back( AUXDYN( (*linklink), int, "ID" )                );
       link_barcode  .push_back( (*linklink)->barcode()                          );
     }
@@ -2057,10 +2055,10 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
 
   // access max-linked truth vertex link
   const xAOD::TruthVertex* maxlinkedTruthVertex = 0;
-  static SG::AuxElement::ConstAccessor<EJsHelper::TruthVertexLink_t> maxlinkedTVAccess("maxlinkedTruthVertexLink");
+  static SG::AuxElement::ConstAccessor<HelperFunctions::TruthVertexLink_t> maxlinkedTVAccess("maxlinkedTruthVertexLink");
   if ( maxlinkedTVAccess.isAvailable( *secVtx ) ) {
     try {
-      const EJsHelper::TruthVertexLink_t& maxlinkedTVLink = maxlinkedTVAccess( *secVtx );
+      const HelperFunctions::TruthVertexLink_t& maxlinkedTVLink = maxlinkedTVAccess( *secVtx );
       maxlinkedTruthVertex = *maxlinkedTVLink;
     } catch(...) {}
   }
@@ -2114,8 +2112,7 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   std::vector<uint8_t> trk_truthPointsToTV;
 
   if ( maxlinkedTruthVertex ) {
-    tv_isPid    = EJsHelper::selectLLP        ( maxlinkedTruthVertex );
-    tv_isOffPid = EJsHelper::selectOffdiagDarkPion ( maxlinkedTruthVertex );
+//    tv_isPid    = HelperFunctions::selectLLP        ( maxlinkedTruthVertex, LLPpid );
 
     tv_ID      = AUXDYN( maxlinkedTruthVertex, int, "ID" );
     tv_x       = maxlinkedTruthVertex->x();
@@ -2174,26 +2171,26 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
       int     recoID      = AlgConsts::invalidUnsigned;
       uint8_t recoIsSel   = AlgConsts::invalidUnsigned;
       uint8_t recoIsAssoc = AlgConsts::invalidUnsigned;
-      static SG::AuxElement::ConstAccessor<EJsHelper::TrackLink_t> recoAccess("trackLink");
+      static SG::AuxElement::ConstAccessor<HelperFunctions::TrackLink_t> recoAccess("trackLink");
       if ( recoAccess.isAvailable( *outP ) ) {
-	try {
-	  const EJsHelper::TrackLink_t& recoLink = recoAccess( *outP );
-	  recoID      = AUXDYN( (*recoLink), int,  "ID"            );
-	  recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
-	  recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
-	} catch(...) {}
+  try {
+    const HelperFunctions::TrackLink_t& recoLink = recoAccess( *outP );
+    recoID      = AUXDYN( (*recoLink), int,  "ID"            );
+    recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
+    recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
+  } catch(...) {}
       }
       tv_outP_recoID            .push_back( recoID                                );
       tv_outP_recoIsSelected    .push_back( recoIsSel                             );
       tv_outP_recoIsAssociated  .push_back( recoIsAssoc                           );
-      tv_outP_isStable          .push_back( EJsHelper::isStable          ( outP ) );
-      tv_outP_isInteracting     .push_back( EJsHelper::isInteracting     ( outP ) );
-      tv_outP_isReconstructible .push_back( EJsHelper::isReconstructible ( outP ) );
-      tv_outP_isDark            .push_back( EJsHelper::isDark            ( outP ) );
+      tv_outP_isStable          .push_back( HelperFunctions::isStable          ( outP ) );
+      tv_outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP ) );
+      tv_outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP ) );
+      tv_outP_isDark            .push_back( HelperFunctions::isDark            ( outP ) );
     }
 
     for ( const auto& trk : filteredTracks ) {
-      const auto* truthProdVtx = EJsHelper::getProdVtx( trk );
+      const auto* truthProdVtx = HelperFunctions::getProdVtx( trk );
       bool truthPointsToTV = false;
       if ( truthProdVtx ) truthPointsToTV = ( maxlinkedTruthVertex == truthProdVtx );
       trk_truthPointsToTV .push_back( truthPointsToTV );
@@ -2260,13 +2257,13 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   std::vector<int>     linkP_barcode;
   
   // access linked parent truth vertex links
-  static SG::AuxElement::ConstAccessor<EJsHelper::TruthVertexLinkVector_t> linkPTVAccess("trackLinkedParentTruthVertexLinks");
+  static SG::AuxElement::ConstAccessor<HelperFunctions::TruthVertexLinkVector_t> linkPTVAccess("trackLinkedParentTruthVertexLinks");
   if ( linkPTVAccess.isAvailable( *secVtx ) ) {
-    const EJsHelper::TruthVertexLinkVector_t linkPTVLinks = linkPTVAccess( *secVtx );
+    const HelperFunctions::TruthVertexLinkVector_t linkPTVLinks = linkPTVAccess( *secVtx );
     for ( const auto& linkPlink : linkPTVLinks ) {
       if ( !linkPlink.isValid() ) continue;
-      linkP_isPid    .push_back( EJsHelper::selectDarkPion(        (*linkPlink) ) );
-      linkP_isOffPid .push_back( EJsHelper::selectOffdiagDarkPion( (*linkPlink) ) );
+//      linkP_isPid    .push_back( HelperFunctions::selectDarkPion(        (*linkPlink) ) );
+//      linkP_isOffPid .push_back( HelperFunctions::selectOffdiagDarkPion( (*linkPlink) ) );
       linkP_ID       .push_back( AUXDYN( (*linkPlink), int, "ID" )                );
       linkP_barcode  .push_back( (*linkPlink)->barcode()                          );
     }
@@ -2281,10 +2278,10 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
 
   // access max-linked parent truth vertex link
   const xAOD::TruthVertex* maxlinkedParentTruthVertex = 0;
-  static SG::AuxElement::ConstAccessor<EJsHelper::TruthVertexLink_t> maxlinkedPTVAccess("maxlinkedParentTruthVertexLink");
+  static SG::AuxElement::ConstAccessor<HelperFunctions::TruthVertexLink_t> maxlinkedPTVAccess("maxlinkedParentTruthVertexLink");
   if ( maxlinkedPTVAccess.isAvailable( *secVtx ) ) {
     try {
-      const EJsHelper::TruthVertexLink_t& maxlinkedPTVLink = maxlinkedPTVAccess( *secVtx );
+      const HelperFunctions::TruthVertexLink_t& maxlinkedPTVLink = maxlinkedPTVAccess( *secVtx );
       maxlinkedParentTruthVertex = *maxlinkedPTVLink;
     } catch(...) {}
   }
@@ -2338,8 +2335,8 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   std::vector<uint8_t> trk_truthParentPointsToPTV;
 
   if ( maxlinkedParentTruthVertex ) {
-    ptv_isPid    = EJsHelper::selectDarkPion        ( maxlinkedParentTruthVertex );
-    ptv_isOffPid = EJsHelper::selectOffdiagDarkPion ( maxlinkedParentTruthVertex );
+//    ptv_isPid    = HelperFunctions::selectDarkPion        ( maxlinkedParentTruthVertex );
+//    ptv_isOffPid = HelperFunctions::selectOffdiagDarkPion ( maxlinkedParentTruthVertex );
 
     ptv_ID      = AUXDYN( maxlinkedParentTruthVertex, int, "ID" );
     ptv_x       = maxlinkedParentTruthVertex->x();
@@ -2398,26 +2395,26 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
       int     recoID      = AlgConsts::invalidUnsigned;
       uint8_t recoIsSel   = AlgConsts::invalidUnsigned;
       uint8_t recoIsAssoc = AlgConsts::invalidUnsigned;
-      static SG::AuxElement::ConstAccessor<EJsHelper::TrackLink_t> recoAccess("trackLink");
+      static SG::AuxElement::ConstAccessor<HelperFunctions::TrackLink_t> recoAccess("trackLink");
       if ( recoAccess.isAvailable( *outP ) ) {
-	try {
-	  const EJsHelper::TrackLink_t& recoLink = recoAccess( *outP );
-	  recoID      = AUXDYN( (*recoLink), int,  "ID"            );
-	  recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
-	  recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
-	} catch(...) {}
+  try {
+    const HelperFunctions::TrackLink_t& recoLink = recoAccess( *outP );
+    recoID      = AUXDYN( (*recoLink), int,  "ID"            );
+    recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
+    recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
+  } catch(...) {}
       }
       ptv_outP_recoID            .push_back( recoID                                );
       ptv_outP_recoIsSelected    .push_back( recoIsSel                             );
       ptv_outP_recoIsAssociated  .push_back( recoIsAssoc                           );
-      ptv_outP_isStable          .push_back( EJsHelper::isStable          ( outP ) );
-      ptv_outP_isInteracting     .push_back( EJsHelper::isInteracting     ( outP ) );
-      ptv_outP_isReconstructible .push_back( EJsHelper::isReconstructible ( outP ) );
-      ptv_outP_isDark            .push_back( EJsHelper::isDark            ( outP ) );
+      ptv_outP_isStable          .push_back( HelperFunctions::isStable          ( outP ) );
+      ptv_outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP ) );
+      ptv_outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP ) );
+      ptv_outP_isDark            .push_back( HelperFunctions::isDark            ( outP ) );
     }
 
     for ( const auto& trk : filteredTracks ) {
-      const auto* truthParentProdVtx = EJsHelper::getParentProdVtx( trk );
+      const auto* truthParentProdVtx = HelperFunctions::getParentProdVtx( trk );
       bool truthParentPointsToPTV = false;
       if ( truthParentProdVtx ) truthParentPointsToPTV = ( maxlinkedParentTruthVertex == truthParentProdVtx );
       trk_truthParentPointsToPTV .push_back( truthParentPointsToPTV );

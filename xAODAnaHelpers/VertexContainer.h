@@ -1,5 +1,5 @@
-#ifndef EJsAnalysis_VertexContainer_H
-#define EJsAnalysis_VertexContainer_H
+#ifndef xAODAnaHelpers_VertexContainer_H
+#define xAODAnaHelpers_VertexContainer_H
 
 /* VertexContainer is the base class for handling vertex container
    information to be used in making ntuples;
@@ -14,9 +14,9 @@
 
 #include <TTree.h>
 
-#include "EJsAnalysis/EJsHelperClasses.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 
-namespace EJs {
+namespace xAH {
 
   template < class T_INFOSWITCH >
   class VertexContainer
@@ -104,6 +104,6 @@ namespace EJs {
   #define AUXDYNVEC( obj, type, varname ) \
     ( obj->isAvailable<std::vector<type>>(varname) ? obj->auxdataConst<std::vector<type>>(varname) : std::vector<type>() )
 
-} // EJs
+} // xAH
 
-#endif // EJsAnalysis_VertexContainer_H
+#endif // xAODAnaHelpers_VertexContainer_H

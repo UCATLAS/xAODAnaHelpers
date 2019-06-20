@@ -1,5 +1,5 @@
-#ifndef EJsAnalysis_VsiBonsaiTool_H
-#define EJsAnalysis_VsiBonsaiTool_H
+#ifndef xAODAnaHelpers_VsiBonsaiTool_H
+#define xAODAnaHelpers_VsiBonsaiTool_H
 
 /* VsiBonsaiTool is a toolkit developed by Hideyuki Oide to trim spurious tracks from
    and re-calculate kinematic properties of VrtSecInclusive secondary vertices -->
@@ -19,8 +19,9 @@
 #include <xAODTracking/TrackParticle.h>
 #include <xAODTracking/Vertex.h>
 
-#include "EJsAnalysis/AlgConsts.h"
-#include "EJsAnalysis/AnyType.h"
+#include "xAODAnaHelpers/AnyType.h"
+#include "xAODAnaHelpers/AlgConsts.h"
+
 
 class TVector3;
 class TLorentzVector;

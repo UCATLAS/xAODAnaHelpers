@@ -1,5 +1,5 @@
-#ifndef EJsAnalysis_SecondaryVertexContainer_H
-#define EJsAnalysis_SecondaryVertexContainer_H
+#ifndef xAODAnaHelpers_SecondaryVertexContainer_H
+#define xAODAnaHelpers_SecondaryVertexContainer_H
 
 /* SecondaryVertexContainer is the secondary-vertex-specific derived class
    of the VertexContainer base class, responsible for handling VrtSecInclusive DV
@@ -15,12 +15,12 @@
 #include <xAODTracking/TrackParticleContainer.h>
 #include <xAODTracking/VertexContainer.h>
 
-#include "EJsAnalysis/VertexContainer.h"
-#include "EJsAnalysis/EJsHelperClasses.h"
+#include "xAODAnaHelpers/VertexContainer.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 
-namespace EJs {
+namespace xAH {
 
-  class SecondaryVertexContainer : public VertexContainer < EJsHelperClasses::SecondaryVertexInfoSwitch >
+  class SecondaryVertexContainer : public VertexContainer < HelperClasses::SecondaryVertexInfoSwitch >
   {
   public:
     SecondaryVertexContainer ( const std::string& name = "secVtx", const std::string& detailStr = "", float units = 1e3,
@@ -330,6 +330,6 @@ namespace EJs {
 
   };
   
-} // EJs
+} // xAH
 
-#endif // EJsAnalysis_SecondaryVertexContainer_H
+#endif // xAODAnaHelpers_SecondaryVertexContainer_H

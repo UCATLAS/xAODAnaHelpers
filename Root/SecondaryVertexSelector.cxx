@@ -10,7 +10,7 @@
 
 #include <xAODAnaHelpers/HelperFunctions.h>
 
-#include "EJsAnalysis/SecondaryVertexSelector.h"
+#include <xAODAnaHelpers/SecondaryVertexSelector.h>
 #include "TVector3.h"
 
 // needed to distribute algorithm to workers

@@ -55,6 +55,9 @@
 #include <xAODAnaHelpers/Writer.h>
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 
+/* SecVtx */
+#include <xAODAnaHelpers/SecondaryVertexSelector.h>
+
 #ifdef __CINT__
 
 #pragma link off all globals;
@@ -111,5 +114,7 @@
 #pragma link C++ class TauJetMatching+;
 #pragma link C++ class Writer+;
 #pragma link C++ class MessagePrinterAlgo+;
+
+#pragma link C++ class SecondaryVertexSelector+;
 
 #endif

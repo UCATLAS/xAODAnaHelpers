@@ -38,6 +38,11 @@
 // messaging includes
 #include <AsgTools/MsgStream.h>
 
+// truth includes
+#include <xAODTracking/TrackParticleContainer.h>
+#include <xAODTruth/TruthParticleContainer.h>
+#include <xAODTruth/TruthVertexContainer.h>
+
 // Functions that need to have a dictionary built. PyROOT does not
 // seem to like the HelperFunctions namespace for some reason.
 namespace xAH {
@@ -537,6 +542,45 @@ namespace HelperFunctions {
    */
   ShowerType getMCShowerType(const std::string& sample_name);
 
+  /**
+    @brief Counts the number of reconstructible children from a truth vertex
+    @params signalTruthvertex   The vertex in question
+
+  */
+  void countReconstructibleDescendentParticles(const xAOD::TruthVertex* signalTruthVertex,
+                                               std::set<const xAOD::TruthParticle*>& set,
+                                               const bool doRecursive,
+                                               const double distanceCutoff,
+                                               const double pTthr);
+
+  // returns vector of decorated filtered tracks
+  void getFilteredTracks ( const xAOD::Vertex*, std::vector<const xAOD::TrackParticle*>& );
+
+  // element link typedefs
+  typedef ElementLink<xAOD::JetContainer>                        JetLink_t;
+  typedef ElementLink<xAOD::TrackParticleContainer>              TrackLink_t;
+  typedef ElementLink<xAOD::VertexContainer>                     VertexLink_t;
+  typedef ElementLink<xAOD::TruthParticleContainer>              TruthParticleLink_t;
+  typedef ElementLink<xAOD::TruthVertexContainer>                TruthVertexLink_t;
+  typedef std::vector<ElementLink<xAOD::JetContainer>>           JetLinkVector_t;
+  typedef std::vector<ElementLink<xAOD::TrackParticleContainer>> TrackLinkVector_t;
+  typedef std::vector<ElementLink<xAOD::VertexContainer>>        VertexLinkVector_t;
+  typedef std::vector<ElementLink<xAOD::TruthParticleContainer>> TruthParticleLinkVector_t;
+  typedef std::vector<ElementLink<xAOD::TruthVertexContainer>>   TruthVertexLinkVector_t;
+    
+  // is truth particle stable / interacting / reconstructible / dark ?
+  bool isStable          ( const xAOD::TruthParticle* );
+  bool isInteracting     ( const xAOD::TruthParticle* );
+  bool isReconstructible ( const xAOD::TruthParticle* );
+  bool isDark            ( const xAOD::TruthParticle* );
+
+  // returns (parent) truth particle corresponding to track
+  const xAOD::TruthParticle* getTruthPart       ( const xAOD::TrackParticle* );
+  const xAOD::TruthParticle* getParentTruthPart ( const xAOD::TrackParticle* );
+
+  // returns production vertex of (parent) truth particle corresponding to track
+  const xAOD::TruthVertex* getProdVtx       ( const xAOD::TrackParticle* );
+  const xAOD::TruthVertex* getParentProdVtx ( const xAOD::TrackParticle* );
 
 } // close namespace HelperFunctions
 

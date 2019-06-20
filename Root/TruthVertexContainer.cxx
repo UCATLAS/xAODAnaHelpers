@@ -1,11 +1,11 @@
 #include <xAODTruth/TruthVertex.h>
 #include <xAODTruth/TruthParticle.h>
 
-#include "EJsAnalysis/TruthVertexContainer.h"
-#include "EJsAnalysis/AlgConsts.h"
-#include "EJsAnalysis/EJsHelperFunctions.h"
+#include "xAODAnaHelpers/TruthVertexContainer.h"
+#include "xAODAnaHelpers/AlgConsts.h"
+#include "xAODAnaHelpers/HelperFunctions.h"
 
-using namespace EJs;
+using namespace xAH;
 
 TruthVertexContainer :: TruthVertexContainer ( const std::string& name, const std::string& detailStr, float units,
 					       bool mc, bool emtopo, bool pflow ) :
@@ -485,7 +485,7 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
   
   VertexContainer::FillVertex ();
 
-  m_isLLPDecay        ->push_back( EJsHelper::selectLLP        ( truthVtx ) );
+//  m_isLLPDecay        ->push_back( HelperFunctions::selectLLP        ( truthVtx ) );
 
   m_ID      ->push_back( AUXDYN( truthVtx, int, "ID" )  );
   m_x       ->push_back( truthVtx->x()                  );
@@ -601,18 +601,18 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
     outP_barcode           .push_back( outP->barcode()                                 );
     outP_isReco            .push_back( AUXDYN( outP, char,   "isTrackMatch"          ) );
     outP_recoProb          .push_back( AUXDYN( outP, double, "trackMatchProbability" ) );
-    outP_isStable          .push_back( EJsHelper::isStable          ( outP           ) );
-    outP_isInteracting     .push_back( EJsHelper::isInteracting     ( outP           ) );
-    outP_isReconstructible .push_back( EJsHelper::isReconstructible ( outP           ) );
-    outP_isDark            .push_back( EJsHelper::isDark            ( outP           ) );
+    outP_isStable          .push_back( HelperFunctions::isStable          ( outP           ) );
+    outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP           ) );
+    outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP           ) );
+    outP_isDark            .push_back( HelperFunctions::isDark            ( outP           ) );
     // get linked track
     int     recoID      = AlgConsts::invalidInt;
     uint8_t recoIsSel   = AlgConsts::invalidUnsigned;
     uint8_t recoIsAssoc = AlgConsts::invalidUnsigned;
-    static SG::AuxElement::ConstAccessor<EJsHelper::TrackLink_t> recoAccess("trackLink");
+    static SG::AuxElement::ConstAccessor<HelperFunctions::TrackLink_t> recoAccess("trackLink");
     if ( recoAccess.isAvailable( *outP ) ) {
       try {
-	const EJsHelper::TrackLink_t& recoLink = recoAccess( *outP );
+	const HelperFunctions::TrackLink_t& recoLink = recoAccess( *outP );
 	recoID      = AUXDYN( (*recoLink), int,  "ID"            );
 	recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
 	recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
@@ -623,9 +623,9 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
     outP_recoIsAssociated .push_back( recoIsAssoc );
   }
 
-  const TLorentzVector& sumP4 = EJsHelper::truthSumP4 ( outParts );
-  m_pt   ->push_back( sumP4.Pt() / m_units );
-  m_mass ->push_back( sumP4.M()  / m_units );
+//  const TLorentzVector& sumP4 = HelperFunctions::truthSumP4 ( outParts );
+//  m_pt   ->push_back( sumP4.Pt() / m_units );
+//  m_mass ->push_back( sumP4.M()  / m_units );
 
   m_outP_ID                ->push_back( outP_ID                );
   m_outP_pt                ->push_back( outP_pt                );
@@ -653,9 +653,9 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
     int     linkedID       = AlgConsts::invalidInt;
     float   linkedScore    = AlgConsts::invalidFloat;
     // access reco vertex links truthVtx linked to
-    static SG::AuxElement::ConstAccessor<EJsHelper::VertexLinkVector_t> linkRecoAccess("linkedSecondaryVertexLinks");
+    static SG::AuxElement::ConstAccessor<HelperFunctions::VertexLinkVector_t> linkRecoAccess("linkedSecondaryVertexLinks");
     if ( linkRecoAccess.isAvailable( *truthVtx ) ) {
-      const EJsHelper::VertexLinkVector_t& vtxLinks = linkRecoAccess( *truthVtx );
+      const HelperFunctions::VertexLinkVector_t& vtxLinks = linkRecoAccess( *truthVtx );
       for ( const auto& link : vtxLinks ) {
 	      if ( !link.isValid() ) continue;
 	      linkedID = AUXDYN( (*link), int, "ID");
@@ -665,10 +665,10 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
     
     const xAOD::Vertex* maxlinkedRecoVertex = 0;
     // access reco vertex links truthVtx max-linked to
-    static SG::AuxElement::ConstAccessor<EJsHelper::VertexLink_t> maxlinkRecoAccess("maxlinkedSecondaryVertexLink");
+    static SG::AuxElement::ConstAccessor<HelperFunctions::VertexLink_t> maxlinkRecoAccess("maxlinkedSecondaryVertexLink");
     if ( maxlinkRecoAccess.isAvailable( *truthVtx ) ) {
       try {
-        const EJsHelper::VertexLink_t& maxlinkedVtxLink = maxlinkRecoAccess( *truthVtx );
+        const HelperFunctions::VertexLink_t& maxlinkedVtxLink = maxlinkRecoAccess( *truthVtx );
         maxlinkedRecoVertex = *maxlinkedVtxLink;
       } catch(...) {}
     }

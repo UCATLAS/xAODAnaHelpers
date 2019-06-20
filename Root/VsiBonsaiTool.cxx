@@ -5,7 +5,7 @@
 #include <TLorentzVector.h>
 #include <TMath.h>
 
-#include "EJsAnalysis/VsiBonsaiTool.h"
+#include "xAODAnaHelpers/VsiBonsaiTool.h"
 
 namespace VsiBonsai {
 
