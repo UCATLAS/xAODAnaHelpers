@@ -1,0 +1,26 @@
+namespace VsiBonsai {
+
+  template<enum Config TYPE>
+  bool varWrtSVCut ( const xAOD::TrackParticle* trk,
+                     const Configurator& config, std::string name ) {
+
+    const auto& cutval = config.at( TYPE ).getVar<double>();
+
+    if ( AlgConsts::invalidFloat == cutval ) { return true; }
+    if ( cutval < 0. )                       { return true; }
+
+    // find ipwrtSV variable
+    if ( !trk->isAvailable<float>( name ) ) {
+      std::cerr << "WARNING: " << __FUNCTION__;
+      std::cerr << ": auxdyn variable " << name << " not available!" << std::endl;
+      return true;
+    }
+
+    auto& var = trk->auxdataConst<float>( name );
+
+    if ( fabs( var ) > cutval )              { return false; }
+
+    return true;
+  }
+
+}
