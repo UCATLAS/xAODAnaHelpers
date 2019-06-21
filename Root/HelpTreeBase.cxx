@@ -1042,6 +1042,91 @@ void HelpTreeBase::ClearMET( const std::string metName ) {
   this->ClearMETUser(metName);
 }
 
+/******************
+ *
+ * TRUTH VERTICES *
+ *
+ ******************/
+
+void HelpTreeBase :: AddTruthVerts ( const std::string detailStr, const std::string truthVtxName )
+{
+  if ( m_debug ) Info( "AddTruthVerts()", "adding truth vertex variables" );
+  
+  m_truthVerts[ truthVtxName ] = new xAH::TruthVertexContainer( truthVtxName, detailStr, m_units, m_isMC );
+  xAH::TruthVertexContainer* thisTruthVtx = m_truthVerts[ truthVtxName ];
+  thisTruthVtx->setBranches( m_tree );
+
+  this->AddTruthVertsUser( detailStr, truthVtxName );
+}
+
+void HelpTreeBase :: FillTruthVerts ( const xAOD::TruthVertexContainer* truthVerts, const std::string truthVtxName )
+{
+  this->ClearTruthVerts ( truthVtxName );
+
+  for ( const auto& truthVtx : *truthVerts )
+    this->FillTruthVertex( truthVtx, truthVtxName );
+}
+
+void HelpTreeBase :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx, const std::string truthVtxName )
+{
+  //std::string treeName = m_tree->GetName();
+  xAH::TruthVertexContainer* thisTruthVtx = m_truthVerts[ truthVtxName ];
+  thisTruthVtx->FillTruthVertex( truthVtx, truthVtxName );
+
+  this->FillTruthVertexUser( truthVtx, truthVtxName );
+}
+
+void HelpTreeBase :: ClearTruthVerts ( const std::string truthVtxName )
+{
+  xAH::TruthVertexContainer* thisTruthVtx = m_truthVerts[ truthVtxName ];
+  thisTruthVtx->clear();
+
+  this->ClearTruthVertsUser( truthVtxName );
+}
+
+
+
+/**********************
+ *
+ * SECONDARY VERTICES *
+ *
+ **********************/
+
+void HelpTreeBase :: AddSecondaryVerts ( const std::string detailStr, const std::string secVtxName )
+{
+  if ( m_debug ) Info( "xAHHelpTreeBase::AddSecondaryVerts()", "adding secondary vertex variables" );
+
+  m_secVerts[ secVtxName ] = new xAH::SecondaryVertexContainer(secVtxName, detailStr, m_units, m_isMC);
+  xAH::SecondaryVertexContainer* thisSecVtx = m_secVerts[ secVtxName ];
+  thisSecVtx->setBranches( m_tree );
+
+  this->AddSecondaryVertsUser( detailStr, secVtxName );
+}
+
+void HelpTreeBase :: FillSecondaryVerts ( const xAOD::VertexContainer* secVerts, const std::string secVtxName )
+{
+  this->ClearSecondaryVerts ( secVtxName );
+
+  for ( const auto& secVtx : *secVerts )
+    this->FillSecondaryVertex( secVtx, secVtxName );
+}
+
+void HelpTreeBase :: FillSecondaryVertex ( const xAOD::Vertex* secVtx, const std::string secVtxName )
+{
+
+  xAH::SecondaryVertexContainer* thisSecVtx = m_secVerts[ secVtxName ];
+  thisSecVtx->FillSecondaryVertex( secVtx, secVtxName );
+
+  this->FillSecondaryVertexUser( secVtx, secVtxName );
+}
+
+void HelpTreeBase :: ClearSecondaryVerts ( const std::string secVtxName )
+{
+  xAH::SecondaryVertexContainer* thisSecVtx = m_secVerts[ secVtxName ];
+  thisSecVtx->clear();
+
+  this->ClearSecondaryVertsUser( secVtxName );
+}
 
 bool HelpTreeBase::writeTo( TFile* file ) {
   file->cd(); // necessary?

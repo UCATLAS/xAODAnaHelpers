@@ -305,22 +305,24 @@ EL::StatusCode TreeAlgo :: execute ()
       // }
       for(unsigned int ll=0; ll<m_fatJetContainers.size();++ll){
         if(m_fatJetDetails.size()==1) helpTree->AddFatJets       (m_fatJetDetailStr, m_fatJetBranches.at(ll).c_str());
-	else{ helpTree->AddFatJets       (m_fatJetDetails.at(ll), m_fatJetBranches.at(ll).c_str()); }
+        else{ helpTree->AddFatJets       (m_fatJetDetails.at(ll), m_fatJetBranches.at(ll).c_str()); }
       }
     }
 
-    if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr, m_truthFatJetBranchName);               }
-    if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
-    if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
-    if (!m_METReferenceContainerName.empty() )  { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
-    if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
-    if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
-    if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesContainerName, m_trackParticlesDetailStr); }
+    if (!m_truthFatJetContainerName.empty() )    { helpTree->AddTruthFatJets(m_truthFatJetDetailStr, m_truthFatJetBranchName);               }
+    if (!m_tauContainerName.empty() )            { helpTree->AddTaus(m_tauDetailStr);                               }
+    if (!m_METContainerName.empty() )            { helpTree->AddMET(m_METDetailStr);                                }
+    if (!m_METReferenceContainerName.empty() )   { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
+    if (!m_photonContainerName.empty() )         { helpTree->AddPhotons(m_photonDetailStr);                         }
+    if (!m_truthParticlesContainerName.empty())  { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
+    if (!m_trackParticlesContainerName.empty())  { helpTree->AddTrackParts(m_trackParticlesContainerName, m_trackParticlesDetailStr); }
+    if (!m_truthVertexContainerName.empty())     { helpTree->AddTruthVerts(m_truthVertexDetailStr);                 }
+    if (!m_secondaryVertexContainerName.empty()) { helpTree->AddSecondaryVerts(m_secondaryVertexDetailStr);         }
     if (!m_clusterContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_clusterContainers.size();++ll){
         if(m_clusterDetails.size()==1)
           helpTree->AddClusters (m_clusterDetailStr, m_clusterBranches.at(ll).c_str());
-	else
+        else
           helpTree->AddClusters (m_clusterDetails.at(ll), m_clusterBranches.at(ll).c_str());
       }
     }
@@ -552,6 +554,22 @@ EL::StatusCode TreeAlgo :: execute ()
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));
       helpTree->FillTracks(m_trackParticlesContainerName, inTrackParticles);
+    }
+
+    if ( !m_truthVertexContainerName.empty() ) {
+      if ( ! HelperFunctions::isAvailable<xAOD::TruthVertexContainer>( m_truthVertexContainerName, m_event, m_store, msg() ) ) continue;
+	  
+      const xAOD::TruthVertexContainer* inTruthVerts(nullptr);
+	  ANA_CHECK( HelperFunctions::retrieve( inTruthVerts, m_truthVertexContainerName, m_event, m_store, msg() ) );
+	  helpTree->FillTruthVerts(inTruthVerts, m_truthVertexContainerName);
+    }
+
+    if ( !m_secondaryVertexContainerName.empty() ) {
+      if ( !HelperFunctions::isAvailable<xAOD::VertexContainer>( m_secondaryVertexContainerName, m_event, m_store, msg() ) ) continue;
+
+	  const xAOD::VertexContainer* inSecVerts(nullptr);
+	  ANA_CHECK( HelperFunctions::retrieve( inSecVerts, m_secondaryVertexContainerName, m_event, m_store, msg() ) );
+	  helpTree->FillSecondaryVerts(inSecVerts, m_secondaryVertexContainerName);
     }
 
     if ( !m_clusterContainerName.empty() ) {

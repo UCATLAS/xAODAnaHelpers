@@ -44,6 +44,8 @@
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
 
+#include "xAODAnaHelpers/TruthVertexContainer.h"
+#include "xAODAnaHelpers/SecondaryVertexContainer.h"
 
 #include <map>
 
@@ -69,17 +71,19 @@ public:
   HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false );
   virtual ~HelpTreeBase();
 
-  void AddEvent       (const std::string detailStr = "");
-  void AddTrigger     (const std::string detailStr = "");
-  void AddJetTrigger  (const std::string detailStr = "");
-  void AddMuons       (const std::string detailStr = "", const std::string muonName = "muon");
-  void AddElectrons   (const std::string detailStr = "", const std::string elecName = "el");
-  void AddPhotons     (const std::string detailStr = "", const std::string photonName = "ph");
-  void AddClusters    (const std::string detailStr = "", const std::string clusterName = "cl");
-  void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
-  void AddL1Jets      ();
-  void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
-  void AddTrackParts  (const std::string trackName,	 const std::string detailStr = "");
+  void AddEvent          (const std::string detailStr = "");
+  void AddTrigger        (const std::string detailStr = "");
+  void AddJetTrigger     (const std::string detailStr = "");
+  void AddMuons          (const std::string detailStr = "",  const std::string muonName = "muon");
+  void AddElectrons      (const std::string detailStr = "",  const std::string elecName = "el");
+  void AddPhotons        (const std::string detailStr = "",  const std::string photonName = "ph");
+  void AddClusters       (const std::string detailStr = "",  const std::string clusterName = "cl");
+  void AddJets           (const std::string detailStr = "",  const std::string jetName = "jet");
+  void AddL1Jets         ();
+  void AddTruthParts     (const std::string truthName,       const std::string detailStr = "");
+  void AddTrackParts     (const std::string trackName,	     const std::string detailStr = "");
+  void AddTruthVerts     ( const std::string detailStr = "", const std::string truthVtxName = "truthVtx");
+  void AddSecondaryVerts ( const std::string detailStr = "", const std::string secVtxName = "secVtx");
 
   /**
    *  @brief  Declare a new collection of fatjets to be written to the output tree.
@@ -147,6 +151,12 @@ public:
   void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
 
+  void FillTruthVerts  ( const xAOD::TruthVertexContainer* truthVerts, const std::string truthVtxName = "truthVtx" );
+  void FillTruthVertex ( const xAOD::TruthVertex* truthVtx,            const std::string truthVtxName = "truthVtx" );
+
+  void FillSecondaryVerts  ( const xAOD::VertexContainer* secVerts, const std::string secVtxName = "secVtx" );
+  void FillSecondaryVertex ( const xAOD::Vertex* secVtx,            const std::string secVtxName = "secVtx" );
+
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
    *          container name and suffix should be declared beforehand using `AddFatJets()`.
@@ -170,18 +180,20 @@ public:
   void ClearEvent();
   void ClearTrigger();
   void ClearJetTrigger();
-  void ClearMuons       (const std::string jetName = "muon");
-  void ClearElectrons   (const std::string elecName = "el");
-  void ClearPhotons     (const std::string photonName = "ph");
-  void ClearClusters    (const std::string clusterName = "cl");
-  void ClearJets        (const std::string jetName = "jet");
-  void ClearL1Jets      ();
-  void ClearTruth       (const std::string truthName);
-  void ClearTracks	(const std::string trackName);
-  void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
-  void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
-  void ClearTaus        (const std::string tauName = "tau" );
-  void ClearMET         (const std::string metName = "met");
+  void ClearMuons          (const std::string jetName = "muon");
+  void ClearElectrons      (const std::string elecName = "el");
+  void ClearPhotons        (const std::string photonName = "ph");
+  void ClearClusters       (const std::string clusterName = "cl");
+  void ClearJets           (const std::string jetName = "jet");
+  void ClearL1Jets         ();
+  void ClearTruth          (const std::string truthName);
+  void ClearTracks	       (const std::string trackName);
+  void ClearFatJets        (const std::string fatjetName, const std::string suffix="");
+  void ClearTruthFatJets   (const std::string truthFatJetName = "truth_fatjet");
+  void ClearTaus           (const std::string tauName = "tau" );
+  void ClearMET            (const std::string metName = "met");
+  void ClearTruthVerts     ( const std::string truthVtxName = "truthVtx" );
+  void ClearSecondaryVerts ( const std::string secVtxName = "secVtx"  );
 
   bool writeTo( TFile *file );
 
@@ -262,28 +274,43 @@ public:
     return;
   };
 
-  virtual void ClearEventUser       ()     { return; };
-  virtual void ClearTriggerUser     ()   { return; };
-  virtual void ClearMuonsUser       (const std::string /*muonName = muon"*/)     { return; };
-  virtual void ClearElectronsUser   (const std::string /*elecName = "el"*/) { return; };
-  virtual void ClearPhotonsUser     (const std::string /*photonName = "ph"*/) { return; };
-  virtual void ClearClustersUser    (const std::string /*clusterName = "cl"*/) { return; };
-  virtual void ClearTruthUser       (const std::string /*truthName*/) 	    { return; };
-  virtual void ClearTracksUser      (const std::string /*trackName*/)       { return; };
-  virtual void ClearJetsUser        (const std::string /*jetName = "jet"*/ ) 	    { return; };
-  virtual void ClearFatJetsUser     (const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/)   { return; };
-  virtual void ClearTruthFatJetsUser(const std::string /*truthFatJetName = "truth_fatjet"*/)   { return; };
-  virtual void ClearTausUser        (const std::string /*tauName = "tau"*/) 	    { return; };
-  virtual void ClearMETUser         (const std::string /*metName = "met"*/)       { return; };
+  virtual void AddTruthVertsUser(const std::string detailStr = "", const std::string truthVtxName = "truthVtx")       {
+    if(m_debug) Info("AddTruthVertsUser","Empty function called from HelpTreeBase %s %s", detailStr.c_str(), truthVtxName.c_str());
+    return;
+  };
 
-  virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
-  virtual void FillMuonsUser    ( const xAOD::Muon*,        const std::string /*muonName = "muon"*/  )             { return; };
-  virtual void FillElectronsUser( const xAOD::Electron*,    const std::string /*elecName = "el"*/ )     { return; };
-  virtual void FillPhotonsUser  ( const xAOD::Photon*,      const std::string /*photonName = "ph"*/ )     { return; };
-  virtual void FillClustersUser ( const xAOD::CaloCluster*, const std::string /*clusterName = "cl"*/ )     { return; };
-  virtual void FillJetsUser     ( const xAOD::Jet*,         const std::string /*jetName = "jet"*/  )               { return; };
-  virtual void FillTruthUser    ( const std::string /*truthName*/, const xAOD::TruthParticle*  )               { return; };
-  virtual void FillTracksUser   ( const std::string /*trackName*/, const xAOD::TrackParticle*  )               { return; };
+  virtual void AddSecondaryVertsUser(const std::string detailStr = "", const std::string truthVtxName = "truthVtx")       {
+    if(m_debug) Info("AddTruthVertsUser","Empty function called from HelpTreeBase %s %s", detailStr.c_str(), truthVtxName.c_str());
+    return;
+  };
+
+  virtual void ClearEventUser           ()   { return; };
+  virtual void ClearTriggerUser         ()   { return; };
+  virtual void ClearMuonsUser           (const std::string /*muonName = muon"*/)     { return; };
+  virtual void ClearElectronsUser       (const std::string /*elecName = "el"*/) { return; };
+  virtual void ClearPhotonsUser         (const std::string /*photonName = "ph"*/) { return; };
+  virtual void ClearClustersUser        (const std::string /*clusterName = "cl"*/) { return; };
+  virtual void ClearTruthUser           (const std::string /*truthName*/) 	    { return; };
+  virtual void ClearTracksUser          (const std::string /*trackName*/)       { return; };
+  virtual void ClearJetsUser            (const std::string /*jetName = "jet"*/ ) 	    { return; };
+  virtual void ClearFatJetsUser         (const std::string /*fatjetName = "fatjet"*/, const std::string /*suffix = ""*/)   { return; };
+  virtual void ClearTruthFatJetsUser    (const std::string /*truthFatJetName = "truth_fatjet"*/)   { return; };
+  virtual void ClearTausUser            (const std::string /*tauName = "tau"*/) 	    { return; };
+  virtual void ClearMETUser             (const std::string /*metName = "met"*/)       { return; };
+  virtual void ClearTruthVertsUser      (const std::string /*metName = "met"*/)       { return; };
+  virtual void ClearSecondaryVertsUser  (const std::string /*metName = "met"*/)       { return; };
+
+  virtual void FillEventUser            ( const xAOD::EventInfo*  )        { return; };
+  virtual void FillMuonsUser            ( const xAOD::Muon*,        const std::string /*muonName = "muon"*/  )             { return; };
+  virtual void FillElectronsUser        ( const xAOD::Electron*,    const std::string /*elecName = "el"*/ )     { return; };
+  virtual void FillPhotonsUser          ( const xAOD::Photon*,      const std::string /*photonName = "ph"*/ )     { return; };
+  virtual void FillClustersUser         ( const xAOD::CaloCluster*, const std::string /*clusterName = "cl"*/ )     { return; };
+  virtual void FillJetsUser             ( const xAOD::Jet*,         const std::string /*jetName = "jet"*/  )               { return; };
+  virtual void FillTruthUser            ( const std::string /*truthName*/, const xAOD::TruthParticle*  )               { return; };
+  virtual void FillTracksUser           ( const std::string /*trackName*/, const xAOD::TrackParticle*  )               { return; };
+  virtual void FillTruthVertexUser      ( const xAOD::TruthVertex* truthVtx, const std::string  )               { return; };
+  virtual void FillSecondaryVertexUser  ( const xAOD::Vertex* secVtx, const std::string  )               { return; };
+
   /**
    *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
    *          information to your jet collection.
@@ -408,6 +435,12 @@ protected:
   // met
   //
   std::map<std::string, xAH::MetContainer* > m_met;
+
+  //
+  // vertices
+  //
+  std::map<std::string, xAH::TruthVertexContainer*>     m_truthVerts;
+  std::map<std::string, xAH::SecondaryVertexContainer*> m_secVerts;
 
 };
 

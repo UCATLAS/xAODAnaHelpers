@@ -33,6 +33,8 @@ public:
   std::string m_clusterDetailStr = "";
   std::string m_truthParticlesDetailStr = "";
   std::string m_trackParticlesDetailStr = "";
+  std::string m_truthVertexDetailStr = "";
+  std::string m_secondaryVertexDetailStr = "";
 
   std::string m_evtContainerName = "";
   std::string m_muContainerName = "";
@@ -56,6 +58,8 @@ public:
   std::string m_truthParticlesContainerName = "";
   std::string m_trackParticlesContainerName = "";
   std::string m_l1JetContainerName = "";
+  std::string m_truthVertexContainerName = "";
+  std::string m_secondaryVertexContainerName = "";
   bool m_sortL1Jets = false;
   bool m_retrievePV = true;
 
