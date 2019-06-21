@@ -37,7 +37,6 @@ namespace xAH {
     bool m_doPFlow;
     
     // vector branches
-    std::vector<uint8_t>* m_isLLPDecay;
 
     std::vector<int>*   m_ID;
     std::vector<float>* m_x;

@@ -101,10 +101,10 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
       m_trk_truthBarcode                    = new std::vector<std::vector<int>>;
       m_trk_truthPdgId                      = new std::vector<std::vector<int>>;
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_close )
-  m_trk_truthPointsToClosestTV        = new std::vector<std::vector<uint8_t>>;
+        m_trk_truthPointsToClosestTV        = new std::vector<std::vector<uint8_t>>;
       if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
-  m_trk_truthPointsToMaxlinkTV        = new std::vector<std::vector<uint8_t>>;
-  m_trk_truthParentPointsToMaxlinkPTV = new std::vector<std::vector<uint8_t>>;
+        m_trk_truthPointsToMaxlinkTV        = new std::vector<std::vector<uint8_t>>;
+        m_trk_truthParentPointsToMaxlinkPTV = new std::vector<std::vector<uint8_t>>;
       }
     }
   }
@@ -112,14 +112,10 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
   // close matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_close ) {
     m_closeTruth_distance               = new std::vector<std::vector<float>>;
-    m_closeTruth_isDarkPionDecay        = new std::vector<std::vector<uint8_t>>;
-    m_closeTruth_isOffdiagDarkPionDecay = new std::vector<std::vector<uint8_t>>;
     m_closeTruth_ID                     = new std::vector<std::vector<int>>;
     m_closeTruth_barcode                = new std::vector<std::vector<int>>;
     
     m_closestTruth_distance               = new std::vector<float>;    
-    m_closestTruth_isDarkPionDecay        = new std::vector<uint8_t>;
-    m_closestTruth_isOffdiagDarkPionDecay = new std::vector<uint8_t>;
 
     m_closestTruth_ID      = new std::vector<int>;
     m_closestTruth_x       = new std::vector<float>;
@@ -162,19 +158,14 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
     m_closestTruth_outP_isStable          = new std::vector<std::vector<uint8_t>>;
     m_closestTruth_outP_isInteracting     = new std::vector<std::vector<uint8_t>>;
     m_closestTruth_outP_isReconstructible = new std::vector<std::vector<uint8_t>>;
-    m_closestTruth_outP_isDark            = new std::vector<std::vector<uint8_t>>;
   }
   // track-truth-link matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
     m_linkTruth_score                  = new std::vector<std::vector<float>>;
-    m_linkTruth_isDarkPionDecay        = new std::vector<std::vector<uint8_t>>;
-    m_linkTruth_isOffdiagDarkPionDecay = new std::vector<std::vector<uint8_t>>;
     m_linkTruth_ID                     = new std::vector<std::vector<int>>;
     m_linkTruth_barcode                = new std::vector<std::vector<int>>;
     
     m_maxlinkTruth_score                  = new std::vector<float>;  
-    m_maxlinkTruth_isDarkPionDecay        = new std::vector<uint8_t>;
-    m_maxlinkTruth_isOffdiagDarkPionDecay = new std::vector<uint8_t>;
 
     m_maxlinkTruth_ID      = new std::vector<int>;
     m_maxlinkTruth_x       = new std::vector<float>;
@@ -217,18 +208,13 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
     m_maxlinkTruth_outP_isStable          = new std::vector<std::vector<uint8_t>>;
     m_maxlinkTruth_outP_isInteracting     = new std::vector<std::vector<uint8_t>>;
     m_maxlinkTruth_outP_isReconstructible = new std::vector<std::vector<uint8_t>>;
-    m_maxlinkTruth_outP_isDark            = new std::vector<std::vector<uint8_t>>;
     
 
     m_linkParentTruth_score                  = new std::vector<std::vector<float>>;
-    m_linkParentTruth_isDarkPionDecay        = new std::vector<std::vector<uint8_t>>;
-    m_linkParentTruth_isOffdiagDarkPionDecay = new std::vector<std::vector<uint8_t>>;
     m_linkParentTruth_ID                     = new std::vector<std::vector<int>>;
     m_linkParentTruth_barcode                = new std::vector<std::vector<int>>;
     
     m_maxlinkParentTruth_score                  = new std::vector<float>;    
-    m_maxlinkParentTruth_isDarkPionDecay        = new std::vector<uint8_t>;
-    m_maxlinkParentTruth_isOffdiagDarkPionDecay = new std::vector<uint8_t>;
 
     m_maxlinkParentTruth_ID      = new std::vector<int>;
     m_maxlinkParentTruth_x       = new std::vector<float>;
@@ -271,7 +257,6 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
     m_maxlinkParentTruth_outP_isStable          = new std::vector<std::vector<uint8_t>>;
     m_maxlinkParentTruth_outP_isInteracting     = new std::vector<std::vector<uint8_t>>;
     m_maxlinkParentTruth_outP_isReconstructible = new std::vector<std::vector<uint8_t>>;
-    m_maxlinkParentTruth_outP_isDark            = new std::vector<std::vector<uint8_t>>;
   }
 
   // matched to jets
@@ -394,14 +379,10 @@ SecondaryVertexContainer :: ~SecondaryVertexContainer ()
   // close matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_close ) {
     delete m_closeTruth_distance;
-    delete m_closeTruth_isDarkPionDecay;
-    delete m_closeTruth_isOffdiagDarkPionDecay;
     delete m_closeTruth_ID;
     delete m_closeTruth_barcode;
     
     delete m_closestTruth_distance;
-    delete m_closestTruth_isDarkPionDecay;
-    delete m_closestTruth_isOffdiagDarkPionDecay;
 
     delete m_closestTruth_ID;
     delete m_closestTruth_x;
@@ -444,19 +425,14 @@ SecondaryVertexContainer :: ~SecondaryVertexContainer ()
     delete m_closestTruth_outP_isStable;
     delete m_closestTruth_outP_isInteracting;
     delete m_closestTruth_outP_isReconstructible;
-    delete m_closestTruth_outP_isDark;
   }
   // track-truth-link matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
     delete m_linkTruth_score;
-    delete m_linkTruth_isDarkPionDecay;
-    delete m_linkTruth_isOffdiagDarkPionDecay;
     delete m_linkTruth_ID;
     delete m_linkTruth_barcode;
     
     delete m_maxlinkTruth_score;   
-    delete m_maxlinkTruth_isDarkPionDecay;
-    delete m_maxlinkTruth_isOffdiagDarkPionDecay;
 
     delete m_maxlinkTruth_ID;
     delete m_maxlinkTruth_x;
@@ -499,18 +475,13 @@ SecondaryVertexContainer :: ~SecondaryVertexContainer ()
     delete m_maxlinkTruth_outP_isStable;
     delete m_maxlinkTruth_outP_isInteracting;
     delete m_maxlinkTruth_outP_isReconstructible;
-    delete m_maxlinkTruth_outP_isDark;
 
 
     delete m_linkParentTruth_score;
-    delete m_linkParentTruth_isDarkPionDecay;
-    delete m_linkParentTruth_isOffdiagDarkPionDecay;
     delete m_linkParentTruth_ID;
     delete m_linkParentTruth_barcode;
     
     delete m_maxlinkParentTruth_score;   
-    delete m_maxlinkParentTruth_isDarkPionDecay;
-    delete m_maxlinkParentTruth_isOffdiagDarkPionDecay;
 
     delete m_maxlinkParentTruth_ID;
     delete m_maxlinkParentTruth_x;
@@ -553,7 +524,6 @@ SecondaryVertexContainer :: ~SecondaryVertexContainer ()
     delete m_maxlinkParentTruth_outP_isStable;
     delete m_maxlinkParentTruth_outP_isInteracting;
     delete m_maxlinkParentTruth_outP_isReconstructible;
-    delete m_maxlinkParentTruth_outP_isDark;
   }
   // matched to jets
   if ( m_infoSwitch.m_jetMatched ) {
@@ -677,14 +647,10 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
   // close matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_close ) {
     connectBranch<std::vector<float>>   ( tree, "closeTruth_distance",               &m_closeTruth_distance               );
-    connectBranch<std::vector<uint8_t>> ( tree, "closeTruth_isDarkPionDecay",        &m_closeTruth_isDarkPionDecay        );
-    connectBranch<std::vector<uint8_t>> ( tree, "closeTruth_isOffdiagDarkPionDecay", &m_closeTruth_isOffdiagDarkPionDecay );
     connectBranch<std::vector<int>>     ( tree, "closeTruth_ID",                     &m_closeTruth_ID                     );
     connectBranch<std::vector<int>>     ( tree, "closeTruth_barcode",                &m_closeTruth_barcode                );
     
     connectBranch<float>   ( tree, "closestTruth_distance",               &m_closestTruth_distance               );
-    connectBranch<uint8_t> ( tree, "closestTruth_isDarkPionDecay",        &m_closestTruth_isDarkPionDecay        );
-    connectBranch<uint8_t> ( tree, "closestTruth_isOffdiagDarkPionDecay", &m_closestTruth_isOffdiagDarkPionDecay );
 
     connectBranch<int>   ( tree, "closestTruth_ID",      &m_closestTruth_ID      );
     connectBranch<float> ( tree, "closestTruth_x",       &m_closestTruth_x       );
@@ -727,19 +693,14 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
     connectBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isStable",          &m_closestTruth_outP_isStable          );
     connectBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isInteracting",     &m_closestTruth_outP_isInteracting     );
     connectBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isReconstructible", &m_closestTruth_outP_isReconstructible );
-    connectBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isDark",            &m_closestTruth_outP_isDark            );
   }
   // track-truth-link matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
     connectBranch<std::vector<float>>   ( tree, "linkTruth_score",                  &m_linkTruth_score                  );
-    connectBranch<std::vector<uint8_t>> ( tree, "linkTruth_isDarkPionDecay",        &m_linkTruth_isDarkPionDecay        );
-    connectBranch<std::vector<uint8_t>> ( tree, "linkTruth_isOffdiagDarkPionDecay", &m_linkTruth_isOffdiagDarkPionDecay );
     connectBranch<std::vector<int>>     ( tree, "linkTruth_ID",                     &m_linkTruth_ID                     );
     connectBranch<std::vector<int>>     ( tree, "linkTruth_barcode",                &m_linkTruth_barcode                );
     
     connectBranch<float>   ( tree, "maxlinkTruth_score",                  &m_maxlinkTruth_score                  ); 
-    connectBranch<uint8_t> ( tree, "maxlinkTruth_isDarkPionDecay",        &m_maxlinkTruth_isDarkPionDecay        );
-    connectBranch<uint8_t> ( tree, "maxlinkTruth_isOffdiagDarkPionDecay", &m_maxlinkTruth_isOffdiagDarkPionDecay );
 
     connectBranch<int>   ( tree, "maxlinkTruth_ID",      &m_maxlinkTruth_ID      );
     connectBranch<float> ( tree, "maxlinkTruth_x",       &m_maxlinkTruth_x       );
@@ -782,18 +743,13 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
     connectBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isStable",          &m_maxlinkTruth_outP_isStable          );
     connectBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isInteracting",     &m_maxlinkTruth_outP_isInteracting     );
     connectBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isReconstructible", &m_maxlinkTruth_outP_isReconstructible );
-    connectBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isDark",            &m_maxlinkTruth_outP_isDark            );
     
 
     connectBranch<std::vector<float>>   ( tree, "linkParentTruth_score",                  &m_linkParentTruth_score                  );
-    connectBranch<std::vector<uint8_t>> ( tree, "linkParentTruth_isDarkPionDecay",        &m_linkParentTruth_isDarkPionDecay        );
-    connectBranch<std::vector<uint8_t>> ( tree, "linkParentTruth_isOffdiagDarkPionDecay", &m_linkParentTruth_isOffdiagDarkPionDecay );
     connectBranch<std::vector<int>>     ( tree, "linkParentTruth_ID",                     &m_linkParentTruth_ID                     );
     connectBranch<std::vector<int>>     ( tree, "linkParentTruth_barcode",                &m_linkParentTruth_barcode                );
     
     connectBranch<float>   ( tree, "maxlinkParentTruth_score",                  &m_maxlinkParentTruth_score                  );   
-    connectBranch<uint8_t> ( tree, "maxlinkParentTruth_isDarkPionDecay",        &m_maxlinkParentTruth_isDarkPionDecay        );
-    connectBranch<uint8_t> ( tree, "maxlinkParentTruth_isOffdiagDarkPionDecay", &m_maxlinkParentTruth_isOffdiagDarkPionDecay );
 
     connectBranch<int>   ( tree, "maxlinkParentTruth_ID",      &m_maxlinkParentTruth_ID      );
     connectBranch<float> ( tree, "maxlinkParentTruth_x",       &m_maxlinkParentTruth_x       );
@@ -836,7 +792,6 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
     connectBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isStable",          &m_maxlinkParentTruth_outP_isStable          );
     connectBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isInteracting",     &m_maxlinkParentTruth_outP_isInteracting     );
     connectBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isReconstructible", &m_maxlinkParentTruth_outP_isReconstructible );
-    connectBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isDark",            &m_maxlinkParentTruth_outP_isDark            );
   }
 
   // matched to jets
@@ -845,7 +800,6 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
       connectBranch<uint8_t>            ( tree, "isTruthJetMatched",  &m_truthJetMatch     );
       connectBranch<std::vector<int>>   ( tree, "truthJetMatch_ID",   &m_truthJetMatch_ID  );
       connectBranch<std::vector<float>> ( tree, "truthJetMatch_dR",   &m_truthJetMatch_dR  );
-      connectBranch<uint8_t>            ( tree, "isDarkJetMatched",   &m_darkJetMatch      );
       connectBranch<std::vector<int>>   ( tree, "darkJetMatch_ID",    &m_darkJetMatch_ID   );
       connectBranch<std::vector<float>> ( tree, "darkJetMatch_dR",    &m_darkJetMatch_dR   );
     }
@@ -958,14 +912,10 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
   // close matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_close ) {
     setBranch<std::vector<float>>   ( tree, "closeTruth_distance",               m_closeTruth_distance               );
-    setBranch<std::vector<uint8_t>> ( tree, "closeTruth_isDarkPionDecay",        m_closeTruth_isDarkPionDecay        );
-    setBranch<std::vector<uint8_t>> ( tree, "closeTruth_isOffdiagDarkPionDecay", m_closeTruth_isOffdiagDarkPionDecay );
     setBranch<std::vector<int>>     ( tree, "closeTruth_ID",                     m_closeTruth_ID                     );
     setBranch<std::vector<int>>     ( tree, "closeTruth_barcode",                m_closeTruth_barcode                );
     
     setBranch<float>   ( tree, "closestTruth_distance",               m_closestTruth_distance               ); 
-    setBranch<uint8_t> ( tree, "closestTruth_isDarkPionDecay",        m_closestTruth_isDarkPionDecay        );
-    setBranch<uint8_t> ( tree, "closestTruth_isOffdiagDarkPionDecay", m_closestTruth_isOffdiagDarkPionDecay );
 
     setBranch<int>   ( tree, "closestTruth_ID",      m_closestTruth_ID      );
     setBranch<float> ( tree, "closestTruth_x",       m_closestTruth_x       );
@@ -1008,19 +958,14 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
     setBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isStable",          m_closestTruth_outP_isStable          );
     setBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isInteracting",     m_closestTruth_outP_isInteracting     );
     setBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isReconstructible", m_closestTruth_outP_isReconstructible );
-    setBranch<std::vector<uint8_t>> ( tree, "closestTruth_outP_isDark",            m_closestTruth_outP_isDark            );
   }
   // track-truth-link matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
     setBranch<std::vector<float>>   ( tree, "linkTruth_score",                  m_linkTruth_score                  );
-    setBranch<std::vector<uint8_t>> ( tree, "linkTruth_isDarkPionDecay",        m_linkTruth_isDarkPionDecay        );
-    setBranch<std::vector<uint8_t>> ( tree, "linkTruth_isOffdiagDarkPionDecay", m_linkTruth_isOffdiagDarkPionDecay );
     setBranch<std::vector<int>>     ( tree, "linkTruth_ID",                     m_linkTruth_ID                     );
     setBranch<std::vector<int>>     ( tree, "linkTruth_barcode",                m_linkTruth_barcode                );
     
     setBranch<float>   ( tree, "maxlinkTruth_score",                  m_maxlinkTruth_score                  );
-    setBranch<uint8_t> ( tree, "maxlinkTruth_isDarkPionDecay",        m_maxlinkTruth_isDarkPionDecay        );
-    setBranch<uint8_t> ( tree, "maxlinkTruth_isOffdiagDarkPionDecay", m_maxlinkTruth_isOffdiagDarkPionDecay );
 
     setBranch<int>   ( tree, "maxlinkTruth_ID",      m_maxlinkTruth_ID      );
     setBranch<float> ( tree, "maxlinkTruth_x",       m_maxlinkTruth_x       );
@@ -1063,18 +1008,13 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
     setBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isStable",          m_maxlinkTruth_outP_isStable          );
     setBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isInteracting",     m_maxlinkTruth_outP_isInteracting     );
     setBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isReconstructible", m_maxlinkTruth_outP_isReconstructible );
-    setBranch<std::vector<uint8_t>> ( tree, "maxlinkTruth_outP_isDark",            m_maxlinkTruth_outP_isDark            );
 
 
     setBranch<std::vector<float>>   ( tree, "linkParentTruth_score",                  m_linkParentTruth_score                  );
-    setBranch<std::vector<uint8_t>> ( tree, "linkParentTruth_isDarkPionDecay",        m_linkParentTruth_isDarkPionDecay        );
-    setBranch<std::vector<uint8_t>> ( tree, "linkParentTruth_isOffdiagDarkPionDecay", m_linkParentTruth_isOffdiagDarkPionDecay );
     setBranch<std::vector<int>>     ( tree, "linkParentTruth_ID",                     m_linkParentTruth_ID                     );
     setBranch<std::vector<int>>     ( tree, "linkParentTruth_barcode",                m_linkParentTruth_barcode                );
     
     setBranch<float>   ( tree, "maxlinkParentTruth_score",                  m_maxlinkParentTruth_score                  );
-    setBranch<uint8_t> ( tree, "maxlinkParentTruth_isDarkPionDecay",        m_maxlinkParentTruth_isDarkPionDecay        );
-    setBranch<uint8_t> ( tree, "maxlinkParentTruth_isOffdiagDarkPionDecay", m_maxlinkParentTruth_isOffdiagDarkPionDecay );
 
     setBranch<int>   ( tree, "maxlinkParentTruth_ID",      m_maxlinkParentTruth_ID      );
     setBranch<float> ( tree, "maxlinkParentTruth_x",       m_maxlinkParentTruth_x       );
@@ -1117,7 +1057,6 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
     setBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isStable",          m_maxlinkParentTruth_outP_isStable          );
     setBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isInteracting",     m_maxlinkParentTruth_outP_isInteracting     );
     setBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isReconstructible", m_maxlinkParentTruth_outP_isReconstructible );
-    setBranch<std::vector<uint8_t>> ( tree, "maxlinkParentTruth_outP_isDark",            m_maxlinkParentTruth_outP_isDark            );
   }
 
   // matched to jets
@@ -1126,7 +1065,6 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
       setBranch<uint8_t>            ( tree, "isTruthJetMatched",  m_truthJetMatch     );
       setBranch<std::vector<int>>   ( tree, "truthJetMatch_ID",   m_truthJetMatch_ID  );
       setBranch<std::vector<float>> ( tree, "truthJetMatch_dR",   m_truthJetMatch_dR  );
-      setBranch<uint8_t>            ( tree, "isDarkJetMatched",   m_darkJetMatch      );
       setBranch<std::vector<int>>   ( tree, "darkJetMatch_ID",    m_darkJetMatch_ID   );
       setBranch<std::vector<float>> ( tree, "darkJetMatch_dR",    m_darkJetMatch_dR   );
     }
@@ -1242,14 +1180,10 @@ void SecondaryVertexContainer :: clear ()
   // close matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_close ) {
     m_closeTruth_distance               ->clear();  
-    m_closeTruth_isDarkPionDecay        ->clear();
-    m_closeTruth_isOffdiagDarkPionDecay ->clear();
     m_closeTruth_ID                     ->clear();  
     m_closeTruth_barcode                ->clear();
     
     m_closestTruth_distance               ->clear();  
-    m_closestTruth_isDarkPionDecay        ->clear();
-    m_closestTruth_isOffdiagDarkPionDecay ->clear();
 
     m_closestTruth_ID      ->clear();
     m_closestTruth_x       ->clear();
@@ -1292,19 +1226,14 @@ void SecondaryVertexContainer :: clear ()
     m_closestTruth_outP_isStable          ->clear();
     m_closestTruth_outP_isInteracting     ->clear();
     m_closestTruth_outP_isReconstructible ->clear();
-    m_closestTruth_outP_isDark            ->clear();
   }
   // track-truth-link matched truth vertices
   if ( m_infoSwitch.m_truth || m_infoSwitch.m_linked ) {
     m_linkTruth_score                  ->clear();  
-    m_linkTruth_isDarkPionDecay        ->clear();
-    m_linkTruth_isOffdiagDarkPionDecay ->clear();
     m_linkTruth_ID                     ->clear();  
     m_linkTruth_barcode                ->clear();
     
     m_maxlinkTruth_score                  ->clear();  
-    m_maxlinkTruth_isDarkPionDecay        ->clear();
-    m_maxlinkTruth_isOffdiagDarkPionDecay ->clear();
 
     m_maxlinkTruth_ID      ->clear();
     m_maxlinkTruth_x       ->clear();
@@ -1347,18 +1276,13 @@ void SecondaryVertexContainer :: clear ()
     m_maxlinkTruth_outP_isStable          ->clear();
     m_maxlinkTruth_outP_isInteracting     ->clear();
     m_maxlinkTruth_outP_isReconstructible ->clear();
-    m_maxlinkTruth_outP_isDark            ->clear();
 
 
     m_linkParentTruth_score                  ->clear();  
-    m_linkParentTruth_isDarkPionDecay        ->clear();
-    m_linkParentTruth_isOffdiagDarkPionDecay ->clear();
     m_linkParentTruth_ID                     ->clear();  
     m_linkParentTruth_barcode                ->clear();
     
     m_maxlinkParentTruth_score                  ->clear();  
-    m_maxlinkParentTruth_isDarkPionDecay        ->clear();
-    m_maxlinkParentTruth_isOffdiagDarkPionDecay ->clear();
 
     m_maxlinkParentTruth_ID      ->clear();
     m_maxlinkParentTruth_x       ->clear();
@@ -1401,7 +1325,6 @@ void SecondaryVertexContainer :: clear ()
     m_maxlinkParentTruth_outP_isStable          ->clear();
     m_maxlinkParentTruth_outP_isInteracting     ->clear();
     m_maxlinkParentTruth_outP_isReconstructible ->clear();
-    m_maxlinkParentTruth_outP_isDark            ->clear();
   }
   // matched to jets
   if ( m_infoSwitch.m_jetMatched ) {
@@ -1539,10 +1462,8 @@ void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVt
     if ( treeName == "nominal" ) jet_str = "";
 
     uint8_t isTruthJetMatch = false;
-    uint8_t isDarkJetMatch  = false;
     if ( secVtx->isAvailable<char>("isMatchedToTruthJet") ) {
       isTruthJetMatch = secVtx->auxdataConst<char>("isMatchedToTruthJet");
-      isDarkJetMatch  = secVtx->auxdataConst<char>("isMatchedToDarkJet");
     }
     
     uint8_t isEMTopoJetMatch = false;
@@ -1567,7 +1488,6 @@ void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVt
       m_truthJetMatch     ->push_back( isTruthJetMatch );
       m_truthJetMatch_ID  ->push_back( AUXDYNVEC( secVtx, int,   "truthJetMatchIDs" ) );
       m_truthJetMatch_dR  ->push_back( AUXDYNVEC( secVtx, float, "truthJetMatchDRs" ) );
-      m_darkJetMatch      ->push_back( isDarkJetMatch  );
       m_darkJetMatch_ID   ->push_back( AUXDYNVEC( secVtx, int,   "darkJetMatchIDs"  ) );
       m_darkJetMatch_dR   ->push_back( AUXDYNVEC( secVtx, float, "darkJetMatchDRs"  ) );
     }
@@ -1811,16 +1731,12 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
     const HelperFunctions::TruthVertexLinkVector_t closeTVLinks = closeTVAccess( *secVtx );
     for ( const auto& closelink : closeTVLinks ) {
       if ( !closelink.isValid() ) continue;
-//      close_isPid    .push_back( HelperFunctions::selectDarkPion(        (*closelink) ) );
-//      close_isOffPid .push_back( HelperFunctions::selectOffdiagDarkPion( (*closelink) ) );
       close_ID       .push_back( AUXDYN( (*closelink), int, "ID" )                );
       close_barcode  .push_back( (*closelink)->barcode()                          );
     }
   }
 
   m_closeTruth_distance               ->push_back( AUXDYNVEC( secVtx, float, "closeMatchedTruthVertex_dist" ) );
-  m_closeTruth_isDarkPionDecay        ->push_back( close_isPid                                                );
-  m_closeTruth_isOffdiagDarkPionDecay ->push_back( close_isOffPid                                             );
   m_closeTruth_ID                     ->push_back( close_ID                                                   );
   m_closeTruth_barcode                ->push_back( close_barcode                                              );
 
@@ -1879,7 +1795,6 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
   std::vector<uint8_t> outP_isStable;
   std::vector<uint8_t> outP_isInteracting;
   std::vector<uint8_t> outP_isReconstructible;
-  std::vector<uint8_t> outP_isDark;
 
   std::vector<uint8_t> trk_truthPointsToTV;
 
@@ -1958,7 +1873,6 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
       outP_isStable          .push_back( HelperFunctions::isStable          ( outP ) );
       outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP ) );
       outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP ) );
-      outP_isDark            .push_back( HelperFunctions::isDark            ( outP ) );
     }
 
     for ( const auto& trk : filteredTracks ) {
@@ -1971,8 +1885,6 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
   else trk_truthPointsToTV .resize( filteredTracks.size(), false );
 
   m_closestTruth_distance               ->push_back( dist     );
-  m_closestTruth_isDarkPionDecay        ->push_back( isPid    );
-  m_closestTruth_isOffdiagDarkPionDecay ->push_back( isOffPid );
 
   m_closestTruth_ID      ->push_back( ID      );
   m_closestTruth_x       ->push_back( x       );
@@ -2015,7 +1927,6 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
   m_closestTruth_outP_isStable          ->push_back( outP_isStable          );
   m_closestTruth_outP_isInteracting     ->push_back( outP_isInteracting     );
   m_closestTruth_outP_isReconstructible ->push_back( outP_isReconstructible );
-  m_closestTruth_outP_isDark            ->push_back( outP_isDark            );
 
   if ( m_infoSwitch.m_tracks )
     m_trk_truthPointsToClosestTV ->push_back( trk_truthPointsToTV );
@@ -2039,16 +1950,12 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
     const HelperFunctions::TruthVertexLinkVector_t linkTVLinks = linkTVAccess( *secVtx );
     for ( const auto& linklink : linkTVLinks ) {
       if ( !linklink.isValid() ) continue;
-//      link_isPid    .push_back( HelperFunctions::selectLLP(        (*linklink) ) );
-//      link_isOffPid .push_back( HelperFunctions::selectOffdiagDarkPion( (*linklink) ) );
       link_ID       .push_back( AUXDYN( (*linklink), int, "ID" )                );
       link_barcode  .push_back( (*linklink)->barcode()                          );
     }
   }
 
   m_linkTruth_score                  ->push_back( AUXDYNVEC( secVtx, float, "trackLinkedTruthVertex_score" ) );
-  m_linkTruth_isDarkPionDecay        ->push_back( link_isPid                                                 );
-  m_linkTruth_isOffdiagDarkPionDecay ->push_back( link_isOffPid                                              );
   m_linkTruth_ID                     ->push_back( link_ID                                                    );
   m_linkTruth_barcode                ->push_back( link_barcode                                               );
 
@@ -2107,7 +2014,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   std::vector<uint8_t> tv_outP_isStable;
   std::vector<uint8_t> tv_outP_isInteracting;
   std::vector<uint8_t> tv_outP_isReconstructible;
-  std::vector<uint8_t> tv_outP_isDark;
 
   std::vector<uint8_t> trk_truthPointsToTV;
 
@@ -2173,12 +2079,12 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
       uint8_t recoIsAssoc = AlgConsts::invalidUnsigned;
       static SG::AuxElement::ConstAccessor<HelperFunctions::TrackLink_t> recoAccess("trackLink");
       if ( recoAccess.isAvailable( *outP ) ) {
-  try {
-    const HelperFunctions::TrackLink_t& recoLink = recoAccess( *outP );
-    recoID      = AUXDYN( (*recoLink), int,  "ID"            );
-    recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
-    recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
-  } catch(...) {}
+        try {
+        const HelperFunctions::TrackLink_t& recoLink = recoAccess( *outP );
+        recoID      = AUXDYN( (*recoLink), int,  "ID"            );
+        recoIsSel   = AUXDYN( (*recoLink), char, "is_selected"   );
+        recoIsAssoc = AUXDYN( (*recoLink), char, "is_associated" );
+        } catch(...) {}
       }
       tv_outP_recoID            .push_back( recoID                                );
       tv_outP_recoIsSelected    .push_back( recoIsSel                             );
@@ -2186,7 +2092,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
       tv_outP_isStable          .push_back( HelperFunctions::isStable          ( outP ) );
       tv_outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP ) );
       tv_outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP ) );
-      tv_outP_isDark            .push_back( HelperFunctions::isDark            ( outP ) );
     }
 
     for ( const auto& trk : filteredTracks ) {
@@ -2199,8 +2104,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   else trk_truthPointsToTV .resize( filteredTracks.size(), false );
 
   m_maxlinkTruth_score                  ->push_back( tv_score    );
-  m_maxlinkTruth_isDarkPionDecay        ->push_back( tv_isPid    );
-  m_maxlinkTruth_isOffdiagDarkPionDecay ->push_back( tv_isOffPid );
 
   m_maxlinkTruth_ID      ->push_back( tv_ID      );
   m_maxlinkTruth_x       ->push_back( tv_x       );
@@ -2243,7 +2146,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   m_maxlinkTruth_outP_isStable          ->push_back( tv_outP_isStable          );
   m_maxlinkTruth_outP_isInteracting     ->push_back( tv_outP_isInteracting     );
   m_maxlinkTruth_outP_isReconstructible ->push_back( tv_outP_isReconstructible );
-  m_maxlinkTruth_outP_isDark            ->push_back( tv_outP_isDark            );
 
   if ( m_infoSwitch.m_tracks )
     m_trk_truthPointsToMaxlinkTV ->push_back( trk_truthPointsToTV );
@@ -2262,16 +2164,12 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
     const HelperFunctions::TruthVertexLinkVector_t linkPTVLinks = linkPTVAccess( *secVtx );
     for ( const auto& linkPlink : linkPTVLinks ) {
       if ( !linkPlink.isValid() ) continue;
-//      linkP_isPid    .push_back( HelperFunctions::selectDarkPion(        (*linkPlink) ) );
-//      linkP_isOffPid .push_back( HelperFunctions::selectOffdiagDarkPion( (*linkPlink) ) );
       linkP_ID       .push_back( AUXDYN( (*linkPlink), int, "ID" )                );
       linkP_barcode  .push_back( (*linkPlink)->barcode()                          );
     }
   }
 
   m_linkParentTruth_score                  ->push_back( AUXDYNVEC( secVtx, float, "trackLinkedParentTruthVertex_score" ) );
-  m_linkParentTruth_isDarkPionDecay        ->push_back( linkP_isPid                                                      );
-  m_linkParentTruth_isOffdiagDarkPionDecay ->push_back( linkP_isOffPid                                                    );
   m_linkParentTruth_ID                     ->push_back( linkP_ID                                                         );
   m_linkParentTruth_barcode                ->push_back( linkP_barcode                                                    );
   
@@ -2330,13 +2228,10 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   std::vector<uint8_t> ptv_outP_isStable;
   std::vector<uint8_t> ptv_outP_isInteracting;
   std::vector<uint8_t> ptv_outP_isReconstructible;
-  std::vector<uint8_t> ptv_outP_isDark;
 
   std::vector<uint8_t> trk_truthParentPointsToPTV;
 
   if ( maxlinkedParentTruthVertex ) {
-//    ptv_isPid    = HelperFunctions::selectDarkPion        ( maxlinkedParentTruthVertex );
-//    ptv_isOffPid = HelperFunctions::selectOffdiagDarkPion ( maxlinkedParentTruthVertex );
 
     ptv_ID      = AUXDYN( maxlinkedParentTruthVertex, int, "ID" );
     ptv_x       = maxlinkedParentTruthVertex->x();
@@ -2410,7 +2305,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
       ptv_outP_isStable          .push_back( HelperFunctions::isStable          ( outP ) );
       ptv_outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP ) );
       ptv_outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP ) );
-      ptv_outP_isDark            .push_back( HelperFunctions::isDark            ( outP ) );
     }
 
     for ( const auto& trk : filteredTracks ) {
@@ -2423,8 +2317,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   else trk_truthParentPointsToPTV .resize( filteredTracks.size(), false );
 
   m_maxlinkParentTruth_score                  ->push_back( ptv_score    );
-  m_maxlinkParentTruth_isDarkPionDecay        ->push_back( ptv_isPid    );
-  m_maxlinkParentTruth_isOffdiagDarkPionDecay ->push_back( ptv_isOffPid );
 
   m_maxlinkParentTruth_ID      ->push_back( ptv_ID      );
   m_maxlinkParentTruth_x       ->push_back( ptv_x       );
@@ -2467,7 +2359,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   m_maxlinkParentTruth_outP_isStable          ->push_back( ptv_outP_isStable          );
   m_maxlinkParentTruth_outP_isInteracting     ->push_back( ptv_outP_isInteracting     );
   m_maxlinkParentTruth_outP_isReconstructible ->push_back( ptv_outP_isReconstructible );
-  m_maxlinkParentTruth_outP_isDark            ->push_back( ptv_outP_isDark            );
 
   if ( m_infoSwitch.m_tracks )
     m_trk_truthParentPointsToMaxlinkPTV ->push_back( trk_truthParentPointsToPTV );

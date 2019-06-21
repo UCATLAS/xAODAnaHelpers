@@ -648,15 +648,11 @@ bool HelperFunctions::isInteracting ( const xAOD::TruthParticle* tp )
   return true;
 }
 
+
 bool HelperFunctions::isReconstructible ( const xAOD::TruthParticle* tp )
 {
   // FILL IN...
   return true;
-}
-
-bool HelperFunctions::isDark ( const xAOD::TruthParticle* tp )
-{
-  return ( tp->absPdgId() > 4.9e6 && tp->absPdgId() < 5.0e6 );
 }
 
 const xAOD::TruthParticle* HelperFunctions::getTruthPart ( const xAOD::TrackParticle* trk )

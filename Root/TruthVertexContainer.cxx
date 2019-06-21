@@ -16,7 +16,6 @@ TruthVertexContainer :: TruthVertexContainer ( const std::string& name, const st
   
   if ( m_debug ) Info( "EJs::TruthVertexContainer()", "setting up" );
 
-  m_isLLPDecay        = new std::vector<uint8_t>;
   m_ID                     = new std::vector<int>;
   m_x                      = new std::vector<float>;
   m_y                      = new std::vector<float>;
@@ -64,7 +63,6 @@ TruthVertexContainer :: TruthVertexContainer ( const std::string& name, const st
   m_outP_isStable          = new std::vector<std::vector<uint8_t>>;
   m_outP_isInteracting     = new std::vector<std::vector<uint8_t>>;
   m_outP_isReconstructible = new std::vector<std::vector<uint8_t>>;
-  m_outP_isDark            = new std::vector<std::vector<uint8_t>>;
   
   if ( m_infoSwitch.m_isMatched || m_infoSwitch.m_recoVerts ) {
     m_isCloseToRecoVtx             = new std::vector<uint8_t>;
@@ -90,9 +88,6 @@ TruthVertexContainer :: TruthVertexContainer ( const std::string& name, const st
     m_truthJetMatch    = new std::vector<uint8_t>;
     m_truthJetMatch_ID = new std::vector<std::vector<int>>;
     m_truthJetMatch_dR = new std::vector<std::vector<float>>;
-    m_darkJetMatch     = new std::vector<uint8_t>;
-    m_darkJetMatch_ID  = new std::vector<std::vector<int>>;
-    m_darkJetMatch_dR  = new std::vector<std::vector<float>>;
     if ( m_doEMTopo ) {
       m_emtopoJetMatch    = new std::vector<uint8_t>;
       m_emtopoJetMatch_ID = new std::vector<std::vector<int>>;
@@ -111,7 +106,6 @@ TruthVertexContainer :: ~TruthVertexContainer ()
 {
   if ( m_debug ) Info( "EJs::TruthVertexContainer()", "deleting" );
 
-  delete m_isLLPDecay;
   delete m_ID;
   delete m_x;
   delete m_y;
@@ -159,7 +153,6 @@ TruthVertexContainer :: ~TruthVertexContainer ()
   delete m_outP_isStable;
   delete m_outP_isInteracting;
   delete m_outP_isReconstructible;
-  delete m_outP_isDark;
 
   if ( m_infoSwitch.m_isMatched || m_infoSwitch.m_recoVerts ) {
     delete m_isCloseToRecoVtx;
@@ -185,9 +178,6 @@ TruthVertexContainer :: ~TruthVertexContainer ()
     delete m_truthJetMatch;
     delete m_truthJetMatch_ID;
     delete m_truthJetMatch_dR;
-    delete m_darkJetMatch;
-    delete m_darkJetMatch_ID;
-    delete m_darkJetMatch_dR;
     if ( m_doEMTopo ) {
       delete m_emtopoJetMatch;
       delete m_emtopoJetMatch_ID;
@@ -208,7 +198,6 @@ void TruthVertexContainer :: setTree ( TTree* tree )
   
   VertexContainer::setTree ( tree );
 
-  connectBranch<uint8_t>              ( tree, "isLLPDecay",        &m_isLLPDecay        );
   connectBranch<int>                  ( tree, "ID",                     &m_ID                     );
   connectBranch<float>                ( tree, "x",                      &m_x                      );
   connectBranch<float>                ( tree, "y",                      &m_y                      );
@@ -256,7 +245,6 @@ void TruthVertexContainer :: setTree ( TTree* tree )
   connectBranch<std::vector<uint8_t>> ( tree, "outP_isStable",          &m_outP_isStable          );
   connectBranch<std::vector<uint8_t>> ( tree, "outP_isInteracting",     &m_outP_isInteracting     );
   connectBranch<std::vector<uint8_t>> ( tree, "outP_isReconstructible", &m_outP_isReconstructible );
-  connectBranch<std::vector<uint8_t>> ( tree, "outP_isDark",            &m_outP_isDark            );
 
   if ( m_infoSwitch.m_isMatched || m_infoSwitch.m_recoVerts ) {
     connectBranch<uint8_t>            ( tree, "isCloseToRecoVtx",             &m_isCloseToRecoVtx             );
@@ -282,9 +270,6 @@ void TruthVertexContainer :: setTree ( TTree* tree )
     connectBranch<uint8_t>              ( tree, "isTruthJetMatched",  &m_truthJetMatch     );
     connectBranch<std::vector<int>>     ( tree, "truthJetMatch_ID",   &m_truthJetMatch_ID  );
     connectBranch<std::vector<float>>   ( tree, "truthJetMatch_dR",   &m_truthJetMatch_dR  );
-    connectBranch<uint8_t>              ( tree, "isDarkJetMatched",   &m_darkJetMatch      );
-    connectBranch<std::vector<int>>     ( tree, "darkJetMatch_ID",    &m_darkJetMatch_ID   );
-    connectBranch<std::vector<float>>   ( tree, "darkJetMatch_dR",    &m_darkJetMatch_dR   );
     if ( m_doEMTopo ) {
       connectBranch<uint8_t>            ( tree, "isEMTopoJetMatched", &m_emtopoJetMatch    );
       connectBranch<std::vector<int>>   ( tree, "EMTopoJetMatch_ID",  &m_emtopoJetMatch_ID );
@@ -305,7 +290,6 @@ void TruthVertexContainer :: setBranches ( TTree* tree )
   
   VertexContainer::setBranches ( tree );
 
-  setBranch<uint8_t>              ( tree, "isLLPDecay",        m_isLLPDecay        );
   setBranch<int>                  ( tree, "ID",                     m_ID                     );
   setBranch<float>                ( tree, "x",                      m_x                      );
   setBranch<float>                ( tree, "y",                      m_y                      );
@@ -353,7 +337,6 @@ void TruthVertexContainer :: setBranches ( TTree* tree )
   setBranch<std::vector<uint8_t>> ( tree, "outP_isStable",          m_outP_isStable          );
   setBranch<std::vector<uint8_t>> ( tree, "outP_isInteracting",     m_outP_isInteracting     );
   setBranch<std::vector<uint8_t>> ( tree, "outP_isReconstructible", m_outP_isReconstructible );
-  setBranch<std::vector<uint8_t>> ( tree, "outP_isDark",            m_outP_isDark            );
 
   if ( m_infoSwitch.m_isMatched || m_infoSwitch.m_recoVerts ) {
     setBranch<std::vector<int>>   ( tree, "linkedRecoVtx_ID",             m_linkedRecoVtx_ID             );
@@ -365,9 +348,6 @@ void TruthVertexContainer :: setBranches ( TTree* tree )
     setBranch<uint8_t>              ( tree, "isTruthJetMatched",  m_truthJetMatch     );
     setBranch<std::vector<int>>     ( tree, "truthJetMatch_ID",   m_truthJetMatch_ID  );
     setBranch<std::vector<float>>   ( tree, "truthJetMatch_dR",   m_truthJetMatch_dR  );
-    setBranch<uint8_t>              ( tree, "isDarkJetMatched",   m_darkJetMatch      );
-    setBranch<std::vector<int>>     ( tree, "darkJetMatch_ID",    m_darkJetMatch_ID   );
-    setBranch<std::vector<float>>   ( tree, "darkJetMatch_dR",    m_darkJetMatch_dR   );
     if ( m_doEMTopo ) {
       setBranch<uint8_t>            ( tree, "isEMTopoJetMatched", m_emtopoJetMatch    );
       setBranch<std::vector<int>>   ( tree, "EMTopoJetMatch_ID",  m_emtopoJetMatch_ID );
@@ -388,7 +368,6 @@ void TruthVertexContainer :: clear ()
   
   VertexContainer::clear ();
 
-  m_isLLPDecay        ->clear();
   m_ID                     ->clear();
   m_x                      ->clear();
   m_y                      ->clear();
@@ -436,7 +415,6 @@ void TruthVertexContainer :: clear ()
   m_outP_isStable          ->clear();
   m_outP_isInteracting     ->clear();
   m_outP_isReconstructible ->clear();
-  m_outP_isDark            ->clear();
 
   if ( m_infoSwitch.m_isMatched || m_infoSwitch.m_recoVerts ) {
     m_isCloseToRecoVtx             ->clear();
@@ -462,9 +440,6 @@ void TruthVertexContainer :: clear ()
     m_truthJetMatch       ->clear();
     m_truthJetMatch_ID    ->clear();
     m_truthJetMatch_dR    ->clear();
-    m_darkJetMatch        ->clear();
-    m_darkJetMatch_ID     ->clear();
-    m_darkJetMatch_dR     ->clear();
     if ( m_doEMTopo ) {
       m_emtopoJetMatch    ->clear();
       m_emtopoJetMatch_ID ->clear();
@@ -485,7 +460,6 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
   
   VertexContainer::FillVertex ();
 
-//  m_isLLPDecay        ->push_back( HelperFunctions::selectLLP        ( truthVtx ) );
 
   m_ID      ->push_back( AUXDYN( truthVtx, int, "ID" )  );
   m_x       ->push_back( truthVtx->x()                  );
@@ -583,7 +557,6 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
   std::vector<uint8_t> outP_isStable;
   std::vector<uint8_t> outP_isInteracting;
   std::vector<uint8_t> outP_isReconstructible;
-  std::vector<uint8_t> outP_isDark;
   
   for ( size_t i = 0; i != truthVtx->nOutgoingParticles(); ++i ) {
     const auto* outP = truthVtx->outgoingParticle(i);
@@ -604,7 +577,6 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
     outP_isStable          .push_back( HelperFunctions::isStable          ( outP           ) );
     outP_isInteracting     .push_back( HelperFunctions::isInteracting     ( outP           ) );
     outP_isReconstructible .push_back( HelperFunctions::isReconstructible ( outP           ) );
-    outP_isDark            .push_back( HelperFunctions::isDark            ( outP           ) );
     // get linked track
     int     recoID      = AlgConsts::invalidInt;
     uint8_t recoIsSel   = AlgConsts::invalidUnsigned;
@@ -645,7 +617,6 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
   m_outP_isStable          ->push_back( outP_isStable          );
   m_outP_isInteracting     ->push_back( outP_isInteracting     );
   m_outP_isReconstructible ->push_back( outP_isReconstructible );
-  m_outP_isDark            ->push_back( outP_isDark            );
 
   if ( m_infoSwitch.m_isMatched ) {
     std::vector<int> linkedReco_ID;
@@ -693,10 +664,8 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
     if ( treeName == "nominal" ) jet_str = "";
 
     uint8_t isTruthJetMatch = false;
-    uint8_t isDarkJetMatch  = false;
     if ( truthVtx->isAvailable<char>("isMatchedToTruthJet") ) {
       isTruthJetMatch = truthVtx->auxdataConst<char>("isMatchedToTruthJet");
-      isDarkJetMatch  = truthVtx->auxdataConst<char>("isMatchedToDarkJet");
     }
       
     uint8_t isEMTopoJetMatch = false;
@@ -720,9 +689,6 @@ void TruthVertexContainer :: FillTruthVertex ( const xAOD::TruthVertex* truthVtx
     m_truthJetMatch       ->push_back( isTruthJetMatch );
     m_truthJetMatch_ID    ->push_back( AUXDYNVEC( truthVtx, int,   "truthJetMatchIDs" ) );
     m_truthJetMatch_dR    ->push_back( AUXDYNVEC( truthVtx, float, "truthJetMatchDRs" ) );
-    m_darkJetMatch        ->push_back( isDarkJetMatch  );
-    m_darkJetMatch_ID     ->push_back( AUXDYNVEC( truthVtx, int,   "darkJetMatchIDs"  ) );
-    m_darkJetMatch_dR     ->push_back( AUXDYNVEC( truthVtx, float, "darkJetMatchDRs"  ) );
     if ( m_doEMTopo ) {
       m_emtopoJetMatch    ->push_back( isEMTopoJetMatch );
       m_emtopoJetMatch_ID ->push_back( AUXDYNVEC( truthVtx, int,   "recoJetMatchIDs_EMTopo" + emtopo_str ) );

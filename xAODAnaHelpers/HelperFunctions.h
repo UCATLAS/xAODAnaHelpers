@@ -572,7 +572,6 @@ namespace HelperFunctions {
   bool isStable          ( const xAOD::TruthParticle* );
   bool isInteracting     ( const xAOD::TruthParticle* );
   bool isReconstructible ( const xAOD::TruthParticle* );
-  bool isDark            ( const xAOD::TruthParticle* );
 
   // returns (parent) truth particle corresponding to track
   const xAOD::TruthParticle* getTruthPart       ( const xAOD::TrackParticle* );
