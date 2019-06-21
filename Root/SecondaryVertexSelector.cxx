@@ -271,9 +271,12 @@ int SecondaryVertexSelector :: PassCuts ( const xAOD::Vertex* vtx, const xAOD::V
   std::vector<const xAOD::TrackParticle*> filteredTracks;
   std::vector<const xAOD::TrackParticle*> droppedTracks;
 
-  for ( size_t i = 0; i != vtx->nTrackParticles(); ++i ) {
+
+  std::vector< ElementLink< xAOD::TrackParticleContainer > > trackLinks = vtx->trackParticleLinks();
+
+  for(auto trkIter = trackLinks.begin(); trkIter != trackLinks.end(); ++trkIter) {
+	const xAOD::TrackParticle* trk = **trkIter;
    
-    auto* trk = vtx->trackParticle( i );
     if( !trk ) continue;
       
     bool flag = true;
