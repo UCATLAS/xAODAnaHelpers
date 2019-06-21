@@ -33,8 +33,8 @@ SecondaryVertexSelector :: SecondaryVertexSelector ()
   , prop_d0signif_wrtSVCut  ( 5.0 /* AlgConsts::invalidFloat*/ )
   , prop_z0signif_wrtSVCut  ( 5.0 /*AlgConsts::invalidFloat*/ )
   , prop_chi2_toSVCut       ( 5.0 /*AlgConsts::invalidFloat*/ )
-  , m_mapInFile              ( "/afs/cern.ch/work/a/aroepe/CombinedNtuple/src/Hto4bLLPAlgorithm/data/MaterialMap_v3.2_Inner.root" )
-  , m_mapOutFile              ( "/afs/cern.ch/work/a/aroepe/CombinedNtuple/src/Hto4bLLPAlgorithm/data/MaterialMap_v3_Outer.root" )
+  , m_mapInFile              ( "" )
+  , m_mapOutFile              ( "" )
   , m_mapInName              ( "FinalMap_inner" )
   , m_mapOutName              ( "matmap_outer" )
   , m_matrixInName              ( "FoldingInfo" )
@@ -274,11 +274,10 @@ int SecondaryVertexSelector :: PassCuts ( const xAOD::Vertex* vtx, const xAOD::V
 
   std::vector< ElementLink< xAOD::TrackParticleContainer > > trackLinks = vtx->trackParticleLinks();
 
-  for(auto trkIter = trackLinks.begin(); trkIter != trackLinks.end(); ++trkIter) {
-	const xAOD::TrackParticle* trk = **trkIter;
-   
-    if( !trk ) continue;
-      
+  for(const auto& trkLink: trackLinks){
+    if(!trkLink.isValid()) break; // error out somehow
+    const xAOD::TrackParticle* trk = *trkLink;
+
     bool flag = true;
  
     if(m_do_trackTrimming) {
