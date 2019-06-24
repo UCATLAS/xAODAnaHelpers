@@ -1,9 +1,15 @@
 #ifndef xAODAnaHelpers_SecondaryVertexSelector_H
 #define xAODAnaHelpers_SecondaryVertexSelector_H
 
-/* SecondaryVertexSelector is the algorithm responsible for
-   selecting secondary vertices (primarily using the VsiBonsai toolkit);
-   based on xAODAnaHelpers' *Selector algorithms */
+/**
+ *@file SecondaryVertexSelector.h
+ *
+ *@author Colleen Treado <colleen.jennifer.treado@cern.ch>
+ *@author Jackson Bruzynski <jackson.carl.burzynski@cern.ch>
+ *
+ *@brief Selects secondary vertices based on the VsiBonsai tool
+ *
+ **/
 
 #include <string>
 #include "TH3S.h"

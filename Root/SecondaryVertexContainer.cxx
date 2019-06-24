@@ -18,7 +18,7 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
   m_doEMTopo = emtopo;
   m_doPFlow  = pflow;
   
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer()", "setting up" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer()", "setting up" );
 
   m_ID            = new std::vector<int>;
   m_x             = new std::vector<float>;
@@ -214,7 +214,7 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
     m_linkParentTruth_ID                     = new std::vector<std::vector<int>>;
     m_linkParentTruth_barcode                = new std::vector<std::vector<int>>;
     
-    m_maxlinkParentTruth_score                  = new std::vector<float>;    
+    m_maxlinkParentTruth_score               = new std::vector<float>;    
 
     m_maxlinkParentTruth_ID      = new std::vector<int>;
     m_maxlinkParentTruth_x       = new std::vector<float>;
@@ -285,7 +285,7 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
 
 SecondaryVertexContainer :: ~SecondaryVertexContainer ()
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer()", "deleting" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer()", "deleting" );
 
   delete m_ID;
   delete m_x;
@@ -551,7 +551,7 @@ SecondaryVertexContainer :: ~SecondaryVertexContainer ()
 
 void SecondaryVertexContainer :: setTree ( TTree* tree )
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::setTree()", "setting tree" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::setTree()", "setting tree" );
   
   VertexContainer::setTree ( tree );
 
@@ -1084,7 +1084,7 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
 
 void SecondaryVertexContainer :: clear ()
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::clear()", "clearing branches" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::clear()", "clearing branches" );
   
   VertexContainer::clear ();
 
@@ -1352,7 +1352,7 @@ void SecondaryVertexContainer :: clear ()
 
 void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVtx, const std::string treeName )
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::FillSecondaryVertex()", "filling branches" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::FillSecondaryVertex()", "filling branches" );
   
 
   
@@ -1532,7 +1532,7 @@ void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVt
 
 void SecondaryVertexContainer :: recordTracks ( const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::recordTracks()", "filling vertex track branches" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::recordTracks()", "filling vertex track branches" );
 
   std::vector<int>   trk_ID;
   std::vector<float> trk_qOverP;
@@ -1718,7 +1718,7 @@ void SecondaryVertexContainer :: recordTracks ( const std::vector<const xAOD::Tr
 void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
                  const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::processCloseTruth()", "filling close truth vertex branches" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::processCloseTruth()", "filling close truth vertex branches" );
 
   std::vector<uint8_t> close_isPid;
   std::vector<uint8_t> close_isOffPid;
@@ -1810,15 +1810,18 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
     phi     = closestTruthVertex->phi();
     barcode = closestTruthVertex->barcode();
 
-    for ( size_t i = 0; i != closestTruthVertex->nIncomingParticles(); ++i ) {
-      const auto* inPart = closestTruthVertex->incomingParticle(i);
+    //for ( size_t i = 0; i != closestTruthVertex->nIncomingParticles(); ++i ) {
+    for ( auto inLink : closestTruthVertex->incomingParticleLinks()){
+      if ( !inLink.isValid()) continue;
+      const xAOD::TruthParticle* inPart = *inLink;
       if ( !inPart ) continue;
       TLorentzVector p4;
       p4.SetPtEtaPhiM( inPart->pt(), inPart->eta(), inPart->phi(), inPart->m() );
       sumP4_in += p4;
     }
-    for ( size_t j = 0; j != closestTruthVertex->nOutgoingParticles(); ++j ) {
-      const auto* outPart = closestTruthVertex->outgoingParticle(j);
+    for ( auto outLink : closestTruthVertex->outgoingParticleLinks()) {
+      if (!outLink.isValid()) continue;
+      const xAOD::TruthParticle* outPart = *outLink;
       if ( !outPart ) continue;
       TLorentzVector p4;
       p4.SetPtEtaPhiM( outPart->pt(), outPart->eta(), outPart->phi(), outPart->m() );
@@ -1839,8 +1842,9 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
       parent_barcode = parent->barcode();
     }
 
-    for ( size_t k = 0; k != closestTruthVertex->nOutgoingParticles(); ++k ) {
-      const auto* outP = closestTruthVertex->outgoingParticle(k);
+    for ( auto outPLink : closestTruthVertex->outgoingParticleLinks() ) {
+      if ( !outPLink.isValid() ) continue;
+      const auto* outP = *outPLink;
       if ( !outP ) continue;
       outP_ID               .push_back( AUXDYN( outP, int, "ID"                       ) );
       outP_pt               .push_back( outP->pt() / m_units                            );
@@ -1937,7 +1941,7 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
 void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx,
                   const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::processLinkedTruth()", "filling linked truth vertex branches" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::processLinkedTruth()", "filling linked truth vertex branches" );
 
   std::vector<uint8_t> link_isPid;
   std::vector<uint8_t> link_isOffPid;
@@ -2029,15 +2033,17 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
     tv_phi     = maxlinkedTruthVertex->phi();
     tv_barcode = maxlinkedTruthVertex->barcode();
 
-    for ( size_t i = 0; i != maxlinkedTruthVertex->nIncomingParticles(); ++i ) {
-      const auto* inPart = maxlinkedTruthVertex->incomingParticle(i);
+    for ( auto inPartLink : maxlinkedTruthVertex->incomingParticleLinks() ) {
+      if ( !inPartLink.isValid() ) continue;
+      const xAOD::TruthParticle* inPart = *inPartLink;
       if ( !inPart ) continue;
       TLorentzVector p4;
       p4.SetPtEtaPhiM( inPart->pt(), inPart->eta(), inPart->phi(), inPart->m() );
       tv_sumP4_in += p4;
     }
-    for ( size_t j = 0; j != maxlinkedTruthVertex->nOutgoingParticles(); ++j ) {
-      const auto* outPart = maxlinkedTruthVertex->outgoingParticle(j);
+    for ( auto outPartLink : maxlinkedTruthVertex->outgoingParticleLinks() ) {
+      if ( !outPartLink.isValid() ) continue;
+      const xAOD::TruthParticle* outPart = *outPartLink;
       if ( !outPart ) continue;
       TLorentzVector p4;
       p4.SetPtEtaPhiM( outPart->pt(), outPart->eta(), outPart->phi(), outPart->m() );
@@ -2058,8 +2064,9 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
       tv_parent_barcode = parent->barcode();
     }
 
-    for ( size_t k = 0; k != maxlinkedTruthVertex->nOutgoingParticles(); ++k ) {
-      const auto* outP = maxlinkedTruthVertex->outgoingParticle(k);
+    for ( auto outPLink : maxlinkedTruthVertex->outgoingParticleLinks() ) {
+      if ( !outPLink.isValid() ) continue;
+      const xAOD::TruthParticle* outP = *outPLink;
       if ( !outP ) continue;
       tv_outP_ID               .push_back( AUXDYN( outP, int, "ID"                       ) );
       tv_outP_pt               .push_back( outP->pt() / m_units                            );
@@ -2151,7 +2158,7 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
     m_trk_truthPointsToMaxlinkTV ->push_back( trk_truthPointsToTV );
 
 
-  if ( m_debug ) Info( "EJs::SecondaryVertexContainer::processLinkedTruth()", "filling linked parent truth vertex branches" );
+  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::processLinkedTruth()", "filling linked parent truth vertex branches" );
 
   std::vector<uint8_t> linkP_isPid;
   std::vector<uint8_t> linkP_isOffPid;
@@ -2242,15 +2249,17 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
     ptv_phi     = maxlinkedParentTruthVertex->phi();
     ptv_barcode = maxlinkedParentTruthVertex->barcode();
 
-    for ( size_t i = 0; i != maxlinkedParentTruthVertex->nIncomingParticles(); ++i ) {
-      const auto* inPart = maxlinkedParentTruthVertex->incomingParticle(i);
+    for ( auto inPartLink : maxlinkedParentTruthVertex->incomingParticleLinks() ) {
+      if ( !inPartLink.isValid() ) continue;
+      const xAOD::TruthParticle* inPart = *inPartLink;
       if ( !inPart ) continue;
       TLorentzVector p4;
       p4.SetPtEtaPhiM( inPart->pt(), inPart->eta(), inPart->phi(), inPart->m() );
       ptv_sumP4_in += p4;
     }
-    for ( size_t j = 0; j != maxlinkedParentTruthVertex->nOutgoingParticles(); ++j ) {
-      const auto* outPart = maxlinkedParentTruthVertex->outgoingParticle(j);
+    for ( auto outPartLink : maxlinkedParentTruthVertex->outgoingParticleLinks() ) {
+      if ( !outPartLink.isValid() ) continue;
+      const xAOD::TruthParticle* outPart = *outPartLink;
       if ( !outPart ) continue;
       TLorentzVector p4;
       p4.SetPtEtaPhiM( outPart->pt(), outPart->eta(), outPart->phi(), outPart->m() );
@@ -2271,8 +2280,9 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
       ptv_parent_barcode = parent->barcode();
     }
 
-    for ( size_t k = 0; k != maxlinkedParentTruthVertex->nOutgoingParticles(); ++k ) {
-      const auto* outP = maxlinkedParentTruthVertex->outgoingParticle(k);
+    for ( auto outPLink : maxlinkedParentTruthVertex->outgoingParticleLinks() ) {
+      if ( !outPLink.isValid() ) continue;
+      const xAOD::TruthParticle* outP = *outPLink;
       if ( !outP ) continue;
       ptv_outP_ID               .push_back( AUXDYN( outP, int, "ID"                       ) );
       ptv_outP_pt               .push_back( outP->pt() / m_units                            );

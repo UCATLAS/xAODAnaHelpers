@@ -1,11 +1,14 @@
 #ifndef xAODAnaHelpers_SecondaryVertexContainer_H
 #define xAODAnaHelpers_SecondaryVertexContainer_H
 
-/* SecondaryVertexContainer is the secondary-vertex-specific derived class
-   of the VertexContainer base class, responsible for handling VrtSecInclusive DV
-   information (including associated tracks, matched truth vertices, etc.)
-   to fill output ntuples; based partially on VSI performance code
-   (https://gitlab.cern.ch/Atlas-Inner-Tracking/SecVtxPUBNote/tree/master/Code/VSIPerf) */
+/**
+ *@file  SecondaryVertexContainer.h 
+ *
+ *@author Colleen Treado <colleen.jennifer,treado@cern.ch>>
+ *@author Jackson Burzynski <jackson.carl.burzynski@cern.ch>
+ *
+ *@brief Container definitions for secondary vertices
+ */
 
 #include <vector>
 #include <string>
