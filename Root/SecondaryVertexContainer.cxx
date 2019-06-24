@@ -1,3 +1,4 @@
+#include <iostream>
 #include <TVector3.h>
 #include <TLorentzVector.h>
 
@@ -7,6 +8,7 @@
 
 #include "xAODAnaHelpers/SecondaryVertexContainer.h"
 #include "xAODAnaHelpers/VsiBonsaiTool.h"
+#include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 using namespace xAH;
@@ -15,11 +17,12 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
                    bool mc, bool emtopo, bool pflow ) :
   VertexContainer ( name, detailStr, units, mc )
 {
+
+  if ( m_debug ) std::cout << " Setup Secondary Vertex Container " << std::endl;
+
   m_doEMTopo = emtopo;
   m_doPFlow  = pflow;
   
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer()", "setting up" );
-
   m_ID            = new std::vector<int>;
   m_x             = new std::vector<float>;
   m_y             = new std::vector<float>;
@@ -285,7 +288,7 @@ SecondaryVertexContainer :: SecondaryVertexContainer ( const std::string& name, 
 
 SecondaryVertexContainer :: ~SecondaryVertexContainer ()
 {
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer()", "deleting" );
+  if ( m_debug ) std::cout << " Deleting Secondary Vertex Container " << std::endl;
 
   delete m_ID;
   delete m_x;
@@ -551,7 +554,7 @@ SecondaryVertexContainer :: ~SecondaryVertexContainer ()
 
 void SecondaryVertexContainer :: setTree ( TTree* tree )
 {
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::setTree()", "setting tree" );
+  if ( m_debug ) std::cout << "SecondaryVertex : setTree()" << std::endl;
   
   VertexContainer::setTree ( tree );
 
@@ -819,7 +822,7 @@ void SecondaryVertexContainer :: setTree ( TTree* tree )
 
 void SecondaryVertexContainer :: setBranches ( TTree* tree )
 {
-  if ( m_debug ) Info( "SecondaryVertexContainer::setBranches()", "setting branches" );
+  if ( m_debug ) std::cout << "SecondaryVertex : setBranches()" << std::endl;
   
   VertexContainer::setBranches ( tree );
 
@@ -1084,7 +1087,7 @@ void SecondaryVertexContainer :: setBranches ( TTree* tree )
 
 void SecondaryVertexContainer :: clear ()
 {
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::clear()", "clearing branches" );
+  if ( m_debug ) std::cout << "SecondaryVertex : clear()" << std::endl;
   
   VertexContainer::clear ();
 
@@ -1352,7 +1355,7 @@ void SecondaryVertexContainer :: clear ()
 
 void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVtx, const std::string treeName )
 {
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::FillSecondaryVertex()", "filling branches" );
+  if ( m_debug ) std::cout << "SecondaryVertex : FillSecondaryVertex()" << std::endl;
   
 
   
@@ -1532,7 +1535,7 @@ void SecondaryVertexContainer :: FillSecondaryVertex ( const xAOD::Vertex* secVt
 
 void SecondaryVertexContainer :: recordTracks ( const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::recordTracks()", "filling vertex track branches" );
+  if ( m_debug ) std::cout << "SecondaryVertexContainer : recordTracks()" << std::endl;
 
   std::vector<int>   trk_ID;
   std::vector<float> trk_qOverP;
@@ -1718,7 +1721,7 @@ void SecondaryVertexContainer :: recordTracks ( const std::vector<const xAOD::Tr
 void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
                  const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::processCloseTruth()", "filling close truth vertex branches" );
+  if ( m_debug ) std::cout << "SecondaryVertexContainer : processCloseTruth()" << std::endl;
 
   std::vector<uint8_t> close_isPid;
   std::vector<uint8_t> close_isOffPid;
@@ -1810,7 +1813,6 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
     phi     = closestTruthVertex->phi();
     barcode = closestTruthVertex->barcode();
 
-    //for ( size_t i = 0; i != closestTruthVertex->nIncomingParticles(); ++i ) {
     for ( auto inLink : closestTruthVertex->incomingParticleLinks()){
       if ( !inLink.isValid()) continue;
       const xAOD::TruthParticle* inPart = *inLink;
@@ -1941,7 +1943,7 @@ void SecondaryVertexContainer :: processCloseTruth ( const xAOD::Vertex* secVtx,
 void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx,
                   const std::vector<const xAOD::TrackParticle*>& filteredTracks )
 {
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::processLinkedTruth()", "filling linked truth vertex branches" );
+  if ( m_debug ) std::cout << "SecondaryVertex : processLinkedTruth()" << std::endl;
 
   std::vector<uint8_t> link_isPid;
   std::vector<uint8_t> link_isOffPid;
@@ -2157,8 +2159,6 @@ void SecondaryVertexContainer :: processLinkedTruth ( const xAOD::Vertex* secVtx
   if ( m_infoSwitch.m_tracks )
     m_trk_truthPointsToMaxlinkTV ->push_back( trk_truthPointsToTV );
 
-
-  if ( m_debug ) Info( "xAH::SecondaryVertexContainer::processLinkedTruth()", "filling linked parent truth vertex branches" );
 
   std::vector<uint8_t> linkP_isPid;
   std::vector<uint8_t> linkP_isOffPid;

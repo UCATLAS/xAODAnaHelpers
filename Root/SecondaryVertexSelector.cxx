@@ -132,7 +132,7 @@ EL::StatusCode SecondaryVertexSelector :: initialize ()
     TFile* mapOut = new TFile(m_mapOutFile.c_str(), "READ");
 
     if( mapIn->IsOpen() && mapOut->IsOpen() ) {
-      std::cout << "files open!" << std::endl;
+      ANA_MSG_DEBUG("files open!");
       mapOut ->GetObject(m_mapOutName.c_str(), m_materialMap_v3_Outer);
       mapIn->GetObject(m_mapInName.c_str(), m_materialMap_v32_Inner);
       mapIn ->GetObject(m_matrixInName.c_str(), m_materialMap_v32_Matrix);
@@ -140,11 +140,11 @@ EL::StatusCode SecondaryVertexSelector :: initialize ()
       
 
       if(m_materialMap_v3_Outer) {
-        std::cout << "Outer map open!" << std::endl;
+        ANA_MSG_DEBUG("Outer map open!");
         m_materialMap_v3_Outer->SetDirectory(0);
       }
       if(m_materialMap_v32_Inner) {
-        std::cout << "Inner map open!" << std::endl;
+        ANA_MSG_DEBUG("Inner map open!");
         m_materialMap_v32_Inner->SetDirectory(0);
       }
     }
