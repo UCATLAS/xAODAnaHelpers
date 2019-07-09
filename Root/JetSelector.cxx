@@ -1016,6 +1016,10 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     } //if nSelectedJets > 1 && !m_diJetTrigChains.empty()
   } //if m_doTrigMatch && selectedJets
 
+  if(m_sort) {
+    std::sort( selectedJets->begin(), selectedJets->end(), HelperFunctions::sort_pt );
+  }
+
   ANA_MSG_DEBUG("leave executeSelection... ");
   return true;
 }
