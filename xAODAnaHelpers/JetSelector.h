@@ -242,6 +242,8 @@ public:
 
   /// @brief remove duplicate jets (same eta, phi; very close pt)
   bool m_removeDuplicates = false;
+  /// @brief number of events with duplicates
+  int m_count_events_with_duplicates = 0;
   /// @brief sort jets (normally done by JetCalibrator, but HLT jets need sorting and don't get calibrated here)
   bool m_sort = false;
 

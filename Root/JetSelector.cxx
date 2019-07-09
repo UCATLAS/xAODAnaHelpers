@@ -582,7 +582,8 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       ANA_MSG_DEBUG( "  jet " << i_jet << ": " << jet_itr->pt() << ", " <<  jet_itr->eta() << ", " << jet_itr->phi() );
       i_jet++;
     }
-    
+    if(!badIndices.empty())
+      m_count_events_with_duplicates++;
   }
 
   i_jet = 0;
@@ -1057,6 +1058,10 @@ EL::StatusCode JetSelector :: finalize ()
     ANA_MSG_DEBUG( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
+  }
+
+  if(m_removeDuplicates) {
+    ANA_MSG_INFO("removed duplicate " << m_inContainerName << " from " << m_count_events_with_duplicates << " events");
   }
 
   return EL::StatusCode::SUCCESS;
