@@ -240,6 +240,9 @@ public:
   /** A comma-separated string w/ all the HLT dijet trigger chains for which you want to perform the matching.  If left empty (as it is by default), no trigger matching will be attempted at all */
   std::string    m_diJetTrigChains = "";
 
+  /// @brief remove duplicate jets (same eta, phi; very close pt)
+  bool m_removeDuplicates = false;
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
@@ -326,5 +329,6 @@ public:
   /// @endcond
 
 };
+
 
 #endif
