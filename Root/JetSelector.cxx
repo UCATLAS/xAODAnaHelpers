@@ -556,6 +556,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     sort(etaPairs.begin(), etaPairs.end());
 
     bool allChecked = false;
+    if(int(etaPairs.size())<=1) allChecked = true;
     while(!allChecked) {
       for(int i_etaPair=1; i_etaPair < int(etaPairs.size()); i_etaPair++) { // start with second jet
 
