@@ -23,8 +23,12 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   }
   
   // clean
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanTrig) {
-    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanTrig){
+  if(m_infoSwitch.m_cleanTrig && ! (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)) {
+    std::cout << "JetContainer              WARNING You asked for cleanTrig for " << name << "but didn't specify clean or cleanLight. Going to assume you wanted clean." << std::endl;
+    m_infoSwitch.m_clean = true;
+  }
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+    if(m_infoSwitch.m_clean){
       m_Timing                    =new std::vector<float>();
       m_LArQuality                =new std::vector<float>();
       m_HECQuality                =new std::vector<float>();
@@ -40,13 +44,21 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_LeadingClusterSecondLambda=new std::vector<float>();
       m_LeadingClusterCenterLambda=new std::vector<float>();
       m_LeadingClusterSecondR     =new std::vector<float>();
-      m_clean_passLooseBadUgly    =new std::vector<int>();
-      m_clean_passTightBadUgly    =new std::vector<int>();
-      m_clean_passLooseBadTriggerUgly=new std::vector<int>();
+      if(m_infoSwitch.m_cleanTrig) {
+        m_clean_passLooseBadTriggerUgly=new std::vector<int>();
+      }
+      else {
+        m_clean_passLooseBadUgly    =new std::vector<int>();
+        m_clean_passTightBadUgly    =new std::vector<int>();
+      }
     }
-    m_clean_passLooseBad        =new std::vector<int>();
-    m_clean_passLooseBadTrigger =new std::vector<int>();
-    m_clean_passTightBad        =new std::vector<int>();
+    if(m_infoSwitch.m_cleanTrig) {
+      m_clean_passLooseBadTrigger =new std::vector<int>();
+    }
+    else {
+      m_clean_passLooseBad        =new std::vector<int>();
+      m_clean_passTightBad        =new std::vector<int>();
+    }
   }
 
   // energy
@@ -65,38 +77,38 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
   // scales
   if ( m_infoSwitch.m_scales ) {
-    m_emScalePt               = new std::vector<float>();
-    m_constScalePt	    = new std::vector<float>();
-    m_pileupScalePt		    = new std::vector<float>();
-    m_originConstitScalePt    = new std::vector<float>();
-    m_etaJESScalePt	    = new std::vector<float>();
-    m_gscScalePt		    = new std::vector<float>();
-    m_jmsScalePt		 = new std::vector<float>();
-    m_insituScalePt	    = new std::vector<float>();
+    m_emScalePt            = new std::vector<float>();
+    m_constScalePt	   = new std::vector<float>();
+    m_pileupScalePt	   = new std::vector<float>();
+    m_originConstitScalePt = new std::vector<float>();
+    m_etaJESScalePt	   = new std::vector<float>();
+    m_gscScalePt	   = new std::vector<float>();
+    m_jmsScalePt           = new std::vector<float>();
+    m_insituScalePt	   = new std::vector<float>();
 
-    m_emScaleM               = new std::vector<float>();
+    m_emScaleM             = new std::vector<float>();
     m_constScaleM          = new std::vector<float>();
-    m_pileupScaleM                 = new std::vector<float>();
-    m_originConstitScaleM    = new std::vector<float>();
+    m_pileupScaleM         = new std::vector<float>();
+    m_originConstitScaleM  = new std::vector<float>();
     m_etaJESScaleM         = new std::vector<float>();
-    m_gscScaleM                    = new std::vector<float>();
-    m_jmsScaleM                 = new std::vector<float>();
+    m_gscScaleM            = new std::vector<float>();
+    m_jmsScaleM            = new std::vector<float>();
     m_insituScaleM         = new std::vector<float>();
   }
 
   // constscale eta
   if ( m_infoSwitch.m_constscaleEta ) {
-    m_constScaleEta               = new std::vector<float>();
+    m_constScaleEta            = new std::vector<float>();
   }
 
   // detector eta
   if ( m_infoSwitch.m_detectorEta ) {
-    m_detectorEta               = new std::vector<float>();
+    m_detectorEta              = new std::vector<float>();
   }
 
   // layer
   if ( m_infoSwitch.m_layer ) {
-    m_EnergyPerSampling       = new std::vector< std::vector<float> >();
+    m_EnergyPerSampling        = new std::vector< std::vector<float> >();
   }
 
   // tracksAll
@@ -113,13 +125,13 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   // trackPV
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
     if (m_infoSwitch.m_trackPV){
-      m_NumTrkPt1000PV       =new std::vector<float>();
-      m_SumPtTrkPt1000PV     =new std::vector<float>();
-      m_TrackWidthPt1000PV   =new std::vector<float>();
-      m_NumTrkPt500PV        =new std::vector<float>();
-      m_SumPtTrkPt500PV      =new std::vector<float>();
-      m_TrackWidthPt500PV    =new std::vector<float>();
-      m_JVFPV                =new std::vector<float>();
+      m_NumTrkPt1000PV       = new std::vector<float>();
+      m_SumPtTrkPt1000PV     = new std::vector<float>();
+      m_TrackWidthPt1000PV   = new std::vector<float>();
+      m_NumTrkPt500PV        = new std::vector<float>();
+      m_SumPtTrkPt500PV      = new std::vector<float>();
+      m_TrackWidthPt500PV    = new std::vector<float>();
+      m_JVFPV                = new std::vector<float>();
       m_JvtJvfcorr           = new std::vector<float>();
       m_JvtRpt               = new std::vector<float>();
     }
@@ -465,8 +477,8 @@ JetContainer::~JetContainer()
   }
 
   // clean
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanTrig) {
-    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanTrig){
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+    if(m_infoSwitch.m_clean){
       delete m_Timing;
       delete m_LArQuality;
       delete m_HECQuality;
@@ -482,13 +494,21 @@ JetContainer::~JetContainer()
       delete m_LeadingClusterSecondLambda;
       delete m_LeadingClusterCenterLambda;
       delete m_LeadingClusterSecondR;
-      delete m_clean_passLooseBadUgly;
-      delete m_clean_passLooseBadTriggerUgly;
-      delete m_clean_passTightBadUgly;
+      if(m_infoSwitch.m_cleanTrig) {
+        delete m_clean_passLooseBadTriggerUgly;
+      }
+      else {
+        delete m_clean_passLooseBadUgly;
+        delete m_clean_passTightBadUgly;
+      }
     }
-    delete m_clean_passLooseBad;
-    delete m_clean_passLooseBadTrigger;
-    delete m_clean_passTightBad;
+    if(m_infoSwitch.m_cleanTrig) {
+      delete m_clean_passLooseBadTrigger;
+    }
+    else {
+      delete m_clean_passLooseBad;
+      delete m_clean_passTightBad;
+    }
   }
 
   // energy
@@ -872,9 +892,9 @@ void JetContainer::setTree(TTree *tree)
     connectBranch<std::string>      (tree, "listTrigChains",       &m_listTrigChains );
   }
 
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanTrig)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
     {
-      if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanTrig){
+      if(m_infoSwitch.m_clean){
         connectBranch<float>(tree, "Timing",                     &m_Timing);
         connectBranch<float>(tree, "LArQuality",                 &m_LArQuality);
         connectBranch<int>  (tree, "LArBadHVNCell",              &m_LArBadHVNCell);
@@ -891,13 +911,21 @@ void JetContainer::setTree(TTree *tree)
         connectBranch<float>(tree, "LeadingClusterSecondLambda", &m_LeadingClusterSecondLambda);
         connectBranch<float>(tree, "LeadingClusterCenterLambda", &m_LeadingClusterCenterLambda);
         connectBranch<float>(tree, "LeadingClusterSecondR",      &m_LeadingClusterSecondR);
-        connectBranch<int>  (tree, "clean_passLooseBadUgly",     &m_clean_passLooseBadUgly);
-        connectBranch<int>  (tree, "clean_passLooseBadTriggerUgly",&m_clean_passLooseBadTriggerUgly);
-        connectBranch<int>  (tree, "clean_passTightBadUgly",     &m_clean_passTightBadUgly);
+        if(m_infoSwitch.m_cleanTrig) {
+          connectBranch<int>  (tree, "clean_passLooseBadTriggerUgly",&m_clean_passLooseBadTriggerUgly);
+        }
+        else {
+          connectBranch<int>  (tree, "clean_passLooseBadUgly",     &m_clean_passLooseBadUgly);
+          connectBranch<int>  (tree, "clean_passTightBadUgly",     &m_clean_passTightBadUgly);
+        }
       }
-      connectBranch<int>  (tree, "clean_passLooseBad",         &m_clean_passLooseBad);
-      connectBranch<int>  (tree, "clean_passLooseBadTrigger",  &m_clean_passLooseBadTrigger);
-      connectBranch<int>  (tree, "clean_passTightBad",         &m_clean_passTightBad);
+      if(m_infoSwitch.m_cleanTrig) {
+        connectBranch<int>  (tree, "clean_passLooseBadTrigger",  &m_clean_passLooseBadTrigger);
+      }
+      else {
+        connectBranch<int>  (tree, "clean_passLooseBad",         &m_clean_passLooseBad);
+        connectBranch<int>  (tree, "clean_passTightBad",         &m_clean_passTightBad);
+      }
     }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight )
@@ -1118,10 +1146,10 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.listTrigChains        =     m_listTrigChains        ->at(idx);
   }
 
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanTrig)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
     {
       if(m_debug) std::cout << "updating clean " << std::endl;
-      if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanTrig){
+      if(m_infoSwitch.m_clean){
         jet.Timing                    =m_Timing                    ->at(idx);
         jet.LArQuality                =m_LArQuality                ->at(idx);
         jet.HECQuality                =m_HECQuality                ->at(idx);
@@ -1137,13 +1165,21 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
         jet.LeadingClusterSecondLambda=m_LeadingClusterSecondLambda->at(idx);
         jet.LeadingClusterCenterLambda=m_LeadingClusterCenterLambda->at(idx);
         jet.LeadingClusterSecondR     =m_LeadingClusterSecondR     ->at(idx);
-        jet.clean_passLooseBadUgly    =m_clean_passLooseBadUgly    ->at(idx);
-        jet.clean_passLooseBadTriggerUgly =m_clean_passLooseBadTriggerUgly    ->at(idx);
-        jet.clean_passTightBadUgly    =m_clean_passTightBadUgly    ->at(idx);
+        if(m_infoSwitch.m_cleanTrig) {
+          jet.clean_passLooseBadTriggerUgly =m_clean_passLooseBadTriggerUgly    ->at(idx);
+        }
+        else {
+          jet.clean_passLooseBadUgly    =m_clean_passLooseBadUgly    ->at(idx);
+          jet.clean_passTightBadUgly    =m_clean_passTightBadUgly    ->at(idx);
+        }
       }
-      jet.clean_passLooseBad        =m_clean_passLooseBad        ->at(idx);
-      jet.clean_passLooseBadTrigger =m_clean_passLooseBadTrigger ->at(idx);
-      jet.clean_passTightBad        =m_clean_passTightBad        ->at(idx);
+      if(m_infoSwitch.m_cleanTrig) {
+        jet.clean_passLooseBadTrigger =m_clean_passLooseBadTrigger ->at(idx);
+      }
+      else {
+        jet.clean_passLooseBad        =m_clean_passLooseBad        ->at(idx);
+        jet.clean_passTightBad        =m_clean_passTightBad        ->at(idx);
+      }
     }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight)
@@ -1740,8 +1776,8 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<std::string>(tree, "listTrigChains", m_listTrigChains );
   }
 
-  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanTrig ) {
-    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanTrig ){
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+    if(m_infoSwitch.m_clean){
       setBranch<float>(tree,"Timing",                        m_Timing               );
       setBranch<float>(tree,"LArQuality",                    m_LArQuality         );
       setBranch<float>(tree,"HECQuality",                    m_HECQuality               );
@@ -1757,13 +1793,21 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<float>(tree,"LeadingClusterSecondLambda",    m_LeadingClusterSecondLambda  	  );
       setBranch<float>(tree,"LeadingClusterCenterLambda",    m_LeadingClusterCenterLambda  	  );
       setBranch<float>(tree,"LeadingClusterSecondR",         m_LeadingClusterSecondR  	      );
-      setBranch<int>  (tree,"clean_passLooseBadUgly",        m_clean_passLooseBadUgly         );
-      setBranch<int>  (tree,"clean_passLooseBadTriggerUgly", m_clean_passLooseBadTriggerUgly  );
-      setBranch<int>  (tree,"clean_passTightBadUgly",        m_clean_passTightBadUgly         );
+      if(m_infoSwitch.m_cleanTrig) {
+        setBranch<int>  (tree,"clean_passLooseBadTriggerUgly", m_clean_passLooseBadTriggerUgly  );
+      }
+      else {
+        setBranch<int>  (tree,"clean_passLooseBadUgly",        m_clean_passLooseBadUgly         );
+        setBranch<int>  (tree,"clean_passTightBadUgly",        m_clean_passTightBadUgly         );
+      }
     }
-    setBranch<int>  (tree,"clean_passLooseBad",            m_clean_passLooseBad             );
-    setBranch<int>  (tree,"clean_passLooseBadTrigger",     m_clean_passLooseBadTrigger      );
-    setBranch<int>  (tree,"clean_passTightBad",            m_clean_passTightBad             );
+    if(m_infoSwitch.m_cleanTrig) {
+      setBranch<int>  (tree,"clean_passLooseBadTrigger",     m_clean_passLooseBadTrigger      );
+    }
+    else {
+      setBranch<int>  (tree,"clean_passLooseBad",            m_clean_passLooseBad             );
+      setBranch<int>  (tree,"clean_passTightBad",            m_clean_passTightBad             );
+    }
   }
 
 
@@ -2142,8 +2186,8 @@ void JetContainer::clear()
   }
   
   // clean
-  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanTrig ) {
-    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanTrig){
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
+    if(m_infoSwitch.m_clean){
       m_Timing                    ->clear();
       m_LArQuality                ->clear();
       m_HECQuality                ->clear();
@@ -2159,13 +2203,21 @@ void JetContainer::clear()
       m_LeadingClusterSecondLambda->clear();
       m_LeadingClusterCenterLambda->clear();
       m_LeadingClusterSecondR     ->clear();
-      m_clean_passTightBadUgly    ->clear();
-      m_clean_passLooseBadUgly    ->clear();
-      m_clean_passLooseBadTriggerUgly->clear();
+      if(m_infoSwitch.m_cleanTrig) {
+        m_clean_passLooseBadTriggerUgly->clear();
+      }
+      else {
+        m_clean_passTightBadUgly    ->clear();
+        m_clean_passLooseBadUgly    ->clear();
+      }
     }
-    m_clean_passLooseBad        ->clear();
-    m_clean_passLooseBadTrigger ->clear();
-    m_clean_passTightBad        ->clear();
+    if(m_infoSwitch.m_cleanTrig) {
+      m_clean_passLooseBadTrigger ->clear();
+    }
+    else {
+      m_clean_passLooseBad        ->clear();
+      m_clean_passTightBad        ->clear();
+    }
   }
 
 
@@ -2562,9 +2614,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     
   }
 
-  if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanTrig) {
+  if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
 
-    if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanTrig){
+    if(m_infoSwitch.m_clean){
 
       static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
       safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
