@@ -1316,4 +1316,3 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   ANA_MSG_DEBUG("Passed Cuts");
   return 1;
 }
-
