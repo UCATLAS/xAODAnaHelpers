@@ -2,6 +2,9 @@ id/I:name/C:xsec/F:kfac/F:eff/F:relunc/F
 345342	PowhegPy8EG_NNLOPS_nnlo_30_ggH125_bb                16.275374999999997         1.0	1.0	1
 345338	PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_bb 	       2.17211904                 1.                    1.0       1
 345931	PowhegPy8EG_NNPDF30_AZNLOCTEQ6L1_VBFH125_bb         2.17211904                 1.                    0.026877  1
+345949	PowhegPythia8EvtGen_NNPDF30_AZNLOCTEQ6L1_VBFH125_bb	2.18242752	1.	1.	1.
 309450	PowhegPy8EG_NNLOPS_nnlo_30_ggH125_bb_kt200	       0.27386			  1.0			1.0	  1
 309452	Pythia8EvtGen_A14NNPDF23LO_ZH125_bb_fj350	       0.346505		  1.0			0.01301815 1
 309451	Pythia8EvtGen_A14NNPDF23LO_WH125_bb_fj350	       0.634845		  1.0			0.01307475 1
+345053	PowhegPythia8EvtGen_NNPDF3_AZNLO_WmH125J_MINLO_lvbb_VpT	0.175550		1.0	   1.0	1.0
+345054	PowhegPythia8EvtGen_NNPDF3_AZNLO_WpH125J_MINLO_lvbb_VpT	0.27863	1.0	1.0	1.0
