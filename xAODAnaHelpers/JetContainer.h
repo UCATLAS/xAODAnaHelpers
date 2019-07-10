@@ -70,6 +70,8 @@ namespace xAH {
       std::vector<float> *m_LeadingClusterSecondR;
       std::vector<int>   *m_clean_passLooseBad;
       std::vector<int>   *m_clean_passLooseBadUgly;
+      std::vector<int>   *m_clean_passLooseBadTrigger;
+      std::vector<int>   *m_clean_passLooseBadTriggerUgly;
       std::vector<int>   *m_clean_passTightBad;
       std::vector<int>   *m_clean_passTightBadUgly;
 

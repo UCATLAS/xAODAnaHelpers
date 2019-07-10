@@ -526,7 +526,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   int nPass(0); int nObj(0);
   bool passEventClean(true);
 
-  static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
+  static SG::AuxElement::Accessor< int > isCleanAcc("cleanJet");
 
   //
   // This cannot be static as multiple instance of Jet Selector would
