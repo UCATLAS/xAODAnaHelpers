@@ -614,59 +614,36 @@ void HelpTreeBase::ClearClusters(const std::string clusterName) {
  *
  ********************/
 
-void HelpTreeBase::AddL1Jets()
+void HelpTreeBase::AddL1Jets( const std::string jetName)
 {
 
-  if(m_debug) Info("AddL1Jets()", "Adding kinematics jet variables");
+  if(m_debug) Info("AddL1Jets()", "Adding %s L1 jets", jetName.c_str());
 
-  m_tree->Branch("nL1Jets",     &m_nL1Jet,"nL1Jets/I");
-  m_tree->Branch("L1Jet_et8x8", &m_l1Jet_et8x8);
-  m_tree->Branch("L1Jet_eta",   &m_l1Jet_eta);
-  m_tree->Branch("L1Jet_phi",   &m_l1Jet_phi);
+  m_l1Jets[jetName] = new xAH::L1JetContainer(jetName, m_units, m_isMC);
+  m_l1Jets[jetName]->m_debug = m_debug;
+
+  xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
+  thisL1Jet->setBranches(m_tree);
 
 }
 
-void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jets ) {
+void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, const std::string jetName, bool sortL1Jets ) {
 
-  this->ClearL1Jets();
+  this->ClearL1Jets(jetName);
 
-  if(!sortL1Jets) {
-    for( auto jet_itr : *jets ) {
-      m_l1Jet_et8x8.push_back ( jet_itr->et8x8() / m_units );
-      m_l1Jet_eta.push_back( jet_itr->eta() );
-      m_l1Jet_phi.push_back( jet_itr->phi() );
-      m_nL1Jet++;
-    }
-  }
+  xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
   
-  else {
-    std::vector< std::vector<float> > vec;
-    for( auto jet_itr : *jets ) {
-      std::vector<float> row;
-      row.clear();
-      row.push_back(jet_itr->et8x8());
-      row.push_back(jet_itr->eta());
-      row.push_back(jet_itr->phi());
-      vec.push_back(row);
-    }
-    
-    std::sort(vec.begin(), vec.end(), [&](const std::vector<float> a, const std::vector<float> b) { return a.at(0) < b.at(0);});
-    for (int i = int(vec.size())-1; i >= 0; i--) {
-      m_l1Jet_et8x8.push_back((vec.at(i)).at(0) / m_units);
-      m_l1Jet_eta.push_back((vec.at(i)).at(1));
-      m_l1Jet_phi.push_back((vec.at(i)).at(2));
-      m_nL1Jet++;
-    }
-    vec.clear();
-  }
+  thisL1Jet->FillL1Jets(jets,sortL1Jets);
+
 }
 
+void HelpTreeBase::ClearL1Jets(const std::string jetName) {
 
-void HelpTreeBase::ClearL1Jets() {
-  m_nL1Jet = 0;
-  m_l1Jet_et8x8.clear();
-  m_l1Jet_eta.clear();
-  m_l1Jet_phi.clear();
+  xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
+  std::cout << "Before thisL1Jet->clear()" << std::endl;
+  thisL1Jet->clear();
+  std::cout << "After thisL1Jet->clear()" << std::endl;
+
 }
 
 

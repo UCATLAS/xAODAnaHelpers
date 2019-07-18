@@ -33,6 +33,7 @@
 #include "xAODAnaHelpers/EventInfo.h"
 #include "xAODAnaHelpers/MetContainer.h"
 #include "xAODAnaHelpers/JetContainer.h"
+#include "xAODAnaHelpers/L1JetContainer.h"
 #include "xAODAnaHelpers/ElectronContainer.h"
 #include "xAODAnaHelpers/PhotonContainer.h"
 #include "xAODAnaHelpers/ClusterContainer.h"
@@ -77,7 +78,7 @@ public:
   void AddPhotons     (const std::string detailStr = "", const std::string photonName = "ph");
   void AddClusters    (const std::string detailStr = "", const std::string clusterName = "cl");
   void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
-  void AddL1Jets      ();
+  void AddL1Jets      (const std::string jetName   = "");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
   void AddTrackParts  (const std::string trackName,	 const std::string detailStr = "");
 
@@ -139,7 +140,7 @@ public:
 
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
-  void FillL1Jets( const xAOD::JetRoIContainer* jets, bool sortL1Jets = false );
+  void FillL1Jets( const xAOD::JetRoIContainer* jets, const std::string jetName = "L1Jet", bool sortL1Jets = false );
 
   void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
@@ -175,7 +176,7 @@ public:
   void ClearPhotons     (const std::string photonName = "ph");
   void ClearClusters    (const std::string clusterName = "cl");
   void ClearJets        (const std::string jetName = "jet");
-  void ClearL1Jets      ();
+  void ClearL1Jets      (const std::string jetName = "L1Jet");
   void ClearTruth       (const std::string truthName);
   void ClearTracks	(const std::string trackName);
   void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
@@ -349,10 +350,7 @@ protected:
   //
   // L1 Jets
   //
-  int m_nL1Jet;
-  std::vector<float> m_l1Jet_et8x8;
-  std::vector<float> m_l1Jet_eta;
-  std::vector<float> m_l1Jet_phi;
+  std::map<std::string, xAH::L1JetContainer*> m_l1Jets;
 
   //
   // Truth
