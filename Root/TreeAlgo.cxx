@@ -102,6 +102,19 @@ EL::StatusCode TreeAlgo :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  std::istringstream ss_l1_containers(m_l1JetContainerName);
+  while ( std::getline(ss_l1_containers, token, ' ') ){
+    m_l1JetContainers.push_back(token);
+  }
+  std::istringstream ss_l1_names(m_l1JetBranchName);
+  while ( std::getline(ss_l1_names, token, ' ') ){
+    m_l1JetBranches.push_back(token);
+  }
+  if( !m_l1JetContainerName.empty() && m_l1JetContainers.size()!=m_l1JetBranches.size()){
+    ANA_MSG_ERROR( "The number of L1 jet containers must be equal to the number of L1 jet name branches. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+
   std::istringstream ss_cluster_containers(m_clusterContainerName);
   while ( std::getline(ss_cluster_containers, token, ' ') ){
     m_clusterContainers.push_back(token);
@@ -283,7 +296,11 @@ EL::StatusCode TreeAlgo :: execute ()
 	else{ helpTree->AddJets       (m_jetDetails.at(ll), m_jetBranches.at(ll).c_str()); }
       }
     }
-    if (!m_l1JetContainerName.empty() )         { helpTree->AddL1Jets();                                           }
+    if (!m_l1JetContainerName.empty() )         {
+      for(unsigned int ll=0; ll<m_l1JetContainers.size();++ll){
+        helpTree->AddL1Jets(m_l1JetBranches.at(ll).c_str());
+      }
+    }
     if (!m_trigJetContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_trigJetContainers.size();++ll){
         if(m_trigJetDetails.size()==1) helpTree->AddJets       (m_trigJetDetailStr, m_trigJetBranches.at(ll).c_str());
@@ -407,11 +424,21 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_l1JetContainerName.empty() ){
-      if ( !HelperFunctions::isAvailable<xAOD::JetRoIContainer>(m_l1JetContainerName, m_event, m_store, msg()) ) continue;
+      bool reject = false;
+      for ( unsigned int ll = 0; ll < m_l1JetContainers.size(); ++ll ) {
+        const xAOD::JetRoIContainer* inL1Jets(nullptr);
+        if ( !HelperFunctions::isAvailable<xAOD::JetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
+          ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
+          reject = true;
+	}
+        ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
+        helpTree->FillL1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets );
+      }
 
-      const xAOD::JetRoIContainer* inL1Jets(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainerName, m_event, m_store, msg()) );
-      helpTree->FillL1Jets( inL1Jets, m_sortL1Jets );
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a L1 jet container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_trigJetContainerName.empty() ) {
