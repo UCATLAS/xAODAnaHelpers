@@ -640,9 +640,7 @@ void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, const std::str
 void HelpTreeBase::ClearL1Jets(const std::string jetName) {
 
   xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
-  std::cout << "Before thisL1Jet->clear()" << std::endl;
   thisL1Jet->clear();
-  std::cout << "After thisL1Jet->clear()" << std::endl;
 
 }
 
@@ -1025,4 +1023,39 @@ bool HelpTreeBase::writeTo( TFile* file ) {
   int status( m_tree->Write() );
   if ( status == 0 ) { return false; }
   return true;
+}
+
+/*********************
+ *
+ *   VERTICES
+ *
+ ********************/
+
+void HelpTreeBase::AddVertices( const std::string detailStr, const std::string vertexName )
+{
+
+  if(m_debug) Info("AddVertices()", "Adding %s vertices", vertexName.c_str());
+
+  m_vertices[vertexName] = new xAH::VertexContainer(detailStr, vertexName);
+  xAH::VertexContainer* thisVertex = m_vertices[vertexName];
+  thisVertex->setBranches(m_tree);
+
+}
+
+void HelpTreeBase::FillVertices( const xAOD::VertexContainer* vertices, const std::string vertexName ) {
+
+  this->ClearVertices(vertexName);
+
+  xAH::VertexContainer* thisVertex = m_vertices[vertexName];
+
+  thisVertex->FillVertices(vertices);
+
+}
+
+void HelpTreeBase::ClearVertices( const std::string vertexName )
+{
+
+  xAH::VertexContainer* thisVertex = m_vertices[vertexName];
+  thisVertex->clear();
+
 }

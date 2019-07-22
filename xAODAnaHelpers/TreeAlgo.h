@@ -33,6 +33,7 @@ public:
   std::string m_clusterDetailStr = "";
   std::string m_truthParticlesDetailStr = "";
   std::string m_trackParticlesDetailStr = "";
+  std::string m_vertexDetailStr = "";
 
   std::string m_evtContainerName = "";
   std::string m_muContainerName = "";
@@ -57,6 +58,7 @@ public:
   std::string m_trackParticlesContainerName = "";
   std::string m_l1JetContainerName = "";
   std::string m_l1JetBranchName    = "L1Jet";
+  std::string m_vertexBranchName   = "vertex";
   bool m_sortL1Jets = false;
   bool m_retrievePV = true;
 
@@ -82,16 +84,20 @@ protected:
   std::vector<std::string> m_trigJetContainers; //!
   std::vector<std::string> m_fatJetContainers; //!
   std::vector<std::string> m_l1JetContainers; //!
+  std::vector<std::string> m_vertexContainers; //!
 
   std::vector<std::string> m_jetBranches; //!
   std::vector<std::string> m_truthJetBranches; //!
   std::vector<std::string> m_trigJetBranches; //!
   std::vector<std::string> m_fatJetBranches; //!
   std::vector<std::string> m_l1JetBranches; //!
+  std::vector<std::string> m_vertexBranches; //!
 
   std::vector<std::string> m_clusterDetails; //!
   std::vector<std::string> m_clusterContainers; //!
   std::vector<std::string> m_clusterBranches; //!
+
+  std::vector<std::string> m_vertexDetails; //!
 
   std::map<std::string, HelpTreeBase*> m_trees;            //!
 
