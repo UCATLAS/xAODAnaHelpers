@@ -53,10 +53,11 @@ void VertexContainer::clear()
 }
 
 void VertexContainer::FillVertices( const xAOD::VertexContainer* vertices){
-  if(m_detailStr == "primary"){
-    m_vertex_x->push_back( vertices->at(0)->x() );
-    m_vertex_y->push_back( vertices->at(0)->y() );
-    m_vertex_z->push_back( vertices->at(0)->z() );
+  if(m_detailStr == "primary"){ // hard-scatter vertex only
+    int pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
+    m_vertex_x->push_back( vertices->at(pvLocation)->x() );
+    m_vertex_y->push_back( vertices->at(pvLocation)->y() );
+    m_vertex_z->push_back( vertices->at(pvLocation)->z() );
   } else if (m_detailStr == "all"){
     for( auto vertex : *vertices) {
       m_vertex_x->push_back( vertex->x() );
