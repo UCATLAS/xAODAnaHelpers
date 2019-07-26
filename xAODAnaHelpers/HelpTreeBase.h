@@ -34,6 +34,7 @@
 #include "xAODAnaHelpers/MetContainer.h"
 #include "xAODAnaHelpers/JetContainer.h"
 #include "xAODAnaHelpers/L1JetContainer.h"
+#include "xAODAnaHelpers/VertexContainer.h"
 #include "xAODAnaHelpers/ElectronContainer.h"
 #include "xAODAnaHelpers/PhotonContainer.h"
 #include "xAODAnaHelpers/ClusterContainer.h"
@@ -81,6 +82,7 @@ public:
   void AddL1Jets      (const std::string jetName   = "");
   void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
   void AddTrackParts  (const std::string trackName,	 const std::string detailStr = "");
+  void AddVertices    (const std::string detailStr = "", const std::string vertexName = "vertex"); // options for detailStr: "all" or "primary"
 
   /**
    *  @brief  Declare a new collection of fatjets to be written to the output tree.
@@ -148,6 +150,8 @@ public:
   void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
 
+  void FillVertices( const xAOD::VertexContainer* vertices, const std::string vertexName = "vertex");
+
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
    *          container name and suffix should be declared beforehand using `AddFatJets()`.
@@ -183,6 +187,7 @@ public:
   void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
   void ClearTaus        (const std::string tauName = "tau" );
   void ClearMET         (const std::string metName = "met");
+  void ClearVertices    (const std::string vertexName = "vertex");
 
   bool writeTo( TFile *file );
 
@@ -406,6 +411,11 @@ protected:
   // met
   //
   std::map<std::string, xAH::MetContainer* > m_met;
+
+  //
+  // vertices
+  //
+  std::map<std::string, xAH::VertexContainer*> m_vertices;
 
 };
 

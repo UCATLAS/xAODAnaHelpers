@@ -115,6 +115,19 @@ EL::StatusCode TreeAlgo :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  std::istringstream ss_vertex_containers(m_vertexContainerName);
+  while ( std::getline(ss_vertex_containers, token, ' ') ){
+    m_vertexContainers.push_back(token);
+  }
+  std::istringstream ss_vertex_names(m_vertexBranchName);
+  while ( std::getline(ss_vertex_names, token, ' ') ){
+    m_vertexBranches.push_back(token);
+  }
+  if( m_vertexContainers.size()!=m_vertexBranches.size()){
+    ANA_MSG_ERROR( "The number of vertex containers must be equal to the number of vertex name branches. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+
   std::istringstream ss_cluster_containers(m_clusterContainerName);
   while ( std::getline(ss_cluster_containers, token, ' ') ){
     m_clusterContainers.push_back(token);
@@ -143,6 +156,15 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_trigJetDetails.size()!=1  && m_trigJetContainers.size()!=m_trigJetDetails.size()){
     ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+
+  std::istringstream ss_vertex_details(m_vertexDetailStr);
+  while ( std::getline(ss_vertex_details, token, '|') ){
+    m_vertexDetails.push_back(token);
+  }
+  if( m_vertexDetails.size()>1 && m_vertexContainers.size()!=m_vertexDetails.size()){
+    ANA_MSG_ERROR( "The size of m_vertexContainers should be equal to the size of m_vertexDetailStr. Exiting");
     return EL::StatusCode::FAILURE;
   }
 
@@ -275,7 +297,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
     m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
     const auto& helpTree = m_trees[systName];
-    helpTree->m_vertexContainerName = m_vertexContainerName;
+    helpTree->m_vertexContainerName = m_vertexContainers.at(0);
 
     // tell the tree to go into the file
     outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
@@ -318,6 +340,12 @@ EL::StatusCode TreeAlgo :: execute ()
 	else{ helpTree->AddFatJets       (m_fatJetDetails.at(ll), m_fatJetBranches.at(ll).c_str()); }
       }
     }
+    if ( !m_vertexContainerName.empty() && !m_vertexDetailStr.empty() ) {
+      for(unsigned int ll=0; ll<m_vertexContainers.size();++ll){
+	if(m_vertexDetails.size()==1) helpTree->AddVertices(m_vertexDetailStr, m_vertexBranches.at(ll).c_str());
+	else{ helpTree->AddVertices(m_vertexDetails.at(ll), m_vertexBranches.at(ll).c_str()); }
+      }
+    }
 
     if (!m_truthFatJetContainerName.empty() )   { helpTree->AddTruthFatJets(m_truthFatJetDetailStr, m_truthFatJetBranchName);               }
     if (!m_tauContainerName.empty() )           { helpTree->AddTaus(m_tauDetailStr);                               }
@@ -343,7 +371,7 @@ EL::StatusCode TreeAlgo :: execute ()
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
   const xAOD::VertexContainer* vertices(nullptr);
   if (m_retrievePV) {
-    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainers.at(0), m_event, m_store, msg()) );
   }
   const xAOD::Vertex* primaryVertex = m_retrievePV ? HelperFunctions::getPrimaryVertex( vertices , msg() ) : nullptr;
 
@@ -572,6 +600,24 @@ EL::StatusCode TreeAlgo :: execute ()
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));
       helpTree->FillTracks(m_trackParticlesContainerName, inTrackParticles);
+    }
+
+    if ( !m_vertexContainerName.empty() && !m_vertexDetailStr.empty() ){
+      bool reject = false;
+      for ( unsigned int ll = 0; ll < m_vertexContainers.size(); ++ll ) {
+        const xAOD::VertexContainer* inVertices(nullptr);
+        if ( !HelperFunctions::isAvailable<xAOD::VertexContainer>(m_vertexContainers.at(ll), m_event, m_store, msg()) ){
+          ANA_MSG_DEBUG( "The vertex container " + m_vertexContainers.at(ll) + " is not available. Skipping all remaining vertex collections");
+          reject = true;
+	}
+        ANA_CHECK( HelperFunctions::retrieve(inVertices, m_vertexContainers.at(ll), m_event, m_store, msg()) );
+        helpTree->FillVertices( inVertices, m_vertexBranches.at(ll));
+      }
+
+      if ( reject ) {
+        ANA_MSG_DEBUG( "There was a vertex container problem - not writing the event");
+        continue;
+      }
     }
 
     if ( !m_clusterContainerName.empty() ) {
