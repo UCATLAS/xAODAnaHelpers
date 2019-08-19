@@ -469,7 +469,7 @@ EL::StatusCode JetCalibrator :: execute ()
 
       // largeR jet truth labelling
       if(m_SmoothedWZTagger_handle.isInitialized()) {
-	m_SmoothedWZTagger_handle->decorateTruthLabel(*jet_itr, "FatjetTruthLabel");
+	m_SmoothedWZTagger_handle->decorateTruthLabel(*jet_itr);
       }
     }
 
