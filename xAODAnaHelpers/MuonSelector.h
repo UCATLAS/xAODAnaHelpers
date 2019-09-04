@@ -118,7 +118,7 @@ private:
   TH1D* m_cutflowHistW = nullptr;     //!
   int   m_cutflow_bin;      //!
 
-  bool  m_isUsedBefore;     //!
+  bool  m_isUsedBefore = false;     //!
 
   // object cutflow
   TH1D* m_mu_cutflowHist_1 = nullptr;                 //!

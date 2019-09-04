@@ -258,7 +258,7 @@ namespace HelperClasses{
     m_rapidity      = has_exact("rapidity");
     m_clean         = has_exact("clean");
     m_cleanLight    = has_exact("cleanLight");
-    m_cleanNoSumm   = has_exact("cleanNoSumm");
+    m_cleanTrig     = has_exact("cleanTrig");
     m_energy        = has_exact("energy");
     m_energyLight   = has_exact("energyLight");
     m_scales        = has_exact("scales");

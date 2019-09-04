@@ -526,7 +526,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   int nPass(0); int nObj(0);
   bool passEventClean(true);
 
-  static SG::AuxElement::Accessor< char > isCleanAcc("cleanJet");
+  static SG::AuxElement::Accessor< int > isCleanAcc("cleanJet");
 
   //
   // This cannot be static as multiple instance of Jet Selector would
@@ -534,8 +534,71 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   //
   SG::AuxElement::Decorator< char > passSelDecor( m_decor );
 
+
+  // identify duplicates
+  std::vector<int> badIndices;
+  badIndices.clear();
+  int i_jet = 0;
+  if(m_removeDuplicates) {
+    ANA_MSG_DEBUG("removing duplicates");
+
+    // fill pairs with jet eta and index
+    std::vector< std::pair<float, int> > etaPairs;
+    ANA_MSG_DEBUG("All jets:");
+    i_jet = 0;
+    for ( auto jet_itr : *inJets ) {
+      ANA_MSG_DEBUG( "  jet " << i_jet << ": " << jet_itr->pt() << ", " <<  jet_itr->eta() << ", " << jet_itr->phi() );
+      etaPairs.push_back( std::make_pair(jet_itr->eta(), i_jet) );
+      i_jet++;
+    }
+
+    // sort pairs by eta
+    sort(etaPairs.begin(), etaPairs.end());
+
+    bool allChecked = false;
+    if(int(etaPairs.size())<=1) allChecked = true;
+    while(!allChecked) {
+      for(int i_etaPair=1; i_etaPair < int(etaPairs.size()); i_etaPair++) { // start with second jet
+
+        // if i and i-1 have identical etas then remove i, and add the relevant index to badIndices
+        if(etaPairs[i_etaPair].first == etaPairs[i_etaPair-1].first) {
+          badIndices.push_back(etaPairs[i_etaPair].second);
+          etaPairs.erase(etaPairs.begin()+i_etaPair);
+          break;
+        }
+
+        // if made it to the end with no duplicates, then we're done
+        if(i_etaPair==int(etaPairs.size())-1)
+          allChecked = true; 
+      }
+    }
+
+    ANA_MSG_DEBUG( "duplicates removed:" );
+    i_jet = 0;
+    for ( auto jet_itr : *inJets ) {
+      if(std::find(badIndices.begin(), badIndices.end(), i_jet) != badIndices.end()) {
+        continue;
+      }
+      ANA_MSG_DEBUG( "  jet " << i_jet << ": " << jet_itr->pt() << ", " <<  jet_itr->eta() << ", " << jet_itr->phi() );
+      i_jet++;
+    }
+    if(!badIndices.empty())
+      m_count_events_with_duplicates++;
+  }
+
+  i_jet = 0;
   for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
+    // removing of duplicates
+    if(m_removeDuplicates) {
+      if(!badIndices.empty()) {
+        if(std::find(badIndices.begin(), badIndices.end(), i_jet) != badIndices.end()) {
+          continue;
+        }
+      }
+      i_jet++;
+    }
+      
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
@@ -955,6 +1018,10 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     } //if nSelectedJets > 1 && !m_diJetTrigChains.empty()
   } //if m_doTrigMatch && selectedJets
 
+  if(m_sort) {
+    std::sort( selectedJets->begin(), selectedJets->end(), HelperFunctions::sort_pt );
+  }
+
   ANA_MSG_DEBUG("leave executeSelection... ");
   return true;
 }
@@ -991,6 +1058,10 @@ EL::StatusCode JetSelector :: finalize ()
     ANA_MSG_DEBUG( "Filling cutflow");
     m_cutflowHist ->SetBinContent( m_cutflow_bin, m_numEventPass        );
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
+  }
+
+  if(m_removeDuplicates) {
+    ANA_MSG_INFO("removed duplicate " << m_inContainerName << " from " << m_count_events_with_duplicates << " events");
   }
 
   return EL::StatusCode::SUCCESS;
