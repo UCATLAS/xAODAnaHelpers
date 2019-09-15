@@ -11,14 +11,10 @@ env:
     - secure: "NKEq9tEPPQhcEJWgy06LaTRjVObqb57GMllFrWa8zQ7/a6kVr4l0VMSqREeDeLrwIXo3RK3nG01sBFavy1Ge4RqUhPjbSBln/xXSEZiMSA1PI97FX3L+emOum4knVIudR1V3WXwRCxK138Fpwudbf0Hi/zLNh/stmApCStWBHmyCrxbfmnI3n+cTKC6RvINY6DJi9QbagCaZCfmLYGSqiNzoQbMEm5T5EkB8xdPFwSoGD7KTBwpcjkqhpS+lGoxcxdXimyEN5lmoR9+EIw6ZUZJzeaANHui6H2keBDe4tJaDeAqZeWkpfw8ixvJO/2OTtPEU5y4DcPzVW3x0GO4B/97oCLZI9PrYDiEq9inBL3xmUmeqXcBV8PLnUVzbosvd0W1kSWiw9Cude223of5VNpiXP7keCNbsklIwWfMNnlDNOKlrI0k+J5dvdf3gH3E+166FykA78/PNgiBCTiZRACuCY00170LLPnXCHFvDvZcUsDhGx8XbxQGEyPfjKyq5Fgythexg03PGW0LjxYR275RLGxa5o4fd/AoZiLQY+NVs1TZeexMIvgjHk03FpHKbCxSzRalCVeibZymc7pnH3huWMuOfPM2It5cd2MlH3iR/M9wln+RNkU+VUsu205PdUbnXYc3YFCy30vUdvb3B2CQntwfiU1sH23ZB9uVR6rE="
     - DOCKER_ORG=ucatlas
   matrix:
-    - RELEASE=AnalysisBase,21.2.65
-    - RELEASE=AnalysisTop,21.2.65
-    - RELEASE=AnalysisBase,21.2.64
-    - RELEASE=AnalysisTop,21.2.64
-    - RELEASE=AnalysisBase,21.2.62
-    - RELEASE=AnalysisTop,21.2.62
-    - RELEASE=AnalysisBase,21.2.61
-    - RELEASE=AnalysisTop,21.2.61
+    - RELEASE=AnalysisBase,21.2.84
+    - RELEASE=AnalysisTop,21.2.84
+    - RELEASE=AnalysisBase,21.2.85
+    - RELEASE=AnalysisTop,21.2.85
 
 script:
   - export RELEASE_TYPE=${RELEASE%%,*}
