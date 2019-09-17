@@ -173,6 +173,9 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief Save master, L1, and HLT key
     bool m_storeTrigKeys = false;
 
+    /// @brief Save the trigger prescale weight
+    bool m_storePrescaleWeight = true;
+
   // Metadata
     /// @brief The name of the derivation (use this as an override)
     std::string m_derivationName = "";
