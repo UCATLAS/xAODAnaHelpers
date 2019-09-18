@@ -1,34 +1,60 @@
+#ifndef xAODAnaHelpers_MuonInFatJetCorrection_H
+#define xAODAnaHelpers_MuonInFatJetCorrection_H
+
 #include <xAODAnaHelpers/Algorithm.h>
-//#include <EventLoop/Algorithm.h>
 #include "xAODJet/JetContainer.h"
 #include "xAODTruth/TruthParticleContainer.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
 #include "MuonMomentumCorrections/MuonCalibrationPeriodTool.h"
 
+#include "JetCalibTools/JetCalibrationTool.h"
 
-class MuonInJetCorrection : public xAH::Algorithm {
+class MuonInFatJetCorrection : public xAH::Algorithm {
 
-public:
+  private:
+    float m_trackJetPtMin;
+    float m_trackJetEtaMax;
+    float m_trackJetNConst;
+    float m_muonPtMin;
+    float m_muonEtaMax;
+    float m_muonDrMax;
+    bool  doVR;
+    bool  m_debug;
 
-  MuonInJetCorrection(const std::string &name, ConfigStore &config, xAOD::TEvent *event,
-                EventInfoHandler & eventInfoHandler);
+    std::string m_inContainerName = "";
 
-  ~MuonInJetCorrection();
+    CP::MuonSelectionTool *m_muonSelectionTool;
+    CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool;
+	
+    JetCalibrationTool *m_fatJetCalibration;
 
-  EL::StatusCode getHbbCorrectedVector(const xAOD::Jet &jet, TLorentzVector &correctedVector, const bool doVR);
-  EL::StatusCode decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const;
-  const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
-                                                      std::string scheme, bool useJMSScale = false) const;
-  CP::MuonSelectionTool *m_muonSelectionTool;
-  CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool;
-  float m_trackJetPtMin;
-  float m_trackJetEtaMax;
-  float m_trackJetNConst;
-  float m_muonPtMin;
-  float m_muonEtaMax;
-  float m_muonDrMax;
+    std::string m_fatJetAlgo;
+    std::string m_fatJetCalibSeq;
+    std::string m_fatCalibArea;
+    std::string m_fatJetConfig;
 
+  public:
+
+    MuonInFatJetCorrection();
+
+    virtual EL::StatusCode setupJob(EL::Job &job);
+    virtual EL::StatusCode histInitialize();
+    virtual EL::StatusCode fileExecute();
+    virtual EL::StatusCode changeInput(bool firstFile);
+    virtual EL::StatusCode initialize();
+    virtual EL::StatusCode execute();
+    virtual EL::StatusCode finalize();
+
+    TTree *tree;
+    std::vector<TLorentzVector> muonCorrectedFatJet;
+
+    EL::StatusCode getHbbCorrectedVector(const xAOD::Jet &jet, TLorentzVector &correctedVector, const bool doVR);
+    EL::StatusCode decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const;
+    const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
+                                                        std::string scheme, bool useJMSScale = false) const;
+ 
+    
+    ClassDef(MuonInFatJetCorrection, 1);
 };
 
 #endif
-
