@@ -112,9 +112,9 @@ EL::StatusCode MuonInFatJetCorrection :: execute()
     //m_fatJetCalibration->calibratedCopy(**fatJet, fatJetCal);
     TLorentzVector correctedVector;
 
-    getHbbCorrectedVector(*fatJet, correctedVector, doVR);
+    getHbbCorrectedVector(**fatJet, correctedVector, doVR);
 
-    dec_4vecMuon(*fatJet) =  correctedVector;
+    dec_4vecMuon(**fatJet) =  correctedVector;
   }
   return EL::StatusCode::SUCCESS;
 } 
