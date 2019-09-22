@@ -1052,6 +1052,16 @@ void HelpTreeBase::FillVertices( const xAOD::VertexContainer* vertices, const st
 
 }
 
+void HelpTreeBase::FillVertices( const xAOD::TruthVertexContainer* truthVertices, const std::string truthVertexName ) {
+
+  this->ClearVertices(truthVertexName);
+
+  xAH::VertexContainer* thisTruthVertex = m_vertices[truthVertexName];
+
+  thisTruthVertex->FillVertices(truthVertices);
+
+}
+
 void HelpTreeBase::ClearVertices( const std::string vertexName )
 {
 

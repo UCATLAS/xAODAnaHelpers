@@ -115,6 +115,7 @@ public:
 
   /// @brief Name of vertex container
   std::string m_vertexContainerName = "PrimaryVertices";
+  std::string m_truthVertexContainerName = "TruthVertices";
 
   // control which branches are filled
   HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
@@ -150,7 +151,8 @@ public:
   void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
 
-  void FillVertices( const xAOD::VertexContainer* vertices, const std::string vertexName = "vertex");
+  void FillVertices( const xAOD::VertexContainer* vertices, const std::string vertexName = "vertex" );
+  void FillVertices( const xAOD::TruthVertexContainer* truthVertices, const std::string truthVertexName = "truth_vertex" );
 
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
