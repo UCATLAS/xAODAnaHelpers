@@ -150,6 +150,19 @@ void HistogramManager::Sumw2(TH1* hist, bool flag /*=true*/) {
 
 void HistogramManager::record(TH1* hist) {
   m_allHists.push_back( hist );
+
+  // Check if the hash for this histName already exists, i.e., if we have a hash collision
+  std::string histName = hist->GetName();
+  const hash_t histHash = this->makeHash(histName);
+  HistMap_t::const_iterator it = m_histMap.find( histHash );
+  if ( it != m_histMap.end() ) // It does exist!
+    {
+      ANA_MSG_WARNING( "Detected a hash collision. The hash for the histogram with name=" << histName
+                       << " already exists and points to a histogram with name=" << it->second->GetName()
+                       << " - NOT entering into the hist map, but prepare for unexpected behaviour" );
+      return;
+    }  
+  m_histMap.insert( m_histMap.end(), std::pair< const hash_t, TH1* >( histHash, hist ) );
 }
 
 void HistogramManager::record(EL::IWorker* wk) {
@@ -174,3 +187,32 @@ void HistogramManager::SetLabel(TH1* hist, std::string xlabel, std::string ylabe
   hist->GetZaxis()->SetTitle(zlabel.c_str());
   this->SetLabel(hist, xlabel, ylabel);
 }
+
+TH1* HistogramManager::findHist(std::string histName) {
+  // Build a 32 bit hash out of the name
+  const hash_t histHash = this->makeHash(histName);
+
+  // See if this entry exists in the map
+  HistMap_t::const_iterator it = m_histMap.find( histHash );
+  if ( it == m_histMap.end() ) {
+    ANA_MSG_ERROR("Histogram name " << histName << " not found");
+    return NULL;
+  }
+  else {
+    return it->second;
+  }
+}
+
+void HistogramManager::fillHist(std::string histName, double value) {
+  TH1* histPointer(NULL);
+  histPointer = this->findHist(histName);
+  histPointer->Fill(value);
+}
+
+void HistogramManager::fillHist(std::string histName, double value, double weight) {
+  TH1* histPointer(NULL);
+  histPointer = this->findHist(histName);
+  histPointer->Fill(value, weight);
+}
+
+

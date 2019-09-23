@@ -203,6 +203,55 @@ class HistogramManager {
       */
     MsgStream& msg (int level) const;
 
+    /**
+     * @brief typedef for the internal hash.
+    @rst
+      The following is mostly copied and modified from 
+      https://gitlab.cern.ch/atlas/athena/blob/master/Control/AthenaBaseComps/AthenaBaseComps/AthHistogramming.h 
+      and cxx. The idea is to create a map of histogram name hashes, and then search that map for 
+      entries allowing m_allHists to be accessed directly just by the histogram name, making for 
+      much easier histogram filling and hence declaration (no need for m_myHist32 = book(...)).
+    @endrst
+     */
+    typedef uint32_t hash_t;
+
+    /**
+     * @brief Typedef for convenience
+     */
+    typedef std::map< const hash_t, TH1* > HistMap_t;
+
+    /**
+     * @brief The map of histogram names to their pointers
+     */
+    HistMap_t m_histMap;
+
+    /**
+     * @brief Create a 32-bit hash out of the histogram name
+     */
+    hash_t makeHash( const std::string& histName ) const
+    {
+      const uint64_t hash64 = std::hash<std::string>{}( histName );
+      return (hash_t)(hash64 & 0xFFFFFFFF);
+    }
+
+    /**
+     * @brief Return the pointer to the histogram
+     */
+    TH1* findHist(std::string histName);
+
+    /**
+     * @brief Fill a histogram by name. Can be overloaded with weight.
+     * 
+     * @param histName   The name of the histogram to be filled
+     * @param value      The value to fill the histogram with
+     */
+    void fillHist(std::string histName, double value);
+    /**
+     * @overload
+     */
+    void fillHist(std::string histName, double value, double weight);
+
+
   private:
     /**
      * @brief Turn on Sumw2 for the histogram
@@ -213,7 +262,7 @@ class HistogramManager {
     void Sumw2(TH1* hist, bool flag=true);
 
     /**
-     * @brief Push the new histogram to HistogramManager#m_allHists
+     * @brief Push the new histogram to HistogramManager#m_allHists and add its name to HistogramManager#m_histMap
      */
     void record(TH1* hist);
 
@@ -234,6 +283,7 @@ class HistogramManager {
      * @overload
      */
     void SetLabel(TH1* hist, std::string xlabel, std::string ylabel, std::string zlabel);
+
 
 };
 
