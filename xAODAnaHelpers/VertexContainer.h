@@ -11,7 +11,6 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 #include "xAODTracking/VertexContainer.h"
-#include "xAODTruth/TruthVertexContainer.h"
 
 namespace xAH {
 
@@ -25,7 +24,6 @@ namespace xAH {
       virtual void setBranches(TTree *tree);
       virtual void clear();
       virtual void FillVertices( const xAOD::VertexContainer* vertices);
-      virtual void FillVertices( const xAOD::TruthVertexContainer* vertices);
 
       std::string m_name;
 
