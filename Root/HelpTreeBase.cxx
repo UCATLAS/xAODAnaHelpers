@@ -1052,16 +1052,6 @@ void HelpTreeBase::FillVertices( const xAOD::VertexContainer* vertices, const st
 
 }
 
-void HelpTreeBase::FillVertices( const xAOD::TruthVertexContainer* truthVertices, const std::string truthVertexName ) {
-
-  this->ClearVertices(truthVertexName);
-
-  xAH::VertexContainer* thisTruthVertex = m_vertices[truthVertexName];
-
-  thisTruthVertex->FillVertices(truthVertices);
-
-}
-
 void HelpTreeBase::ClearVertices( const std::string vertexName )
 {
 
@@ -1069,3 +1059,33 @@ void HelpTreeBase::ClearVertices( const std::string vertexName )
   thisVertex->clear();
 
 }
+
+void HelpTreeBase::AddTruthVertices( const std::string detailStr, const std::string truthVertexName )
+{
+
+  if(m_debug) Info("AddVertices()", "Adding %s vertices", truthVertexName.c_str());
+
+  m_truth_vertices[truthVertexName] = new xAH::TruthVertexContainer(detailStr, truthVertexName);
+  xAH::TruthVertexContainer* thisTruthVertex = m_truth_vertices[truthVertexName];
+  thisTruthVertex->setBranches(m_tree);
+
+}
+
+void HelpTreeBase::FillTruthVertices( const xAOD::TruthVertexContainer* truthVertices, const std::string truthVertexName ) {
+
+  this->ClearTruthVertices(truthVertexName);
+
+  xAH::TruthVertexContainer* thisTruthVertex = m_truth_vertices[truthVertexName];
+
+  thisTruthVertex->FillTruthVertices(truthVertices);
+
+}
+
+void HelpTreeBase::ClearTruthVertices( const std::string truthVertexName )
+{
+
+  xAH::TruthVertexContainer* thisTruthVertex = m_truth_vertices[truthVertexName];
+  thisTruthVertex->clear();
+
+}
+

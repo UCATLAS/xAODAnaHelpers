@@ -35,6 +35,7 @@
 #include "xAODAnaHelpers/JetContainer.h"
 #include "xAODAnaHelpers/L1JetContainer.h"
 #include "xAODAnaHelpers/VertexContainer.h"
+#include "xAODAnaHelpers/TruthVertexContainer.h"
 #include "xAODAnaHelpers/ElectronContainer.h"
 #include "xAODAnaHelpers/PhotonContainer.h"
 #include "xAODAnaHelpers/ClusterContainer.h"
@@ -71,18 +72,19 @@ public:
   HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false );
   virtual ~HelpTreeBase();
 
-  void AddEvent       (const std::string detailStr = "");
-  void AddTrigger     (const std::string detailStr = "");
-  void AddJetTrigger  (const std::string detailStr = "");
-  void AddMuons       (const std::string detailStr = "", const std::string muonName = "muon");
-  void AddElectrons   (const std::string detailStr = "", const std::string elecName = "el");
-  void AddPhotons     (const std::string detailStr = "", const std::string photonName = "ph");
-  void AddClusters    (const std::string detailStr = "", const std::string clusterName = "cl");
-  void AddJets        (const std::string detailStr = "", const std::string jetName = "jet");
-  void AddL1Jets      (const std::string jetName   = "");
-  void AddTruthParts  (const std::string truthName,      const std::string detailStr = "");
-  void AddTrackParts  (const std::string trackName,	 const std::string detailStr = "");
-  void AddVertices    (const std::string detailStr = "", const std::string vertexName = "vertex"); // options for detailStr: "all" or "primary"
+  void AddEvent         (const std::string detailStr = "");
+  void AddTrigger       (const std::string detailStr = "");
+  void AddJetTrigger    (const std::string detailStr = "");
+  void AddMuons         (const std::string detailStr = "", const std::string muonName = "muon");
+  void AddElectrons     (const std::string detailStr = "", const std::string elecName = "el");
+  void AddPhotons       (const std::string detailStr = "", const std::string photonName = "ph");
+  void AddClusters      (const std::string detailStr = "", const std::string clusterName = "cl");
+  void AddJets          (const std::string detailStr = "", const std::string jetName = "jet");
+  void AddL1Jets        (const std::string jetName   = "");
+  void AddTruthParts    (const std::string truthName,      const std::string detailStr = "");
+  void AddTrackParts    (const std::string trackName,	 const std::string detailStr = "");
+  void AddVertices      (const std::string detailStr = "", const std::string vertexName = "vertex"); // options for detailStr: "all" or "primary"
+  void AddTruthVertices (const std::string detailStr = "", const std::string vertexName = "truth_vertex"); // options for detailStr: "all" or "primary"
 
   /**
    *  @brief  Declare a new collection of fatjets to be written to the output tree.
@@ -152,7 +154,7 @@ public:
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
 
   void FillVertices( const xAOD::VertexContainer* vertices, const std::string vertexName = "vertex" );
-  void FillVertices( const xAOD::TruthVertexContainer* truthVertices, const std::string truthVertexName = "truth_vertex" );
+  void FillTruthVertices( const xAOD::TruthVertexContainer* truthVertices, const std::string truthVertexName = "truth_vertex" );
 
   /**
    *  @brief  Write a container of jets to the specified container name (and optionally suffix). The
@@ -177,19 +179,20 @@ public:
   void ClearEvent();
   void ClearTrigger();
   void ClearJetTrigger();
-  void ClearMuons       (const std::string jetName = "muon");
-  void ClearElectrons   (const std::string elecName = "el");
-  void ClearPhotons     (const std::string photonName = "ph");
-  void ClearClusters    (const std::string clusterName = "cl");
-  void ClearJets        (const std::string jetName = "jet");
-  void ClearL1Jets      (const std::string jetName = "L1Jet");
-  void ClearTruth       (const std::string truthName);
-  void ClearTracks	(const std::string trackName);
-  void ClearFatJets     (const std::string fatjetName, const std::string suffix="");
-  void ClearTruthFatJets(const std::string truthFatJetName = "truth_fatjet");
-  void ClearTaus        (const std::string tauName = "tau" );
-  void ClearMET         (const std::string metName = "met");
-  void ClearVertices    (const std::string vertexName = "vertex");
+  void ClearMuons         (const std::string jetName = "muon");
+  void ClearElectrons     (const std::string elecName = "el");
+  void ClearPhotons       (const std::string photonName = "ph");
+  void ClearClusters      (const std::string clusterName = "cl");
+  void ClearJets          (const std::string jetName = "jet");
+  void ClearL1Jets        (const std::string jetName = "L1Jet");
+  void ClearTruth         (const std::string truthName);
+  void ClearTracks	      (const std::string trackName);
+  void ClearFatJets       (const std::string fatjetName, const std::string suffix="");
+  void ClearTruthFatJets  (const std::string truthFatJetName = "truth_fatjet");
+  void ClearTaus          (const std::string tauName = "tau" );
+  void ClearMET           (const std::string metName = "met");
+  void ClearVertices      (const std::string vertexName = "vertex");
+  void ClearTruthVertices (const std::string vertexName = "truth_vertex");
 
   bool writeTo( TFile *file );
 
@@ -418,6 +421,7 @@ protected:
   // vertices
   //
   std::map<std::string, xAH::VertexContainer*> m_vertices;
+  std::map<std::string, xAH::TruthVertexContainer*> m_truth_vertices;
 
 };
 
