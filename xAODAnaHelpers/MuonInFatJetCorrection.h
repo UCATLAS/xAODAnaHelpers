@@ -48,10 +48,10 @@ class MuonInFatJetCorrection : public xAH::Algorithm {
 
     //std::vector<TLorentzVector> muonCorrectedFatJet;
 
-    //EL::StatusCode getHbbCorrectedVector(const xAOD::Jet &jet, TLorentzVector &correctedVector, const bool doVR);
-    //EL::StatusCode decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const;
-    //const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
-    //                                                    std::string scheme, bool useJMSScale = false) const;
+    EL::StatusCode getHbbCorrectedVector(const xAOD::Jet &jet, TLorentzVector &correctedVector, const bool doVR);
+    EL::StatusCode decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const;
+    const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
+                                                        std::string scheme, bool useJMSScale = false) const;
  
     
     ClassDef(MuonInFatJetCorrection, 1);
