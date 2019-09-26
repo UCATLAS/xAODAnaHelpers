@@ -12,40 +12,41 @@
 class MuonInFatJetCorrection : public xAH::Algorithm {
 
   private:
-    float m_trackJetPtMin;
-    float m_trackJetEtaMax;
-    float m_trackJetNConst;
-    float m_muonPtMin;
-    float m_muonEtaMax;
-    float m_muonDrMax;
-    bool  doVR;
-    bool  m_debug;
 
-    std::string m_inContainerName = "";
-
-    CP::MuonSelectionTool *m_muonSelectionTool;
-    CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool;
-	
-    JetCalibrationTool *m_fatJetCalibration;
-
-    std::string m_fatJetAlgo;
-    std::string m_fatJetCalibSeq;
-    std::string m_fatCalibArea;
-    std::string m_fatJetConfig;
+    CP::MuonSelectionTool *m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
+    CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool = new CP::MuonCalibrationPeriodTool("MuonCalibrationPeriodToolForHbb");
 
   public:
 
     MuonInFatJetCorrection();
+    
+    std::string m_inContainerName = "";
+    //CP::MuonSelectionTool *m_muonSelectionTool;
+    //CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool;
 
-    virtual EL::StatusCode setupJob(EL::Job &job);
+    // Don't need this anymore (it may be the null pointer that was causing the crash as well)	
+    //JetCalibrationTool *m_fatJetCalibration;
+    
+    float m_trackJetPtMin = 10000.0;
+    float m_trackJetEtaMax = 2.5;
+    float m_trackJetNConst = 2.0;
+    float m_muonPtMin = 10000.0;
+    float m_muonEtaMax = 2.7;
+    float m_muonDrMax = 0.4;
+    bool  doVR = true;
+    bool  m_debug = false;
+
+    virtual EL::StatusCode setupJob(EL::Job& job);
     virtual EL::StatusCode histInitialize();
     virtual EL::StatusCode fileExecute();
     virtual EL::StatusCode changeInput(bool firstFile);
     virtual EL::StatusCode initialize();
     virtual EL::StatusCode execute();
+    virtual EL::StatusCode postExecute();
     virtual EL::StatusCode finalize();
+    virtual EL::StatusCode histFinalize();
 
-    TTree *tree;
+    //TTree *tree;
     std::vector<TLorentzVector> muonCorrectedFatJet;
 
     EL::StatusCode getHbbCorrectedVector(const xAOD::Jet &jet, TLorentzVector &correctedVector, const bool doVR);
