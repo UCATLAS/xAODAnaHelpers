@@ -13,17 +13,17 @@ class MuonInFatJetCorrection : public xAH::Algorithm {
 
   private:
 
-    CP::MuonSelectionTool *m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
-    CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool = new CP::MuonCalibrationPeriodTool("MuonCalibrationPeriodToolForHbb");
+    //CP::MuonSelectionTool *m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
+    //CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool = new CP::MuonCalibrationPeriodTool("MuonCalibrationPeriodToolForHbb");
+    //CP::MuonSelectionTool *m_muonSelectionTool;
+    //CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool;
 
   public:
 
     MuonInFatJetCorrection();
     
     std::string m_inContainerName = "";
-    //CP::MuonSelectionTool *m_muonSelectionTool;
-    //CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool;
-
+    std::string m_inMuonContainerName = "";
     // Don't need this anymore (it may be the null pointer that was causing the crash as well)	
     //JetCalibrationTool *m_fatJetCalibration;
     
@@ -46,13 +46,12 @@ class MuonInFatJetCorrection : public xAH::Algorithm {
     virtual EL::StatusCode finalize();
     virtual EL::StatusCode histFinalize();
 
-    //TTree *tree;
-    std::vector<TLorentzVector> muonCorrectedFatJet;
+    //std::vector<TLorentzVector> muonCorrectedFatJet;
 
-    EL::StatusCode getHbbCorrectedVector(const xAOD::Jet &jet, TLorentzVector &correctedVector, const bool doVR);
-    EL::StatusCode decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const;
-    const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
-                                                        std::string scheme, bool useJMSScale = false) const;
+    //EL::StatusCode getHbbCorrectedVector(const xAOD::Jet &jet, TLorentzVector &correctedVector, const bool doVR);
+    //EL::StatusCode decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const;
+    //const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
+    //                                                    std::string scheme, bool useJMSScale = false) const;
  
     
     ClassDef(MuonInFatJetCorrection, 1);
