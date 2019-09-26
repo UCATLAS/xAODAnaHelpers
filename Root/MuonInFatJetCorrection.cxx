@@ -16,29 +16,20 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
+
+// Needed to distribute the algorithm to the workers
+ClassImp(MuonInFatJetCorrection)
 static const SG::AuxElement::ConstAccessor<ElementLink<xAOD::JetContainer>> acc_parent("Parent");
 static const SG::AuxElement::ConstAccessor<std::vector<ElementLink<xAOD::IParticleContainer>>> acc_ghostMatchedTrackJets("GhostAntiKt2TrackJet");
 static const SG::AuxElement::ConstAccessor<std::vector<ElementLink<xAOD::IParticleContainer>>> acc_ghostMatchedTrackJetsVR("GhostVR30Rmax4Rmin02TrackJet");
 SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::IParticleContainer>>> m_decMuonsInTrackJetLink("MuonsInTrackJet");
 
-// Needed to distribute the algorithm to the workers
-ClassImp(MuonInFatJetCorrection)
-
 MuonInFatJetCorrection :: MuonInFatJetCorrection() :
   Algorithm("MuonInFatJetCorrection")
 {
-  m_trackJetPtMin = 10000.0,
-  m_trackJetEtaMax = 2.5,
-  m_trackJetNConst = 2.0,
-  m_muonPtMin = 10000.0,
-  m_muonEtaMax = 2.7,
-  m_muonDrMax = 0.4,
-  doVR = true, 
-  m_debug = false;
-
 }
 
-EL::StatusCode MuonInFatJetCorrection :: setupJob(EL::Job &job)
+EL::StatusCode MuonInFatJetCorrection :: setupJob(EL::Job& job)
 {
   ANA_MSG_DEBUG("Calling setupJob");
   job.useXAOD();
@@ -77,14 +68,14 @@ EL::StatusCode MuonInFatJetCorrection :: initialize()
   m_store = wk()->xaodStore();
 
   // FatJet Calibration
-  m_fatJetCalibration = new JetCalibrationTool("HbbISRJets");
-  m_fatJetCalibration->setProperty("JetCollection",m_fatJetAlgo);
-  m_fatJetCalibration->setProperty("ConfigFile"   ,m_fatJetConfig);
-  m_fatJetCalibration->setProperty("CalibSequence",m_fatJetCalibSeq);
-  m_fatJetCalibration->setProperty("CalibArea"    ,m_fatCalibArea);
+  //m_fatJetCalibration = new JetCalibrationTool("HbbISRJets");
+  //m_fatJetCalibration->setProperty("JetCollection",m_fatJetAlgo);
+  //m_fatJetCalibration->setProperty("ConfigFile"   ,m_fatJetConfig);
+  //m_fatJetCalibration->setProperty("CalibSequence",m_fatJetCalibSeq);
+  //m_fatJetCalibration->setProperty("CalibArea"    ,m_fatCalibArea);
 
 
-  ANA_CHECK( m_fatJetCalibration->initialize() );
+  //ANA_CHECK( m_fatJetCalibration->initialize() );
 
   return EL::StatusCode::SUCCESS;
 }
@@ -101,10 +92,10 @@ EL::StatusCode MuonInFatJetCorrection :: execute()
  //   return EL::StatusCode::FAILURE;
  // }
 
+  
   static SG::AuxElement::Decorator<TLorentzVector> dec_4vecMuon("muonCorrectedP4");
   const xAOD::JetContainer *fatJets(nullptr);
   ANA_CHECK(HelperFunctions::retrieve(fatJets, m_inContainerName, m_event, m_store, msg()));
-  
   // Loop over fatjets
   for (auto fatJet = fatJets->begin(); fatJet != fatJets->end(); fatJet++){
     
@@ -116,14 +107,31 @@ EL::StatusCode MuonInFatJetCorrection :: execute()
 
     dec_4vecMuon(**fatJet) =  correctedVector;
   }
+  
   return EL::StatusCode::SUCCESS;
 } 
+
+EL::StatusCode MuonInFatJetCorrection :: postExecute ()
+{
+  ANA_MSG_DEBUG("Calling postExecute");
+
+  return EL::StatusCode::SUCCESS;
+}
 
 
 EL::StatusCode MuonInFatJetCorrection :: finalize()
 {
   return EL::StatusCode::SUCCESS;
 }
+
+EL::StatusCode MuonInFatJetCorrection :: histFinalize ()
+{
+
+  ANA_MSG_DEBUG( "Calling histFinalize");
+  ANA_CHECK( xAH::Algorithm::algFinalize());
+  return EL::StatusCode::SUCCESS;
+}
+
 
 EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& jet, TLorentzVector& correctedVector, const bool doVR)
 {
