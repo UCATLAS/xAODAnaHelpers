@@ -35,7 +35,6 @@
 #include "xAODAnaHelpers/JetContainer.h"
 #include "xAODAnaHelpers/L1JetContainer.h"
 #include "xAODAnaHelpers/VertexContainer.h"
-#include "xAODAnaHelpers/TruthVertexContainer.h"
 #include "xAODAnaHelpers/ElectronContainer.h"
 #include "xAODAnaHelpers/PhotonContainer.h"
 #include "xAODAnaHelpers/ClusterContainer.h"
@@ -421,7 +420,7 @@ protected:
   // vertices
   //
   std::map<std::string, xAH::VertexContainer*> m_vertices;
-  std::map<std::string, xAH::TruthVertexContainer*> m_truth_vertices;
+  std::map<std::string, xAH::VertexContainer*> m_truth_vertices;
 
 };
 
