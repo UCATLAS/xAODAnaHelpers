@@ -111,6 +111,12 @@ namespace xAH {
       std::unordered_map<std::string, xAH::JetContainer*> m_trkJets;
       std::unordered_map<std::string, std::vector<std::vector<unsigned int>>* > m_trkJetsIdx;
 
+      //
+      std::vector<float> *m_muonCorrected_E;
+      std::vector<float> *m_muonCorrected_pt;
+      std::vector<float> *m_muonCorrected_phi;
+      std::vector<float> *m_muonCorrected_eta;
+
     };
 }
 
