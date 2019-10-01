@@ -73,6 +73,10 @@ namespace xAH {
 
       std::unordered_map<std::string, std::vector<xAH::Jet>> trkJets;
       
+      float muonCorrected_E;      
+      float muonCorrected_pt;      
+      float muonCorrected_phi;      
+      float muonCorrected_eta;      
     };
 
 }//xAH
