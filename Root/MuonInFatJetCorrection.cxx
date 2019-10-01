@@ -23,7 +23,6 @@ static const SG::AuxElement::ConstAccessor<ElementLink<xAOD::JetContainer>> acc_
 static const SG::AuxElement::ConstAccessor<std::vector<ElementLink<xAOD::IParticleContainer>>> acc_ghostMatchedTrackJets("GhostAntiKt2TrackJet");
 static const SG::AuxElement::ConstAccessor<std::vector<ElementLink<xAOD::IParticleContainer>>> acc_ghostMatchedTrackJetsVR("GhostVR30Rmax4Rmin02TrackJet");
 SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::IParticleContainer>>> m_decMuonsInTrackJetLink("MuonsInTrackJet");
-//SG::AuxElement::Decorator<std::vector<xAOD::MuonContainer>> m_decMuonsInTrackJetLink("MuonsInTrackJet");
 
 MuonInFatJetCorrection :: MuonInFatJetCorrection() :
   Algorithm("MuonInFatJetCorrection")
@@ -68,48 +67,24 @@ EL::StatusCode MuonInFatJetCorrection :: initialize()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
-  // FatJet Calibration
-  //m_fatJetCalibration = new JetCalibrationTool("HbbISRJets");
-  //m_fatJetCalibration->setProperty("JetCollection",m_fatJetAlgo);
-  //m_fatJetCalibration->setProperty("ConfigFile"   ,m_fatJetConfig);
-  //m_fatJetCalibration->setProperty("CalibSequence",m_fatJetCalibSeq);
-  //m_fatJetCalibration->setProperty("CalibArea"    ,m_fatCalibArea);
-
-
-  //ANA_CHECK( m_fatJetCalibration->initialize() );
-
   return EL::StatusCode::SUCCESS;
 }
 
 EL::StatusCode MuonInFatJetCorrection :: execute()
 {
  
- // static const char *FatJetCollectionName = "AntiKt10LCTopoTrimmedPtFrac5SmallR20Jets";
- // const xAOD::JetContainer *fatJets = 0;
- // 
- // // Retrieve fatJets
- // if (!m_event->retrieve(fatJets, FatJetCollectionName).isSuccess()) {
- //   Error("MuonInFatJetCorrection::execute()", "Failed to retrieve FatJet container.");
- //   return EL::StatusCode::FAILURE;
- // }
-
-  
-  static SG::AuxElement::Decorator<TLorentzVector> dec_4vecMuon("muonCorrectedP4");
+  static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");
+ 
   const xAOD::JetContainer *fatJets(nullptr);
   ANA_CHECK(HelperFunctions::retrieve(fatJets, m_inContainerName, m_event, m_store, msg()));
-  //std::cout << "m_inMuonContainerName: " << m_inMuonContainerName << std::endl;
-  //const xAOD::MuonContainer *CalibratedMuons(nullptr);
-  //ANA_CHECK(HelperFunctions::retrieve(CalibratedMuons, m_inMuonContainerName, m_event, m_store, msg()));
   // Loop over fatjets
   for (auto fatJet = fatJets->begin(); fatJet != fatJets->end(); fatJet++){
     
-    //xAOD::Jet * fatJetCal = 0;
-    //m_fatJetCalibration->calibratedCopy(**fatJet, fatJetCal);
     TLorentzVector correctedVector;
 
     getHbbCorrectedVector(**fatJet, correctedVector, doVR);
 
-    dec_4vecMuon(**fatJet) =  correctedVector;
+    dec_correctedFatJets_tlv(**fatJet) = correctedVector;
   }
   
   return EL::StatusCode::SUCCESS;
@@ -197,7 +172,6 @@ EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& je
   // Step 2
 
   std::vector<const xAOD::Muon*> calibratedMuons;
-  //std::vector<ElementLink<DataVector<xAOD::IParticle>>> calibratedMuons;
   std::vector<const xAOD::Muon*> matched_muons;
   for (const auto &trackJetEL : associated_trackJets_filtered) {
     const xAOD::Jet *trackJet(static_cast<const xAOD::Jet*> (*trackJetEL));
@@ -207,38 +181,6 @@ EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& je
     if (!m_decMuonsInTrackJetLink.isAvailable(*trackJet)) {
       Error("MuonInFatJetCorrection::getHbbCorrectedVector()", "No muons link found for jet.");
     }
-    //for (auto muonLink : m_decMuonsInTrackJetLink(*trackJet)) {
-    //  if (!muonLink.isValid()) {
-    //    if (m_debug) std::cout << "Muon link not valid." << std::endl;
-    //    continue;
-    //  }
-    //  const xAOD::Muon *muon(static_cast<const xAOD::Muon*> (*muonLink));
-    //  // apply muon correction if not calibrated yet
-    //  static SG::AuxElement::Accessor<float> acc_muonSpectrometerPt("MuonSpectrometerPt");
-    //  static SG::AuxElement::Accessor<float> acc_innerDetectorPt("InnerDetectorPt");
-    //  if (!(acc_innerDetectorPt.isAvailable(*muon) && acc_muonSpectrometerPt.isAvailable(*muon))) {
-    //    if (m_debug) std::cout << "No decorators for MuonSpectrometerPt or InnerDetectorPt found. Calibrate muons on-the-fly." << std::endl;
-    //    xAOD::Muon *muon_calib(nullptr);
-    //    if (m_muonCalibrationPeriodTool->correctedCopy(*muon, muon_calib) != CP::CorrectionCode::Ok) {
-    //      Error("MuonInFatJetCorrection::getHbbCorrectedVector()", "Could not get calibrated copy of muon.");
-    //    }
-    //    // save the pointers for deletion later
-    //    calibratedMuons.push_back(muon_calib);
-    //    // work with calibrated muon
-    //    muon = muon_calib;
-    //  }
-    // // muon quality selection
-    //  if (muon->pt() < m_muonPtMin) continue;
-    //  if (m_muonSelectionTool->getQuality(*muon) > xAOD::Muon::Medium) continue;
-    //  if (fabs(muon->eta()) > m_muonEtaMax) continue;
-    //  // find clostest muon
-    //  float DR( trackJet->p4().DeltaR(muon->p4()) );
-    //  float cutDR=std::min(0.4,0.04 + 10000.0/muon->pt());
-    //  if (DR > cutDR) continue;
-    //  if (DR > maxDR) continue;
-    //  maxDR = DR;
-    //  closest_muon = muon;
-    //}
 
     for (auto muon_calib : m_decMuonsInTrackJetLink(*trackJet)) {
       //if (!muon_calib.isValid()) {
@@ -252,18 +194,13 @@ EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& je
       static SG::AuxElement::Accessor<float> acc_innerDetectorPt("InnerDetectorPt");
       if (!(acc_innerDetectorPt.isAvailable(*muon) && acc_muonSpectrometerPt.isAvailable(*muon))) {
         if (m_debug) std::cout << "No decorators for MuonSpectrometerPt or InnerDetectorPt found. Calibrate muons on-the-fly." << std::endl;
-        //xAOD::Muon *muon_calib(nullptr);
-        //if (m_muonCalibrationPeriodTool->correctedCopy(*muon, muon_calib) != CP::CorrectionCode::Ok) {
-        //  Error("MuonInFatJetCorrection::getHbbCorrectedVector()", "Could not get calibrated copy of muon.");
-        //}
-        // save the pointers for deletion later
         calibratedMuons.push_back(muon);
-        // work with calibrated muon
-        //muon = muon_calib;
       }
      // muon quality selection
       if (muon->pt() < m_muonPtMin) continue;
+      // TODO: Figure out how to access the quality of the muon.
       //if (m_muonSelectionTool->getQuality(*muon) > xAOD::Muon::Medium) continue;
+      if (muon->quality() > xAOD::Muon::Medium) continue;
       if (fabs(muon->eta()) > m_muonEtaMax) continue;
       // find clostest muon
       float DR( trackJet->p4().DeltaR(muon->p4()) );
@@ -304,15 +241,8 @@ EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& je
 EL::StatusCode MuonInFatJetCorrection::decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const
 {
   // retrieve muons from StoreGate
-  //const xAOD::MuonContainer *muons;
-  // TODO: HERE!!!!
   const xAOD::MuonContainer *muons(nullptr);
   ANA_CHECK(HelperFunctions::retrieve(muons, m_inMuonContainerName, m_event, m_store, msg()));
-  //if (!m_event->retrieve(muons, "Muons" )) {
-  //  Error("MuonInFatJetCorrection::decorateWithMuons()", "Cannot retrieve muon collection Muons from event store.");
-  //  return StatusCode::FAILURE;
-  //}
-  // retrieve ghost-associated track jets from large-R jet
   std::vector<const xAOD::Jet*> associated_trackJets;
   // get the element links to the parent, ungroomed jet
   if (!acc_parent.isAvailable(jet)) {
