@@ -441,14 +441,13 @@ EL::StatusCode JetSelector :: execute ()
       }
     }
 
-    // Check against pile-up only jets: if fails in nominal, it should always fail..//
+    // Check against pile-up only jets:
     if( isMC() && m_doMCCleaning && m_haveTruthJets ){
     	
-        ANA_MSG_DEBUG("Mariana debug: doing pileup requirement!");
         float pTAvg = 0.;
     	pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
         if(  ( pTAvg / truthJets->at(0)->pt() ) > 1.4 ) {
-	  ANA_MSG_DEBUG("Failed truth pileup requirement, skipping event");
+	  ANA_MSG_DEBUG("Failed MC cleaning, skipping event");
 	  wk()->skipEvent();
 	}
     }
