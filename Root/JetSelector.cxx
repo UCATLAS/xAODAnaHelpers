@@ -416,7 +416,7 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( isMC() && m_doJVT && m_haveTruthJets) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
+  if ( isMC() && (m_doJVT || m_doMCCleaning ) && m_haveTruthJets) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -439,6 +439,17 @@ EL::StatusCode JetSelector :: execute ()
         isHS(*jet)=ishs;
         isPU(*jet)=ispu;
       }
+    }
+
+    // Check against pile-up only jets:
+    if( isMC() && m_doMCCleaning && m_haveTruthJets && inJets->size()>1 ){
+    	
+        float pTAvg = 0.;
+    	pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
+        if(  ( pTAvg / truthJets->at(0)->pt() ) > 1.4 ) {
+	  ANA_MSG_DEBUG("Failed MC cleaning, skipping event");
+	  wk()->skipEvent();
+	}
     }
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName, true );
