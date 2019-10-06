@@ -442,7 +442,7 @@ EL::StatusCode JetSelector :: execute ()
     }
 
     // Check against pile-up only jets:
-    if( isMC() && m_doMCCleaning && m_haveTruthJets ){
+    if( isMC() && m_doMCCleaning && m_haveTruthJets && inJets->size()>1 ){
     	
         float pTAvg = 0.;
     	pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
