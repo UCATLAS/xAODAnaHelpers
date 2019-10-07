@@ -442,14 +442,13 @@ EL::StatusCode JetSelector :: execute ()
     }
 
     // Check against pile-up only jets:
-    if( isMC() && m_doMCCleaning && m_haveTruthJets && inJets->size()>1 ){
-    	
-        float pTAvg = 0.;
-    	pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
-        if(  ( pTAvg / truthJets->at(0)->pt() ) > 1.4 ) {
-	  ANA_MSG_DEBUG("Failed MC cleaning, skipping event");
-	  wk()->skipEvent();
-	}
+    if ( isMC() && m_doMCCleaning && m_haveTruthJets ){
+      float pTAvg = (inJets->size() > 0) ? inJets->at(0)->pt() : 0;
+      if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
+      if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > 1.4 ) {
+        ANA_MSG_DEBUG("Failed MC cleaning, skipping event");
+        wk()->skipEvent();
+      }
     }
 
     pass = executeSelection( inJets, mcEvtWeight, count, m_outContainerName, true );
@@ -463,9 +462,19 @@ EL::StatusCode JetSelector :: execute ()
     // loop over systematics
     auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
     bool passOne(false);
+    bool passMCcleaning(true);
     for ( auto systName : *systNames ) {
 
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+
+      // Check against pile-up only jets (if nominal do not pass the selection then throw the event for all systs too)
+      if ( isMC() && m_doMCCleaning && m_haveTruthJets && systName.empty() ){
+        float pTAvg = (inJets->size() > 0) ? inJets->at(0)->pt() : 0;
+        if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
+        if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > 1.4 ) {
+          passMCcleaning = false;
+        }
+      }
 
       // decorate inJets with truth info
       if ( isMC() && m_doJVT && m_haveTruthJets ) {
@@ -491,6 +500,7 @@ EL::StatusCode JetSelector :: execute ()
       }
       // the final decision - if at least one passes keep going!
       pass = pass || passOne;
+      pass = (passMCcleaning) ? pass : false; // if nominal do not pass MC cleaning then event should be skip for all systs
     }
 
     // save list of systs that should be considered down stream
