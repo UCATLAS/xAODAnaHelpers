@@ -72,17 +72,19 @@ EL::StatusCode MuonInFatJetCorrection :: initialize()
 
 EL::StatusCode MuonInFatJetCorrection :: execute()
 {
- 
+  // Decorator holding muon in fatjet corrected fatjets. 
   static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");
  
+  // Retrieve calibrated fatjets.
   const xAOD::JetContainer *fatJets(nullptr);
   ANA_CHECK(HelperFunctions::retrieve(fatJets, m_inContainerName, m_event, m_store, msg()));
+
   // Loop over fatjets
   for (auto fatJet = fatJets->begin(); fatJet != fatJets->end(); fatJet++){
     
+    // Get corrected fatjet.
     TLorentzVector correctedVector;
-
-    getHbbCorrectedVector(**fatJet, correctedVector, doVR);
+    correctedVector = getHbbCorrectedVector(**fatJet, doVR);
 
     dec_correctedFatJets_tlv(**fatJet) = correctedVector;
   }
@@ -112,7 +114,7 @@ EL::StatusCode MuonInFatJetCorrection :: histFinalize ()
 }
 
 
-EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& jet, TLorentzVector& correctedVector, const bool doVR)
+TLorentzVector MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& jet, const bool doVR)
 {
   /* Steps:
      1. Get all AntiKt2TrackJets/AntiKtVR30Rmax4Rmin02TrackJets asssociated with the ungroomed jet
@@ -188,7 +190,6 @@ EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& je
       //  continue;
       //}
       const xAOD::Muon *muon(static_cast<const xAOD::Muon*> (*muon_calib));
-      //const xAOD::Muon *muon(muon_calib);
       // apply muon correction if not calibrated yet
       static SG::AuxElement::Accessor<float> acc_muonSpectrometerPt("MuonSpectrometerPt");
       static SG::AuxElement::Accessor<float> acc_innerDetectorPt("InnerDetectorPt");
@@ -198,8 +199,6 @@ EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& je
       }
      // muon quality selection
       if (muon->pt() < m_muonPtMin) continue;
-      // TODO: Figure out how to access the quality of the muon.
-      //if (m_muonSelectionTool->getQuality(*muon) > xAOD::Muon::Medium) continue;
       if (muon->quality() > xAOD::Muon::Medium) continue;
       if (fabs(muon->eta()) > m_muonEtaMax) continue;
       // find clostest muon
@@ -228,14 +227,14 @@ EL::StatusCode MuonInFatJetCorrection::getHbbCorrectedVector(const xAOD::Jet& je
 
   xAOD::JetFourMom_t corrected_jet_p4 = getMuonCorrectedJetFourMom(jet, matched_muons, "Combined");
   TLorentzVector corrected_jet(corrected_jet_p4.x(), corrected_jet_p4.y(), corrected_jet_p4.z(), corrected_jet_p4.t());
-  correctedVector = corrected_jet;
+  //correctedVector = corrected_jet;
 
   // delete the vector of pointers to muons after you have used them to correct the four vector
   for (const xAOD::Muon *muonPointer : calibratedMuons) {
     delete muonPointer;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return corrected_jet;
 }
 
 EL::StatusCode MuonInFatJetCorrection::decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const
