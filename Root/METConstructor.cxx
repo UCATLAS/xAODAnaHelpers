@@ -118,6 +118,9 @@ EL::StatusCode METConstructor :: initialize ()
   if ( m_dofJVTCut ) {
     ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", "passFJVT"));
   }
+  if ( m_doPFlow ) {
+    ANA_CHECK(m_metmaker_handle.setProperty("DoPFlow", true));
+  }
   ANA_CHECK(m_metmaker_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
@@ -129,20 +132,22 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
 
   //////////// IMETSignificance ////////////////
-  ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
-  ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
+  if ( m_calculateSignificance ) {
+    ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
+    ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
 
-  // For AFII samples
-  if ( isMC() ) {
-    // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
-    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
-    if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
-      ANA_MSG_INFO( "Setting simulation flavour to AFII");
-      ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
+    // For AFII samples
+    if ( isMC() ) {
+      // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
+      const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
+      if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
+        ANA_MSG_INFO( "Setting simulation flavour to AFII");
+        ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
+      }
     }
+    ANA_CHECK( m_metSignificance_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_metSignificance_handle);
   }
-  ANA_CHECK( m_metSignificance_handle.retrieve());
-  ANA_MSG_DEBUG("Retrieved tool: " << m_metSignificance_handle);
 
   ANA_MSG_INFO( "METConstructor Interface " << m_name << " succesfully initialized!");
 

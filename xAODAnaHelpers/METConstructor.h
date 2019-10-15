@@ -48,6 +48,9 @@ public:
   bool    m_doJVTCut = false;
   bool    m_dofJVTCut = false;
 
+  /// @brief To turn on p-flow MET calculation set m_doPFlow to true
+  bool    m_doPFlow = false;
+
   /// Rebuild MET using tracks in calo jets
   bool    m_rebuildUsingTracksInJets = false;
   /**
