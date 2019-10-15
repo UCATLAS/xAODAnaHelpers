@@ -51,6 +51,7 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<uint32_t>(tree, "TileFlags",                  &m_TileFlags);
     connectBranch<uint32_t>(tree, "SCTFlags",                   &m_SCTFlags);
     connectBranch<uint32_t>(tree, "LArFlags",                   &m_LArFlags);
+    connectBranch<bool    >(tree, "eventClean_LooseBad",        &m_eventClean_LooseBad);
   }
 
   if ( m_infoSwitch.m_pileup ) {
@@ -143,14 +144,15 @@ void EventInfo::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_eventCleaning ) {
-    tree->Branch("timeStamp",          &m_timeStamp,         "timeStamp/i");
-    tree->Branch("timeStampNSOffset",  &m_timeStampNSOffset, "timeStampNSOffset/i");
-    tree->Branch("TileError",          &m_TileError,         "TileError/O");
-    tree->Branch("SCTError",           &m_SCTError,          "SCTError/O");
-    tree->Branch("LArError",           &m_LArError,          "LArError/O");
-    tree->Branch("TileFlags",          &m_TileFlags,         "TileFlags/i");
-    tree->Branch("SCTFlags",           &m_SCTFlags,          "SCTFlags/i");
-    tree->Branch("LArFlags",           &m_LArFlags,          "LArFlags/i");
+    tree->Branch("timeStamp",          &m_timeStamp,          "timeStamp/i");
+    tree->Branch("timeStampNSOffset",  &m_timeStampNSOffset,  "timeStampNSOffset/i");
+    tree->Branch("TileError",          &m_TileError,          "TileError/O");
+    tree->Branch("SCTError",           &m_SCTError,           "SCTError/O");
+    tree->Branch("LArError",           &m_LArError,           "LArError/O");
+    tree->Branch("TileFlags",          &m_TileFlags,          "TileFlags/i");
+    tree->Branch("SCTFlags",           &m_SCTFlags,           "SCTFlags/i");
+    tree->Branch("LArFlags",           &m_LArFlags,           "LArFlags/i");
+    tree->Branch("eventClean_LooseBad",&m_eventClean_LooseBad,"eventClean_LooseBad/O");
   }
 
   if ( m_infoSwitch.m_pileup ) {
@@ -221,6 +223,7 @@ void EventInfo::clear()
   m_LArFlags = 0;
   m_TileFlags = 0;
   m_SCTFlags = 0;
+  m_eventClean_LooseBad = false;
   m_mcEventWeight = 1.;
   m_DistEmptyBCID = -999;
   m_DistLastUnpairedBCID = -999;
@@ -308,6 +311,10 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
 
     m_timeStamp = eventInfo->timeStamp();
     m_timeStampNSOffset = eventInfo->timeStampNSOffset();
+
+    static SG::AuxElement::ConstAccessor< char > acc_DFCommonJets_eventClean_LooseBad("DFCommonJets_eventClean_LooseBad");
+    if ( acc_DFCommonJets_eventClean_LooseBad.isAvailable( *eventInfo ))
+      m_eventClean_LooseBad = acc_DFCommonJets_eventClean_LooseBad( *eventInfo );
 
   }
 
