@@ -175,8 +175,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // initialize the BJetSelectionTool
   // A few which are not configurable as of yet....
   // is there a reason to have this configurable here??...I think no (GF to self)
-  ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",2.5));
-  ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",20000.));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()));
   // configurable parameters
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",          m_taggerName));
@@ -204,12 +202,31 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	std::string calibration=m_EfficiencyCalibration;
 	if(m_EfficiencyCalibration=="auto")
 	  {
-	    std::string sampleName=wk()->metaData()->castString(SH::MetaFields::sampleName);
+	    std::string gridName=wk()->metaData()->castString(SH::MetaFields::gridName);
 
-	    switch(HelperFunctions::getMCShowerType(sampleName))
+	    HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
+	    if(!gridName.empty())
+	      { // Do not trust sample name on the grid, in case there are multiple samples per job
+		std::stringstream ss(gridName);
+		std::string sampleName;
+		while(std::getline(ss,sampleName,','))
+		  {
+		    HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
+		    if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown)
+		      ANA_MSG_ERROR("Cannot have different shower types per grid task.");
+		    sampleShowerType=mySampleShowerType;
+		  }
+	      }
+	    else // Use sample name when running locally
+	      {
+		gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
+		sampleShowerType=HelperFunctions::getMCShowerType(gridName);
+	      }
+
+	    switch(sampleShowerType)
 	      {
 	      case HelperFunctions::Pythia8:
-		calibration="410501";
+		calibration="410470";
 		break;
 	      case HelperFunctions::Herwig7:
 		calibration="410558";
@@ -221,8 +238,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		calibration="410250";
 	      break;
 	      case HelperFunctions::Unknown:
-		ANA_MSG_WARNING("Cannot determine MC shower type for sample " << sampleName << ", assuming Pythia8 (default).");
-		calibration="410501";
+		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
 		break;
 	      }
 	  }
