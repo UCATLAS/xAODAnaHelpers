@@ -162,6 +162,7 @@ EL::StatusCode OverlapRemover :: initialize ()
   orFlags.doTaus      = m_useTaus;
   orFlags.doPhotons   = m_usePhotons;
   orFlags.doFatJets   = false;
+  orFlags.doMuPFJetOR = m_doMuPFJetOR;
 
   ANA_CHECK( ORUtils::recommendedTools(orFlags, m_ORToolbox));
   ANA_CHECK( m_ORToolbox.initialize());
