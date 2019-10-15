@@ -46,6 +46,7 @@ namespace xAH {
     uint32_t m_TileFlags;
     uint32_t m_LArFlags;
     uint32_t m_SCTFlags;
+    bool     m_eventClean_LooseBad;
     int      m_mcEventNumber;
     int      m_mcChannelNumber;
     float    m_mcEventWeight;
