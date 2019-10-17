@@ -70,21 +70,37 @@ EL::StatusCode MuonInFatJetCorrection :: execute()
 {
   // Decorator holding muon in fatjet corrected fatjets. 
   static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");
- 
-  // Retrieve calibrated fatjets.
-  const xAOD::JetContainer *fatJets(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(fatJets, m_fatJetContainerName, m_event, m_store, msg()));
 
-  // Loop over fatjets
-  for(const xAOD::Jet *fatJet : *fatJets)
+  std::vector<std::string>* systNames(nullptr);
+  if ( !m_inputAlgo.empty() )
     {
-      // Get corrected fatjet.
-      TLorentzVector correctedVector;
-      correctedVector = getHbbCorrectedVector(*fatJet);
-      
-
-      dec_correctedFatJets_tlv(*fatJet) = correctedVector;
+      ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
     }
+  else
+    {
+      systNames=new std::vector<std::string>({""});
+    }
+
+  for(const std::string& systName : *systNames)
+    {
+      // Retrieve calibrated fatjets.
+      const xAOD::JetContainer *fatJets(nullptr);
+      ANA_CHECK(HelperFunctions::retrieve(fatJets, m_fatJetContainerName+systName, m_event, m_store, msg()));
+
+      // Loop over fatjets
+      for(const xAOD::Jet *fatJet : *fatJets)
+	{
+	  // Get corrected fatjet.
+	  TLorentzVector correctedVector;
+	  correctedVector = getHbbCorrectedVector(*fatJet);
+
+	  dec_correctedFatJets_tlv(*fatJet) = correctedVector;
+	}
+    }
+
+  // Clean up systematics list if none exists
+  if(m_inputAlgo.empty())
+    delete systNames;
 
   return EL::StatusCode::SUCCESS;
 } 
@@ -253,8 +269,12 @@ EL::StatusCode MuonInFatJetCorrection::decorateWithMuons(const xAOD::Jet& jet) c
     }
 
   // decorate all track jets by default, no selection, no muon overlap removal (will be done later)
+  static SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::MuonContainer>>> dec_MuonsInTrackJet("MuonsInTrackJet");
   for (const xAOD::Jet* trackJet : associated_trackJets)
     {
+      if(dec_MuonsInTrackJet.isAvailable(*trackJet))
+	continue; // Jet already decorated (ie: from another systematic)
+
       std::vector<ElementLink<xAOD::MuonContainer>> muons_in_jet;
       for (const xAOD::Muon* muon: *muons)
 	{
@@ -264,7 +284,6 @@ EL::StatusCode MuonInFatJetCorrection::decorateWithMuons(const xAOD::Jet& jet) c
 	  muons_in_jet.push_back(muonEL);
 	}
 
-      static SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::MuonContainer>>> dec_MuonsInTrackJet("MuonsInTrackJet");
       dec_MuonsInTrackJet(*trackJet) = muons_in_jet;
 
       ANA_MSG_DEBUG("Found " << muons_in_jet.size() << " muons within R < " << m_muonDrMax << " of associated track jet.");
