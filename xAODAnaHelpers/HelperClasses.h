@@ -454,7 +454,7 @@ namespace HelperClasses {
         m_byAverageMu    byAverageMu    exact
         m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
-	m_muonCorrection muonCorrection exact 
+        m_muonCorrection muonCorrection exact 
         ================ ============== =======
 
         .. note::
