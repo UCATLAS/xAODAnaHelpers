@@ -33,6 +33,8 @@ public:
   std::string m_muonContainerName = "";
   /// @brief The name of the track jet container to match with muons
   std::string m_trackJetContainerName = "GhostVR30Rmax4Rmin02TrackJet";
+  /// @brief Algortihm systematics loop
+  std::string m_inputAlgo;
 
   /// @brief Minimum pt of track jets to use for correction
   float m_trackJetPtMin = 10000.0;
