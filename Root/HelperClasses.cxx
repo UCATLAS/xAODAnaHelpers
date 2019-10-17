@@ -275,6 +275,7 @@ namespace HelperClasses{
     m_allTrackPVSel = has_exact("allTrackPVSel");
     m_allTrackDetail= has_exact("allTrackDetail");
     m_muonCorrection= has_exact("muonCorrection");
+
     if( m_allTrackDetail ) {
       m_allTrackPVSel = m_allTrackPVSel || has_exact("allTrackDetailPVSel") ;
     }

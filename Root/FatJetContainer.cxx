@@ -73,8 +73,8 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_nWBosons  = new std::vector< int > ();
     m_nZBosons  = new std::vector< int > ();
   }
-  // TODO: condition
-  if (true) {
+  
+  if (m_infoSwitch.m_muonCorrection) {
     m_muonCorrected_E   = new std::vector<float>();
     m_muonCorrected_pt  = new std::vector<float>();
     m_muonCorrected_phi = new std::vector<float>();
@@ -157,8 +157,8 @@ FatJetContainer::~FatJetContainer()
     delete m_nWBosons;
     delete m_nZBosons;
   }
-  // TODO: condition
-  if (true) {
+  
+  if (m_infoSwitch.m_muonCorrection) {
     delete m_muonCorrected_E;
     delete m_muonCorrected_pt;
     delete m_muonCorrected_phi;
@@ -243,8 +243,8 @@ void FatJetContainer::setTree(TTree *tree)
     connectBranch< int >(tree, "nWBosons",  &m_nWBosons);
     connectBranch< int >(tree, "nZBosons",  &m_nZBosons);
   }
-  // TODO: condition
-  if (true) {
+  
+  if (m_infoSwitch.m_muonCorrection) {
     connectBranch< float >(tree, "muonCorrected_E"  , &m_muonCorrected_E);
     connectBranch< float >(tree, "muonCorrected_pt" , &m_muonCorrected_pt);
     connectBranch< float >(tree, "muonCorrected_phi", &m_muonCorrected_phi);
@@ -325,8 +325,8 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.nWBosons = m_nWBosons->at(idx);
     fatjet.nZBosons = m_nZBosons->at(idx);
   }
-  // TODO: condition
-  if (true) {
+  
+  if (m_infoSwitch.m_muonCorrection) {
     fatjet.muonCorrected_E   = m_muonCorrected_E  ->at(idx);
     fatjet.muonCorrected_pt  = m_muonCorrected_pt ->at(idx);
     fatjet.muonCorrected_phi = m_muonCorrected_phi->at(idx);
@@ -415,8 +415,8 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< int >(tree, "nWBosons",       m_nWBosons);
     setBranch< int >(tree, "nZBosons",       m_nZBosons);
   }
-  //TODO:conditional
-  if (true) {
+  
+  if (m_infoSwitch.m_muonCorrection) {
     setBranch<float> (tree, "muonCorrected_E"  , m_muonCorrected_E);
     setBranch<float> (tree, "muonCorrected_pt" , m_muonCorrected_pt);
     setBranch<float> (tree, "muonCorrected_phi", m_muonCorrected_phi);
@@ -497,8 +497,8 @@ void FatJetContainer::clear()
     m_nWBosons->clear();
     m_nZBosons->clear();
   }
-  //TODO: condition
-  if(true) {
+  
+  if(m_infoSwitch.m_muonCorrection) {
     m_muonCorrected_E->clear();
     m_muonCorrected_pt->clear();
     m_muonCorrected_phi->clear();
@@ -696,8 +696,8 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       safeFill<int, int, xAOD::Jet>(fatJetParentJet, truthfatjet_HBosons, m_nHBosons, -999);
     }
   }
-  // TODO: Condition
-  if (true) {
+  
+  if (m_infoSwitch.m_muonCorrection) {
     static SG::AuxElement::ConstAccessor<TLorentzVector> acc_correctedFatJets_tlv("correctedFatJets_tlv");
     if (acc_correctedFatJets_tlv.isAvailable(*fatjet)) {
       m_muonCorrected_E  ->push_back(acc_correctedFatJets_tlv(*fatjet).E() / m_units);
