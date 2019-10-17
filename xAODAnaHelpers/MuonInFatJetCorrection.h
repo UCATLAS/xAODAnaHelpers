@@ -9,50 +9,63 @@
 
 #include "JetCalibTools/JetCalibrationTool.h"
 
-class MuonInFatJetCorrection : public xAH::Algorithm {
+/** @rst
+    Algorithm for correcting the momentum of largeR jets containing muon decays.
 
-  private:
+    Only muons associated to track jets are used. Quality and kinematic cuts for the muons and track jets can be adjusted by the user.
 
-    //CP::MuonSelectionTool *m_muonSelectionTool = new CP::MuonSelectionTool("MuonSelectionTool");
-    //CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool = new CP::MuonCalibrationPeriodTool("MuonCalibrationPeriodToolForHbb");
-    //CP::MuonSelectionTool *m_muonSelectionTool;
-    //CP::MuonCalibrationPeriodTool *m_muonCalibrationPeriodTool;
+    There are currently four correction schemes; Calorimeter, TrackAssisted, Combined, and SimpleMuon. At present, Combined is used, which takes a weighted sum of corrections from both the TrackAssisted and Calorimeter Schemes.
 
-  public:
+    The corrected large-R are saved as a TLorentzVector in a decorator named "correctedFatJets_tlv".
 
-    MuonInFatJetCorrection();
-    
-    std::string m_inContainerName = "";
-    std::string m_inMuonContainerName = "";
-    // Don't need this anymore (it may be the null pointer that was causing the crash as well)	
-    //JetCalibrationTool *m_fatJetCalibration;
-    
-    float m_trackJetPtMin = 10000.0;
-    float m_trackJetEtaMax = 2.5;
-    float m_trackJetNConst = 2.0;
-    float m_muonPtMin = 10000.0;
-    float m_muonEtaMax = 2.7;
-    float m_muonDrMax = 0.4;
-    bool  doVR = true;
-    bool  m_debug = false;
+    @endrst */
+class MuonInFatJetCorrection : public xAH::Algorithm
+{
+public:
+  /// @brief Different schemes for the muon in jet correction
+  enum Scheme {Calorimeter, TrackAssisted, Combined, SimpleMuon};
+  
+  MuonInFatJetCorrection();
 
-    virtual EL::StatusCode setupJob(EL::Job& job);
-    virtual EL::StatusCode histInitialize();
-    virtual EL::StatusCode fileExecute();
-    virtual EL::StatusCode changeInput(bool firstFile);
-    virtual EL::StatusCode initialize();
-    virtual EL::StatusCode execute();
-    virtual EL::StatusCode postExecute();
-    virtual EL::StatusCode finalize();
-    virtual EL::StatusCode histFinalize();
+  /// @brief The name of the container with fat jets to be corrected
+  std::string m_fatJetContainerName = "";
+  /// @brief The name of the container with muons to be used for the correction
+  std::string m_muonContainerName = "";
+  /// @brief The name of the track jet container to match with muons
+  std::string m_trackJetContainerName = "GhostVR30Rmax4Rmin02TrackJet";
 
-    TLorentzVector getHbbCorrectedVector(const xAOD::Jet &jet, const bool doVR);
-    EL::StatusCode decorateWithMuons(const xAOD::Jet& jet, const bool doVR) const;
-    const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
-                                                        std::string scheme, bool useJMSScale = false) const;
- 
-    
-    ClassDef(MuonInFatJetCorrection, 1);
+  /// @brief Minimum pt of track jets to use for correction
+  float m_trackJetPtMin = 10000.0;
+  /// @brief Maximum eta of track jets to use for correction
+  float m_trackJetEtaMax = 2.5;
+  /// @brief Minimum number of constituents (tracks) of track jets to use for correction
+  float m_trackJetNConst = 2.0;
+
+  /// @brief Minimum pt of muons to use for correction
+  float m_muonPtMin = 10000.0;
+  /// @brief Maximum eta of muons to use for correction
+  float m_muonEtaMax = 2.7;
+
+  /// @brief DR cut to use when matching muons to track jets
+  float m_muonDrMax = 0.4;
+
+  virtual EL::StatusCode setupJob(EL::Job& job);
+  virtual EL::StatusCode histInitialize();
+  virtual EL::StatusCode fileExecute();
+  virtual EL::StatusCode changeInput(bool firstFile);
+  virtual EL::StatusCode initialize();
+  virtual EL::StatusCode execute();
+  virtual EL::StatusCode postExecute();
+  virtual EL::StatusCode finalize();
+  virtual EL::StatusCode histFinalize();
+
+  TLorentzVector getHbbCorrectedVector(const xAOD::Jet &jet);
+  EL::StatusCode decorateWithMuons(const xAOD::Jet& jet) const;
+  const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
+						      Scheme scheme, bool useJMSScale = false) const;
+
+
+  ClassDef(MuonInFatJetCorrection, 1);
 };
 
 #endif

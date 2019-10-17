@@ -73,12 +73,12 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_nWBosons  = new std::vector< int > ();
     m_nZBosons  = new std::vector< int > ();
   }
-  // TODO: condition
-  if (true) {
-    m_muonCorrected_E   = new std::vector<float>();
+
+  if ( m_infoSwitch.m_muonCorrection) {
     m_muonCorrected_pt  = new std::vector<float>();
-    m_muonCorrected_phi = new std::vector<float>();
     m_muonCorrected_eta = new std::vector<float>();
+    m_muonCorrected_phi = new std::vector<float>();
+    m_muonCorrected_m   = new std::vector<float>();
   }
 
   for(const auto& trackJetName : m_infoSwitch.m_trackJetNames)
@@ -157,12 +157,12 @@ FatJetContainer::~FatJetContainer()
     delete m_nWBosons;
     delete m_nZBosons;
   }
-  // TODO: condition
-  if (true) {
-    delete m_muonCorrected_E;
+
+  if ( m_infoSwitch.m_muonCorrection) {
     delete m_muonCorrected_pt;
-    delete m_muonCorrected_phi;
     delete m_muonCorrected_eta;
+    delete m_muonCorrected_phi;
+    delete m_muonCorrected_m;
   }
 
   if( !m_infoSwitch.m_trackJetNames.empty() ){
@@ -243,12 +243,13 @@ void FatJetContainer::setTree(TTree *tree)
     connectBranch< int >(tree, "nWBosons",  &m_nWBosons);
     connectBranch< int >(tree, "nZBosons",  &m_nZBosons);
   }
-  // TODO: condition
-  if (true) {
-    connectBranch< float >(tree, "muonCorrected_E"  , &m_muonCorrected_E);
-    connectBranch< float >(tree, "muonCorrected_pt" , &m_muonCorrected_pt);
-    connectBranch< float >(tree, "muonCorrected_phi", &m_muonCorrected_phi);
+
+  if ( m_infoSwitch.m_muonCorrection) {
+    connectBranch< float >(tree, "muonCorrected_pt" , &m_muonCorrected_pt );
     connectBranch< float >(tree, "muonCorrected_eta", &m_muonCorrected_eta);
+    connectBranch< float >(tree, "muonCorrected_phi", &m_muonCorrected_phi);
+    connectBranch< float >(tree, "muonCorrected_m"  , &m_muonCorrected_m  );
+	
   } 
 
   for(const auto& kv : m_trkJets)
@@ -319,18 +320,18 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.constituent_e      = m_constituent_e       ->at(idx);
   }
 
-  if(m_infoSwitch.m_bosonCount){
+  if (m_infoSwitch.m_bosonCount) {
     fatjet.nTQuarks = m_nTQuarks->at(idx);
     fatjet.nHBosons = m_nHBosons->at(idx);
     fatjet.nWBosons = m_nWBosons->at(idx);
     fatjet.nZBosons = m_nZBosons->at(idx);
   }
-  // TODO: condition
-  if (true) {
-    fatjet.muonCorrected_E   = m_muonCorrected_E  ->at(idx);
+
+  if (m_infoSwitch.m_muonCorrection) {
     fatjet.muonCorrected_pt  = m_muonCorrected_pt ->at(idx);
-    fatjet.muonCorrected_phi = m_muonCorrected_phi->at(idx);
     fatjet.muonCorrected_eta = m_muonCorrected_eta->at(idx);
+    fatjet.muonCorrected_phi = m_muonCorrected_phi->at(idx);
+    fatjet.muonCorrected_m   = m_muonCorrected_m  ->at(idx);
   }
 
   for(const auto& kv : m_trkJets)
@@ -409,18 +410,18 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< std::vector<float> >(tree, "constituent_e",       m_constituent_e);
   }
 
-  if(m_infoSwitch.m_bosonCount){
+  if (m_infoSwitch.m_bosonCount){
     setBranch< int >(tree, "nTQuarks",       m_nTQuarks);
     setBranch< int >(tree, "nHBosons",       m_nHBosons);
     setBranch< int >(tree, "nWBosons",       m_nWBosons);
     setBranch< int >(tree, "nZBosons",       m_nZBosons);
   }
-  //TODO:conditional
-  if (true) {
-    setBranch<float> (tree, "muonCorrected_E"  , m_muonCorrected_E);
-    setBranch<float> (tree, "muonCorrected_pt" , m_muonCorrected_pt);
-    setBranch<float> (tree, "muonCorrected_phi", m_muonCorrected_phi);
+
+  if (m_infoSwitch.m_muonCorrection) {
+    setBranch<float> (tree, "muonCorrected_pt" , m_muonCorrected_pt );
     setBranch<float> (tree, "muonCorrected_eta", m_muonCorrected_eta);
+    setBranch<float> (tree, "muonCorrected_phi", m_muonCorrected_phi);
+    setBranch<float> (tree, "muonCorrected_m"  , m_muonCorrected_m  );
   }
 
   for(const auto& kv : m_trkJets)
@@ -491,18 +492,18 @@ void FatJetContainer::clear()
     m_constituent_e     ->clear();
   }
 
-  if(m_infoSwitch.m_bosonCount){
+  if ( m_infoSwitch.m_bosonCount) {
     m_nTQuarks->clear();
     m_nHBosons->clear();
     m_nWBosons->clear();
     m_nZBosons->clear();
   }
-  //TODO: condition
-  if(true) {
-    m_muonCorrected_E->clear();
-    m_muonCorrected_pt->clear();
-    m_muonCorrected_phi->clear();
+
+  if ( m_infoSwitch.m_muonCorrection) {
+    m_muonCorrected_pt ->clear();
     m_muonCorrected_eta->clear();
+    m_muonCorrected_phi->clear();
+    m_muonCorrected_m  ->clear();
   }
   
   for(const auto& kv : m_trkJets)
@@ -696,14 +697,14 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       safeFill<int, int, xAOD::Jet>(fatJetParentJet, truthfatjet_HBosons, m_nHBosons, -999);
     }
   }
-  // TODO: Condition
-  if (true) {
-    static SG::AuxElement::ConstAccessor<TLorentzVector> acc_correctedFatJets_tlv("correctedFatJets_tlv");
+
+  if(m_infoSwitch.m_muonCorrection){
+    static const SG::AuxElement::ConstAccessor<TLorentzVector> acc_correctedFatJets_tlv("correctedFatJets_tlv");
     if (acc_correctedFatJets_tlv.isAvailable(*fatjet)) {
-      m_muonCorrected_E  ->push_back(acc_correctedFatJets_tlv(*fatjet).E() / m_units);
       m_muonCorrected_pt ->push_back(acc_correctedFatJets_tlv(*fatjet).Pt() / m_units);
-      m_muonCorrected_phi->push_back(acc_correctedFatJets_tlv(*fatjet).Phi());
       m_muonCorrected_eta->push_back(acc_correctedFatJets_tlv(*fatjet).Eta());
+      m_muonCorrected_phi->push_back(acc_correctedFatJets_tlv(*fatjet).Phi());
+      m_muonCorrected_m  ->push_back(acc_correctedFatJets_tlv(*fatjet).M()  / m_units);
     }
   }
 
