@@ -157,7 +157,7 @@ FatJetContainer::~FatJetContainer()
     delete m_nWBosons;
     delete m_nZBosons;
   }
-  if (m_infoSwitch.m_muonCorrection) {
+  
   if ( m_infoSwitch.m_muonCorrection) {
     delete m_muonCorrected_pt;
     delete m_muonCorrected_eta;
@@ -702,8 +702,8 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
       m_muonCorrected_eta->push_back(acc_correctedFatJets_tlv(*fatjet).Eta());
       m_muonCorrected_phi->push_back(acc_correctedFatJets_tlv(*fatjet).Phi());
       m_muonCorrected_m  ->push_back(acc_correctedFatJets_tlv(*fatjet).M()  / m_units);
-    }
   }
+
 
   //
   // Associated track jets
