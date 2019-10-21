@@ -12,29 +12,29 @@
 #include "MuonSelectorTools/MuonSelectionTool.h"
 #include "MuonMomentumCorrections/MuonCalibrationPeriodTool.h"
 
-#include "xAODAnaHelpers/MuonInJetCorrector.h"
+#include "xAODAnaHelpers/MuonInFatJetCorrector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 
 // Needed to distribute the algorithm to the workers
-ClassImp(MuonInJetCorrector)
+ClassImp(MuonInFatJetCorrector)
 
-MuonInJetCorrector :: MuonInJetCorrector() :
-  Algorithm("MuonInJetCorrector")
+MuonInFatJetCorrector :: MuonInFatJetCorrector() :
+  Algorithm("MuonInFatJetCorrector")
 {
 }
 
-EL::StatusCode MuonInJetCorrector :: setupJob(EL::Job& job)
+EL::StatusCode MuonInFatJetCorrector :: setupJob(EL::Job& job)
 {
   ANA_MSG_DEBUG("Calling setupJob");
   job.useXAOD();
-  xAOD::Init("MuonInJetCorrector").ignore();
+  xAOD::Init("MuonInFatJetCorrector").ignore();
   
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInJetCorrector :: histInitialize()
+EL::StatusCode MuonInFatJetCorrector :: histInitialize()
 {
   ANA_MSG_DEBUG("Calling histInitialize");
   ANA_CHECK(xAH::Algorithm::algInitialize());
@@ -42,21 +42,21 @@ EL::StatusCode MuonInJetCorrector :: histInitialize()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInJetCorrector :: fileExecute()
+EL::StatusCode MuonInFatJetCorrector :: fileExecute()
 {
   ANA_MSG_DEBUG("Calling fileExecute");
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInJetCorrector :: changeInput(bool /*firstFile*/)
+EL::StatusCode MuonInFatJetCorrector :: changeInput(bool /*firstFile*/)
 {
   ANA_MSG_DEBUG("Calling changeInput");
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInJetCorrector :: initialize()
+EL::StatusCode MuonInFatJetCorrector :: initialize()
 {
   ANA_MSG_DEBUG("Calling initialize");
 
@@ -66,7 +66,7 @@ EL::StatusCode MuonInJetCorrector :: initialize()
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInJetCorrector :: execute()
+EL::StatusCode MuonInFatJetCorrector :: execute()
 {
   // Decorator holding muon in fatjet corrected fatjets. 
   static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");
@@ -105,7 +105,7 @@ EL::StatusCode MuonInJetCorrector :: execute()
   return EL::StatusCode::SUCCESS;
 } 
 
-EL::StatusCode MuonInJetCorrector :: postExecute ()
+EL::StatusCode MuonInFatJetCorrector :: postExecute ()
 {
   ANA_MSG_DEBUG("Calling postExecute");
 
@@ -113,12 +113,12 @@ EL::StatusCode MuonInJetCorrector :: postExecute ()
 }
 
 
-EL::StatusCode MuonInJetCorrector :: finalize()
+EL::StatusCode MuonInFatJetCorrector :: finalize()
 {
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInJetCorrector :: histFinalize ()
+EL::StatusCode MuonInFatJetCorrector :: histFinalize ()
 {
 
   ANA_MSG_DEBUG( "Calling histFinalize");
@@ -127,7 +127,7 @@ EL::StatusCode MuonInJetCorrector :: histFinalize ()
 }
 
 
-TLorentzVector MuonInJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet)
+TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet)
 {
   /* Steps:
      1. Get all track jets asssociated with the ungroomed jet
@@ -238,7 +238,7 @@ TLorentzVector MuonInJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet)
   return corrected_jet;
 }
 
-EL::StatusCode MuonInJetCorrector::decorateWithMuons(const xAOD::Jet& jet) const
+EL::StatusCode MuonInFatJetCorrector::decorateWithMuons(const xAOD::Jet& jet) const
 {
   // retrieve muons from StoreGate
   const xAOD::MuonContainer *muons(nullptr);
@@ -292,7 +292,7 @@ EL::StatusCode MuonInJetCorrector::decorateWithMuons(const xAOD::Jet& jet) const
   return StatusCode::SUCCESS;
 }
 
-const xAOD::JetFourMom_t MuonInJetCorrector::getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons, Scheme scheme, bool useJMSScale) const
+const xAOD::JetFourMom_t MuonInFatJetCorrector::getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons, Scheme scheme, bool useJMSScale) const
 {
   xAOD::JetFourMom_t JetCorr_tlv = jet.jetP4();
   if (muons.size() == 0)

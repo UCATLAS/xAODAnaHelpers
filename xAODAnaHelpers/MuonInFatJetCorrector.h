@@ -1,5 +1,5 @@
-#ifndef xAODAnaHelpers_MuonInJetCorrector_H
-#define xAODAnaHelpers_MuonInJetCorrector_H
+#ifndef xAODAnaHelpers_MuonInFatJetCorrector_H
+#define xAODAnaHelpers_MuonInFatJetCorrector_H
 
 #include <xAODAnaHelpers/Algorithm.h>
 #include "xAODJet/JetContainer.h"
@@ -19,13 +19,13 @@
     The corrected large-R are saved as a TLorentzVector in a decorator named "correctedFatJets_tlv".
 
     @endrst */
-class MuonInJetCorrector : public xAH::Algorithm
+class MuonInFatJetCorrector : public xAH::Algorithm
 {
 public:
   /// @brief Different schemes for the muon in jet correction
   enum Scheme {Calorimeter, TrackAssisted, Combined, SimpleMuon};
   
-  MuonInJetCorrector();
+  MuonInFatJetCorrector();
 
   /// @brief The name of the container with fat jets to be corrected
   std::string m_fatJetContainerName = "";
@@ -67,7 +67,7 @@ public:
 						      Scheme scheme, bool useJMSScale = false) const;
 
 
-  ClassDef(MuonInJetCorrector, 1);
+  ClassDef(MuonInFatJetCorrector, 1);
 };
 
 #endif
