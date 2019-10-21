@@ -78,8 +78,6 @@ namespace xAH {
       float muonCorrected_eta;
       float muonCorrected_phi;
       float muonCorrected_m;
-
-      ClassDef(FatJet, 1);
     };
 
 }//xAH
