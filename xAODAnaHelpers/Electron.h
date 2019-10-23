@@ -43,6 +43,7 @@ namespace xAH {
     std::map< std::string, std::vector< float > > IsoEff_SF;
     std::map< std::string, std::vector< float > > TrigEff_SF;
     std::map< std::string, std::vector< float > > TrigMCEff;
+    std::map< std::string, std::vector< float > > ChflipEff_SF;
     //const std::vector< std::string > m_PIDWPs = {"LooseAndBLayerLLH","MediumLLH","TightLLH"};
     //const std::vector< std::string > m_isolWPs = {"","_isolFixedCutLoose","_isolFixedCutTight","_isolFixedCutTightTrackOnly","_isolGradient","_isolGradientLoose","_isolLoose","_isolLooseTrackOnly","_isolTight"};
 
@@ -86,6 +87,9 @@ namespace xAH {
     float PromptLeptonIso;
     float PromptLeptonVeto;
 
+    // charge-flip BDT
+    int   ECIDSPassed;
+    float ECIDSResult;
   };
 
 }//xAH

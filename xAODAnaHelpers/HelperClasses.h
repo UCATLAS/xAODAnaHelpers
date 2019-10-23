@@ -321,6 +321,8 @@ namespace HelperClasses {
         m_isolWPs[""]         ISOL_NONE           exact
         m_isolWPs[XYZ]        ISOL_XYZ            pattern
         m_trigWPs[XYZ]        TRIG_XYZ            pattern
+        m_chflipBDT           chflipBDT           exact
+        m_chflipSF            chflipSF            exact
         ===================== =================== =======
 
         .. note::
@@ -350,6 +352,8 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
+    bool m_chflipSF;
+    bool m_chflipBDT;
     bool m_promptlepton;
     std::vector< std::string > m_PIDWPs;
     std::vector< std::string > m_PIDSFWPs;

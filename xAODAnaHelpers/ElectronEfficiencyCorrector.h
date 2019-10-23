@@ -19,6 +19,7 @@
 
 // external tools include(s):
 #include "ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h"
+#include "ElectronEfficiencyCorrection/ElectronChargeEfficiencyCorrectionTool.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -61,14 +62,17 @@ public:
   float m_systValIso = 0.0;
   float m_systValReco = 0.0;
   float m_systValTrig = 0.0;
+  float m_systValChflip = 0.0;
   std::string m_systNamePID = "";
   std::string m_systNameIso = "";
   std::string m_systNameReco = "";
   std::string m_systNameTrig = "";
+  std::string m_systNameChflip = "";
   std::string m_outputSystNamesPID = "EleEffCorr_PIDSyst";
   std::string m_outputSystNamesIso = "EleEffCorr_IsoSyst";
   std::string m_outputSystNamesReco = "EleEffCorr_RecoSyst";
   std::string m_outputSystNamesTrig = "EleEffCorr_TrigSyst";
+  std::string m_outputSystNamesChflip = "EleEffCorr_ChflipSyst";
 
   /// @brief Systematic correlation model
   std::string m_correlationModel = "FULL";
@@ -85,6 +89,9 @@ public:
   /// @brief Trigger working point
   std::string m_WorkingPointTrig = "";
 
+  /// @brief Charge-flip efficiency path (currently not in the map file)
+  std::string m_ChflipCorrectionPath = "";
+
   /// @brief Override corrections map file (not recommended)
   std::string m_overrideMapFilePath = "";
 
@@ -96,6 +103,7 @@ private:
   std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListReco; //!
   std::vector<CP::SystematicSet> m_systListTrig; //!
+  std::vector<CP::SystematicSet> m_systListChflip; //!
 
   // tools
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  //!
@@ -108,6 +116,8 @@ private:
   std::string m_TrigEffSF_tool_name;                                  //!
   AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; //!
   std::string m_TrigMCEff_tool_name;                                  //!
+  CP::ElectronChargeEfficiencyCorrectionTool *m_elChflipEffCorrTool = nullptr; //!
+  std::string m_ChflipEffSF_tool_name;                                //!
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

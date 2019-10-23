@@ -47,6 +47,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_TrigMCEff  = new std::map< std::string, std::vector< std::vector< float > > >();
     m_PIDEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
     m_IsoEff_SF  = new std::map< std::string, std::vector< std::vector< float > > >();
+    m_ChflipEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
 
     m_RecoEff_SF = new std::vector< std::vector< float > > ();
   }
@@ -94,6 +95,11 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_PromptLeptonIso                   = new std::vector<float> ();
     m_PromptLeptonVeto                  = new std::vector<float> ();
   }
+  
+  if ( m_infoSwitch.m_chflipBDT ) {
+    m_ECIDSPassed = new std::vector<int> ();
+    m_ECIDSResult = new std::vector<float> ();
+  }
 
 }
 
@@ -136,6 +142,7 @@ ElectronContainer::~ElectronContainer()
     delete m_TrigMCEff  ;
     delete m_PIDEff_SF  ;
     delete m_IsoEff_SF  ;
+    delete m_ChflipEff_SF ;
     delete m_RecoEff_SF ;
   }
 
@@ -181,6 +188,11 @@ ElectronContainer::~ElectronContainer()
     delete m_PromptLeptonInput_sv1_jf_ntrkv    ;
     delete m_PromptLeptonIso                   ;
     delete m_PromptLeptonVeto                  ;
+  }
+
+  if ( m_infoSwitch.m_chflipBDT ) {
+    delete m_ECIDSPassed;
+    delete m_ECIDSResult;
   }
 
 }
@@ -250,6 +262,10 @@ void ElectronContainer::setTree(TTree *tree)
           tree->SetBranchStatus ( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , 1 );
           tree->SetBranchAddress( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
         }
+        if (m_infoSwitch.m_chflipSF) {
+          tree->SetBranchStatus ( (m_name+"_ChflipEff_SF_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , 1 );
+          tree->SetBranchAddress( (m_name+"_ChflipEff_SF_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_ChflipEff_SF)[ PID+isol ] );
+        }
       }
     }
 
@@ -300,6 +316,10 @@ void ElectronContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "PromptLeptonVeto",                 &m_PromptLeptonVeto);
   }
 
+  if ( m_infoSwitch.m_chflipBDT ) {
+    connectBranch<int>  (tree, "ECIDSPassed", &m_ECIDSPassed);
+    connectBranch<float>(tree, "ECIDSResult", &m_ECIDSResult);
+  }
 }
 
 void ElectronContainer::updateParticle(uint idx, Electron& elec)
@@ -362,6 +382,8 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
           elec.TrigEff_SF[ trig+PID+iso ] = (*m_TrigEff_SF)[ trig+PID+iso ].at(idx);
           elec.TrigMCEff [ trig+PID+iso ] = (*m_TrigMCEff )[ trig+PID+iso ].at(idx);
         }
+        if(m_infoSwitch.m_chflipSF)
+          elec.ChflipEff_SF[ PID+iso ] =  (*m_ChflipEff_SF) [ PID+iso ].at(idx);
       }
     }
 
@@ -417,6 +439,11 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.PromptLeptonVeto                  = m_PromptLeptonVeto                  ->at(idx);
   }
 
+  // charge-flip BDT
+  if ( m_infoSwitch.m_chflipBDT ) {
+    elec.ECIDSPassed = m_ECIDSPassed->at(idx);
+    elec.ECIDSResult = m_ECIDSResult->at(idx);
+  }
 }
 
 
@@ -474,6 +501,8 @@ void ElectronContainer::setBranches(TTree *tree)
           tree->Branch( (m_name+"_TrigEff_SF_" + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigEff_SF)[ trig+PID+isol ] );
           tree->Branch( (m_name+"_TrigMCEff_"  + trig + "_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_TrigMCEff) [ trig+PID+isol ] );
         }
+        if (m_infoSwitch.m_chflipSF)
+          tree->Branch( (m_name+"_ChflipEff_SF_" + PID + (!isol.empty() ? "_isol" + isol : "")).c_str() , & (*m_ChflipEff_SF)[ PID+isol ] );
       }
     }
 
@@ -522,6 +551,11 @@ void ElectronContainer::setBranches(TTree *tree)
     setBranch<int>  (tree, "PromptLeptonInput_sv1_jf_ntrkv",    m_PromptLeptonInput_sv1_jf_ntrkv);
     setBranch<float>(tree, "PromptLeptonIso",                   m_PromptLeptonIso);
     setBranch<float>(tree, "PromptLeptonVeto",                  m_PromptLeptonVeto);
+  }
+
+  if ( m_infoSwitch.m_chflipBDT ) {
+    setBranch<int>  (tree, "ECIDSPassed", m_ECIDSPassed);
+    setBranch<float>(tree, "ECIDSResult", m_ECIDSResult);
   }
 
   return;
@@ -581,6 +615,8 @@ void ElectronContainer::clear()
           (*m_TrigEff_SF)[ trig+PID+isol ].clear();
           (*m_TrigMCEff)[ trig+PID+isol ].clear();
         }
+        if(m_infoSwitch.m_chflipSF)
+          (*m_ChflipEff_SF)[ PID+isol ].clear();
       }
     }
 
@@ -630,6 +666,11 @@ void ElectronContainer::clear()
     m_PromptLeptonInput_sv1_jf_ntrkv     -> clear();
     m_PromptLeptonIso                    -> clear();
     m_PromptLeptonVeto                   -> clear();
+  }
+
+  if ( m_infoSwitch.m_chflipBDT ) {
+    m_ECIDSPassed->clear();
+    m_ECIDSResult->clear();
   }
 
 }
@@ -827,6 +868,14 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     m_PromptLeptonVeto                 ->push_back( acc_Veto           .isAvailable(*elec) ? acc_Veto(*elec)           : -100);
   }
 
+  if ( m_infoSwitch.m_chflipBDT ) {
+    static SG::AuxElement::ConstAccessor<char>  acc_ECIDSPassed("DFCommonElectronsECIDS");
+    static SG::AuxElement::ConstAccessor<float> acc_ECIDSResult("DFCommonElectronsECIDSResult");
+
+    safeFill<char,  int,   xAOD::Electron>( elec, acc_ECIDSPassed, m_ECIDSPassed, -1    );
+    safeFill<float, float, xAOD::Electron>( elec, acc_ECIDSResult, m_ECIDSResult, -9999 );
+  }
+
   if ( m_infoSwitch.m_effSF && m_mc ) {
 
     std::vector<float> junkSF(1,-1.0);
@@ -836,6 +885,7 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accIsoSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTrigEFF;
+    static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accChflipSF;
 
     for (auto& PID : m_infoSwitch.m_PIDSFWPs) {
       std::string PIDSF = "ElPIDEff_SF_syst_" + PID;
@@ -862,6 +912,11 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
         }
 
+        if(m_infoSwitch.m_chflipSF) {
+          std::string ChflipSF = "ElChflipEff_SF_syst_" + PID + (!isol.empty() ? "_isol" + isol : "");
+          accChflipSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( PID+isol , SG::AuxElement::Accessor< std::vector< float > >( ChflipSF ) ) );
+          safeSFVecFill<float, xAOD::Electron>( elec, accChflipSF.at( PID+isol ), &m_ChflipEff_SF->at( PID+isol ), junkSF );
+        }
       }
     }
 
