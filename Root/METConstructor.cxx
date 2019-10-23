@@ -125,6 +125,9 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
   ///////////// IMETSystematicsTool ///////////////////
+  if ( m_doPFlow ) { // do TST
+    ANA_CHECK(m_metSyst_handle.setProperty("ConfigSoftTrkFile", "TrackSoftTerms-pflow.config"));
+  }
   ANA_CHECK(m_metSyst_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
 
