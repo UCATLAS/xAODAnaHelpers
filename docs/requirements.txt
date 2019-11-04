@@ -1,5 +1,5 @@
 Babel==2.1.1
-Jinja2==2.9
+Jinja2>=2.10.1
 MarkupSafe==0.23
 PyYAML==3.11
 Pygments==2.0.2
