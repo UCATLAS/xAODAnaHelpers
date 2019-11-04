@@ -1,7 +1,7 @@
 Babel==2.1.1
 Jinja2>=2.10.1
 MarkupSafe==0.23
-PyYAML==3.11
+PyYAML==5.1
 Pygments==2.0.2
 Sphinx==1.5.5
 alabaster==0.7.6
