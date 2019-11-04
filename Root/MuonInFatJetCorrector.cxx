@@ -234,7 +234,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
   return corrected_jet;
 }
 
-EL::StatusCode MuonInFatJetCorrection::matchTrackJetsToMuons() const
+EL::StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
 {
   // retrieve muons from StoreGate
   const xAOD::MuonContainer *muons(nullptr);
