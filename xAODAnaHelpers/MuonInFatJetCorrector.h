@@ -2,12 +2,6 @@
 #define xAODAnaHelpers_MuonInFatJetCorrector_H
 
 #include <xAODAnaHelpers/Algorithm.h>
-#include "xAODJet/JetContainer.h"
-#include "xAODTruth/TruthParticleContainer.h"
-#include "MuonSelectorTools/MuonSelectionTool.h"
-#include "MuonMomentumCorrections/MuonCalibrationPeriodTool.h"
-
-#include "JetCalibTools/JetCalibrationTool.h"
 
 /** @rst
     Algorithm for correcting the momentum of largeR jets containing muon decays.
@@ -29,10 +23,12 @@ public:
 
   /// @brief The name of the container with fat jets to be corrected
   std::string m_fatJetContainerName = "";
+  /// @brief The name of the container with track jets used for matching
+  std::string m_trackJetContainerName = "AntiKtVR30Rmax4Rmin02TrackJets";
   /// @brief The name of the container with muons to be used for the correction
   std::string m_muonContainerName = "";
-  /// @brief The name of the track jet container to match with muons
-  std::string m_trackJetContainerName = "GhostVR30Rmax4Rmin02TrackJet";
+  /// @brief The name of the link to matched track jets
+  std::string m_trackJetLinkName = "GhostVR30Rmax4Rmin02TrackJet";
   /// @brief Algortihm systematics loop
   std::string m_inputAlgo;
 
@@ -61,8 +57,8 @@ public:
   virtual EL::StatusCode finalize();
   virtual EL::StatusCode histFinalize();
 
+  EL::StatusCode matchTrackJetsToMuons() const;
   TLorentzVector getHbbCorrectedVector(const xAOD::Jet &jet);
-  EL::StatusCode decorateWithMuons(const xAOD::Jet& jet) const;
   const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
 						      Scheme scheme, bool useJMSScale = false) const;
 
