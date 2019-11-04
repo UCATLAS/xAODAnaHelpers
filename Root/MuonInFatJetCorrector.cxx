@@ -68,9 +68,12 @@ EL::StatusCode MuonInFatJetCorrector :: initialize()
 
 EL::StatusCode MuonInFatJetCorrector :: execute()
 {
-  // Decorator holding muon in fatjet corrected fatjets. 
-  static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");
+  //
+  // Do muon matching
+  ANA_CHECK(matchTrackJetsToMuons());
 
+  //
+  // Loop over large-R jets (all systematics) and calculate correction
   std::vector<std::string>* systNames(nullptr);
   if ( !m_inputAlgo.empty() )
     {
@@ -81,6 +84,8 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
       systNames=new std::vector<std::string>({""});
     }
 
+  // Decorator holding muon in fatjet corrected fatjets.
+  static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");  
   for(const std::string& systName : *systNames)
     {
       // Retrieve calibrated fatjets.
@@ -91,8 +96,7 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
       for(const xAOD::Jet *fatJet : *fatJets)
 	{
 	  // Get corrected fatjet.
-	  TLorentzVector correctedVector;
-	  correctedVector = getHbbCorrectedVector(*fatJet);
+	  TLorentzVector correctedVector = getHbbCorrectedVector(*fatJet);
 
 	  dec_correctedFatJets_tlv(*fatJet) = correctedVector;
 	}
@@ -136,14 +140,6 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
      3. Correct the fat-jet mass by putting the matched muon back
   */
 
-  // no associated muons available at the moment in DxAOD
-  // decorate track jets with muons using simple dR matching
-  if (decorateWithMuons(jet) == StatusCode::FAILURE)
-    {
-      ANA_MSG_FATAL("No muon decoration for muon-in-jet correction available.");
-      return TLorentzVector();
-    }
-
   //
   // Step 1
   std::vector<const xAOD::Jet*> associated_trackJets;
@@ -164,7 +160,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
   
   // access the track jets
   const xAOD::Jet* parentJet = *parentEL;
-  if (!parentJet->getAssociatedObjects<xAOD::Jet>(m_trackJetContainerName, associated_trackJets))
+  if (!parentJet->getAssociatedObjects<xAOD::Jet>(m_trackJetLinkName, associated_trackJets))
     {
       ANA_MSG_FATAL("No associated track jets found on parent jet.");
       return TLorentzVector();
@@ -238,45 +234,22 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
   return corrected_jet;
 }
 
-EL::StatusCode MuonInFatJetCorrector::decorateWithMuons(const xAOD::Jet& jet) const
+EL::StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
 {
   // retrieve muons from StoreGate
   const xAOD::MuonContainer *muons(nullptr);
   ANA_CHECK(HelperFunctions::retrieve(muons, m_muonContainerName, m_event, m_store, msg()));
 
-  // get the element links to the parent, ungroomed jet
-  static const SG::AuxElement::ConstAccessor<ElementLink<xAOD::JetContainer>> acc_Parent("Parent");
-  if (!acc_Parent.isAvailable(jet))
-    {
-      ANA_MSG_FATAL("Parent (ungroomed) jet collection does not exist.");
-      return StatusCode::FAILURE;
-    }
-  ElementLink<xAOD::JetContainer> parentEL = acc_Parent(jet);
-  if (!parentEL.isValid())
-    {
-      ANA_MSG_FATAL("Parent link is not valid.");
-      return StatusCode::FAILURE;
-    }
-  
-  // access the track jets
-  const xAOD::Jet* parentJet = *parentEL;
-  
-  std::vector<const xAOD::Jet*> associated_trackJets;  
-  if (!parentJet->getAssociatedObjects<xAOD::Jet>(m_trackJetContainerName, associated_trackJets))
-    {
-      ANA_MSG_FATAL("No associated track jets found on parent jet.");
-      return StatusCode::FAILURE;
-    }
+  // retrieve track jets from StoreGate
+  const xAOD::JetContainer *trackJets(nullptr);
+  ANA_CHECK(HelperFunctions::retrieve(trackJets, m_trackJetContainerName, m_event, m_store, msg()));
 
   // decorate all track jets by default, no selection, no muon overlap removal (will be done later)
   static SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::MuonContainer>>> dec_MuonsInTrackJet("MuonsInTrackJet");
-  for (const xAOD::Jet* trackJet : associated_trackJets)
+  for (const xAOD::Jet* trackJet : *trackJets)
     {
-      if(dec_MuonsInTrackJet.isAvailable(*trackJet))
-	continue; // Jet already decorated (ie: from another systematic)
-
       std::vector<ElementLink<xAOD::MuonContainer>> muons_in_jet;
-      for (const xAOD::Muon* muon: *muons)
+      for (const xAOD::Muon* muon : *muons)
 	{
 	  float DR=trackJet->p4().DeltaR(muon->p4());
 	  if (DR > m_muonDrMax) continue;
