@@ -66,3 +66,25 @@ void VertexContainer::FillVertices( const xAOD::VertexContainer* vertices){
     }
   }
 }
+
+void VertexContainer::FillTruthVertices( const xAOD::TruthVertexContainer* truthVertices){
+  if(m_detailStr == "primary"){ // hard-scatter vertex only
+    int hsBarcode = -999;
+    const xAOD::TruthVertex* hsTruthVertex(nullptr);
+    for ( auto *truthVertex : *truthVertices ) {
+      if ( truthVertex->barcode()<0 && truthVertex->barcode()>hsBarcode ) {
+        hsBarcode = truthVertex->barcode();
+        hsTruthVertex = truthVertex;
+      }
+    }
+    m_vertex_x->push_back( hsTruthVertex->x() );
+    m_vertex_y->push_back( hsTruthVertex->y() );
+    m_vertex_z->push_back( hsTruthVertex->z() );
+  } else if (m_detailStr == "all"){
+    for( auto truthVertex : *truthVertices) {
+      m_vertex_x->push_back( truthVertex->x() );
+      m_vertex_y->push_back( truthVertex->y() );
+      m_vertex_z->push_back( truthVertex->z() );
+    }
+  }
+}

@@ -215,6 +215,10 @@ EL::StatusCode JetCalibrator :: initialize ()
       ANA_MSG_WARNING("Calibrating AntiKt4EM jets in fullsim without the smearing step. This is not recommended, make sure it's really what you want!");
   }
 
+  // retrieve EventInfo to get sample information
+  const xAOD::EventInfo* ei(nullptr);
+  ANA_CHECK(HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()));
+
   // initialize jet calibration tool
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
@@ -275,6 +279,16 @@ EL::StatusCode JetCalibrator :: initialize ()
       }// For each cleaning decision
     }//If save all cleaning decisions
   }// if m_doCleaning
+
+  // initialize largeR jet truth labelling tool
+  if(isMC() && m_inContainerName.find("AntiKt10") != std::string::npos){
+    // Truth labelling is required for systematics on largeR jets and is provided by the WZ tagger tool.
+    // Since only the truth-labelling functionality is used, the tagger config is hard-coded as it does not matter.
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("CalibArea" , "SmoothedWZTaggers/Rel21"));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("ConfigFile", "SmoothedContainedWTagger_AntiKt10LCTopoTrimmed_FixedSignalEfficiency50_MC16d_20190410.dat"));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("DSID", ei->mcChannelNumber()));
+    ANA_CHECK(m_SmoothedWZTagger_handle.retrieve());
+  }// if MC && largeR
 
   // Generate nominal systematic
   const CP::SystematicSet recSyst = CP::SystematicSet();;
@@ -431,30 +445,37 @@ EL::StatusCode JetCalibrator :: execute ()
   for ( auto jet_itr : *(calibJetsSC.first) ) {
     m_numObject++;
 
-    //Set isBjet for Jet Systematics
+    //
+    // truth labelling for systematics
     if(isMC() && m_runSysts){
 
+      // b-jet truth labelling
       int this_TruthLabel = 0;
 
       static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
       static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
 
       if ( TruthLabelID.isAvailable( *jet_itr) ) {
-  this_TruthLabel = TruthLabelID( *jet_itr );
-  if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
+	this_TruthLabel = TruthLabelID( *jet_itr );
+	if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
       } else if(PartonTruthLabelID.isAvailable( *jet_itr) ) {
-  this_TruthLabel = PartonTruthLabelID( *jet_itr );
-  if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
+	this_TruthLabel = PartonTruthLabelID( *jet_itr );
+	if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
       }
 
       bool isBjet = false; // decide whether or not the jet is a b-jet (truth-labelling + kinematic selections)
       if (this_TruthLabel == 5) isBjet = true;
       static SG::AuxElement::Decorator<char> accIsBjet("IsBjet"); // char due to limitations of ROOT I/O, still treat it as a bool
       accIsBjet(*jet_itr) = isBjet;
+
+      // largeR jet truth labelling
+      if(m_SmoothedWZTagger_handle.isInitialized()) {
+	m_SmoothedWZTagger_handle->decorateTruthLabel(*jet_itr);
+      }
     }
 
-
-
+    //
+    // the calibration
     if ( m_JetCalibrationTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
       ANA_MSG_ERROR( "JetCalibration tool reported a CP::CorrectionCode::Error");
       ANA_MSG_ERROR( m_name );

@@ -142,6 +142,10 @@ class OverlapRemover : public xAH::Algorithm
   std::string  m_outContainerName_Taus = "";
   std::string  m_inputAlgoTaus = "";
 
+  /** @brief To remove muons reconstructed as p-flow jets
+  https://twiki.cern.ch/twiki/bin/view/AtlasProtected/HowToCleanJetsR21#Muons_Reconstructed_as_Jets_in_P */
+  bool m_doMuPFJetOR = false;
+
  protected:
 
   /** @brief A counter for the number of processed events */

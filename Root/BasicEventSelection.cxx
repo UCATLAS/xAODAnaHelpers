@@ -1007,8 +1007,10 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     }
 
-    static SG::AuxElement::Decorator< float > weight_prescale("weight_prescale");
-    weight_prescale(*eventInfo) = triggerChainGroup->getPrescale();
+    if ( m_storePrescaleWeight ) {
+      static SG::AuxElement::Decorator< float > weight_prescale("weight_prescale");
+      weight_prescale(*eventInfo) = triggerChainGroup->getPrescale();
+    }
 
     if ( m_storePassL1 ) {
       static SG::AuxElement::Decorator< int > passL1("passL1");

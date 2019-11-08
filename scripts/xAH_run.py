@@ -185,18 +185,18 @@ if __name__ == "__main__":
         if os.getenv(env_var) is None:
           raise EnvironmentError('Panda client is not setup. Run localSetupPandaClient.')
 
-      isSLC6 = True
+      isSLC7 = True
       # check that we're not submitting to grid from CC7 machines
       try:
         xAH_logger.debug('Running lsb_release -d.')
         lsb_release = subprocess.check_output(["lsb_release", "-d"], cwd=os.path.dirname(os.path.realpath(__file__)), stderr=subprocess.STDOUT).strip()
         xAH_logger.debug('  - command output: {}'.format(lsb_release))
-        slc6_release_names = ['Scientific Linux release 6', 'Scientific Linux CERN SLC release 6', 'Red Hat Enterprise Linux Server release 6' ,'CentOS release 6']
-        if not any(name in lsb_release for name in slc6_release_names):
-          xAH_logger.debug('  - did not find SLC6 in output.')
-          isSLC6 = False
+        slc7_release_names = ['CentOS Linux release 7', 'Scientific Linux release 7']
+        if not any(name in lsb_release for name in slc7_release_names):
+          xAH_logger.debug('  - did not find SLC7 in output.')
+          isSLC7 = False
         else:
-          xAH_logger.debug('  - found SLC6 in output.')
+          xAH_logger.debug('  - found SLC7 in output.')
 
       except:
         xAH_logger.debug('Previous command could not run correctly. Searching through env. variables.')
@@ -205,12 +205,12 @@ if __name__ == "__main__":
         env_vars = [(k,v) for k,v in os.environ.iteritems() if k.endswith('_PLATFORM') and k != 'Analysis'+ASG_framework_type+'_PLATFORM']
         xAH_logger.debug('Relevant environment variables found:')
         for (k,v) in env_vars: xAH_logger.debug('  - {0} = {1}'.format(k, v))
-        if any(['centos7' in v for (k,v) in env_vars]):
-          xAH_logger.debug('Found CC7 in environment variable, cannot submit from this machine.')
-          isSLC6 = False
+        if any(['slc6' in v for (k,v) in env_vars]):
+          xAH_logger.debug('Found SLC6 in environment variable, cannot submit from this machine.')
+          isSLC7 = False
 
-      if not isSLC6:
-        raise EnvironmentError('We think you\'re not running on SLC6. Grid jobs cannot be submitted from this machine. See https://xaodanahelpers.readthedocs.io/en/master/FAQs.html#slc6-vs-cc7 for more information.')
+      if not isSLC7:
+        raise EnvironmentError('We think you\'re not running on SLC7. Grid jobs cannot be submitted from this machine. See https://xaodanahelpers.readthedocs.io/en/master/FAQs.html#slc6-vs-slc7 for more information.')
 
     # check submission directory
     if args.force_overwrite:
