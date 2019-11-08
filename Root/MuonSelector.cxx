@@ -214,14 +214,15 @@ EL::StatusCode MuonSelector :: initialize ()
 
   // Parse input isolation WP list, split by comma, and put into a vector for later use
   // Make sure it's not empty!
-  //
-  if ( m_IsoWPList.empty() ) {
-    ANA_MSG_ERROR("Empty isolation WP list");
-  }
-  std::string token;
-  std::istringstream ss(m_IsoWPList);
-  while ( std::getline(ss, token, ',') ) {
-    m_IsoKeys.push_back(token);
+  if(m_doIsolation){
+    if ( m_IsoWPList.empty() ) {
+      ANA_MSG_ERROR("Empty isolation WP list");
+    }
+    std::string token;
+    std::istringstream ss(m_IsoWPList);
+    while ( std::getline(ss, token, ',') ) {
+      m_IsoKeys.push_back(token);
+    }
   }
 
   if ( m_inContainerName.empty() ){
@@ -250,45 +251,47 @@ EL::StatusCode MuonSelector :: initialize ()
   ANA_CHECK( m_muonSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonSelectionTool_handle);
 
-  // *************************************
-  //
-  // Initialise CP::IsolationSelectionTool
-  //
-  // *************************************
+  if(m_doIsolation){
+    // *************************************
+    //
+    // Initialise CP::IsolationSelectionTool
+    //
+    // *************************************
 
-  // Do this only for the first WP in the list
-  ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
-  ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
-  ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
-  ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
-  ANA_MSG_DEBUG("Retrieved tool: " << m_isolationSelectionTool_handle);
-  m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
+    // Do this only for the first WP in the list
+    ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
+    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
+    ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
+    ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_isolationSelectionTool_handle);
+    m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
 
-  // Add the remaining input WPs to the tool
-  // (start from 2nd element)
-  //
-  for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
+    // Add the remaining input WPs to the tool
+    // (start from 2nd element)
+    //
+    for ( auto WP_itr = std::next(m_IsoKeys.begin()); WP_itr != m_IsoKeys.end(); ++WP_itr ) {
 
-     ANA_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
+       ANA_MSG_DEBUG( "Adding extra isolation WP " << *WP_itr << " to IsolationSelectionTool" );
 
-     if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
+       if ( (*WP_itr).find("UserDefined") != std::string::npos ) {
 
-       HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
+         HelperClasses::EnumParser<xAOD::Iso::IsolationType> isoParser;
 
-       std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
-       myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
-       myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
+         std::vector< std::pair<xAOD::Iso::IsolationType, std::string> > myCuts;
+         myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_TrackBasedIsoType), m_TrackIsoEff.c_str() ));
+         myCuts.push_back(std::make_pair<xAOD::Iso::IsolationType, std::string>(isoParser.parseEnum(m_CaloBasedIsoType) , m_CaloIsoEff.c_str()  ));
 
-       CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
-       if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
+         CP::IsolationSelectionTool::IsoWPType iso_type(CP::IsolationSelectionTool::Efficiency);
+         if ( (*WP_itr).find("Cut") != std::string::npos ) { iso_type = CP::IsolationSelectionTool::Cut; }
 
-       ANA_CHECK(  m_isolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type));
+         ANA_CHECK(  m_isolationSelectionTool->addUserDefinedWP((*WP_itr).c_str(), xAOD::Type::Muon, myCuts, "", iso_type));
 
-     } else {
+       } else {
 
-        ANA_CHECK( m_isolationSelectionTool->addMuonWP( (*WP_itr).c_str() ));
+          ANA_CHECK( m_isolationSelectionTool->addMuonWP( (*WP_itr).c_str() ));
 
-     }
+       }
+    }
   }
 
   // **************************************
@@ -885,32 +888,34 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   static SG::AuxElement::Decorator< float > d0SigDecor("d0sig");
   d0SigDecor( *muon ) = static_cast<float>(d0_significance);
 
-  // *********************************************************************************************************************************************************************
-  //
-  // isolation cut
-  //
+  if(m_doIsolation){
+    // *********************************************************************************************************************************************************************
+    //
+    // isolation cut
+    //
 
-  // Get the "list" of input WPs with the accept() decision from the tool
-  //
-  Root::TAccept accept_list = m_isolationSelectionTool_handle->accept( *muon );
+    // Get the "list" of input WPs with the accept() decision from the tool
+    //
+    Root::TAccept accept_list = m_isolationSelectionTool_handle->accept( *muon );
 
-  // Decorate w/ decision for all input WPs
-  //
-  std::string base_decor("isIsolated");
-  for ( auto WP_itr : m_IsoKeys ) {
+    // Decorate w/ decision for all input WPs
+    //
+    std::string base_decor("isIsolated");
+    for ( auto WP_itr : m_IsoKeys ) {
 
-    std::string decorWP = base_decor + "_" + WP_itr;
+      std::string decorWP = base_decor + "_" + WP_itr;
 
-    ANA_MSG_DEBUG( "Decorate muon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
-    muon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
+      ANA_MSG_DEBUG( "Decorate muon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
+      muon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
 
-  }
+    }
 
-  // Apply the cut if needed
-  //
-  if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
-    ANA_MSG_DEBUG( "Muon failed isolation cut " <<  m_MinIsoWPCut );
-    return 0;
+    // Apply the cut if needed
+    //
+    if ( !m_MinIsoWPCut.empty() && !accept_list.getCutResult( m_MinIsoWPCut.c_str() ) ) {
+      ANA_MSG_DEBUG( "Muon failed isolation cut " <<  m_MinIsoWPCut );
+      return 0;
+    }
   }
   if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_iso_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_iso_cut, 1 ); }
