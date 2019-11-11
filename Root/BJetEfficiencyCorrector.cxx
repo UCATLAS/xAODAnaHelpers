@@ -324,7 +324,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   if (systNames_ptr) systNames = *systNames_ptr;
 
   // loop over systematic sets available
-  for ( auto systName : systNames ) {
+  for ( const std::string& systName : systNames ) {
 
     bool doNominal = (systName == "");
 
@@ -367,121 +367,122 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   SG::AuxElement::Decorator< std::vector<float> > dec_ineffsfBTag( m_decorInefficiencySF );
 
   //
-  // run the btagging decision and get scale factors (or get weight and quantile if running continuous)
+  // run the btagging decision or get weight and quantile if running continuous
   //
-  unsigned int idx(0);
-  for( auto jet_itr : *(inJets)) {
+  for( const xAOD::Jet* jet_itr : *(inJets))
+    {
+      if(!m_useContinuous)
+	{ // get tagging decision
+	  ANA_MSG_DEBUG(" Getting tagging decision ");
 
-    bool tagged = true; // for continuous b-tagging will save Scale Factor and InefficiencyScaleFactor
-    if(!m_useContinuous){// get tagging decision
+	  // Add decorator for decision
+	  if( m_BJetSelectTool_handle->accept( *jet_itr ) )
+	    dec_isBTag( *jet_itr ) = 1;
+	  else
+	    dec_isBTag( *jet_itr ) = 0;
 
-      ANA_MSG_DEBUG(" Getting tagging decision ");
+	  // Add pT-dependent b-tag decision decorator (intended for use in OR)
+	  if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
+	      && m_BJetSelectTool_handle->accept( *jet_itr ) )
+	    dec_isBTagOR( *jet_itr ) = 1;
+	  else
+	    dec_isBTagOR( *jet_itr ) = 0;
+	}
+      else
+	{ // continuous b-tagging
 
-      // Add decorator for decision
-      if( m_BJetSelectTool_handle->accept( *jet_itr ) ) {
-        dec_isBTag( *jet_itr ) = 1;
-        tagged = true;
-      }
-      else {
-        dec_isBTag( *jet_itr ) = 0;
-        tagged = false;
-      }
+	  ANA_MSG_DEBUG(" Getting TaggerWeight and Quantile");
 
-      // Add pT-dependent b-tag decision decorator (intended for use in OR)
-      if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
-          && m_BJetSelectTool_handle->accept( *jet_itr ) ) {
-        dec_isBTagOR( *jet_itr ) = 1;
-      }
-      else {
-        dec_isBTagOR( *jet_itr ) = 0;
-      }
-
-    } else { // continuous b-tagging
-
-      ANA_MSG_DEBUG(" Getting TaggerWeight and Quantile");
-
-      double tagWeight;
-      if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok ){
-        ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
-        return EL::StatusCode::FAILURE;
-      }
-      int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
-      ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
-      ANA_MSG_DEBUG( "quantile: " << quantile );
-      dec_Weight( *jet_itr)    = tagWeight;
-      dec_Quantile( *jet_itr ) = quantile;
-
+	  double tagWeight;
+	  if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok )
+	    {
+	      ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
+	      return EL::StatusCode::FAILURE;
+	    }
+	  int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
+	  ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
+	  ANA_MSG_DEBUG( "quantile: " << quantile );
+	  dec_Weight( *jet_itr)    = tagWeight;
+	  dec_Quantile( *jet_itr ) = quantile;
+	}
     }
 
-    // Create Scale Factor aux for all jets
-    std::vector<float> sfVec;
-    std::vector<float> ineffsfVec;
+  //
+  // get the scale factors for all jets
+  //
+  if(m_getScaleFactors)
+    { // loop over available systematics
+      for(const CP::SystematicSet& syst_it : m_systList)
+	{
+	  //  If not nominal input jet collection, dont calculate systematics
+	  if ( !doNominal )
+	    {
+	      if( syst_it.name() != "" )
+		{ // if not nominal btag decision
+		  ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
+		  continue;
+		}
+	    }
 
-    if(m_getScaleFactors) { // loop over available systematics
-      for(const auto& syst_it : m_systList) {
-        //  If not nominal input jet collection, dont calculate systematics
-        if ( !doNominal ) {
-          if( syst_it.name() != "" ) { // if not nominal btag decision
-            ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
-            continue;
-          }
-        }
+	  // configure tool with syst variation
+	  if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok)
+	    {
+	      ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
+	      return EL::StatusCode::FAILURE;
+	    }
+	  ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
-        // configure tool with syst variation
-        if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok) {
-          ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
-          return EL::StatusCode::FAILURE;
-        }
-        ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
+	  for( const xAOD::Jet* jet_itr : *(inJets))
+	    {
+	      // get the scale factor
+	      float SF(-1.0);
+	      float inefficiencySF(-1.0); // only for continuous b-tagging
+	      CP::CorrectionCode BJetEffCode;
+	      CP::CorrectionCode BJetIneEffCode = CP::CorrectionCode::Ok;
+	      // if passes cut take the efficiency scale factor
+	      // if failed cut take the inefficiency scale factor
+	      // for continuous b-tagging save both
+	      if( dec_isBTag( *jet_itr ) )
+		{
+		  BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+		  if(m_useContinuous) BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
+		}
+	      else
+		{
+		  BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+		}
+	      if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error)
+		{
+		  ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
+		  return EL::StatusCode::FAILURE;
+		}
+	      else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
+		{
+		  ANA_MSG_DEBUG( "Jet is out of validity range");
+		}
 
-        // get the scale factor
-        float SF(-1.0);
-        float inefficiencySF(-1.0); // only for continuous b-tagging
-        CP::CorrectionCode BJetEffCode;
-        CP::CorrectionCode BJetIneEffCode = CP::CorrectionCode::Ok;
-        // if passes cut take the efficiency scale factor
-        // if failed cut take the inefficiency scale factor
-	// for continuous b-tagging save both
-        if( tagged ) {
-          BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-	  if(m_useContinuous) BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
-        } else {
-          BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-        }
-        if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error) {
-          ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
-          return EL::StatusCode::FAILURE;
-        } else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange) {
-          ANA_MSG_DEBUG( "Jet is out of validity range");
-        }
+	      // Save it to the vector
+	      if(                   !dec_sfBTag     .isAvailable( *jet_itr ))
+		dec_sfBTag     ( *jet_itr ) = std::vector<float>();
+	      if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
+		dec_ineffsfBTag( *jet_itr ) = std::vector<float>();
 
-        // Add it to vector
-        sfVec.push_back(SF);
-	if(m_useContinuous) ineffsfVec.push_back(inefficiencySF);
-
-        ANA_MSG_DEBUG( "===>>>");
-        ANA_MSG_DEBUG( " ");
-        ANA_MSG_DEBUG( "Jet " << idx << " pt = " << jet_itr->pt()*1e-3 << " GeV , eta = " << jet_itr->eta() );
-        ANA_MSG_DEBUG( " ");
-        ANA_MSG_DEBUG( "BTag SF decoration: " << m_decorSF );
-        ANA_MSG_DEBUG( " ");
-        ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-        ANA_MSG_DEBUG( " ");
-        ANA_MSG_DEBUG( "BTag SF: " << SF);
-        ANA_MSG_DEBUG( "--------------------------------------");
+	      
+	      dec_sfBTag( *jet_itr ).push_back(SF);
+	      if(m_useContinuous) dec_ineffsfBTag( *jet_itr ).push_back(inefficiencySF);
       }
     }
-    else { // no scale factors available, set to 1.
-      sfVec.push_back(1.);
-      if(m_useContinuous) ineffsfVec.push_back(1.);
-    }
-
-    // save scale factors
-    idx++;
-    dec_sfBTag( *jet_itr ) = sfVec;
-    if(m_useContinuous) dec_ineffsfBTag( *jet_itr ) = ineffsfVec;
-
   }
+  else
+    {
+      for( const xAOD::Jet* jet_itr : *(inJets))
+	{
+	  if(                   !dec_sfBTag     .isAvailable( *jet_itr ))
+	    dec_sfBTag     ( *jet_itr ) = std::vector<float>({1.});
+	  if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
+	    dec_ineffsfBTag( *jet_itr ) = std::vector<float>({1.});
+	}
+    }
 
   //
   // Store list of available systematics
