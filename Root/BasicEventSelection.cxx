@@ -1214,11 +1214,11 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   for(const auto& mcCampaign : mcCampaignList)
     {
       if( !m_prwActualMu2016File.empty() && mcCampaign == "mc16a" )
-	prwConfigFiles.push_back(m_prwActualMu2016File);
+	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2016File));
       if( !m_prwActualMu2017File.empty() && (mcCampaign == "mc16c" || mcCampaign=="mc16d") )
-	prwConfigFiles.push_back(m_prwActualMu2017File);
+	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2017File));
       if( !m_prwActualMu2018File.empty() && (mcCampaign == "mc16e" || mcCampaign=="mc16f") )
-	prwConfigFiles.push_back(m_prwActualMu2018File);
+	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
     }
 
   // also need to handle lumicalc files: only use 2015+2016 with mc16a
