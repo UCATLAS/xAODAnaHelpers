@@ -124,21 +124,53 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_numObject     = 0;
 
   // Initialize the CP::MuonCalibrationPeriodTool
-  if ( m_overrideStatComb ) {
-    ANA_MSG_WARNING("Overriding muon calibration StatComb property to " << m_statComb);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb", m_statComb));
+  if ( m_statComb1516 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration StatComb1516 property to " << m_statComb1516);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb1516", static_cast<bool>(m_statComb1516)));
   }
-  if ( m_overrideSagittaCorr ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr property to " << m_sagittaCorr);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr", m_sagittaCorr));
+  if ( m_statComb17 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration StatComb1516 property to " << m_statComb17);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb17", static_cast<bool>(m_statComb17)));
   }
-  if ( m_overrideDoSagittaMCDistortion ) {
-    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion property to " << m_doSagittaMCDistortion);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion", m_doSagittaMCDistortion));
+  if ( m_statComb18 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration StatComb1516 property to " << m_statComb18);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb18", static_cast<bool>(m_statComb18)));
   }
-  if ( m_overrideSagittaCorrPhaseSpace ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace property to " << m_sagittaCorrPhaseSpace);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace", m_sagittaCorrPhaseSpace));
+  if ( m_sagittaCorr1516 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr1516 property to " << m_sagittaCorr1516);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr1516", static_cast<bool>(m_sagittaCorr1516)));
+  }
+  if ( m_sagittaCorr17 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr17 property to " << m_sagittaCorr17);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr17", static_cast<bool>(m_sagittaCorr17)));
+  }
+  if ( m_sagittaCorr18 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr18 property to " << m_sagittaCorr18);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr18", static_cast<bool>(m_sagittaCorr18)));
+  }
+  if ( m_doSagittaMCDistortion1516 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion1516 property to " << m_doSagittaMCDistortion1516);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion1516", static_cast<bool>(m_doSagittaMCDistortion1516)));
+  }
+  if ( m_doSagittaMCDistortion17 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion17 property to " << m_doSagittaMCDistortion17);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion17", static_cast<bool>(m_doSagittaMCDistortion17)));
+  }
+  if ( m_doSagittaMCDistortion18 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion18 property to " << m_doSagittaMCDistortion18);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion18", static_cast<bool>(m_doSagittaMCDistortion18)));
+  }
+  if ( m_sagittaCorrPhaseSpace1516 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace1516 property to " << m_sagittaCorrPhaseSpace1516);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace1516", static_cast<bool>(m_sagittaCorrPhaseSpace1516)));
+  }
+  if ( m_sagittaCorrPhaseSpace17 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace17 property to " << m_sagittaCorrPhaseSpace17);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace17", static_cast<bool>(m_sagittaCorrPhaseSpace17)));
+  }
+  if ( m_sagittaCorrPhaseSpace18 >= 0 ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace18 property to " << m_sagittaCorrPhaseSpace18);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace18", static_cast<bool>(m_sagittaCorrPhaseSpace18)));
   }
   if ( !m_overrideRelease.empty() ) {
     ANA_MSG_WARNING("Overriding muon calibration release to " << m_overrideRelease);
