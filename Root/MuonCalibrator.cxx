@@ -124,6 +124,22 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_numObject     = 0;
 
   // Initialize the CP::MuonCalibrationPeriodTool
+  if ( m_overrideStatComb ) {
+    ANA_MSG_WARNING("Overriding muon calibration StatComb property to " << m_statComb);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb", m_statComb));
+  }
+  if ( m_overrideSagittaCorr ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr property to " << m_sagittaCorr);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr", m_sagittaCorr));
+  }
+  if ( m_overrideDoSagittaMCDistortion ) {
+    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion property to " << m_doSagittaMCDistortion);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion", m_doSagittaMCDistortion));
+  }
+  if ( m_overrideSagittaCorrPhaseSpace ) {
+    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace property to " << m_sagittaCorrPhaseSpace);
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace", m_sagittaCorrPhaseSpace));
+  }
   if ( !m_overrideRelease.empty() ) {
     ANA_MSG_WARNING("Overriding muon calibration release to " << m_overrideRelease);
     ANA_CHECK(m_muonCalibrationTool_handle.setProperty("Release", m_overrideRelease));
