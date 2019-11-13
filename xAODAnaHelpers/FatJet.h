@@ -72,7 +72,12 @@ namespace xAH {
       int Ztag_tight;
 
       std::unordered_map<std::string, std::vector<xAH::Jet>> trkJets;
-      
+
+      // muonCorrection
+      float muonCorrected_pt;
+      float muonCorrected_eta;
+      float muonCorrected_phi;
+      float muonCorrected_m;
     };
 
 }//xAH

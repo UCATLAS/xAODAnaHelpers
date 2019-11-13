@@ -454,6 +454,7 @@ namespace HelperClasses {
         m_byAverageMu    byAverageMu    exact
         m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
+        m_muonCorrection muonCorrection exact 
         ================ ============== =======
 
         .. note::
@@ -525,6 +526,7 @@ namespace HelperClasses {
     bool m_byAverageMu;
     bool m_area;
     bool m_JVC;
+    bool m_muonCorrection;
     std::string              m_trackName;
     std::vector<std::string> m_trackJetNames;
     std::string              m_sfJVTName;
