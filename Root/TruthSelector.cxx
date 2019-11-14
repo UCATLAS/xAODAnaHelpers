@@ -339,26 +339,29 @@ int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
   }
 
   // origin
+  if ( !m_originOptions.empty() ) { // check w.r.t. multiple possible origin values
+    if ( m_origin != 1000 ) { ANA_MSG_WARNING( "single and multiple origin conditions were selected, only the former will be used" );
+    } else {
+      std::string token;
+      std::vector<int> originVec;
+      std::istringstream ss(m_originOptions);
+      while ( std::getline(ss, token, '|') ) originVec.push_back(std::stoi(token));
+      bool found = false;
+      if( truthPart->isAvailable<unsigned int>("classifierParticleOrigin") ){
+        unsigned int origin = truthPart->auxdata<unsigned int>("classifierParticleOrigin");
+        for (unsigned int i=0;i<originVec.size();++i){
+          if (origin == originVec.at(i)) found = true;
+        }
+        if (!found) { return 0; }
+      } else {
+        ANA_MSG_WARNING( "classifierParticleOrigin is not available" );
+      }
+    }
+  }
   if ( m_origin != 1000 ) { // single origin value
     if( truthPart->isAvailable<unsigned int>("classifierParticleOrigin") ){
       unsigned int origin = truthPart->auxdata<unsigned int>("classifierParticleOrigin");
       if ( origin != m_origin ) { return 0; }
-    } else {
-      ANA_MSG_WARNING( "classifierParticleOrigin is not available" );
-    }
-  }
-  if ( !m_originOptions.empty() ) { // check w.r.t. multiple possible origin values
-    std::string token;
-    std::vector<int> originVec;
-    std::istringstream ss(m_originOptions);
-    while ( std::getline(ss, token, '|') ) originVec.push_back(std::stoi(token));
-    bool found = false;
-    if( truthPart->isAvailable<unsigned int>("classifierParticleOrigin") ){
-      unsigned int origin = truthPart->auxdata<unsigned int>("classifierParticleOrigin");
-      for (unsigned int i=0;i<originVec.size();++i){
-        if (origin == originVec.at(i)) found = true;
-      }
-      if (!found) { return 0; }
     } else {
       ANA_MSG_WARNING( "classifierParticleOrigin is not available" );
     }
