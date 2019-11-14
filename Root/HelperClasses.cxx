@@ -463,6 +463,7 @@ namespace HelperClasses{
     m_parents       = has_exact("parents");
     m_children      = has_exact("children");
     m_dressed       = has_exact("dressed");
+    m_origin        = has_exact("origin");
   }
 
   void TrackInfoSwitch::initialize(){

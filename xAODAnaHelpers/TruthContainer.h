@@ -73,6 +73,9 @@ namespace xAH {
       std::vector<float>* m_phi_dressed;
       std::vector<float>* m_e_dressed;
 
+      // origin
+      std::vector<unsigned int>* m_origin;
+
     };
 }
 
