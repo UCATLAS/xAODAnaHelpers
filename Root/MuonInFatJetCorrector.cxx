@@ -249,12 +249,16 @@ EL::StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
   for (const xAOD::Jet* trackJet : *trackJets)
     {
       std::vector<ElementLink<xAOD::MuonContainer>> muons_in_jet;
+      uint32_t idx=0;
       for (const xAOD::Muon* muon : *muons)
 	{
 	  float DR=trackJet->p4().DeltaR(muon->p4());
-	  if (DR > m_muonDrMax) continue;
-	  ElementLink<xAOD::MuonContainer> muonEL(*muons, muon->index());
-	  muons_in_jet.push_back(muonEL);
+	  if (DR < m_muonDrMax)
+	    {
+	      ElementLink<xAOD::MuonContainer> muonEL(*muons, idx);
+	      muons_in_jet.push_back(muonEL);
+	    }
+	  ++idx;
 	}
 
       dec_MuonsInTrackJet(*trackJet) = muons_in_jet;
