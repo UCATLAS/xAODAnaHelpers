@@ -554,6 +554,7 @@ namespace HelperClasses {
         m_parents        parents        exact
         m_children       children       exact
         m_dressed        dressed        exact
+        m_origin         origin         exact
         ================ ============== =======
 
 
@@ -566,6 +567,7 @@ namespace HelperClasses {
     bool m_parents;
     bool m_children;
     bool m_dressed;
+    bool m_origin;
     TruthInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();

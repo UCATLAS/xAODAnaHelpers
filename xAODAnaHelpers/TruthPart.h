@@ -42,6 +42,9 @@ namespace xAH {
       float phi_dressed;
       float e_dressed;
 
+      // Origin
+      unsigned int origin;
+
     };
 
 }//xAH

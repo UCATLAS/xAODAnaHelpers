@@ -47,6 +47,10 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
     m_e_dressed   = new std::vector<float>();
   }
 
+  if(m_infoSwitch.m_origin){
+    m_origin = new std::vector<unsigned int>();
+  }
+
 }
 
 TruthContainer::~TruthContainer()
@@ -90,6 +94,10 @@ TruthContainer::~TruthContainer()
     delete m_e_dressed;
   }
 
+  if(m_infoSwitch.m_origin){
+    delete m_origin;
+  }
+
 }
 
 void TruthContainer::setTree(TTree *tree)
@@ -128,10 +136,14 @@ void TruthContainer::setTree(TTree *tree)
   }
 
   if(m_infoSwitch.m_dressed){
-    connectBranch<float> (tree,"pt_dressd",  &m_pt_dressed);
-    connectBranch<float> (tree,"eta_dressd", &m_eta_dressed);
-    connectBranch<float> (tree,"phi_dressd", &m_phi_dressed);
-    connectBranch<float> (tree,"e_dressd",   &m_e_dressed);
+    connectBranch<float> (tree,"pt_dressed",  &m_pt_dressed);
+    connectBranch<float> (tree,"eta_dressed", &m_eta_dressed);
+    connectBranch<float> (tree,"phi_dressed", &m_phi_dressed);
+    connectBranch<float> (tree,"e_dressed",   &m_e_dressed);
+  }
+
+  if(m_infoSwitch.m_origin){
+    connectBranch<unsigned int> (tree,"origin",  &m_origin);
   }
 
 }
@@ -177,6 +189,10 @@ void TruthContainer::updateParticle(uint idx, TruthPart& truth)
     truth.eta_dressed = m_eta_dressed->at(idx);
     truth.phi_dressed = m_phi_dressed->at(idx);
     truth.e_dressed   = m_e_dressed->at(idx);
+  }
+
+  if(m_infoSwitch.m_origin){
+    truth.origin = m_origin->at(idx);
   }
 
   if(m_debug) std::cout << "leave TruthContainer::updateParticle " << std::endl;
@@ -226,6 +242,10 @@ void TruthContainer::setBranches(TTree *tree)
     setBranch<float> (tree,"e_dressed", m_e_dressed );
   }
 
+  if(m_infoSwitch.m_origin){
+    setBranch<unsigned int> (tree,"origin",m_origin);
+  }
+
   return;
 }
 
@@ -269,6 +289,10 @@ void TruthContainer::clear()
     m_eta_dressed->clear();
     m_phi_dressed->clear();
     m_e_dressed->clear();
+  }
+
+  if(m_infoSwitch.m_origin){
+    m_origin->clear();
   }
 
   return;
@@ -380,6 +404,15 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
       m_e_dressed->push_back(e_dressed / m_units);
     } else {
       m_e_dressed->push_back(-999);
+    }
+  }
+
+  if(m_infoSwitch.m_origin){
+    if( truth->isAvailable<unsigned int>("classifierParticleOrigin") ){
+      unsigned int origin = truth->auxdata<unsigned int>("classifierParticleOrigin");
+      m_origin->push_back(origin);
+    } else {
+      m_origin->push_back(0); // Non-defined
     }
   }
 

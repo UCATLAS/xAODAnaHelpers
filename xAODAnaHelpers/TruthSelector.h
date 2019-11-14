@@ -58,6 +58,8 @@ public:
   unsigned int m_type = 1000; // this will apply no selection
   /// @brief require classifierParticleOrigin == origin (defined by TruthClassifier: https://gitlab.cern.ch/atlas/athena/blob/21.2/PhysicsAnalysis/MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h)
   unsigned int m_origin = 1000; // this will apply no selection
+  /// @brief require classifierParticleOrigin to match any of the "|" separated origin values (e.g. "10|12|13")
+  std::string m_originOptions; // this will apply no selection
   /// @brief require pt_dressed > pt_dressed_min
   float m_pT_dressed_min = 1e8;
   /// @brief require eta_dressed > eta_dressed_min
