@@ -183,7 +183,7 @@ if __name__ == "__main__":
       required_environment_variables = ['PATHENA_GRID_SETUP_SH', 'PANDA_CONFIG_ROOT', 'ATLAS_LOCAL_PANDACLIENT_PATH', 'PANDA_SYS', 'ATLAS_LOCAL_PANDACLI_VERSION']
       for env_var in required_environment_variables:
         if os.getenv(env_var) is None:
-          raise EnvironmentError('Panda client is not setup. Run localSetupPandaClient.')
+          raise EnvironmentError('Panda client is not setup. Run lsetup panda.')
 
       isSLC7 = True
       # check that we're not submitting to grid from CC7 machines
@@ -221,11 +221,6 @@ if __name__ == "__main__":
       # check if directory exists
       if os.path.exists(args.submit_dir):
         raise OSError('Output directory {0:s} already exists. Either re-run with -f/--force, choose a different --submitDir, or rm -rf it yourself. Just deal with it, dang it.'.format(args.submit_dir))
-
-    # they will need it to get it working for rel 20
-    needXRD = ( args.use_scanRucio ) and (args.driver!='prun')
-    if needXRD:
-      xAH_logger.warning("Make sure rucio is setup (lsetup \"rucio\" or lsetup \"rucio -w\")")
 
     use_scanEOS = (args.use_scanEOS)
 
