@@ -445,7 +445,7 @@ EL::StatusCode JetSelector :: execute ()
     if ( isMC() && m_doMCCleaning && m_haveTruthJets ){
       float pTAvg = (inJets->size() > 0) ? inJets->at(0)->pt() : 0;
       if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
-      if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > 1.4 ) {
+      if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > m_mcCleaningCut ) {
         ANA_MSG_DEBUG("Failed MC cleaning, skipping event");
         wk()->skipEvent();
       }
@@ -471,7 +471,7 @@ EL::StatusCode JetSelector :: execute ()
       if ( isMC() && m_doMCCleaning && m_haveTruthJets && systName.empty() ){
         float pTAvg = (inJets->size() > 0) ? inJets->at(0)->pt() : 0;
         if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
-        if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > 1.4 ) {
+        if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > m_mcCleaningCut ) {
           passMCcleaning = false;
         }
       }

@@ -80,6 +80,7 @@ public:
   std::string m_jetScale4Selection = "Final";
   /// @brief (MC-only) Kill event if avg(pT[0],pT[1])>1.4*truth_pT[0]
   bool m_doMCCleaning = false;
+  float m_mcCleaningCut = 1.4;
   /// @brief minimum number of objects passing cuts
   int m_pass_min = -1;
   /// @brief maximum number of objects passing cuts
