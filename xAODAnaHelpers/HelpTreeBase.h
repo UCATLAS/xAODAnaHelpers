@@ -80,8 +80,8 @@ public:
   void AddClusters      (const std::string detailStr = "", const std::string clusterName = "cl");
   void AddJets          (const std::string detailStr = "", const std::string jetName = "jet");
   void AddL1Jets        (const std::string jetName   = "");
-  void AddTruthParts    (const std::string truthName,      const std::string detailStr = "");
-  void AddTrackParts    (const std::string trackName,	 const std::string detailStr = "");
+  void AddTruthParts    (const std::string detailStr = "", const std::string truthName = "xAH_truth");
+  void AddTrackParts    (const std::string detailStr = "", const std::string trackName = "trk");
   void AddVertices      (const std::string detailStr = "", const std::string vertexName = "vertex"); // options for detailStr: "all" or "primary"
   void AddTruthVertices (const std::string detailStr = "", const std::string vertexName = "truth_vertex"); // options for detailStr: "all" or "primary"
 
@@ -146,10 +146,10 @@ public:
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string jetName = "jet" );
   void FillL1Jets( const xAOD::JetRoIContainer* jets, const std::string jetName = "L1Jet", bool sortL1Jets = false );
 
-  void FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truth);
+  void FillTruth( const xAOD::TruthParticleContainer* truth, const std::string truthName = "truth_particle" );
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string truthName );
 
-  void FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* tracks);
+  void FillTracks( const xAOD::TrackParticleContainer* tracks, const std::string trackName = "trk" );
   void FillTrack( const xAOD::TrackParticle* trackPart, const std::string trackName );
 
   void FillVertices( const xAOD::VertexContainer* vertices, const std::string vertexName = "vertex" );
@@ -235,12 +235,12 @@ public:
     return;
   };
 
-  virtual void AddTruthUser(const std::string truthName, const std::string detailStr = "")       {
+  virtual void AddTruthUser(const std::string truthName = "", const std::string detailStr = "xAH_truth")       {
     if(m_debug) Info("AddTruthUser","Empty function called from HelpTreeBase %s %s",truthName.c_str(), detailStr.c_str());
     return;
   };
 
-  virtual void AddTracksUser(const std::string trackName, const std::string detailStr = "")       {
+  virtual void AddTracksUser(const std::string trackName = "", const std::string detailStr = "trk")       {
     if(m_debug) Info("AddTracksUser","Empty function called from HelpTreeBase %s %s",trackName.c_str(), detailStr.c_str());
     return;
   };
@@ -292,8 +292,8 @@ public:
   virtual void FillPhotonsUser  ( const xAOD::Photon*,      const std::string /*photonName = "ph"*/ )     { return; };
   virtual void FillClustersUser ( const xAOD::CaloCluster*, const std::string /*clusterName = "cl"*/ )     { return; };
   virtual void FillJetsUser     ( const xAOD::Jet*,         const std::string /*jetName = "jet"*/  )               { return; };
-  virtual void FillTruthUser    ( const std::string /*truthName*/, const xAOD::TruthParticle*  )               { return; };
-  virtual void FillTracksUser   ( const std::string /*trackName*/, const xAOD::TrackParticle*  )               { return; };
+  virtual void FillTruthUser    ( const xAOD::TruthParticle*, const std::string /*truthName*/ )               { return; };
+  virtual void FillTracksUser   ( const xAOD::TrackParticle*, const std::string /*trackName*/ )               { return; };
   /**
    *  @brief  Called once per call to `FillFatJets()`.Ooverride this if you want to any additional
    *          information to your jet collection.

@@ -715,7 +715,7 @@ void HelpTreeBase::ClearJets(const std::string jetName) {
  *
  ********************/
 
-void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string detailStr)
+void HelpTreeBase::AddTruthParts(const std::string detailStr, const std::string truthName)
 {
 
   if(m_debug) Info("AddTruthParts()", "Adding truth particle %s with variables: %s", truthName.c_str(), detailStr.c_str());
@@ -726,7 +726,7 @@ void HelpTreeBase::AddTruthParts(const std::string truthName, const std::string 
   this->AddTruthUser(truthName, detailStr);
 }
 
-void HelpTreeBase::FillTruth( const std::string truthName, const xAOD::TruthParticleContainer* truthParts ) {
+void HelpTreeBase::FillTruth( const xAOD::TruthParticleContainer* truthParts, const std::string truthName  ) {
 
   this->ClearTruth(truthName);
 
@@ -751,7 +751,7 @@ void HelpTreeBase::FillTruth( const xAOD::TruthParticle* truthPart, const std::s
 
   thisTruth->FillTruth(truthPart);
 
-  this->FillTruthUser(truthName, truthPart);
+  this->FillTruthUser(truthPart, truthName);
 
   return;
 }
@@ -771,7 +771,7 @@ void HelpTreeBase::ClearTruth(const std::string truthName) {
  *
  ********************/
 
-void HelpTreeBase::AddTrackParts(const std::string trackName, const std::string detailStr)
+void HelpTreeBase::AddTrackParts(const std::string detailStr, const std::string trackName)
 {
   if(m_debug) Info("AddTrackParts()", "Adding track particle %s with variables: %s", trackName.c_str(), detailStr.c_str());
   m_tracks[trackName] = new xAH::TrackContainer(trackName, detailStr, m_units);
@@ -781,7 +781,7 @@ void HelpTreeBase::AddTrackParts(const std::string trackName, const std::string 
   this->AddTracksUser(trackName, detailStr);
 }
 
-void HelpTreeBase::FillTracks( const std::string trackName, const xAOD::TrackParticleContainer* trackParts ) {
+void HelpTreeBase::FillTracks( const xAOD::TrackParticleContainer* trackParts, const std::string trackName  ) {
 
   this->ClearTracks(trackName);
 
@@ -806,7 +806,7 @@ void HelpTreeBase::FillTrack( const xAOD::TrackParticle* trackPart, const std::s
 
   thisTrack->FillTrack(trackPart);
 
-  this->FillTracksUser(trackName, trackPart);
+  this->FillTracksUser(trackPart, trackName);
 
   return;
 }

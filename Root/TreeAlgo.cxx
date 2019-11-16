@@ -353,8 +353,8 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
     if (!m_METReferenceContainerName.empty() )  { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
     if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
-    if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts("xAH_truth", m_truthParticlesDetailStr); }
-    if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesContainerName, m_trackParticlesDetailStr); }
+    if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts(m_truthParticlesDetailStr, "xAH_truth"); }
+    if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesDetailStr, m_trackParticlesContainerName); }
     if (!m_clusterContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_clusterContainers.size();++ll){
         if(m_clusterDetails.size()==1)
@@ -592,7 +592,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
       const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainerName, m_event, m_store, msg()));
-      helpTree->FillTruth("xAH_truth", inTruthParticles);
+      helpTree->FillTruth(inTruthParticles,"xAH_truth");
     }
 
     if ( !m_trackParticlesContainerName.empty() ) {
@@ -600,7 +600,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));
-      helpTree->FillTracks(m_trackParticlesContainerName, inTrackParticles);
+      helpTree->FillTracks(inTrackParticles,m_trackParticlesContainerName);
     }
 
     if ( !m_vertexContainerName.empty() && !m_vertexDetailStr.empty() ){
