@@ -346,6 +346,15 @@ EL::StatusCode JetSelector :: initialize ()
     ANA_MSG_WARNING("***********************************************************");
   }
 
+  // Check MC cleaning option
+  if ( m_doMCCleaning && (m_mcCleaningCut < 1.0) ) {
+    ANA_MSG_WARNING("***********************************************************");
+    ANA_MSG_WARNING( "MC cleaning has been set :" );
+    ANA_MSG_WARNING( "\t reconstructed jet avg(pT1,pT2) > x*(truth jet pT1), x = " << m_mcCleaningCut );
+    ANA_MSG_WARNING( "As the specified cut < 1.0 is not the intended use of this procedure, will be reset to default = 1.4!" );
+    ANA_MSG_WARNING("***********************************************************");
+  }
+
   ANA_MSG_DEBUG( "JetSelector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
