@@ -78,8 +78,10 @@ public:
   bool m_markCleanEvent = false;
   /** @brief Choose the scale at which the selection is performed (default "Final", i.e. default 4vector) */
   std::string m_jetScale4Selection = "Final";
-  /// @brief (MC-only) Kill event if avg(pT[0],pT[1])>1.4*truth_pT[0]
+  /// @brief (MC-only) Kill pileup overlay event if reconstructed jets avg(pT1,pT2) > 1.4*(truth jet pT1)
   bool m_doMCCleaning = false;
+  /// @brief Change the default 1.4 cut to x > 1.0
+  float m_mcCleaningCut = 1.4;
   /// @brief minimum number of objects passing cuts
   int m_pass_min = -1;
   /// @brief maximum number of objects passing cuts
