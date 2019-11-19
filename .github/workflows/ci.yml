@@ -4,16 +4,6 @@ on:
   push:
   pull_request:
 
-script:
-  - envsubst '\$DOCKER_IMG \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
-  - envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
-  - docker build --build-arg RELEASE=${RELEASE}
-                 --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT}
-                 --build-arg TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
-                 -t ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest .
-  - docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest
-  - docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
-
 jobs:
   images:
 
