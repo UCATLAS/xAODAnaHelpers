@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         release_type:
-          - AnalysisBase
-          - AnalysisTop
+          - analysisbase
+          - analysistop
         release_version:
           - 21.2.90
 
@@ -25,14 +25,19 @@ jobs:
     - uses: actions/checkout@master
     - name: Build ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
       run: |
-        export DOCKER_TAG=${RELEASE_VERSION}
-        export DOCKER_IMG=$(echo ${RELEASE_TYPE} | tr '[:upper:]' '[:lower:]')
-        envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
         docker build --build-arg RELEASE \
                      --build-arg GIT_SHA=$GITHUB_SHA \
                      --build-arg DOCKER_REPO \
-                     --build-arg DOCKER_IMG \
-                     --build-arg DOCKER_TAG \
+                     --build-arg DOCKER_IMG=$RELEASE_TYPE \
+                     --build-arg DOCKER_TAG=$RELEASE_VERSION \
                      -t ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest .
         #docker run --rm ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest
         #docker run --rm ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
+    - name: Publish Docker Action
+      uses: jerray/publish-docker-action@v1.0.3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ucatlas/${{ matrix.release_type }}
+        build_args: RELEASE, GIT_SHA=$GITHUB_SHA, DOCKER_REPO, DOCKER_IMG=$RELEASE_TYPE, DOCKER_TAG=$RELEASE_VERSION
+

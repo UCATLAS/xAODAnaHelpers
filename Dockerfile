@@ -15,7 +15,7 @@ WORKDIR /home/atlas
 
 # Copy the project's sources into the image
 COPY . /workarea/src/xAODAnaHelpers
-COPY ci/top_CMakeLists.txt /workarea/src/CMakeLists.txt
+COPY ci/top_CMakeLists.txt /workarea/src/CMakeLists.txt.tmp
 # this is needed to get rpmbuild temp dir in different place
 COPY ci/.rpmmacros /root/.rpmmacros
 # Use our MOTD (Message-of-the-Day)
@@ -32,7 +32,9 @@ USER root
 # 4. Clean up
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
-RUN source /home/atlas/release_setup.sh \
+RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
+    && envsubst '\$RELEASE_TYPE' < /workarea/src/top_CMakeLists.txt.tmp > /workarea/src/top_CMakeLists.txt \
+    && source /home/atlas/release_setup.sh \
     && mkdir -p /workarea/build \
     && cd /workarea/build \
     && time cmake ../src \
