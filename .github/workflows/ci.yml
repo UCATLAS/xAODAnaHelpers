@@ -15,8 +15,8 @@ jobs:
     strategy:
       matrix:
         release_type:
-          - analysisbase
-          - analysistop
+          - AnalysisBase
+          - AnalysisTop
         release_version:
           - 21.2.90
 
@@ -24,9 +24,9 @@ jobs:
     - uses: actions/checkout@master
     - name: Build ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
       run: |
-        export DOCKER_TAG=$RELEASE_VERSION
-        export DOCKER_IMG=$RELEASE
-        export DOCKER_REPO=$RELEASE_TYPE
+        export DOCKER_TAG=${RELEASE_VERSION}
+        export DOCKER_REPO=$(echo ${RELEASE_TYPE} | tr '[:upper:]' '[:lower:]')
+        export DOCKER_REPO="${RELEASE_TYPE}:${RELEASE_VERSION}"
         printenv
         #envsubst '\$DOCKER_IMG \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
         #envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
