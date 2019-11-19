@@ -13,7 +13,6 @@ jobs:
       RELEASE_VERSION: ${{ matrix.release_version }}
       RELEASE: ${{ format('{0},{1}', matrix.release_type,matrix.release_version) }}
       DOCKER_REPO: atlas
-      GIT_SHA: ${{ github.sha }}
     strategy:
       matrix:
         release_type:
@@ -32,7 +31,7 @@ jobs:
         envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
         cat Dockerfile
         docker build --build-arg RELEASE \
-                     --build-arg GIT_SHA \
+                     --build-arg GIT_SHA=$GITHUB_SHA \
                      --build-arg DOCKER_REPO \
                      --build-arg DOCKER_IMG \
                      --build-arg DOCKER_TAG \
