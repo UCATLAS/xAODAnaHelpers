@@ -12,20 +12,20 @@ jobs:
       RELEASE_TYPE: ${{ matrix.release_type }}
       RELEASE_VERSION: ${{ matrix.release_version }}
       RELEASE: ${{ format('{0},{1}', matrix.release_type,matrix.release_version) }}
-      DOCKER_TAG: "${RELEASE_VERSION}"
-      DOCKER_IMG: "$(echo ${RELEASE/,/:} | tr '[:upper:]' '[:lower:]')"
-      DOCKER_REPO: "$(echo ${RELEASE_TYPE} | tr '[:upper:]' '[:lower:]')"
+      DOCKER_TAG: ${{ env.release_version }}
+      DOCKER_IMG: ${{ env.release }}
+      DOCKER_REPO: ${{ env.release_type }}
     strategy:
       matrix:
         release_type:
-          - AnalysisBase
-          - AnalysisTop
+          - analysisbase
+          - analysistop
         release_version:
           - 21.2.90
 
     steps:
     - uses: actions/checkout@master
-    - name: Build ${{ matrix.release_type }},${{ matrix.release_version}}
+    - name: Build ${{ format('{0}@[1}', matrix.release_type, matrix.release_version) }}
       run: |
         printenv
         #envsubst '\$DOCKER_IMG \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
