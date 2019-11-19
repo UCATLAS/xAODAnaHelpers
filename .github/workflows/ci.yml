@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - name: Build ${{ format('{0}@[1}', matrix.release_type, matrix.release_version) }}
+    - name: Build ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
       run: |
         export DOCKER_TAG=$RELEASE_VERSION
         export DOCKER_IMG=$RELEASE
