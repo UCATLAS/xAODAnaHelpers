@@ -33,9 +33,9 @@ USER root
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
 RUN mkdir -p /workarea/build \
-    && cd /workarea/build
-    && time cmake ../src
-    && time make
+    && cd /workarea/build \
+    && time cmake ../src \
+    && time make \
     && cpack \
     && rpm -i /workarea/build/*_*.rpm \
     && rm -rf /workarea \
