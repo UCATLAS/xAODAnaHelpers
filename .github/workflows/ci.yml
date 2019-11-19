@@ -1,0 +1,48 @@
+name: CI/CD
+
+on:
+  push:
+  pull_request:
+
+script:
+  - envsubst '\$DOCKER_IMG \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
+  - envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
+  - docker build --build-arg RELEASE=${RELEASE}
+                 --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT}
+                 --build-arg TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
+                 -t ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest .
+  - docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest
+  - docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
+
+jobs:
+  images:
+
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TYPE: ${{ matrix.release_type }}
+      RELEASE_VERSION: ${{ matrix.release_version }}
+      RELEASE: ${{ format('{0},{1}', matrix.release_type,matrix.release_version) }}
+      DOCKER_TAG: "${RELEASE_VERSION}"
+      DOCKER_IMG: "$(echo ${RELEASE/,/:} | tr '[:upper:]' '[:lower:]')"
+      DOCKER_REPO: "$(echo ${RELEASE_TYPE} | tr '[:upper:]' '[:lower:]')"
+    strategy:
+      matrix:
+        release_type:
+          - AnalysisBase
+          - AnalysisTop
+        release_version:
+          - 21.2.90
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Build ${{ matrix.release_type }},${{ matrix.release_version}}
+      run: |
+        printenv
+        #envsubst '\$DOCKER_IMG \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
+        #envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
+        #docker build --build-arg RELEASE=${RELEASE}
+        #             --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT}
+        #             --build-arg TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
+        #             -t ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest .
+        #docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest
+        #docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
