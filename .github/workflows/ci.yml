@@ -12,6 +12,8 @@ jobs:
       RELEASE_TYPE: ${{ matrix.release_type }}
       RELEASE_VERSION: ${{ matrix.release_version }}
       RELEASE: ${{ format('{0},{1}', matrix.release_type,matrix.release_version) }}
+      DOCKER_REPO: atlas
+      GIT_SHA: ${{ github.sha }}
     strategy:
       matrix:
         release_type:
@@ -25,14 +27,15 @@ jobs:
     - name: Build ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
       run: |
         export DOCKER_TAG=${RELEASE_VERSION}
-        export DOCKER_REPO=$(echo ${RELEASE_TYPE} | tr '[:upper:]' '[:lower:]')
-        export DOCKER_IMG="${DOCKER_REPO}:${DOCKER_TAG}"
+        export DOCKER_IMG=$(echo ${RELEASE_TYPE} | tr '[:upper:]' '[:lower:]')
         printenv
-        #envsubst '\$DOCKER_IMG \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
-        #envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
-        #docker build --build-arg RELEASE=${RELEASE}
-        #             --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT}
-        #             --build-arg TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
-        #             -t ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest .
-        #docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest
-        #docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
+        envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
+        cat Dockerfile
+        docker build --build-arg RELEASE
+                     --build-arg GIT_SHA
+                     --build-arg DOCKER_REPO
+                     --build-arg DOCKER_IMG
+                     --build-arg DOCKER_TAG
+                     -t ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest .
+        #docker run --rm ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest
+        #docker run --rm ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'

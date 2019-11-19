@@ -10,7 +10,7 @@ find_package( $RELEASE_TYPE 21.2 REQUIRED )
 atlas_ctest_setup()
 
 # Set up the project:
-atlas_project( xAODAnaHelpers $ENV{TRAVIS_COMMIT}
+atlas_project( xAODAnaHelpers $ENV{GIT_SHA}
    USE $RELEASE_TYPE ${${RELEASE_TYPE}_VERSION} )
 
 # Generate an environment setup script:
