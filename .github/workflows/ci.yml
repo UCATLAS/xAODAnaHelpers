@@ -30,7 +30,7 @@ jobs:
                      --build-arg DOCKER_REPO \
                      --build-arg DOCKER_IMG=$RELEASE_TYPE \
                      --build-arg DOCKER_TAG=$RELEASE_VERSION \
-                     -t ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest .
+                     -t ucatlas/${RELEASE_TYPE}:${RELEASE_VERSION}-latest .
         #docker run --rm ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest
         #docker run --rm ucatlas/${DOCKER_IMG}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
     - name: Publish Docker Action
