@@ -33,7 +33,7 @@ USER root
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
 RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
-    && envsubst '\$RELEASE_TYPE' < /workarea/src/top_CMakeLists.txt.tmp > /workarea/src/top_CMakeLists.txt \
+    && envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
     && source /home/atlas/release_setup.sh \
     && mkdir -p /workarea/build \
     && cd /workarea/build \
