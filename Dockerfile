@@ -32,7 +32,8 @@ USER root
 # 4. Clean up
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
-RUN mkdir -p /workarea/build \
+RUN source /home/atlas/release_setup.sh \
+    && mkdir -p /workarea/build \
     && cd /workarea/build \
     && time cmake ../src \
     && time make \
