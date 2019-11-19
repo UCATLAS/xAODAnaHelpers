@@ -12,9 +12,9 @@ jobs:
       RELEASE_TYPE: ${{ matrix.release_type }}
       RELEASE_VERSION: ${{ matrix.release_version }}
       RELEASE: ${{ format('{0},{1}', matrix.release_type,matrix.release_version) }}
-      DOCKER_TAG: ${{ env.release_version }}
-      DOCKER_IMG: ${{ env.release }}
-      DOCKER_REPO: ${{ env.release_type }}
+      DOCKER_TAG: ${{ RELEASE_VERSION }}
+      DOCKER_IMG: ${{ RELEASE }}
+      DOCKER_REPO: ${{ RELEASE_TYPE }}
     strategy:
       matrix:
         release_type:
