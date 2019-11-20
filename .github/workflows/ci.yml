@@ -14,7 +14,7 @@ jobs:
       DOCKER_BASE_REPO: atlas
       DOCKER_TARGET_REPO: ucatlas
       RELEASE: ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
-      DOCKER_TARGET_IMAGE: ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}
+      DOCKER_TARGET_IMAGE: ${{ env['DOCKER_TARGET_REPO' }}/${{ env['RELEASE_TYPE'] }}:${{ env['RELEASE_VERSION'] }}
     strategy:
       matrix:
         release_type:
