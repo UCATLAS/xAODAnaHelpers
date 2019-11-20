@@ -42,7 +42,7 @@ RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisB
     && mkdir -p /workarea/build \
     && cd /workarea/build \
     && time cmake ../src \
-    && time make -j3 \
+    && time make -j2 \
     && cpack \
     && rpm -i /workarea/build/*_*.rpm \
     && rm -rf /workarea \
