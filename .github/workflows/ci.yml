@@ -31,10 +31,10 @@ jobs:
                      --build-arg DOCKER_IMG=$RELEASE_TYPE \
                      --build-arg DOCKER_TAG=$RELEASE_VERSION \
                      -t ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-latest .
-    - name: test bash on ${{ env['DOCKER_TARGET_REPO' }}/${{ env['RELEASE_TYPE'] }}:${{ env['RELEASE_VERSION'] }}
+    - name: "test bash on ${{ env['DOCKER_TARGET_REPO' }}/${{ env['RELEASE_TYPE'] }}:${{ env['RELEASE_VERSION'] }}"
       run: |
         docker run --rm ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-latest /bin/bash -c "source ~/.bashrc"
-    - name: test xAH_run.py on ${{ env['DOCKER_TARGET_REPO' }}/${{ env['RELEASE_TYPE'] }}:${{ env['RELEASE_VERSION'] }}
+    - name: "test xAH_run.py on ${{ env['DOCKER_TARGET_REPO' }}/${{ env['RELEASE_TYPE'] }}:${{ env['RELEASE_VERSION'] }}"
       run: |
         docker run --rm ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
     - name: login
