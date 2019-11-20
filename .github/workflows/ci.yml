@@ -76,7 +76,7 @@ jobs:
         pip list
     - name: Build docs
       run: |
-        cd docs && make html && cd -
+        cd docs && make html && cd ../
         touch docs/_build/html/.nojekyll
     - name: Deploy docs to GitHub Pages
       if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
