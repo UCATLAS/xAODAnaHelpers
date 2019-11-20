@@ -55,6 +55,7 @@ Contents
    Community
    FAQs
    API
+   api/library_root
 
 Indices and tables
 ==================

@@ -5,69 +5,12 @@ language: ruby
 branches:
   only:
     - master
-env:
-  global:
-    - secure: "odiHOjJdN6GOxIrb+Rn+UXGPbf+XdhffhpSFtWiN1KEH7YiYYSMxqfdmHbfS+ZDMfTcaAhpAjoJNeoYziWnMl0k5k4pREyPc4iMc8JRUDZd0xKkSimJFL0ljNHqtJQPXD+vZfXKOpKjtp4po4fxPqlbeBhs9ycTpplgB7PP7J+9+iLW2vzfvULYkZa2f+mcl+3yUO/YbuD/yePxoWjgLJPgvPNM2POtOHb90wI1le6TJ0CRzKCKgXGH8M3eZteZ80J/DspT6WwcD9mBjvmVSDHOPEI2BYeGtaITGH3eY9DNQ05u+To6O4d9GrDXFBQN3xIRKQnuHP0up/vdUQPeUhveVyD5+in7iRR5qcdc2GEKKzQg+3kgF1o6Cf+Z6WWkR+l4CD4CghajVKPUkXGKnlsq4WFFf5ZILa3BOQcRDVlN/eNP4ebeL+q4MNelDCqHYQcCEfkkR/4AJlYZ7VJ0+HetYt7SlPPFlmYi6FksczLb71mXyvn4bgL5+HNT5v45PTG4RCQ0A5sO5TXK0il6tvssbaKYLLDyC/AuahWNGOhvVNb3yN8BHmXjYYWlhNdi0eejETASR5mm1e875E/DWge0FYOOmhr4OhqY5ZFwfhb8Xi/GtJ2DZqhvZ4srvIQQGe25w8UybhP0cO8aVIvCIpKpW/87uSzKOIqKyqrqkcoQ="
-    - secure: "NKEq9tEPPQhcEJWgy06LaTRjVObqb57GMllFrWa8zQ7/a6kVr4l0VMSqREeDeLrwIXo3RK3nG01sBFavy1Ge4RqUhPjbSBln/xXSEZiMSA1PI97FX3L+emOum4knVIudR1V3WXwRCxK138Fpwudbf0Hi/zLNh/stmApCStWBHmyCrxbfmnI3n+cTKC6RvINY6DJi9QbagCaZCfmLYGSqiNzoQbMEm5T5EkB8xdPFwSoGD7KTBwpcjkqhpS+lGoxcxdXimyEN5lmoR9+EIw6ZUZJzeaANHui6H2keBDe4tJaDeAqZeWkpfw8ixvJO/2OTtPEU5y4DcPzVW3x0GO4B/97oCLZI9PrYDiEq9inBL3xmUmeqXcBV8PLnUVzbosvd0W1kSWiw9Cude223of5VNpiXP7keCNbsklIwWfMNnlDNOKlrI0k+J5dvdf3gH3E+166FykA78/PNgiBCTiZRACuCY00170LLPnXCHFvDvZcUsDhGx8XbxQGEyPfjKyq5Fgythexg03PGW0LjxYR275RLGxa5o4fd/AoZiLQY+NVs1TZeexMIvgjHk03FpHKbCxSzRalCVeibZymc7pnH3huWMuOfPM2It5cd2MlH3iR/M9wln+RNkU+VUsu205PdUbnXYc3YFCy30vUdvb3B2CQntwfiU1sH23ZB9uVR6rE="
-    - DOCKER_ORG=ucatlas
-  matrix:
-    - RELEASE=AnalysisBase,21.2.90
-    - RELEASE=AnalysisTop,21.2.90
-
-script:
-  - export RELEASE_TYPE=${RELEASE%%,*}
-  - export RELEASE_VERSION=${RELEASE#*,}
-  - export DOCKER_TAG=${RELEASE_VERSION}
-  - export DOCKER_IMG=$(echo ${RELEASE/,/:} | tr '[:upper:]' '[:lower:]')
-  - export DOCKER_REPO=$(echo ${RELEASE_TYPE} | tr '[:upper:]' '[:lower:]')
-  - envsubst '\$DOCKER_IMG \$TRAVIS_COMMIT \$TRAVIS_JOB_ID' < ci/Dockerfile > Dockerfile
-  - envsubst '\$RELEASE_TYPE' < ci/top_CMakeLists.txt > ci/top_CMakeLists.txt.tmp && mv ci/top_CMakeLists.txt.tmp ci/top_CMakeLists.txt
-  - docker build --build-arg RELEASE=${RELEASE}
-                 --build-arg TRAVIS_COMMIT=${TRAVIS_COMMIT}
-                 --build-arg TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
-                 -t ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest .
-  - docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest
-  - docker run --rm ${DOCKER_ORG}/${DOCKER_REPO}:${DOCKER_TAG}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
-# travis does not deploy on PRs, but we don't want to deploy images that could potentially break ;)
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: ci/deploy.sh
-  on:
-    branch: master
 
 # below are specific matrix includes for building documentation
 #    and running cppcheck (not actually used)
 matrix:
   fast_finish: true
   include:
-    - language: python
-      python: 2.7
-      sudo: false
-      env: JOB="Building online documentation"
-      addons:
-        apt:
-          packages:
-            - doxygen
-            - doxygen-doc
-            - doxygen-gui
-            - doxygen-latex
-            - graphviz
-      install: pip install -r docs/requirements.txt
-      script:
-        - cd docs
-        - doxygen
-        - make html
-        - cd ..
-        - touch docs/_build/html/.nojekyll
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        github_token: $GITHUB_TOKEN
-        local_dir: docs/_build/html
-        on:
-          branch: master
-
     - language: cpp
       sudo: required
       services:

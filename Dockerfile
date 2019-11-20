@@ -1,11 +1,17 @@
 # provide xAH on top of the AnalysisBase/AnalysisTop image
-#ARG RELEASE
-FROM atlas/$DOCKER_IMG
+ARG DOCKER_BASE_REPO
+ARG DOCKER_IMG
+ARG DOCKER_TAG
+ARG GIT_SHA
+FROM $DOCKER_BASE_REPO/$DOCKER_IMG:$DOCKER_TAG
 
 # change TMPDIR because analysisbase image problems writing to /tmp
+ARG DOCKER_IMG
+ARG GIT_SHA
 ENV TMPDIR=/workarea/tmp/
-ENV TRAVIS_COMMIT=${TRAVIS_COMMIT}
-ENV TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
+ENV DOCKER_IMG=${DOCKER_IMG:-analysisbase}
+ENV GIT_SHA=${GIT_SHA:-private}
+
 WORKDIR $TMPDIR
 WORKDIR /home/atlas
 
@@ -13,6 +19,7 @@ WORKDIR /home/atlas
 
 # Copy the project's sources into the image
 COPY . /workarea/src/xAODAnaHelpers
+COPY ci/top_CMakeLists.txt /workarea/src/CMakeLists.txt.tmp
 # this is needed to get rpmbuild temp dir in different place
 COPY ci/.rpmmacros /root/.rpmmacros
 # Use our MOTD (Message-of-the-Day)
@@ -29,8 +36,14 @@ USER root
 # 4. Clean up
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
-RUN /workarea/src/xAODAnaHelpers/ci/compile.sh \
-    && cd /workarea/build && cpack \
+RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
+    && envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
+    && source /home/atlas/release_setup.sh \
+    && mkdir -p /workarea/build \
+    && cd /workarea/build \
+    && time cmake ../src \
+    && time make -j2 \
+    && cpack \
     && rpm -i /workarea/build/*_*.rpm \
     && rm -rf /workarea \
     && echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' >> /home/atlas/.bashrc \

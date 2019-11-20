@@ -107,7 +107,7 @@ def parse_json(filename):
 
 # this registers the provided dictionary of cli-options on an argparse.ArgumentParser object
 def register_on_parser(cli_options, parser):
-    for optName, optConfig in cli_options.iteritems():
+    for optName, optConfig in cli_options.items():
         # no flags specified? that's fine, use '--{optName}' as default
         flags = optConfig.pop("flags", ["--{0:s}".format(optName)])
         parser.add_argument(*flags, **optConfig)

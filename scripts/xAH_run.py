@@ -202,7 +202,7 @@ if __name__ == "__main__":
         xAH_logger.debug('Previous command could not run correctly. Searching through env. variables.')
         # there was a problem trying to get lsb_release, search through env variables
         lsb_release = None
-        env_vars = [(k,v) for k,v in os.environ.iteritems() if k.endswith('_PLATFORM') and k != 'Analysis'+ASG_framework_type+'_PLATFORM']
+        env_vars = [(k,v) for k,v in os.environ.items() if k.endswith('_PLATFORM') and k != 'Analysis'+ASG_framework_type+'_PLATFORM']
         xAH_logger.debug('Relevant environment variables found:')
         for (k,v) in env_vars: xAH_logger.debug('  - {0} = {1}'.format(k, v))
         if any(['slc6' in v for (k,v) in env_vars]):
@@ -448,20 +448,20 @@ if __name__ == "__main__":
       configGlobals, configLocals = {}, {'args': args}
       execfile(args.config, configGlobals, configLocals)
       # Find the created xAODAnaHelpers.config.Config object and add its _algorithms to the Job
-      for k,v in configLocals.iteritems():
+      for k,v in configLocals.items():
         if isinstance(v, Config):
           configurator = v
           break
 
     # setting sample metadata
-    for pattern, metadata in configurator._samples.iteritems():
+    for pattern, metadata in configurator._samples.items():
       found_matching_sample = False
       xAH_logger.debug("Looking for sample(s) that matches pattern {0}".format(pattern))
       for sample in sh_all:
         if pattern in sample.name():
           found_matching_sample = True
           xAH_logger.info("Setting sample metadata for {0:s}".format(sample.name()))
-          for k,t,v in ((k, type(v), v) for k,v in metadata.iteritems()):
+          for k,t,v in ((k, type(v), v) for k,v in metadata.items()):
             if t in [float]:
               setter = 'setDouble'
             elif t in [int]:
