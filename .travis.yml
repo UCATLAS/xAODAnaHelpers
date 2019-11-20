@@ -11,33 +11,6 @@ branches:
 matrix:
   fast_finish: true
   include:
-    - language: python
-      python: 2.7
-      sudo: false
-      env: JOB="Building online documentation"
-      addons:
-        apt:
-          packages:
-            - doxygen
-            - doxygen-doc
-            - doxygen-gui
-            - doxygen-latex
-            - graphviz
-      install: pip install -r docs/requirements.txt
-      script:
-        - cd docs
-        - doxygen
-        - make html
-        - cd ..
-        - touch docs/_build/html/.nojekyll
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        github_token: $GITHUB_TOKEN
-        local_dir: docs/_build/html
-        on:
-          branch: master
-
     - language: cpp
       sudo: required
       services:
