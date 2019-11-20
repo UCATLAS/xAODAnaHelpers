@@ -25,8 +25,7 @@ jobs:
     - uses: actions/checkout@master
     - name: Build ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
       run: |
-        docker build --build-arg RELEASE \
-                     --build-arg GIT_SHA=$GITHUB_SHA \
+        docker build --build-arg GIT_SHA=$GITHUB_SHA \
                      --build-arg DOCKER_REPO \
                      --build-arg DOCKER_IMG=$RELEASE_TYPE \
                      --build-arg DOCKER_TAG=$RELEASE_VERSION \
@@ -39,5 +38,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ucatlas/${{ matrix.release_type }}
-        build_args: RELEASE, GIT_SHA=$GITHUB_SHA, DOCKER_REPO, DOCKER_IMG=$RELEASE_TYPE, DOCKER_TAG=$RELEASE_VERSION
+        build_args: GIT_SHA=$GITHUB_SHA, DOCKER_REPO, DOCKER_IMG=$RELEASE_TYPE, DOCKER_TAG=$RELEASE_VERSION
 
