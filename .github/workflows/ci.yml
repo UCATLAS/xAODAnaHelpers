@@ -29,6 +29,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
+    - name: ${{ env }}
+      run: echo "Hello World"
     - name: build $RELEASE
       run: |
         docker build --build-arg GIT_SHA=$GITHUB_SHA \
