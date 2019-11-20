@@ -31,7 +31,7 @@ jobs:
                      -t ucatlas/${RELEASE_TYPE}:${RELEASE_VERSION}-latest .
     - name: Test Default Run
       run: |
-        docker run --rm ucatlas/${RELEASE_TYPE}:${RELEASE_VERSION}-latest
+        docker run --rm ucatlas/${RELEASE_TYPE}:${RELEASE_VERSION}-latest /bin/bash -c "source ~/.bashrc"
     - name: Test xAH_run.py
       run: |
         docker run --rm ucatlas/${RELEASE_TYPE}:${RELEASE_VERSION}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
