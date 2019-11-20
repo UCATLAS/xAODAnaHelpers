@@ -77,7 +77,7 @@ class Config(object):
       alg_obj.SetName(algName)
       self._log.append((className,algName))
       alg_obj.setMsgLevel(msgLevel)
-      for k,v in options.iteritems():
+      for k,v in options.items():
         # only crash on algorithm configurations that aren't m_msgLevel and m_name (xAH specific)
         if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
           raise AttributeError(k)
@@ -96,7 +96,7 @@ class Config(object):
       self._log.append((className, algName))
       # TODO
       #setattr(alg_obj, "OutputLevel", msgLevel)
-      for k,v in options.iteritems():
+      for k,v in options.items():
         if k in ['m_msgLevel', 'm_name']: continue
         if isinstance(v, unicode): v = v.encode('utf-8')
         self._log.append((algName, k, v))
