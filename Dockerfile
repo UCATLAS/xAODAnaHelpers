@@ -8,7 +8,7 @@ FROM $DOCKER_REPO/$DOCKER_IMG:$DOCKER_TAG
 # change TMPDIR because analysisbase image problems writing to /tmp
 ENV TMPDIR=/workarea/tmp/
 ENV GIT_SHA=$GIT_SHA
-ENV RELEASE_TYPE=$DOCKER_IMG
+ENV DOCKER_IMG=$DOCKER_IMG
 WORKDIR $TMPDIR
 WORKDIR /home/atlas
 
@@ -33,9 +33,9 @@ USER root
 # 4. Clean up
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
-RUN echo $RELEASE_TYPE \
-    && echo $([ "$RELEASE_TYPE" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
-    && export RELEASE_TYPE=$([ "$RELEASE_TYPE" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
+RUN echo $DOCKER_IMG \
+    && echo $([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
+    && export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
     && echo $RELEASE_TYPE \
     && envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
     && source /home/atlas/release_setup.sh \
