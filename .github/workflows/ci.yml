@@ -37,5 +37,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ucatlas/${{ matrix.release_type }}
-        build_args: GIT_SHA=$GITHUB_SHA, DOCKER_REPO, DOCKER_IMG=$RELEASE_TYPE, DOCKER_TAG=$RELEASE_VERSION
+        build_args: GIT_SHA=$GITHUB_SHA,DOCKER_REPO,DOCKER_IMG=$RELEASE_TYPE,DOCKER_TAG=$RELEASE_VERSION
 
