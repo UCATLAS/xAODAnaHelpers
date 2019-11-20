@@ -33,7 +33,11 @@ USER root
 # 4. Clean up
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
-RUN RELEASE_TYPE=$([ "$RELEASE_TYPE" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
+RUN echo $RELEASE_TYPE \
+    && echo $([ "$RELEASE_TYPE" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
+    && export RELEASE_TYPE=$([ "$RELEASE_TYPE" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
+    && echo $RELEASE_TYPE \
+    && envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
     && source /home/atlas/release_setup.sh \
     && mkdir -p /workarea/build \
     && cd /workarea/build \
