@@ -1,9 +1,9 @@
 # provide xAH on top of the AnalysisBase/AnalysisTop image
-ARG DOCKER_REPO
+ARG DOCKER_BASE_REPO
 ARG DOCKER_IMG
 ARG DOCKER_TAG
 ARG GIT_SHA
-FROM $DOCKER_REPO/$DOCKER_IMG:$DOCKER_TAG
+FROM $DOCKER_BASE_REPO/$DOCKER_IMG:$DOCKER_TAG
 
 # change TMPDIR because analysisbase image problems writing to /tmp
 ARG DOCKER_IMG
