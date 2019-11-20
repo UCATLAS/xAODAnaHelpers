@@ -2,11 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - master
   pull_request:
-    branches:
-      - master
 
 jobs:
   images:
@@ -29,28 +25,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - name: ${{ env['RELEASE'] }}
-      run: echo "Hello World"
-    - name: build $RELEASE
+    - name: build ${{ env['RELEASE'] }}
       run: |
         docker build --build-arg GIT_SHA=$GITHUB_SHA \
                      --build-arg DOCKER_BASE_REPO \
                      --build-arg DOCKER_IMG=$RELEASE_TYPE \
                      --build-arg DOCKER_TAG=$RELEASE_VERSION \
                      -t ${DOCKER_TARGET_IMAGE}-latest .
-    - name: test default on $RELEASE
+    - name: test bash on ${{ env['DOCKER_TARGET_IMAGE'] }}
       run: |
         docker run --rm ${DOCKER_TARGET_IMAGE}-latest /bin/bash -c "source ~/.bashrc"
-    - name: test xAH_run.py on ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
+    - name: test xAH_run.py on ${{ env['DOCKER_TARGET_IMAGE'] }}
       run: |
-        docker run --rm ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
+        docker run --rm ${DOCKER_TARGET_IMAGE}-latest /bin/bash -c 'source xAODAnaHelpers_setup.sh; xAH_run.py -h'
     - name: login
       run: |
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-    - name: tag $RELEASE
+    - name: timestamp the image
       run: |
         docker tag ${DOCKER_TARGET_IMAGE}-latest ${DOCKER_TARGET_IMAGE}-${GITHUB_SHA::6}-$(date +%Y%m%d)
-    - name: push
+    - name: deploy latest and timestamped for ${{ env['RELEASE'] }}
       if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: |
         docker push ${DOCKER_TARGET_IMAGE}-${GITHUB_SHA::6}-$(date +%Y%m%d)
