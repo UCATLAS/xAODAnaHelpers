@@ -1,14 +1,17 @@
 # provide xAH on top of the AnalysisBase/AnalysisTop image
-ARG DOCKER_REPO=atlas
-ARG DOCKER_IMG=analysisbase
-ARG DOCKER_TAG=latest
-ARG GIT_SHA=private
+ARG DOCKER_REPO
+ARG DOCKER_IMG
+ARG DOCKER_TAG
+ARG GIT_SHA
 FROM $DOCKER_REPO/$DOCKER_IMG:$DOCKER_TAG
 
 # change TMPDIR because analysisbase image problems writing to /tmp
+ARG DOCKER_IMG
+ARG GIT_SHA
 ENV TMPDIR=/workarea/tmp/
-ENV GIT_SHA=$GIT_SHA
-ENV DOCKER_IMG=$DOCKER_IMG
+ENV DOCKER_IMG=${DOCKER_IMG:-analysisbase}
+ENV GIT_SHA=${GIT_SHA:-private}
+
 WORKDIR $TMPDIR
 WORKDIR /home/atlas
 
@@ -33,10 +36,7 @@ USER root
 # 4. Clean up
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
-RUN echo $DOCKER_IMG \
-    && echo $([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
-    && export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
-    && echo $RELEASE_TYPE \
+RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
     && envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
     && source /home/atlas/release_setup.sh \
     && mkdir -p /workarea/build \
