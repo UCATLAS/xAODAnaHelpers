@@ -40,17 +40,15 @@ jobs:
     - name: timestamp the image
       run: |
         docker tag ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-latest ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-${GITHUB_SHA::6}-$(date +%Y%m%d)
-    - name: login
-      run: |
-        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     - name: deploy latest and timestamped for ${{ env['RELEASE'] }}
       if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: |
+        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         docker push ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-${GITHUB_SHA::6}-$(date +%Y%m%d)
         docker push ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-latest
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   docs:
 
