@@ -125,8 +125,6 @@ public:
 
 private:
 
-  float m_mcEvtWeight = 1.0;
-
   std::vector<std::string> m_passKeys;
   std::vector<std::string> m_failKeys;
 
@@ -158,7 +156,7 @@ public:
   virtual EL::StatusCode changeInput (bool firstFile);
   virtual EL::StatusCode initialize ();
   virtual EL::StatusCode execute ();
-  EL::StatusCode executeTrackCollection ();
+  EL::StatusCode executeTrackCollection (float mcEvtWeight);
   EL::StatusCode executeTracksInJets ();
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();

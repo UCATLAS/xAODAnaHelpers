@@ -185,24 +185,18 @@ EL::StatusCode TrackSelector :: execute ()
 
   // MC event weight
   //
-  m_mcEvtWeight = 1.0;
-  static SG::AuxElement::Accessor< float > m_mcEvtWeightAcc("mcEventWeight");
-  if ( ! m_mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
-    ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
-  }
-  m_mcEvtWeight = m_mcEvtWeightAcc( *eventInfo );
+  float mcEvtWeight = eventInfo->mcEventWeight();
 
   if(m_doTracksInJets){
     return executeTracksInJets();
   } else{
-    return executeTrackCollection();
+    return executeTrackCollection(mcEvtWeight);
   }
 
   return EL::StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackSelector :: executeTrackCollection ()
+EL::StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
 {
   m_numEvent++;
 
@@ -273,7 +267,7 @@ EL::StatusCode TrackSelector :: executeTrackCollection ()
   m_numEventPass++;
   if(m_useCutFlow) {
     m_cutflowHist ->Fill( m_cutflow_bin, 1 );
-    m_cutflowHistW->Fill( m_cutflow_bin, m_mcEvtWeight);
+    m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
   }
 
   return EL::StatusCode::SUCCESS;
