@@ -4,6 +4,7 @@
 #include "AthContainers/ConstDataVector.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "xAODAnaHelpers/TrackSelector.h"
+#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -22,8 +23,7 @@ ClassImp(TrackSelector)
 
 
 TrackSelector :: TrackSelector () :
-    Algorithm("TrackSelector"),
-    m_trkSelTool(nullptr)
+    Algorithm("TrackSelector")
 {
 }
 
@@ -134,41 +134,39 @@ EL::StatusCode TrackSelector :: initialize ()
   m_numObjectPass = 0;
 
   ANA_MSG_DEBUG( "Initializing InDetTrackSelectionTool..." );
-  m_trkSelTool = new InDet::InDetTrackSelectionTool( m_name );
+  if(m_pT_min                           != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minPt",                           m_pT_min));
+  if(m_p_min                            != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minP",                            m_p_min));
+  if(m_eta_max                          != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxAbsEta",                       m_eta_max));
+  if(m_d0_max                           != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxD0",                           m_d0_max));
+  if(m_sigmad0_max                      != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxSigmaD0",                      m_sigmad0_max));
+  if(m_d0oversigmad0_max                != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxD0overSigmaD0",                m_d0oversigmad0_max));
+  if(m_z0_max                           != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxZ0",                           m_z0_max));
+  if(m_z0sinT_max                       != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxZ0SinTheta",                   m_z0sinT_max));
+  if(m_sigmaz0_max                      != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxSigmaZ0",                      m_sigmaz0_max));
+  if(m_sigmaz0sintheta_max              != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxSigmaZ0SinTheta",              m_sigmaz0sintheta_max));
+  if(m_z0oversigmaz0_max                != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxZ0overSigmaZ0",                m_z0oversigmaz0_max));
+  if(m_z0sinthetaoversigmaz0sintheta_max!= 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxZ0SinThetaoverSigmaZ0SinTheta",m_z0sinthetaoversigmaz0sintheta_max));
+  if(m_nInnermostPixel_min              != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNInnermostLayerHits",          m_nInnermostPixel_min));
+  if(m_nNextToInnermostPixel_min        != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNNextToInnermostLayerHits",    m_nNextToInnermostPixel_min));
+  if(m_nBothInnermostLayersHits_min     != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNBothInnermostLayersHits",     m_nBothInnermostLayersHits_min));
+  if(m_nSi_min                          != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNSiHits",                      m_nSi_min));
+  if(m_nSiPhysical_min                  != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNSiHitsPhysical",              m_nSiPhysical_min));
+  if(m_nSiSharedHits_max                != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxNSiSharedHits",                m_nSiSharedHits_max));
+  if(m_nSiHoles_max                     != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxNSiHoles",                     m_nSiHoles_max));
+  if(m_nPixelHits_min                   != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNPixelHits",                   m_nPixelHits_min));
+  if(m_nPixelHitsPhysical_min           != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNPixelHitsPhysical",           m_nPixelHitsPhysical_min));
+  if(m_nPixelSharedHits_max             != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxNPixelSharedHits",             m_nPixelSharedHits_max));
+  if(m_nPixHoles_max                    != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxNPixelHoles",                  m_nPixHoles_max));
+  if(m_nSctHits_min                     != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNSctHits",                     m_nSctHits_min));
+  if(m_nSctHitsPhysical_min             != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minNSctHitsPhysical",             m_nSctHitsPhysical_min));
+  if(m_nSctSharedHits_max               != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxNSctSharedHits",               m_nSctSharedHits_max));
+  if(m_nSctHoles_max                    != 2e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxNSctHoles",                    m_nSctHoles_max));
+  if(m_nSiSharedModules_max             != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxNSiSharedModules",             m_nSiSharedModules_max));
+  if(m_chi2Prob_min                     != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("minProb",                         m_chi2Prob_min));
+  if(m_chi2NdofCut_max                  != 1e8)ANA_CHECK(m_trkSelTool_handle.setProperty("maxChiSqperNdf",                  m_chi2NdofCut_max));
+  if(m_cutLevelString                   != "" )ANA_CHECK(m_trkSelTool_handle.setProperty("CutLevel",                        m_cutLevelString));
 
-  if(m_pT_min                           != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minPt",                           m_pT_min));
-  if(m_p_min                            != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minP",                            m_p_min));
-  if(m_eta_max                          != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxAbsEta",                       m_eta_max));
-  if(m_d0_max                           != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxD0",                           m_d0_max));
-  if(m_sigmad0_max                      != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxSigmaD0",                      m_sigmad0_max));
-  if(m_d0oversigmad0_max                != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxD0overSigmaD0",                m_d0oversigmad0_max));
-  if(m_z0_max                           != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxZ0",                           m_z0_max));
-  if(m_z0sinT_max                       != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxZ0SinTheta",                   m_z0sinT_max));
-  if(m_sigmaz0_max                      != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxSigmaZ0",                      m_sigmaz0_max));
-  if(m_sigmaz0sintheta_max              != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxSigmaZ0SinTheta",              m_sigmaz0sintheta_max));
-  if(m_z0oversigmaz0_max                != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxZ0overSigmaZ0",                m_z0oversigmaz0_max));
-  if(m_z0sinthetaoversigmaz0sintheta_max!= 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxZ0SinThetaoverSigmaZ0SinTheta",m_z0sinthetaoversigmaz0sintheta_max));
-  if(m_nInnermostPixel_min              != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNInnermostLayerHits",          m_nInnermostPixel_min));
-  if(m_nNextToInnermostPixel_min        != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNNextToInnermostLayerHits",    m_nNextToInnermostPixel_min));
-  if(m_nBothInnermostLayersHits_min     != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNBothInnermostLayersHits",     m_nBothInnermostLayersHits_min));
-  if(m_nSi_min                          != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNSiHits",                      m_nSi_min));
-  if(m_nSiPhysical_min                  != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNSiHitsPhysical",              m_nSiPhysical_min));
-  if(m_nSiSharedHits_max                != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxNSiSharedHits",                m_nSiSharedHits_max));
-  if(m_nSiHoles_max                     != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxNSiHoles",                     m_nSiHoles_max));
-  if(m_nPixelHits_min                   != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNPixelHits",                   m_nPixelHits_min));
-  if(m_nPixelHitsPhysical_min           != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNPixelHitsPhysical",           m_nPixelHitsPhysical_min));
-  if(m_nPixelSharedHits_max             != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxNPixelSharedHits",             m_nPixelSharedHits_max));
-  if(m_nPixHoles_max                    != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxNPixelHoles",                  m_nPixHoles_max));
-  if(m_nSctHits_min                     != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNSctHits",                     m_nSctHits_min));
-  if(m_nSctHitsPhysical_min             != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minNSctHitsPhysical",             m_nSctHitsPhysical_min));
-  if(m_nSctSharedHits_max               != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxNSctSharedHits",               m_nSctSharedHits_max));
-  if(m_nSctHoles_max                    != 2e8)ANA_CHECK(m_trkSelTool->setProperty("maxNSctHoles",                    m_nSctHoles_max));
-  if(m_nSiSharedModules_max             != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxNSiSharedModules",             m_nSiSharedModules_max));
-  if(m_chi2Prob_min                     != 1e8)ANA_CHECK(m_trkSelTool->setProperty("minProb",                         m_chi2Prob_min));
-  if(m_chi2NdofCut_max                  != 1e8)ANA_CHECK(m_trkSelTool->setProperty("maxChiSqperNdf",                  m_chi2NdofCut_max));
-  if(m_cutLevelString                   != "" )ANA_CHECK(m_trkSelTool->setProperty("CutLevel",                        m_cutLevelString));
-
-  m_trkSelTool->initialize();
+  ANA_CHECK( m_trkSelTool_handle.retrieve() );
 
   ANA_MSG_DEBUG( "TrackSelector Interface succesfully initialized!" );
 
@@ -402,7 +400,7 @@ EL::StatusCode TrackSelector :: histFinalize ()
 int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx ) {
 
   // InDetTrackSelectionTool
-  if ( !m_trkSelTool->accept(*trk, pvx) ) { return 0; }
+  if ( !m_trkSelTool_handle->accept(*trk, pvx) ) { return 0; }
 
   // Cuts not available with the InDetTrackSelectionTool
   //

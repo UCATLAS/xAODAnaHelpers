@@ -4,12 +4,17 @@
 // ROOT include(s):
 #include "TH1D.h"
 
+// EDM include(s):
 #include "xAODTracking/VertexContainer.h"
 #include "xAODTracking/TrackParticleContainer.h"
-#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
+
+// external tools include(s):
+#include "InDetTrackSelectionTool/IInDetTrackSelectionTool.h"
+#include "AsgTools/AnaToolHandle.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
+
 
 class TrackSelector : public xAH::Algorithm
 {
@@ -109,7 +114,7 @@ public:
   /// @brief require TMath::Prob(chi2,ndof) > chi2ProbMax
   float m_chi2Prob_min = 1e8;
   /// @brief require nIBL >= nBL_min (not recommended; for downward compatibility)
-  float m_nBL_min = 1e8;
+  int m_nBL_min = 1e8;
 
 
   std::string              m_passAuxDecorKeys = "";
@@ -125,7 +130,7 @@ private:
   std::vector<std::string> m_passKeys;
   std::vector<std::string> m_failKeys;
 
-  InDet::InDetTrackSelectionTool * m_trkSelTool;
+  asg::AnaToolHandle <InDet::IInDetTrackSelectionTool> m_trkSelTool_handle{"InDet::InDetTrackSelectionTool/TrackSelectionTool", this}; //!
 
   int m_numEvent;         //!
   int m_numObject;        //!
