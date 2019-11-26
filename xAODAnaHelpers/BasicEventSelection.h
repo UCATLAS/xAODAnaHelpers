@@ -53,18 +53,10 @@ class BasicEventSelection : public xAH::Algorithm
     bool m_truthLevelOnly = false;
 
   /** @rst
-      If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.
-
-      With SampleHandler, one can define sample metadata in job steering macro. You can do this with relevant samples doing something like:
-
-      .. code-block:: c++
-
-      // access a single sample
-      Sample *sample = sh.get ("mc14_13TeV.blahblahblah");
-      sample->setMetaString("SimulationFlavour", "AFII");
-
+      SimulationFlavour will be determined from the sample MetaData, unless AFII or FS is explicitely requested with the following flags.
       @endrst */
     bool m_setAFII = false;
+    bool m_setFS = false;
 
   // GRL
     /// @brief Apply GRL selection

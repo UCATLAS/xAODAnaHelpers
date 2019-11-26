@@ -1087,10 +1087,21 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 
   // Determine simulation flavour
   std::string SimulationFlavour;
-  if( m_setAFII )
+  if( m_setAFII ){
     SimulationFlavour="AFII";
-  else
-    SimulationFlavour = wk()->metaData()->castString("SimulationFlavour");
+  }else if ( m_setFS ){
+    SimulationFlavour="FS";
+  }else{
+    const xAOD::FileMetaData* fmd = nullptr;
+    ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") );
+    fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
+
+    if( SimulationFlavour == "AtlfastII" ){
+      SimulationFlavour="AFII";
+    }else{
+      SimulationFlavour="FS";
+    }
+  }
   if(SimulationFlavour.empty())
     SimulationFlavour="FS";
 
