@@ -33,6 +33,16 @@ StatusCode xAH::Algorithm::algInitialize(){
     // deprecating m_verbose, but this is around for backwards compatibility
     m_verbose = msgLvl(MSG::VERBOSE);
 
+
+    //Backwards compatibility
+    m_forceFastSim = m_forceFastSim || m_setAFII;
+
+    //Return a failure if there's contradictory flags (2 or more are true)
+    if( m_forceData ? (m_forceFastSim || m_forceFullSim) : (m_forceFastSim && m_forceFullSim) ){
+      ANA_MSG_ERROR("Multiple input-type flags are set, be sure only one of m_forceData(" << m_forceData << "), m_forceFastSim(" << m_forceFastSim << "), and m_forceFullSim(" << m_forceFullSim << ") are true.");
+      return StatusCode::FAILURE;
+    }
+  
     return StatusCode::SUCCESS;
 }
 
@@ -56,23 +66,61 @@ StatusCode xAH::Algorithm::parseSystValVector(){
 }
 
 bool xAH::Algorithm::isMC(){
-  // first override if need to
-  if(m_isMC == 0 || m_isMC == 1) return m_isMC;
+    
+    // If decision is established, return the decision
+    if(m_isMC == 0 || m_isMC == 1) return m_isMC;
+    
+    // If overriding decision by boolean flags
+    if( m_forceData ){
+      m_isMC = 0;
+      return m_isMC;
+    }else if ( m_forceFullSim || m_forceFastSim ){
+      m_isMC = 1;
+      return m_isMC;
+    }
 
-  const xAOD::EventInfo* ei(nullptr);
-  // couldn't retrieve it
-  if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
-    RCU_THROW_MSG( "Could not retrieve eventInfo container (" + m_eventInfoContainerName+") for isMC() check.");
-  }
+    const xAOD::EventInfo* ei(nullptr);
+    // couldn't retrieve it
+    if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
+      RCU_THROW_MSG( "Could not retrieve eventInfo container (" + m_eventInfoContainerName+") for isMC() check.");
+    }
 
-  static SG::AuxElement::ConstAccessor<uint32_t> eventType("eventTypeBitmask");
-  if(!eventType.isAvailable(*ei)){
-    RCU_THROW_MSG( "eventType is not available for isMC() check.");
-  }
+    static SG::AuxElement::ConstAccessor<uint32_t> eventType("eventTypeBitmask");
+    if(!eventType.isAvailable(*ei)){
+      RCU_THROW_MSG( "eventType is not available for isMC() check.");
+    }
 
-  // reached here, return True or False since we have all we need
-  m_isMC = (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
-  return m_isMC;
+    // reached here, return True or False since we have all we need
+    m_isMC = (static_cast<uint32_t>(eventType(*ei)) & xAOD::EventInfo::IS_SIMULATION);
+    return m_isMC;
+}
+
+bool xAH::Algorithm::isFastSim(){
+
+    // If decision is established, return the decision
+    if(m_isFastSim == 0 || m_isFastSim == 1) return m_isFastSim;
+      
+    // If overriding decision by boolean flags
+    if( m_forceData || m_forceFullSim ){
+      m_isFastSim = 0;
+      return m_isFastSim;
+    }else if ( m_forceFastSim ){
+      m_isFastSim = 1;
+      return m_isFastSim;
+    }
+   
+    std::string SimulationFlavour; 
+    const xAOD::FileMetaData* fmd = nullptr;
+    ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") );
+    fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
+  
+    if( SimulationFlavour == "AtlfastII" ){
+      m_isFastSim = 1;
+    }else{
+      m_isFastSim = 0;
+    }
+  
+    return m_isFastSim;
 }
 
 void xAH::Algorithm::registerInstance(){

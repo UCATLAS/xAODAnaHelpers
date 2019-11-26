@@ -144,52 +144,31 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
 
   if ( !isMC() ) {
-    m_isFullSim = false;
     // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
     if ( m_forceInsitu && m_calibSequence.find("Insitu") == std::string::npos) m_calibSequence += "_Insitu";
 
     m_calibConfig = m_calibConfigData;
   } else {
-    m_calibConfig = m_calibConfigFullSim;
-    // treat as fullsim by default
-    m_isFullSim = true;
-    // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
-    //
-    // N.B.: With SampleHandler, you can define sample metadata in job steering macro!
-    //
-    //       They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
-    //       I reasonably suppose everyone will use SH...
-    //
-    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*)
 
-    //
-    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
-    if ( m_setAFII ) {
-      ANA_MSG_INFO( "Setting simulation flavour to AFII");
-      m_isFullSim = false;
-    } else if ( stringMeta.empty() ) {
-      ANA_MSG_WARNING( "Could not access simulation flavour from EL::Worker. Treating MC as FullSim by default!" );
-    } else {
-      m_isFullSim = (stringMeta == "AFII") ? false : true;
-    }
-    if ( !m_isFullSim ) {
+    if ( isFastSim() ) {
       m_calibConfig = m_calibConfigAFII;
     } else {
+      m_calibConfig = m_calibConfigFullSim;
       // Insitu should not be applied to the trimmed jets, per Jet/Etmiss recommendation
       if ( m_forceSmear && m_calibSequence.find("Smear") == std::string::npos) m_calibSequence += "_Smear";
     }
   }
 
-  if(m_uncertMCType.empty()) m_uncertMCType = m_isFullSim ? "MC16" : "AFII";
+  if(m_uncertMCType.empty()) m_uncertMCType = isFastSim() ? "AFII" : "MC16";
 
   // Autoconfigure calibration sequence if the user didn't do it.
   // Recommended strings taken from ApplyJetCalibrationR21 Twiki.
   if(m_calibSequence.empty()){
     // Standard R=0.4 jets
     if(m_inContainerName.find("AntiKt4EM") != std::string::npos){
-      if(!isMC())          m_calibSequence = "JetArea_Residual_EtaJES_GSC_Insitu";
-      else if(m_isFullSim) m_calibSequence = "JetArea_Residual_EtaJES_GSC_Smear";
-      else /*AFII*/        m_calibSequence = "JetArea_Residual_EtaJES_GSC";
+      if( !isMC() )           m_calibSequence = "JetArea_Residual_EtaJES_GSC_Insitu";
+      else if( isFastSim() )  m_calibSequence = "JetArea_Residual_EtaJES_GSC";
+      else /*FullSim*/        m_calibSequence = "JetArea_Residual_EtaJES_GSC_Smear";
     }
     // R-scan jets
     else if(m_inContainerName.find("AntiKt2LCTopo") != std::string::npos ||
@@ -211,7 +190,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   if(m_inContainerName.find("AntiKt4EM") != std::string::npos){
     if(!isMC() && m_calibSequence.find("_Insitu") == std::string::npos)
       ANA_MSG_WARNING("Calibrating AntiKt4EM jets in data without the in-situ step. This is not recommended, make sure it's really what you want!");
-    else if(m_isFullSim && m_calibSequence.find("_Smear") == std::string::npos)
+    else if(!isFastSim() && m_calibSequence.find("_Smear") == std::string::npos)
       ANA_MSG_WARNING("Calibrating AntiKt4EM jets in fullsim without the smearing step. This is not recommended, make sure it's really what you want!");
   }
 

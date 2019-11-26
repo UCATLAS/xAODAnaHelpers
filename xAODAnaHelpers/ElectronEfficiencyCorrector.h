@@ -54,9 +54,6 @@ public:
   /// @brief Write systematics names to metadata
   bool m_writeSystToMetadata = false;
 
-  /** @brief Force AFII flag in calibration, in case metadata is broken */
-  bool m_setAFII = false;
-
   float m_systValPID = 0.0;
   float m_systValIso = 0.0;
   float m_systValReco = 0.0;

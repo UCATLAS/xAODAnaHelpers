@@ -55,7 +55,7 @@ public:
   /// @brief this is the name of the vector of names of the systematically varied containers produced by THIS algo ( these will be the m_inputAlgoSystNames of the algo downstream
   std::string m_outputAlgoSystNames = "PhotonCalibrator_Syst";
 
-  bool        m_useAFII = false;
+  bool        m_useAFII = false; //For backwards compatibility
   float       m_systVal = 0.0;
   std::string m_systName = "";
 

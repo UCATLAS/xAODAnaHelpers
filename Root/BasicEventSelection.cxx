@@ -30,6 +30,7 @@
 #include "xAODCore/tools/IOStats.h"
 #include "xAODCore/tools/ReadStats.h"
 
+//TODO remove
 #include "xAODMetaData/FileMetaData.h"
 
 
@@ -1087,23 +1088,10 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 
   // Determine simulation flavour
   std::string SimulationFlavour;
-  if( m_setAFII ){
-    SimulationFlavour="AFII";
-  }else if ( m_setFS ){
-    SimulationFlavour="FS";
-  }else{
-    const xAOD::FileMetaData* fmd = nullptr;
-    ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") );
-    fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
-
-    if( SimulationFlavour == "AtlfastII" ){
-      SimulationFlavour="AFII";
-    }else{
-      SimulationFlavour="FS";
-    }
-  }
-  if(SimulationFlavour.empty())
-    SimulationFlavour="FS";
+  if( isFastSim() )
+    SimulationFlavour = "AFII";
+  else
+    SimulationFlavour = "FS";
 
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";

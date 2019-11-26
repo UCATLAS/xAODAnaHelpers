@@ -62,8 +62,6 @@ public:
   bool    m_addSoftClusterTerms = false;
 
   // MET significance
-  /// @brief Force AFII flag in calculation, in case metadata is broken
-  bool m_setAFII = false;
   /// @brief Enable MET significance calculation
   bool m_calculateSignificance = false;
   /// @brief Introduce "resolution" for jets with low JVT, if the analysis is sensitive to pileup jets

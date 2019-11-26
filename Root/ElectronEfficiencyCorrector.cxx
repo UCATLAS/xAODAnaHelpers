@@ -117,15 +117,9 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   // *******************************************************
 
   int sim_flav(1); // default for FullSim
-  if ( isMC() ) {
-    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
-    if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
-      ANA_MSG_INFO( "Setting simulation flavour to AFII");
-      sim_flav = 3;
-    }
-    else if ( !m_setAFII && stringMeta.empty() ) {
-      ANA_MSG_WARNING( "No meta-data string found. Simulation flavour will be set to FullSim. Care if you are running on Fast-Sim MC.");
-    }
+  if ( isFastSim() ) {
+    ANA_MSG_INFO( "Setting simulation flavour to AFII");
+    sim_flav = 3;
   }
 
   // 1.

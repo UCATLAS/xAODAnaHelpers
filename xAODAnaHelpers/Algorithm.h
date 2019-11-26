@@ -5,10 +5,12 @@
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
 #include "xAODRootAccess/TStore.h"
+#include "xAODMetaData/FileMetaData.h"
 
 // EL include(s):
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Algorithm.h>
+#include <EventLoop/Worker.h>
 
 #include <string>
 
@@ -24,6 +26,7 @@
 #include <AsgTools/MsgStream.h>
 #include <AsgTools/MsgStreamMacros.h>
 #include <AsgTools/MessageCheck.h>
+
 
 namespace xAH {
 
@@ -128,7 +131,7 @@ namespace xAH {
 
         /**
             @rst
-                This is an override at the algorithm level to force analyzing MC or not.
+                This stores the isMC decision, and can also be used to override at the algorithm level to force analyzing MC or not.
 
                 ===== ========================================================
                 Value Meaning
@@ -141,6 +144,31 @@ namespace xAH {
             @endrst
          */
         int m_isMC = -1;
+
+        /**
+            @rst
+                This stores the isFastSim decision, and can also be used to override at the algorithm level to force analyzing FastSim or not.
+
+                ===== ========================================================
+                Value Meaning
+                ===== ========================================================
+                -1    Default, use Metadata object to determine if FullSim or FastSim
+                0     Treat the input as FullSim
+                1     Treat the input as FastSim
+                ===== ========================================================
+
+            @endrst
+         */
+        int m_isFastSim = -1;
+
+        /** Flags to force a specific data-type, even if it disagrees with your input */
+        bool m_forceFastSim = false;
+        bool m_forceFullSim = false;
+        bool m_forceData    = false;
+
+        /** Backwards compatibility, same as m_forceFastSim */
+        bool m_setAFII = false;
+
 
       protected:
         /**
@@ -156,8 +184,6 @@ namespace xAH {
         /** The TStore object */
         xAOD::TStore* m_store = nullptr; //!
 
-        // will try to determine if data or if MC
-        // returns: 0=data, 1=mc
         /**
             @rst
                 Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isMC` can be used
@@ -175,6 +201,24 @@ namespace xAH {
             @endrst
          */
         bool isMC();
+        
+        /**
+            @rst
+                Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isFastSim` can be used
+		to fix the return value. Otherwise the metadata is queried.
+
+		An exception is thrown if the type cannot be determined.
+
+                ============ =======
+                Return Value Meaning
+                ============ =======
+                0            FullSim (or Data)
+                1            FastSim
+                ============ =======
+
+            @endrst
+         */
+        bool isFastSim();
 
         /**
             @rst
