@@ -30,10 +30,6 @@
 #include "xAODCore/tools/IOStats.h"
 #include "xAODCore/tools/ReadStats.h"
 
-//TODO remove
-#include "xAODMetaData/FileMetaData.h"
-
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
