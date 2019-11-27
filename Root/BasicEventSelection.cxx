@@ -1083,11 +1083,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
 
   // Determine simulation flavour
-  std::string SimulationFlavour;
-  if( isFastSim() )
-    SimulationFlavour = "AFII";
-  else
-    SimulationFlavour = "FS";
+  std::string SimulationFlavour = isFastSim() ? "AFII" : "FS";
 
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";
