@@ -30,9 +30,6 @@
 #include "xAODCore/tools/IOStats.h"
 #include "xAODCore/tools/ReadStats.h"
 
-#include "xAODMetaData/FileMetaData.h"
-
-
 // this is needed to distribute the algorithm to the workers
 ClassImp(BasicEventSelection)
 
@@ -1086,13 +1083,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
 
   // Determine simulation flavour
-  std::string SimulationFlavour;
-  if( m_setAFII )
-    SimulationFlavour="AFII";
-  else
-    SimulationFlavour = wk()->metaData()->castString("SimulationFlavour");
-  if(SimulationFlavour.empty())
-    SimulationFlavour="FS";
+  std::string SimulationFlavour = isFastSim() ? "AFII" : "FS";
 
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";

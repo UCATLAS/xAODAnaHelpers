@@ -86,6 +86,7 @@ EL::StatusCode PhotonCalibrator :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -122,6 +123,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   // input events.
 
   ANA_MSG_INFO( "Initializing PhotonCalibrator Interface... ");
+  
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
@@ -150,9 +152,13 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel));
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel));
   if(m_randomRunNumber>0) ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("randomRunNumber", m_randomRunNumber));
-  if (m_useAFII) {
+
+  //Backwards compatibility
+  if (m_useAFII)
+    m_forceFastSim = true;
+  if ( isFastSim() )
     ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
-  }
+
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->initialize());
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( msg().level() );
 
@@ -245,13 +251,13 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   if (isMC()) {
 
     int dataType = PATCore::ParticleDataType::Data;
-    if (m_useAFII) {
+    if ( isFastSim() ) {
       dataType = PATCore::ParticleDataType::Fast;
     } else {
       dataType = PATCore::ParticleDataType::Full;
     }
+    ANA_MSG_DEBUG("isSimulation=" << ( isMC() ? "Y" : "N") << " isAFII=" << ( isFastSim() ? "Y" : "N" ) << " selected dataType=" << dataType );
 
-    ANA_MSG_DEBUG("isSimulation=" << ( isMC() ? "Y" : "N") << " isAFII=" << (m_useAFII ? "Y" : "N" ) << " selected dataType=" << dataType );
 
     // photon efficiency correction tool
     //----------------------------------
@@ -512,10 +518,10 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     if (LHDecisionLoose.isAvailable( *photon ))
       isLoose =  LHDecisionLoose( *photon );
   } else {
-    if(!m_useAFII && isMC()){
+    if( isMC() && !isFastSim() ){
       if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
-	ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
-	return EL::StatusCode::FAILURE;
+        ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
+        return EL::StatusCode::FAILURE;
       }
     }
     isTight  = m_photonTightIsEMSelector->accept(photon);

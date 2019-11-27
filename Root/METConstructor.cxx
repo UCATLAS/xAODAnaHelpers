@@ -140,13 +140,9 @@ EL::StatusCode METConstructor :: initialize ()
     ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
 
     // For AFII samples
-    if ( isMC() ) {
-      // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
-      const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
-      if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ) {
-        ANA_MSG_INFO( "Setting simulation flavour to AFII");
-        ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
-      }
+    if ( isFastSim() ){ 
+      ANA_MSG_INFO( "Setting simulation flavour to AFII");
+      ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
     }
     ANA_CHECK( m_metSignificance_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_metSignificance_handle);

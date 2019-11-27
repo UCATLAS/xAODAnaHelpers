@@ -140,28 +140,13 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("ESModel", m_esModel));
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("decorrelationModel", m_decorrelationModel));
+
   //
   // For AFII samples
   //
-  if ( isMC() ) {
-
-    // Check simulation flavour for calibration config - cannot directly read metadata in xAOD otside of Athena!
-    //
-    // N.B.: With SampleHandler, you can define sample metadata in job steering macro!
-    //
-    //       They will be passed to the EL:;Worker automatically and can be retrieved anywhere in the EL::Algorithm
-    //       I reasonably suppose everyone will use SH...
-    //
-    //       IMPORTANT! the metadata name set in SH *must* be "AFII" (if not set, name will be *empty_string*)
-    //
-    const std::string stringMeta = wk()->metaData()->castString("SimulationFlavour");
-
-    if ( m_setAFII || ( !stringMeta.empty() && ( stringMeta.find("AFII") != std::string::npos ) ) ){
-
-      ANA_MSG_INFO( "Setting simulation flavour to AFII");
-      ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
-
-    }
+  if ( isFastSim() ){
+    ANA_MSG_INFO( "Setting simulation flavour to AFII");
+    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
   }
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->initialize());
 

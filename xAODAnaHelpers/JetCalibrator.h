@@ -78,19 +78,6 @@ public:
   /// @brief Set analysis-specific jet flavour composition file for JetUncertainties (default: unknown comp.)
   std::string m_overrideAnalysisFile = "";
 
-  /** @rst
-    If you do not want to use SampleHandler to mark samples as AFII, this flag can be used to force run the AFII configurations.
-
-    With SampleHandler, one can define sample metadata in job steering macro. You can do this with relevant samples doing something like:
-
-    .. code-block:: c++
-
-      // access a single sample
-      Sample *sample = sh.get ("mc14_13TeV.blahblahblah");
-      sample->setMetaString("SimulationFlavour", "AFII");
-
-  @endrst */
-  bool m_setAFII = false;
   /// @brief when running data "_Insitu" is appended to calibration sequence
   bool m_forceInsitu = false;
   /// @brief when running FullSim "_Smear" is appended to calibration sequence
@@ -140,8 +127,6 @@ private:
 
   int m_numEvent;         //!
   int m_numObject;        //!
-
-  bool m_isFullSim;       //!
 
   std::string m_calibConfig; //!
 
