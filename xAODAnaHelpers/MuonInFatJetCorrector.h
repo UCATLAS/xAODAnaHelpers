@@ -29,6 +29,8 @@ public:
   std::string m_muonContainerName = "";
   /// @brief The name of the link to matched track jets
   std::string m_trackJetLinkName = "GhostVR30Rmax4Rmin02TrackJet";
+  /// @brief Name of calibrated jet mass decorator, without the TA/Calo prefix (empty means determine automatically)
+  std::string m_calibratedMassDecorator;
   /// @brief Algortihm systematics loop
   std::string m_inputAlgo;
 
