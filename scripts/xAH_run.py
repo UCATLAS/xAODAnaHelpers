@@ -175,6 +175,16 @@ if __name__ == "__main__":
     raise ValueError('Invalid log level: {0:s}'.format(args.log_level))
   xAH_logger.setLevel(numeric_log_level)
 
+  ## Determine which ASG framework using env var for CMAKE setup
+  ASG_framework_list = ['Base', 'Top']
+  ASG_framework_type = xAH_utils.findFrameworkTypeFromList(ASG_framework_list)
+  if( ASG_framework_type == None ):
+    arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
+    raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
+
+  # architecture used for CMake
+  arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM')
+
   try:
     import xAODAnaHelpers.timing
 
@@ -232,16 +242,6 @@ if __name__ == "__main__":
 
     # at this point, we should import ROOT and do stuff
     import ROOT
-    ## Determine which ASG framework using env var for CMAKE setup
-    ASG_framework_list = ['Base', 'Top']
-    ASG_framework_type = xAH_utils.findFrameworkTypeFromList(ASG_framework_list)
-    if( ASG_framework_type == None ):
-      arch = os.environ.get('CMTCONFIG', os.environ.get('BINARY_TYPE', '<arch>'))
-      raise OSError("It doesn't seem like the CMake environment is setup correctly. (Hint: source 'build/{0:s}/setup.sh)".format(arch))
-
-    # architecture used for CMake
-    arch = os.environ.get('Analysis'+ASG_framework_type+'_PLATFORM')
-
     # Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore()
 
