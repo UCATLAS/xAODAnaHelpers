@@ -45,10 +45,10 @@
 
           c = xAH_config()
           # ...
-          c.setalg("JetSelector", JetSelectorDict)
-          c.setalg("ElectronSelector", ElectronSelectorDict)
+          c.algorithm("JetSelector", JetSelectorDict)
+          c.algorithm("ElectronSelector", ElectronSelectorDict)
           # ...
-          c.setalg("OverlapRemover", OverlapRemoverDict)
+          c.algorithm("OverlapRemover", OverlapRemoverDict)
           # ...
 
       where each algorithm has the following I/O systematics configuration (via python dictionaries):

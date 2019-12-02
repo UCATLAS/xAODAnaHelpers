@@ -53,8 +53,8 @@ This gets us started. We make a list of algorithms that we want to run, this lis
     from xAODAnaHelpers import Config
     c = Config()
 
-    c.setalg("BasicEventSelection", {})
-    c.setalg("JetHistsAlgo", {})
+    c.algorithm("BasicEventSelection", {})
+    c.algorithm("JetHistsAlgo", {})
 
 Next, we should probably add some obvious configurations that work for us. I look up the header files of each and decide to flesh it out as below:
 
@@ -89,14 +89,14 @@ and I save this into ``xah_run_example.json``. If you want more variables in you
     from xAODAnaHelpers import Config
     c = Config()
 
-    c.setalg("BasicEventSelection", {"m_truthLevelOnly": False,
+    c.algorithm("BasicEventSelection", {"m_truthLevelOnly": False,
                                      "m_applyGRLCut": True,
                                      "m_GRLxml": "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml",
                                      "m_doPUreweighting": False,
                                      "m_vertexContainerName": "PrimaryVertices",
                                      "m_PVNTrack": 2,
                                      "m_name": "myBaseEventSel"})
-    c.setalg("JetHistsAlgo", {"m_inContainerName": "AntiKt4EMTopoJets",
+    c.algorithm("JetHistsAlgo", {"m_inContainerName": "AntiKt4EMTopoJets",
                               "m_detailStr": "kinematic",
                               "m_name": "NoPreSel"})
 
