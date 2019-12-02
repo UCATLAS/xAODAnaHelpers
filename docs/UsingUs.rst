@@ -90,15 +90,15 @@ and I save this into ``xah_run_example.json``. If you want more variables in you
     c = Config()
 
     c.algorithm("BasicEventSelection", {"m_truthLevelOnly": False,
-                                     "m_applyGRLCut": True,
-                                     "m_GRLxml": "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml",
-                                     "m_doPUreweighting": False,
-                                     "m_vertexContainerName": "PrimaryVertices",
-                                     "m_PVNTrack": 2,
-                                     "m_name": "myBaseEventSel"})
+                                        "m_applyGRLCut": True,
+                                        "m_GRLxml": "$ROOTCOREBIN/data/xAODAnaHelpers/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml",
+                                        "m_doPUreweighting": False,
+                                        "m_vertexContainerName": "PrimaryVertices",
+                                        "m_PVNTrack": 2,
+                                        "m_name": "myBaseEventSel"})
     c.algorithm("JetHistsAlgo", {"m_inContainerName": "AntiKt4EMTopoJets",
-                              "m_detailStr": "kinematic",
-                              "m_name": "NoPreSel"})
+                                 "m_detailStr": "kinematic",
+                                 "m_name": "NoPreSel"})
 
 The similarity is on purpose, to make it incredibly easy to switch back and forth between the two formats.
 
