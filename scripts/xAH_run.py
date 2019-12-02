@@ -440,7 +440,7 @@ if __name__ == "__main__":
       xAH_logger.debug("loaded the json configurations")
       # add our algorithm to the job
       configurator = Config()
-      map(lambda x: configurator.setalg(x['class'], x['configs']), algConfigs)
+      map(lambda x: configurator.algorithm(x['class'], x['configs']), algConfigs)
 
     else:
       #  Executing the python

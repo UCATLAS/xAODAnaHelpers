@@ -28,9 +28,9 @@
 
           c = xAH_config()
           # ...
-          c.setalg("PhotonSelector", PhotonSelectorDict)
+          c.algorithm("PhotonSelector", PhotonSelectorDict)
           # ...
-          c.setalg("TrigMatcher", TrigMatcherDict)
+          c.algorithm("TrigMatcher", TrigMatcherDict)
           # ...
 
       where each algorithm has the following I/O systematics configuration (via python dictionaries)::
