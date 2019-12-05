@@ -30,7 +30,7 @@ Latest Version
 .. Cannot bold just yet: http://stackoverflow.com/questions/33537747/substitution-inside-inline-markup-while-escaping-whitespace
 
 .. note::
-    If you need to add a new release to be supported, please make sure you update the `.travis.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.travis.yml>`_ file first.
+    If you need to add a new release to be supported, please make sure you update the GitHub Actions `ci.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.github/workflows/ci.yml>`_ workflow file first.
 
 We support the following releases: |all_releases|
 
