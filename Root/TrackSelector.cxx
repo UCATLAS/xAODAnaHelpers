@@ -185,7 +185,9 @@ EL::StatusCode TrackSelector :: execute ()
 
   // MC event weight
   //
-  float mcEvtWeight = eventInfo->mcEventWeight();
+  float mcEvtWeight(1);
+  if ( eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION) )
+	mcEvtWeight = eventInfo->mcEventWeight();
 
   if(m_doTracksInJets){
     return executeTracksInJets();
