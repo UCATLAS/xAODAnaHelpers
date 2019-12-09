@@ -145,7 +145,7 @@ public:
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string& jetName = "jet" );
   void FillL1Jets( const xAOD::JetRoIContainer* jets, const std::string& jetName = "L1Jet", bool sortL1Jets = false );
 
-  void FillTruth( const xAOD::TruthParticleContainer* truth, const std::string& truthName = "truth_particle" );
+  void FillTruth( const xAOD::TruthParticleContainer* truth, const std::string& truthName = "xAH_truth" );
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string& truthName );
 
   void FillTracks( const xAOD::TrackParticleContainer* tracks, const std::string& trackName = "trk" );
