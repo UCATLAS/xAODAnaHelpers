@@ -343,7 +343,7 @@ int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
     if ( m_origin != 1000 ) { ANA_MSG_WARNING( "single and multiple origin conditions were selected, only the former will be used" );
     } else {
       std::string token;
-      std::vector<int> originVec;
+      std::vector<unsigned int> originVec;
       std::istringstream ss(m_originOptions);
       while ( std::getline(ss, token, '|') ) originVec.push_back(std::stoi(token));
       bool found = false;
