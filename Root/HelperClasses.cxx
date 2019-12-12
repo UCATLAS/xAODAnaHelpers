@@ -60,7 +60,7 @@ namespace HelperClasses{
 
   /* parser for Tau BDT ID enum */
   /* Apparently this won't be useful for non-Athena users...  */
-  
+
   template <>
   EnumParser<xAOD::TauJetParameters::IsTauFlag>::EnumParser()
   {
@@ -409,8 +409,8 @@ namespace HelperClasses{
         count++;
       }
     } // sfFTagHyb
-
     m_jetBTag.clear();
+    m_jetBTagCts.clear();
     tmpConfigStr=std::string(m_configStr);
     while( tmpConfigStr.find("jetBTag") != std::string::npos ) { // jetBTag
       // erase everything before the interesting string
@@ -428,29 +428,34 @@ namespace HelperClasses{
       std::string type;
       std::vector<uint> wps;
       while(std::getline(ss, s, '_')) {
-	switch(idx)
-	  {
-	  case 0: // jetBTag
-	    break;
-	  case 1: // tagger
-	    tagger=s;
-	    break;
-	  case 2: // efficiency type
-	    type=s;
-	    break;
-	  case 3: // list of efficiency working points
-	    uint size( s.size()/2 );
-	    for(uint i=0;i<size;i++) {
-	      std::string number = s.substr(0,2);
-	      wps.push_back( atoi( number.c_str() ) );
-	      s.erase(0,2);
-	    }
-	  }
-	idx++;
+        switch(idx)
+        {
+          case 0: // jetBTag
+            break;
+          case 1: // tagger
+            tagger=s;
+            break;
+          case 2: // efficiency type
+            type=s;
+            break;
+          case 3: // list of efficiency working points
+            uint size( s.size()/2 );
+            for(uint i=0;i<size;i++) {
+              std::string number = s.substr(0,2);
+              wps.push_back( atoi( number.c_str() ) );
+              s.erase(0,2);
+            }
+        }
+        idx++;
       }
       if(m_jetBTag.find(tagger)==m_jetBTag.end()) m_jetBTag[tagger]=std::vector<std::pair<std::string,uint>>();
       for(auto wp : wps)
-	m_jetBTag[tagger].push_back(std::make_pair(type,wp));
+        m_jetBTag[tagger].push_back(std::make_pair(type,wp));
+
+      // Add the continuous tagger if this was the one that was passed
+      if(type.find("Continuous")!=std::string::npos)
+        m_jetBTagCts.push_back(tagger);
+
     } // jetBTag
 
     m_area          = has_exact("area");
@@ -467,11 +472,11 @@ namespace HelperClasses{
   }
 
   void TrackInfoSwitch::initialize(){
-    m_kinematic     = has_exact("kinematic");
+    m_kinematic   = has_exact("kinematic");
     m_fitpars	    = has_exact("fitpars");
     m_numbers	    = has_exact("numbers");
     m_vertex	    = has_exact("vertex");
-    m_useTheS       = has_exact("useTheS");
+    m_useTheS     = has_exact("useTheS");
   }
 
   void TauInfoSwitch::initialize(){

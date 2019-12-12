@@ -454,7 +454,7 @@ namespace HelperClasses {
         m_byAverageMu    byAverageMu    exact
         m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
-        m_muonCorrection muonCorrection exact 
+        m_muonCorrection muonCorrection exact
         ================ ============== =======
 
         .. note::
@@ -535,6 +535,7 @@ namespace HelperClasses {
     std::vector<int>         m_sfFTagFlt;
     std::vector<int>         m_sfFTagHyb;
     std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
+    std::vector<std::string> m_jetBTagCts;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~JetInfoSwitch() {}
   protected:
@@ -623,8 +624,8 @@ namespace HelperClasses {
 
         .. note::
 
-             ``identification`` and ``effSF`` switches do not enable any additional output by themselves. 
-             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ`` 
+             ``identification`` and ``effSF`` switches do not enable any additional output by themselves.
+             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ``
              for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
 
                  m_configStr = "... TAUEFF_EleOLRElectronEleBDTLoose_TauIDMedium ... TRIG_EleOLRElectronEleBDTMedium_TauIDLoose_TrigMyTriggerMenu"
@@ -640,11 +641,11 @@ namespace HelperClasses {
     bool m_JetID;
     bool m_EleVeto;
     bool m_xahTauJetMatching;
-    bool m_trackAll;         
+    bool m_trackAll;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
-    
+
     std::vector< std::string > m_tauEffWPs;
     std::vector< std::string > m_trigWPs;
 
