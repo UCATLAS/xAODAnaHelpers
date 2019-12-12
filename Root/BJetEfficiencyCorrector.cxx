@@ -132,11 +132,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  false; }
 
-  // Continuous
-  // if (m_operatingPt == "Continuous") { opOK = true; taggerOK = true; m_getScaleFactors =  true; m_useContinuous = true; ANA_MSG_DEBUG(" Using continuous b-tagging");}
-  //m_useContinuous = static_cast<bool>(m_operatingPt == "Continuous");
-  //if (m_useContinuous) ANA_MSG_DEBUG(" Using continuous b-tagging");
-
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
     return EL::StatusCode::FAILURE;
