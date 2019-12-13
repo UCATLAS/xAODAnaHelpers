@@ -780,8 +780,11 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
       float d0_significance =  ( d0SigAcc.isAvailable( *muon ) ) ? d0SigAcc( *muon ) : -1.0;
       m_trkd0sig->push_back( d0_significance );
 
-      m_trkz0->push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
-
+      if (primaryVertex)
+        m_trkz0->push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
+      else
+        m_trkz0->push_back( -999.0 );
+	    
       static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
       float z0sintheta =  ( z0sinthetaAcc.isAvailable( *muon ) ) ? z0sinthetaAcc( *muon ) : -999.0;
       m_trkz0sintheta->push_back( z0sintheta );
