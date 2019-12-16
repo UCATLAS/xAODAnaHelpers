@@ -60,7 +60,7 @@ namespace HelperClasses{
 
   /* parser for Tau BDT ID enum */
   /* Apparently this won't be useful for non-Athena users...  */
-
+  
   template <>
   EnumParser<xAOD::TauJetParameters::IsTauFlag>::EnumParser()
   {
@@ -409,6 +409,7 @@ namespace HelperClasses{
         count++;
       }
     } // sfFTagHyb
+
     m_jetBTag.clear();
     m_jetBTagCts.clear();
     tmpConfigStr=std::string(m_configStr);

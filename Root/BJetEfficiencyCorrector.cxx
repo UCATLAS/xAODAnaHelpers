@@ -468,7 +468,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
 		dec_ineffsfBTag( *jet_itr ) = std::vector<float>();
 
-
+	      
 	      dec_sfBTag( *jet_itr ).push_back(SF);
 	      if(m_useContinuous) dec_ineffsfBTag( *jet_itr ).push_back(inefficiencySF);
       }

@@ -1745,10 +1745,10 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.is_DL1rmu_Continuous=       btag->m_isTag->at(idx);
       jet.SF_DL1rmu_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
       break;
-    default:
-      break;
+	default:
+	  break;
 	}
-  }
+    }
 
   // truth
   if(m_infoSwitch.m_truth)
@@ -2753,63 +2753,63 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     bool status(false);
     // EM Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum", fourVec );
-    if( status ) {
+    if( status ) { 
       m_emScalePt->push_back( fourVec.Pt() / m_units );
       m_emScaleM->push_back( fourVec.M() / m_units );
     }
-    else {
-      m_emScalePt->push_back( -999 );
-      m_emScaleM->push_back( -999 );
+    else { 
+      m_emScalePt->push_back( -999 ); 
+      m_emScaleM->push_back( -999 ); 
     }
     // Constit Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetConstitScaleMomentum", fourVec );
-    if( status ) {
-      m_constScalePt->push_back( fourVec.Pt() / m_units );
-      m_constScaleM->push_back( fourVec.M() / m_units );
+    if( status ) { 
+      m_constScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_constScaleM->push_back( fourVec.M() / m_units ); 
     }
-    else {
-      m_constScalePt->push_back( -999 );
-      m_constScaleM->push_back( -999 );
+    else { 
+      m_constScalePt->push_back( -999 ); 
+      m_constScaleM->push_back( -999 ); 
     }
     // Pileup Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum", fourVec );
-    if( status ) {
-      m_pileupScalePt->push_back( fourVec.Pt() / m_units );
-      m_pileupScaleM->push_back( fourVec.M() / m_units );
+    if( status ) { 
+      m_pileupScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_pileupScaleM->push_back( fourVec.M() / m_units ); 
     }
-    else {
-      m_pileupScalePt->push_back( -999 );
-      m_pileupScaleM->push_back( -999 );
+    else { 
+      m_pileupScalePt->push_back( -999 ); 
+      m_pileupScaleM->push_back( -999 ); 
     }
     // OriginConstit Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetOriginConstitScaleMomentum", fourVec );
     if( status ) {
-      m_originConstitScalePt->push_back( fourVec.Pt() / m_units );
-      m_originConstitScaleM->push_back( fourVec.M() / m_units );
+      m_originConstitScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_originConstitScaleM->push_back( fourVec.M() / m_units ); 
     }
-    else {
-      m_originConstitScalePt->push_back( -999 );
-      m_originConstitScaleM->push_back( -999 );
+    else { 
+      m_originConstitScalePt->push_back( -999 ); 
+      m_originConstitScaleM->push_back( -999 ); 
     }
     // EtaJES Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetEtaJESScaleMomentum", fourVec );
-    if( status ) {
+    if( status ) { 
       m_etaJESScalePt->push_back( fourVec.Pt() / m_units );
       m_etaJESScaleM->push_back( fourVec.M() / m_units );
     }
-    else {
-      m_etaJESScalePt->push_back( -999 );
-      m_etaJESScaleM->push_back( -999 );
+    else { 
+      m_etaJESScalePt->push_back( -999 ); 
+      m_etaJESScaleM->push_back( -999 ); 
     }
     // GSC Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetGSCScaleMomentum", fourVec );
-    if( status ) {
-      m_gscScalePt->push_back( fourVec.Pt() / m_units );
-      m_gscScaleM->push_back( fourVec.M() / m_units );
+    if( status ) { 
+      m_gscScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_gscScaleM->push_back( fourVec.M() / m_units ); 
     }
     else {
-      m_gscScalePt->push_back( -999 );
-      m_gscScaleM->push_back( -999 );
+      m_gscScalePt->push_back( -999 ); 
+      m_gscScaleM->push_back( -999 ); 
     }
     // EtaJES Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetJMSScaleMomentum", fourVec );
@@ -3206,7 +3206,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     val=-999;
     myBTag->variable<double>("MV2c20"   , "discriminant", val);
     m_MV2c20   ->push_back( val );
-
+    
     val=-999;
     myBTag->variable<double>("MV2rmu" , "discriminant", val);
     m_MV2rmu ->push_back( val );
@@ -3251,7 +3251,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1rnn_pc->push_back(pc);
     m_DL1rnn_pb->push_back(pb);
     m_DL1rnn->push_back( score );
-
+    
     pu=0; pb=0; pc=0;
     myBTag->variable<double>("DL1rmu" , "pu", pu);
     myBTag->variable<double>("DL1rmu" , "pc", pc);
@@ -3552,11 +3552,11 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       if(m_debug) std::cout << "Filling m_vtx_online... " << std::endl;
       if(online_pvx){
-	if(m_debug) std::cout << " ...online_pvx_bkg valid " << std::endl;
+	if(m_debug) std::cout << " ... online_pvx valid " << std::endl;
         m_vtx_online_x0->push_back( online_pvx->x() );
         m_vtx_online_y0->push_back( online_pvx->y() );
         m_vtx_online_z0->push_back( online_pvx->z() );
-      } else{
+      }else{
         m_vtx_online_x0->push_back( -999 );
         m_vtx_online_y0->push_back( -999 );
         m_vtx_online_z0->push_back( -999 );
@@ -3564,7 +3564,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       if(m_debug) std::cout << "Filling m_vtx_online... " << std::endl;
       if(online_pvx_bkg){
-      if(m_debug) std::cout << " ...online_pvx_bkg valid " << std::endl;
+	if(m_debug) std::cout << " ...online_pvx_bkg valid " << std::endl;
         m_vtx_online_bkg_x0->push_back( online_pvx_bkg->x() );
         m_vtx_online_bkg_y0->push_back( online_pvx_bkg->y() );
         m_vtx_online_bkg_z0->push_back( online_pvx_bkg->z() );
