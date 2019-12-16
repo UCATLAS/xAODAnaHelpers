@@ -471,8 +471,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 	      dec_sfBTag( *jet_itr ).push_back(SF);
 	      if(m_useContinuous) dec_ineffsfBTag( *jet_itr ).push_back(inefficiencySF);
-     }
-   }
+      }
+    }
   }
   else
     {
