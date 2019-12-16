@@ -185,8 +185,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_BJetSelectTool_handle);
 
   //  Configure the BJetEfficiencyCorrectionTool
-  if( m_getScaleFactors )
-  {
+  if( m_getScaleFactors ) {
 
     // initialize the BJetEfficiencyCorrectionTool
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("TaggerName",          m_taggerName));
@@ -199,55 +198,51 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
 
     if(isMC() && !m_EfficiencyCalibration.empty())
-    {
-      std::string calibration=m_EfficiencyCalibration;
-      if(m_EfficiencyCalibration=="auto")
       {
-        std::string gridName=wk()->metaData()->castString(SH::MetaFields::gridName);
+	    std::string gridName=wk()->metaData()->castString(SH::MetaFields::gridName);
 
-        HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
-        if(!gridName.empty())
-        { // Do not trust sample name on the grid, in case there are multiple samples per job
-          std::stringstream ss(gridName);
-          std::string sampleName;
-          while(std::getline(ss,sampleName,','))
-          {
-            HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
-            if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown)
-            ANA_MSG_ERROR("Cannot have different shower types per grid task.");
-            sampleShowerType=mySampleShowerType;
-          }
-        }
-        else // Use sample name when running locally
-        {
-          gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
-          sampleShowerType=HelperFunctions::getMCShowerType(gridName);
-        }
+	    HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
+	    if(!gridName.empty())
+	      { // Do not trust sample name on the grid, in case there are multiple samples per job
+		std::stringstream ss(gridName);
+		std::string sampleName;
+		while(std::getline(ss,sampleName,','))
+		  {
+		    HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
+		    if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown)
+		      ANA_MSG_ERROR("Cannot have different shower types per grid task.");
+		    sampleShowerType=mySampleShowerType;
+		  }
+	      }
+	    else // Use sample name when running locally
+	      {
+		gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
+		sampleShowerType=HelperFunctions::getMCShowerType(gridName);
+	      }
 
-        switch(sampleShowerType)
-        {
-          case HelperFunctions::Pythia8:
-            calibration="410470";
-            break;
-          case HelperFunctions::Herwig7:
-            calibration="410558";
-            break;
-          case HelperFunctions::Sherpa21:
-            calibration="426131";
-            break;
-          case HelperFunctions::Sherpa22:
-            calibration="410250";
-            break;
-          case HelperFunctions::Unknown:
-            ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-            break;
-        }
-      }
-      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
-      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
-      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
-      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
-    }
+	    switch(sampleShowerType)
+	      {
+	      case HelperFunctions::Pythia8:
+		calibration="410470";
+		break;
+	      case HelperFunctions::Herwig7:
+		calibration="410558";
+		break;
+	      case HelperFunctions::Sherpa21:
+		calibration="426131";
+		break;
+	      case HelperFunctions::Sherpa22:
+		calibration="410250";
+	      break;
+	      case HelperFunctions::Unknown:
+		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+		break;
+	      }
+	  }
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));    }
 
     ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
@@ -371,42 +366,42 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   // run the btagging decision or get weight and quantile if running continuous
   //
   for( const xAOD::Jet* jet_itr : *(inJets))
-  {
-    if(!m_useContinuous)
-    { // get tagging decision
-      ANA_MSG_DEBUG(" Getting tagging decision ");
+    {
+      if(!m_useContinuous)
+	{ // get tagging decision
+	  ANA_MSG_DEBUG(" Getting tagging decision ");
 
-      // Add decorator for decision
-      if( m_BJetSelectTool_handle->accept( *jet_itr ) )
-      dec_isBTag( *jet_itr ) = 1;
+	  // Add decorator for decision
+	  if( m_BJetSelectTool_handle->accept( *jet_itr ) )
+	    dec_isBTag( *jet_itr ) = 1;
+	  else
+	    dec_isBTag( *jet_itr ) = 0;
+
+	  // Add pT-dependent b-tag decision decorator (intended for use in OR)
+	  if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
+	      && m_BJetSelectTool_handle->accept( *jet_itr ) )
+	    dec_isBTagOR( *jet_itr ) = 1;
+	  else
+	    dec_isBTagOR( *jet_itr ) = 0;
+	}
       else
-      dec_isBTag( *jet_itr ) = 0;
+	{ // continuous b-tagging
 
-      // Add pT-dependent b-tag decision decorator (intended for use in OR)
-      if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
-        && m_BJetSelectTool_handle->accept( *jet_itr ) )
-        dec_isBTagOR( *jet_itr ) = 1;
-        else
-        dec_isBTagOR( *jet_itr ) = 0;
+	  ANA_MSG_DEBUG(" Getting TaggerWeight and Quantile");
+
+	  double tagWeight;
+	  if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok )
+	    {
+	      ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
+	      return EL::StatusCode::FAILURE;
+	    }
+	  int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
+	  ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
+	  ANA_MSG_DEBUG( "quantile: " << quantile );
+	  dec_Weight( *jet_itr)    = tagWeight;
+	  dec_Quantile( *jet_itr ) = quantile;
+	}
     }
-    else
-    { // continuous b-tagging
-
-      ANA_MSG_DEBUG(" Getting TaggerWeight and Quantile");
-
-      double tagWeight;
-      if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok )
-      {
-        ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
-        return EL::StatusCode::FAILURE;
-      }
-      int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
-      ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
-      ANA_MSG_DEBUG( "quantile: " << quantile );
-      dec_Weight( *jet_itr)    = tagWeight;
-      dec_Quantile( *jet_itr ) = quantile;
-    }
-  } // end of loop over jets
 
   //
   // get the scale factors for all jets
