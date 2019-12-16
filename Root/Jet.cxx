@@ -579,6 +579,6 @@ void Jet::muonInJetCorrection(const xAH::MuonContainer* muons){
 		    newVec.Phi(),
 		    newVec.E  ());
   }
-
+  
   return;
 }

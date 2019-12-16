@@ -10,9 +10,6 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_trkSelTool(nullptr)
 
 {
-
-  if(m_debug) Info("JetContainer::JetContainer()", "detailStr: %s", detailStr.c_str());
-
   // rapidity
   if(m_infoSwitch.m_rapidity) {
     m_rapidity                  =new std::vector<float>();
@@ -363,9 +360,9 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     std::stringstream ss_wpName;
     for(auto wp : m_infoSwitch.m_sfFTagFix)
       {
-        ss_wpName.str("");
-        ss_wpName << "Fix" << std::setfill('0') << std::setw(2) << wp;
-        m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
+	ss_wpName.str("");
+	ss_wpName << "Fix" << std::setfill('0') << std::setw(2) << wp;
+	m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
       }
   }
 
@@ -373,9 +370,9 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     std::stringstream ss_wpName;
     for(auto wp : m_infoSwitch.m_sfFTagFlt)
       {
-        ss_wpName.str("");
-        ss_wpName << "Flt" << std::setfill('0') << std::setw(2) << wp;
-        m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
+	ss_wpName.str("");
+	ss_wpName << "Flt" << std::setfill('0') << std::setw(2) << wp;
+	m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
       }
   }
 
@@ -383,9 +380,9 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     std::stringstream ss_wpName;
     for(auto wp : m_infoSwitch.m_sfFTagHyb)
       {
-        ss_wpName.str("");
-        ss_wpName << "Hyb" << std::setfill('0') << std::setw(2) << wp;
-        m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
+	ss_wpName.str("");
+	ss_wpName << "Hyb" << std::setfill('0') << std::setw(2) << wp;
+	m_btags.push_back(new btagOpPoint(m_mc,ss_wpName.str()));
       }
   }
 
@@ -393,12 +390,12 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     std::stringstream ss_wpName;
     for(const auto& btaginfo : m_infoSwitch.m_jetBTag)
       {
-      for(auto wp : btaginfo.second)
-        {
-          ss_wpName.str("");
-          ss_wpName << wp.first << "_" << std::setfill('0') << std::setw(2) << wp.second;
-          m_btags.push_back(new btagOpPoint(m_mc, btaginfo.first, ss_wpName.str()));
-        }
+	for(auto wp : btaginfo.second)
+	  {
+	    ss_wpName.str("");
+	    ss_wpName << wp.first << "_" << std::setfill('0') << std::setw(2) << wp.second;
+	    m_btags.push_back(new btagOpPoint(m_mc, btaginfo.first, ss_wpName.str()));
+	  }
       }
   }
 
@@ -1372,366 +1369,366 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
   }
 
   static const std::vector<float> dummy1 = {1.};
-  for(auto btag : m_btags) {
-    switch(btag->m_op)
+  for(auto btag : m_btags)
     {
-
-    case Jet::BTaggerOP::DL1rnn_FixedCutBEff_60:
-      jet.is_DL1rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rnn_FixedCutBEff_70:
-      jet.is_DL1rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rnn_FixedCutBEff_77:
-      jet.is_DL1rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rnn_FixedCutBEff_85:
-      jet.is_DL1rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rnn_HybBEff_60:
-      jet.is_DL1rnn_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rnn_HybBEff_70:
-      jet.is_DL1rnn_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rnn_HybBEff_77:
-      jet.is_DL1rnn_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rnn_HybBEff_85:
-      jet.is_DL1rnn_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_FixedCutBEff_60:
-      jet.is_DL1mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_FixedCutBEff_70:
-      jet.is_DL1mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_FixedCutBEff_77:
-      jet.is_DL1mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_FixedCutBEff_85:
-      jet.is_DL1mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_HybBEff_60:
-      jet.is_DL1mu_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_HybBEff_70:
-      jet.is_DL1mu_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_HybBEff_77:
-      jet.is_DL1mu_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1mu_HybBEff_85:
-      jet.is_DL1mu_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-       case Jet::BTaggerOP::DL1rmu_FixedCutBEff_60:
-      jet.is_DL1rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rmu_FixedCutBEff_70:
-      jet.is_DL1rmu_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rmu_FixedCutBEff_77:
-      jet.is_DL1rmu_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rmu_FixedCutBEff_85:
-      jet.is_DL1rmu_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rmu_HybBEff_60:
-      jet.is_DL1rmu_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rmu_HybBEff_70:
-      jet.is_DL1rmu_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rmu_HybBEff_77:
-      jet.is_DL1rmu_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1rmu_HybBEff_85:
-      jet.is_DL1rmu_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1rmu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-       case Jet::BTaggerOP::DL1r_FixedCutBEff_60:
-      jet.is_DL1r_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1r_FixedCutBEff_70:
-      jet.is_DL1r_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1r_FixedCutBEff_77:
-      jet.is_DL1r_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1r_FixedCutBEff_85:
-      jet.is_DL1r_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1r_HybBEff_60:
-      jet.is_DL1r_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1r_HybBEff_70:
-      jet.is_DL1r_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1r_HybBEff_77:
-      jet.is_DL1r_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1r_HybBEff_85:
-      jet.is_DL1r_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1r_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_FixedCutBEff_60:
-      jet.is_DL1_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_FixedCutBEff_70:
-      jet.is_DL1_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_FixedCutBEff_77:
-      jet.is_DL1_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_FixedCutBEff_85:
-      jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_HybBEff_60:
-      jet.is_DL1_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_DL1_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_HybBEff_70:
-      jet.is_DL1_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_DL1_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_HybBEff_77:
-      jet.is_DL1_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_DL1_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::DL1_HybBEff_85:
-      jet.is_DL1_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_DL1_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_60:
-      jet.is_MV2c10rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_70:
-      jet.is_MV2c10rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_77:
-      jet.is_MV2c10rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_85:
-      jet.is_MV2c10rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_HybBEff_60:
-      jet.is_MV2c10rnn_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_HybBEff_70:
-      jet.is_MV2c10rnn_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_HybBEff_77:
-      jet.is_MV2c10rnn_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10rnn_HybBEff_85:
-      jet.is_MV2c10rnn_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_60:
-      jet.is_MV2c10mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_70:
-      jet.is_MV2c10mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_77:
-      jet.is_MV2c10mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_85:
-      jet.is_MV2c10mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_HybBEff_60:
-      jet.is_MV2c10mu_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_HybBEff_70:
-      jet.is_MV2c10mu_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_HybBEff_77:
-      jet.is_MV2c10mu_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10mu_HybBEff_85:
-      jet.is_MV2c10mu_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-       case Jet::BTaggerOP::MV2r_FixedCutBEff_60:
-      jet.is_MV2r_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2r_FixedCutBEff_70:
-      jet.is_MV2r_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2r_FixedCutBEff_77:
-      jet.is_MV2r_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2r_FixedCutBEff_85:
-      jet.is_MV2r_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2r_HybBEff_60:
-      jet.is_MV2r_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2r_HybBEff_70:
-      jet.is_MV2r_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2r_HybBEff_77:
-      jet.is_MV2r_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2r_HybBEff_85:
-      jet.is_MV2r_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2r_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_FixedCutBEff_60:
-      jet.is_MV2rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_FixedCutBEff_70:
-      jet.is_MV2rmu_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_FixedCutBEff_77:
-      jet.is_MV2rmu_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_FixedCutBEff_85:
-      jet.is_MV2rmu_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_HybBEff_60:
-      jet.is_MV2rmu_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_HybBEff_70:
-      jet.is_MV2rmu_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_HybBEff_77:
-      jet.is_MV2rmu_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2rmu_HybBEff_85:
-      jet.is_MV2rmu_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2rmu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FixedCutBEff_30:
-      jet.is_MV2c10_FixedCutBEff_30=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FixedCutBEff_30=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FixedCutBEff_50:
-      jet.is_MV2c10_FixedCutBEff_50=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FixedCutBEff_50=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FixedCutBEff_60:
-      jet.is_MV2c10_FixedCutBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FixedCutBEff_70:
-      jet.is_MV2c10_FixedCutBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FixedCutBEff_77:
-      jet.is_MV2c10_FixedCutBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FixedCutBEff_85:
-      jet.is_MV2c10_FixedCutBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FixedCutBEff_90:
-      jet.is_MV2c10_FixedCutBEff_90=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FixedCutBEff_90=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FlatBEff_30:
-      jet.is_MV2c10_FlatBEff_30=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FlatBEff_30=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FlatBEff_50:
-      jet.is_MV2c10_FlatBEff_50=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FlatBEff_50=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FlatBEff_60:
-      jet.is_MV2c10_FlatBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FlatBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FlatBEff_70:
-      jet.is_MV2c10_FlatBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FlatBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FlatBEff_77:
-      jet.is_MV2c10_FlatBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FlatBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_FlatBEff_85:
-      jet.is_MV2c10_FlatBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_FlatBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_HybBEff_60:
-      jet.is_MV2c10_HybBEff_60=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_HybBEff_70:
-      jet.is_MV2c10_HybBEff_70=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_HybBEff_77:
-      jet.is_MV2c10_HybBEff_77=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
-    case Jet::BTaggerOP::MV2c10_HybBEff_85:
-      jet.is_MV2c10_HybBEff_85=       btag->m_isTag->at(idx);
-      jet.SF_MV2c10_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-      break;
+      switch(btag->m_op)
+	{
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_60:
+	  jet.is_DL1rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_70:
+	  jet.is_DL1rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_77:
+	  jet.is_DL1rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_85:
+	  jet.is_DL1rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_60:
+	  jet.is_DL1rnn_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_70:
+	  jet.is_DL1rnn_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_77:
+	  jet.is_DL1rnn_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rnn_HybBEff_85:
+	  jet.is_DL1rnn_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_60:
+	  jet.is_DL1mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_70:
+	  jet.is_DL1mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_77:
+	  jet.is_DL1mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_FixedCutBEff_85:
+	  jet.is_DL1mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_60:
+	  jet.is_DL1mu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_70:
+	  jet.is_DL1mu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_77:
+	  jet.is_DL1mu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1mu_HybBEff_85:
+	  jet.is_DL1mu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+    case Jet::BTaggerOP::DL1rmu_FixedCutBEff_60:
+	  jet.is_DL1rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_70:
+	  jet.is_DL1rmu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_77:
+	  jet.is_DL1rmu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_85:
+	  jet.is_DL1rmu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_60:
+	  jet.is_DL1rmu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_70:
+	  jet.is_DL1rmu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_77:
+	  jet.is_DL1rmu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1rmu_HybBEff_85:
+	  jet.is_DL1rmu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1rmu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+    case Jet::BTaggerOP::DL1r_FixedCutBEff_60:
+	  jet.is_DL1r_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_FixedCutBEff_70:
+	  jet.is_DL1r_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_FixedCutBEff_77:
+	  jet.is_DL1r_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_FixedCutBEff_85:
+	  jet.is_DL1r_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_60:
+	  jet.is_DL1r_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_70:
+	  jet.is_DL1r_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_77:
+	  jet.is_DL1r_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1r_HybBEff_85:
+	  jet.is_DL1r_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1r_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_60:
+	  jet.is_DL1_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_70:
+	  jet.is_DL1_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_77:
+	  jet.is_DL1_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_FixedCutBEff_85:
+	  jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_60:
+	  jet.is_DL1_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_70:
+	  jet.is_DL1_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_77:
+	  jet.is_DL1_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1_HybBEff_85:
+	  jet.is_DL1_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_60:
+	  jet.is_MV2c10rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_70:
+	  jet.is_MV2c10rnn_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_77:
+	  jet.is_MV2c10rnn_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_FixedCutBEff_85:
+	  jet.is_MV2c10rnn_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_60:
+	  jet.is_MV2c10rnn_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_70:
+	  jet.is_MV2c10rnn_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_77:
+	  jet.is_MV2c10rnn_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10rnn_HybBEff_85:
+	  jet.is_MV2c10rnn_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10rnn_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_60:
+	  jet.is_MV2c10mu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_70:
+	  jet.is_MV2c10mu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_77:
+	  jet.is_MV2c10mu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_FixedCutBEff_85:
+	  jet.is_MV2c10mu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_60:
+	  jet.is_MV2c10mu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_70:
+	  jet.is_MV2c10mu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_77:
+	  jet.is_MV2c10mu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10mu_HybBEff_85:
+	  jet.is_MV2c10mu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10mu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+    case Jet::BTaggerOP::MV2r_FixedCutBEff_60:
+	  jet.is_MV2r_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_FixedCutBEff_70:
+	  jet.is_MV2r_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_FixedCutBEff_77:
+	  jet.is_MV2r_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_FixedCutBEff_85:
+	  jet.is_MV2r_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_60:
+	  jet.is_MV2r_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_70:
+	  jet.is_MV2r_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_77:
+	  jet.is_MV2r_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2r_HybBEff_85:
+	  jet.is_MV2r_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2r_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_60:
+	  jet.is_MV2rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_70:
+	  jet.is_MV2rmu_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_77:
+	  jet.is_MV2rmu_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_FixedCutBEff_85:
+	  jet.is_MV2rmu_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_60:
+	  jet.is_MV2rmu_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_70:
+	  jet.is_MV2rmu_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_77:
+	  jet.is_MV2rmu_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2rmu_HybBEff_85:
+	  jet.is_MV2rmu_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2rmu_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_30:
+	  jet.is_MV2c10_FixedCutBEff_30=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_30=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_50:
+	  jet.is_MV2c10_FixedCutBEff_50=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_50=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_60:
+	  jet.is_MV2c10_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_70:
+	  jet.is_MV2c10_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_77:
+	  jet.is_MV2c10_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_85:
+	  jet.is_MV2c10_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FixedCutBEff_90:
+	  jet.is_MV2c10_FixedCutBEff_90=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FixedCutBEff_90=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_30:
+	  jet.is_MV2c10_FlatBEff_30=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_30=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_50:
+	  jet.is_MV2c10_FlatBEff_50=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_50=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_60:
+	  jet.is_MV2c10_FlatBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_70:
+	  jet.is_MV2c10_FlatBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_77:
+	  jet.is_MV2c10_FlatBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_FlatBEff_85:
+	  jet.is_MV2c10_FlatBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_FlatBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_60:
+	  jet.is_MV2c10_HybBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_70:
+	  jet.is_MV2c10_HybBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_77:
+	  jet.is_MV2c10_HybBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::MV2c10_HybBEff_85:
+	  jet.is_MV2c10_HybBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_MV2c10_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
     case Jet::BTaggerOP::MV2c10_Continuous:
       jet.is_MV2c10_Continuous=       btag->m_isTag->at(idx);
       jet.SF_MV2c10_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1750,7 +1747,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       break;
     default:
       break;
-    }
+	}
   }
 
   // truth
@@ -2602,6 +2599,7 @@ void JetContainer::FillJet( const xAOD::Jet* jet, const xAOD::Vertex* pv, int pv
 }
 
 void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex* pv, int pvLocation ){
+  if(m_debug) std::cout << "In JetContainer::FillJet " << std::endl;
 
   ParticleContainer::FillParticle(particle);
 
@@ -2623,8 +2621,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       // loop over map and fill branches
       //
       for ( auto const &it : (isTrigMatchedMapJetAcc( *jet )) ) {
-        matches.push_back( static_cast<int>(it.second) );
-        m_listTrigChains->push_back( it.first );
+	matches.push_back( static_cast<int>(it.second) );
+	m_listTrigChains->push_back( it.first );
       }
     } else {
       matches.push_back( -1 );
@@ -3521,40 +3519,40 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       static SG::AuxElement::ConstAccessor< float > acc_bs_online_vs ("bs_online_vz");
       if(acc_bs_online_vs.isAvailable( *jet) ){
-        if(m_debug) std::cout << "Have bs_online_vz " << std::endl;
-        float bs_online_vz = jet->auxdata< float >("bs_online_vz");
-        //std::cout << "**bs_online_vz " << bs_online_vz << std::endl;
-        m_bs_online_vz->push_back( bs_online_vz );
+	if(m_debug) std::cout << "Have bs_online_vz " << std::endl;
+	float bs_online_vz = jet->auxdata< float >("bs_online_vz");
+	//std::cout << "**bs_online_vz " << bs_online_vz << std::endl;
+	m_bs_online_vz->push_back( bs_online_vz );
 
-        float bs_online_vx = jet->auxdata< float >("bs_online_vx");
-        //std::cout << "**bs_online_vx " << bs_online_vx << std::endl;
-        m_bs_online_vx->push_back( bs_online_vx );
+	float bs_online_vx = jet->auxdata< float >("bs_online_vx");
+	//std::cout << "**bs_online_vx " << bs_online_vx << std::endl;
+	m_bs_online_vx->push_back( bs_online_vx );
 
-        float bs_online_vy = jet->auxdata< float >("bs_online_vy");
-        //std::cout << "**bs_online_vy " << bs_online_vy << std::endl;
-        m_bs_online_vy->push_back( bs_online_vy );
-             }else{
-        m_bs_online_vz->push_back( -999 );
-        m_bs_online_vx->push_back( -999 );
-        m_bs_online_vy->push_back( -999 );
+	float bs_online_vy = jet->auxdata< float >("bs_online_vy");
+	//std::cout << "**bs_online_vy " << bs_online_vy << std::endl;
+	m_bs_online_vy->push_back( bs_online_vy );
+      }else{
+	m_bs_online_vz->push_back( -999 );
+	m_bs_online_vx->push_back( -999 );
+	m_bs_online_vy->push_back( -999 );
       }
 
       if(m_debug) std::cout << "Filling m_vtx_offline " << std::endl;
       if(offline_pvx){
-        m_vtx_offline_x0->push_back( offline_pvx->x() );
-        m_vtx_offline_y0->push_back( offline_pvx->y() );
-        m_vtx_offline_z0->push_back( offline_pvx->z() );
-      } else{
-        m_vtx_offline_x0->push_back( -999 );
-        m_vtx_offline_y0->push_back( -999 );
-        m_vtx_offline_z0->push_back( -999 );
+	m_vtx_offline_x0->push_back( offline_pvx->x() );
+	m_vtx_offline_y0->push_back( offline_pvx->y() );
+	m_vtx_offline_z0->push_back( offline_pvx->z() );
+      }else{
+	m_vtx_offline_x0->push_back( -999 );
+	m_vtx_offline_y0->push_back( -999 );
+	m_vtx_offline_z0->push_back( -999 );
       }
 
       if(m_debug) std::cout << "Done Filling m_vtx_offline " << std::endl;
 
       if(m_debug) std::cout << "Filling m_vtx_online... " << std::endl;
       if(online_pvx){
-      if(m_debug) std::cout << " ... online_pvx valid " << std::endl;
+	if(m_debug) std::cout << " ...online_pvx_bkg valid " << std::endl;
         m_vtx_online_x0->push_back( online_pvx->x() );
         m_vtx_online_y0->push_back( online_pvx->y() );
         m_vtx_online_z0->push_back( online_pvx->z() );
@@ -3570,7 +3568,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         m_vtx_online_bkg_x0->push_back( online_pvx_bkg->x() );
         m_vtx_online_bkg_y0->push_back( online_pvx_bkg->y() );
         m_vtx_online_bkg_z0->push_back( online_pvx_bkg->z() );
-      } else{
+      }else{
         m_vtx_online_bkg_x0->push_back( -999 );
         m_vtx_online_bkg_y0->push_back( -999 );
         m_vtx_online_bkg_z0->push_back( -999 );
