@@ -199,6 +199,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
     if(isMC() && !m_EfficiencyCalibration.empty())
       {
+	std::string calibration=m_EfficiencyCalibration;
+	if(m_EfficiencyCalibration=="auto")
+	  {
 	    std::string gridName=wk()->metaData()->castString(SH::MetaFields::gridName);
 
 	    HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
@@ -242,7 +245,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));    }
+	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
+      }
 
     ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
@@ -407,20 +411,20 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   // get the scale factors for all jets
   //
   if(m_getScaleFactors)
-  { // loop over available systematics
-    for(const CP::SystematicSet& syst_it : m_systList)
-{
-  //  If not nominal input jet collection, dont calculate systematics
-  if ( !doNominal )
-    {
-      if( syst_it.name() != "" )
-  { // if not nominal btag decision
-    ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
-    continue;
-  }
-    }
+    { // loop over available systematics
+      for(const CP::SystematicSet& syst_it : m_systList)
+	{
+	  //  If not nominal input jet collection, dont calculate systematics
+	  if ( !doNominal )
+	    {
+	      if( syst_it.name() != "" )
+		{ // if not nominal btag decision
+		  ANA_MSG_DEBUG("Not running B-tag systematics when doing JES systematics");
+		  continue;
+		}
+	    }
 
-    // configure tool with syst variation
+	  // configure tool with syst variation
 	  if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok)
 	    {
 	      ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
@@ -436,10 +440,9 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      CP::CorrectionCode BJetEffCode;
 	      CP::CorrectionCode BJetIneEffCode = CP::CorrectionCode::Ok;
 
-         // if passes cut take the efficiency scale factor
-         // if failed cut take the inefficiency scale factor
-         // for continuous b-tagging save both
-         ANA_MSG_DEBUG( "dec_isBTag: " << dec_isBTag( *jet_itr ) );
+	      // if passes cut take the efficiency scale factor
+	      // if failed cut take the inefficiency scale factor
+	      // for continuous b-tagging save both
          if(m_useContinuous){
            BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
            BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
@@ -486,16 +489,13 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   // Store list of available systematics
   //
-  if(doNominal)
-  {
+  if(doNominal){
     auto sysVariationNames = std::make_unique< std::vector< std::string > >();
-    if(m_getScaleFactors)
-    {
+    if(m_getScaleFactors){
       for(const auto& syst_it : m_systList)
-        sysVariationNames->push_back(syst_it.name());
+	sysVariationNames->push_back(syst_it.name());
     }
-    else
-    {
+    else {
       sysVariationNames->push_back("");
     }
 
