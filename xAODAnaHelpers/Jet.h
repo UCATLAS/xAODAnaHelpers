@@ -44,7 +44,7 @@ namespace xAH {
       int               isTrigMatched;
       std::vector<int>  isTrigMatchedToChain;
       std::string       listTrigChains;
-
+      
       // clean
       float Timing;
       float LArQuality;
@@ -67,7 +67,7 @@ namespace xAH {
       int   clean_passLooseBadUgly;
       int   clean_passTightBad;
       int   clean_passTightBadUgly;
-
+    
       // energy
       float HECFrac;
       float EMFrac;
@@ -77,7 +77,7 @@ namespace xAH {
       float LowEtConstituentsFrac;
       float GhostMuonSegmentCount;
       float Width;
-
+    
       // trackPV
       float NumTrkPt1000PV;
       float SumPtTrkPt1000PV;
@@ -86,12 +86,12 @@ namespace xAH {
       float SumPtTrkPt500PV;
       float TrackWidthPt500PV;
       float JVFPV;
-
+    
       // trackAll or trackPV
       float Jvt;
       float JvtJvfcorr;
       float JvtRpt;
-
+    
       //JVC
       float JVC;
 
@@ -135,7 +135,7 @@ namespace xAH {
 
       float vtxOnlineValid;
       float vtxHadDummy;
-
+      
       float bs_online_vx;
       float bs_online_vy;
       float bs_online_vz;
@@ -143,7 +143,7 @@ namespace xAH {
       float vtx_offline_x0;
       float vtx_offline_y0;
       float vtx_offline_z0;
-
+    
       float vtx_online_x0;
       float vtx_online_y0;
       float vtx_online_z0;
@@ -151,7 +151,7 @@ namespace xAH {
       float vtx_online_bkg_x0;
       float vtx_online_bkg_y0;
       float vtx_online_bkg_z0;
-
+    
       float JetFitter_nVTX           ;
       float JetFitter_nSingleTracks  ;
       float JetFitter_nTracksAtVtx   ;
@@ -161,7 +161,7 @@ namespace xAH {
       float JetFitter_deltaeta       ;
       float JetFitter_deltaphi       ;
       float JetFitter_N2Tpar         ;
-
+    
       float sv0_NGTinSvx  ;
       float sv0_N2Tpair   ;
       float sv0_massvx    ;
@@ -182,7 +182,7 @@ namespace xAH {
       float sv1_L3d       ;
       float sv1_distmatlay;
       float sv1_dR        ;
-
+    
       float IP2D_pu     ;
       float IP2D_pb     ;
       float IP2D_pc     ;
@@ -190,7 +190,7 @@ namespace xAH {
       float IP2D_c      ;
       float IP2D_cu     ;
       float nIP2DTracks ;
-
+    
       std::vector<float> IP2D_gradeOfTracks         ;
       std::vector<float> IP2D_flagFromV0ofTracks    ;
       std::vector<float> IP2D_valD0wrtPVofTracks    ;
@@ -198,14 +198,14 @@ namespace xAH {
       std::vector<float> IP2D_weightBofTracks       ;
       std::vector<float> IP2D_weightCofTracks       ;
       std::vector<float> IP2D_weightUofTracks       ;
-
+    
       float IP3D_pu     ;
       float IP3D_pb     ;
       float IP3D_pc     ;
       float IP3D_c      ;
       float IP3D_cu     ;
       float nIP3DTracks ;
-
+    
       std::vector<float> IP3D_gradeOfTracks      ;
       std::vector<float> IP3D_flagFromV0ofTracks ;
       std::vector<float> IP3D_valD0wrtPVofTracks ;

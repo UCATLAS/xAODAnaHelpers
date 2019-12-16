@@ -454,7 +454,7 @@ namespace HelperClasses {
         m_byAverageMu    byAverageMu    exact
         m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
-        m_muonCorrection muonCorrection exact
+        m_muonCorrection muonCorrection exact 
         ================ ============== =======
 
         .. note::
@@ -624,8 +624,8 @@ namespace HelperClasses {
 
         .. note::
 
-             ``identification`` and ``effSF`` switches do not enable any additional output by themselves.
-             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ``
+             ``identification`` and ``effSF`` switches do not enable any additional output by themselves. 
+             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ`` 
              for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
 
                  m_configStr = "... TAUEFF_EleOLRElectronEleBDTLoose_TauIDMedium ... TRIG_EleOLRElectronEleBDTMedium_TauIDLoose_TrigMyTriggerMenu"
@@ -645,7 +645,7 @@ namespace HelperClasses {
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
-
+    
     std::vector< std::string > m_tauEffWPs;
     std::vector< std::string > m_trigWPs;
 

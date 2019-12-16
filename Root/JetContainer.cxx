@@ -21,7 +21,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_isTrigMatchedToChain   = new     std::vector<std::vector<int> > ();
     m_listTrigChains         = new     std::vector<std::string>       ();
   }
-
+  
   // clean
   if(m_infoSwitch.m_cleanTrig && ! (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)) {
     std::cout << "JetContainer              WARNING You asked for cleanTrig for " << name << "but didn't specify clean or cleanLight. Going to assume you wanted clean." << std::endl;
@@ -2200,14 +2200,14 @@ void JetContainer::clear()
   if( m_infoSwitch.m_rapidity ) {
     m_rapidity->clear();
   }
-
+  
   // trigger
   if ( m_infoSwitch.m_trigger ) {
     m_isTrigMatched->clear();
     m_isTrigMatchedToChain->clear();
     m_listTrigChains->clear();
   }
-
+  
   // clean
   if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
     if(m_infoSwitch.m_clean){
@@ -2630,11 +2630,11 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     m_isTrigMatchedToChain->push_back(matches);
-
+    
     // if at least one match among the chains is found, say this jet is trigger matched
     if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
     else { m_isTrigMatched->push_back(0); }
-
+    
   }
 
   if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
@@ -2689,7 +2689,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       if(!m_infoSwitch.m_cleanTrig) {
         static SG::AuxElement::ConstAccessor<int> clean_passLooseBadUgly ("clean_passLooseBadUgly");
         safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
-
+        
         static SG::AuxElement::ConstAccessor<int> clean_passTightBadUgly ("clean_passTightBadUgly");
         safeFill<int, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
       }
@@ -2697,7 +2697,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTriggerUgly ("clean_passLooseBadTriggerUgly");
         safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTriggerUgly, m_clean_passLooseBadTriggerUgly, -999);
       }
-
+      
     }
 
     if(!m_infoSwitch.m_cleanTrig) {
@@ -2823,13 +2823,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
     // only available in data
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", fourVec );
-    if(status) {
-      m_insituScalePt->push_back( fourVec.Pt() / m_units );
-      m_insituScaleM->push_back( fourVec.M() / m_units );
+    if(status) { 
+      m_insituScalePt->push_back( fourVec.Pt() / m_units ); 
+      m_insituScaleM->push_back( fourVec.M() / m_units ); 
     }
-    else {
-      m_insituScalePt->push_back( -999 );
-      m_insituScaleM->push_back( -999 );
+    else { 
+      m_insituScalePt->push_back( -999 ); 
+      m_insituScaleM->push_back( -999 ); 
     }
   }
 
