@@ -302,7 +302,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
-} // end of initialize function
+}
 
 EL::StatusCode BJetEfficiencyCorrector :: execute ()
 {
@@ -439,7 +439,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      float inefficiencySF(-1.0); // only for continuous b-tagging
 	      CP::CorrectionCode BJetEffCode;
 	      CP::CorrectionCode BJetIneEffCode = CP::CorrectionCode::Ok;
-
 	      // if passes cut take the efficiency scale factor
 	      // if failed cut take the inefficiency scale factor
 	      // for continuous b-tagging save both
@@ -472,8 +471,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 	      dec_sfBTag( *jet_itr ).push_back(SF);
 	      if(m_useContinuous) dec_ineffsfBTag( *jet_itr ).push_back(inefficiencySF);
-     } // end of loop over jets
-   } // end of loop over systematics
+     }
+   }
   }
   else
     {
@@ -491,7 +490,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   if(doNominal){
     auto sysVariationNames = std::make_unique< std::vector< std::string > >();
-    if(m_getScaleFactors){
+    if(m_getScaleFactors) {
       for(const auto& syst_it : m_systList)
 	sysVariationNames->push_back(syst_it.name());
     }
