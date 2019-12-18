@@ -47,6 +47,7 @@ namespace xAH {
       float  NTrimSubjets;
       int    NClusters;
       int    nTracks;
+      float ANN_score;
 
       // constituent
       int    numConstituents;
