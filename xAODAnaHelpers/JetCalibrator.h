@@ -77,6 +77,8 @@ public:
   std::string m_overrideUncertCalibArea = "";
   /// @brief Set analysis-specific jet flavour composition file for JetUncertainties (default: unknown comp.)
   std::string m_overrideAnalysisFile = "";
+  /// @brief Override uncertainties path (not recommended)
+  std::string m_overrideUncertPath = "";
 
   /// @brief when running data "_Insitu" is appended to calibration sequence
   bool m_forceInsitu = false;
