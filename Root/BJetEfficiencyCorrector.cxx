@@ -126,7 +126,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_taggerName == "MV2r")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "MV2rmu") { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "DL1")    { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  true; }
   if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  false; }
 
   // Continuous
