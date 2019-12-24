@@ -65,8 +65,7 @@ EL::StatusCode MuonInFatJetCorrector :: initialize()
 
   //
   // Automatically determine calibrated mass decorators, if asked
-  if(m_calibratedMassDecorator.empty())
-      m_calibratedMassDecorator=(isMC())?"JetJMSScaleMomentum":"JetInsituScaleMomentum";
+  m_calibratedMassDecorator=(isMC())?m_calibratedMassDecoratorFullSim:m_calibratedMassDecoratorData;
 
   return EL::StatusCode::SUCCESS;
 }

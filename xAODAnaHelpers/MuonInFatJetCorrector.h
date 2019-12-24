@@ -29,8 +29,10 @@ public:
   std::string m_muonContainerName = "";
   /// @brief The name of the link to matched track jets
   std::string m_trackJetLinkName = "GhostVR30Rmax4Rmin02TrackJet";
-  /// @brief Name of calibrated jet mass decorator, without the TA/Calo prefix (empty means determine automatically)
-  std::string m_calibratedMassDecorator;
+  /// @brief Name of calibrated jet mass decorator, without the TA/Calo suffix, for data
+  std::string m_calibratedMassDecoratorData = "JetInsituScaleMomentum";
+  /// @brief Name of calibrated jet mass decorator, without the TA/Calo suffix, for full sim
+  std::string m_calibratedMassDecoratorFullSim = "JetJMSScaleMomentum";
   /// @brief Algortihm systematics loop
   std::string m_inputAlgo;
 
@@ -64,7 +66,10 @@ public:
   const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
 						      Scheme scheme, bool useJMSScale = false) const;
 
-
+private:
+   /// @brief Name of calibrated jet mass decorator, without the TA/Calo suffix, for the given sample type
+  std::string m_calibratedMassDecorator;
+ 
   ClassDef(MuonInFatJetCorrector, 1);
 };
 
