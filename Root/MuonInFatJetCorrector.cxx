@@ -63,6 +63,10 @@ EL::StatusCode MuonInFatJetCorrector :: initialize()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
+  //
+  // Automatically determine calibrated mass decorators, if asked
+  m_calibratedMassDecorator=(isMC())?m_calibratedMassDecoratorFullSim:m_calibratedMassDecoratorData;
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -282,7 +286,7 @@ const xAOD::JetFourMom_t MuonInFatJetCorrector::getMuonCorrectedJetFourMom(const
       {
 	// muon-in-jet correction for jets calibrated using calorimeter mass
 	xAOD::JetFourMom_t CaloJet_tlv = jet.jetP4();
-	if (useJMSScale) CaloJet_tlv = jet.jetP4("JetJMSScaleMomentumCalo");
+	if (useJMSScale) CaloJet_tlv = jet.jetP4(m_calibratedMassDecorator+"Calo");
 	for(const xAOD::Muon* muon : muons)
 	  {
 	    // get energy loss of muon in the calorimeter
@@ -306,8 +310,8 @@ const xAOD::JetFourMom_t MuonInFatJetCorrector::getMuonCorrectedJetFourMom(const
       {
 	// muon-in-jet correction for jets calibrated using track-assisted mass
 	xAOD::JetFourMom_t TAJet_tlv = jet.jetP4();
-	if (useJMSScale) TAJet_tlv = jet.jetP4("JetJMSScaleMomentumTA");
-	xAOD::JetFourMom_t CaloJet_tlv = jet.jetP4("JetJMSScaleMomentumCalo");
+	if (useJMSScale) TAJet_tlv = jet.jetP4(m_calibratedMassDecorator+"TA");
+	xAOD::JetFourMom_t CaloJet_tlv = jet.jetP4(m_calibratedMassDecorator+"Calo");
 	xAOD::JetFourMom_t CaloJetCorr_tlv =  getMuonCorrectedJetFourMom(jet, muons, Scheme::Calorimeter, true);
 	float TAJetCorr_m = TAJet_tlv.M() / CaloJet_tlv.Pt() * CaloJetCorr_tlv.Pt() ;
 	float TAJetCorr_pt = sqrt((CaloJetCorr_tlv.E() * CaloJetCorr_tlv.E()) - (TAJetCorr_m * TAJetCorr_m)) / cosh(CaloJetCorr_tlv.Eta());
@@ -318,9 +322,9 @@ const xAOD::JetFourMom_t MuonInFatJetCorrector::getMuonCorrectedJetFourMom(const
     case Scheme::Combined:
       {
 	// muon-in-jet correction for jets calibrated using combined mass
-	xAOD::JetFourMom_t TAJet_tlv       = jet.jetP4("JetJMSScaleMomentumTA");
+	xAOD::JetFourMom_t TAJet_tlv       = jet.jetP4(m_calibratedMassDecorator+"TA");
 	xAOD::JetFourMom_t TAJetCorr_tlv   = getMuonCorrectedJetFourMom(jet, muons, Scheme::TrackAssisted, true);
-	xAOD::JetFourMom_t CaloJet_tlv     = jet.jetP4("JetJMSScaleMomentumCalo");
+	xAOD::JetFourMom_t CaloJet_tlv     = jet.jetP4(m_calibratedMassDecorator+"Calo");
 	xAOD::JetFourMom_t CaloJetCorr_tlv = getMuonCorrectedJetFourMom(jet, muons, Scheme::Calorimeter  , true);
 	xAOD::JetFourMom_t CombJet_tlv = jet.jetP4();
 	float CaloWeight = (CombJet_tlv.M() -   TAJet_tlv.M()) / (CaloJet_tlv.M() - TAJet_tlv.M());
