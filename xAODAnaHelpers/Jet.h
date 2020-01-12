@@ -33,7 +33,8 @@ namespace xAH {
 	MV2c10_FixedCutBEff_30,MV2c10_FixedCutBEff_50,MV2c10_FixedCutBEff_90, // R20.7
 	MV2c10_FixedCutBEff_60,MV2c10_FixedCutBEff_70,MV2c10_FixedCutBEff_77,MV2c10_FixedCutBEff_85,
 	MV2c10_FlatBEff_30,MV2c10_FlatBEff_50,MV2c10_FlatBEff_60,MV2c10_FlatBEff_70,MV2c10_FlatBEff_77,MV2c10_FlatBEff_85, // R20.7
-	MV2c10_HybBEff_60,MV2c10_HybBEff_70,MV2c10_HybBEff_77,MV2c10_HybBEff_85
+	MV2c10_HybBEff_60,MV2c10_HybBEff_70,MV2c10_HybBEff_77,MV2c10_HybBEff_85,
+  MV2c10_Continuous,DL1_Continuous,DL1r_Continuous,DL1rmu_Continuous // Continuous
       };
 
       Jet();
@@ -415,6 +416,21 @@ namespace xAH {
       std::vector<float> SF_MV2c10_HybBEff_77;
       int is_MV2c10_HybBEff_85;
       std::vector<float> SF_MV2c10_HybBEff_85;
+
+      // Continuous
+      int is_MV2c10_Continuous;
+      std::vector<float> SF_MV2c10_Continuous;
+      std::vector<float> inEffSF_MV2c10_Continuous;
+      int is_DL1_Continuous;
+      std::vector<float> SF_DL1_Continuous;
+      std::vector<float> inEffSF_DL1_Continuous;
+      int is_DL1r_Continuous;
+      std::vector<float> SF_DL1r_Continuous;
+      std::vector<float> inEffSF_DL1r_Continuous;
+      int is_DL1rmu_Continuous;
+      std::vector<float> SF_DL1rmu_Continuous;
+      std::vector<float> inEffSF_DL1rmu_Continuous;
+
 
       // truth
       int   ConeTruthLabelID;

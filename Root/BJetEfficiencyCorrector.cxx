@@ -120,6 +120,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "HybBEff_70")  { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "HybBEff_77")  { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "HybBEff_85")  { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "Continuous")  { opOK = true; m_getScaleFactors =  true;
+                                        m_useContinuous = true;
+                                        ANA_MSG_DEBUG(" Using continuous b-tagging");}
 
   // Only DL1 and MV2c10 are calibrated
   if (m_taggerName == "MV2c10") { taggerOK = true; m_getScaleFactors =  true; }
@@ -128,9 +131,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_taggerName == "DL1")    { taggerOK = true; m_getScaleFactors =  true; }
   if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  true; }
   if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  false; }
-
-  // Continuous
-  if (m_operatingPt == "Continuous") { opOK = true; taggerOK = true; m_getScaleFactors =  true; m_useContinuous = true; ANA_MSG_DEBUG(" Using continuous b-tagging");}
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
@@ -442,15 +442,16 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      // if passes cut take the efficiency scale factor
 	      // if failed cut take the inefficiency scale factor
 	      // for continuous b-tagging save both
-	      if( dec_isBTag( *jet_itr ) )
-		{
-		  BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-		  if(m_useContinuous) BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
-		}
-	      else
-		{
-		  BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-		}
+         if(m_useContinuous){
+           BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+           BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
+         } else{
+           if( dec_isBTag( *jet_itr ) )
+             BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+            else
+              BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+         }
+
 	      if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error)
 		{
 		  ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");

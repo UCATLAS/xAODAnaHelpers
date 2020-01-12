@@ -535,6 +535,7 @@ namespace HelperClasses {
     std::vector<int>         m_sfFTagFlt;
     std::vector<int>         m_sfFTagHyb;
     std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
+    std::vector<std::string> m_jetBTagCts;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~JetInfoSwitch() {}
   protected:

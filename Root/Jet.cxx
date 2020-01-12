@@ -256,6 +256,18 @@ int Jet::is_btag(BTaggerOP op) const
     case Jet::BTaggerOP::MV2c10_HybBEff_85:
       return is_MV2c10_HybBEff_85;
       break;
+    case Jet::BTaggerOP::MV2c10_Continuous:
+      return is_MV2c10_Continuous;
+      break;
+    case Jet::BTaggerOP::DL1_Continuous:
+      return is_DL1_Continuous;
+      break;
+    case Jet::BTaggerOP::DL1r_Continuous:
+      return is_DL1r_Continuous;
+      break;
+    case Jet::BTaggerOP::DL1rmu_Continuous:
+      return is_DL1rmu_Continuous;
+      break;
     default:
       return 0;
       break;
@@ -511,6 +523,18 @@ const std::vector<float>& Jet::SF_btag(BTaggerOP op) const
       break;
     case Jet::BTaggerOP::MV2c10_HybBEff_85:
       return SF_MV2c10_HybBEff_85;
+      break;
+    case Jet::BTaggerOP::MV2c10_Continuous:
+      return SF_MV2c10_Continuous;
+      break;
+    case Jet::BTaggerOP::DL1_Continuous:
+      return SF_DL1_Continuous;
+      break;
+    case Jet::BTaggerOP::DL1r_Continuous:
+      return SF_DL1r_Continuous;
+      break;
+    case Jet::BTaggerOP::DL1rmu_Continuous:
+      return SF_DL1rmu_Continuous;
       break;
     default:
       static const std::vector<float> dummySF = {1.};

@@ -411,6 +411,7 @@ namespace HelperClasses{
     } // sfFTagHyb
 
     m_jetBTag.clear();
+    m_jetBTagCts.clear();
     tmpConfigStr=std::string(m_configStr);
     while( tmpConfigStr.find("jetBTag") != std::string::npos ) { // jetBTag
       // erase everything before the interesting string
@@ -451,6 +452,11 @@ namespace HelperClasses{
       if(m_jetBTag.find(tagger)==m_jetBTag.end()) m_jetBTag[tagger]=std::vector<std::pair<std::string,uint>>();
       for(auto wp : wps)
 	m_jetBTag[tagger].push_back(std::make_pair(type,wp));
+
+      // Add the continuous tagger if this was the one that was passed
+      if(type.find("Continuous")!=std::string::npos)
+        m_jetBTagCts.push_back(tagger);
+
     } // jetBTag
 
     m_area          = has_exact("area");

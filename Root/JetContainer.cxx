@@ -399,6 +399,13 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       }
   }
 
+  if ( !m_infoSwitch.m_jetBTagCts.empty() ){
+    for(const auto& tagger: m_infoSwitch.m_jetBTagCts)
+    {
+      m_btags.push_back(new btagOpPoint(m_mc,tagger,"Continuous"));
+    }
+  }
+
   // area
   if( m_infoSwitch.m_area ) {
     m_GhostArea          = new std::vector<float>();
@@ -1722,6 +1729,22 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	  jet.is_MV2c10_HybBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_MV2c10_HybBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
+    case Jet::BTaggerOP::MV2c10_Continuous:
+      jet.is_MV2c10_Continuous=       btag->m_isTag->at(idx);
+      jet.SF_MV2c10_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::DL1_Continuous:
+      jet.is_DL1_Continuous=       btag->m_isTag->at(idx);
+      jet.SF_DL1_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::DL1r_Continuous:
+      jet.is_DL1r_Continuous=       btag->m_isTag->at(idx);
+      jet.SF_DL1r_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::DL1rmu_Continuous:
+      jet.is_DL1rmu_Continuous=       btag->m_isTag->at(idx);
+      jet.SF_DL1rmu_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
 	default:
 	  break;
 	}
@@ -2103,7 +2126,7 @@ void JetContainer::setBranches(TTree *tree)
 
   }
 
-  if( !m_infoSwitch.m_jetBTag.empty() ) {
+  if( !m_infoSwitch.m_jetBTag.empty() || !m_infoSwitch.m_jetBTagCts.empty() ) {
     for(auto btag : m_btags)
       btag->setBranch(tree, m_name);
   }
@@ -2505,7 +2528,7 @@ void JetContainer::clear()
   }
 
 
-  if( !m_infoSwitch.m_jetBTag.empty() ) { // just clear them all....
+  if( !m_infoSwitch.m_jetBTag.empty() || !m_infoSwitch.m_jetBTagCts.empty()) { // just clear them all....
     for(auto btag : m_btags)
       btag->clear();
   }
@@ -3556,7 +3579,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
   }
 
 
-  if( !m_infoSwitch.m_jetBTag.empty() ) {
+  if( !m_infoSwitch.m_jetBTag.empty() || !m_infoSwitch.m_jetBTagCts.empty() ) {
     for(auto btag : m_btags)
       btag->Fill( jet );
   } // jetBTag

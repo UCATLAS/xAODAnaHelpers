@@ -315,10 +315,12 @@ namespace xAH {
         std::string m_accessorName;
 	Jet::BTaggerOP m_op;
 	bool m_old;
+        bool m_isContinuous;
 
 	// branches
         std::vector<int>*                  m_isTag;
         std::vector< std::vector<float> >* m_sf;
+        std::vector< std::vector<float> >* m_ineffSf; // for continuous
 
         btagOpPoint(bool mc, const std::string& accessorName)
 	  : m_mc(mc), m_accessorName(accessorName),m_old(true) {
@@ -365,6 +367,10 @@ namespace xAH {
 	  : m_mc(mc), m_accessorName(tagger+"_"+wp),m_old(false) {
           m_isTag     = new std::vector<int>();
           m_sf        = new std::vector< std::vector<float> >();
+
+          m_isContinuous = (wp == "Continuous");
+          if(m_isContinuous)
+            m_ineffSf = new std::vector< std::vector<float> >();
 
 	  if(m_accessorName=="DL1rnn_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::DL1rnn_FixedCutBEff_60;
@@ -530,11 +536,21 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_77;
 	  else if(m_accessorName=="MV2c10_HybBEff_85")
 	    m_op=Jet::BTaggerOP::MV2c10_HybBEff_85;
+          else if(m_accessorName=="MV2c10_Continuous")
+          m_op=Jet::BTaggerOP::MV2c10_Continuous;
+          else if(m_accessorName=="DL1_Continuous")
+          m_op=Jet::BTaggerOP::DL1_Continuous;
+          else if(m_accessorName=="DL1r_Continuous")
+          m_op=Jet::BTaggerOP::DL1r_Continuous;
+          else if(m_accessorName=="DL1rmu_Continuous")
+          m_op=Jet::BTaggerOP::DL1rmu_Continuous;
         }
 
         ~btagOpPoint() {
           delete m_isTag;
           delete m_sf;
+          if(m_isContinuous)
+            delete m_ineffSf;
         }
 
         void setTree(TTree *tree, std::string jetName) {
@@ -547,9 +563,12 @@ namespace xAH {
 	    }
 	  else
 	    {
-	      HelperFunctions::connectBranch<int>                  (jetName, tree,"is_"+m_accessorName, &m_isTag);
+              std::string branch = m_isContinuous ? "Quantile_"+m_accessorName : "is_"+m_accessorName;
+              HelperFunctions::connectBranch<int>                   (jetName, tree, branch,               &m_isTag);
 	      if(m_mc) {
 		HelperFunctions::connectBranch<std::vector<float> >(jetName, tree,"SF_"+m_accessorName, &m_sf);
+                if(m_isContinuous)
+                  HelperFunctions::connectBranch<std::vector<float>>(jetName, tree, "InefficiencySF_"+m_accessorName, &m_ineffSf);
 	      }
 	    }
         }
@@ -557,10 +576,13 @@ namespace xAH {
 
         void setBranch(TTree *tree, std::string jetName) {
 	  if(m_old) return; // DEPRICATED
-          tree->Branch((jetName+"_is_"+m_accessorName).c_str(),   &m_isTag);
 
+          std::string id = m_isContinuous ? "_Quantile_" : "_is_";
+          tree->Branch((jetName+id+m_accessorName).c_str(), &m_isTag);
           if ( m_mc ) {
             tree->Branch((jetName+"_SF_"+m_accessorName).c_str(),           &m_sf);
+            if(m_isContinuous)
+              tree->Branch((jetName+"_InefficiencySF_"+m_accessorName).c_str(),&m_ineffSf);
           }
         }
 
@@ -569,23 +591,38 @@ namespace xAH {
 	  if(m_old) return; // DEPRICATED
           m_isTag->clear();
           m_sf->clear();
+          if(m_isContinuous)
+            m_ineffSf->clear();
         }
 
         void Fill( const xAOD::Jet* jet ) {
 	  if(m_old) return; // DEPRICATED
-          SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_accessorName);
-          if( isTag.isAvailable( *jet ) )
-            m_isTag->push_back( isTag( *jet ) );
-          else
-            m_isTag->push_back( -1 );
 
-          if(!m_mc) { return; }
-          SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_accessorName);
-	  static const std::vector<float> junk(1,-999);
-          if ( sf.isAvailable( *jet ) )
-            m_sf->push_back( sf( *jet ) );
-          else
-            m_sf->push_back(junk);
+          static const std::vector<float> junk(1,-999);
+
+          if( m_isContinuous ){
+            SG::AuxElement::ConstAccessor< int > quantile("BTag_Quantile_"+m_accessorName);
+            m_isTag->push_back( quantile.isAvailable(*jet) ? quantile(*jet) : -1 );
+
+            if(m_mc){
+              SG::AuxElement::ConstAccessor< std::vector<float> > sf(     "BTag_SF_"            +m_accessorName);
+              SG::AuxElement::ConstAccessor< std::vector<float> > ineffSf("BTag_InefficiencySF_"+m_accessorName);
+
+              m_sf     ->push_back(      sf.isAvailable( *jet ) ?      sf( *jet ) : junk);
+              m_ineffSf->push_back( ineffSf.isAvailable( *jet ) ? ineffSf( *jet ) : junk);
+
+            }
+          }
+          else{
+            SG::AuxElement::ConstAccessor< char > isTag("BTag_"+m_accessorName);
+            m_isTag->push_back( isTag.isAvailable(*jet) ? isTag(*jet) : -1 );
+
+            if(m_mc){
+              SG::AuxElement::ConstAccessor< std::vector<float> > sf("BTag_SF_"+m_accessorName);
+              m_sf->push_back( sf.isAvailable( *jet ) ? sf( *jet ) : junk);
+            }
+          }
+
         } // Fill
       };
 
