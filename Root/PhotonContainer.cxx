@@ -105,7 +105,7 @@ PhotonContainer::~PhotonContainer()
     //std::vector<float> m_w1
   }
 
-  if(m_infoSwitch.m_effSF){
+  if(m_infoSwitch.m_effSF && m_mc){
     delete m_LooseEffSF;
     delete m_MediumEffSF;
     delete m_TightEffSF;
