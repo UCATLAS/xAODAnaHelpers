@@ -299,8 +299,8 @@ EL::StatusCode JetCalibrator :: initialize ()
       ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("AnalysisFile", m_overrideAnalysisFile));
     }
     if( !m_overrideUncertPath.empty() ){
-      ANA_MSG_WARNING("Overriding jet uncertainties path to " << m_overrideUncertPath);
-      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("Path", m_overrideUncertPath));
+      ANA_MSG_WARNING("Overriding jet uncertainties path to " << PathResolverFindCalibDirectory(m_overrideUncertPath));
+      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("Path", PathResolverFindCalibDirectory(m_overrideUncertPath)));
     }
     ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("OutputLevel", msg().level()));
     ANA_CHECK( m_JetUncertaintiesTool_handle.retrieve());
