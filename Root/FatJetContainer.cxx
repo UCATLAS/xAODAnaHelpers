@@ -458,7 +458,7 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch<float> (tree, "muonCorrected_m"  , m_muonCorrected_m  );
   }
 
-  for(const std::pair< std::string, std::vector<std::vector<unsigned int>>* >& kv : m_trkJetsIdx)
+  for(const auto& kv : m_trkJets)
     {
       kv.second->setBranches(tree);
       setBranch< std::vector<unsigned int> >(tree, "trkJetsIdx_"+kv.first, m_trkJetsIdx[kv.first]);
