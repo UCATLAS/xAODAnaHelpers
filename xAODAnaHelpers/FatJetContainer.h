@@ -7,11 +7,14 @@
 #include <vector>
 #include <string>
 
+#include <xAODJet/JetContainer.h>
+
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 #include <xAODAnaHelpers/FatJet.h>
 #include <xAODAnaHelpers/ParticleContainer.h>
+#include <xAODAnaHelpers/JetContainer.h>
 
 
 namespace xAH {
