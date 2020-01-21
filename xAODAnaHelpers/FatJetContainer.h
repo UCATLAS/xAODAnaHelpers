@@ -7,16 +7,11 @@
 #include <vector>
 #include <string>
 
-#include "xAODJet/JetContainer.h"
-
 #include <xAODAnaHelpers/HelperClasses.h>
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 #include <xAODAnaHelpers/FatJet.h>
 #include <xAODAnaHelpers/ParticleContainer.h>
-#include <xAODAnaHelpers/JetContainer.h>
-
-#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
 
 
 namespace xAH {
@@ -35,8 +30,8 @@ namespace xAH {
       virtual void FillFatJet( const xAOD::IParticle* particle );
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
-      float       m_trackJetPtCut;
-      float       m_trackJetEtaCut;
+      float       m_trackJetPtCut  =10e3;
+      float       m_trackJetEtaCut =2.5;
 
     protected:
 
@@ -101,6 +96,12 @@ namespace xAH {
       std::vector< std::vector<float> >  *m_constituent_phi;
       std::vector< std::vector<float> >  *m_constituent_e;
 
+      // truth
+      std::vector<float> *m_truth_m;
+      std::vector<float> *m_truth_pt;
+      std::vector<float> *m_truth_phi;
+      std::vector<float> *m_truth_eta;
+      
       // bosonCount
       std::vector< int > *m_nTQuarks;
       std::vector< int > *m_nHBosons;
