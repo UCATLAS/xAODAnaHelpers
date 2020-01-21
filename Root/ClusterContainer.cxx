@@ -50,6 +50,5 @@ void ClusterContainer::FillCluster( const xAOD::CaloCluster* cluster ){
 void ClusterContainer::FillCluster( const xAOD::IParticle* particle )
 {
   ParticleContainer::FillParticle(particle);
-  const xAOD::CaloCluster* cluster=dynamic_cast<const xAOD::CaloCluster*>(particle);
   return;
 }
