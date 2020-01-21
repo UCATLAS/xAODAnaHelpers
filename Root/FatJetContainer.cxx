@@ -66,11 +66,11 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
 
   
   if ( m_infoSwitch.m_truth && m_mc ) {
-      m_truth_m  =new std::vector<float>;
-      m_truth_pt =new std::vector<float>;
-      m_truth_phi=new std::vector<float>;
-      m_truth_eta=new std::vector<float>;
-    }
+    m_truth_m  =new std::vector<float>;
+    m_truth_pt =new std::vector<float>;
+    m_truth_phi=new std::vector<float>;
+    m_truth_eta=new std::vector<float>;
+  }
 
   if ( m_infoSwitch.m_bosonCount && m_mc) {
     m_nTQuarks  = new std::vector< int > ();
@@ -95,9 +95,6 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
 
       m_trkJetsIdx[trackJetName] = new std::vector<std::vector<unsigned int> > ();
     }
-
-  m_trackJetPtCut  = m_infoSwitch.m_trackJetPtCut *1e3;
-  m_trackJetEtaCut = m_infoSwitch.m_trackJetEtaCut*1e3;
 
 }
 
@@ -275,7 +272,7 @@ void FatJetContainer::setTree(TTree *tree)
 	
   } 
 
-  for(const auto& kv : m_trkJets)
+  for(const std::pair< std::string, std::vector<std::vector<unsigned int>>* >& kv : m_trkJetsIdx)
     {
       m_trkJets[kv.first]->JetContainer::setTree(tree);
       if(tree->GetBranch(branchName("trkJetsIdx").c_str()))
@@ -441,18 +438,11 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch< std::vector<float> >(tree, "constituent_e",       m_constituent_e);
   }
 
-    if ( m_infoSwitch.m_truth && m_mc ) {
-    m_truth_m  =new std::vector<float>;
-    m_truth_pt =new std::vector<float>;
-    m_truth_phi=new std::vector<float>;
-    m_truth_eta=new std::vector<float>;
-  }
-
   if ( m_infoSwitch.m_truth && m_mc ) {
-    setBranch<float>(tree,"truth_m",   m_truth_m);
-    setBranch<float>(tree,"truth_pt",  m_truth_pt);
-    setBranch<float>(tree,"truth_phi", m_truth_phi);
-    setBranch<float>(tree,"truth_eta", m_truth_eta);
+    setBranch<float>(tree, "truth_m"  , m_truth_m  );
+    setBranch<float>(tree, "truth_pt" , m_truth_pt );
+    setBranch<float>(tree, "truth_phi", m_truth_phi);
+    setBranch<float>(tree, "truth_eta", m_truth_eta);
   }
     
   if ( m_infoSwitch.m_bosonCount && m_mc ) {
@@ -468,7 +458,7 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch<float> (tree, "muonCorrected_m"  , m_muonCorrected_m  );
   }
 
-  for(const auto& kv : m_trkJets)
+  for(const std::pair< std::string, std::vector<std::vector<unsigned int>>* >& kv : m_trkJetsIdx)
     {
       kv.second->setBranches(tree);
       setBranch< std::vector<unsigned int> >(tree, "trkJetsIdx_"+kv.first, m_trkJetsIdx[kv.first]);
@@ -799,7 +789,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle ){
 	  std::sort( assotrkjets.begin(), assotrkjets.end(), HelperFunctions::sort_pt );
 	}
 	catch (...){
-	  //Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", trackJetName.data());
+	  Warning("execute()", "Unable to fetch \"%s\" link from leading calo-jet", trackJetName.data());
 	}
 
 	std::vector<unsigned int> trkJetsIdx;

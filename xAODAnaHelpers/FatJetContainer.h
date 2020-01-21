@@ -30,8 +30,8 @@ namespace xAH {
       virtual void FillFatJet( const xAOD::IParticle* particle );
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
-      float       m_trackJetPtCut  =10e3;
-      float       m_trackJetEtaCut =2.5;
+      float       m_trackJetPtCut  =10e3; // slimming pT cut on associated track jets
+      float       m_trackJetEtaCut =2.5;  // slimmint eta cut on associated track jets
 
     protected:
 
