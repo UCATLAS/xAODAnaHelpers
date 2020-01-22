@@ -58,6 +58,9 @@ namespace xAH {
       std::vector<float>  constituent_phi;
       std::vector<float>  constituent_e;
 
+      // truth
+      TLorentzVector truth_p4;
+      
       // bosons 
       int nTQuarks;
       int nHBosons;
