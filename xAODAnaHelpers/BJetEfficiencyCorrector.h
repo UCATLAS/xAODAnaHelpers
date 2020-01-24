@@ -43,6 +43,7 @@ public:
   bool        m_useDevelopmentFile = true;
   bool        m_coneFlavourLabel = true;
   std::string m_systematicsStrategy = "SFEigen";
+  bool        m_errorOnTagWeightFailure = true;
 
   // allowed operating points:
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
