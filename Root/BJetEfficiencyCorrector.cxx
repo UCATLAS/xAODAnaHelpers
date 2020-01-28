@@ -180,6 +180,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",          m_taggerName));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",           m_jetAuthor));
+  ANA_CHECK( m_BJetSelectTool_handle.setProperty("ErrorOnTagWeightFailure", m_errorOnTagWeightFailure));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel", msg().level() ));
   ANA_CHECK( m_BJetSelectTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_BJetSelectTool_handle);
@@ -371,6 +372,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   for( const xAOD::Jet* jet_itr : *(inJets))
     {
+
       if(!m_useContinuous)
 	{ // get tagging decision
 	  ANA_MSG_DEBUG(" Getting tagging decision ");
@@ -468,7 +470,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
 		dec_ineffsfBTag( *jet_itr ) = std::vector<float>();
 
-	      
+
 	      dec_sfBTag( *jet_itr ).push_back(SF);
 	      if(m_useContinuous) dec_ineffsfBTag( *jet_itr ).push_back(inefficiencySF);
       }

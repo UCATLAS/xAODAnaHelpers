@@ -43,6 +43,8 @@ public:
   bool        m_useDevelopmentFile = true;
   bool        m_coneFlavourLabel = true;
   std::string m_systematicsStrategy = "SFEigen";
+  /// @brief BTaggingSelectionTool throws an error on missing tagging weights. If false, a warning is given instead
+  bool        m_errorOnTagWeightFailure = true;
 
   // allowed operating points:
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
