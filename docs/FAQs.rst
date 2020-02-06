@@ -11,9 +11,7 @@ How do I...
 ... submit a grid (prun) job?
    Start with a minimal environment::
 
-       lsetup fax
        lsetup panda
-       rcSetup
 
    and a minimal configuration script::
 
@@ -24,7 +22,7 @@ How do I...
    Then we can submit a job::
 
         xAH_run.py --files "user.lgagnon.370150.Gtt.DAOD_SUSY10.e4049_s2608_r6765_r6282_p2411_tag_10_v1_output_xAOD.root" \
-        --config=test.py --inputDQ2 prun --optGridMergeOutput=1 \
+        --config=test.py prun --optGridMergeOutput=1 \
         --optGridNFilesPerJob=1.0 --optGridOutputSampleName=user.gstark.test
 
 ... submit ``xAH_run`` jobs with production privileges?
