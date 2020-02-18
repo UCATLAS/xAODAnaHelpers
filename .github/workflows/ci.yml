@@ -18,7 +18,6 @@ jobs:
       matrix:
         release_type:
           - analysisbase
-          - analysistop
         release_version:
           - 21.2.90
           - 21.2.91
