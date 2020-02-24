@@ -38,7 +38,6 @@ jobs:
           - 21.2.106
           - 21.2.107
           - 21.2.108
-          - 21.2.109
 
     steps:
     - uses: actions/checkout@master
