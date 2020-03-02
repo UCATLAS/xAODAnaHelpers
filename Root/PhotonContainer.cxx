@@ -11,19 +11,23 @@ PhotonContainer::PhotonContainer(const std::string& name, const std::string& det
 {
 
 
-  if(m_infoSwitch.m_isolation){
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "20") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone20                    = new std::vector<float> ();
+    m_ptvarcone20                 = new std::vector<float> ();
+    m_topoetcone20                = new std::vector<float> ();
+    m_isIsolated_Cone20           = new std::vector<int>   ();
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "30") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone30                    = new std::vector<float> ();
+    m_ptvarcone30                 = new std::vector<float> ();
+    m_topoetcone30                = new std::vector<float> ();
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "40") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone40                    = new std::vector<float> ();
+    m_ptvarcone40                 = new std::vector<float> ();
+    m_topoetcone40                = new std::vector<float> ();
     m_isIsolated_Cone40CaloOnly   = new std::vector<int>   ();
     m_isIsolated_Cone40           = new std::vector<int>   ();
-    m_isIsolated_Cone20           = new std::vector<int>   ();
-    m_ptcone20                    = new std::vector<float> ();
-    m_ptcone30                    = new std::vector<float> ();
-    m_ptcone40                    = new std::vector<float> ();
-    m_ptvarcone20                 = new std::vector<float> ();
-    m_ptvarcone30                 = new std::vector<float> ();
-    m_ptvarcone40                 = new std::vector<float> ();
-    m_topoetcone20                = new std::vector<float> ();
-    m_topoetcone30                = new std::vector<float> ();
-    m_topoetcone40                = new std::vector<float> ();
   }
 
       // PID
@@ -69,19 +73,24 @@ PhotonContainer::PhotonContainer(const std::string& name, const std::string& det
 
 PhotonContainer::~PhotonContainer()
 {
-  if(m_infoSwitch.m_isolation){
+
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "20") != m_infoSwitch.m_isoCones.end()){
+    delete m_ptcone20;
+    delete m_ptvarcone20;
+    delete m_topoetcone20;
+    delete m_isIsolated_Cone20;
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "30") != m_infoSwitch.m_isoCones.end()){
+    delete m_ptcone30;
+    delete m_ptvarcone30;
+    delete m_topoetcone30;
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "40") != m_infoSwitch.m_isoCones.end()){
+    delete m_ptcone40;
+    delete m_ptvarcone40;
+    delete m_topoetcone40;
+    delete m_isIsolated_Cone40;
     delete m_isIsolated_Cone40CaloOnly;
-    delete m_isIsolated_Cone40	   ;
-    delete m_isIsolated_Cone20	   ;
-    delete m_ptcone20		   ;
-    delete m_ptcone30		   ;
-    delete m_ptcone40		   ;
-    delete m_ptvarcone20	   ;
-    delete m_ptvarcone30	   ;
-    delete m_ptvarcone40	   ;
-    delete m_topoetcone20	   ;
-    delete m_topoetcone30	   ;
-    delete m_topoetcone40          ;
   }
 
   // PID
@@ -129,19 +138,23 @@ void PhotonContainer::setTree(TTree *tree)
   tree->SetBranchStatus  ("nph" , 1);
   tree->SetBranchAddress ("nph" , &m_n);
 
-  if(m_infoSwitch.m_isolation){
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "20") != m_infoSwitch.m_isoCones.end()){
+    connectBranch<float>(tree, "ptcone20",                  &m_ptcone20                  );
+    connectBranch<float>(tree, "ptvarcone20",               &m_ptvarcone20               );
+    connectBranch<float>(tree, "topoetcone20",              &m_topoetcone20              );
+    connectBranch<int>  (tree, "isIsolated_Cone20",         &m_isIsolated_Cone20         );
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "30") != m_infoSwitch.m_isoCones.end()){
+    connectBranch<float>(tree, "ptcone30",                  &m_ptcone30                  );
+    connectBranch<float>(tree, "ptvarcone30",               &m_ptvarcone30               );
+    connectBranch<float>(tree, "topoetcone30",              &m_topoetcone30              );
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "40") != m_infoSwitch.m_isoCones.end()){
+    connectBranch<float>(tree, "ptcone40",                  &m_ptcone40                  );
+    connectBranch<float>(tree, "ptvarcone40",               &m_ptvarcone40               );
+    connectBranch<float>(tree, "topoetcone40",              &m_topoetcone40              );
     connectBranch<int>  (tree, "isIsolated_Cone40CaloOnly", &m_isIsolated_Cone40CaloOnly );
     connectBranch<int>  (tree, "isIsolated_Cone40",         &m_isIsolated_Cone40         );
-    connectBranch<int>  (tree, "isIsolated_Cone20",         &m_isIsolated_Cone20         );
-    connectBranch<float>(tree, "ptcone20",                  &m_ptcone20                  );
-    connectBranch<float>(tree, "ptcone30",                  &m_ptcone30                  );
-    connectBranch<float>(tree, "ptcone40",                  &m_ptcone40                  );
-    connectBranch<float>(tree, "ptvarcone20",               &m_ptvarcone20               );
-    connectBranch<float>(tree, "ptvarcone30",               &m_ptvarcone30               );
-    connectBranch<float>(tree, "ptvarcone40",               &m_ptvarcone40               );
-    connectBranch<float>(tree, "topoetcone20",              &m_topoetcone20              );
-    connectBranch<float>(tree, "topoetcone30",              &m_topoetcone30              );
-    connectBranch<float>(tree, "topoetcone40",              &m_topoetcone40              );
   }
 
   // PID
@@ -195,19 +208,23 @@ void PhotonContainer::updateParticle(uint idx, Photon& photon)
 {
   ParticleContainer::updateParticle(idx,photon);
 
-  if(m_infoSwitch.m_isolation){
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "20") != m_infoSwitch.m_isoCones.end()){
+    photon.ptcone20 =                   m_ptcone20                  ->at(idx);
+    photon.topoetcone20 =               m_topoetcone20              ->at(idx);
+    photon.ptvarcone20 =                m_ptvarcone20               ->at(idx);
+    photon.isIsolated_Cone20 =          m_isIsolated_Cone20         ->at(idx);
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "30") != m_infoSwitch.m_isoCones.end()){
+    photon.ptcone30 =                   m_ptcone30                  ->at(idx);
+    photon.topoetcone30 =               m_topoetcone30              ->at(idx);
+    photon.ptvarcone30 =                m_ptvarcone30               ->at(idx);
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "40") != m_infoSwitch.m_isoCones.end()){
+    photon.ptcone40 =                   m_ptcone40                  ->at(idx);
+    photon.ptvarcone40 =                m_ptvarcone40               ->at(idx);
+    photon.topoetcone40 =               m_topoetcone40              ->at(idx);
     photon.isIsolated_Cone40CaloOnly =  m_isIsolated_Cone40CaloOnly ->at(idx);
     photon.isIsolated_Cone40 =          m_isIsolated_Cone40         ->at(idx);
-    photon.isIsolated_Cone20 =          m_isIsolated_Cone20         ->at(idx);
-    photon.ptcone20 =                   m_ptcone20                  ->at(idx);
-    photon.ptcone30 =                   m_ptcone30                  ->at(idx);
-    photon.ptcone40 =                   m_ptcone40                  ->at(idx);
-    photon.ptvarcone20 =                m_ptvarcone20               ->at(idx);
-    photon.ptvarcone30 =                m_ptvarcone30               ->at(idx);
-    photon.ptvarcone40 =                m_ptvarcone40               ->at(idx);
-    photon.topoetcone20 =               m_topoetcone20              ->at(idx);
-    photon.topoetcone30 =               m_topoetcone30              ->at(idx);
-    photon.topoetcone40 =               m_topoetcone40              ->at(idx);
   }
 
   // PID
@@ -253,19 +270,23 @@ void PhotonContainer::setBranches(TTree *tree)
   ParticleContainer::setBranches(tree);
 
 
-  if(m_infoSwitch.m_isolation){
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "20") != m_infoSwitch.m_isoCones.end()){
+    setBranch<float>(tree, "ptcone20",                  m_ptcone20                  );
+    setBranch<float>(tree, "ptvarcone20",               m_ptvarcone20               );
+    setBranch<float>(tree, "topoetcone20",              m_topoetcone20              );
+    setBranch<int>  (tree, "isIsolated_Cone20",         m_isIsolated_Cone20         );
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "30") != m_infoSwitch.m_isoCones.end()){
+    setBranch<float>(tree, "ptcone30",                  m_ptcone30                  );
+    setBranch<float>(tree, "ptvarcone30",               m_ptvarcone30               );
+    setBranch<float>(tree, "topoetcone30",              m_topoetcone30              );
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "40") != m_infoSwitch.m_isoCones.end()){
+    setBranch<float>(tree, "ptcone40",                  m_ptcone40                  );
+    setBranch<float>(tree, "ptvarcone40",               m_ptvarcone40               );
+    setBranch<float>(tree, "topoetcone40",              m_topoetcone40              );
     setBranch<int>  (tree, "isIsolated_Cone40CaloOnly", m_isIsolated_Cone40CaloOnly );
     setBranch<int>  (tree, "isIsolated_Cone40",         m_isIsolated_Cone40         );
-    setBranch<int>  (tree, "isIsolated_Cone20",         m_isIsolated_Cone20         );
-    setBranch<float>(tree, "ptcone20",                  m_ptcone20                  );
-    setBranch<float>(tree, "ptcone30",                  m_ptcone30                  );
-    setBranch<float>(tree, "ptcone40",                  m_ptcone40                  );
-    setBranch<float>(tree, "ptvarcone20",               m_ptvarcone20               );
-    setBranch<float>(tree, "ptvarcone30",               m_ptvarcone30               );
-    setBranch<float>(tree, "ptvarcone40",               m_ptvarcone40               );
-    setBranch<float>(tree, "topoetcone20",              m_topoetcone20              );
-    setBranch<float>(tree, "topoetcone30",              m_topoetcone30              );
-    setBranch<float>(tree, "topoetcone40",              m_topoetcone40              );
   }
 
   // PID
@@ -320,19 +341,23 @@ void PhotonContainer::clear()
 
   ParticleContainer::clear();
 
-  if(m_infoSwitch.m_isolation){
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "20") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone20		  -> clear() ;
+    m_ptvarcone20	  -> clear() ;
+    m_topoetcone20	  -> clear() ;
+    m_isIsolated_Cone20	  -> clear() ;
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "30") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone30		  -> clear() ;
+    m_ptvarcone30	  -> clear() ;
+    m_topoetcone30	  -> clear() ;
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "40") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone40		  -> clear() ;
+    m_ptvarcone40	  -> clear() ;
+    m_topoetcone40        -> clear();
     m_isIsolated_Cone40CaloOnly-> clear();
     m_isIsolated_Cone40	  -> clear() ;
-    m_isIsolated_Cone20	  -> clear() ;
-    m_ptcone20		  -> clear() ;
-    m_ptcone30		  -> clear() ;
-    m_ptcone40		  -> clear() ;
-    m_ptvarcone20	  -> clear() ;
-    m_ptvarcone30	  -> clear() ;
-    m_ptvarcone40	  -> clear() ;
-    m_topoetcone20	  -> clear() ;
-    m_topoetcone30	  -> clear() ;
-    m_topoetcone40        -> clear();
   }
 
   // PID
@@ -393,27 +418,28 @@ void PhotonContainer::FillPhoton( const xAOD::IParticle* particle )
   const xAOD::Photon* photon=dynamic_cast<const xAOD::Photon*>(particle);
 
 
-  if ( m_infoSwitch.m_isolation ) {
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "20") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone20     -> push_back( photon->isolation( xAOD::Iso::ptcone20    ) / m_units  );
+    m_ptvarcone20  -> push_back( photon->isolation( xAOD::Iso::ptvarcone20 ) / m_units  );
+    m_topoetcone20 -> push_back( photon->isolation( xAOD::Iso::topoetcone20) / m_units  );
+    static SG::AuxElement::Accessor<char> isIsoCone20Acc            ("isIsolated_FixedCutLoose");
+    safeFill<char, int, xAOD::Photon>(photon, isIsoCone20Acc, m_isIsolated_Cone20, -1);
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "30") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone30     -> push_back( photon->isolation( xAOD::Iso::ptcone30    ) / m_units  );
+    m_ptvarcone30  -> push_back( photon->isolation( xAOD::Iso::ptvarcone30 ) / m_units  );
+    m_topoetcone30 -> push_back( photon->isolation( xAOD::Iso::topoetcone30) / m_units  );
+  }
+  if(m_infoSwitch.m_isolation || std::find(m_infoSwitch.m_isoCones.begin(), m_infoSwitch.m_isoCones.end(), "40") != m_infoSwitch.m_isoCones.end()){
+    m_ptcone40     -> push_back( photon->isolation( xAOD::Iso::ptcone40    ) / m_units  );
+    m_ptvarcone40  -> push_back( photon->isolation( xAOD::Iso::ptvarcone40 ) / m_units  );
+    m_topoetcone40 -> push_back( photon->isolation( xAOD::Iso::topoetcone40) / m_units  );
 
     static SG::AuxElement::Accessor<char> isIsoCone40CaloOnlyAcc    ("isIsolated_FixedCutTightCaloOnly");
     safeFill<char, int, xAOD::Photon>(photon, isIsoCone40CaloOnlyAcc, m_isIsolated_Cone40CaloOnly, -1);
 
     static SG::AuxElement::Accessor<char> isIsoCone40Acc            ("isIsolated_FixedCutTight");
     safeFill<char, int, xAOD::Photon>(photon, isIsoCone40Acc, m_isIsolated_Cone40, -1);
-
-    static SG::AuxElement::Accessor<char> isIsoCone20Acc            ("isIsolated_FixedCutLoose");
-    safeFill<char, int, xAOD::Photon>(photon, isIsoCone20Acc, m_isIsolated_Cone20, -1);
-
-    m_ptcone20     -> push_back( photon->isolation( xAOD::Iso::ptcone20    ) / m_units  );
-    m_ptcone30     -> push_back( photon->isolation( xAOD::Iso::ptcone30    ) / m_units  );
-    m_ptcone40     -> push_back( photon->isolation( xAOD::Iso::ptcone40    ) / m_units  );
-    m_ptvarcone20  -> push_back( photon->isolation( xAOD::Iso::ptvarcone20 ) / m_units  );
-    m_ptvarcone30  -> push_back( photon->isolation( xAOD::Iso::ptvarcone30 ) / m_units  );
-    m_ptvarcone40  -> push_back( photon->isolation( xAOD::Iso::ptvarcone40 ) / m_units  );
-    m_topoetcone20 -> push_back( photon->isolation( xAOD::Iso::topoetcone20) / m_units  );
-    m_topoetcone30 -> push_back( photon->isolation( xAOD::Iso::topoetcone30) / m_units  );
-    m_topoetcone40 -> push_back( photon->isolation( xAOD::Iso::topoetcone40) / m_units  );
-
   }
 
   if ( m_infoSwitch.m_PID ) {

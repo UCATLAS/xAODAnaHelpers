@@ -60,7 +60,7 @@ namespace HelperClasses{
 
   /* parser for Tau BDT ID enum */
   /* Apparently this won't be useful for non-Athena users...  */
-  
+
   template <>
   EnumParser<xAOD::TauJetParameters::IsTauFlag>::EnumParser()
   {
@@ -243,6 +243,7 @@ namespace HelperClasses{
     m_purity        = has_exact("purity");
     m_effSF         = has_exact("effSF");
     m_trigger       = has_exact("trigger");
+    m_isoCones      = get_working_points("isoCone");
   }
 
   void ClusterInfoSwitch::initialize(){
