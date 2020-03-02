@@ -73,7 +73,7 @@ standard = {
     "inputList": {
         "dest": "use_inputFileList",
         "action": "store_true",
-        "help": "If enabled, will read in a text file containing a list of paths/filenames.",
+        "help": "If enabled, will read in a text file containing a list of newline separated paths/filenames.",
     },
     "inputTag": {
         "dest": "inputTag",
