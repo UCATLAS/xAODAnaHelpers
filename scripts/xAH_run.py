@@ -107,7 +107,7 @@ parser._positionals.title = "required"
 parser._optionals.title = "optional"
 
 # positional argument, require the first argument to be the input filename
-parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read. This gives all the input files for the script to use. Depending on the other options specified, these could be rucio sample names, local paths, or text files containing a list of newline separated filenames/paths.')
+parser_requiredNamed.add_argument('--files', dest='input_filename', metavar='file', type=str, nargs='+', required=True, help='input file(s) to read. This gives all the input files for the script to use. Depending on the other options specified, these could be rucio sample names, local paths, or text files containing a list of newline separated paths/filenames.')
 parser_requiredNamed.add_argument('--config', metavar='', type=str, required=True, help='configuration for the algorithms. This tells the script which algorithms to load, configure, run, and in which order. Without it, it becomes a headless chicken.')
 
 parser.add_argument('--version', action='version', version='xAH_run.py {version}'.format(version=__version__), help='{version}'.format(version=__version__))
