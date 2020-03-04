@@ -38,3 +38,5 @@ The following list are packages / analyses searches that depend on xAH. We thank
 -  `Trigger-Level Analysis <https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/TriggerLevelAnalysis>`__
 -  `Jet trigger group performance studies <https://gitlab.cern.ch/atlas-trig-jet-performance>`__
 -  `Dijet+ISR Analysis <https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExoticThreeJets>`__
+-  `SM Full Run 2 Z+HF analysis <https://gitlab.cern.ch/jbossios/MakeTTrees_ZHF/tree/master>`__
+-  `SM Full Run 2 W+jets analysis <https://gitlab.cern.ch/atlas-physics/sm/wz/W-plus-jets/wjets-13-tev/McGill/tree/master/MakeTTrees_Wjets>`__
