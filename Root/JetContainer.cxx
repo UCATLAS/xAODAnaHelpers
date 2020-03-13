@@ -1,6 +1,7 @@
 #include "xAODAnaHelpers/JetContainer.h"
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <iostream>
+#include <exception> // std::domain_error
 #include "xAODTruth/TruthEventContainer.h"
 
 using namespace xAH;
@@ -1748,7 +1749,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.SF_DL1rmu_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
       break;
 	default:
-	  break;
+    throw std::domain_error(
+        __FILE__ + std::string(", in ") + __func__ + ": "
+        + "unexpected value of btag->m_op (of type xAH::Jet::BTaggerOP)");
 	}
     }
 
