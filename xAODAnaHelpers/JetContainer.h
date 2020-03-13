@@ -323,7 +323,7 @@ namespace xAH {
         std::vector< std::vector<float> >* m_ineffSf; // for continuous
 
         btagOpPoint(bool mc, const std::string& accessorName)
-	  : m_mc(mc), m_accessorName(accessorName),m_old(true) {
+	  : m_mc(mc), m_accessorName(accessorName),m_op(Jet::BTaggerOP::None),m_old(true) {
           m_isTag = new std::vector<int>();
           m_sf    = new std::vector< std::vector<float> >();
 
@@ -364,7 +364,7 @@ namespace xAH {
         }
 
         btagOpPoint(bool mc, const std::string& tagger, const std::string& wp)
-	  : m_mc(mc), m_accessorName(tagger+"_"+wp),m_old(false) {
+	  : m_mc(mc), m_accessorName(tagger+"_"+wp),m_op(Jet::BTaggerOP::None),m_old(false) {
           m_isTag     = new std::vector<int>();
           m_sf        = new std::vector< std::vector<float> >();
 
