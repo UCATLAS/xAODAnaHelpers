@@ -1373,6 +1373,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     {
       switch(btag->m_op)
 	{
+  case Jet::BTaggerOP::None: // has a point, see: https://github.com/UCATLAS/xAODAnaHelpers/issues/1420 
+    break; 
 	case Jet::BTaggerOP::DL1rnn_FixedCutBEff_60:
 	  jet.is_DL1rnn_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1rnn_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
