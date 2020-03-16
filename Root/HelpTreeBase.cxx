@@ -874,7 +874,7 @@ void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , int pvLocati
 
 void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, int pvLocation, const std::string& fatjetName, const std::string& suffix ) {
 
-  const std::string collectionName = FatJetCollectionName(fatjetName, suffix);
+  const std::string& collectionName = FatJetCollectionName(fatjetName, suffix);
   xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
 
   thisFatJet->FillFatJet(fatjet_itr, pvLocation);
