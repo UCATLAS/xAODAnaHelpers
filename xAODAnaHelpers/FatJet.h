@@ -47,6 +47,9 @@ namespace xAH {
       float  NTrimSubjets;
       int    NClusters;
       int    nTracks;
+      int    ungrtrk500;
+      float  EMFrac;
+      int    nChargedParticles;
 
       // constituent
       int    numConstituents;
