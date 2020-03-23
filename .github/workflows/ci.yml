@@ -43,7 +43,6 @@ jobs:
           - 21.2.111
           - 21.2.112
           - 21.2.113
-          - 21.2.114
 
     steps:
     - uses: actions/checkout@master
