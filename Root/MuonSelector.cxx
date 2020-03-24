@@ -564,7 +564,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     ANA_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
     return false;
   }
-  if ( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max >= 0 && nPass > m_pass_max ) {
     ANA_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
     return false;
   }
