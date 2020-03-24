@@ -115,6 +115,12 @@ standard = {
         "default": False,
         "help": "If enabled, will variable usage statistics.",
     },
+    "sample-names": {
+        "help": "Specify the sample names for the input files if you need to change them from the default.",
+        "type": str,
+        "nargs": "+",
+        "default": [],
+    },
 }
 
 # These are handled by xAH_run.py at the top level instead of down by drivers
