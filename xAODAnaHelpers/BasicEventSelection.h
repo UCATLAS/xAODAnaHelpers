@@ -209,6 +209,9 @@ class BasicEventSelection : public xAH::Algorithm
 
     int m_eventCounter;     //!
 
+    // sumW
+    TH1D* m_histSumW = nullptr;     //!
+
     // read from MetaData
     TH1D* m_histEventCount = nullptr;          //!
     uint64_t m_MD_initialNevents;    //!

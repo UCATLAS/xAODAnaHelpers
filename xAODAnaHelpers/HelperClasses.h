@@ -373,7 +373,16 @@ namespace HelperClasses {
         m_purity       purity       exact
         m_effSF        effSF        exact
         m_trigger      trigger      exact
+        m_isoCones     isoCone      partial
         ============== ============ =======
+
+        .. note::
+
+            ``isoCone`` can be repeated but requires a number after it, for example::
+
+                m_configStr = "... isoCone20 isoCone40 ..."
+
+            which will define ``std::vector<int> m_isoCones = {20,40}``.
 
     @endrst
    */
@@ -384,6 +393,7 @@ namespace HelperClasses {
     bool m_purity;
     bool m_effSF;
     bool m_trigger;
+    std::vector<std::string> m_isoCones;
     PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
     virtual ~PhotonInfoSwitch() {}
   protected:
@@ -454,7 +464,7 @@ namespace HelperClasses {
         m_byAverageMu    byAverageMu    exact
         m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
-        m_muonCorrection muonCorrection exact 
+        m_muonCorrection muonCorrection exact
         ================ ============== =======
 
         .. note::
@@ -624,8 +634,8 @@ namespace HelperClasses {
 
         .. note::
 
-             ``identification`` and ``effSF`` switches do not enable any additional output by themselves. 
-             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ`` 
+             ``identification`` and ``effSF`` switches do not enable any additional output by themselves.
+             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ``
              for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
 
                  m_configStr = "... TAUEFF_EleOLRElectronEleBDTLoose_TauIDMedium ... TRIG_EleOLRElectronEleBDTMedium_TauIDLoose_TrigMyTriggerMenu"
@@ -641,11 +651,11 @@ namespace HelperClasses {
     bool m_JetID;
     bool m_EleVeto;
     bool m_xahTauJetMatching;
-    bool m_trackAll;         
+    bool m_trackAll;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
-    
+
     std::vector< std::string > m_tauEffWPs;
     std::vector< std::string > m_trigWPs;
 

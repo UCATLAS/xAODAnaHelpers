@@ -29,8 +29,8 @@ namespace xAH {
       virtual void setTree    (TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
-      virtual void FillFatJet( const xAOD::Jet* jet );
-      virtual void FillFatJet( const xAOD::IParticle* particle );
+      virtual void FillFatJet( const xAOD::Jet* jet           , int pvLocation );
+      virtual void FillFatJet( const xAOD::IParticle* particle, int pvLocation );
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
       float       m_trackJetPtCut  =10e3; // slimming pT cut on associated track jets
@@ -43,6 +43,7 @@ namespace xAH {
     private:
 
       bool SelectTrackJet(const xAOD::Jet* TrackJet);
+      float GetEMFrac(const xAOD::Jet& jet);
 
     private:
 
@@ -88,6 +89,9 @@ namespace xAH {
       std::vector<float> *m_NTrimSubjets;
       std::vector<int>   *m_NClusters;
       std::vector<int>   *m_nTracks;
+      std::vector<int>   *m_ungrtrk500;
+      std::vector<float> *m_EMFrac;
+      std::vector<int>   *m_nChargedParticles;
 
       // constituent
       std::vector< int > *m_numConstituents;

@@ -163,11 +163,11 @@ public:
    *  @param  fatjetName  The name of the output collection to write to.
    *  @param  suffix      The suffix of the output collection to write to.
    */
-  void FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName = "fatjet", const std::string& suffix = "");
-  void FillFatJet ( const xAOD::Jet* fatjet_itr,        const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+  void FillFatJets( const xAOD::JetContainer* fatJets , int pvLocation, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+  void FillFatJet ( const xAOD::Jet* fatjet_itr,        int pvLocation, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
-  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     const std::string& truthFatJetName="truth_fatjet" );
-  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, const std::string& truthFatJetName="truth_fatjet" );
+  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     int pvLocation, const std::string& truthFatJetName="truth_fatjet" );
+  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, int pvLocation, const std::string& truthFatJetName="truth_fatjet" );
 
   void FillTaus( const xAOD::TauJetContainer* taus, const std::string& tauName = "tau" );
   void FillTau ( const xAOD::TauJet* tau,           const std::string& tauName = "tau" );
@@ -301,8 +301,8 @@ public:
    *  @param  fatjetName  the (prefix) name of the output collection
    *  @param  suffix      the suffix to append to output branches.
    */
-  virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
-  virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, const std::string& /*fatjetName = "truth_fatjet"*/   )            { return; };
+  virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, int /*pvLocation = 0*/, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
+  virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, int /*pvLocation = 0*/, const std::string& /*fatjetName = "truth_fatjet"*/   )            { return; };
   virtual void FillTausUser( const xAOD::TauJet*,           const std::string& /*tauName = "tau"*/  )            { return; };
   virtual void FillMETUser( const xAOD::MissingETContainer*, const std::string& /*metName = "met"*/ ) { return; };
   virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };

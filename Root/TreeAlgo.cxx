@@ -529,15 +529,15 @@ EL::StatusCode TreeAlgo :: execute ()
 
       bool reject = false;
       for(unsigned int ll=0;ll<m_fatJetContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll), m_event, m_store, msg()) ) {
-          ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll) + " was not retrieved. Skipping all remaining fat jet collections");
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll)+fatJetSuffix + " was not retrieved. Skipping all remaining fat jet collections");
           reject = true;
           break;
         }
 
         const xAOD::JetContainer* inFatJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll), m_event, m_store, msg()) );
-        helpTree->FillFatJets( inFatJets, m_fatJetBranches.at(ll) );
+        ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) );
+        helpTree->FillFatJets( inFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_fatJetBranches.at(ll) );
 
       }
 
@@ -552,7 +552,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
       const xAOD::JetContainer* inTruthFatJets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, msg()) );
-      helpTree->FillTruthFatJets( inTruthFatJets, m_truthFatJetBranchName );
+      helpTree->FillTruthFatJets( inTruthFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthFatJetBranchName );
     }
 
     if ( !m_tauContainerName.empty() ) {
