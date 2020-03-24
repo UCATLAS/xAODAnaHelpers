@@ -21,9 +21,9 @@ base release as well as xAODAnaHelpers. View our online documentation here:
 
 To set up xAODAnaHelpers + the analysis release of the image, please execute:
 
-      source /home/atlas/xAODAnaHelpers_setup.sh
+      source /xAODAnaHelpers_setup.sh
 
 To set up *only* the analysis release of the image, please execute:
 
-      source /home/atlas/release_setup.sh
+      source /release_setup.sh
 
