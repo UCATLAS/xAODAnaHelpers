@@ -379,7 +379,7 @@ bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
   }
-  if ( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max >= 0 && nPass > m_pass_max ) {
     return false;
   }
 

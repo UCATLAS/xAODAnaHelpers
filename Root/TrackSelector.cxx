@@ -256,7 +256,7 @@ EL::StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;
   }
-  if( m_pass_max > 0 && nPass > m_pass_max ) {
+  if( m_pass_max >= 0 && nPass > m_pass_max ) {
     wk()->skipEvent();
     return EL::StatusCode::SUCCESS;
   }

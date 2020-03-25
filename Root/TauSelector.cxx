@@ -492,7 +492,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
     ANA_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
     return false;
   }
-  if ( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max >= 0 && nPass > m_pass_max ) {
     ANA_MSG_DEBUG( "Reject event: nSelectedTaus ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
     return false;
   }
