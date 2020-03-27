@@ -480,7 +480,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   m_duplicatesTree = new TTree("duplicates","Info on duplicated events");
   m_duplicatesTree->Branch("runNumber",    &m_duplRunNumber,      "runNumber/I");
-  m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/LI");
+  m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/L");
 
   // -------------------------------------------------------------------------------------------------
 
