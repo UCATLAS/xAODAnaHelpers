@@ -39,6 +39,8 @@ public:
   std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root";
 
   std::string m_jetAuthor = "AntiKt4EMTopoJets";
+  /// @brief Minimum pT in MeV for taggable jets
+  float       m_minPt = -1;
   std::string m_taggerName = "MV2c10";
   bool        m_useDevelopmentFile = true;
   bool        m_coneFlavourLabel = true;
