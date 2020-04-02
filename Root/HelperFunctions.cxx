@@ -549,6 +549,7 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
   tmp_name.ReplaceAll("Py8EG","PYTHIA8EVTGEN");
   if(tmp_name.Contains("Pythia") && !tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia","PYTHIA8EVTGEN");
   if(tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia8","PYTHIA8EVTGEN");
+  if(tmp_name.Contains("H7")) tmp_name.ReplaceAll("H7","HERWIG");
   //capitalize the entire sample name
   tmp_name.ToUpper();
 
