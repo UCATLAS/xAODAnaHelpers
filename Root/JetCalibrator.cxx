@@ -266,6 +266,18 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("CalibArea" , "SmoothedWZTaggers/Rel21"));
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("ConfigFile", "SmoothedContainedWTagger_AntiKt10LCTopoTrimmed_FixedSignalEfficiency50_MC16d_20190410.dat"));
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("DSID", ei->mcChannelNumber()));
+    std::string truthBosonContainer = "TruthParticles";
+    if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthBoson" )){
+      truthBosonContainer = "TruthBoson";
+    } else if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthBosonsWithDecayParticles" )){
+      truthBosonContainer = "TruthBosonsWithDecayParticles";
+    }
+    std::string truthTopContainer = "TruthParticles";
+    if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthTop" )){
+      truthTopContainer = "TruthTop";
+    } else if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthTopQuarkWithDecayParticles" )){
+      truthTopContainer = "TruthTopQuarkWithDecayParticles";
+    }
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthWBosonContainerName", "TruthBoson"));
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthZBosonContainerName", "TruthBoson"));
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthHBosonContainerName", "TruthBoson"));
