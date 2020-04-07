@@ -751,6 +751,9 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       m_trkd0sig->push_back( d0_significance );
       if (primaryVertex)
         m_trkz0->push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
+      else
+        m_trkz0->push_back( -999.0 );
+
 
       static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
       float z0sintheta =  ( z0sinthetaAcc.isAvailable( *elec ) ) ? z0sinthetaAcc( *elec ) : -999.0;

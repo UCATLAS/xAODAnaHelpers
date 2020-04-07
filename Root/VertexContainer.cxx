@@ -59,6 +59,10 @@ void VertexContainer::FillVertices( const xAOD::VertexContainer* vertices){
       m_vertex_x->push_back(vertices->at(pvLocation)->x());
       m_vertex_y->push_back(vertices->at(pvLocation)->y());
       m_vertex_z->push_back(vertices->at(pvLocation)->z());
+    } else {
+      m_vertex_x->push_back( -999.0 );
+      m_vertex_y->push_back( -999.0 );
+      m_vertex_z->push_back( -999.0 );
     }
   } else if (m_detailStr == "all"){
     for( auto vertex : *vertices) {
