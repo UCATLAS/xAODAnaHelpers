@@ -278,10 +278,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     } else if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthTopQuarkWithDecayParticles" )){
       truthTopContainer = "TruthTopQuarkWithDecayParticles";
     }
-    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthWBosonContainerName", "TruthBoson"));
-    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthZBosonContainerName", "TruthBoson"));
-    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthHBosonContainerName", "TruthBoson"));
-    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthTopQuarkContainerName", "TruthTop"));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthWBosonContainerName", truthBosonContainer));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthZBosonContainerName", truthBosonContainer));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthHBosonContainerName", truthBosonContainer));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthTopQuarkContainerName", truthTopContainer));
     ANA_CHECK(m_SmoothedWZTagger_handle.retrieve());
   }// if MC && largeR
 
