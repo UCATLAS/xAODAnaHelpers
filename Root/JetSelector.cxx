@@ -1200,6 +1200,8 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     if ( jetPt < m_pt_max_JVF ) {
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVF ){
+        if ( m_pvLocation < 0 )
+          return 0;
         if ( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
           return 0;
         }
