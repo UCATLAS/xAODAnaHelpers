@@ -473,17 +473,11 @@ namespace HelperClasses {
 
                 m_configStr = "... sfJVTMedium ..."
 
-            ``sfFTagFix``, ``sfFTagFlt`` and ``sfFTagHyb`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
-
-                m_configStr = "... sfFTagFix010203 ..."
-
-            will define ``std::vector<int> m_sfFTagFix = {1,2,3}``. THIS OPTION IS DEPRICATED!
-
             ``jetBTag`` expects the format ``jetBTag_tagger_type_AABB..MM..YY.ZZ``. This will create a vector of working points (AA, BB, CC, ..., ZZ) associated with that tagger. Several entries can be given. For example::
 
-                m_configStr = "... jetBTag_MV2c10_HybBEff_60707785 ..."
+                m_configStr = "... jetBTag_MV2c10_FixedCutBEff_60707785 ..."
 
-            will define ``std::map<std::vector<std::pair<std::string,uint>>> m_jetBTag["MV2c10"] = {std::make_pair("HybBEff",60), std::make_pair("HybBEff",70) ,std::make_pair("HybBEff",77), std::make_pair("HybBEff",85)}``.
+            will define ``std::map<std::vector<std::pair<std::string,uint>>> m_jetBTag["MV2c10"] = {std::make_pair("FixedCutBEff",60), std::make_pair("FixedCutBEff",70) ,std::make_pair("FixedCutBEff",77), std::make_pair("FixedCutBEff",85)}``.
 
 	    ``trackJetName`` expects one or more track jet container names separated by an underscore. For example, the string ``trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet`` will set the attriubte ``m_trackJetNames``
 	    to ``{"GhostAntiKt2TrackJet", "GhostVR30Rmax4Rmin02TrackJet"}``.
@@ -541,9 +535,6 @@ namespace HelperClasses {
     std::vector<std::string> m_trackJetNames;
     std::string              m_sfJVTName;
     std::string              m_sffJVTName;
-    std::vector<int>         m_sfFTagFix;
-    std::vector<int>         m_sfFTagFlt;
-    std::vector<int>         m_sfFTagHyb;
     std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
     std::vector<std::string> m_jetBTagCts;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };

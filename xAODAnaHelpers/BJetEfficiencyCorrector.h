@@ -39,6 +39,8 @@ public:
   std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2016-20_7-13TeV-MC15-CDI-July12_v1.root";
 
   std::string m_jetAuthor = "AntiKt4EMTopoJets";
+  /// @brief Minimum pT in MeV for taggable jets
+  float       m_minPt = -1;
   std::string m_taggerName = "MV2c10";
   bool        m_useDevelopmentFile = true;
   bool        m_coneFlavourLabel = true;
@@ -48,8 +50,7 @@ public:
 
   // allowed operating points:
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
-  //For the fixed cut, valid options are: [ "FixedCutBEff_30", "FixedCutBEff_50", "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_80", "FixedCutBEff_85", "FixedCutBEff_90" ]
-  //For the variable cut, valid options are: [ "FlatBEff_30", "FlatBEff_40", "FlatBEff_50", "FlatBEff_60", "FlatBEff_70", "FlatBEff_77", "FlatBEff_85" ]
+  //For the fixed cut, valid options are: [ "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_85" ]
 
   /// @brief Operating point.
   std::string m_operatingPt = "FixedCutBEff_70";
