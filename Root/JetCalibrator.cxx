@@ -266,6 +266,22 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("CalibArea" , "SmoothedWZTaggers/Rel21"));
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("ConfigFile", "SmoothedContainedWTagger_AntiKt10LCTopoTrimmed_FixedSignalEfficiency50_MC16d_20190410.dat"));
     ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("DSID", ei->mcChannelNumber()));
+    std::string truthBosonContainer = "TruthParticles";
+    if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthBoson" )){
+      truthBosonContainer = "TruthBoson";
+    } else if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthBosonsWithDecayParticles" )){
+      truthBosonContainer = "TruthBosonsWithDecayParticles";
+    }
+    std::string truthTopContainer = "TruthParticles";
+    if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthTop" )){
+      truthTopContainer = "TruthTop";
+    } else if(evtStore()->contains<xAOD::TruthParticleContainer>( "TruthTopQuarkWithDecayParticles" )){
+      truthTopContainer = "TruthTopQuarkWithDecayParticles";
+    }
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthWBosonContainerName", truthBosonContainer));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthZBosonContainerName", truthBosonContainer));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthHBosonContainerName", truthBosonContainer));
+    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty( "TruthTopQuarkContainerName", truthTopContainer));
     ANA_CHECK(m_SmoothedWZTagger_handle.retrieve());
   }// if MC && largeR
 
@@ -451,6 +467,9 @@ EL::StatusCode JetCalibrator :: execute ()
       if (this_TruthLabel == 5) isBjet = true;
       static SG::AuxElement::Decorator<char> accIsBjet("IsBjet"); // char due to limitations of ROOT I/O, still treat it as a bool
       accIsBjet(*jet_itr) = isBjet;
+      
+      SG::AuxElement::Accessor< int > accTruth("FatJetTruthLabel");
+
 
       // largeR jet truth labelling
       if(m_SmoothedWZTagger_handle.isInitialized()) {
@@ -481,7 +500,6 @@ EL::StatusCode JetCalibrator :: execute ()
   for ( const auto& syst_it : m_systList ) {
 
     bool nominal = syst_it.name().empty();
-
     // always append the name of the variation, including nominal which is an empty string
     outSCContainerName   =m_outContainerName+syst_it.name()+"ShallowCopy";
     outSCAuxContainerName=m_outContainerName+syst_it.name()+"ShallowCopyAux.";
@@ -504,6 +522,7 @@ EL::StatusCode JetCalibrator :: execute ()
       }
 
       for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
+
         if (m_applyFatJetPreSel) {
           bool validForJES = (jet_itr->pt() >= 150e3 && jet_itr->pt() < 3000e3);
           validForJES &= (jet_itr->m()/jet_itr->pt() >= 0 && jet_itr->m()/jet_itr->pt() < 1);
