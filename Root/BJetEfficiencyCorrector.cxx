@@ -174,7 +174,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",          m_taggerName));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",           m_jetAuthor));
-  ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",               m_minPt));
+  if(m_minPt!=-1) ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt", m_minPt));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("ErrorOnTagWeightFailure", m_errorOnTagWeightFailure));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel", msg().level() ));
   ANA_CHECK( m_BJetSelectTool_handle.retrieve());
@@ -188,7 +188,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI     ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("JetAuthor",           m_jetAuthor          ));
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("MinPt",               m_minPt              ));
+    if(m_minPt!=-1) ANA_CHECK( m_BJetEffSFTool_handle.setProperty("MinPt", m_minPt            ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ScaleFactorFileName", m_corrFileName       ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
