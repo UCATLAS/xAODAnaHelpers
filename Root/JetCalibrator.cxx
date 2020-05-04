@@ -284,7 +284,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       // Need a second uncertainties tool to handle the pseudodata smearing
       initializeUncertaintiesTool(m_pseudodataJERTool_handle, true);
     }
-    if(m_pseudoData) {
+    else if(m_pseudoData) {
       ANA_MSG_INFO("Input treated as pseudo-data");
       initializeUncertaintiesTool(m_JetUncertaintiesTool_handle, false);
     }
