@@ -286,7 +286,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
     else if(m_pseudoData) {
       ANA_MSG_INFO("Input treated as pseudo-data");
-      initializeUncertaintiesTool(m_JetUncertaintiesTool_handle, false);
+      initializeUncertaintiesTool(m_JetUncertaintiesTool_handle, true);
     }
     else {
       initializeUncertaintiesTool(m_JetUncertaintiesTool_handle, !isMC());
