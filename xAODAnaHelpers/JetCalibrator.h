@@ -23,6 +23,7 @@
 #include "JetInterface/IJetUpdateJvt.h"
 #include "JetCPInterfaces/IJetTileCorrectionTool.h"
 #include "BoostedJetTaggers/SmoothedWZTagger.h"
+#include "xAODCore/ShallowCopy.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -123,6 +124,9 @@ public:
   /// @brief needed in case want to treat MC as pseudoData for JER uncertainty propagation
   bool m_pseudoData = false;
 
+  /// @brief Treat MC as usual, then run the JER uncertainties on it a second time treating it as pseudodata. Overrides m_pseudodata if true.
+  bool m_mcAndPseudoData = false;
+
 private:
   /// @brief set to true if systematics asked for and exist
   bool m_runSysts = false; //!
@@ -137,7 +141,7 @@ private:
   // tools
   asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
-  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JERUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_pseudodataJERTool_handle    {"PseudodataJERTool"    , this}; //!
   asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , this}; //!
   asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
@@ -147,9 +151,11 @@ private:
   std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!
 
-  // run pseudo-data mode for JER
-  EL::StatusCode executePDJER (const xAOD::JetContainer* inJets, xAOD::JetContainer* calibJets, std::unique_ptr< std::vector< std::string > > & vecOutContainerNames);
-  EL::StatusCode initializePDJER ();
+  // Helper functions
+  EL::StatusCode executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
+                                   std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer*>& calibJetsSC,
+                                   std::vector<std::string>& vecOutContainerNames, bool isPDCopy);
+  EL::StatusCode initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData);
 
 public:
 
