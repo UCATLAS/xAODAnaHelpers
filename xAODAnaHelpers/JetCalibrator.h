@@ -137,6 +137,7 @@ private:
   // tools
   asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JERUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
   asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , this}; //!
   asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
@@ -145,6 +146,10 @@ private:
 
   std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!
+
+  // run pseudo-data mode for JER
+  EL::StatusCode executePDJER (const xAOD::JetContainer* inJets, xAOD::JetContainer* calibJets, std::unique_ptr< std::vector< std::string > > & vecOutContainerNames);
+  EL::StatusCode initializePDJER ();
 
 public:
 
