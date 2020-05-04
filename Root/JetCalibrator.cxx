@@ -278,34 +278,19 @@ EL::StatusCode JetCalibrator :: initialize ()
   //------------------------------------------------
   if ( !m_uncertConfig.empty() && !m_systName.empty() && m_systName != "None" ) {
 
-    ANA_MSG_INFO("Initialize Jet Uncertainties Tool with " << m_uncertConfig);
-    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetUncertaintiesTool_handle, JetUncertaintiesTool));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("JetDefinition",m_jetAlgo));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("MCType",m_uncertMCType));
-    if(m_pseudoData) {
+    if(m_mcAndPseudoData){
+      ANA_MSG_INFO("Input treated as MC AND pseudo-data. JER uncertainties will be run twice.");
+      initializeUncertaintiesTool(m_JetUncertaintiesTool_handle, false);
+      // Need a second uncertainties tool to handle the pseudodata smearing
+      initializeUncertaintiesTool(m_pseudodataJERTool_handle, true);
+    }
+    else if(m_pseudoData) {
       ANA_MSG_INFO("Input treated as pseudo-data");
-      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("IsData",true));
+      initializeUncertaintiesTool(m_JetUncertaintiesTool_handle, true);
     }
     else {
-      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("IsData",!isMC()));
+      initializeUncertaintiesTool(m_JetUncertaintiesTool_handle, !isMC());
     }
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("ConfigFile", m_uncertConfig));
-    if ( !m_overrideUncertCalibArea.empty() ) {
-      ANA_MSG_WARNING("Overriding jet uncertainties calibration area to " << m_overrideUncertCalibArea);
-      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("CalibArea", m_overrideUncertCalibArea));
-    }
-    if( !m_overrideAnalysisFile.empty() ) {
-      ANA_MSG_WARNING("Overriding jet uncertainties analysis file to " << m_overrideAnalysisFile);
-      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("AnalysisFile", m_overrideAnalysisFile));
-    }
-    if( !m_overrideUncertPath.empty() ){
-      std::string uncPath = PathResolverFindCalibDirectory(m_overrideUncertPath);
-      ANA_MSG_WARNING("Overriding jet uncertainties path to " << uncPath);
-      ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("Path", uncPath));
-    }
-    ANA_CHECK( m_JetUncertaintiesTool_handle.setProperty("OutputLevel", msg().level()));
-    ANA_CHECK( m_JetUncertaintiesTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_JetUncertaintiesTool_handle);
 
     //
     // Get a list of recommended systematics for this tool
@@ -477,109 +462,16 @@ EL::StatusCode JetCalibrator :: execute ()
   // loop over available systematics - remember syst == "Nominal" --> baseline
   auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
 
-  //std::vector< int >
   for ( const auto& syst_it : m_systList ) {
 
-    bool nominal = syst_it.name().empty();
+    executeSystematic(syst_it, inJets, calibJetsSC, *vecOutContainerNames, false);
 
-    // always append the name of the variation, including nominal which is an empty string
-    outSCContainerName   =m_outContainerName+syst_it.name()+"ShallowCopy";
-    outSCAuxContainerName=m_outContainerName+syst_it.name()+"ShallowCopyAux.";
-    std::string outContainerName=m_outContainerName+syst_it.name();
-
-    vecOutContainerNames->push_back( syst_it.name() );
-
-    // create shallow copy;
-    std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > uncertCalibJetsSC = nominal ? calibJetsSC : xAOD::shallowCopyContainer( *calibJetsSC.first );
-    ConstDataVector<xAOD::JetContainer>* uncertCalibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-    uncertCalibJetsCDV->reserve( uncertCalibJetsSC.first->size() );
-
-    //Apply Uncertainties
-    if ( m_runSysts ) {
-      // Jet Uncertainty Systematic
-      ANA_MSG_DEBUG("Configure for systematic variation : " << syst_it.name());
-      if ( m_JetUncertaintiesTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-        ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
-        return EL::StatusCode::FAILURE;
-      }
-
-      for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-        if (m_applyFatJetPreSel) {
-          bool validForJES = (jet_itr->pt() >= 150e3 && jet_itr->pt() < 3000e3);
-          validForJES &= (jet_itr->m()/jet_itr->pt() >= 0 && jet_itr->m()/jet_itr->pt() < 1);
-          validForJES &= (fabs(jet_itr->eta()) < 2);
-          if (!validForJES) continue;
-        }
-
-        if ( m_JetUncertaintiesTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-          ANA_MSG_ERROR( "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
-          ANA_MSG_ERROR( m_name );
-        }
-      }
-
-    }// if m_runSysts
-
-    if(m_doCleaning){
-      // decorate with cleaning decision
-      for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-
-        static SG::AuxElement::Decorator< int > isCleanDecor( "cleanJet" );
-        const xAOD::Jet* jetToClean = jet_itr;
-
-        if(m_cleanParent){
-          ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
-          if(!el_parent.isValid()){
-            ANA_MSG_ERROR( "Could not make jet cleaning decision on the parent! It doesn't exist.");
-          } else {
-            jetToClean = *el_parent;
-          }
-        }
-
-        isCleanDecor(*jet_itr) = m_JetCleaningTool_handle->keep(*jetToClean);
-
-        if( m_saveAllCleanDecisions ){
-          for(unsigned int i=0; i < m_AllJetCleaningTool_handles.size() ; ++i){
-            jet_itr->auxdata< int >(("clean_pass"+m_decisionNames.at(i)).c_str()) = m_AllJetCleaningTool_handles.at(i)->keep(*jetToClean);
-          }
-        }
-      } //end cleaning decision
+    if(m_mcAndPseudoData && std::string(syst_it.name()).find("JER") != std::string::npos) {
+      // This is a JER uncertainty that also needs a pseudodata copy done.
+      executeSystematic(syst_it, inJets, calibJetsSC, *vecOutContainerNames, true);
     }
-
-    if ( !xAOD::setOriginalObjectLink(*inJets, *(uncertCalibJetsSC.first)) ) {
-      ANA_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
-    }
-
-    // Recalculate JVT using calibrated Jets
-    if(m_redoJVT){
-      for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-        jet_itr->auxdata< float >("Jvt") = m_JVTUpdateTool_handle->updateJvt(*jet_itr);
-      }
-    }
-
-    // Calculate fJVT using calibrated Jets
-    if ( m_calculatefJVT ) {
-      m_fJVTTool_handle->modify(*(uncertCalibJetsSC.first));
-    }
-
-    // save pointers in ConstDataVector with same order
-    for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-      uncertCalibJetsCDV->push_back( jet_itr );
-    }
-
-    // can only sort the CDV - a bit no-no to sort the shallow copies
-    if ( m_sort ) {
-      std::sort( uncertCalibJetsCDV->begin(), uncertCalibJetsCDV->end(), HelperFunctions::sort_pt );
-    }
-
-    // add shallow copy to TStore
-    if ( !nominal ) { // nominal is always saved outside of loop
-      ANA_CHECK( m_store->record( uncertCalibJetsSC.first, outSCContainerName));
-      ANA_CHECK( m_store->record( uncertCalibJetsSC.second, outSCAuxContainerName));
-    }
-
-    // add ConstDataVector to TStore
-    ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
   }
+
   // add vector of systematic names to TStore
   ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgo));
 
@@ -637,5 +529,150 @@ EL::StatusCode JetCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
+  return EL::StatusCode::SUCCESS;
+}
+
+EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
+                                                std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer*>& calibJetsSC,
+                                                std::vector<std::string>& vecOutContainerNames, bool isPDCopy){
+
+  bool nominal = thisSyst.name().empty();
+
+  std::string outSCContainerName, outSCAuxContainerName, outContainerName;
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>* jetUncTool(nullptr);
+
+  // always append the name of the variation, including nominal which is an empty string
+  if(isPDCopy){
+    outSCContainerName    = m_outContainerName+thisSyst.name()+"_PDShallowCopy";
+    outSCAuxContainerName = m_outContainerName+thisSyst.name()+"_PDShallowCopyAux.";
+    outContainerName      = m_outContainerName+thisSyst.name()+"_PD";
+    vecOutContainerNames.push_back(thisSyst.name()+"_PD");
+    jetUncTool = &m_pseudodataJERTool_handle;
+  }
+  else{
+    outSCContainerName    = m_outContainerName+thisSyst.name()+"ShallowCopy";
+    outSCAuxContainerName = m_outContainerName+thisSyst.name()+"ShallowCopyAux.";
+    outContainerName      = m_outContainerName+thisSyst.name();
+    vecOutContainerNames.push_back(thisSyst.name());
+    jetUncTool = &m_JetUncertaintiesTool_handle;
+  }
+
+  // create shallow copy;
+  std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > uncertCalibJetsSC = nominal ? calibJetsSC : xAOD::shallowCopyContainer(*calibJetsSC.first);
+  ConstDataVector<xAOD::JetContainer>* uncertCalibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
+  uncertCalibJetsCDV->reserve( uncertCalibJetsSC.first->size() );
+
+  //Apply Uncertainties
+  if ( m_runSysts ) {
+    // Jet Uncertainty Systematic
+    ANA_MSG_DEBUG("Configure for systematic variation : " << thisSyst.name());
+    if ( (*jetUncTool)->applySystematicVariation(thisSyst) != CP::SystematicCode::Ok ) {
+      ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
+      return EL::StatusCode::FAILURE;
+    }
+
+    for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
+      if (m_applyFatJetPreSel) {
+        bool validForJES = (jet_itr->pt() >= 150e3 && jet_itr->pt() < 3000e3);
+        validForJES &= (jet_itr->m()/jet_itr->pt() >= 0 && jet_itr->m()/jet_itr->pt() < 1);
+        validForJES &= (fabs(jet_itr->eta()) < 2);
+        if (!validForJES) continue;
+      }
+
+      if ( (*jetUncTool)->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+        ANA_MSG_ERROR( "JetUncertaintiesTool reported a CP::CorrectionCode::Error");
+        ANA_MSG_ERROR( m_name );
+      }
+    }
+
+  }// if m_runSysts
+
+  if(m_doCleaning){
+    // decorate with cleaning decision
+    for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
+
+      static SG::AuxElement::Decorator< int > isCleanDecor( "cleanJet" );
+      const xAOD::Jet* jetToClean = jet_itr;
+
+      if(m_cleanParent){
+        ElementLink<xAOD::JetContainer> el_parent = jet_itr->auxdata<ElementLink<xAOD::JetContainer> >("Parent") ;
+        if(!el_parent.isValid())
+          ANA_MSG_ERROR( "Could not make jet cleaning decision on the parent! It doesn't exist.");
+        else
+          jetToClean = *el_parent;
+      }
+
+      isCleanDecor(*jet_itr) = m_JetCleaningTool_handle->keep(*jetToClean);
+
+      if( m_saveAllCleanDecisions ){
+        for(unsigned int i=0; i < m_AllJetCleaningTool_handles.size() ; ++i){
+          jet_itr->auxdata< int >(("clean_pass"+m_decisionNames.at(i)).c_str()) = m_AllJetCleaningTool_handles.at(i)->keep(*jetToClean);
+        }
+      }
+    } //end cleaning decision
+  }
+
+  if ( !xAOD::setOriginalObjectLink(*inJets, *(uncertCalibJetsSC.first)) ) {
+    ANA_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
+  }
+
+  // Recalculate JVT using calibrated Jets
+  if(m_redoJVT){
+    for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
+      jet_itr->auxdata< float >("Jvt") = m_JVTUpdateTool_handle->updateJvt(*jet_itr);
+    }
+  }
+
+  // Calculate fJVT using calibrated Jets
+  if ( m_calculatefJVT ) {
+    m_fJVTTool_handle->modify(*(uncertCalibJetsSC.first));
+  }
+
+  // save pointers in ConstDataVector with same order
+  for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
+    uncertCalibJetsCDV->push_back( jet_itr );
+  }
+
+  // can only sort the CDV - a bit no-no to sort the shallow copies
+  if ( m_sort ) {
+    std::sort( uncertCalibJetsCDV->begin(), uncertCalibJetsCDV->end(), HelperFunctions::sort_pt );
+  }
+
+  // add shallow copy to TStore
+  if(!nominal){ // nominal is always saved outside of systematics loop
+    ANA_CHECK( m_store->record( uncertCalibJetsSC.first, outSCContainerName));
+    ANA_CHECK( m_store->record( uncertCalibJetsSC.second, outSCAuxContainerName));
+  }
+  // add ConstDataVector to TStore
+  ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
+  
+  return EL::StatusCode::SUCCESS;
+}
+
+EL::StatusCode JetCalibrator::initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData){
+
+  ANA_MSG_INFO("Initialize Jet Uncertainties Tool with " << m_uncertConfig);
+  ANA_CHECK( ASG_MAKE_ANA_TOOL(uncToolHandle, JetUncertaintiesTool));
+  ANA_CHECK( uncToolHandle.setProperty("JetDefinition",m_jetAlgo));
+  ANA_CHECK( uncToolHandle.setProperty("MCType",m_uncertMCType));
+  ANA_CHECK( uncToolHandle.setProperty("IsData",isData));
+  ANA_CHECK( uncToolHandle.setProperty("ConfigFile", m_uncertConfig));
+  if ( !m_overrideUncertCalibArea.empty() ) {
+    ANA_MSG_WARNING("Overriding jet uncertainties calibration area to " << m_overrideUncertCalibArea);
+    ANA_CHECK( uncToolHandle.setProperty("CalibArea", m_overrideUncertCalibArea));
+  }
+  if( !m_overrideAnalysisFile.empty() ) {
+     ANA_MSG_WARNING("Overriding jet uncertainties analysis file to " << m_overrideAnalysisFile);
+     ANA_CHECK( uncToolHandle.setProperty("AnalysisFile", m_overrideAnalysisFile));
+  }
+  if( !m_overrideUncertPath.empty() ){
+    std::string uncPath = PathResolverFindCalibDirectory(m_overrideUncertPath);
+    ANA_MSG_WARNING("Overriding jet uncertainties path to " << uncPath);
+    ANA_CHECK( uncToolHandle.setProperty("Path", uncPath));
+  }
+  ANA_CHECK( uncToolHandle.setProperty("OutputLevel", msg().level()));
+  ANA_CHECK( uncToolHandle.retrieve());
+  ANA_MSG_DEBUG("Retrieved JetUncertaintiesTool: " << uncToolHandle);
+
   return EL::StatusCode::SUCCESS;
 }
