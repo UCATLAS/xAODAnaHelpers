@@ -292,8 +292,8 @@ drivers_prun.update({
         "required": False,
         "default": None,
     },
-    "optOfficial": {"metavar": "", "type": int, "required": False, "default": None},
-    "optVoms": {"metavar": "", "type": int, "required": False, "default": None},
+    "optOfficial": {"metavar": "", "type": str, "required": False, "default": None},      
+    "optVoms": {"metavar": "", "type": str, "required": False, "default": None},
     # the following is not technically supported by Job.h but it is a valid option for prun, emailed pathelp about it
     "optGridOutputSampleName": {
         "metavar": "",
