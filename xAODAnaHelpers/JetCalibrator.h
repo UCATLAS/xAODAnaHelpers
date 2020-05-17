@@ -22,7 +22,7 @@
 #include "JetInterface/IJetSelector.h"
 #include "JetInterface/IJetUpdateJvt.h"
 #include "JetCPInterfaces/IJetTileCorrectionTool.h"
-#include "BoostedJetTaggers/SmoothedWZTagger.h"
+#include "ParticleJetTools/JetTruthLabelingTool.h"
 #include "xAODCore/ShallowCopy.h"
 
 // algorithm wrapper
@@ -117,6 +117,19 @@ public:
   bool    m_cleanParent = false;
   bool    m_applyFatJetPreSel = false;
 
+  /// @brief Name of the large-R jet truth labeling definition
+  std::string m_truthLabelName = "R10TruthLabel_R21Consolidated";
+  /// @brief Flag to indicate if using a truth jet collection
+  bool m_isTruthJetCol = false;
+  /// @brief Flag to indicate if input xAOD uses TRUTH3 style containers
+  bool m_useTRUTH3 = true;
+  /// @brief Name of the truth particle container if not using TRUTH3 containers
+  std::string m_truthParticleContainerName = "TruthParticles";
+  /// @brief Name of the truth boson container if using TRUTH3 containers
+  std::string m_truthBosonContainerName = "TruthBosonsWithDecayParticles";
+  /// @brief Name of the truth top quark container if using TRUTH3 containers
+  std::string m_truthTopQuarkContainerName = "TruthTopQuarkWithDecayParticles";
+
 // systematics
   /// @brief jet tile correction
   bool m_doJetTileCorr = false;
@@ -146,7 +159,7 @@ private:
   asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
   asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
-  asg::AnaToolHandle<SmoothedWZTagger>           m_SmoothedWZTagger_handle     {"SmoothedWZTagger"     , this}; //!
+  asg::AnaToolHandle<JetTruthLabelingTool>       m_JetTruthLabelingTool_handle {"JetTruthLabelingTool" , this}; //!
 
   std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!

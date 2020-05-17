@@ -261,12 +261,17 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   // initialize largeR jet truth labelling tool
   if(isMC() && m_inContainerName.find("AntiKt10") != std::string::npos){
-    // Truth labelling is required for systematics on largeR jets and is provided by the WZ tagger tool.
-    // Since only the truth-labelling functionality is used, the tagger config is hard-coded as it does not matter.
-    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("CalibArea" , "SmoothedWZTaggers/Rel21"));
-    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("ConfigFile", "SmoothedContainedWTagger_AntiKt10LCTopoTrimmed_FixedSignalEfficiency50_MC16d_20190410.dat"));
-    ANA_CHECK(m_SmoothedWZTagger_handle.setProperty("DSID", ei->mcChannelNumber()));
-    ANA_CHECK(m_SmoothedWZTagger_handle.retrieve());
+    // Truth labelling is required for systematics on largeR jets.
+    // TruthLabelName typically should not be changed until new recommendations are available
+    // The other properties have default values but need to be configured by the user
+    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthLabelName" , m_truthLabelName));
+    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("IsTruthJetCollection" , m_isTruthJetCol));
+    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("UseTRUTH3" , m_useTRUTH3));
+    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthParticleContainerName" , m_truthParticleContainerName));
+    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthBosonContainerName" , m_truthBosonContainerName));
+    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthTopQuarkContainerName" , m_truthTopQuarkContainerName));
+    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("OutputLevel" , msg().level()));
+    ANA_CHECK(m_JetTruthLabelingTool_handle.retrieve());
   }// if MC && largeR
 
   // Generate nominal systematic
@@ -416,31 +421,38 @@ EL::StatusCode JetCalibrator :: execute ()
 
     //
     // truth labelling for systematics
-    if(isMC() && m_runSysts){
+    if(isMC()){
+      
+      if(m_runSysts){
 
-      // b-jet truth labelling
-      int this_TruthLabel = 0;
+        // b-jet truth labelling
+        int this_TruthLabel = 0;
 
-      static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
-      static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
+        static SG::AuxElement::ConstAccessor<int> TruthLabelID ("TruthLabelID");
+        static SG::AuxElement::ConstAccessor<int> PartonTruthLabelID ("PartonTruthLabelID");
 
-      if ( TruthLabelID.isAvailable( *jet_itr) ) {
-	this_TruthLabel = TruthLabelID( *jet_itr );
-	if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
-      } else if(PartonTruthLabelID.isAvailable( *jet_itr) ) {
-	this_TruthLabel = PartonTruthLabelID( *jet_itr );
-	if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
+        if ( TruthLabelID.isAvailable( *jet_itr) ) {
+          this_TruthLabel = TruthLabelID( *jet_itr );
+          if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
+        } else if(PartonTruthLabelID.isAvailable( *jet_itr) ) {
+          this_TruthLabel = PartonTruthLabelID( *jet_itr );
+          if (this_TruthLabel == 21 || this_TruthLabel<4) this_TruthLabel = 0;
+        }
+
+        bool isBjet = false; // decide whether or not the jet is a b-jet (truth-labelling + kinematic selections)
+        if (this_TruthLabel == 5) isBjet = true;
+        static SG::AuxElement::Decorator<char> accIsBjet("IsBjet"); // char due to limitations of ROOT I/O, still treat it as a bool
+        accIsBjet(*jet_itr) = isBjet;
+
       }
 
-      bool isBjet = false; // decide whether or not the jet is a b-jet (truth-labelling + kinematic selections)
-      if (this_TruthLabel == 5) isBjet = true;
-      static SG::AuxElement::Decorator<char> accIsBjet("IsBjet"); // char due to limitations of ROOT I/O, still treat it as a bool
-      accIsBjet(*jet_itr) = isBjet;
-
+      static SG::AuxElement::ConstAccessor<int> JetTruthLabel (m_truthLabelName);
+      
       // largeR jet truth labelling
-      if(m_SmoothedWZTagger_handle.isInitialized()) {
-	m_SmoothedWZTagger_handle->decorateTruthLabel(*jet_itr);
+      if(m_JetTruthLabelingTool_handle.isInitialized() && !JetTruthLabel.isAvailable(*jet_itr)) {
+        m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
       }
+    
     }
 
     //
