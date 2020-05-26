@@ -237,6 +237,7 @@ EL::StatusCode JetSelector :: initialize ()
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_eff_tool_handle, CP::JetJvtEfficiency));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("WorkingPoint", m_WorkingPointfJVT ));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("SFFile",       m_SFFilefJVT ));
+    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("UseMuSFFormat",       m_UseMuSFFormatfJVT ));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("ScaleFactorDecorationName", "fJVTSF"));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("OutputLevel",  msg().level()));
     ANA_CHECK( m_fJVT_eff_tool_handle.retrieve());

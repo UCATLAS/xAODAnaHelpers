@@ -161,7 +161,7 @@ public:
 
     @endrst
   */
-  std::string m_WorkingPointJVT = "Medium";
+  std::string m_WorkingPointJVT = "Tight";
 
   /**
      @brief Configuration containting JVT scale factors.
@@ -172,7 +172,7 @@ public:
      See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
      @endrst
   */
-  std::string m_SFFileJVT = "JetJvtEfficiency/Moriond2017/JvtSFFile_EM.root";
+  std::string m_SFFileJVT = "JetJvtEfficiency/Moriond2018/JvtSFFile_EMPFlow.root";
   std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
 
   float         m_systValJVT = 0.0;
@@ -194,7 +194,7 @@ public:
         See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
     @endrst
   */
-  std::string m_WorkingPointfJVT = "Medium";
+  std::string m_WorkingPointfJVT = "Loose";
 
   /**
      @brief Configuration containting fJVT scale factors.
@@ -205,7 +205,11 @@ public:
         See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/FJVTCalibration for latest recommendation.
      @endrst
   */
-  std::string m_SFFilefJVT = "JetJvtEfficiency/Moriond2016_v2/fJvtSFFile.root";
+
+  // Set the correct SF file and format
+  std::string m_SFFilefJVT = "JetJvtEfficiency/May2020/fJvtSFFile.EMPFlow.root";
+  bool m_UseMuSFFormatfJVT = true; // To account for new SF binning
+
   std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
 
   float         m_systValfJVT = 0.0;
