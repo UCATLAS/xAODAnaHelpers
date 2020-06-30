@@ -117,6 +117,8 @@ public:
   bool    m_cleanParent = false;
   bool    m_applyFatJetPreSel = false;
 
+  /// @brief Use large-R jet truth labeling tool (needed for systematics)
+  bool m_useLargeRTruthLabelingTool = true;
   /// @brief Name of the large-R jet truth labeling definition
   std::string m_truthLabelName = "R10TruthLabel_R21Consolidated";
   /// @brief Flag to indicate if using a truth jet collection
