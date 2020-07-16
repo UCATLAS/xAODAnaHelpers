@@ -260,7 +260,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   }// if m_doCleaning
 
   // initialize largeR jet truth labelling tool
-  if(isMC() && m_inContainerName.find("AntiKt10") != std::string::npos){
+  if(isMC() && m_useLargeRTruthLabelingTool && m_inContainerName.find("AntiKt10") != std::string::npos){
     // Truth labelling is required for systematics on largeR jets.
     // TruthLabelName typically should not be changed until new recommendations are available
     // The other properties have default values but need to be configured by the user
@@ -446,11 +446,13 @@ EL::StatusCode JetCalibrator :: execute ()
 
       }
 
-      static SG::AuxElement::ConstAccessor<int> JetTruthLabel (m_truthLabelName);
-      
-      // largeR jet truth labelling
-      if(m_JetTruthLabelingTool_handle.isInitialized() && !JetTruthLabel.isAvailable(*jet_itr)) {
-        m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
+      if(m_useLargeRTruthLabelingTool){
+        static SG::AuxElement::ConstAccessor<int> JetTruthLabel (m_truthLabelName);
+
+        // largeR jet truth labelling
+        if(m_JetTruthLabelingTool_handle.isInitialized() && !JetTruthLabel.isAvailable(*jet_itr)) {
+          m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
+        }
       }
     
     }
