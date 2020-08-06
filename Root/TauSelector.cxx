@@ -31,6 +31,7 @@
 // tool includes
 #include "TauAnalysisTools/TauSelectionTool.h"  
 #include "TriggerMatchingTool/MatchingTool.h"
+#include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -240,19 +241,28 @@ EL::StatusCode TauSelector :: initialize ()
   //
   // **************************************
   if( !( m_singleTauTrigChains.empty() && m_diTauTrigChains.empty() ) ) {
-    // Grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_handle.isUserConfigured()){
-      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
-    }
-    ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
-    //  everything went fine, let's initialise the tool!
-    ANA_CHECK( m_trigTauMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
-    ANA_CHECK( m_trigTauMatchTool_handle.setProperty("OutputLevel", msg().level() ));
-    ANA_CHECK( m_trigTauMatchTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigTauMatchTool_handle);
+    if( !isPHYS() ) {
+      // Grab the TrigDecTool from the ToolStore
+      if(!m_trigDecTool_handle.isUserConfigured()){
+        ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_CHECK( m_trigDecTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
+      //  everything went fine, let's initialise the tool!
+      m_trigTauMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
+      ANA_CHECK( m_trigTauMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigTauMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigTauMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigTauMatchTool_handle);
+    } else {
+      m_trigTauMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
+      ANA_CHECK( m_trigTauMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigTauMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigTauMatchTool_handle);
+    }
 
   } else {
 
@@ -298,7 +308,7 @@ EL::StatusCode TauSelector :: execute ()
 
   // QUESTION: why this must be done in execute(), and does not work in initialize()?
   //
-  if ( m_numEvent == 1 && m_trigDecTool_handle.isInitialized() ) {
+  if ( m_numEvent == 1 && m_trigTauMatchTool_handle.isInitialized() ) {
 
     // parse input tau trigger chain list, split by comma and fill vector
     //

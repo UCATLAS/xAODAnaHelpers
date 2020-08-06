@@ -123,6 +123,17 @@ bool xAH::Algorithm::isFastSim(){
     return m_isFastSim;
 }
 
+bool xAH::Algorithm::isPHYS(){
+    TTree* metaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
+    if(metaData){
+      metaData->LoadTree(0);
+      return metaData->GetBranch("StreamDAOD_PHYS");
+    } else {
+      ANA_MSG_ERROR("MetaData tree missing from input file!");
+      return 0;
+    }
+}
+
 void xAH::Algorithm::registerInstance(){
     if(m_registered) return;
     m_instanceRegistry[m_className]++;
