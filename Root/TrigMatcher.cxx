@@ -20,6 +20,8 @@
 
 #include <xAODAnaHelpers/TrigMatcher.h>
 
+#include "TriggerMatchingTool/MatchFromCompositeTool.h"
+
 // ROOT include(s):
 #include <TFile.h>
 #include <TObjArray.h>
@@ -70,13 +72,15 @@ EL::StatusCode TrigMatcher :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // Grab the TrigDecTool from the ToolStore
-  if(!m_trigDecTool_handle.isUserConfigured()){
-    ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-    return EL::StatusCode::FAILURE;
+  if( !isPHYS() ) {
+    // Grab the TrigDecTool from the ToolStore
+    if(!m_trigDecTool_handle.isUserConfigured()){
+      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+      return EL::StatusCode::FAILURE;
+    }
+    ANA_CHECK( m_trigDecTool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
   }
-  ANA_CHECK( m_trigDecTool_handle.retrieve());
-  ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
   // ***************************************
   //
@@ -93,7 +97,12 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   //  everything went fine, let's initialise the tool!
   //
-  ANA_CHECK( m_trigMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+  if( !isPHYS() ) {
+    m_trigMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
+    ANA_CHECK( m_trigMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+  } else { // For DAOD_PHYS samples
+    m_trigMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
+  }
   ANA_CHECK( m_trigMatchTool_handle.retrieve() );
 
   // **********************************************************************************************

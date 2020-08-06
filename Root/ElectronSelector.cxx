@@ -28,6 +28,7 @@
 #include "IsolationSelection/IsolationSelectionTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
+#include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -344,19 +345,28 @@ EL::StatusCode ElectronSelector :: initialize ()
   // NB: need to retrieve the TrigDecisionTool from asg::ToolStore to configure the tool!
   //     do not initialise if there are no input trigger chains
   if(  !( m_singleElTrigChains.empty() && m_diElTrigChains.empty() ) ) {
-    // Grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_handle.isUserConfigured()){
-      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
-    }
-    ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
-    //  everything went fine, let's initialise the tool!
-    ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
-    ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
-    ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);
+    if( !isPHYS() ) {
+      // Grab the TrigDecTool from the ToolStore
+      if(!m_trigDecTool_handle.isUserConfigured()){
+        ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_CHECK( m_trigDecTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
+      //  everything went fine, let's initialise the tool!
+      m_trigElectronMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");;
+      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);
+    } else { // For DAOD_PHYS samples
+      m_trigElectronMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");;
+      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);
+    }
 
   } else {
 
@@ -404,7 +414,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
   // QUESTION: why this must be done in execute(), and does not work in initialize()?
   //
-  if ( m_numEvent == 1 && m_trigDecTool_handle.isInitialized() ) {
+  if ( m_numEvent == 1 && m_trigElectronMatchTool_handle.isInitialized() ) {
 
     // parse input electron trigger chain list, split by comma and fill vector
     //

@@ -109,7 +109,7 @@ private:
   std::vector<std::string>            m_diTauTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diTauTrigChains */
   asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this}; //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle{"Trig::MatchingTool/MatchingTool",  this}; //!  
+  asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!
