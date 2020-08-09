@@ -274,8 +274,8 @@ void MuonContainer::setTree(TTree *tree)
   if ( m_infoSwitch.m_quality ) {
     for (auto& quality : m_infoSwitch.m_recoWPs) {
       if (!quality.empty()) {
-        tree->SetBranchStatus ( (m_name + "is" + quality).c_str() , 1);
-        tree->SetBranchAddress( (m_name + "is" + quality).c_str() , & (*m_quality)[ quality ] );
+        tree->SetBranchStatus ( (m_name + "_is" + quality).c_str() , 1);
+        tree->SetBranchAddress( (m_name + "_is" + quality).c_str() , & (*m_quality)[ quality ] );
       }
     }
   }

@@ -227,8 +227,8 @@ void ElectronContainer::setTree(TTree *tree)
   if ( m_infoSwitch.m_PID ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
       if (!PID.empty()) {
-        tree->SetBranchStatus ( (m_name + PID).c_str() , 1);
-        tree->SetBranchAddress( (m_name + PID).c_str() , & (*m_PID)[ PID ] );
+        tree->SetBranchStatus ( (m_name + "_" + PID).c_str() , 1);
+        tree->SetBranchAddress( (m_name + "_" + PID).c_str() , &(*m_PID)[ PID ] );
       }
     }
   }
