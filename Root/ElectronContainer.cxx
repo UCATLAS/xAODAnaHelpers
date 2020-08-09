@@ -39,7 +39,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_PID ) {
-    m_PID = new std::map< std::string, std::vector< int > >();
+    m_PID = new std::map< std::string, std::vector< int >* >();
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -344,7 +344,7 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
   if ( m_infoSwitch.m_PID ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
       if (!PID.empty()) {
-        elec.PID[PID] = (*m_PID)[ PID ].at(idx);
+        elec.PID[PID] = (*m_PID)[ PID ]->at(idx);
       }
     }
   }
@@ -459,7 +459,7 @@ void ElectronContainer::setBranches(TTree *tree)
   if ( m_infoSwitch.m_PID ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
       if (!PID.empty()) {
-        setBranch<int>(tree, PID, &(*m_PID)[PID]);
+        setBranch<int>(tree, PID, (*m_PID)[PID]);
       }
     }
   }
@@ -566,7 +566,7 @@ void ElectronContainer::clear()
 
   if ( m_infoSwitch.m_PID ) {
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
-      (*m_PID)[ PID ].clear();
+      (*m_PID)[ PID ]->clear();
     }
   }
 
@@ -717,13 +717,13 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
         if (PID == "LHLooseBL") {
           accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( "LHLoose" ) ) );
           if ( accPID.at( PID ).isAvailable( *elec ) && accBLayer.isAvailable( *elec ) ) {
-            m_PID->at( PID ).push_back( accBLayer( *elec ) == 1 && (accPID.at( PID ))( *elec ) == 1 );
+            m_PID->at( PID )->push_back( accBLayer( *elec ) == 1 && (accPID.at( PID ))( *elec ) == 1 );
           } else {
-            m_PID->at( PID ).push_back( -1 );
+            m_PID->at( PID )->push_back( -1 );
           }
         } else {
           accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( PID ) ) );
-          safeFill<char, int, xAOD::Electron>( elec, accPID.at( PID ), &m_PID->at( PID ), -1 );
+          safeFill<char, int, xAOD::Electron>( elec, accPID.at( PID ), m_PID->at( PID ), -1 );
         }
       }
     }

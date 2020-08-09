@@ -57,7 +57,7 @@ namespace xAH {
       std::vector<float>* m_topoetcone40;
 
       // PID
-      std::map< std::string, std::vector< int > >* m_PID;
+      std::map< std::string, std::vector< int >* >* m_PID;
 
       // scale factors w/ sys
       // per object
