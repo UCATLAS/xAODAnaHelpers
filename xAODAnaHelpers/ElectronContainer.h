@@ -44,7 +44,7 @@ namespace xAH {
       std::vector<std::string>*       m_listTrigChains;
 
       // isolation
-      std::map< std::string, std::vector< int > >* m_isIsolated;
+      std::map< std::string, std::vector< int >* >* m_isIsolated;
       std::vector<float>* m_etcone20;
       std::vector<float>* m_ptcone20;
       std::vector<float>* m_ptcone30;
@@ -63,10 +63,10 @@ namespace xAH {
       // per object
       std::vector< std::vector< float > >* m_RecoEff_SF;
 
-      std::map< std::string, std::vector< std::vector< float > > >* m_PIDEff_SF;
-      std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
-      std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
-      std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_PIDEff_SF;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_IsoEff_SF;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_TrigEff_SF;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_TrigMCEff;
 
       // reco parameters
       std::vector<int>* m_author;

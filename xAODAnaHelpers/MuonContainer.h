@@ -43,7 +43,7 @@ namespace xAH {
       std::vector<std::string>       *m_listTrigChains;
     
       // isolation
-      std::map< std::string, std::vector< int > >* m_isIsolated;
+      std::map< std::string, std::vector< int >* >* m_isIsolated;
       std::vector<float> *m_ptcone20;
       std::vector<float> *m_ptcone30;
       std::vector<float> *m_ptcone40;
@@ -55,16 +55,16 @@ namespace xAH {
       std::vector<float> *m_topoetcone40;
 
       // quality
-      std::map< std::string, std::vector< int > >* m_quality;
+      std::map< std::string, std::vector< int >* >* m_quality;
 
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > > *m_TTVAEff_SF;
       
-      std::map< std::string, std::vector< std::vector< float > > >* m_RecoEff_SF;
-      std::map< std::string, std::vector< std::vector< float > > >* m_IsoEff_SF;
-      std::map< std::string, std::vector< std::vector< float > > >* m_TrigEff_SF;
-      std::map< std::string, std::vector< std::vector< float > > >* m_TrigMCEff;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_RecoEff_SF;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_IsoEff_SF;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_TrigEff_SF;
+      std::map< std::string, std::vector< std::vector< float > >* >* m_TrigMCEff;
       
       // track parameters
       std::vector<float> *m_trkd0;
