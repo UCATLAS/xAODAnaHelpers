@@ -26,6 +26,7 @@
 #include "IsolationSelection/IsolationSelectionTool.h"
 #include "MuonSelectorTools/MuonSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
+#include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -300,19 +301,27 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // **************************************
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
-    // Grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_handle.isUserConfigured()){
-      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
-    }
-    ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+    if( !isPHYS() ) {
+      // Grab the TrigDecTool from the ToolStore
+      if(!m_trigDecTool_handle.isUserConfigured()){
+        ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_CHECK( m_trigDecTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
-    //  everything went fine, let's initialise the tool!
-    ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
-    ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
-    ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
+      //  everything went fine, let's initialise the tool!
+      m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
+    } else { // For DAOD_PHYS samples
+      m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
+    }
 
   } else {
 
@@ -358,7 +367,7 @@ EL::StatusCode MuonSelector :: execute ()
 
   // QUESTION: why this must be done in execute(), and does not work in initialize()?
   //
-  if ( m_numEvent == 1 && m_trigDecTool_handle.isInitialized() ) {
+  if ( m_numEvent == 1 && m_trigMuonMatchTool_handle.isInitialized() ) {
 
     // parse input muon trigger chain list, split by comma and fill vector
     //
@@ -564,7 +573,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
     ANA_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") < nPassMin ("<<m_pass_min<<")" );
     return false;
   }
-  if ( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max >= 0 && nPass > m_pass_max ) {
     ANA_MSG_DEBUG( "Reject event: nSelectedMuons ("<<nPass<<") > nPassMax ("<<m_pass_max<<")" );
     return false;
   }

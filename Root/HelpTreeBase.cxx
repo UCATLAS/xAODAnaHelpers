@@ -860,50 +860,49 @@ void HelpTreeBase::AddTruthFatJets(const std::string& detailStr, const std::stri
 }
 
 
-void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , const std::string& fatjetName, const std::string& suffix) {
+void HelpTreeBase::FillFatJets( const xAOD::JetContainer* fatJets , int pvLocation, const std::string& fatjetName, const std::string& suffix ) {
 
   this->ClearFatJets(fatjetName, suffix);
 
   for( auto fatjet_itr : *fatJets ) {
 
-    this->FillFatJet(fatjet_itr, fatjetName, suffix);
+    this->FillFatJet(fatjet_itr, pvLocation, fatjetName, suffix);
 
   } // loop over fat jets
 
 }
 
-void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, const std::string& fatjetName, const std::string& suffix ) {
+void HelpTreeBase::FillFatJet( const xAOD::Jet* fatjet_itr, int pvLocation, const std::string& fatjetName, const std::string& suffix ) {
 
   const std::string& collectionName = FatJetCollectionName(fatjetName, suffix);
   xAH::FatJetContainer* thisFatJet = m_fatjets[collectionName];
 
-  thisFatJet->FillFatJet(fatjet_itr);
+  thisFatJet->FillFatJet(fatjet_itr, pvLocation);
 
-  this->FillFatJetsUser(fatjet_itr, fatjetName, suffix);
+  this->FillFatJetsUser(fatjet_itr, pvLocation, fatjetName, suffix);
 
   return;
 }
 
 
-
-void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets, const std::string& truthFatJetName ) {
+void HelpTreeBase::FillTruthFatJets( const xAOD::JetContainer* truthTruthFatJets, int pvLocation, const std::string& truthFatJetName ) {
   this->ClearTruthFatJets(truthFatJetName);
 
   for( auto truth_fatjet_itr : *truthTruthFatJets ) {
 
-    this->FillTruthFatJet(truth_fatjet_itr, truthFatJetName);
+    this->FillTruthFatJet(truth_fatjet_itr, pvLocation, truthFatJetName);
 
-  } // loop over fat jets
+  } // loop over truth fat jets
 
 }
 
-void HelpTreeBase::FillTruthFatJet( const xAOD::Jet* truth_fatjet_itr, const std::string& truthFatJetName ) {
+void HelpTreeBase::FillTruthFatJet( const xAOD::Jet* truth_fatjet_itr, int pvLocation, const std::string& truthFatJetName ) {
 
   xAH::FatJetContainer* thisTruthFatJet = m_truth_fatjets[truthFatJetName];
 
-  thisTruthFatJet->FillFatJet(truth_fatjet_itr);
+  thisTruthFatJet->FillFatJet(truth_fatjet_itr, pvLocation);
 
-  this->FillTruthFatJetsUser(truth_fatjet_itr, truthFatJetName);
+  this->FillTruthFatJetsUser(truth_fatjet_itr, pvLocation, truthFatJetName);
 
   return;
 }

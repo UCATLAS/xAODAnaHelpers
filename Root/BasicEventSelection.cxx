@@ -94,6 +94,15 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
     m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
   }
 
+  TFile *fileSumW = wk()->getOutputFile (m_metaDataStreamName);
+  fileSumW->cd();
+
+  // event counts from meta data
+  if ( !m_histSumW ) {
+    m_histSumW = new TH1D("MetaData_SumW", "MetaData_SumW", 1, -0.5, 0.5);
+    m_histSumW->SetCanExtend(TH1::kAllAxes);
+  }
+
   ANA_MSG_INFO( "Creating histograms");
 
   // write the cutflows to this file so algos downstream can pick up the pointer
@@ -238,27 +247,46 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       }
 
       int maxCycle(-1);
-      for ( const auto& cbk: *completeCBC ) {
+      for ( const xAOD::CutBookkeeper* cbk: *completeCBC )
+	{
+	  // Find initial book keeper
 	  ANA_MSG_INFO("Complete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream() );
-	  if ( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" ) {
+	  if( cbk->cycle() > maxCycle && cbk->name() == "AllExecutedEvents" && cbk->inputStream() == "StreamAOD" )
+	    {
 	      allEventsCBK = cbk;
 	      maxCycle = cbk->cycle();
-	  }
-	  if ( m_isDerivation ) {
-
-	    if(m_derivationName != ""){
-
-	      if ( cbk->name() == m_derivationName ) {
-		DxAODEventsCBK = cbk;
-	      }
-
-	    } else if( cbk->name().find("Kernel") != std::string::npos ){
-	      ANA_MSG_INFO("Auto config found DAOD made by Derivation Algorithm: " << cbk->name());
-	      DxAODEventsCBK = cbk;
 	    }
 
-	  } // is derivation
-      }
+	  // Find derivation book keeper
+	  if ( m_isDerivation )
+	    {
+
+	      if(m_derivationName != "")
+		{
+		  if ( cbk->name() == m_derivationName )
+		    DxAODEventsCBK = cbk;
+		}
+	      else if( cbk->name().find("Kernel") != std::string::npos )
+		{
+		  ANA_MSG_INFO("Auto config found DAOD made by Derivation Algorithm: " << cbk->name());
+		  DxAODEventsCBK = cbk;
+		}
+	    } // is derivation
+
+	  // Find and record AOD-level sumW information for all alternate weights
+	  //  The nominal AllExecutedEvents will be filled later, due to posibility of multiple CBK entries
+	  if(cbk->name().substr(0,37) == "AllExecutedEvents_NonNominalMCWeight_" && cbk->name().length()!=17 && cbk->inputStream() == "StreamAOD")
+	    {
+	      // Extract weight index from name
+	      int32_t idx=std::stoi(cbk->name().substr(37));
+
+	      // Fill histogram, making sure that there is space
+	      // Note will fill bin index = idx+1
+	      while(idx>=m_histSumW->GetNbinsX())
+		m_histSumW->LabelsInflate("X");
+	      m_histSumW->Fill(idx, cbk->sumOfEventWeights());
+	    }
+	}
 
       if(allEventsCBK == nullptr) {
         ANA_MSG_WARNING("No allEventsCBK found (this is expected for DataScouting, otherwise not). Event numbers set to 0.");
@@ -294,13 +322,14 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_cutflowHist ->Fill(m_cutflow_all, m_MD_initialNevents);
       m_cutflowHistW->Fill(m_cutflow_all, m_MD_initialSumW);
 
+      m_histSumW->Fill(0., m_MD_initialSumW);
+
       m_histEventCount -> Fill(1, m_MD_initialNevents);
       m_histEventCount -> Fill(2, m_MD_finalNevents);
       m_histEventCount -> Fill(3, m_MD_initialSumW);
       m_histEventCount -> Fill(4, m_MD_finalSumW);
       m_histEventCount -> Fill(5, m_MD_initialSumWSquared);
       m_histEventCount -> Fill(6, m_MD_finalSumWSquared);
-
   }
 
   return EL::StatusCode::SUCCESS;
@@ -451,7 +480,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   m_duplicatesTree = new TTree("duplicates","Info on duplicated events");
   m_duplicatesTree->Branch("runNumber",    &m_duplRunNumber,      "runNumber/I");
-  m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/LI");
+  m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/L");
 
   // -------------------------------------------------------------------------------------------------
 

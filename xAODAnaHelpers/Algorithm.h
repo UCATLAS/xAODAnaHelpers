@@ -220,6 +220,9 @@ namespace xAH {
          */
         bool isFastSim();
 
+	/** Determines if using DAOD_PHYS or not. */
+	bool isPHYS();
+
         /**
             @rst
                 Register the given instance under the moniker :cpp:member:`xAH::Algorithm::m_className`

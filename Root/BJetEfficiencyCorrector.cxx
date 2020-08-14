@@ -116,21 +116,15 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FixedCutBEff_70") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_77") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_85") { opOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_60")  { opOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_70")  { opOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_77")  { opOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "HybBEff_85")  { opOK = true; m_getScaleFactors =  true; }
-  if (m_operatingPt == "Continuous")  { opOK = true; m_getScaleFactors =  true;
-                                        m_useContinuous = true;
-                                        ANA_MSG_DEBUG(" Using continuous b-tagging");}
+  if (m_operatingPt == "Continuous"     ) { opOK = true; m_getScaleFactors =  true;
+    m_useContinuous = true;
+    ANA_MSG_DEBUG(" Using continuous b-tagging"); }
 
-  // Only DL1 and MV2c10 are calibrated
+  // Only DL1, DL1r, DLr1mu and MV2c10 are calibrated
   if (m_taggerName == "MV2c10") { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "MV2r")   { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "MV2rmu") { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "DL1")    { taggerOK = true; m_getScaleFactors =  true; }
   if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  true; }
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
@@ -180,6 +174,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",          m_taggerName));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",           m_jetAuthor));
+  if(m_minPt!=-1) ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt", m_minPt));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("ErrorOnTagWeightFailure", m_errorOnTagWeightFailure));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel", msg().level() ));
   ANA_CHECK( m_BJetSelectTool_handle.retrieve());
@@ -189,13 +184,14 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if( m_getScaleFactors ) {
 
     // initialize the BJetEfficiencyCorrectionTool
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("TaggerName",          m_taggerName));
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy ));
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI));
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("JetAuthor",           m_jetAuthor));
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ScaleFactorFileName", m_corrFileName));
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile));
-    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("TaggerName",          m_taggerName         ));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI     ));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("JetAuthor",           m_jetAuthor          ));
+    if(m_minPt!=-1) ANA_CHECK( m_BJetEffSFTool_handle.setProperty("MinPt", m_minPt            ));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ScaleFactorFileName", m_corrFileName       ));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile ));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
 
     if(isMC() && !m_EfficiencyCalibration.empty())
@@ -237,9 +233,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		break;
 	      case HelperFunctions::Sherpa22:
 		calibration="410250";
-	      break;
+		break;
 	      case HelperFunctions::Unknown:
 		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+		return EL::StatusCode::FAILURE;
 		break;
 	      }
 	  }
@@ -444,15 +441,18 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      // if passes cut take the efficiency scale factor
 	      // if failed cut take the inefficiency scale factor
 	      // for continuous b-tagging save both
-         if(m_useContinuous){
-           BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-           BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
-         } else{
-           if( dec_isBTag( *jet_itr ) )
-             BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-            else
-              BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
-         }
+	      if(m_useContinuous)
+		{
+		  BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+		  BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
+		}
+	      else
+		{
+		  if( dec_isBTag( *jet_itr ) )
+		    BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
+		  else
+		    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
+		}
 
 	      if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error)
 		{

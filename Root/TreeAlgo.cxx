@@ -186,6 +186,20 @@ EL::StatusCode TreeAlgo :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  // to handle more than one truth particles collections
+  std::istringstream ss_truthParticlesContainers(m_truthParticlesContainerName);
+  while ( std::getline(ss_truthParticlesContainers, token, ' ') ){
+    m_truthParticlesContainers.push_back(token);
+  }
+  std::istringstream ss_truthParticlesNames(m_truthParticlesBranchName);
+  while ( std::getline(ss_truthParticlesNames, token, ' ') ){
+    m_truthParticlesBranches.push_back(token);
+  }
+  if( !m_truthParticlesContainerName.empty() && m_truthParticlesContainers.size()!=m_truthParticlesBranches.size()){
+    ANA_MSG_ERROR( "The number of truth particles containers must be equal to the number of truth particles name branches. Exiting");
+    return EL::StatusCode::FAILURE;
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -353,7 +367,11 @@ EL::StatusCode TreeAlgo :: execute ()
     if (!m_METContainerName.empty() )           { helpTree->AddMET(m_METDetailStr);                                }
     if (!m_METReferenceContainerName.empty() )  { helpTree->AddMET(m_METReferenceDetailStr, "referenceMet");       }
     if (!m_photonContainerName.empty() )        { helpTree->AddPhotons(m_photonDetailStr);                         }
-    if (!m_truthParticlesContainerName.empty()) { helpTree->AddTruthParts(m_truthParticlesDetailStr, "xAH_truth"); }
+    if (!m_truthParticlesContainerName.empty()) {
+      for(unsigned int ll=0; ll<m_truthParticlesContainers.size();++ll){
+        helpTree->AddTruthParts(m_truthParticlesDetailStr, m_truthParticlesBranches.at(ll).c_str());
+      }
+    }
     if (!m_trackParticlesContainerName.empty()) { helpTree->AddTrackParts(m_trackParticlesDetailStr, m_trackParticlesContainerName); }
     if (!m_clusterContainerName.empty() )      {
       for(unsigned int ll=0; ll<m_clusterContainers.size();++ll){
@@ -529,15 +547,15 @@ EL::StatusCode TreeAlgo :: execute ()
 
       bool reject = false;
       for(unsigned int ll=0;ll<m_fatJetContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll), m_event, m_store, msg()) ) {
-          ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll) + " was not retrieved. Skipping all remaining fat jet collections");
+        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) ) {
+          ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll)+fatJetSuffix + " was not retrieved. Skipping all remaining fat jet collections");
           reject = true;
           break;
         }
 
         const xAOD::JetContainer* inFatJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll), m_event, m_store, msg()) );
-        helpTree->FillFatJets( inFatJets, m_fatJetBranches.at(ll) );
+        ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) );
+        helpTree->FillFatJets( inFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_fatJetBranches.at(ll) );
 
       }
 
@@ -552,7 +570,7 @@ EL::StatusCode TreeAlgo :: execute ()
 
       const xAOD::JetContainer* inTruthFatJets(nullptr);
       ANA_CHECK( HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, msg()) );
-      helpTree->FillTruthFatJets( inTruthFatJets, m_truthFatJetBranchName );
+      helpTree->FillTruthFatJets( inTruthFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthFatJetBranchName );
     }
 
     if ( !m_tauContainerName.empty() ) {
@@ -588,11 +606,13 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_truthParticlesContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainerName, m_event, m_store, msg()) ) continue;
+      for ( unsigned int ll = 0; ll < m_truthParticlesContainers.size(); ++ll) {
+        if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainers.at(ll), m_event, m_store, msg()) ) continue;
 
-      const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainerName, m_event, m_store, msg()));
-      helpTree->FillTruth(inTruthParticles,"xAH_truth");
+        const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
+        ANA_CHECK( HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainers.at(ll), m_event, m_store, msg()));
+        helpTree->FillTruth(inTruthParticles, m_truthParticlesBranches.at(ll));
+      }
     }
 
     if ( !m_trackParticlesContainerName.empty() ) {

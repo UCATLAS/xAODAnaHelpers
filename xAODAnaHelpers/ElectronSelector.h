@@ -255,7 +255,7 @@ private:
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
   CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                                                                 //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle {"Trig::MatchingTool/MatchingTool"                  , this}; //!
+  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true;

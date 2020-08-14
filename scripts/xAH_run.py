@@ -364,6 +364,15 @@ if __name__ == "__main__":
           sh_list = ROOT.SH.DiskListLocal(mother_dir)
           ROOT.SH.scanDir(sh_all, sh_list, fname_base, os.path.basename(sample_dir))
 
+    # do we need to overwrite sample names?
+    if args.sample_names:
+      if len(args.sample_names) != len(sh_all):
+        raise ValueError("You specified to override the names of {0:d} samples, but we found {1:d} samples".format(len(args.sample_names), len(sh_all)))
+      else:
+        for sampleName, sample in zip(args.sample_names, sh_all):
+          MBJ_logger.info(" - changing sample name from {0:s} to {1:s}".format(sample.meta().getString(ROOT.SH.MetaFields.sampleName), sampleName))
+          sample.meta().setString(ROOT.SH.MetaFields.sampleName, sampleName)
+
     # print out the samples we found
     xAH_logger.info("\t%d different dataset(s) found", len(sh_all))
         #if not args.use_scanRucio:

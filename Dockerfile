@@ -25,7 +25,7 @@ COPY ci/.rpmmacros /root/.rpmmacros
 # Use our MOTD (Message-of-the-Day)
 COPY ci/motd /etc/motd
 # Copy the environemnt setup script for xAH
-COPY ci/xAODAnaHelpers_setup.sh /home/atlas/xAODAnaHelpers_setup.sh
+COPY ci/xAODAnaHelpers_setup.sh /xAODAnaHelpers_setup.sh
 
 ### RUN COMMANDS HERE (AS ROOT) ###
 # Switch to ROOT user for now
@@ -38,7 +38,7 @@ USER root
 # 6. Call the environment setup script in .bashrc
 RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
     && envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
-    && source /home/atlas/release_setup.sh \
+    && source /release_setup.sh \
     && mkdir -p /workarea/build \
     && cd /workarea/build \
     && time cmake ../src \
@@ -47,7 +47,7 @@ RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisB
     && rpm -i /workarea/build/*_*.rpm \
     && rm -rf /workarea \
     && echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' >> /home/atlas/.bashrc \
-    && echo 'source $HOME/xAODAnaHelpers_setup.sh' >> /home/atlas/.bashrc
+    && echo 'source /xAODAnaHelpers_setup.sh' >> /home/atlas/.bashrc
 
 # set TMPDIR back
 ENV TMPDIR=/tmp

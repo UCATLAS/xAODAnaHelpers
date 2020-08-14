@@ -22,7 +22,8 @@
 #include "JetInterface/IJetSelector.h"
 #include "JetInterface/IJetUpdateJvt.h"
 #include "JetCPInterfaces/IJetTileCorrectionTool.h"
-#include "BoostedJetTaggers/SmoothedWZTagger.h"
+#include "ParticleJetTools/JetTruthLabelingTool.h"
+#include "xAODCore/ShallowCopy.h"
 
 // algorithm wrapper
 #include "xAODAnaHelpers/Algorithm.h"
@@ -116,12 +117,30 @@ public:
   bool    m_cleanParent = false;
   bool    m_applyFatJetPreSel = false;
 
+  /// @brief Use large-R jet truth labeling tool (needed for systematics)
+  bool m_useLargeRTruthLabelingTool = true;
+  /// @brief Name of the large-R jet truth labeling definition
+  std::string m_truthLabelName = "R10TruthLabel_R21Consolidated";
+  /// @brief Flag to indicate if using a truth jet collection
+  bool m_isTruthJetCol = false;
+  /// @brief Flag to indicate if input xAOD uses TRUTH3 style containers
+  bool m_useTRUTH3 = true;
+  /// @brief Name of the truth particle container if not using TRUTH3 containers
+  std::string m_truthParticleContainerName = "TruthParticles";
+  /// @brief Name of the truth boson container if using TRUTH3 containers
+  std::string m_truthBosonContainerName = "TruthBosonsWithDecayParticles";
+  /// @brief Name of the truth top quark container if using TRUTH3 containers
+  std::string m_truthTopQuarkContainerName = "TruthTopQuarkWithDecayParticles";
+
 // systematics
   /// @brief jet tile correction
   bool m_doJetTileCorr = false;
 
   /// @brief needed in case want to treat MC as pseudoData for JER uncertainty propagation
   bool m_pseudoData = false;
+
+  /// @brief Treat MC as usual, then run the JER uncertainties on it a second time treating it as pseudodata. Overrides m_pseudodata if true.
+  bool m_mcAndPseudoData = false;
 
 private:
   /// @brief set to true if systematics asked for and exist
@@ -137,14 +156,21 @@ private:
   // tools
   asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
+  asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_pseudodataJERTool_handle    {"PseudodataJERTool"    , this}; //!
   asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , this}; //!
   asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
   asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
-  asg::AnaToolHandle<SmoothedWZTagger>           m_SmoothedWZTagger_handle     {"SmoothedWZTagger"     , this}; //!
+  asg::AnaToolHandle<JetTruthLabelingTool>       m_JetTruthLabelingTool_handle {"JetTruthLabelingTool" , this}; //!
 
   std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!
+
+  // Helper functions
+  EL::StatusCode executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
+                                   std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer*>& calibJetsSC,
+                                   std::vector<std::string>& vecOutContainerNames, bool isPDCopy);
+  EL::StatusCode initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData);
 
 public:
 

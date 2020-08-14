@@ -60,7 +60,7 @@ namespace HelperClasses{
 
   /* parser for Tau BDT ID enum */
   /* Apparently this won't be useful for non-Athena users...  */
-  
+
   template <>
   EnumParser<xAOD::TauJetParameters::IsTauFlag>::EnumParser()
   {
@@ -243,6 +243,7 @@ namespace HelperClasses{
     m_purity        = has_exact("purity");
     m_effSF         = has_exact("effSF");
     m_trigger       = has_exact("trigger");
+    m_isoCones      = get_working_points("isoCone");
   }
 
   void ClusterInfoSwitch::initialize(){
@@ -339,76 +340,6 @@ namespace HelperClasses{
 
     m_sfJVTName           = get_working_point("sfJVT");
     m_sffJVTName          = get_working_point("sffJVT");
-
-    m_sfFTagFix.clear();
-    if( has_match( "sfFTagFix" ) ) {
-      std::string input(m_configStr);
-      // erase everything before the interesting string
-      input.erase( 0, input.find("sfFTagFix") );
-      // erase everything after the interesting string
-      // only if there is something after the string
-      if( input.find(" ") != std::string::npos ) {
-        input.erase( input.find_first_of(" "), input.size() );
-      }
-      // remove fTagSFFix to just leave the numbers
-      input.erase(0,9);
-      // two by two take the characters and push back an int into this vector
-      std::vector<int> values;
-      int size( input.size()/2 );
-      int count(0);
-      while( count < size ) {
-        std::string number = input.substr(0,2);
-        m_sfFTagFix.push_back( atoi( number.c_str() ) );
-        input.erase(0,2);
-        count++;
-      }
-    } // sfFTagFix
-    m_sfFTagFlt.clear();
-    if( has_match( "sfFTagFlt" ) ) {
-      std::string input(m_configStr);
-      // erase everything before the interesting string
-      input.erase( 0, input.find("sfFTagFlt") );
-      // erase everything after the interesting string
-      // only if there is something after the string
-      if( input.find(" ") != std::string::npos ) {
-        input.erase( input.find_first_of(" "), input.size() );
-      }
-      // remove fTagSFFlt to just leave the numbers
-      input.erase(0,9);
-      // two by two take the characters and push back an int into this vector
-      std::vector<int> values;
-      int size( input.size()/2 );
-      int count(0);
-      while( count < size ) {
-        std::string number = input.substr(0,2);
-        m_sfFTagFlt.push_back( atoi( number.c_str() ) );
-        input.erase(0,2);
-        count++;
-      }
-    } // sfFTagFlt
-    m_sfFTagHyb.clear();
-    if( has_match( "sfFTagHyb" ) ) {
-      std::string input(m_configStr);
-      // erase everything before the interesting string
-      input.erase( 0, input.find("sfFTagHyb") );
-      // erase everything after the interesting string
-      // only if there is something after the string
-      if( input.find(" ") != std::string::npos ) {
-        input.erase( input.find_first_of(" "), input.size() );
-      }
-      // remove fTagSFHyb to just leave the numbers
-      input.erase(0,9);
-      // two by two take the characters and push back an int into this vector
-      std::vector<int> values;
-      int size( input.size()/2 );
-      int count(0);
-      while( count < size ) {
-        std::string number = input.substr(0,2);
-        m_sfFTagHyb.push_back( atoi( number.c_str() ) );
-        input.erase(0,2);
-        count++;
-      }
-    } // sfFTagHyb
 
     m_jetBTag.clear();
     m_jetBTagCts.clear();

@@ -55,6 +55,7 @@ public:
   std::string m_clusterContainerName = "";
   std::string m_clusterBranchName = "CaloCalTopoClusters";
   std::string m_truthParticlesContainerName = "";
+  std::string m_truthParticlesBranchName = "xAH_truth";
   std::string m_trackParticlesContainerName = "";
   std::string m_l1JetContainerName = "";
   std::string m_l1JetBranchName    = "L1Jet";
@@ -88,6 +89,7 @@ protected:
   std::vector<std::string> m_fatJetContainers; //!
   std::vector<std::string> m_l1JetContainers; //!
   std::vector<std::string> m_vertexContainers; //!
+  std::vector<std::string> m_truthParticlesContainers; //!
 
   std::vector<std::string> m_jetBranches; //!
   std::vector<std::string> m_truthJetBranches; //!
@@ -95,6 +97,7 @@ protected:
   std::vector<std::string> m_fatJetBranches; //!
   std::vector<std::string> m_l1JetBranches; //!
   std::vector<std::string> m_vertexBranches; //!
+  std::vector<std::string> m_truthParticlesBranches; //!
 
   std::vector<std::string> m_clusterDetails; //!
   std::vector<std::string> m_clusterContainers; //!

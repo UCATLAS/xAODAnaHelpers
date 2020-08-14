@@ -491,11 +491,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  delete m_asgElEffCorrTool_elSF_PID;
-  delete m_asgElEffCorrTool_elSF_Iso;
-  delete m_asgElEffCorrTool_elSF_Reco;
-  delete m_asgElEffCorrTool_elSF_Trig;
-  delete m_asgElEffCorrTool_elSF_TrigMCEff;
+  if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_pidEffSF_tool_name) )  delete m_asgElEffCorrTool_elSF_PID;
+  if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_IsoEffSF_tool_name) )  delete m_asgElEffCorrTool_elSF_Iso;
+  if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_RecoEffSF_tool_name) ) delete m_asgElEffCorrTool_elSF_Reco;
+  if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name) ) delete m_asgElEffCorrTool_elSF_Trig;
+  if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) delete m_asgElEffCorrTool_elSF_TrigMCEff;
 
   return EL::StatusCode::SUCCESS;
 }

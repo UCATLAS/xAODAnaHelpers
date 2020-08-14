@@ -29,6 +29,7 @@
 #include "JetMomentTools/JetForwardJvtTool.h"
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
+#include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -237,6 +238,7 @@ EL::StatusCode JetSelector :: initialize ()
     ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_eff_tool_handle, CP::JetJvtEfficiency));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("WorkingPoint", m_WorkingPointfJVT ));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("SFFile",       m_SFFilefJVT ));
+    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("UseMuSFFormat",       m_UseMuSFFormatfJVT ));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("ScaleFactorDecorationName", "fJVTSF"));
     ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("OutputLevel",  msg().level()));
     ANA_CHECK( m_fJVT_eff_tool_handle.retrieve());
@@ -319,19 +321,28 @@ EL::StatusCode JetSelector :: initialize ()
   //
   // **************************************
   if( !( m_singleJetTrigChains.empty() && m_diJetTrigChains.empty() ) ) {
-    // Grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_handle.isUserConfigured()){
-      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
-    }
-    ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
-    //  everything went fine, let's initialise the tool!
-    ANA_CHECK( m_trigJetMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
-    ANA_CHECK( m_trigJetMatchTool_handle.setProperty("OutputLevel", msg().level() ));
-    ANA_CHECK( m_trigJetMatchTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigJetMatchTool_handle);
+    if( !isPHYS() ) {
+      // Grab the TrigDecTool from the ToolStore
+      if(!m_trigDecTool_handle.isUserConfigured()){
+        ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_CHECK( m_trigDecTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+
+      //  everything went fine, let's initialise the tool!
+      m_trigJetMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
+      ANA_CHECK( m_trigJetMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigJetMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigJetMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigJetMatchTool_handle);
+    } else { // For DAOD_PHYS samples
+      m_trigJetMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
+      ANA_CHECK( m_trigJetMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigJetMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigJetMatchTool_handle);
+    }
 
   } else {
 
@@ -391,7 +402,7 @@ EL::StatusCode JetSelector :: execute ()
 
   // QUESTION: why this must be done in execute(), and does not work in initialize()?
   //
-  if ( m_numEvent == 1 && m_trigDecTool_handle.isInitialized() ) {
+  if ( m_numEvent == 1 && m_trigJetMatchTool_handle.isInitialized() ) {
 
     // parse input jet trigger chain list, split by comma and fill vector
     //
@@ -931,7 +942,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   if ( m_pass_min > 0 && nPass < m_pass_min ) {
     return false;
   }
-  if ( m_pass_max > 0 && nPass > m_pass_max ) {
+  if ( m_pass_max >= 0 && nPass > m_pass_max ) {
     return false;
   }
 
@@ -1200,6 +1211,8 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     if ( jetPt < m_pt_max_JVF ) {
       xAOD::JetFourMom_t jetScaleP4 = jet->getAttribute< xAOD::JetFourMom_t >( m_jetScaleType.c_str() );
       if ( fabs(jetScaleP4.eta()) < m_eta_max_JVF ){
+        if ( m_pvLocation < 0 )
+          return 0;
         if ( jet->getAttribute< std::vector<float> >( "JVF" ).at( m_pvLocation ) < m_JVFCut ) {
           return 0;
         }

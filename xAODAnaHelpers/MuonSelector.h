@@ -149,7 +149,7 @@ private:
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
   CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr}; //!
   asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle     {"CP::MuonSelectionTool/MuonSelectionTool"          , this}; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle     {"Trig::MatchingTool/MatchingTool"                  , this}; //!
+  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle; //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing

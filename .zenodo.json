@@ -1,0 +1,261 @@
+{
+    "description": "Flexible C++ xAOD analysis, driven by python, on top of ATLAS offline software",
+    "license": "Apache-2.0",
+    "title": "xAODAnaHelpers, v1.0.0",
+    "version": "v1.0.0",
+    "upload_type": "software",
+    "creators": [
+        {
+            "affiliation": "SCIPP, University of California, Santa Cruz",
+            "name": "Giordon Stark",
+            "orcid": "0000-0001-6616-3433"
+        },
+        {
+            "affiliation": "ARC Centre of Excellence in Particle Physics at the Terascale, School of Physics, The University of Melbourne",
+            "name": "Marco Milesi",
+            "orcid": "0000-0002-8805-1886"
+        },
+        {
+            "affiliation": "University of Chicago, Enrico Fermi Institute",
+            "name": "John Alison",
+            "orcid": "0000-0003-0843-1641"
+        },
+        {
+            "affiliation": "University of Warwick, Coventry",
+            "name": "Gabriel Facini",
+            "orcid": "0000-0002-4056-4578"
+        },
+        {
+            "affiliation": "Lawrence Berkeley National Laboratory and University of California, Berkeley",
+            "name": "Karol Krizka",
+            "orcid": "0000-0001-6408-2648"
+        },
+        {
+            "affiliation": "Department of Physics and Astronomy, University of Pennsylvania",
+            "name": "Jeffrey Dandoy",
+            "orcid": "0000-0002-9271-7126"
+        },
+        {
+            "affiliation": "Jozef Stefan Institute",
+            "name": "Tadej Novak",
+            "orcid": "0000-0002-3053-0913"
+        },
+        {
+            "affiliation": "McGill University, Department of Physics",
+            "name": "Jonathan Bossio",
+            "orcid": "0000-0002-7134-8077"
+        },
+        {
+            "affiliation": "ARC Centre of Excellence in Particle Physics at the Terascale, School of Physics, The University of Melbourne",
+            "name": "Federico Scutti"
+        },
+        {
+            "affiliation": "University of Arizona",
+            "name": "Matthew LeBlanc",
+            "orcid": "0000-0001-5977-6418"
+        },
+        {
+            "affiliation": "Department of Physics and Astronomy, University of Pennsylvania",
+            "name": "Leigh Schaefer",
+            "orcid": "0000-0003-1355-5032"
+        },
+        {
+            "affiliation": "University of Chicago, Enrico Fermi Institute",
+            "name": "Brian Tuan"
+        },
+        {
+            "affiliation": "University of Illinois at Urbana-Champaign",
+            "name": "Matthew Feickert",
+            "orcid": "0000-0003-4124-7862"
+        },
+        {
+            "affiliation": "Brookhaven National Laboratory (BNL)",
+            "name": "William Kalderon",
+            "orcid": "0000-0002-2875-853X"
+        },
+        {
+            "affiliation": "Harvard University",
+            "name": "Alexander Tuna",
+            "orcid": "0000-0002-7672-7754"
+        },
+        {
+            "affiliation": "Lawrence Berkeley National Laboratory and University of California, Berkeley",
+            "name": "Miha Muskinja",
+            "orcid": "0000-0001-8442-2718"
+        },
+        {
+            "affiliation": "University of California, Irvine",
+            "name": "Joakim Olsson",
+            "orcid": "0000-0003-4154-8139"
+        },
+        {
+            "affiliation": "Harvard University",
+            "name": "Lawrence Lee Jr",
+            "orcid": "0000-0002-5590-335X"
+        },
+        {
+            "affiliation": "Harvard University",
+            "name": "Baojia Tong",
+            "orcid": "0000-0003-2430-8870"
+        },
+        {
+            "affiliation": "Department of Physics, University of Toronto",
+            "name": "Tao Hyoun Park"
+        },
+        {
+            "affiliation": "TRIUMF",
+            "name": "Maximilian Swiatlowski",
+            "orcid": "0000-0001-7287-0468"
+        },
+        {
+            "affiliation": "Harvard University",
+            "name": "Tomo Lazovich"
+        },
+        {
+            "affiliation": "University of Pittsburgh",
+            "name": "Benjamin Carlson",
+            "orcid": "0000-0002-7550-7821"
+        },
+        {
+            "affiliation": "Lunds universitet, Fysiska institutionen",
+            "name": "Caterina Doglioni",
+            "orcid": "0000-0002-1509-0390"
+        },
+        {
+            "affiliation": "Laboratoire de Physique Nucleaire et de Hautes Energies (LPNHE), Sorbonne Universite, Universite de Paris, CNRS/IN2P3",
+            "name": "Robert Hankache",
+            "orcid": "0000-0003-4519-8949"
+        },
+        {
+            "affiliation": "University of California, Irvine",
+            "name": "Meghan Frate",
+            "orcid": "0000-0003-2510-364X"
+        },
+        {
+            "affiliation": "Lawrence Berkeley National Laboratory and University of California, Berkeley",
+            "name": "Vincent Pascuzzi",
+            "orcid": "0000-0003-3167-8773"
+        },
+        {
+            "affiliation": "Southern Methodist University, Department of Physics",
+            "name": "Stephen Sekula",
+            "orcid": "0000-0002-3199-4699"
+        },
+        {
+            "affiliation": "University of British Columbia",
+            "name": "Robin Newhouse"
+        },
+        {
+            "affiliation": "Universite Paris-Saclay, CNRS/IN2P3, IJCLab, 91405, Orsay",
+            "name": "Marta Perego",
+            "orcid": "0000-0002-9875-0904"
+        },
+        {
+            "affiliation": "Universidad de Buenos Aires",
+            "name": "Mariana Toscani"
+        },
+        {
+            "affiliation": "Cavendish Laboratory, University of Cambridge",
+            "name": "Lars Henkelmann",
+            "orcid": "0000-0001-8231-2080"
+        },
+        {
+            "affiliation": "Department of Physics and Astronomy, University College London",
+            "name": "Laurie McClymont"
+        },
+        {
+            "affiliation": "Duke University, Department of Physics",
+            "name": "Katherina Pachal",
+            "orcid": "0000-0002-8332-243X"
+        },
+        {
+            "affiliation": "Yale University",
+            "name": "Chase Shimmin",
+            "orcid": "0000-0002-2228-2251"
+        },
+        {
+            "affiliation": "McGill University, Department of Physics",
+            "name": "Christina Nelson"
+        },
+        {
+            "affiliation": "Lawrence Berkeley National Laboratory and University of California, Berkeley",
+            "name": "Brian Amadio"
+        },
+        {
+            "affiliation": "University of Oxford, Particle Physics",
+            "name": "Beojan Stanislaus",
+            "orcid": "0000-0001-9007-7658"
+        },
+        {
+            "affiliation": "University of Oxford, Particle Physics",
+            "name": "William Balunas",
+            "orcid": "0000-0002-7048-4915"
+        },
+        {
+            "affiliation": "SLAC National Accelerator Laboratory",
+            "name": "Nicole Hartman"
+        },
+        {
+            "affiliation": "Brookhaven National Laboratory (BNL)",
+            "name": "Jennifer Roloff",
+            "orcid": "0000-0001-6479-3079"
+        },
+        {
+            "affiliation": "Lunds universitet, Fysiska institutionen",
+            "name": "Jannik Geisen",
+            "orcid": "0000-0003-4644-2472"
+        },
+        {
+            "affiliation": "University of Massachusetts, Amherst",
+            "name": "Dale Abbott"
+        },
+        {
+            "affiliation": "Royal Institute of Technology (KTH)",
+            "name": "Christian Ohm",
+            "orcid": "0000-0002-8015-7512"
+        },
+        {
+            "affiliation": "Santa Cruz Institute for Particle Physics, University of California Santa Cruz",
+            "name": "Cole Helling",
+            "orcid": "0000-0002-2657-7532"
+        },
+        {
+            "affiliation": "Departement de Physique Nucleaire et Corpusculaire, Universite de Geneve",
+            "name": "Claire Antel",
+            "orcid": "0000-0001-9683-0890"
+        },
+        {
+            "affiliation": "Nevis Laboratory, Columbia University",
+            "name": "Alexander Emerman"
+        },
+        {
+            "affiliation": "SLAC National Accelerator Laboratory",
+            "name": "Aviv Cukierman",
+            "orcid": "0000-0002-7834-1716"
+        },
+        {
+            "affiliation": "INFN Genova and Universita' di Genova, Dipartimento di Fisica",
+            "name": "Andrea Coccaro",
+            "orcid": "0000-0003-2368-4559"
+        }
+    ],
+    "access_right": "open",
+    "keywords": [
+      "physics",
+      "analysis",
+      "eventloop",
+      "c++",
+      "selection",
+      "calibration",
+      "histogram",
+      "ntuple",
+      "ROOT"
+    ],
+    "related_identifiers": [
+        {
+            "scheme": "url",
+            "identifier": "https://github.com/UCATLAS/xAODAnaHelpers/tree/v1.0.0",
+            "relation": "isSupplementTo"
+        }
+    ]
+}

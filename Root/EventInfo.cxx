@@ -123,7 +123,7 @@ void EventInfo::setBranches(TTree *tree)
 
   // always
   tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
-  tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/LI");
+  tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/L");
   tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
   tree->Branch("coreFlags",          &m_coreFlags,      "coreFlags/i");
   tree->Branch("bcid",               &m_bcid,           "bcid/I");

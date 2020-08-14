@@ -373,7 +373,16 @@ namespace HelperClasses {
         m_purity       purity       exact
         m_effSF        effSF        exact
         m_trigger      trigger      exact
+        m_isoCones     isoCone      partial
         ============== ============ =======
+
+        .. note::
+
+            ``isoCone`` can be repeated but requires a number after it, for example::
+
+                m_configStr = "... isoCone20 isoCone40 ..."
+
+            which will define ``std::vector<int> m_isoCones = {20,40}``.
 
     @endrst
    */
@@ -384,6 +393,7 @@ namespace HelperClasses {
     bool m_purity;
     bool m_effSF;
     bool m_trigger;
+    std::vector<std::string> m_isoCones;
     PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
     virtual ~PhotonInfoSwitch() {}
   protected:
@@ -454,7 +464,7 @@ namespace HelperClasses {
         m_byAverageMu    byAverageMu    exact
         m_byEta          byEta          exact
         m_etaPhiMap      etaPhiMap      exact
-        m_muonCorrection muonCorrection exact 
+        m_muonCorrection muonCorrection exact
         ================ ============== =======
 
         .. note::
@@ -463,17 +473,11 @@ namespace HelperClasses {
 
                 m_configStr = "... sfJVTMedium ..."
 
-            ``sfFTagFix``, ``sfFTagFlt`` and ``sfFTagHyb`` require a string of numbers pairwise ``AABB..MM..YYZZ`` succeeding it. This will create a vector of numbers (AA, BB, CC, ..., ZZ) associated with that variable. For example::
-
-                m_configStr = "... sfFTagFix010203 ..."
-
-            will define ``std::vector<int> m_sfFTagFix = {1,2,3}``. THIS OPTION IS DEPRICATED!
-
             ``jetBTag`` expects the format ``jetBTag_tagger_type_AABB..MM..YY.ZZ``. This will create a vector of working points (AA, BB, CC, ..., ZZ) associated with that tagger. Several entries can be given. For example::
 
-                m_configStr = "... jetBTag_MV2c10_HybBEff_60707785 ..."
+                m_configStr = "... jetBTag_MV2c10_FixedCutBEff_60707785 ..."
 
-            will define ``std::map<std::vector<std::pair<std::string,uint>>> m_jetBTag["MV2c10"] = {std::make_pair("HybBEff",60), std::make_pair("HybBEff",70) ,std::make_pair("HybBEff",77), std::make_pair("HybBEff",85)}``.
+            will define ``std::map<std::vector<std::pair<std::string,uint>>> m_jetBTag["MV2c10"] = {std::make_pair("FixedCutBEff",60), std::make_pair("FixedCutBEff",70) ,std::make_pair("FixedCutBEff",77), std::make_pair("FixedCutBEff",85)}``.
 
 	    ``trackJetName`` expects one or more track jet container names separated by an underscore. For example, the string ``trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet`` will set the attriubte ``m_trackJetNames``
 	    to ``{"GhostAntiKt2TrackJet", "GhostVR30Rmax4Rmin02TrackJet"}``.
@@ -531,9 +535,6 @@ namespace HelperClasses {
     std::vector<std::string> m_trackJetNames;
     std::string              m_sfJVTName;
     std::string              m_sffJVTName;
-    std::vector<int>         m_sfFTagFix;
-    std::vector<int>         m_sfFTagFlt;
-    std::vector<int>         m_sfFTagHyb;
     std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
     std::vector<std::string> m_jetBTagCts;
     JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
@@ -624,8 +625,8 @@ namespace HelperClasses {
 
         .. note::
 
-             ``identification`` and ``effSF`` switches do not enable any additional output by themselves. 
-             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ`` 
+             ``identification`` and ``effSF`` switches do not enable any additional output by themselves.
+             They require additional working point pattern using ``TAUEFF_XYZ`` for combined scale factors, and ``TRIG_XYZ``
              for trigger scale factors. ``XYZ`` in the pattern should be replaced using the working point name, for example::
 
                  m_configStr = "... TAUEFF_EleOLRElectronEleBDTLoose_TauIDMedium ... TRIG_EleOLRElectronEleBDTMedium_TauIDLoose_TrigMyTriggerMenu"
@@ -641,11 +642,11 @@ namespace HelperClasses {
     bool m_JetID;
     bool m_EleVeto;
     bool m_xahTauJetMatching;
-    bool m_trackAll;         
+    bool m_trackAll;
     bool m_trackparams;
     bool m_trackhitcont;
     bool m_effSF;
-    
+
     std::vector< std::string > m_tauEffWPs;
     std::vector< std::string > m_trigWPs;
 
