@@ -359,7 +359,7 @@ class JetHists : public IParticleHists
     //TH1F* m_SumPtTrkPt1000PV;
     //TH1F* m_TrackWidthPt1000PV;
     //TH1F* m_NumTrkPt500PV;
-    //TH1F* m_SumPtTrkPt500PV;
+    TH1F* m_SumPtTrkPt500PV;
     //TH1F* m_TrackWidthPt500PV;
     //TH1F* m_JVFPV;
 

@@ -502,7 +502,7 @@ StatusCode JetHists::initialize() {
       //m_SumPtTrkPt1000PV   = book(m_name, "SumPtTrkPt1000PV", m_titlePrefix+" jet #sum_{trk,P_{T}>1 GeV}"  , 100,    0, 1000);
       //m_TrackWidthPt1000PV = book(m_name, "TrackWidthPt1000P",m_titlePrefix+" jet w_{trk,P_{T}>1 GeV}"     , 100,    0, 0.5);
       //m_NumTrkPt500PV      = book(m_name, "NumTrkPt500PV",    m_titlePrefix+" jet N_{trk,P_{T}>500 MeV}"   ,  50, -0.5, 49.5);
-      //m_SumPtTrkPt500PV    = book(m_name, "SumPtTrkPt500PV",  m_titlePrefix+" jet #sum_{trk,P_{T}>500 MeV}", 100,    0, 1000);
+      m_SumPtTrkPt500PV    = book(m_name, "SumPtTrkPt500PV",  m_titlePrefix+" jet #sum_{trk,P_{T}>500 MeV}", 100,    0, 1000);
       //m_TrackWidthPt500PV  = book(m_name, "TrackWidthPt500P", m_titlePrefix+" jet w_{trk,P_{T}>500 MeV}"   , 100,    0, 0.5);
       //m_JVFPV              = book(m_name, "JVFPV",            m_titlePrefix+" jet JVF_{PV}"                , 100,    0, 0.5);
     }
@@ -1707,7 +1707,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 //      m_SumPtTrkPt1000PV  ->Fill(jet->SumPtTrkPt1000PV  , eventWeight);
 //      m_TrackWidthPt1000PV->Fill(jet->TrackWidthPt1000PV, eventWeight);
 //      m_NumTrkPt500PV     ->Fill(jet->NumTrkPt500PV     , eventWeight);
-//      m_SumPtTrkPt500PV   ->Fill(jet->SumPtTrkPt500PV   , eventWeight);
+     m_SumPtTrkPt500PV   ->Fill(jet->SumPtTrkPt500PV   , eventWeight);
 //      m_TrackWidthPt500PV ->Fill(jet->TrackWidthPt500PV , eventWeight);
 //      m_JVFPV             ->Fill(jet->JVFPV             , eventWeight);
     }
