@@ -1140,6 +1140,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
         jet.N90Constituents           =m_N90Constituents           ->at(idx);
         jet.LArBadHVEFrac             =m_LArBadHVEnergyFrac        ->at(idx);
         jet.LArBadHVNCell             =m_LArBadHVNCell             ->at(idx);
+        jet.ChargeFrac                =m_ChargeFrac                ->at(idx);
         jet.OotFracClusters5          =m_OotFracClusters5          ->at(idx);
         jet.OotFracClusters10         =m_OotFracClusters10         ->at(idx);
         jet.LeadingClusterPt          =m_LeadingClusterPt          ->at(idx);
