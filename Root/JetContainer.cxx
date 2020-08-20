@@ -2355,6 +2355,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
       safeFill<int, int, xAOD::Jet>(jet, LArBadHVNCell, m_LArBadHVNCell, -999);
 
+      static SG::AuxElement::ConstAccessor<float> ChargeFrac ("ChargeFrac");
+      safeFill<float, float, xAOD::Jet>(jet, ChargeFrac, m_ChargeFrac, -999);
+
       static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
       safeFill<float, float, xAOD::Jet>(jet, OotFracClus5, m_OotFracClusters5, -999);
 
