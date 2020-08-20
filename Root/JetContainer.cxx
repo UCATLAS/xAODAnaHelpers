@@ -39,7 +39,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_N90Constituents           =new std::vector<float>();
       m_LArBadHVEnergyFrac        =new std::vector<float>();
       m_LArBadHVNCell             =new std::vector<int>();
-      m_ChargeFrac                =new std::vector<float>();
+      m_ChargedFraction           =new std::vector<float>();
       m_OotFracClusters5          =new std::vector<float>();
       m_OotFracClusters10         =new std::vector<float>();
       m_LeadingClusterPt          =new std::vector<float>();
@@ -467,7 +467,7 @@ JetContainer::~JetContainer()
       delete m_N90Constituents;
       delete m_LArBadHVEnergyFrac;
       delete m_LArBadHVNCell;
-      delete m_ChargeFrac;
+      delete m_ChargedFraction;
       delete m_OotFracClusters5;
       delete m_OotFracClusters10;
       delete m_LeadingClusterPt;
@@ -885,7 +885,7 @@ void JetContainer::setTree(TTree *tree)
         connectBranch<float>(tree, "BchCorrCell",                &m_BchCorrCell);
         connectBranch<float>(tree, "N90Constituents",            &m_N90Constituents);
         connectBranch<float>(tree, "LArBadHVEnergyFrac",         &m_LArBadHVEnergyFrac);
-        connectBranch<float>(tree, "ChargeFrac",                 &m_ChargeFrac);
+        connectBranch<float>(tree, "ChargedFraction",            &m_ChargedFraction);
         connectBranch<float>(tree, "OotFracClusters5",           &m_OotFracClusters5);
         connectBranch<float>(tree, "OotFracClusters10",          &m_OotFracClusters10);
         connectBranch<float>(tree, "LeadingClusterPt",           &m_LeadingClusterPt);
@@ -1140,7 +1140,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
         jet.N90Constituents           =m_N90Constituents           ->at(idx);
         jet.LArBadHVEFrac             =m_LArBadHVEnergyFrac        ->at(idx);
         jet.LArBadHVNCell             =m_LArBadHVNCell             ->at(idx);
-        jet.ChargeFrac                =m_ChargeFrac                ->at(idx);
+        jet.ChargedFraction           =m_ChargedFraction           ->at(idx);
         jet.OotFracClusters5          =m_OotFracClusters5          ->at(idx);
         jet.OotFracClusters10         =m_OotFracClusters10         ->at(idx);
         jet.LeadingClusterPt          =m_LeadingClusterPt          ->at(idx);
@@ -1495,7 +1495,7 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<float>(tree,"N90Constituents",               m_N90Constituents           );
       setBranch<float>(tree,"LArBadHVEnergyFrac",            m_LArBadHVEnergyFrac   );
       setBranch<int>  (tree,"LArBadHVNCell",                 m_LArBadHVNCell  	  );
-      setBranch<float>(tree,"ChargeFrac",                    m_ChargeFrac);
+      setBranch<float>(tree,"ChargedFraction",               m_ChargedFraction);
       setBranch<float>(tree,"OotFracClusters5",              m_OotFracClusters5  	    );
       setBranch<float>(tree,"OotFracClusters10",             m_OotFracClusters10  	  );
       setBranch<float>(tree,"LeadingClusterPt",              m_LeadingClusterPt  	            );
@@ -1906,7 +1906,7 @@ void JetContainer::clear()
       m_N90Constituents           ->clear();
       m_LArBadHVEnergyFrac        ->clear();
       m_LArBadHVNCell             ->clear();
-      m_ChargeFrac                ->clear();
+      m_ChargedFraction           ->clear();
       m_OotFracClusters5          ->clear();
       m_OotFracClusters10         ->clear();
       m_LeadingClusterPt          ->clear();
@@ -2355,8 +2355,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
       safeFill<int, int, xAOD::Jet>(jet, LArBadHVNCell, m_LArBadHVNCell, -999);
 
-      static SG::AuxElement::ConstAccessor<float> ChargeFrac ("ChargeFrac");
-      safeFill<float, float, xAOD::Jet>(jet, ChargeFrac, m_ChargeFrac, -999);
+      static SG::AuxElement::ConstAccessor<float> ChargedFraction ("ChargedFraction");
+      safeFill<float, float, xAOD::Jet>(jet, ChargedFraction, m_ChargedFraction, -999);
 
       static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
       safeFill<float, float, xAOD::Jet>(jet, OotFracClus5, m_OotFracClusters5, -999);
@@ -2660,8 +2660,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
     if ( m_infoSwitch.m_clean && pvLocation >= 0 ) {
       if ( sumPt500.isAvailable( *jet ) ) {
-        m_ChargeFrac->push_back( sumPt500( *jet )[pvLocation] / jet->pt() ); // units cancel out
-      } else { m_ChargeFrac->push_back( -999 ); }
+        m_ChargedFraction->push_back( sumPt500( *jet )[pvLocation] / jet->pt() ); // units cancel out
+      } else { m_ChargedFraction->push_back( -999 ); }
     } // clean
 
   } // trackAll || trackPV || JVT

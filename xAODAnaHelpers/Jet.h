@@ -36,7 +36,7 @@ namespace xAH {
       float N90Constituents;
       float LArBadHVEFrac;
       int   LArBadHVNCell;
-      float ChargeFrac;
+      float ChargedFraction;
       float OotFracClusters5;
       float OotFracClusters10;
       float LeadingClusterPt;
