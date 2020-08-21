@@ -631,6 +631,15 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   } // fillClean
 
+  if( m_infoSwitch->m_trackPV ) {
+    if(m_debug) std::cout << "JetHists: m_trackPV " <<std::endl;
+
+    static SG::AuxElement::ConstAccessor<float> SumPtTrkPt500PV ("SumPtTrkPt500PV");
+    if( SumPtTrkPt500PV.isAvailable( *jet ) ) {
+      m_SumPtTrkPt500PV ->  Fill( SumPtTrkPt500PV( *jet ), eventWeight );
+    }
+  }
+
   // Pileup
   if(m_infoSwitch->m_vsActualMu){
     float actualMu = eventInfo->actualInteractionsPerCrossing();
