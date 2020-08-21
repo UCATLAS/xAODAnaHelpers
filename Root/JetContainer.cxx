@@ -2355,9 +2355,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::ConstAccessor<int> LArBadHVNCell ("LArBadHVNCell");
       safeFill<int, int, xAOD::Jet>(jet, LArBadHVNCell, m_LArBadHVNCell, -999);
 
-      static SG::AuxElement::ConstAccessor<float> ChargedFraction ("ChargedFraction");
-      safeFill<float, float, xAOD::Jet>(jet, ChargedFraction, m_ChargedFraction, -999);
-
       static SG::AuxElement::ConstAccessor<float> OotFracClus5 ("OotFracClusters5");
       safeFill<float, float, xAOD::Jet>(jet, OotFracClus5, m_OotFracClusters5, -999);
 
@@ -2658,6 +2655,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
     } // trackPV || JVT
 
+    // Can't use safeFill as ChargedFraction is not derivation level decoration
     if ( m_infoSwitch.m_clean && pvLocation >= 0 ) {
       if ( sumPt500.isAvailable( *jet ) ) {
         m_ChargedFraction->push_back( sumPt500( *jet )[pvLocation] / jet->pt() ); // units cancel out
