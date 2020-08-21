@@ -2659,7 +2659,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     if ( m_infoSwitch.m_clean && pvLocation >= 0 ) {
       if ( sumPt500.isAvailable( *jet ) ) {
         m_ChargedFraction->push_back( sumPt500( *jet )[pvLocation] / jet->pt() ); // units cancel out
-      } else { m_ChargedFraction->push_back( -999 ); }
+      } else {
+        m_ChargedFraction->push_back( -999. );
+      }
     } // clean
 
   } // trackAll || trackPV || JVT
