@@ -699,7 +699,15 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle, int pvLocatio
         if ( acc_NumTrkPt500.isAvailable( *fatjetParent ) ) {
           m_ungrtrk500->push_back( acc_NumTrkPt500( *fatjetParent )[pvLocation] );
         } else { 
-          m_ungrtrk500->push_back( -999 );
+	  //Perhaps the case if we are dealing with reclustered jets
+	  int sumUngrtrk500 = 0;
+	  const xAOD::Jet* subjet(nullptr);
+	  for(auto constit: fatjet->getConstituents()){
+            subjet = static_cast<const xAOD::Jet*>(constit->rawConstituent());
+            if (subjet->type() != xAOD::Type::Jet) continue;
+	    if ( acc_NumTrkPt500.isAvailable( *subjet ) ) sumUngrtrk500+=acc_NumTrkPt500( *subjet )[pvLocation];
+	  }
+          m_ungrtrk500->push_back( sumUngrtrk500 );
         }
       } else {
         m_ungrtrk500->push_back(-999);
