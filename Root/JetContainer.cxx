@@ -2661,7 +2661,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::Decorator< float > chargedFractionDecor("ChargedFraction");
       if ( chargedFractionDecor.isAvailable( *jet ) ) {
         safeFill<float, float, xAOD::Jet>(jet, ChargedFraction, m_ChargedFraction, -999);
-      } else { // calcualte and decorate
+      } else { // calculate and decorate
 
         if ( sumPt500.isAvailable( *jet ) ) {
           m_ChargedFraction->push_back( sumPt500( *jet )[pvLocation] / jet->pt() ); // units cancel out
