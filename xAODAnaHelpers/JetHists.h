@@ -53,6 +53,7 @@ class JetHists : public IParticleHists
     //TH1F* m_LArQmean;
     //TH1F* m_LArBadHVEFrac;
     //TH1F* m_LArBadHVNCell;
+    TH1F* m_ChargedFraction;        //!
     //TH1F* m_OotFracClusters5;
     //TH1F* m_OotFracClusters10;
     //TH1F* m_LeadingClusterPt;

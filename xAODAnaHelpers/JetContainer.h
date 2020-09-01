@@ -62,6 +62,7 @@ namespace xAH {
       std::vector<float> *m_N90Constituents;
       std::vector<float> *m_LArBadHVEnergyFrac;
       std::vector<int>   *m_LArBadHVNCell;
+      std::vector<float> *m_ChargedFraction;
       std::vector<float> *m_OotFracClusters5;
       std::vector<float> *m_OotFracClusters10;
       std::vector<float> *m_LeadingClusterPt;

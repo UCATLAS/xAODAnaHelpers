@@ -39,6 +39,8 @@ StatusCode JetHists::initialize() {
 
     //m_LArBadHVEFrac              =book(m_name, "LArBadHVEFrac",              m_titlePrefix+" jet LAr Bad HV Energy Fraction", 120,   0,    1);
     //m_LArBadHVNCell              =book(m_name, "LArBadHVNCell",              m_titlePrefix+" jet LAr Bad HV N_{cells}",       120,  -0.5,499.5);
+    // Range is [0, 2] instead of [0, 1] to include tail of events that spill over 1
+    m_ChargedFraction = book(m_name, "ChargedFraction", m_titlePrefix+" Sum of charged tracks p_{T}/jet p_{T}", 120, 0, 2);
     //m_OotFracClusters5           =book(m_name, "OotFracClusters5",           m_titlePrefix+" jet OotFracClusters5" ,          120,   0,    1);
     //m_OotFracClusters10          =book(m_name, "OotFracClusters10",          m_titlePrefix+" jet OotFracClusters10" ,         120,   0,    1);
     //m_LeadingClusterPt           =book(m_name, "LeadingClusterPt",           m_titlePrefix+" jet Leading Cluster P_{T}" ,     120,   0, 1000);
@@ -608,6 +610,11 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     static SG::AuxElement::ConstAccessor<float> N90Const ("N90Constituents");
     if( N90Const.isAvailable( *jet ) ) {
       m_N90Const ->  Fill( N90Const( *jet ), eventWeight );
+    }
+
+    static SG::AuxElement::ConstAccessor<float> ChargedFraction ("ChargedFraction");
+    if( ChargedFraction.isAvailable( *jet ) ) {
+      m_ChargedFraction ->  Fill( ChargedFraction( *jet ), eventWeight );
     }
 
 
@@ -1669,6 +1676,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       //m_LArQmean                  ->Fill(jet->AverageLArQF/65535        ,eventWeight);
       //m_LArBadHVEFrac             ->Fill(jet->LArBadHVEFrac             ,eventWeight);
       //m_LArBadHVNCell             ->Fill(jet->LArBadHVNCell             ,eventWeight);
+      m_ChargedFraction           ->Fill(jet->ChargedFraction           ,eventWeight);
       //m_OotFracClusters5          ->Fill(jet->OotFracClusters5          ,eventWeight);
       //m_OotFracClusters10         ->Fill(jet->OotFracClusters10         ,eventWeight);
       //m_LeadingClusterPt          ->Fill(jet->LeadingClusterPt          ,eventWeight);
