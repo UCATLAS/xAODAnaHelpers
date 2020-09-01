@@ -39,6 +39,7 @@ StatusCode JetHists::initialize() {
 
     //m_LArBadHVEFrac              =book(m_name, "LArBadHVEFrac",              m_titlePrefix+" jet LAr Bad HV Energy Fraction", 120,   0,    1);
     //m_LArBadHVNCell              =book(m_name, "LArBadHVNCell",              m_titlePrefix+" jet LAr Bad HV N_{cells}",       120,  -0.5,499.5);
+    // Range is [0, 2] instead of [0, 1] to include tail of events that spill over 1
     m_ChargedFraction = book(m_name, "ChargedFraction", m_titlePrefix+" Sum of charged tracks p_{T}/jet p_{T}", 120, 0, 2);
     //m_OotFracClusters5           =book(m_name, "OotFracClusters5",           m_titlePrefix+" jet OotFracClusters5" ,          120,   0,    1);
     //m_OotFracClusters10          =book(m_name, "OotFracClusters10",          m_titlePrefix+" jet OotFracClusters10" ,         120,   0,    1);
