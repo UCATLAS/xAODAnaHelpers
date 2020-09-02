@@ -188,10 +188,15 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   // Warn user if they're running standard jets without in-situ in data or smearing in MC
   if(m_inContainerName.find("AntiKt4EM") != std::string::npos){
-    if(!isMC() && m_calibSequence.find("_Insitu") == std::string::npos)
-      ANA_MSG_WARNING("Calibrating AntiKt4EM jets in data without the in-situ step. This is not recommended, make sure it's really what you want!");
-    else if(!isFastSim() && m_calibSequence.find("_Smear") == std::string::npos)
-      ANA_MSG_WARNING("Calibrating AntiKt4EM jets in fullsim without the smearing step. This is not recommended, make sure it's really what you want!");
+    if(!isMC()){
+      if(m_calibSequence.find("_Insitu") == std::string::npos){
+        ANA_MSG_WARNING("Calibrating AntiKt4EM jets in data without the in-situ step. This is not recommended, make sure it's really what you want!");
+      }
+    } else { // MC
+      if(!isFastSim() && m_calibSequence.find("_Smear") == std::string::npos){
+        ANA_MSG_WARNING("Calibrating AntiKt4EM jets in fullsim without the smearing step. This is not recommended, make sure it's really what you want!");
+      }
+    }
   }
 
   // retrieve EventInfo to get sample information
