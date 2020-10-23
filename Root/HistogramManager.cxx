@@ -11,7 +11,7 @@
  *
  ******************************************/
 
-#include <AsgTools/MsgStream.h>
+#include <AsgMessaging/MsgStream.h>
 #include "xAODAnaHelpers/HistogramManager.h"
 
 /* constructors and destructors */

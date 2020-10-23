@@ -102,12 +102,12 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    ElectronPhotonShowerShapeFudgeToolLib
                    FTagAnalysisInterfacesLib JetAnalysisInterfacesLib MuonAnalysisInterfacesLib
                    PhotonEfficiencyCorrectionLib METUtilitiesLib METInterface
-                   TauAnalysisToolsLib AsgTools xAODMissingET JetResolutionLib
+                   TauAnalysisToolsLib AsgTools xAODMissingET 
                    AssociationUtilsLib JetEDM JetUncertaintiesLib
                    JetCPInterfaces xAODBTaggingEfficiencyLib TrigConfxAODLib
                    TrigDecisionToolLib xAODCutFlow JetMomentToolsLib
                    TriggerMatchingToolLib xAODMetaDataCnv xAODMetaData
-                   JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils JetTileCorrectionLib BoostedJetTaggersLib
+                  #  JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils JetTileCorrectionLib BoostedJetTaggersLib JetResolutionLib
                    ${release_libs}
 )
 
@@ -122,11 +122,11 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include(SetupPythonPackage)
 
 # Install argcomplete:
-setup_python_package( argcomplete
-   "https://pypi.python.org/packages/3b/db/c524f0d72842b44b179cc50d4257f1e72f447fef0919556e8b28a9b0f80f/argcomplete-1.9.2.tar.gz"
-   "13243e0b88102f13f7537f5aa70a48c0"
-   PATCH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch-setup.cfg setup.cfg
-)
+# setup_python_package( argcomplete
+#    "https://pypi.python.org/packages/3b/db/c524f0d72842b44b179cc50d4257f1e72f447fef0919556e8b28a9b0f80f/argcomplete-1.9.2.tar.gz"
+#    "13243e0b88102f13f7537f5aa70a48c0"
+#    PATCH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch-setup.cfg setup.cfg
+# )
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/xAH_env_copied
                    COMMAND cat ${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.sh >> ${CMAKE_BINARY_DIR}/${ATLAS_PLATFORM}/setup.sh

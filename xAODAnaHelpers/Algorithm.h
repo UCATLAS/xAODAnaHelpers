@@ -15,7 +15,7 @@
 #include <string>
 
 // for StatusCode::isSuccess
-#include "AsgTools/StatusCode.h"
+#include "AsgMessaging/StatusCode.h"
 #include "AsgTools/ToolStore.h"
 #include "AsgTools/AnaToolHandle.h"
 
@@ -23,9 +23,9 @@
 #include "PathResolver/PathResolver.h"
 
 // messaging includes
-#include <AsgTools/MsgStream.h>
-#include <AsgTools/MsgStreamMacros.h>
-#include <AsgTools/MessageCheck.h>
+#include <AsgMessaging/MsgStream.h>
+#include <AsgMessaging/MsgStreamMacros.h>
+#include <AsgMessaging/MessageCheck.h>
 
 
 namespace xAH {

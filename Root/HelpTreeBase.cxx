@@ -15,10 +15,10 @@
 // package include(s):
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/HelpTreeBase.h>
-#include <AsgTools/MessageCheck.h>
+#include <AsgMessaging/MessageCheck.h>
 
 
-#include "AsgTools/StatusCode.h"
+#include "AsgMessaging/StatusCode.h"
 
 using std::vector;
 
