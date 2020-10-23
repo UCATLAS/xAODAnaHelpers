@@ -915,7 +915,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       std::string decorWP = base_decor + "_" + WP_itr;
 
       ANA_MSG_DEBUG( "Decorate muon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
-      muon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
+      muon->auxdecor<char>(decorWP) = static_cast<bool>( accept_list.getCutResult( WP_itr.c_str() ) );
 
     }
 
