@@ -20,7 +20,7 @@
 // #include <xAODAnaHelpers/TauCalibrator.h>
 // /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
 // #include <xAODAnaHelpers/HLTJetRoIBuilder.h>
-// #include <xAODAnaHelpers/HLTJetGetter.h>
+#include <xAODAnaHelpers/HLTJetGetter.h>
 
 // /* Missing Energy Reconstruction */
 #include <xAODAnaHelpers/METConstructor.h>
