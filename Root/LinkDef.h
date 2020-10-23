@@ -4,7 +4,7 @@
 // /* Event and Jet Selectors */
 #include <xAODAnaHelpers/BasicEventSelection.h>
 #include <xAODAnaHelpers/ElectronSelector.h>
-// #include <xAODAnaHelpers/PhotonSelector.h>
+#include <xAODAnaHelpers/PhotonSelector.h>
 // #include <xAODAnaHelpers/TauSelector.h>
 // #include <xAODAnaHelpers/JetSelector.h>
 // #include <xAODAnaHelpers/DebugTool.h>
@@ -14,7 +14,7 @@
 
 // /* Calibrations */
 #include <xAODAnaHelpers/ElectronCalibrator.h>
-// #include <xAODAnaHelpers/PhotonCalibrator.h>
+#include <xAODAnaHelpers/PhotonCalibrator.h>
 // #include <xAODAnaHelpers/JetCalibrator.h>
 #include <xAODAnaHelpers/MuonCalibrator.h>
 // #include <xAODAnaHelpers/TauCalibrator.h>
