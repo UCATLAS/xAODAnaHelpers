@@ -116,7 +116,7 @@ EL::StatusCode METConstructor :: initialize ()
 
   //////////// IMETMaker ////////////////
   if ( m_dofJVTCut ) {
-    ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", "passFJVT"));
+    ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", m_fJVTdecorName));
   }
   if ( m_doPFlow ) {
     ANA_CHECK(m_metmaker_handle.setProperty("DoPFlow", true));
