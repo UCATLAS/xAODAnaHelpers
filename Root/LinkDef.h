@@ -10,13 +10,13 @@
 // #include <xAODAnaHelpers/DebugTool.h>
 // #include <xAODAnaHelpers/TruthSelector.h>
 // #include <xAODAnaHelpers/TrackSelector.h>
-// #include <xAODAnaHelpers/MuonSelector.h>
+#include <xAODAnaHelpers/MuonSelector.h>
 
 // /* Calibrations */
 // #include <xAODAnaHelpers/ElectronCalibrator.h>
 // #include <xAODAnaHelpers/PhotonCalibrator.h>
 // #include <xAODAnaHelpers/JetCalibrator.h>
-// #include <xAODAnaHelpers/MuonCalibrator.h>
+#include <xAODAnaHelpers/MuonCalibrator.h>
 // #include <xAODAnaHelpers/TauCalibrator.h>
 // /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
 // #include <xAODAnaHelpers/HLTJetRoIBuilder.h>
