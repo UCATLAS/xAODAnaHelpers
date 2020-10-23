@@ -514,7 +514,6 @@ if __name__ == "__main__":
 
     # make the driver we want to use:
     xAH_logger.info("creating driver")
-    args.driver = 'direct' #LUKAS
     xAH_logger.info("\trunning on {0:s}".format(args.driver))
     driver = None
     if (args.driver == "direct"):
