@@ -32,14 +32,14 @@
 // #include <xAODAnaHelpers/BJetEfficiencyCorrector.h>
 
 // /* Plotting Tools */
-// #include <xAODAnaHelpers/IParticleHistsAlgo.h>
-// #include <xAODAnaHelpers/JetHistsAlgo.h>
-// #include <xAODAnaHelpers/MuonHistsAlgo.h>
-// #include <xAODAnaHelpers/PhotonHistsAlgo.h>
-// #include <xAODAnaHelpers/ElectronHistsAlgo.h>
-// #include <xAODAnaHelpers/MetHistsAlgo.h>
-// #include <xAODAnaHelpers/TrackHistsAlgo.h>
-// #include <xAODAnaHelpers/ClusterHistsAlgo.h>
+#include <xAODAnaHelpers/IParticleHistsAlgo.h>
+#include <xAODAnaHelpers/JetHistsAlgo.h>
+#include <xAODAnaHelpers/MuonHistsAlgo.h>
+#include <xAODAnaHelpers/PhotonHistsAlgo.h>
+#include <xAODAnaHelpers/ElectronHistsAlgo.h>
+#include <xAODAnaHelpers/MetHistsAlgo.h>
+#include <xAODAnaHelpers/TrackHistsAlgo.h>
+#include <xAODAnaHelpers/ClusterHistsAlgo.h>
 
 // /* Tree */
 #include <xAODAnaHelpers/TreeAlgo.h>
