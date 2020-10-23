@@ -23,7 +23,7 @@
 // #include <xAODAnaHelpers/HLTJetGetter.h>
 
 // /* Missing Energy Reconstruction */
-// #include <xAODAnaHelpers/METConstructor.h>
+#include <xAODAnaHelpers/METConstructor.h>
 
 // /* Scale Factors */
 // #include <xAODAnaHelpers/ElectronEfficiencyCorrector.h>
