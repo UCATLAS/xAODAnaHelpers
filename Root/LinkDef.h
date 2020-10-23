@@ -6,7 +6,7 @@
 #include <xAODAnaHelpers/ElectronSelector.h>
 #include <xAODAnaHelpers/PhotonSelector.h>
 // #include <xAODAnaHelpers/TauSelector.h>
-// #include <xAODAnaHelpers/JetSelector.h>
+#include <xAODAnaHelpers/JetSelector.h>
 // #include <xAODAnaHelpers/DebugTool.h>
 // #include <xAODAnaHelpers/TruthSelector.h>
 // #include <xAODAnaHelpers/TrackSelector.h>
@@ -15,7 +15,7 @@
 // /* Calibrations */
 #include <xAODAnaHelpers/ElectronCalibrator.h>
 #include <xAODAnaHelpers/PhotonCalibrator.h>
-// #include <xAODAnaHelpers/JetCalibrator.h>
+#include <xAODAnaHelpers/JetCalibrator.h>
 #include <xAODAnaHelpers/MuonCalibrator.h>
 // #include <xAODAnaHelpers/TauCalibrator.h>
 // /*#include <xAODAnaHelpers/GroomedFatJets.h>*/
