@@ -2,7 +2,7 @@
 #include <xAODAnaHelpers/Algorithm.h>
 
 // /* Event and Jet Selectors */
-// #include <xAODAnaHelpers/BasicEventSelection.h>
+#include <xAODAnaHelpers/BasicEventSelection.h>
 // #include <xAODAnaHelpers/ElectronSelector.h>
 // #include <xAODAnaHelpers/PhotonSelector.h>
 // #include <xAODAnaHelpers/TauSelector.h>
