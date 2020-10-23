@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import logging
+from functools import reduce
 logger = logging.getLogger("xAH.config")
 
 import ROOT
@@ -30,9 +31,9 @@ class Config(object):
 
   def algorithm(self, className, options):
     # check first argument
-    if isinstance(className, unicode): className = className.encode('utf-8')
-    if not isinstance(className, str):
-      raise TypeError("className must be a string")
+    # if isinstance(className, unicode):
+    # if not isinstance(className, str):
+    #   raise TypeError("className must be a string")
 
     if not isinstance(options, dict):
       raise TypeError("Must pass in a dictionary of options")
@@ -43,8 +44,8 @@ class Config(object):
       algName = str(NameGenerator())
       logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
       options['m_name'] = algName
-    if not isinstance(algName, str) and not isinstance(algName, unicode):
-      raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
+    # if not isinstance(algName, str) and not isinstance(algName, unicode):
+    #   raise TypeError("'m_name' must be a string for instance of {0:s}".format(className))
 
     # handle deprecation of m_debug, m_verbose
     if 'm_debug' in options:
@@ -54,7 +55,7 @@ class Config(object):
 
     # handle msgLevels, can be string or integer
     msgLevel = options.get("m_msgLevel", "info")
-    if isinstance(msgLevel, unicode): msgLevel = msgLevel.encode('utf-8')
+    # if isinstance(msgLevel, unicode): msgLevel = msgLevel.encode('utf-8')
     if not isinstance(msgLevel, str) and not isinstance(msgLevel, int):
       raise TypeError("m_msgLevel must be a string or integer for instance of {0:s}".format(className))
     if isinstance(msgLevel, str):
@@ -83,7 +84,7 @@ class Config(object):
           raise AttributeError(k)
         elif hasattr(alg_obj, k):
           #handle unicode from json
-          if isinstance(v, unicode): v = v.encode('utf-8')
+          # if isinstance(v, unicode): v = v.encode('utf-8')
           self._log.append((algName, k, v))
           try:
             setattr(alg_obj, k, v)
@@ -98,7 +99,7 @@ class Config(object):
       #setattr(alg_obj, "OutputLevel", msgLevel)
       for k,v in options.items():
         if k in ['m_msgLevel', 'm_name']: continue
-        if isinstance(v, unicode): v = v.encode('utf-8')
+        # if isinstance(v, unicode): v = v.encode('utf-8')
         self._log.append((algName, k, v))
         try:
           setattr(alg_obj, k, v)

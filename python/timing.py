@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import logging
+from functools import reduce
 
 logger = logging.getLogger("xAH.timing")
 logger.setLevel(10) # we use info

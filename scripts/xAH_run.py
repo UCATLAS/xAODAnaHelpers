@@ -384,9 +384,9 @@ if __name__ == "__main__":
       xAH_logger.info("No datasets found. Exiting.")
       sys.exit(0)
 
-    if args.optEventsPerWorker is not None:
-      xAH_logger.info("Splitting up events onto each worker. optEventsPerWorker was set!")
-      ROOT.SH.scanNEvents(sh_all)
+    # if args.optEventsPerWorker is not None:
+    #   xAH_logger.info("Splitting up events onto each worker. optEventsPerWorker was set!")
+    #   ROOT.SH.scanNEvents(sh_all)
 
     # set the name of the tree in our files (should be configurable)
     sh_all.setMetaString( "nc_tree", args.treeName)
@@ -455,7 +455,9 @@ if __name__ == "__main__":
       #  Executing the python
       #   (configGlobals and configLocals are used to pass vars
       configGlobals, configLocals = {}, {'args': args}
-      execfile(args.config, configGlobals, configLocals)
+      exec(open(args.config).read(), configGlobals, configLocals)
+
+      # execfile(args.config, configGlobals, configLocals)
       # Find the created xAODAnaHelpers.config.Config object and add its _algorithms to the Job
       for k,v in configLocals.items():
         if isinstance(v, Config):
@@ -512,6 +514,7 @@ if __name__ == "__main__":
 
     # make the driver we want to use:
     xAH_logger.info("creating driver")
+    args.driver = 'direct' #LUKAS
     xAH_logger.info("\trunning on {0:s}".format(args.driver))
     driver = None
     if (args.driver == "direct"):
