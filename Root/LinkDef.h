@@ -42,18 +42,18 @@
 // #include <xAODAnaHelpers/ClusterHistsAlgo.h>
 
 // /* Tree */
-// #include <xAODAnaHelpers/TreeAlgo.h>
+#include <xAODAnaHelpers/TreeAlgo.h>
 
 // /* Mini xAOD */
-// #include <xAODAnaHelpers/MinixAOD.h>
+#include <xAODAnaHelpers/MinixAOD.h>
 
 // /* Other */
 // #include <xAODAnaHelpers/HelperFunctions.h>
 // #include <xAODAnaHelpers/OverlapRemover.h>
 // #include <xAODAnaHelpers/TrigMatcher.h>
 // #include <xAODAnaHelpers/TauJetMatching.h>
-// #include <xAODAnaHelpers/Writer.h>
-// #include <xAODAnaHelpers/MessagePrinterAlgo.h>
+#include <xAODAnaHelpers/Writer.h>
+#include <xAODAnaHelpers/MessagePrinterAlgo.h>
 // #include <xAODAnaHelpers/MuonInFatJetCorrector.h>
 
 #ifdef __CINT__
