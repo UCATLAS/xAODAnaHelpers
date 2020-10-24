@@ -9,7 +9,7 @@
 #include <xAODAnaHelpers/JetSelector.h>
 // #include <xAODAnaHelpers/DebugTool.h>
 // #include <xAODAnaHelpers/TruthSelector.h>
-// #include <xAODAnaHelpers/TrackSelector.h>
+#include <xAODAnaHelpers/TrackSelector.h>
 #include <xAODAnaHelpers/MuonSelector.h>
 
 // /* Calibrations */
@@ -50,7 +50,7 @@
 // /* Other */
 // #include <xAODAnaHelpers/HelperFunctions.h>
 // #include <xAODAnaHelpers/OverlapRemover.h>
-// #include <xAODAnaHelpers/TrigMatcher.h>
+#include <xAODAnaHelpers/TrigMatcher.h>
 // #include <xAODAnaHelpers/TauJetMatching.h>
 #include <xAODAnaHelpers/Writer.h>
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
