@@ -498,8 +498,9 @@ if __name__ == "__main__":
           job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
 
     # Add the algorithms to the job
-    map(job.algsAdd, configurator._algorithms)
-
+    for alg in configurator._algorithms:
+      job.algsAdd(alg)
+    
     for configLog in configurator._log:
       # this is when we have just the algorithm name
       if len(configLog) == 2:
