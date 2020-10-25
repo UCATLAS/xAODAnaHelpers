@@ -309,12 +309,12 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
     m_numberDoF->push_back( track->numberDoF() );
     //m_definingParametersCovMatrix ->push_back(track->definingParametersCovMatrix() ); // fix this too
 
-    static SG::AuxElement::ConstAccessor<char> expectInnermostPixelLayerHit("expectInnermostPixelLayerHit");
+    static SG::AuxElement::ConstAccessor<unsigned char> expectInnermostPixelLayerHit("expectInnermostPixelLayerHit");
     //safeFill<char, int, xAOD::TrackParticle>(track, expectInnermostPixelLayerHit, m_expectInnermostPixelLayerHit, -999);
     m_expectInnermostPixelLayerHit->push_back(expectInnermostPixelLayerHit(*track));
 
     //m_expectNextToInnermostPixelLayerHit->push_back(track->expectNextToInnermostPixelLayerHit() );
-    static SG::AuxElement::ConstAccessor<char> expectNextToInnermostPixelLayerHit("expectNextToInnermostPixelLayerHit");
+    static SG::AuxElement::ConstAccessor<unsigned char> expectNextToInnermostPixelLayerHit("expectNextToInnermostPixelLayerHit");
     m_expectNextToInnermostPixelLayerHit->push_back(expectNextToInnermostPixelLayerHit(*track));
   }
 
