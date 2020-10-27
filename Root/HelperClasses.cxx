@@ -454,6 +454,11 @@ namespace HelperClasses{
     m_refJetTrk = has_exact("refJetTrk"); // take this one *only* if requested by user explicitly
     m_softClus  = has_exact("softClus") || has_exact("all");
     m_softTrk   = has_exact("softTrk")  || has_exact("all");
+    m_noExtra   = has_exact("noExtra");
+    if(!m_metClus && !m_metTrk && !m_noExtra){ // to maintain backward compatibility which turned on metClus and metTrk if both were false
+      m_metClus = true;
+      m_metTrk  = true;
+    }
   }
 
 } // close namespace HelperClasses
