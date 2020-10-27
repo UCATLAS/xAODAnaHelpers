@@ -498,7 +498,7 @@ void HelpTreeBase::FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex
 
   thisElec->FillElectron(elec, primaryVertex);
 
-  this->FillElectronsUser(elec, elecName);
+  this->FillElectronsUser(elec, elecName, primaryVertex);
 
   return;
 }
