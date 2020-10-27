@@ -677,6 +677,7 @@ namespace HelperClasses {
         m_refJetTrk          refJetTrk              exact
         m_softClus           softClus|all           exact
         m_softTrk            softTrk|all            exact
+        m_noExtra            noExtra                exact
         ==================== ====================== =======
 
 
@@ -700,6 +701,7 @@ namespace HelperClasses {
     bool m_refJetTrk;
     bool m_softClus;
     bool m_softTrk;
+    bool m_noExtra; // adds only what it is being asked (false by default)
     METInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();

@@ -17,7 +17,7 @@ MetContainer::~MetContainer()
 void MetContainer::setTree(TTree *tree)
 {
 
-  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+  if ( m_infoSwitch.m_metClus ) {
     connectBranch<float>(tree, "FinalClus",         &m_metFinalClus     );
     connectBranch<float>(tree, "FinalClusPx",       &m_metFinalClusPx   );
     connectBranch<float>(tree, "FinalClusPy",       &m_metFinalClusPy   );
@@ -38,7 +38,7 @@ void MetContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "FinalClusVarT", &m_metFinalClusVarT);
   }
 
-  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+  if ( m_infoSwitch.m_metTrk ) {
     connectBranch<float>(tree, "FinalTrk",          &m_metFinalTrk     );
     connectBranch<float>(tree, "FinalTrkPx",        &m_metFinalTrkPx   );
     connectBranch<float>(tree, "FinalTrkPy",        &m_metFinalTrkPy   );
@@ -113,7 +113,7 @@ void MetContainer::setTree(TTree *tree)
 void MetContainer::setBranches(TTree *tree)
 {
 
-  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+  if ( m_infoSwitch.m_metClus ) {
     setBranch(tree, "FinalClus",         &m_metFinalClus,      "F");
     setBranch(tree, "FinalClusPx",       &m_metFinalClusPx,    "F");
     setBranch(tree, "FinalClusPy",       &m_metFinalClusPy,    "F");
@@ -134,7 +134,7 @@ void MetContainer::setBranches(TTree *tree)
     setBranch(tree, "FinalClusVarT", &m_metFinalClusVarT, "F");
   }
 
-  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+  if ( m_infoSwitch.m_metTrk ) {
     setBranch(tree, "FinalTrk",          &m_metFinalTrk,       "F");
     setBranch(tree, "FinalTrkPx",        &m_metFinalTrkPx,     "F");
     setBranch(tree, "FinalTrkPy",        &m_metFinalTrkPy,     "F");
@@ -210,7 +210,7 @@ void MetContainer::setBranches(TTree *tree)
 
 void MetContainer::clear()
 {
-  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+  if ( m_infoSwitch.m_metClus ) {
     m_metFinalClus      = -999;
     m_metFinalClusPx    = -999;
     m_metFinalClusPy    = -999;
@@ -218,7 +218,7 @@ void MetContainer::clear()
     m_metFinalClusPhi   = -999;
   }
 
-  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+  if ( m_infoSwitch.m_metTrk ) {
     m_metFinalTrk	      = -999;
     m_metFinalTrkPx     = -999;
     m_metFinalTrkPy     = -999;
@@ -279,7 +279,7 @@ void MetContainer::FillMET( const xAOD::MissingETContainer* met) {
 
   //if ( m_debug ) { Info("HelpTreeBase::FillMET()", "Filling MET info"); }
 
-  if ( m_infoSwitch.m_metClus || !m_infoSwitch.m_metTrk ) {
+  if ( m_infoSwitch.m_metClus ) {
     const xAOD::MissingET* final_clus = *met->find("FinalClus"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based onleares)
     m_metFinalClus      = final_clus->met() / m_units;
     m_metFinalClusPx    = final_clus->mpx() / m_units;
@@ -301,7 +301,7 @@ void MetContainer::FillMET( const xAOD::MissingETContainer* met) {
     }
   }
 
-  if ( m_infoSwitch.m_metTrk || !m_infoSwitch.m_metClus ) {
+  if ( m_infoSwitch.m_metTrk ) {
     const xAOD::MissingET* final_trk = *met->find("FinalTrk"); // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
     m_metFinalTrk       = final_trk->met() / m_units;
     m_metFinalTrkPx     = final_trk->mpx() / m_units;
