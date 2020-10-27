@@ -421,7 +421,7 @@ void HelpTreeBase::FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primary
 
   thisMuon->FillMuon(muon, primaryVertex);
 
-  this->FillMuonsUser(muon, muonName);
+  this->FillMuonsUser(muon, muonName, primaryVertex);
 
   return;
 }
@@ -498,7 +498,7 @@ void HelpTreeBase::FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex
 
   thisElec->FillElectron(elec, primaryVertex);
 
-  this->FillElectronsUser(elec, elecName);
+  this->FillElectronsUser(elec, elecName, primaryVertex);
 
   return;
 }

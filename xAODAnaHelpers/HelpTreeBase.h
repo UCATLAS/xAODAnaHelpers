@@ -286,8 +286,8 @@ public:
   virtual void ClearMETUser         (const std::string& /*metName = "met"*/)       { return; };
 
   virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
-  virtual void FillMuonsUser    ( const xAOD::Muon*,        const std::string& /*muonName = "muon"*/  )             { return; };
-  virtual void FillElectronsUser( const xAOD::Electron*,    const std::string& /*elecName = "el"*/ )     { return; };
+  virtual void FillMuonsUser    ( const xAOD::Muon*,        const std::string& /*muonName = "muon"*/, const xAOD::Vertex* ) { return; };
+  virtual void FillElectronsUser( const xAOD::Electron*,    const std::string& /*elecName = "el"*/, const xAOD::Vertex* )   { return; };
   virtual void FillPhotonsUser  ( const xAOD::Photon*,      const std::string& /*photonName = "ph"*/ )     { return; };
   virtual void FillClustersUser ( const xAOD::CaloCluster*, const std::string& /*clusterName = "cl"*/ )     { return; };
   virtual void FillJetsUser     ( const xAOD::Jet*,         const std::string& /*jetName = "jet"*/  )               { return; };
