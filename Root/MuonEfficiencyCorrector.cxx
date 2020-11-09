@@ -695,7 +695,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
       auto trig_it = trig.second;
       if (trig.first.find("2015")!=std::string::npos && run>284484) continue;
-      else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos) && run<=284484) continue;
+      else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos || trig.first.find("2018")!=std::string::npos) && run<=284484) continue;
 
       std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig = nullptr;
       if ( writeSystNames ) sysVariationNamesTrig = std::make_unique< std::vector< std::string > >();
