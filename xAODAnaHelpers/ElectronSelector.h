@@ -188,6 +188,9 @@ public:
   /// Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.07;
 
+  /// @brief Apply fix to EGamma Crack-Electron topocluster association bug for MET (PFlow) / false by default
+  bool m_applyCrackVetoCleaning = false;
+
 private:
 
   /**
