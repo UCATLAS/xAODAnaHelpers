@@ -7,9 +7,10 @@
 #include "xAODRootAccess/TStore.h"
 #include "xAODMetaData/FileMetaData.h"
 
+#include <AnaAlgorithm/AnaAlgorithm.h>
+
 // EL include(s):
 #include <EventLoop/StatusCode.h>
-#include <EventLoop/Algorithm.h>
 #include <EventLoop/Worker.h>
 
 #include <string>
@@ -64,13 +65,15 @@ namespace xAH {
         @endrst
 
      */
-  class Algorithm : public EL::Algorithm {
+  class Algorithm : public EL::AnaAlgorithm {
       public:
         /**
             @brief Initialization
-            @param className    This is the name of the class that inherits from :cpp:namespace:`~xAH::Algorithm`
+            @param name         This is the name of the algorithm instance
+            @param pSvcLocator  This is the service locator object (internal to atlas/athena)
+            @param className    This is the name of the algorithm that inherits from :cpp:namespace:`~xAH::Algorithm`
          */
-        Algorithm(std::string className = "Algorithm");
+        Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className = "Algorithm");
         ~Algorithm();
         /// @cond
         ClassDef(Algorithm, 1);

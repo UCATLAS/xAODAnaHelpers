@@ -53,8 +53,8 @@ using HelperClasses::ToolName;
 ClassImp(PhotonCalibrator)
 
 
-PhotonCalibrator :: PhotonCalibrator () :
-    Algorithm("PhotonCalibrator")
+PhotonCalibrator :: PhotonCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "PhotonCalibrator")
 {
 }
 
@@ -123,7 +123,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   // input events.
 
   ANA_MSG_INFO( "Initializing PhotonCalibrator Interface... ");
-  
+
 
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();

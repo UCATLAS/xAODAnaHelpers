@@ -244,7 +244,7 @@ class OverlapRemover : public xAH::Algorithm
 public:
 
   // this is a standard constructor
-  OverlapRemover ();
+  OverlapRemover (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

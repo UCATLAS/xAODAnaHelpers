@@ -20,8 +20,8 @@
 // Needed to distribute the algorithm to the workers
 ClassImp(MuonInFatJetCorrector)
 
-MuonInFatJetCorrector :: MuonInFatJetCorrector() :
-  Algorithm("MuonInFatJetCorrector")
+MuonInFatJetCorrector :: MuonInFatJetCorrector(const std::string& name, ISvcLocator *pSvcLocator) :
+  Algorithm(name, pSvcLocator, "MuonInFatJetCorrector")
 {
 }
 
@@ -30,7 +30,7 @@ EL::StatusCode MuonInFatJetCorrector :: setupJob(EL::Job& job)
   ANA_MSG_DEBUG("Calling setupJob");
   job.useXAOD();
   xAOD::Init("MuonInFatJetCorrector").ignore();
-  
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -89,7 +89,7 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
     }
 
   // Decorator holding muon in fatjet corrected fatjets.
-  static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");  
+  static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");
   for(const std::string& systName : *systNames)
     {
       // Retrieve calibrated fatjets.
@@ -111,7 +111,7 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
     delete systNames;
 
   return EL::StatusCode::SUCCESS;
-} 
+}
 
 EL::StatusCode MuonInFatJetCorrector :: postExecute ()
 {
@@ -161,7 +161,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
       ANA_MSG_FATAL("Parent link is not valid.");
       return TLorentzVector();
     }
-  
+
   // access the track jets
   const xAOD::Jet* parentJet = *parentEL;
   if (!parentJet->getAssociatedObjects<xAOD::Jet>(m_trackJetLinkName, associated_trackJets))
@@ -169,7 +169,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
       ANA_MSG_FATAL("No associated track jets found on parent jet.");
       return TLorentzVector();
     }
-  
+
   // get trackjets of interest
   std::vector<const xAOD::Jet*> associated_trackJets_filtered;
   for (const xAOD::Jet* trackJet : associated_trackJets)
@@ -200,7 +200,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
 	  return TLorentzVector();
 	}
 
-      std::vector<ElementLink<xAOD::MuonContainer>> associated_muons=acc_MuonsInTrackJet(*trackJet);	    
+      std::vector<ElementLink<xAOD::MuonContainer>> associated_muons=acc_MuonsInTrackJet(*trackJet);
       for (const ElementLink<xAOD::MuonContainer>& muonEL : associated_muons)
 	{
 	  const xAOD::Muon* muon=(*muonEL);

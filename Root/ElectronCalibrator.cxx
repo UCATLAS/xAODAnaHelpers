@@ -42,8 +42,8 @@ using HelperClasses::ToolName;
 ClassImp(ElectronCalibrator)
 
 
-ElectronCalibrator :: ElectronCalibrator () :
-    Algorithm("ElectronCalibrator")
+ElectronCalibrator :: ElectronCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "ElectronCalibrator")
 {
 }
 

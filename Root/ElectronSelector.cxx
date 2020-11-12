@@ -38,8 +38,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronSelector)
 
-ElectronSelector :: ElectronSelector () :
-    Algorithm("ElectronSelector")
+ElectronSelector :: ElectronSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "ElectronSelector")
 {
 }
 

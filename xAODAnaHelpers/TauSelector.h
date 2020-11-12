@@ -63,23 +63,23 @@ public:
   bool           m_EleOLR = true;
 
   /* trigger matching */
-  
+
   /*
-   * A comma-separated string w/ all the HLT 
-   * single muon trigger chains for which you want 
-   * to perform the matching. If left empty (as it is by default), 
-   * no trigger matching will be attempted at all 
+   * A comma-separated string w/ all the HLT
+   * single muon trigger chains for which you want
+   * to perform the matching. If left empty (as it is by default),
+   * no trigger matching will be attempted at all
    */
-  
+
   std::string    m_singleTauTrigChains = "";
-  
+
   /*
-   * A comma-separated string w/ all the HLT 
-   * dimuon trigger chains for which you want 
-   * to perform the matching.  If left empty (as it is by default), 
-   * no trigger matching will be attempted at all 
+   * A comma-separated string w/ all the HLT
+   * dimuon trigger chains for which you want
+   * to perform the matching.  If left empty (as it is by default),
+   * no trigger matching will be attempted at all
    */
-  
+
   std::string    m_diTauTrigChains = "";
 
 private:
@@ -113,7 +113,7 @@ private:
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!
-  
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -123,9 +123,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TauSelector ();
-
-  ~TauSelector();
+  TauSelector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

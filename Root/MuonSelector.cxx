@@ -36,8 +36,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(MuonSelector)
 
-MuonSelector :: MuonSelector () :
-    Algorithm("MuonSelector")
+MuonSelector :: MuonSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "MuonSelector")
 {
 }
 

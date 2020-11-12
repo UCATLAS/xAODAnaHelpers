@@ -33,8 +33,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(HLTJetGetter)
 
-HLTJetGetter :: HLTJetGetter () :
-Algorithm("HLTJetGetter")
+HLTJetGetter :: HLTJetGetter (const std::string& name, ISvcLocator *pSvcLocator) :
+Algorithm(name, pSvcLocator, "HLTJetGetter")
 {
 }
 
@@ -130,7 +130,7 @@ EL::StatusCode HLTJetGetter :: execute ()
 
     //Retrieving jets via trigger decision tool:
     const Trig::ChainGroup * chainGroup = m_trigDecTool_handle->getChainGroup(m_triggerList); //Trigger list:
-    
+
     std::vector<std::string> trigger_list = chainGroup->getListOfTriggers();
 
     auto chainFeatures = chainGroup->features(); //Gets features associated to chain defined above
@@ -147,7 +147,7 @@ EL::StatusCode HLTJetGetter :: execute ()
             hltJets->push_back( Jet );
         }//end trigJet loop
     }//end feature container loop
-    
+
     if(msgLvl(MSG::VERBOSE)) m_store->print();
 
     return EL::StatusCode::SUCCESS;

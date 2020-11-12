@@ -34,8 +34,8 @@ using HelperClasses::ToolName;
 ClassImp(MuonEfficiencyCorrector)
 
 
-MuonEfficiencyCorrector :: MuonEfficiencyCorrector () :
-    Algorithm("MuonEfficiencyCorrector")
+MuonEfficiencyCorrector :: MuonEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "MuonEfficiencyCorrector")
 {
 }
 

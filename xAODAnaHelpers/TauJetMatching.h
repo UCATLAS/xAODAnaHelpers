@@ -44,9 +44,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TauJetMatching ();
-
-  ~TauJetMatching();
+  TauJetMatching (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

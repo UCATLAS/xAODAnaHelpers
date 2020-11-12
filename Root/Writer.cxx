@@ -15,8 +15,8 @@ ClassImp(Writer)
 
 
 
-Writer :: Writer () :
-    Algorithm("Writer")
+Writer :: Writer (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "Writer")
 {
 }
 

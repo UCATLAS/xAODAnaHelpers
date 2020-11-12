@@ -36,8 +36,8 @@
 ClassImp(DebugTool)
 
 
-DebugTool :: DebugTool () :
-    Algorithm("DebugTool")
+DebugTool :: DebugTool (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "DebugTool")
 {
 }
 

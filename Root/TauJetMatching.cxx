@@ -27,8 +27,8 @@
 ClassImp(TauJetMatching)
 
 
-TauJetMatching :: TauJetMatching () :
-    Algorithm("TauJetMatching")
+TauJetMatching :: TauJetMatching (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TauJetMatching")
 {
 }
 
@@ -178,9 +178,9 @@ EL::StatusCode TauJetMatching :: execute ()
     // fill truth-matching map
     //
     std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > > match_map;
-    
+
     match_map = findBestMatchDR( inJets, inTaus, m_DeltaR );
-    
+
     executeDecoration(match_map, inTaus);
 
   } else { // get the list of systematics to run over
@@ -202,9 +202,9 @@ EL::StatusCode TauJetMatching :: execute ()
       ANA_CHECK( HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) );
 
       std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > > match_map_sys;
-      
+
       match_map_sys = findBestMatchDR( inJets, inTaus, m_DeltaR );
-      
+
       executeDecoration(match_map_sys, inTaus);
     }
   }
@@ -226,7 +226,7 @@ bool TauJetMatching :: executeDecoration ( std::unordered_map<int, std::pair<con
   static SG::AuxElement::ConstAccessor<float> jetJvtAcc("Jvt");
 
   ANA_MSG_DEBUG( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) );
-  
+
   int iTau = -1;
 
   for ( auto tau_itr : *inTaus ) { // duplicated of basic loop
@@ -235,20 +235,20 @@ bool TauJetMatching :: executeDecoration ( std::unordered_map<int, std::pair<con
     std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > >::const_iterator it_map = match_map.find (iTau);
 
     if (it_map != match_map.end()) {
-      
-      // jet width      
+
+      // jet width
       if (jetWidthAcc.isAvailable(*match_map[iTau].second)) {
         JetWidthDecor(*tau_itr) = static_cast<float>( jetWidthAcc(*match_map[iTau].second) );
-      } else { 
+      } else {
         JetWidthDecor(*tau_itr) = -1.;
-      } 
-   
-      // jet jvt    
+      }
+
+      // jet jvt
       if (jetJvtAcc.isAvailable(*match_map[iTau].second)) {
         JetJvtDecor(*tau_itr) = static_cast<float>( jetJvtAcc(*match_map[iTau].second) );
-      } else { 
+      } else {
         JetJvtDecor(*tau_itr) = -1.;
-      } 
+      }
 
 
     } else {
@@ -321,30 +321,30 @@ float TauJetMatching::getDR(float eta1, float eta2, float phi1, float phi2)
 std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > > TauJetMatching::findBestMatchDR(const xAOD::JetContainer* jetCont,
                                                                                                             const xAOD::TauJetContainer* tauCont,
                                                                                                             float best_DR=1.0)
-{ 
+{
   // Find tau that best matches a jet using DR.
-  // If matching is successful, returns a map where the key 
+  // If matching is successful, returns a map where the key
   // is the  container index of the matched tau and the value
   // is the pair of the matched tau and the corresponding jet
-  
+
   float default_best_DR = best_DR;
   int ijet = -1;
   int best_ijet = -1;
   const xAOD::Jet* best_jet = nullptr;
 
   std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet*>> match_map;
-  
+
   for (const auto jet : *jetCont) {
       ++ijet;
-      
+
       int itau = -1;
       int best_itau = -1;
       const xAOD::TauJet* best_tau = nullptr;
       float DR = 0;
-      
+
       for (const auto tau : *tauCont) {
         ++itau;
-        
+
         DR = this->getDR(tau->eta(),jet->eta(),tau->phi(),jet->phi());
 
         if (DR < best_DR) {
@@ -355,12 +355,12 @@ std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > > TauJ
           best_ijet = ijet;
         }
       }
-      
+
       std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > >::const_iterator got = match_map.find (best_itau);
-      
-      // if a new match is found for a previous 
-      // tau keep the new match if it is better 
-      
+
+      // if a new match is found for a previous
+      // tau keep the new match if it is better
+
       if (got == match_map.end() and best_itau != -1 and best_ijet != -1) {
         match_map[best_itau] = std::pair<const xAOD::TauJet*, const xAOD::Jet*>(best_tau, best_jet);
       }
@@ -370,7 +370,7 @@ std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > > TauJ
           match_map[best_itau] = std::pair<const xAOD::TauJet*, const xAOD::Jet*>(best_tau, best_jet);
         }
       }
-      
+
       // reset the best_DR to the default value
       best_DR = default_best_DR;
   }

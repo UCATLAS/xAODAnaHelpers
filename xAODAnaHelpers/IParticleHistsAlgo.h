@@ -38,7 +38,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  IParticleHistsAlgo (std::string className = "IParticleHistsAlgo");
+  IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, const std::string& className="IParticleHistsAlgo");
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

@@ -11,8 +11,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrackHistsAlgo)
 
-TrackHistsAlgo :: TrackHistsAlgo () :
-    Algorithm("TrackHistsAlgo")
+TrackHistsAlgo :: TrackHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TrackHistsAlgo")
 {
 }
 

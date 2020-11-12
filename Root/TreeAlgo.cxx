@@ -18,8 +18,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TreeAlgo)
 
-TreeAlgo :: TreeAlgo () :
-    Algorithm("TreeAlgo")
+TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TreeAlgo")
 {
 }
 

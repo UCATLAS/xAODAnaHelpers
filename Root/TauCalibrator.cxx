@@ -38,8 +38,8 @@ using HelperClasses::ToolName;
 // this is needed to distribute the algorithm to the workers
 ClassImp(TauCalibrator)
 
-TauCalibrator :: TauCalibrator () :
-    Algorithm("TauCalibrator")
+TauCalibrator :: TauCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TauCalibrator")
 {
 }
 
@@ -238,7 +238,7 @@ EL::StatusCode TauCalibrator :: execute ()
 	    ANA_MSG_WARNING( "TauSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original tau values are taken.
 	  }
 	}
-	
+
         ANA_MSG_DEBUG( "  corrected tau pt = " << tauSC_itr->pt()*1e-3 << " GeV");
 
 	++idx;

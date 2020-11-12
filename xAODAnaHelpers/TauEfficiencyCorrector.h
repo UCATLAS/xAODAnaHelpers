@@ -30,7 +30,7 @@ class TauEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 
 public:
- 
+
   std::string m_RecommendationTag = "";
 
   // configuration variables
@@ -38,17 +38,17 @@ public:
 
   // Reco efficiency SF
   std::string   m_WorkingPointReco = "";
-  
+
   // EleOLR efficiency SF if the the reco tau is a true tau
   std::string   m_WorkingPointEleOLRHadTau = "";
 
   // EleOLR efficiency SF if the the reco tau is a true electron
   std::string   m_WorkingPointEleOLRElectron = "";
-  
+
   // TauID efficiency SF
   std::string   m_WorkingPointTauID = "";
 
-  // working point for tauID used in 
+  // working point for tauID used in
   // combination with the trigger
   std::string   m_TriggerName = "";
 
@@ -64,9 +64,9 @@ public:
   bool          m_writeSystToMetadata = false;
 
   float         m_systVal = 0.0;
-  
+
   std::string   m_systName = "";
-  
+
   std::string   m_outputSystNames = "TauEfficiencyCorrector_Syst";
 
 private:
@@ -77,10 +77,10 @@ private:
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",           this}; //! 
+  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",           this}; //!
   // the selection tool is needed for baseline configuration
   asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool"}; //!
-  
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
@@ -91,7 +91,7 @@ public:
   // TH1 *myHist;  //!
 
   // this is a standard constructor
-  TauEfficiencyCorrector ();
+  TauEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

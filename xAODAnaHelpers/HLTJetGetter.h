@@ -42,7 +42,7 @@ public:
 private:
 
   //Trig::TrigDecisionTool*        m_trigDecTool = nullptr;   //!
-  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //! 
+  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //!
   TrigConf::xAODConfigTool*      m_trigConfTool = nullptr;   //!
   /// @brief flag to own TDT and TCT
   bool                           m_ownTDTAndTCT = false;   //!
@@ -50,7 +50,7 @@ private:
 public:
 
   // this is a standard constructor
-  HLTJetGetter ();
+  HLTJetGetter (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

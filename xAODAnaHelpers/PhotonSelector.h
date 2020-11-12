@@ -97,9 +97,7 @@ public:
 
   /* this is a standard constructor */
 
-  PhotonSelector ();
-
-  ~PhotonSelector();
+  PhotonSelector (const std::string& name, ISvcLocator *pSvcLocator);
 
   /* these are the functions inherited from Algorithm */
 

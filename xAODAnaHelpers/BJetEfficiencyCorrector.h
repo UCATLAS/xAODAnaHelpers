@@ -93,7 +93,7 @@ private:
 public:
 
   // this is a standard constructor
-  BJetEfficiencyCorrector ();
+  BJetEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

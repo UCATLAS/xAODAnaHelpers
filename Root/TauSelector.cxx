@@ -29,7 +29,7 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "PATCore/TAccept.h"
 // tool includes
-#include "TauAnalysisTools/TauSelectionTool.h"  
+#include "TauAnalysisTools/TauSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
@@ -42,8 +42,8 @@
 ClassImp(TauSelector)
 
 
-TauSelector :: TauSelector () :
-    Algorithm("TauSelector")
+TauSelector :: TauSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TauSelector")
 {
 }
 
@@ -192,9 +192,9 @@ EL::StatusCode TauSelector :: initialize ()
   // IMPORTANT: if no working point is specified the one in this configuration will be used
   ANA_CHECK( m_tauSelTool_handle.setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()));
   if (!m_JetIDWP.empty()) {
-    
+
     std::map <std::string, int> jetid_wp_map;
-    
+
     jetid_wp_map["JETIDNONE"] = int(TauAnalysisTools::JETIDNONE);
     jetid_wp_map["JETIDBDTLOOSE"] = int(TauAnalysisTools::JETIDBDTLOOSE);
     jetid_wp_map["JETIDBDTMEDIUM"] = int(TauAnalysisTools::JETIDBDTMEDIUM);
@@ -204,29 +204,29 @@ EL::StatusCode TauSelector :: initialize ()
     jetid_wp_map["JETIDBDTMEDIUMNOTTIGHT"] = int(TauAnalysisTools::JETIDBDTMEDIUMNOTTIGHT);
     jetid_wp_map["JETIDBDTNOTLOOSE"] = int(TauAnalysisTools::JETIDBDTNOTLOOSE);
     jetid_wp_map["JETIDBDTVERYLOOSE"] = int(TauAnalysisTools::JETIDBDTVERYLOOSE);
-    
+
     if (jetid_wp_map.count(m_JetIDWP) != 0 ) {
       ANA_CHECK( m_tauSelTool_handle.setProperty("JetIDWP", jetid_wp_map[m_JetIDWP]));
     } else {
       ANA_MSG_ERROR( "Unknown requested tau JetIDWP " << m_JetIDWP);
-      return EL::StatusCode::FAILURE; 
+      return EL::StatusCode::FAILURE;
     }
   }
 
   if (!m_EleBDTWP.empty()) {
-    
+
     std::map <std::string, int> elebdt_wp_map;
-    
+
     elebdt_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
     elebdt_wp_map["ELEIDBDTLOOSE"] = int(TauAnalysisTools::ELEIDBDTLOOSE);
     elebdt_wp_map["ELEIDBDTMEDIUM"] = int(TauAnalysisTools::ELEIDBDTMEDIUM);
     elebdt_wp_map["ELEIDBDTTIGHT"] = int(TauAnalysisTools::ELEIDBDTTIGHT);
-    
+
     if (elebdt_wp_map.count(m_EleBDTWP) != 0 ) {
       ANA_CHECK( m_tauSelTool_handle.setProperty("EleBDTWP", elebdt_wp_map[m_EleBDTWP]));
     } else {
       ANA_MSG_ERROR( "Unknown requested tau EleBDTWP " << m_EleBDTWP);
-      return EL::StatusCode::FAILURE; 
+      return EL::StatusCode::FAILURE;
     }
   }
 
@@ -699,7 +699,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
 
   static SG::AuxElement::Decorator< float > JetBDTScore("JetBDTScore");
   static SG::AuxElement::Decorator< float > JetBDTScoreSigTrans("JetBDTScoreSigTrans");
-  
+
 
   isJetBDTSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigVeryLoose));
   isJetBDTSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
@@ -716,7 +716,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   static SG::AuxElement::Decorator< int > isEleBDTTight("isEleBDTTight");
 
   static SG::AuxElement::Decorator< float > EleBDTScore("EleBDTScore");
-  
+
 
   isEleBDTLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTLoose));
   isEleBDTMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTMedium));
@@ -728,7 +728,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   // EleOLR decoration
   // -----------------
   static SG::AuxElement::Decorator< int > passEleOLR("passEleOLR");
-  
+
   passEleOLR( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::PassEleOLR));
 
   if (m_decorateWithTracks) {
@@ -746,43 +746,43 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
      SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClIso( "trackIsClIso" );
      SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClConv( "trackIsClConv" );
      SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClFake( "trackIsClFake" );
-     
-     
+
+
      for (const xAOD::TauTrack* trk : tau->allTracks()){
-      
+
         tauTrackPt( *tau ).push_back(trk->pt());
         tauTrackEta( *tau ).push_back(trk->eta());
         tauTrackPhi( *tau ).push_back(trk->phi());
-     
-     
+
+
         if (!trk->flag(xAOD::TauJetParameters::coreTrack)) tauTrackIsCore(*tau).push_back(1);
         else tauTrackIsCore(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::wideTrack)) tauTrackIsWide(*tau).push_back(1);
         else tauTrackIsWide(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::failTrackFilter)) tauTrackFailTrackFilter(*tau).push_back(1);
         else tauTrackFailTrackFilter(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::passTrkSelector)) tauTrackPassTrkSel(*tau).push_back(1);
         else tauTrackPassTrkSel(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedCharged)) tauTrackIsClCharged(*tau).push_back(1);
         else tauTrackIsClCharged(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedIsolation)) tauTrackIsClIso(*tau).push_back(1);
         else tauTrackIsClIso(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedConversion)) tauTrackIsClConv(*tau).push_back(1);
         else tauTrackIsClConv(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedFake)) tauTrackIsClFake(*tau).push_back(1);
         else tauTrackIsClFake(*tau).push_back(0);
-     
+
      }
 
   } // if decorate with tracks
-  
+
   ANA_MSG_DEBUG( "Got decoration values" );
 
 

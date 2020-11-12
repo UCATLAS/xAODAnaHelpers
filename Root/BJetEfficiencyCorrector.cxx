@@ -38,8 +38,8 @@ using HelperClasses::ToolName;
 ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
-    Algorithm("BJetEfficiencyCorrector")
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "BJetEfficiencyCorrector")
 {
 }
 

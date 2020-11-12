@@ -123,7 +123,7 @@ class BasicEventSelection : public xAH::Algorithm
 
     // Jet Cleaning
     // Jet Cleaning (see also https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017)
-    /// recommended way to clean all jets, but especially collections other than EMTopo ... equivalent to "loose" jet-by-jet cleaning! 
+    /// recommended way to clean all jets, but especially collections other than EMTopo ... equivalent to "loose" jet-by-jet cleaning!
     bool m_applyJetCleaningEventFlag = false;
     /// should only ever be used in 2015 and 2016 data, for analyses which may be of interest for analyses where fake MET can be an issue
     bool m_applyIsBadBatmanFlag = false;
@@ -277,7 +277,7 @@ class BasicEventSelection : public xAH::Algorithm
     //
 
     // this is a standard constructor
-    BasicEventSelection ();
+    BasicEventSelection (const std::string& name, ISvcLocator *pSvcLocator);
 
     // these are the functions inherited from Algorithm
     virtual EL::StatusCode setupJob (EL::Job& job);

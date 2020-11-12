@@ -18,8 +18,8 @@ class MuonInFatJetCorrector : public xAH::Algorithm
 public:
   /// @brief Different schemes for the muon in jet correction
   enum Scheme {Calorimeter, TrackAssisted, Combined, SimpleMuon};
-  
-  MuonInFatJetCorrector();
+
+  MuonInFatJetCorrector (const std::string& name, ISvcLocator *pSvcLocator);
 
   /// @brief The name of the container with fat jets to be corrected
   std::string m_fatJetContainerName = "";
@@ -69,7 +69,7 @@ public:
 private:
    /// @brief Name of calibrated jet mass decorator, without the TA/Calo suffix, for the given sample type
   std::string m_calibratedMassDecorator;
- 
+
   ClassDef(MuonInFatJetCorrector, 1);
 };
 

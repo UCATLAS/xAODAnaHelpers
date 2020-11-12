@@ -41,7 +41,7 @@ public:
   int   m_pass_min = -1;
   /// @brief maximum number of objects passing cuts
   int   m_pass_max = -1;
-  /// @brief available: Loose LoosePrimary TightPrimary LooseMuon LooseElectron MinBias HILoose HITight 
+  /// @brief available: Loose LoosePrimary TightPrimary LooseMuon LooseElectron MinBias HILoose HITight
   std::string m_cutLevelString = "";
   /// @brief require pT < pt_max
   float m_pT_max = 1e8;
@@ -61,9 +61,9 @@ public:
   float m_d0_max = 1e8;
   /// @brief require |z0| < z0_max
   float m_z0_max = 1e8;
-  /// @brief maximum error on d0 
+  /// @brief maximum error on d0
   float m_sigmad0_max = 1e8;
-  /// @brief maximum significance of |d0| 
+  /// @brief maximum significance of |d0|
   float m_d0oversigmad0_max = 1e8;
   /// @brief require |z0xsin(theta)| < z0sintheta_max
   float m_z0sinT_max = 1e8;
@@ -76,13 +76,13 @@ public:
   /// @brief max |z0sin(theta)| significance
   float m_z0sinthetaoversigmaz0sintheta_max=1e8;
   /// @brief minimum pixel hits (counting dead sensors)
-  int   m_nPixelHits_min =1e8; 
+  int   m_nPixelHits_min =1e8;
   /// @brief minimum pixel hits (no dead sensors)
-  int   m_nPixelHitsPhysical_min =1e8; 
+  int   m_nPixelHitsPhysical_min =1e8;
   /// @brief minimum SCT hits (counting dead sensors)
-  int   m_nSctHits_min =1e8; 
+  int   m_nSctHits_min =1e8;
   /// @brief minimum SCT hits (no dead sensors)
-  int   m_nSctHitsPhysical_min =1e8; 
+  int   m_nSctHitsPhysical_min =1e8;
   /// @brief require nSi >= nSi_min (nSi = nPix + nSct)
   int   m_nSi_min = 1e8;
   /// @brief require nSi >= nSi_min (nSi = nPix + nSct, no dead sensors)
@@ -92,21 +92,21 @@ public:
   /// @brief require nSCTHoles <= nSCTHoles_max
   int   m_nSctHoles_max = 1e8;
   /// @brief maximum silicon holes
-  int   m_nSiHoles_max =1e8; 
+  int   m_nSiHoles_max =1e8;
   /// @brief minimum nIBL (if expected)
-  int   m_nInnermostPixel_min =1e8; 
+  int   m_nInnermostPixel_min =1e8;
   /// @brief minimum nBL (if expected)
-  int   m_nNextToInnermostPixel_min =1e8; 
+  int   m_nNextToInnermostPixel_min =1e8;
   /// @brief minimum nIBL + nBL (if every hit that is not expected, we require one less)
-  int   m_nBothInnermostLayersHits_min =1e8; 
+  int   m_nBothInnermostLayersHits_min =1e8;
   /// @brief maximum pixel hits shared with other tracks
-  int   m_nPixelSharedHits_max =1e8; 
+  int   m_nPixelSharedHits_max =1e8;
   /// @brief maximum SCT hits shared with other tracks
-  int   m_nSctSharedHits_max =1e8; 
+  int   m_nSctSharedHits_max =1e8;
   /// @brief maximum silicon hits shared with other tracks
-  int   m_nSiSharedHits_max =1e8; 
+  int   m_nSiSharedHits_max =1e8;
   /// @brief maximum (pixel + SCT/2) shared hits
-  int   m_nSiSharedModules_max =1e8; 
+  int   m_nSiSharedModules_max =1e8;
   /// @brief require chi2/ndof < chi2NdofCut_max
   float m_chi2NdofCut_max = 1e8;
   /// @brief require TMath::Prob(chi2,ndof) < chi2ProbMax
@@ -147,7 +147,7 @@ public:
 
 
   // this is a standard constructor
-  TrackSelector ();
+  TrackSelector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

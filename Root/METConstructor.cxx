@@ -33,8 +33,8 @@
 ClassImp(METConstructor)
 
 
-METConstructor :: METConstructor () :
-    Algorithm("METConstructor")
+METConstructor :: METConstructor (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "METConstructor")
 {
 }
 
@@ -140,7 +140,7 @@ EL::StatusCode METConstructor :: initialize ()
     ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
 
     // For AFII samples
-    if ( isFastSim() ){ 
+    if ( isFastSim() ){
       ANA_MSG_INFO( "Setting simulation flavour to AFII");
       ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
     }

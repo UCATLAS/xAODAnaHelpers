@@ -12,7 +12,8 @@ std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 // this is needed to distribute the algorithm to the workers
 ClassImp(xAH::Algorithm)
 
-xAH::Algorithm::Algorithm(std::string className) :
+xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className) :
+  EL::AnaAlgorithm(name, pSvcLocator),
   m_className(className)
 {
 }
@@ -42,7 +43,7 @@ StatusCode xAH::Algorithm::algInitialize(){
       ANA_MSG_ERROR("Multiple input-type flags are set, be sure only one of m_forceData(" << m_forceData << "), m_forceFastSim(" << m_forceFastSim << "), and m_forceFullSim(" << m_forceFullSim << ") are true.");
       return StatusCode::FAILURE;
     }
-  
+
     return StatusCode::SUCCESS;
 }
 
@@ -66,10 +67,10 @@ StatusCode xAH::Algorithm::parseSystValVector(){
 }
 
 bool xAH::Algorithm::isMC(){
-    
+
     // If decision is established, return the decision
     if(m_isMC == 0 || m_isMC == 1) return m_isMC;
-    
+
     // If overriding decision by boolean flags
     if( m_forceData ){
       m_isMC = 0;
@@ -99,7 +100,7 @@ bool xAH::Algorithm::isFastSim(){
 
     // If decision is established, return the decision
     if(m_isFastSim == 0 || m_isFastSim == 1) return m_isFastSim;
-      
+
     // If overriding decision by boolean flags
     if( m_forceData || m_forceFullSim ){
       m_isFastSim = 0;
@@ -108,18 +109,18 @@ bool xAH::Algorithm::isFastSim(){
       m_isFastSim = 1;
       return m_isFastSim;
     }
-   
-    std::string SimulationFlavour; 
+
+    std::string SimulationFlavour;
     const xAOD::FileMetaData* fmd = nullptr;
     ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") );
     fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
-  
+
     if( SimulationFlavour == "AtlfastII" ){
       m_isFastSim = 1;
     }else{
       m_isFastSim = 0;
     }
-  
+
     return m_isFastSim;
 }
 

@@ -29,8 +29,8 @@ using HelperClasses::ToolName;
 ClassImp(ElectronEfficiencyCorrector)
 
 
-ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
-    Algorithm("ElectronEfficiencyCorrector")
+ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "ElectronEfficiencyCorrector")
 {
 }
 

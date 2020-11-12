@@ -72,7 +72,7 @@ class HLTJetRoIBuilder : public xAH::Algorithm
   public:
 
     // this is a standard constructor
-    HLTJetRoIBuilder ();
+    HLTJetRoIBuilder (const std::string& name, ISvcLocator *pSvcLocator);
 
     // these are the functions inherited from Algorithm
     virtual EL::StatusCode setupJob (EL::Job& job);

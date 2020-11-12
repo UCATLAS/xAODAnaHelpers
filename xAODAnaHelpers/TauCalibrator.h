@@ -19,7 +19,7 @@ public:
   std::string m_outContainerName = "";
 
   std::string m_RecommendationTag = "";
-  
+
   bool m_applyMVATES = false;
   bool m_applyCombinedTES = false;
   bool m_setAFII = false;
@@ -57,7 +57,7 @@ public:
   // TH1 *myHist; //!
 
   // this is a standard constructor
-  TauCalibrator ();
+  TauCalibrator (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

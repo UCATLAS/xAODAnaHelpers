@@ -34,8 +34,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(PhotonSelector)
 
-PhotonSelector :: PhotonSelector () :
-    Algorithm("PhotonSelector")
+PhotonSelector :: PhotonSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "PhotonSelector")
 {
 }
 

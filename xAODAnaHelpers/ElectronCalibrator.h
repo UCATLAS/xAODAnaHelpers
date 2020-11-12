@@ -97,7 +97,7 @@ public:
 
 
   // this is a standard constructor
-  ElectronCalibrator ();
+  ElectronCalibrator (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual EL::StatusCode setupJob (EL::Job& job);

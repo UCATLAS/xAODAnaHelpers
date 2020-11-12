@@ -13,7 +13,7 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(IParticleHistsAlgo)
 
-IParticleHistsAlgo :: IParticleHistsAlgo (std::string className) :
+IParticleHistsAlgo :: IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, std::string className) :
     Algorithm(className)
 {
 }

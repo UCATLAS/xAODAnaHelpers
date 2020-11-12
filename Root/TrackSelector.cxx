@@ -22,8 +22,8 @@ using std::vector;
 ClassImp(TrackSelector)
 
 
-TrackSelector :: TrackSelector () :
-    Algorithm("TrackSelector")
+TrackSelector :: TrackSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TrackSelector")
 {
 }
 
@@ -407,7 +407,7 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   }
 
   //
-  // eta 
+  // eta
   //
   if( m_eta_min != 1e8 ) {
     if( fabs(trk->eta()) < m_eta_min ) { return 0; }
@@ -420,13 +420,13 @@ int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Verte
   }
 
 
- 
-  //  
+
+  //
   //  nBLayer
   //
   uint8_t nBL       = -1;
   if( m_nBL_min != 1e8 ){
-    //  xAOD::numberOfBLayerHits is deprecated, keeping it for compatibility 
+    //  xAOD::numberOfBLayerHits is deprecated, keeping it for compatibility
     if(!trk->summaryValue(nBL, xAOD::numberOfBLayerHits)) ANA_MSG_ERROR( "BLayer hits not filled");
     if( nBL < m_nBL_min ) {return 0; }
   }

@@ -84,9 +84,7 @@ public:
 
   /* this is a standard constructor */
 
-  TrigMatcher ();
-
-  ~TrigMatcher();
+  TrigMatcher (const std::string& name, ISvcLocator *pSvcLocator);
 
   /* these are the functions inherited from Algorithm */
 
