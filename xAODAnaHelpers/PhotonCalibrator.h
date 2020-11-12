@@ -73,7 +73,7 @@ private:
 
   std::vector<CP::SystematicSet> m_systList;
 
-  EL::StatusCode decorate(xAOD::Photon * photon);
+  StatusCode decorate(xAOD::Photon * photon);
 
   // tools
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr;
@@ -97,15 +97,15 @@ public:
   PhotonCalibrator (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode setupJob (EL::Job& job);
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode postExecute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

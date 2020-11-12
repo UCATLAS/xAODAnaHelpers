@@ -92,7 +92,7 @@ OverlapRemover :: OverlapRemover (const std::string& name, ISvcLocator *pSvcLoca
 {
 }
 
-EL::StatusCode OverlapRemover :: setupJob (EL::Job& job)
+StatusCode OverlapRemover :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -107,43 +107,43 @@ EL::StatusCode OverlapRemover :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "OverlapRemover" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode OverlapRemover :: histInitialize ()
+StatusCode OverlapRemover :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode OverlapRemover :: fileExecute ()
+StatusCode OverlapRemover :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode OverlapRemover :: changeInput (bool /*firstFile*/)
+StatusCode OverlapRemover :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode OverlapRemover :: initialize ()
+StatusCode OverlapRemover :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -156,9 +156,9 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   ANA_MSG_INFO( "Initializing OverlapRemover Interface... ");
 
-  if ( setCutFlowHist() == EL::StatusCode::FAILURE ) {
+  if ( setCutFlowHist() == StatusCode::FAILURE ) {
     ANA_MSG_ERROR( "Failed to setup cutflow histograms. Exiting." );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_event = wk()->xaodEvent();
@@ -169,7 +169,7 @@ EL::StatusCode OverlapRemover :: initialize ()
 
   if ( m_inContainerName_Jets.empty() ) {
     ANA_MSG_ERROR( "InputContainerJets is empty! Must have it to perform Overlap Removal! Exiting.");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( !m_inContainerName_Electrons.empty() ) { m_useElectrons = true; }
@@ -184,9 +184,9 @@ EL::StatusCode OverlapRemover :: initialize ()
   m_outAuxContainerName_Taus        = m_outContainerName_Taus + "Aux.";      // the period is very important!
 
 
-  if ( setCounters() == EL::StatusCode::FAILURE ) {
+  if ( setCounters() == StatusCode::FAILURE ) {
     ANA_MSG_ERROR( "Failed to properly set event/object counters. Exiting." );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // initialize ASG overlap removal tool
@@ -214,11 +214,11 @@ EL::StatusCode OverlapRemover :: initialize ()
   ANA_CHECK( m_ORToolbox.initialize());
   ANA_MSG_INFO( "OverlapRemover Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode OverlapRemover :: execute ()
+StatusCode OverlapRemover :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -353,11 +353,11 @@ EL::StatusCode OverlapRemover :: execute ()
   // look what do we have in TStore
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode OverlapRemover :: postExecute ()
+StatusCode OverlapRemover :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -365,11 +365,11 @@ EL::StatusCode OverlapRemover :: postExecute ()
 
   ANA_MSG_DEBUG("Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode OverlapRemover :: finalize ()
+StatusCode OverlapRemover :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -383,12 +383,12 @@ EL::StatusCode OverlapRemover :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode OverlapRemover :: histFinalize ()
+StatusCode OverlapRemover :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -403,11 +403,11 @@ EL::StatusCode OverlapRemover :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContainer* objCont, const std::string& overlapFlag, const std::string& selectFlag)
+StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContainer* objCont, const std::string& overlapFlag, const std::string& selectFlag)
 {
   SG::AuxElement::ConstAccessor<char> selectAcc(selectFlag);
   SG::AuxElement::ConstAccessor<char> overlapAcc(overlapFlag);
@@ -421,7 +421,7 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
     //
     if ( !overlapAcc.isAvailable( *obj_itr ) ) {
       ANA_MSG_ERROR( "Overlap decoration missing for this object");
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     switch(obj_itr->type()) {
       case xAOD::Type::Electron:
@@ -451,7 +451,7 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
         break;
       default:
         ANA_MSG_ERROR("Unsupported object");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
         break;
     }
 
@@ -475,12 +475,12 @@ EL::StatusCode OverlapRemover :: fillObjectCutflow (const xAOD::IParticleContain
 
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
 
-EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
+StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inElectrons, const xAOD::MuonContainer* inMuons, const xAOD::JetContainer* inJets,
                const xAOD::PhotonContainer* inPhotons,   const xAOD::TauJetContainer* inTaus,
                SystType syst_type, std::vector<std::string>* sysVec, std::vector<std::string>* sysVecOut)
 {
@@ -546,7 +546,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
-      if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
+      if ( nomContainerNotFound ) {return StatusCode::SUCCESS;}
 
       if ( m_useElectrons ) { ANA_MSG_DEBUG(  "inElectrons : " << inElectrons->size()); }
       if ( m_useMuons )     { ANA_MSG_DEBUG(  "inMuons : " << inMuons->size()); }
@@ -658,7 +658,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
-      if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
+      if ( nomContainerNotFound ) {return StatusCode::SUCCESS;}
 
 
       for ( auto systName : *sysVec) {
@@ -763,7 +763,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
-      if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
+      if ( nomContainerNotFound ) {return StatusCode::SUCCESS;}
 
 
       for ( auto systName : *sysVec) {
@@ -870,7 +870,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
-      if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
+      if ( nomContainerNotFound ) {return StatusCode::SUCCESS;}
 
       for( auto systName : *sysVec ) {
 
@@ -975,7 +975,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
-      if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
+      if ( nomContainerNotFound ) {return StatusCode::SUCCESS;}
 
       for( auto systName : *sysVec ) {
 
@@ -1081,7 +1081,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
-      if ( nomContainerNotFound ) {return EL::StatusCode::SUCCESS;}
+      if ( nomContainerNotFound ) {return StatusCode::SUCCESS;}
 
       for( auto systName : *sysVec ) {
 
@@ -1145,16 +1145,16 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
     default :
     {
       ANA_MSG_ERROR("Unknown systematics type. Aborting");
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
   } // end of switch
 
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode OverlapRemover :: setCutFlowHist( )
+StatusCode OverlapRemover :: setCutFlowHist( )
 {
 
   if ( m_useCutFlow ) {
@@ -1177,13 +1177,13 @@ EL::StatusCode OverlapRemover :: setCutFlowHist( )
     m_tau_cutflow_OR_cut  = m_tau_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode OverlapRemover :: setCounters( )
+StatusCode OverlapRemover :: setCounters( )
 {
   m_numEvent      = 0;
   m_numObject     = 0;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

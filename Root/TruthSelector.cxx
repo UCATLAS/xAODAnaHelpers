@@ -68,44 +68,44 @@ TruthSelector :: TruthSelector (const std::string& name, ISvcLocator *pSvcLocato
 {
 }
 
-EL::StatusCode TruthSelector :: setupJob (EL::Job& job)
+StatusCode TruthSelector :: setupJob (EL::Job& job)
 {
   ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "TruthSelector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TruthSelector :: histInitialize ()
+StatusCode TruthSelector :: histInitialize ()
 {
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TruthSelector :: fileExecute ()
+StatusCode TruthSelector :: fileExecute ()
 {
   ANA_MSG_INFO( "Calling fileExecute");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TruthSelector :: changeInput (bool /*firstFile*/)
+StatusCode TruthSelector :: changeInput (bool /*firstFile*/)
 {
   ANA_MSG_INFO( "Calling changeInput");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TruthSelector :: initialize ()
+StatusCode TruthSelector :: initialize ()
 {
   ANA_MSG_INFO( "Calling initialize");
 
@@ -135,7 +135,7 @@ EL::StatusCode TruthSelector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_decor   = "passSel";
@@ -158,12 +158,12 @@ EL::StatusCode TruthSelector :: initialize ()
 
   ANA_MSG_INFO( "TruthSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TruthSelector :: execute ()
+StatusCode TruthSelector :: execute ()
 {
   ANA_MSG_DEBUG( "Applying Jet Selection... ");
 
@@ -176,7 +176,7 @@ EL::StatusCode TruthSelector :: execute ()
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
@@ -203,7 +203,7 @@ EL::StatusCode TruthSelector :: execute ()
     wk()->skipEvent();
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -277,15 +277,15 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 }
 
 
-EL::StatusCode TruthSelector :: postExecute ()
+StatusCode TruthSelector :: postExecute ()
 {
   ANA_MSG_DEBUG( "Calling postExecute");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TruthSelector :: finalize ()
+StatusCode TruthSelector :: finalize ()
 {
   ANA_MSG_INFO( m_name );
 
@@ -295,16 +295,16 @@ EL::StatusCode TruthSelector :: finalize ()
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TruthSelector :: histFinalize ()
+StatusCode TruthSelector :: histFinalize ()
 {
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {

@@ -17,17 +17,17 @@ ClusterHistsAlgo :: ClusterHistsAlgo (const std::string& name, ISvcLocator *pSvc
 {
 }
 
-EL::StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
+StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
 
   // let's initialize the algorithm to use the xAODRootAccess package
   xAOD::Init("ClusterHistsAlgo").ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ClusterHistsAlgo :: histInitialize ()
+StatusCode ClusterHistsAlgo :: histInitialize ()
 {
 
   ANA_MSG_INFO( m_name );
@@ -35,7 +35,7 @@ EL::StatusCode ClusterHistsAlgo :: histInitialize ()
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     ANA_MSG_ERROR( "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -44,21 +44,21 @@ EL::StatusCode ClusterHistsAlgo :: histInitialize ()
   ANA_CHECK( m_plots -> initialize());
   m_plots -> record( wk() );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ClusterHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+StatusCode ClusterHistsAlgo :: fileExecute () { return StatusCode::SUCCESS; }
+StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 
-EL::StatusCode ClusterHistsAlgo :: initialize ()
+StatusCode ClusterHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "ClusterHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ClusterHistsAlgo :: execute ()
+StatusCode ClusterHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -74,15 +74,15 @@ EL::StatusCode ClusterHistsAlgo :: execute ()
 
   ANA_CHECK( m_plots->execute( ccls, eventWeight ));
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ClusterHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode ClusterHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode ClusterHistsAlgo :: histFinalize ()
+StatusCode ClusterHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
+StatusCode ClusterHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
+StatusCode ClusterHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots) delete m_plots;
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

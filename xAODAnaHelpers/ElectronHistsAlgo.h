@@ -20,11 +20,11 @@ public:
   ElectronHistsAlgo ();
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode execute ();
+  virtual StatusCode setupJob (EL::Job& job);
+  virtual StatusCode execute ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode AddHists( std::string name );
+  virtual StatusCode AddHists( std::string name );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

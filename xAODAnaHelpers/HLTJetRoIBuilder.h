@@ -66,8 +66,8 @@ class HLTJetRoIBuilder : public xAH::Algorithm
     std::string                  m_vtxName = "EFHistoPrmVtx";
     xAH::OnlineBeamSpotTool      m_onlineBSTool;
 
-    EL::StatusCode buildHLTBJets ();
-    EL::StatusCode buildHLTJets  ();
+    StatusCode buildHLTBJets ();
+    StatusCode buildHLTJets  ();
 
   public:
 
@@ -75,15 +75,15 @@ class HLTJetRoIBuilder : public xAH::Algorithm
     HLTJetRoIBuilder (const std::string& name, ISvcLocator *pSvcLocator);
 
     // these are the functions inherited from Algorithm
-    virtual EL::StatusCode setupJob (EL::Job& job);
-    virtual EL::StatusCode fileExecute ();
-    virtual EL::StatusCode histInitialize ();
-    virtual EL::StatusCode changeInput (bool firstFile);
-    virtual EL::StatusCode initialize ();
-    virtual EL::StatusCode execute ();
-    virtual EL::StatusCode postExecute ();
-    virtual EL::StatusCode finalize ();
-    virtual EL::StatusCode histFinalize ();
+    virtual StatusCode setupJob (EL::Job& job);
+    virtual StatusCode fileExecute ();
+    virtual StatusCode histInitialize ();
+    virtual StatusCode changeInput (bool firstFile);
+    virtual StatusCode initialize ();
+    virtual StatusCode execute ();
+    virtual StatusCode postExecute ();
+    virtual StatusCode finalize ();
+    virtual StatusCode histFinalize ();
 
 
     /// @cond

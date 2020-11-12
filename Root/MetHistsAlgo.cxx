@@ -17,24 +17,24 @@ MetHistsAlgo :: MetHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator)
 {
 }
 
-EL::StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
+StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
 
   // let's initialize the algorithm to use the xAODRootAccess package
   xAOD::Init("MetHistsAlgo").ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MetHistsAlgo :: histInitialize ()
+StatusCode MetHistsAlgo :: histInitialize ()
 {
 
   ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     ANA_MSG_ERROR( "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // declare class and add histograms to output
@@ -42,21 +42,21 @@ EL::StatusCode MetHistsAlgo :: histInitialize ()
   ANA_CHECK( m_plots -> initialize());
   m_plots -> record( wk() );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MetHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode MetHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+StatusCode MetHistsAlgo :: fileExecute () { return StatusCode::SUCCESS; }
+StatusCode MetHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 
-EL::StatusCode MetHistsAlgo :: initialize ()
+StatusCode MetHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "MetHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MetHistsAlgo :: execute ()
+StatusCode MetHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -72,16 +72,16 @@ EL::StatusCode MetHistsAlgo :: execute ()
 
   ANA_CHECK( m_plots->execute( met, eventWeight ));
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MetHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode MetHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode MetHistsAlgo :: histFinalize ()
+StatusCode MetHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
+StatusCode MetHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
+StatusCode MetHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots) delete m_plots;
 
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

@@ -41,18 +41,18 @@ public:
   IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, const std::string& className="IParticleHistsAlgo");
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
+  virtual StatusCode setupJob (EL::Job& job);
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
   /**
       @brief Calls execute<IParticleContainer>
    */
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode execute ();
+  virtual StatusCode postExecute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /**
       @brief Fill histograms with particles in a container
@@ -65,7 +65,7 @@ public:
 	  where the sample-weights are taken from SampleHandler and set to 1 by default.
       @endrst
   */
-  template<class HIST_T, class CONT_T> EL::StatusCode execute ()
+  template<class HIST_T, class CONT_T> StatusCode execute ()
   {
     static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
 
@@ -109,7 +109,7 @@ public:
       }
     }
 
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   // these are the functions not inherited from Algorithm
@@ -117,7 +117,7 @@ public:
       @brief Calls AddHists<IParticleHists>
       @param name Name of the systematic
    */
-  virtual EL::StatusCode AddHists( std::string name);
+  virtual StatusCode AddHists( std::string name);
 
   /**
       @brief Create histograms
@@ -129,7 +129,7 @@ public:
 	  IParticleHists.
       @endrst
   */
-  template<class HIST_T> EL::StatusCode AddHists( std::string name ) {
+  template<class HIST_T> StatusCode AddHists( std::string name ) {
     std::string fullname(m_name);
     fullname += name; // add systematic
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
@@ -138,7 +138,7 @@ public:
     particleHists->record( wk() );
     m_plots[name] = particleHists;
 
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   /// @cond

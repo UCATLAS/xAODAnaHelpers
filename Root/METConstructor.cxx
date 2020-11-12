@@ -72,7 +72,7 @@ METConstructor :: METConstructor (const std::string& name, ISvcLocator *pSvcLoca
 {
 }
 
-EL::StatusCode METConstructor :: setupJob (EL::Job& job)
+StatusCode METConstructor :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -94,43 +94,43 @@ EL::StatusCode METConstructor :: setupJob (EL::Job& job)
    //StatusCode::enableFailure();// do not decomment this, maybe an unchecked status code gives a crash...
 
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode METConstructor :: histInitialize ()
+StatusCode METConstructor :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode METConstructor :: fileExecute ()
+StatusCode METConstructor :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode METConstructor :: changeInput (bool /*firstFile*/)
+StatusCode METConstructor :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode METConstructor :: initialize ()
+StatusCode METConstructor :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -208,11 +208,11 @@ EL::StatusCode METConstructor :: initialize ()
     HelperFunctions::writeSystematicsListHist(m_sysList, m_name, fileMD);
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode METConstructor :: execute ()
+StatusCode METConstructor :: execute ()
 {
    // Here you do everything that needs to be done on every single
    // events, e.g. read input variables, apply cuts, and fill
@@ -479,7 +479,7 @@ EL::StatusCode METConstructor :: execute ()
 
      if ( m_inputJets.empty() ) {
        ANA_MSG_ERROR("Jets are required for MET calculation.");
-       return EL::StatusCode::FAILURE;
+       return StatusCode::FAILURE;
      }
 
      const xAOD::JetContainer* jetCont(0);
@@ -628,13 +628,13 @@ EL::StatusCode METConstructor :: execute ()
 
    if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
 
 
-EL::StatusCode METConstructor :: postExecute ()
+StatusCode METConstructor :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -642,12 +642,12 @@ EL::StatusCode METConstructor :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode METConstructor::finalize()
+StatusCode METConstructor::finalize()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -666,12 +666,12 @@ EL::StatusCode METConstructor::finalize()
 //    m_metmaker_handle = 0;
 //  }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode METConstructor :: histFinalize ()
+StatusCode METConstructor :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -686,5 +686,5 @@ EL::StatusCode METConstructor :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

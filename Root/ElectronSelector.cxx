@@ -79,7 +79,7 @@ ElectronSelector :: ElectronSelector (const std::string& name, ISvcLocator *pSvc
 {
 }
 
-EL::StatusCode ElectronSelector :: setupJob (EL::Job& job)
+StatusCode ElectronSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -94,12 +94,12 @@ EL::StatusCode ElectronSelector :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "ElectronSelector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: histInitialize ()
+StatusCode ElectronSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -114,24 +114,24 @@ EL::StatusCode ElectronSelector :: histInitialize ()
     ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: fileExecute ()
+StatusCode ElectronSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
+StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -139,12 +139,12 @@ EL::StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_INFO( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: initialize ()
+StatusCode ElectronSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -231,13 +231,13 @@ EL::StatusCode ElectronSelector :: initialize ()
        m_LHOperatingPoint != "Medium"          &&
        m_LHOperatingPoint != "Tight"     ) {
     ANA_MSG_ERROR( "Unknown electron likelihood PID requested " << m_LHOperatingPoint);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   if ( m_CutBasedOperatingPoint != "Loose"  &&
        m_CutBasedOperatingPoint != "Medium" &&
        m_CutBasedOperatingPoint != "Tight"  ) {
     ANA_MSG_ERROR( "Unknown electron cut-based PID requested " << m_CutBasedOperatingPoint);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // Parse input isolation WP list, split by comma, and put into a vector for later use
@@ -254,7 +254,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -384,7 +384,7 @@ EL::StatusCode ElectronSelector :: initialize ()
       // Grab the TrigDecTool from the ToolStore
       if(!m_trigDecTool_handle.isUserConfigured()){
         ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -419,10 +419,10 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   ANA_MSG_INFO( "ElectronSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronSelector :: execute ()
+StatusCode ElectronSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -440,7 +440,7 @@ EL::StatusCode ElectronSelector :: execute ()
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
@@ -579,10 +579,10 @@ EL::StatusCode ElectronSelector :: execute ()
 
   if( !eventPass ) {
     wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -771,7 +771,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
 }
 
-EL::StatusCode ElectronSelector :: postExecute ()
+StatusCode ElectronSelector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -779,12 +779,12 @@ EL::StatusCode ElectronSelector :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: finalize ()
+StatusCode ElectronSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -806,12 +806,12 @@ EL::StatusCode ElectronSelector :: finalize ()
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: histFinalize ()
+StatusCode ElectronSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -827,7 +827,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {

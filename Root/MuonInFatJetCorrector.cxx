@@ -38,38 +38,38 @@ MuonInFatJetCorrector :: MuonInFatJetCorrector(const std::string& name, ISvcLoca
 {
 }
 
-EL::StatusCode MuonInFatJetCorrector :: setupJob(EL::Job& job)
+StatusCode MuonInFatJetCorrector :: setupJob(EL::Job& job)
 {
   ANA_MSG_DEBUG("Calling setupJob");
   job.useXAOD();
   xAOD::Init("MuonInFatJetCorrector").ignore();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: histInitialize()
+StatusCode MuonInFatJetCorrector :: histInitialize()
 {
   ANA_MSG_DEBUG("Calling histInitialize");
   ANA_CHECK(xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: fileExecute()
+StatusCode MuonInFatJetCorrector :: fileExecute()
 {
   ANA_MSG_DEBUG("Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: changeInput(bool /*firstFile*/)
+StatusCode MuonInFatJetCorrector :: changeInput(bool /*firstFile*/)
 {
   ANA_MSG_DEBUG("Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: initialize()
+StatusCode MuonInFatJetCorrector :: initialize()
 {
   ANA_MSG_DEBUG("Calling initialize");
 
@@ -80,10 +80,10 @@ EL::StatusCode MuonInFatJetCorrector :: initialize()
   // Automatically determine calibrated mass decorators, if asked
   m_calibratedMassDecorator=(isMC())?m_calibratedMassDecoratorFullSim:m_calibratedMassDecoratorData;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: execute()
+StatusCode MuonInFatJetCorrector :: execute()
 {
   //
   // Do muon matching
@@ -123,28 +123,28 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
   if(m_inputAlgo.empty())
     delete systNames;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: postExecute ()
+StatusCode MuonInFatJetCorrector :: postExecute ()
 {
   ANA_MSG_DEBUG("Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode MuonInFatJetCorrector :: finalize()
+StatusCode MuonInFatJetCorrector :: finalize()
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: histFinalize ()
+StatusCode MuonInFatJetCorrector :: histFinalize ()
 {
 
   ANA_MSG_DEBUG( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
@@ -251,7 +251,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
   return corrected_jet;
 }
 
-EL::StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
+StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
 {
   // retrieve muons from StoreGate
   const xAOD::MuonContainer *muons(nullptr);

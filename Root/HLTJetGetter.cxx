@@ -42,37 +42,37 @@ HLTJetGetter :: HLTJetGetter (const std::string& name, ISvcLocator *pSvcLocator)
 }
 
 
-EL::StatusCode HLTJetGetter :: setupJob (EL::Job& job)
+StatusCode HLTJetGetter :: setupJob (EL::Job& job)
 {
     ANA_MSG_INFO( "Calling setupJob");
     job.useXAOD ();
     xAOD::Init( "HLTJetGetter" ).ignore(); // call before opening first file
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetGetter :: histInitialize ()
+StatusCode HLTJetGetter :: histInitialize ()
 {
     ANA_CHECK( xAH::Algorithm::algInitialize());
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetGetter :: fileExecute ()
+StatusCode HLTJetGetter :: fileExecute ()
 {
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetGetter :: changeInput (bool /*firstFile*/)
+StatusCode HLTJetGetter :: changeInput (bool /*firstFile*/)
 {
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
-EL::StatusCode HLTJetGetter :: initialize ()
+StatusCode HLTJetGetter :: initialize ()
 {
 
 
@@ -107,20 +107,20 @@ EL::StatusCode HLTJetGetter :: initialize ()
 
     if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     // If there is no InputContainer we must stop
     if ( m_inContainerName.empty() ) {
         ANA_MSG_ERROR( "InputContainer is empty!");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
     }
 
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode HLTJetGetter :: execute ()
+StatusCode HLTJetGetter :: execute ()
 {
     ANA_MSG_DEBUG( "Getting HLT jets... ");
 
@@ -153,20 +153,20 @@ EL::StatusCode HLTJetGetter :: execute ()
 
     if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetGetter :: postExecute ()
+StatusCode HLTJetGetter :: postExecute ()
 {
     ANA_MSG_DEBUG( "Calling postExecute");
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetGetter :: finalize ()
+StatusCode HLTJetGetter :: finalize ()
 {
     ANA_MSG_INFO( "Deleting tool instances...");
 
@@ -178,14 +178,14 @@ EL::StatusCode HLTJetGetter :: finalize ()
       if ( m_trigConfTool ) {  delete m_trigConfTool; m_trigConfTool = nullptr; }
     }
 
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetGetter :: histFinalize ()
+StatusCode HLTJetGetter :: histFinalize ()
 {
     ANA_MSG_INFO( "Calling histFinalize");
     ANA_CHECK( xAH::Algorithm::algFinalize());
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
 }

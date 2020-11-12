@@ -55,7 +55,7 @@ MinixAOD :: MinixAOD (const std::string& name, ISvcLocator *pSvcLocator) :
 {
 }
 
-EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
+StatusCode MinixAOD :: setupJob (EL::Job& job)
 {
   ANA_MSG_DEBUG("Calling setupJob");
 
@@ -68,18 +68,18 @@ EL::StatusCode MinixAOD :: setupJob (EL::Job& job)
     job.outputAdd (out_xAOD);
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MinixAOD :: histInitialize ()
+StatusCode MinixAOD :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MinixAOD :: changeInput (bool firstFile)
+StatusCode MinixAOD :: changeInput (bool firstFile)
 {
   //
   // Update CutBookkeeper
@@ -111,12 +111,12 @@ EL::StatusCode MinixAOD :: changeInput (bool firstFile)
       m_outputCBKContainer->merge(inputCBKContainer);
     }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MinixAOD :: fileExecute () { return EL::StatusCode::SUCCESS; }
+StatusCode MinixAOD :: fileExecute () { return StatusCode::SUCCESS; }
 
-EL::StatusCode MinixAOD :: initialize ()
+StatusCode MinixAOD :: initialize ()
 {
   ANA_MSG_DEBUG("Calling initialize");
 
@@ -187,10 +187,10 @@ EL::StatusCode MinixAOD :: initialize ()
 
   ANA_MSG_DEBUG("MinixAOD Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MinixAOD :: execute ()
+StatusCode MinixAOD :: execute ()
 {
   ANA_MSG_VERBOSE( "Dumping objects...");
 
@@ -241,7 +241,7 @@ EL::StatusCode MinixAOD :: execute ()
       ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::TauJetContainer, xAOD::TauJetAuxContainer, xAOD::TauJet>(m_store, out_key.c_str(), t_cont)));
     } else {
       ANA_MSG_ERROR("Could not identify what container " << in_key << " corresponds to for deep-copying.");
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     m_copyFromStoreToEventKeys_vec.push_back(out_key);
 
@@ -308,7 +308,7 @@ EL::StatusCode MinixAOD :: execute ()
       ANA_CHECK( (HelperFunctions::recordOutput<xAOD::TauJetContainer, xAOD::TauJetAuxContainer>(m_event, m_store, key)));
     } else {
       ANA_MSG_ERROR("Could not identify what container " << key << " corresponds to for copying from TStore to TEvent.");
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     ANA_MSG_DEBUG("Copied " << key << " and it's auxiliary container from TStore to TEvent");
@@ -318,13 +318,13 @@ EL::StatusCode MinixAOD :: execute ()
   m_event->fill();
   ANA_MSG_DEBUG("Finished dumping objects...");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode MinixAOD :: postExecute () { return EL::StatusCode::SUCCESS; }
+StatusCode MinixAOD :: postExecute () { return StatusCode::SUCCESS; }
 
-EL::StatusCode MinixAOD :: finalize () {
+StatusCode MinixAOD :: finalize () {
   //
   // Save cutbookkeeper
   if(m_copyCutBookkeeper)
@@ -345,10 +345,10 @@ EL::StatusCode MinixAOD :: finalize () {
   if(m_fileMetaDataTool) delete m_fileMetaDataTool;
   if(m_trigMetaDataTool) delete m_trigMetaDataTool;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
-EL::StatusCode MinixAOD :: histFinalize ()
+StatusCode MinixAOD :: histFinalize ()
 {
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

@@ -57,7 +57,7 @@ ElectronCalibrator :: ElectronCalibrator (const std::string& name, ISvcLocator *
 }
 
 
-EL::StatusCode ElectronCalibrator :: setupJob (EL::Job& job)
+StatusCode ElectronCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -72,43 +72,43 @@ EL::StatusCode ElectronCalibrator :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "ElectronCalibrator" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronCalibrator :: histInitialize ()
+StatusCode ElectronCalibrator :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronCalibrator :: fileExecute ()
+StatusCode ElectronCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronCalibrator :: changeInput (bool /*firstFile*/)
+StatusCode ElectronCalibrator :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronCalibrator :: initialize ()
+StatusCode ElectronCalibrator :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -128,7 +128,7 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
@@ -210,11 +210,11 @@ EL::StatusCode ElectronCalibrator :: initialize ()
 
   ANA_MSG_INFO( "ElectronCalibrator Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode ElectronCalibrator :: execute ()
+StatusCode ElectronCalibrator :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -259,7 +259,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
     //
     if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     // create shallow copy for calibration - one per syst
@@ -334,10 +334,10 @@ EL::StatusCode ElectronCalibrator :: execute ()
   // look what we have in TStore
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronCalibrator :: postExecute ()
+StatusCode ElectronCalibrator :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -345,12 +345,12 @@ EL::StatusCode ElectronCalibrator :: postExecute ()
 
   ANA_MSG_DEBUG("Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronCalibrator :: finalize ()
+StatusCode ElectronCalibrator :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -367,12 +367,12 @@ EL::StatusCode ElectronCalibrator :: finalize ()
   if ( m_EgammaCalibrationAndSmearingTool ) { delete m_EgammaCalibrationAndSmearingTool; m_EgammaCalibrationAndSmearingTool = nullptr; }
   if ( m_IsolationCorrectionTool )          { delete m_IsolationCorrectionTool; m_IsolationCorrectionTool = nullptr; }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronCalibrator :: histFinalize ()
+StatusCode ElectronCalibrator :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -387,5 +387,5 @@ EL::StatusCode ElectronCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

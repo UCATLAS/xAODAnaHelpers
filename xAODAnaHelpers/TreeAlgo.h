@@ -113,15 +113,15 @@ public:
   TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode setupJob (EL::Job& job);
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode postExecute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // Help tree creator function
   virtual HelpTreeBase* createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store);

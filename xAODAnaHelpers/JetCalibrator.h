@@ -167,10 +167,10 @@ private:
   std::vector<std::string>  m_decisionNames;
 
   // Helper functions
-  EL::StatusCode executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
+  StatusCode executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
                                    std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer*>& calibJetsSC,
                                    std::vector<std::string>& vecOutContainerNames, bool isPDCopy);
-  EL::StatusCode initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData);
+  StatusCode initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData);
 
 public:
 
@@ -178,15 +178,15 @@ public:
   JetCalibrator (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode setupJob (EL::Job& job);
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode postExecute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

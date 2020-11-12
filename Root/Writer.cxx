@@ -24,7 +24,7 @@ Writer :: Writer (const std::string& name, ISvcLocator *pSvcLocator) :
 {
 }
 
-EL::StatusCode Writer :: setupJob (EL::Job& job)
+StatusCode Writer :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -43,50 +43,50 @@ EL::StatusCode Writer :: setupJob (EL::Job& job)
 
   if ( m_outputLabel.Length() == 0 ) {
     ANA_MSG_ERROR( "No OutputLabel specified!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // tell EventLoop about our output xAOD:
   EL::OutputStream out(m_outputLabel.Data());
   job.outputAdd (out);
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: histInitialize ()
+StatusCode Writer :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: fileExecute ()
+StatusCode Writer :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: changeInput (bool /*firstFile*/)
+StatusCode Writer :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: initialize ()
+StatusCode Writer :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -111,12 +111,12 @@ EL::StatusCode Writer :: initialize ()
 // event->setAuxItemList( "GoodJetsAux.", "JetGhostArea.TrackCount" );
 
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: execute ()
+StatusCode Writer :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -149,7 +149,7 @@ EL::StatusCode Writer :: execute ()
       ANA_MSG_INFO( " Write a collection " << contName.Data() << inJets->size() );
       if( ! m_event->record( inJets, contName.Data() ) ) {
         ANA_MSG_ERROR(m_name << ": Could not record " << contName.Data());
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_MSG_INFO( " Wrote a collection " << contName.Data());
 
@@ -159,19 +159,19 @@ EL::StatusCode Writer :: execute ()
       TString auxName( contName + "Aux." );
       if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, msg()).isSuccess() ){
         ANA_MSG_ERROR(m_name << ": Could not get Aux data for " << contName.Data());
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_MSG_INFO( " Wrote a aux store " << contName.Data());
 
       if( ! m_event->record( inJetsAux, auxName.Data() ) ) {
         ANA_MSG_ERROR( m_name << ": Could not record aux store for " << contName.Data());
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
     }
     // could not find the container - problems
     else {
       ANA_MSG_ERROR( m_name << ": Could not find " << contName.Data());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
   }
 
@@ -179,22 +179,22 @@ EL::StatusCode Writer :: execute ()
 
   m_event->fill();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: postExecute ()
+StatusCode Writer :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: finalize ()
+StatusCode Writer :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -210,12 +210,12 @@ EL::StatusCode Writer :: finalize ()
   TFile * file = wk()->getOutputFile(m_outputLabel.Data());
   ANA_CHECK( m_event->finishWritingTo( file ));
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode Writer :: histFinalize ()
+StatusCode Writer :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -228,5 +228,5 @@ EL::StatusCode Writer :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

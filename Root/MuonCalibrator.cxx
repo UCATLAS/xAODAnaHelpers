@@ -66,7 +66,7 @@ MuonCalibrator :: MuonCalibrator (const std::string& name, ISvcLocator *pSvcLoca
 {
 }
 
-EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
+StatusCode MuonCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -81,43 +81,43 @@ EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "MuonCalibrator" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: histInitialize ()
+StatusCode MuonCalibrator :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: fileExecute ()
+StatusCode MuonCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: changeInput (bool /*firstFile*/)
+StatusCode MuonCalibrator :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: initialize ()
+StatusCode MuonCalibrator :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -142,7 +142,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -251,11 +251,11 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   ANA_MSG_INFO( "MuonCalibrator Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode MuonCalibrator :: execute ()
+StatusCode MuonCalibrator :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -302,7 +302,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     //
     if ( m_muonCalibrationTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure MuonCalibrationAndSmearingTool for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     // create shallow copy for calibration - one per syst
@@ -374,11 +374,11 @@ EL::StatusCode MuonCalibrator :: execute ()
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   ANA_MSG_DEBUG( "Left ");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode MuonCalibrator :: postExecute ()
+StatusCode MuonCalibrator :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -386,12 +386,12 @@ EL::StatusCode MuonCalibrator :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: finalize ()
+StatusCode MuonCalibrator :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -405,12 +405,12 @@ EL::StatusCode MuonCalibrator :: finalize ()
 
   ANA_MSG_DEBUG( "Calling finalize");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: histFinalize ()
+StatusCode MuonCalibrator :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -425,5 +425,5 @@ EL::StatusCode MuonCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

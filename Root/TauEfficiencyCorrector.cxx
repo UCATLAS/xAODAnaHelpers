@@ -50,7 +50,7 @@ TauEfficiencyCorrector :: TauEfficiencyCorrector (const std::string& name, ISvcL
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: setupJob (EL::Job& job)
+StatusCode TauEfficiencyCorrector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -65,43 +65,43 @@ EL::StatusCode TauEfficiencyCorrector :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "TauEfficiencyCorrector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: histInitialize ()
+StatusCode TauEfficiencyCorrector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: fileExecute ()
+StatusCode TauEfficiencyCorrector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: changeInput (bool /*firstFile*/)
+StatusCode TauEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: initialize ()
+StatusCode TauEfficiencyCorrector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -121,7 +121,7 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -135,7 +135,7 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   if( isMC() ){
     if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     ANA_CHECK( m_pileup_tool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
@@ -162,7 +162,7 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
      else if ( m_WorkingPointTauID == "Tight")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTTIGHT));     }
      else {
        ANA_MSG_ERROR("Failed to configure WorkingPointTauID with unknown " << m_WorkingPointTauID);
-       return EL::StatusCode::FAILURE;
+       return StatusCode::FAILURE;
      }
   } else if ( m_WorkingPointTauID.empty() )      {
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDNONE));
@@ -180,7 +180,7 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
     else if (m_WorkingPointEleOLRElectron == "EleBDTMediumPlusVeto") { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTMEDIUMPLUSVETO)); }
     else {
        ANA_MSG_ERROR("Failed to configure WorkingPointEleOLRElectron with unknown " << m_WorkingPointEleOLRElectron);
-       return EL::StatusCode::FAILURE;
+       return StatusCode::FAILURE;
     }
   } else if ( m_WorkingPointEleOLRElectron.empty() )      {
     // still consider this a working point
@@ -232,11 +232,11 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "TauEfficiencyCorrector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: execute ()
+StatusCode TauEfficiencyCorrector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -247,7 +247,7 @@ EL::StatusCode TauEfficiencyCorrector :: execute ()
 
   if ( !isMC() ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Tau Efficiency correction... "); }
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Applying Tau Efficiency corrections... ");
@@ -298,12 +298,12 @@ EL::StatusCode TauEfficiencyCorrector :: execute ()
   //
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: postExecute ()
+StatusCode TauEfficiencyCorrector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -311,12 +311,12 @@ EL::StatusCode TauEfficiencyCorrector :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: finalize ()
+StatusCode TauEfficiencyCorrector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -330,11 +330,11 @@ EL::StatusCode TauEfficiencyCorrector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: histFinalize ()
+StatusCode TauEfficiencyCorrector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -349,10 +349,10 @@ EL::StatusCode TauEfficiencyCorrector :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::TauJetContainer* inputTaus, bool nominal, bool writeSystNames )
+StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::TauJetContainer* inputTaus, bool nominal, bool writeSystNames )
 {
   //****************************
 
@@ -394,7 +394,7 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
     //
     if ( m_tauEffCorrTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR("Failed to configure TauEfficiencyScaleFactors for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     ANA_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
@@ -453,5 +453,5 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
     ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystNames ));
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

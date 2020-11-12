@@ -61,7 +61,7 @@ MuonEfficiencyCorrector :: MuonEfficiencyCorrector (const std::string& name, ISv
 }
 
 
-EL::StatusCode MuonEfficiencyCorrector :: setupJob (EL::Job& job)
+StatusCode MuonEfficiencyCorrector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -76,43 +76,43 @@ EL::StatusCode MuonEfficiencyCorrector :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "MuonEfficiencyCorrector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonEfficiencyCorrector :: histInitialize ()
+StatusCode MuonEfficiencyCorrector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonEfficiencyCorrector :: fileExecute ()
+StatusCode MuonEfficiencyCorrector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonEfficiencyCorrector :: changeInput (bool /*firstFile*/)
+StatusCode MuonEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonEfficiencyCorrector :: initialize ()
+StatusCode MuonEfficiencyCorrector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -132,7 +132,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -146,7 +146,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   if( isMC() ){
     if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     ANA_CHECK( m_pileup_tool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
@@ -349,11 +349,11 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "MuonEfficiencyCorrector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode MuonEfficiencyCorrector :: execute ()
+StatusCode MuonEfficiencyCorrector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -364,7 +364,7 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
 
   if ( !isMC() ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Muon Efficiency correction... "); }
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Applying Muon Efficiency corrections... ");
@@ -416,12 +416,12 @@ EL::StatusCode MuonEfficiencyCorrector :: execute ()
   //
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
 
-EL::StatusCode MuonEfficiencyCorrector :: postExecute ()
+StatusCode MuonEfficiencyCorrector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -429,12 +429,12 @@ EL::StatusCode MuonEfficiencyCorrector :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonEfficiencyCorrector :: finalize ()
+StatusCode MuonEfficiencyCorrector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -453,11 +453,11 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
   delete m_muTrigSF_tool;
   delete m_muTTVASF_tool;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
+StatusCode MuonEfficiencyCorrector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -472,10 +472,10 @@ EL::StatusCode MuonEfficiencyCorrector :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
+StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::MuonContainer* inputMuons, bool nominal, bool writeSystNames )
 {
 
   //
@@ -517,7 +517,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       //
       if ( m_muRecoSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
         ANA_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
@@ -556,7 +556,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            recoEffSF = -1.0;
          } else {
            ANA_MSG_ERROR( "Could not get Reco efficiency scale factors");
-           return EL::StatusCode::FAILURE;
+           return StatusCode::FAILURE;
          }
     	 }
     	 //
@@ -622,7 +622,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       //
       if ( m_muIsoSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
@@ -660,7 +660,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            IsoEffSF = -1.0;
          } else {
            ANA_MSG_ERROR( "Could not get Iso efficiency scale factors");
-           return EL::StatusCode::FAILURE;
+           return StatusCode::FAILURE;
          }
     	 }
     	 //
@@ -749,7 +749,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
         //
         if ( m_muTrigSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
           ANA_MSG_ERROR( "Failed to configure MuonTriggerScaleFactors for trigger " << trig_it << " systematic " << syst_it.name());
-          return EL::StatusCode::FAILURE;
+          return StatusCode::FAILURE;
         }
         ANA_MSG_DEBUG( "Successfully applied systematic " << syst_it.name() << " for trigger " << trig_it);
 
@@ -789,7 +789,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
                triggerMCEff = -1.0;
              } else {
                ANA_MSG_ERROR( "Could not get trigger efficiency - trigger: " << trig_it);
-               return EL::StatusCode::FAILURE;
+               return StatusCode::FAILURE;
              }
            }
            // Add it to decoration vector
@@ -806,7 +806,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
                  triggerDataEff = -1.0;
                } else {
                  ANA_MSG_ERROR( "Could not get trigger efficiency - trigger: " << trig_it);
-                 return EL::StatusCode::FAILURE;
+                 return StatusCode::FAILURE;
                }
              }
            }
@@ -819,7 +819,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
                  triggerEffSF = -1.0;
                } else {
                  ANA_MSG_ERROR( "Could not get trigger efficiency scale factor - trigger: " << trig_it);
-                 return EL::StatusCode::FAILURE;
+                 return StatusCode::FAILURE;
                }
              }
            } else {
@@ -890,7 +890,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       //if ( m_muTTVASF_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       if ( m_muTTVASF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
        	ANA_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
@@ -928,7 +928,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            TTVAEffSF = -1.0;
          } else {
            ANA_MSG_ERROR( "Could not get TTVA efficiency scale factors");
-           return EL::StatusCode::FAILURE;
+           return StatusCode::FAILURE;
          }
     	 }
     	 //
@@ -957,5 +957,5 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     }
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

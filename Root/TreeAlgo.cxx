@@ -77,7 +77,7 @@ TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
 {
 }
 
-EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
+StatusCode TreeAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
   xAOD::Init("TreeAlgo").ignore();
@@ -85,10 +85,10 @@ EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
   EL::OutputStream outForTree("tree");
   job.outputAdd (outForTree);
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: initialize ()
+StatusCode TreeAlgo :: initialize ()
 {
   ANA_MSG_INFO( m_name );
   m_event = wk()->xaodEvent();
@@ -111,7 +111,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_jetContainerName.empty() && m_jetContainers.size()!=m_jetBranches.size()){
     ANA_MSG_ERROR( "The number of jet containers must be equal to the number of jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   std::istringstream ss_trig_containers(m_trigJetContainerName);
   while ( std::getline(ss_trig_containers, token, ' ') ){
@@ -123,7 +123,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_trigJetContainerName.empty() && m_trigJetContainers.size()!=m_trigJetBranches.size()){
     ANA_MSG_ERROR( "The number of trig jet containers must be equal to the number of trig jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   std::istringstream ss_truth_containers(m_truthJetContainerName);
   while ( std::getline(ss_truth_containers, token, ' ') ){
@@ -135,7 +135,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_truthJetContainerName.empty() && m_truthJetContainers.size()!=m_truthJetBranches.size()){
     ANA_MSG_ERROR( "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_fat_containers(m_fatJetContainerName);
@@ -153,7 +153,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_fatJetContainerName.empty() && m_fatJetContainers.size()!=m_fatJetBranches.size()){
     ANA_MSG_ERROR( "The number of fat jet containers must be equal to the number of fat jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_l1_containers(m_l1JetContainerName);
@@ -166,7 +166,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_l1JetContainerName.empty() && m_l1JetContainers.size()!=m_l1JetBranches.size()){
     ANA_MSG_ERROR( "The number of L1 jet containers must be equal to the number of L1 jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_vertex_containers(m_vertexContainerName);
@@ -179,7 +179,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_vertexContainers.size()!=m_vertexBranches.size()){
     ANA_MSG_ERROR( "The number of vertex containers must be equal to the number of vertex name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_cluster_containers(m_clusterContainerName);
@@ -192,7 +192,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_clusterContainerName.empty() && m_clusterContainers.size()!=m_clusterBranches.size()){
     ANA_MSG_ERROR( "The number of cluster containers must be equal to the number of cluster name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // allow to store different variables for each jet collection (reco, trig, fat only, default: store the same)
@@ -202,7 +202,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_jetDetails.size()!=1  && m_jetContainers.size()!=m_jetDetails.size()){
     ANA_MSG_ERROR( "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   std::istringstream ss_trig_details(m_trigJetDetailStr);
   while ( std::getline(ss_trig_details, token, '|') ){
@@ -210,7 +210,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_trigJetDetails.size()!=1  && m_trigJetContainers.size()!=m_trigJetDetails.size()){
     ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_vertex_details(m_vertexDetailStr);
@@ -219,7 +219,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_vertexDetails.size()>1 && m_vertexContainers.size()!=m_vertexDetails.size()){
     ANA_MSG_ERROR( "The size of m_vertexContainers should be equal to the size of m_vertexDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_fat_details(m_fatJetDetailStr);
@@ -228,7 +228,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_fatJetDetails.size()!=1  && m_fatJetContainers.size()!=m_fatJetDetails.size()){
     ANA_MSG_ERROR( "The size of m_fatJetContainers should be equal to the size of m_fatJetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_cluster_details(m_clusterDetailStr);
@@ -237,7 +237,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_clusterDetails.size()!=1  && m_clusterContainers.size()!=m_clusterDetails.size()){
     ANA_MSG_ERROR( "The size of m_clusterContainers should be equal to the size of m_clusterDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // to handle more than one truth particles collections
@@ -251,24 +251,24 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_truthParticlesContainerName.empty() && m_truthParticlesContainers.size()!=m_truthParticlesBranches.size()){
     ANA_MSG_ERROR( "The number of truth particles containers must be equal to the number of truth particles name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: histInitialize ()
+StatusCode TreeAlgo :: histInitialize ()
 {
   ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+StatusCode TreeAlgo :: fileExecute () { return StatusCode::SUCCESS; }
+StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 
 
-EL::StatusCode TreeAlgo :: execute ()
+StatusCode TreeAlgo :: execute ()
 {
 
   // what systematics do we need to process for this event?
@@ -360,7 +360,7 @@ EL::StatusCode TreeAlgo :: execute ()
     TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
     if ( !outTree ) {
       ANA_MSG_ERROR("Failed to instantiate output tree!");
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
@@ -719,13 +719,13 @@ EL::StatusCode TreeAlgo :: execute ()
     helpTree->Fill();
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode TreeAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
+StatusCode TreeAlgo :: postExecute () { return StatusCode::SUCCESS; }
 
-EL::StatusCode TreeAlgo :: finalize () {
+StatusCode TreeAlgo :: finalize () {
 
   ANA_MSG_INFO( "Deleting tree instances...");
 
@@ -734,10 +734,10 @@ EL::StatusCode TreeAlgo :: finalize () {
   }
   m_trees.clear();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
+StatusCode TreeAlgo :: histFinalize () { return StatusCode::SUCCESS; }
 
 HelpTreeBase* TreeAlgo :: createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store) {
     return new HelpTreeBase( event, tree, file, units, debug, store );

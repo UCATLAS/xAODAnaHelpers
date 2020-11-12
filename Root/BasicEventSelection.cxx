@@ -82,7 +82,7 @@ BasicEventSelection :: BasicEventSelection (const std::string& name, ISvcLocator
 }
 
 
-EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
+StatusCode BasicEventSelection :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -107,12 +107,12 @@ EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
   EL::OutputStream outForDuplicates(m_duplicatesStreamName);
   if(!job.outputHas(m_duplicatesStreamName) ){ job.outputAdd ( outForDuplicates ); }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: histInitialize ()
+StatusCode BasicEventSelection :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -200,11 +200,11 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   ANA_MSG_INFO( "Finished creating histograms");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode BasicEventSelection :: fileExecute ()
+StatusCode BasicEventSelection :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
@@ -221,7 +221,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
   if ( !MetaData ) {
     ANA_MSG_ERROR( "MetaData tree not found! Exiting.");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   MetaData->LoadTree(0);
 
@@ -245,7 +245,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
       if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
 	  ANA_MSG_ERROR("Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
-	  return EL::StatusCode::FAILURE;
+	  return StatusCode::FAILURE;
       }
       bool allFromUnknownStream(true);
       if ( incompleteCBC->size() != 0 ) {
@@ -268,7 +268,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
       if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
 	  ANA_MSG_ERROR("Failed to retrieve CutBookkeepers from MetaData! Exiting.");
-	  return EL::StatusCode::FAILURE;
+	  return StatusCode::FAILURE;
       }
 
       // Find the smallest cycle number, the original first processing step/cycle
@@ -345,7 +345,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
       if ( m_isDerivation && !DxAODEventsCBK ) {
         ANA_MSG_ERROR( "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
 
       m_MD_finalNevents	      = ( m_isDerivation ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
@@ -375,21 +375,21 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_histEventCount -> Fill(6, m_MD_finalSumWSquared);
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode BasicEventSelection :: changeInput (bool /*firstFile*/)
+StatusCode BasicEventSelection :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: initialize ()
+StatusCode BasicEventSelection :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -654,7 +654,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       asg::AnaToolHandle<Trig::ITrigDecisionTool> iTrigDecTool_handle {"Trig::TrigDecisionTool/TrigDecisionTool"};
       if ( !iTrigDecTool_handle.isUserConfigured() ) {
         ANA_MSG_FATAL("A configured " << iTrigDecTool_handle.typeAndName() << " must have been previously created!");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( iTrigDecTool_handle.retrieve() );
       ANA_CHECK( m_pileup_tool_handle.setProperty("TrigDecisionTool", iTrigDecTool_handle ));
@@ -672,12 +672,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   ANA_MSG_INFO( "BasicEventSelection succesfully initialized!");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: execute ()
+StatusCode BasicEventSelection :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -763,7 +763,7 @@ EL::StatusCode BasicEventSelection :: execute ()
           ANA_MSG_INFO("Dropping huge weight event. Weight should be 352220000");
           ANA_MSG_INFO("WEIGHT : " << mcEvtWeight);
           wk()->skipEvent();
-          return EL::StatusCode::SUCCESS; // go to next event
+          return StatusCode::SUCCESS; // go to next event
         }
       }
     }
@@ -834,7 +834,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       m_duplicatesTree->Fill();
 
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS; // go to next event
+      return StatusCode::SUCCESS; // go to next event
     }
 
     m_RunNr_VS_EvtNr.insert(thispair);
@@ -877,7 +877,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       // apply minimum pile-up cut
       if ( eventInfo->actualInteractionsPerCrossing() < m_actualMuMin ) { // veto event
           wk()->skipEvent();
-          return EL::StatusCode::SUCCESS;
+          return StatusCode::SUCCESS;
       }
   }
 
@@ -885,7 +885,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       // apply maximum pile-up cut
       if ( eventInfo->actualInteractionsPerCrossing() > m_actualMuMax ) { // veto event
           wk()->skipEvent();
-          return EL::StatusCode::SUCCESS;
+          return StatusCode::SUCCESS;
       }
   }
 
@@ -906,7 +906,7 @@ EL::StatusCode BasicEventSelection :: execute ()
     if ( m_applyGRLCut ) {
       if ( !m_grl_handle->passRunLB( *eventInfo ) ) {
         wk()->skipEvent();
-        return EL::StatusCode::SUCCESS; // go to next event
+        return StatusCode::SUCCESS; // go to next event
       }
       m_cutflowHist ->Fill( m_cutflow_grl, 1 );
       m_cutflowHistW->Fill( m_cutflow_grl, mcEvtWeight);
@@ -920,28 +920,28 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) ) {
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_lar, 1 );
     m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_tile, 1 );
     m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error) ) {
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_SCT, 1 );
     m_cutflowHistW->Fill( m_cutflow_SCT, mcEvtWeight);
 
     if ( m_applyCoreFlagsCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
@@ -952,7 +952,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( m_applyJetCleaningEventFlag && eventInfo->isAvailable<char>("DFCommonJets_eventClean_LooseBad") ) {
     if(eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad")<1) {
 	wk()->skipEvent();
-	return EL::StatusCode::SUCCESS;
+	return StatusCode::SUCCESS;
       }
   }
   m_cutflowHist ->Fill( m_cutflow_jetcleaning, 1 );
@@ -963,7 +963,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( m_applyIsBadBatmanFlag && eventInfo->isAvailable<char>("DFCommonJets_isBadBatman") &&  !isMC() ) {
     if(eventInfo->auxdataConst<char>("DFCommonJets_isBadBatman")>0) {
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      return StatusCode::SUCCESS;
     }
   }
   m_cutflowHist ->Fill( m_cutflow_isbadbatman, 1 );
@@ -979,7 +979,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      return StatusCode::SUCCESS;
     }
   }
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
@@ -997,7 +997,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
       if ( !triggerChainGroup->isPassed() ) {
         wk()->skipEvent();
-        return EL::StatusCode::SUCCESS;
+        return StatusCode::SUCCESS;
       }
       m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
       m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
@@ -1139,7 +1139,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }//if data
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 // "Borrowed" from SUSYTools
@@ -1349,18 +1349,18 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 }
 
 
-EL::StatusCode BasicEventSelection :: postExecute ()
+StatusCode BasicEventSelection :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
   // code.  It is mainly used in implementing the NTupleSvc.
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: finalize ()
+StatusCode BasicEventSelection :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -1388,12 +1388,12 @@ EL::StatusCode BasicEventSelection :: finalize ()
     xAOD::IOStats::instance().stats().printSmartSlimmingBranchList();
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: histFinalize ()
+StatusCode BasicEventSelection :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -1406,5 +1406,5 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

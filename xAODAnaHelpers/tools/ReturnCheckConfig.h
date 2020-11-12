@@ -14,7 +14,7 @@
              if(fSuccess != 0){                                                   \
                        ANA_MSG_ERROR( "Could not find the "                       \
                                            "configuration file:" << CONFIG.c_str());      \
-                       return EL::StatusCode::FAILURE;                                    \
+                       return StatusCode::FAILURE;                                    \
                      } else {                                                             \
                                ANA_MSG_INFO( "Found configuration file: " << CONFIG.c_str());  \
                              }                                                                    \

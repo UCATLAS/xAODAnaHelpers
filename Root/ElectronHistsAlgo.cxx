@@ -15,18 +15,18 @@ ElectronHistsAlgo :: ElectronHistsAlgo () :
 IParticleHistsAlgo("ElectronHistsAlgo")
 { }
 
-EL::StatusCode ElectronHistsAlgo :: setupJob (EL::Job& job)
+StatusCode ElectronHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
   xAOD::Init("ElectronHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronHistsAlgo::AddHists( std::string name ) {
+StatusCode ElectronHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<ElectronHists>(name);
 }
 
-EL::StatusCode ElectronHistsAlgo :: execute () {
+StatusCode ElectronHistsAlgo :: execute () {
   return IParticleHistsAlgo::execute<ElectronHists, xAOD::ElectronContainer>();
 }

@@ -64,42 +64,42 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (const std::string& name, ISv
 }
 
 
-EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
+StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
 {
   ANA_MSG_INFO( "Calling setupJob");
 
   job.useXAOD ();
   xAOD::Init( "BJetEfficiencyCorrector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
+StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   m_corrFileName = PathResolverFindCalibFile(m_corrFileName);
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: fileExecute ()
+StatusCode BJetEfficiencyCorrector :: fileExecute ()
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: changeInput (bool /*firstFile*/)
+StatusCode BJetEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode BJetEfficiencyCorrector :: initialize ()
+StatusCode BJetEfficiencyCorrector :: initialize ()
 {
   ANA_MSG_INFO( "Initializing BJetEfficiencyCorrector Interface... ");
 
@@ -148,7 +148,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // make unique name
@@ -178,7 +178,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   if( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( !isMC() && m_getScaleFactors ) {
@@ -256,7 +256,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		break;
 	      case HelperFunctions::Unknown:
 		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-		return EL::StatusCode::FAILURE;
+		return StatusCode::FAILURE;
 		break;
 	      }
 	  }
@@ -319,10 +319,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode BJetEfficiencyCorrector :: execute ()
+StatusCode BJetEfficiencyCorrector :: execute ()
 {
   ANA_MSG_DEBUG( "Applying BJetEfficiencyCorrector for " << m_taggerName << " tagger... ");
 
@@ -361,14 +361,14 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
   ANA_MSG_DEBUG( "Leave Efficency Selection... ");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
+StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
 								      const xAOD::EventInfo* /*eventInfo*/,
 								      bool doNominal)
 {
@@ -416,7 +416,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	  if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok )
 	    {
 	      ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
-	      return EL::StatusCode::FAILURE;
+	      return StatusCode::FAILURE;
 	    }
 	  int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
 	  ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
@@ -447,7 +447,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	  if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok)
 	    {
 	      ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
-	      return EL::StatusCode::FAILURE;
+	      return StatusCode::FAILURE;
 	    }
 	  ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
@@ -477,7 +477,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error)
 		{
 		  ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
-		  return EL::StatusCode::FAILURE;
+		  return StatusCode::FAILURE;
 		}
 	      else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
 		{
@@ -526,29 +526,29 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystName));
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
+StatusCode BJetEfficiencyCorrector :: postExecute ()
 {
   ANA_MSG_DEBUG("Calling postExecute");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: finalize ()
+StatusCode BJetEfficiencyCorrector :: finalize ()
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
+StatusCode BJetEfficiencyCorrector :: histFinalize ()
 {
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

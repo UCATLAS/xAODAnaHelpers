@@ -122,7 +122,7 @@ JetSelector :: JetSelector (const std::string& name, ISvcLocator *pSvcLocator) :
 {
 }
 
-EL::StatusCode JetSelector :: setupJob (EL::Job& job)
+StatusCode JetSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -137,12 +137,12 @@ EL::StatusCode JetSelector :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "JetSelector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: histInitialize ()
+StatusCode JetSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -152,24 +152,24 @@ EL::StatusCode JetSelector :: histInitialize ()
   ANA_MSG_DEBUG( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: fileExecute ()
+StatusCode JetSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_DEBUG( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
+StatusCode JetSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -177,12 +177,12 @@ EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_DEBUG( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: initialize ()
+StatusCode JetSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -259,7 +259,7 @@ EL::StatusCode JetSelector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   bool allOK(true);
@@ -282,7 +282,7 @@ EL::StatusCode JetSelector :: initialize ()
 
   if( !allOK ) {
     ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( m_decorateSelectedObjects ) {
@@ -403,7 +403,7 @@ EL::StatusCode JetSelector :: initialize ()
       // Grab the TrigDecTool from the ToolStore
       if(!m_trigDecTool_handle.isUserConfigured()){
         ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -446,12 +446,12 @@ EL::StatusCode JetSelector :: initialize ()
 
   ANA_MSG_DEBUG( "JetSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: execute ()
+StatusCode JetSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -470,7 +470,7 @@ EL::StatusCode JetSelector :: execute ()
     static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
     if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
       ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     mcEvtWeight = mcEvtWeightAcc( *eventInfo );
   }
@@ -616,7 +616,7 @@ EL::StatusCode JetSelector :: execute ()
 
   ANA_MSG_DEBUG( "Leave Jet Selection... ");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -807,7 +807,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 	  //
 	  if ( m_JVT_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
 	    ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
-	    return EL::StatusCode::FAILURE;
+	    return StatusCode::FAILURE;
 	  }
 	  ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
 
@@ -832,7 +832,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               }
               if ( m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in JVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             } else { // otherwise classic efficiency scale factor
               if ( syst_it.name().empty() ) {
@@ -840,7 +840,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               }
               if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in JVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             }
           }
@@ -928,7 +928,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 	  //
 	  if ( m_fJVT_eff_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
 	    ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
-	    return EL::StatusCode::FAILURE;
+	    return StatusCode::FAILURE;
 	  }
 	  ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
 
@@ -947,12 +947,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
             if ( !m_dofJVTVeto && jet->auxdata<char>("passFJVT") != 1 ) {
               if ( m_fJVT_eff_tool_handle->getInefficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in fJVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             } else { // otherwise classic efficiency scale factor
               if ( m_fJVT_eff_tool_handle->getEfficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in fJVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             }
           }
@@ -1146,7 +1146,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 }
 
 
-EL::StatusCode JetSelector :: postExecute ()
+StatusCode JetSelector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -1154,12 +1154,12 @@ EL::StatusCode JetSelector :: postExecute ()
 
   ANA_MSG_DEBUG("Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: finalize ()
+StatusCode JetSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -1183,12 +1183,12 @@ EL::StatusCode JetSelector :: finalize ()
     ANA_MSG_INFO("removed duplicate " << m_inContainerName << " from " << m_count_events_with_duplicates << " events");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: histFinalize ()
+StatusCode JetSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -1203,7 +1203,7 @@ EL::StatusCode JetSelector :: histFinalize ()
 
   ANA_MSG_DEBUG( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {

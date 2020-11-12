@@ -51,39 +51,39 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (const std::string& name, ISvcLocator *pSvc
 }
 
 
-EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
+StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
 {
   ANA_MSG_DEBUG( "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "HLTJetRoIBuilder" ).ignore(); // call before opening first file
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: histInitialize ()
+StatusCode HLTJetRoIBuilder :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: fileExecute ()
+StatusCode HLTJetRoIBuilder :: fileExecute ()
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: changeInput (bool /*firstFile*/)
+StatusCode HLTJetRoIBuilder :: changeInput (bool /*firstFile*/)
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: initialize ()
+StatusCode HLTJetRoIBuilder :: initialize ()
 {
 
   ANA_MSG_DEBUG( "Initializing HLTJetRoIBuilder Interface... ");
@@ -94,7 +94,7 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
   // Grab the TrigDecTool from the ToolStore
   if(!m_trigDecTool_handle.isUserConfigured()){
     ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   ANA_CHECK( m_trigDecTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -130,11 +130,11 @@ EL::StatusCode HLTJetRoIBuilder :: initialize ()
   ANA_MSG_INFO("\tm_vtxName: " << m_vtxName);
   ANA_MSG_INFO("\tm_jetName: " << m_jetName);
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode HLTJetRoIBuilder :: execute ()
+StatusCode HLTJetRoIBuilder :: execute ()
 {
   ANA_MSG_DEBUG( "Doing HLT JEt ROI Building... ");
 
@@ -148,12 +148,12 @@ EL::StatusCode HLTJetRoIBuilder :: execute ()
 
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
+StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 {
   ANA_MSG_VERBOSE(" "  );
   auto triggerChainGroup = m_trigDecTool_handle->getChainGroup(m_trigItem);
@@ -498,12 +498,12 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
   ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
+StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 {
   ANA_MSG_VERBOSE("In buildHLTJets  ");
   //
@@ -533,30 +533,30 @@ EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()
   ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
   ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
   ANA_MSG_VERBOSE("Left buildHLTJets  ");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: postExecute ()
+StatusCode HLTJetRoIBuilder :: postExecute ()
 {
   ANA_MSG_DEBUG( "Calling postExecute");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: finalize ()
+StatusCode HLTJetRoIBuilder :: finalize ()
 {
   ANA_MSG_DEBUG( "Deleting tool instances...");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode HLTJetRoIBuilder :: histFinalize ()
+StatusCode HLTJetRoIBuilder :: histFinalize ()
 {
   ANA_MSG_DEBUG( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

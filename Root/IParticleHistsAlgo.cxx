@@ -23,23 +23,23 @@ IParticleHistsAlgo :: IParticleHistsAlgo (const std::string& name, ISvcLocator *
 {
 }
 
-EL::StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)
+StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
   xAOD::Init("IParticleHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode IParticleHistsAlgo :: histInitialize ()
+StatusCode IParticleHistsAlgo :: histInitialize ()
 {
 
   ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
+StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
   std::string fullname(m_name);
   fullname += name; // add systematic
   IParticleHists* particleHists = new IParticleHists( fullname, m_detailStr, m_histPrefix, m_histTitle ); // add systematic
@@ -48,20 +48,20 @@ EL::StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
   particleHists->record( wk() );
   m_plots[name] = particleHists;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode IParticleHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode IParticleHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+StatusCode IParticleHistsAlgo :: fileExecute () { return StatusCode::SUCCESS; }
+StatusCode IParticleHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 
-EL::StatusCode IParticleHistsAlgo :: initialize ()
+StatusCode IParticleHistsAlgo :: initialize ()
 {
   ANA_MSG_DEBUG( m_name);
 
   // in case anything was missing or blank...
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     ANA_MSG_ERROR( "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -69,17 +69,17 @@ EL::StatusCode IParticleHistsAlgo :: initialize ()
   if(m_inputAlgo.empty()) { AddHists( "" ); }
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode IParticleHistsAlgo :: execute ()
+StatusCode IParticleHistsAlgo :: execute ()
 {
   return execute<IParticleHists, xAOD::IParticleContainer>();
 }
 
-EL::StatusCode IParticleHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
+StatusCode IParticleHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
 
-EL::StatusCode IParticleHistsAlgo :: finalize () {
+StatusCode IParticleHistsAlgo :: finalize () {
   ANA_MSG_DEBUG( m_name );
   for( auto plots : m_plots ) {
     if(plots.second){
@@ -87,10 +87,10 @@ EL::StatusCode IParticleHistsAlgo :: finalize () {
       delete plots.second;
     }
   }
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode IParticleHistsAlgo :: histFinalize () {
+StatusCode IParticleHistsAlgo :: histFinalize () {
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

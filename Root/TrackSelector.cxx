@@ -76,7 +76,7 @@ TrackSelector :: TrackSelector (const std::string& name, ISvcLocator *pSvcLocato
 {
 }
 
-EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
+StatusCode TrackSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -91,12 +91,12 @@ EL::StatusCode TrackSelector :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "TrackSelector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: histInitialize ()
+StatusCode TrackSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -105,24 +105,24 @@ EL::StatusCode TrackSelector :: histInitialize ()
 
   ANA_MSG_DEBUG("Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: fileExecute ()
+StatusCode TrackSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_DEBUG("Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
+StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -130,12 +130,12 @@ EL::StatusCode TrackSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_DEBUG("Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: initialize ()
+StatusCode TrackSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -169,7 +169,7 @@ EL::StatusCode TrackSelector :: initialize ()
 
   if( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_event = wk()->xaodEvent();
@@ -219,12 +219,12 @@ EL::StatusCode TrackSelector :: initialize ()
 
   ANA_MSG_DEBUG( "TrackSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: execute ()
+StatusCode TrackSelector :: execute ()
 {
 
   ANA_MSG_DEBUG("Applying Track Selection... " << m_name);
@@ -244,10 +244,10 @@ EL::StatusCode TrackSelector :: execute ()
     return executeTrackCollection(mcEvtWeight);
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
+StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
 {
   m_numEvent++;
 
@@ -303,11 +303,11 @@ EL::StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if( m_pass_min > 0 && nPass < m_pass_min ) {
     wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
   if( m_pass_max >= 0 && nPass > m_pass_max ) {
     wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   // add output container to TStore
@@ -321,11 +321,11 @@ EL::StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
     m_cutflowHistW->Fill( m_cutflow_bin, mcEvtWeight);
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TrackSelector :: executeTracksInJets ()
+StatusCode TrackSelector :: executeTracksInJets ()
 {
   ANA_MSG_DEBUG("Applying TracksInJet Selection... " << m_inJetContainerName);
   m_numEvent++;
@@ -389,12 +389,12 @@ EL::StatusCode TrackSelector :: executeTracksInJets ()
   }//jets
 
   m_numEventPass++;
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: postExecute ()
+StatusCode TrackSelector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -402,12 +402,12 @@ EL::StatusCode TrackSelector :: postExecute ()
 
   ANA_MSG_DEBUG("Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: finalize ()
+StatusCode TrackSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -421,12 +421,12 @@ EL::StatusCode TrackSelector :: finalize ()
 
   ANA_MSG_DEBUG("Deleting tool instances...");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TrackSelector :: histFinalize ()
+StatusCode TrackSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -439,7 +439,7 @@ EL::StatusCode TrackSelector :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int TrackSelector :: PassCuts( const xAOD::TrackParticle* trk, const xAOD::Vertex *pvx ) {

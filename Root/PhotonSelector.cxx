@@ -59,7 +59,7 @@ PhotonSelector :: PhotonSelector (const std::string& name, ISvcLocator *pSvcLoca
 {
 }
 
-EL::StatusCode PhotonSelector :: setupJob (EL::Job& job)
+StatusCode PhotonSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -74,10 +74,10 @@ EL::StatusCode PhotonSelector :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "PhotonSelector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonSelector :: histInitialize ()
+StatusCode PhotonSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -87,20 +87,20 @@ EL::StatusCode PhotonSelector :: histInitialize ()
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonSelector :: fileExecute ()
+StatusCode PhotonSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonSelector :: changeInput (bool /*firstFile*/)
+StatusCode PhotonSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -108,10 +108,10 @@ EL::StatusCode PhotonSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_INFO( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonSelector :: initialize ()
+StatusCode PhotonSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -179,7 +179,7 @@ EL::StatusCode PhotonSelector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -213,11 +213,11 @@ EL::StatusCode PhotonSelector :: initialize ()
 
   ANA_MSG_INFO( "PhotonSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode PhotonSelector :: execute ()
+StatusCode PhotonSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -235,7 +235,7 @@ EL::StatusCode PhotonSelector :: execute ()
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
@@ -344,10 +344,10 @@ EL::StatusCode PhotonSelector :: execute ()
 
   if( !eventPass ) {
     wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons,
@@ -555,7 +555,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
 }
 
 
-EL::StatusCode PhotonSelector :: postExecute ()
+StatusCode PhotonSelector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -563,12 +563,12 @@ EL::StatusCode PhotonSelector :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonSelector :: finalize ()
+StatusCode PhotonSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -607,12 +607,12 @@ EL::StatusCode PhotonSelector :: finalize ()
   ANA_MSG_DEBUG("Matching Tool deleted");
 
   ANA_MSG_INFO( "Finalization done.");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonSelector :: histFinalize ()
+StatusCode PhotonSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -628,5 +628,5 @@ EL::StatusCode PhotonSelector :: histFinalize ()
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

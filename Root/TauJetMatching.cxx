@@ -39,7 +39,7 @@ TauJetMatching :: TauJetMatching (const std::string& name, ISvcLocator *pSvcLoca
 {
 }
 
-EL::StatusCode TauJetMatching :: setupJob (EL::Job& job)
+StatusCode TauJetMatching :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -54,12 +54,12 @@ EL::StatusCode TauJetMatching :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "TauJetMatching" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauJetMatching :: histInitialize ()
+StatusCode TauJetMatching :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -74,24 +74,24 @@ EL::StatusCode TauJetMatching :: histInitialize ()
   //  ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   //}
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauJetMatching :: fileExecute ()
+StatusCode TauJetMatching :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauJetMatching :: changeInput (bool /*firstFile*/)
+StatusCode TauJetMatching :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -99,12 +99,12 @@ EL::StatusCode TauJetMatching :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_INFO( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauJetMatching :: initialize ()
+StatusCode TauJetMatching :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -132,12 +132,12 @@ EL::StatusCode TauJetMatching :: initialize ()
 
   if ( m_inContainerName.empty() ){
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( m_inJetContainerName.empty() ){
     ANA_MSG_ERROR( "InputJetContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // ********************************
@@ -150,10 +150,10 @@ EL::StatusCode TauJetMatching :: initialize ()
 
   ANA_MSG_INFO( "TauJetMatching Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TauJetMatching :: execute ()
+StatusCode TauJetMatching :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -218,7 +218,7 @@ EL::StatusCode TauJetMatching :: execute ()
   //
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -267,7 +267,7 @@ bool TauJetMatching :: executeDecoration ( std::unordered_map<int, std::pair<con
   return true;
 }
 
-EL::StatusCode TauJetMatching :: postExecute ()
+StatusCode TauJetMatching :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -275,12 +275,12 @@ EL::StatusCode TauJetMatching :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauJetMatching :: finalize ()
+StatusCode TauJetMatching :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -292,12 +292,12 @@ EL::StatusCode TauJetMatching :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauJetMatching :: histFinalize ()
+StatusCode TauJetMatching :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -312,7 +312,7 @@ EL::StatusCode TauJetMatching :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 float TauJetMatching::getDR(float eta1, float eta2, float phi1, float phi2)

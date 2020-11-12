@@ -39,7 +39,7 @@ TrigMatcher :: TrigMatcher (const std::string& name, ISvcLocator *pSvcLocator) :
 {
 }
 
-EL::StatusCode TrigMatcher :: setupJob (EL::Job& job)
+StatusCode TrigMatcher :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -54,10 +54,10 @@ EL::StatusCode TrigMatcher :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "TrigMatcher" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrigMatcher :: initialize ()
+StatusCode TrigMatcher :: initialize ()
 {
   ANA_MSG_INFO( "Initializing TrigMatcher Interface... ");
 
@@ -70,14 +70,14 @@ EL::StatusCode TrigMatcher :: initialize ()
   // Configuration
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if( !isPHYS() ) {
     // Grab the TrigDecTool from the ToolStore
     if(!m_trigDecTool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -110,10 +110,10 @@ EL::StatusCode TrigMatcher :: initialize ()
 
   ANA_MSG_INFO( "TrigMatcher Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrigMatcher :: execute ()
+StatusCode TrigMatcher :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -153,10 +153,10 @@ EL::StatusCode TrigMatcher :: execute ()
 
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* inParticles )
+StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* inParticles )
 {
   static const SG::AuxElement::Decorator< std::vector< std::string > > isTrigMatchedDecor( "trigMatched" );
 
@@ -176,5 +176,5 @@ EL::StatusCode TrigMatcher :: executeMatching ( const xAOD::IParticleContainer* 
       }
     }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

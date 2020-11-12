@@ -18,17 +18,17 @@ TrackHistsAlgo :: TrackHistsAlgo (const std::string& name, ISvcLocator *pSvcLoca
 {
 }
 
-EL::StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
+StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
 
   // let's initialize the algorithm to use the xAODRootAccess package
   xAOD::Init("TrackHistsAlgo").ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHistsAlgo :: histInitialize ()
+StatusCode TrackHistsAlgo :: histInitialize ()
 {
 
   ANA_MSG_INFO( m_name );
@@ -36,7 +36,7 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     ANA_MSG_ERROR( "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -45,21 +45,21 @@ EL::StatusCode TrackHistsAlgo :: histInitialize ()
   ANA_CHECK( m_plots -> initialize());
   m_plots -> record( wk() );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+StatusCode TrackHistsAlgo :: fileExecute () { return StatusCode::SUCCESS; }
+StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 
-EL::StatusCode TrackHistsAlgo :: initialize ()
+StatusCode TrackHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "TrackHistsAlgo");
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHistsAlgo :: execute ()
+StatusCode TrackHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
@@ -80,15 +80,15 @@ EL::StatusCode TrackHistsAlgo :: execute ()
 
   ANA_CHECK( m_plots->execute( tracks, pvx, eventWeight, eventInfo ));
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TrackHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TrackHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TrackHistsAlgo :: histFinalize ()
+StatusCode TrackHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
+StatusCode TrackHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
+StatusCode TrackHistsAlgo :: histFinalize ()
 {
   // clean up memory
   if(m_plots) delete m_plots;
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

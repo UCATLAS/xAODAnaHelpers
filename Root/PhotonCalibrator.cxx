@@ -75,7 +75,7 @@ PhotonCalibrator :: PhotonCalibrator (const std::string& name, ISvcLocator *pSvc
 }
 
 
-EL::StatusCode PhotonCalibrator :: setupJob (EL::Job& job)
+StatusCode PhotonCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -90,12 +90,12 @@ EL::StatusCode PhotonCalibrator :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "PhotonCalibrator" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonCalibrator :: histInitialize ()
+StatusCode PhotonCalibrator :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -103,31 +103,31 @@ EL::StatusCode PhotonCalibrator :: histInitialize ()
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonCalibrator :: fileExecute ()
+StatusCode PhotonCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonCalibrator :: changeInput (bool /*firstFile*/)
+StatusCode PhotonCalibrator :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonCalibrator :: initialize ()
+StatusCode PhotonCalibrator :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -148,7 +148,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
@@ -308,11 +308,11 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   ANA_MSG_INFO( "PhotonCalibrator Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode PhotonCalibrator :: execute ()
+StatusCode PhotonCalibrator :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -360,7 +360,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
 
     if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     ANA_MSG_DEBUG("Systematics applied");
@@ -438,10 +438,10 @@ EL::StatusCode PhotonCalibrator :: execute ()
   //
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonCalibrator :: postExecute ()
+StatusCode PhotonCalibrator :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -449,12 +449,12 @@ EL::StatusCode PhotonCalibrator :: postExecute ()
 
   ANA_MSG_DEBUG("Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonCalibrator :: finalize ()
+StatusCode PhotonCalibrator :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -494,12 +494,12 @@ EL::StatusCode PhotonCalibrator :: finalize ()
 
   ANA_MSG_INFO( "Finalization done.");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonCalibrator :: histFinalize ()
+StatusCode PhotonCalibrator :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -514,10 +514,10 @@ EL::StatusCode PhotonCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
+StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
 {
   // (1) apply fudge factors and (2) evaluate the ID quality
   bool isTight(false);
@@ -537,7 +537,7 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
     if( isMC() && !isFastSim() ){
       if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
         ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
     }
     isTight  = m_photonTightIsEMSelector->accept(photon);
@@ -573,28 +573,28 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
       // SF
       if(m_photonTightEffTool_handle->getEfficiencyScaleFactor(*photon, photonTightEffSF) == CP::CorrectionCode::Error){
         ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       if(m_photonMediumEffTool_handle->getEfficiencyScaleFactor(*photon, photonMediumEffSF) == CP::CorrectionCode::Error){
         ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       if(m_photonLooseEffTool_handle->getEfficiencyScaleFactor(*photon, photonLooseEffSF) == CP::CorrectionCode::Error){
         ANA_MSG_ERROR("getEfficiencyScaleFactor returned CP::CorrectionCode::Error");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       // SF error
       if(m_photonTightEffTool_handle->getEfficiencyScaleFactorError(*photon, photonTightEffSFError) == CP::CorrectionCode::Error){
         ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       if(m_photonMediumEffTool_handle->getEfficiencyScaleFactorError(*photon, photonMediumEffSFError) == CP::CorrectionCode::Error){
         ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       if(m_photonLooseEffTool_handle->getEfficiencyScaleFactorError(*photon, photonLooseEffSFError) == CP::CorrectionCode::Error){
         ANA_MSG_ERROR("getEfficiencyScaleFactorError returned CP::CorrectionCode::Error");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
     }
 
@@ -611,5 +611,5 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
                   "Loose=" << photonLooseEffSF << "(" << photonLooseEffSFError << ")");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

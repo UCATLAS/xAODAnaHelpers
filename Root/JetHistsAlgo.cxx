@@ -15,19 +15,19 @@ JetHistsAlgo :: JetHistsAlgo () :
 IParticleHistsAlgo("JetHistsAlgo")
 { }
 
-EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
+StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
   xAOD::Init("JetHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
+StatusCode JetHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<JetHists>(name);
 }
 
-EL::StatusCode JetHistsAlgo :: execute ()
+StatusCode JetHistsAlgo :: execute ()
 {
   return IParticleHistsAlgo::execute<JetHists, xAOD::JetContainer>();
 }

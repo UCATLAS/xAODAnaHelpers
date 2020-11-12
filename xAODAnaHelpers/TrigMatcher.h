@@ -88,12 +88,12 @@ public:
 
   /* these are the functions inherited from Algorithm */
 
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
+  virtual StatusCode setupJob (EL::Job& job);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
 
   /* these are the functions not inherited from Algorithm */
-  EL::StatusCode executeMatching( const xAOD::IParticleContainer* inParticles );
+  StatusCode executeMatching( const xAOD::IParticleContainer* inParticles );
 
   /// @cond
   ClassDef(TrigMatcher, 1);

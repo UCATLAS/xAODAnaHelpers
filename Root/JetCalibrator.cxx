@@ -91,7 +91,7 @@ JetCalibrator :: JetCalibrator (const std::string& name, ISvcLocator *pSvcLocato
 {
 }
 
-EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
+StatusCode JetCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -106,44 +106,44 @@ EL::StatusCode JetCalibrator :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "JetCalibrator" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetCalibrator :: histInitialize ()
+StatusCode JetCalibrator :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetCalibrator :: fileExecute ()
+StatusCode JetCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetCalibrator :: changeInput (bool /*firstFile*/)
+StatusCode JetCalibrator :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetCalibrator :: initialize ()
+StatusCode JetCalibrator :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -165,7 +165,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // If there is no InputContainer we must stop
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( m_outputAlgo.empty() ) {
@@ -177,12 +177,12 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   if( isMC() && m_calibSequence.find("_Insitu") != std::string::npos){
     ANA_MSG_ERROR( "Attempting to use an Insitu calibration sequence on MC.  Exiting.");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if( !isMC() && m_calibSequence.find("_Smear") != std::string::npos){
     ANA_MSG_ERROR( "Attempting to use an Smear calibration sequence on data.  Exiting.");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( !isMC() ) {
@@ -224,7 +224,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     else{
       ANA_MSG_ERROR( "Cannot autoconfigure jet calibration sequence for collection " << m_systName);
       ANA_MSG_ERROR( "JetCalibrator::m_calibSequence needs to be set manually in configuration.");
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
   }
 
@@ -375,7 +375,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       // setup uncertainity tool for systematic evaluation
       if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
         ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
     }
   } // running systematics
@@ -426,11 +426,11 @@ EL::StatusCode JetCalibrator :: initialize ()
 
   ANA_MSG_INFO( "JetCalibrator Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode JetCalibrator :: execute ()
+StatusCode JetCalibrator :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -540,12 +540,12 @@ EL::StatusCode JetCalibrator :: execute ()
 
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetCalibrator :: postExecute ()
+StatusCode JetCalibrator :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -553,12 +553,12 @@ EL::StatusCode JetCalibrator :: postExecute ()
 
   ANA_MSG_DEBUG("Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetCalibrator :: finalize ()
+StatusCode JetCalibrator :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -570,12 +570,12 @@ EL::StatusCode JetCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetCalibrator :: histFinalize ()
+StatusCode JetCalibrator :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -590,10 +590,10 @@ EL::StatusCode JetCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
+StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
                                                 std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer*>& calibJetsSC,
                                                 std::vector<std::string>& vecOutContainerNames, bool isPDCopy){
 
@@ -629,7 +629,7 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
     ANA_MSG_DEBUG("Configure for systematic variation : " << thisSyst.name());
     if ( (*jetUncTool)->applySystematicVariation(thisSyst) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
@@ -707,10 +707,10 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
   // add ConstDataVector to TStore
   ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode JetCalibrator::initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData){
+StatusCode JetCalibrator::initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData){
 
   ANA_MSG_INFO("Initialize Jet Uncertainties Tool with " << m_uncertConfig);
   ANA_CHECK( ASG_MAKE_ANA_TOOL(uncToolHandle, JetUncertaintiesTool));
@@ -735,5 +735,5 @@ EL::StatusCode JetCalibrator::initializeUncertaintiesTool(asg::AnaToolHandle<ICP
   ANA_CHECK( uncToolHandle.retrieve());
   ANA_MSG_DEBUG("Retrieved JetUncertaintiesTool: " << uncToolHandle);
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

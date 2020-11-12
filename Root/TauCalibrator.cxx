@@ -53,7 +53,7 @@ TauCalibrator :: TauCalibrator (const std::string& name, ISvcLocator *pSvcLocato
 {
 }
 
-EL::StatusCode TauCalibrator :: setupJob (EL::Job& job)
+StatusCode TauCalibrator :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -68,39 +68,39 @@ EL::StatusCode TauCalibrator :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "TauCalibrator" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: histInitialize ()
+StatusCode TauCalibrator :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: fileExecute ()
+StatusCode TauCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: changeInput (bool /*firstFile*/)
+StatusCode TauCalibrator :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: initialize ()
+StatusCode TauCalibrator :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -125,7 +125,7 @@ EL::StatusCode TauCalibrator :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -176,11 +176,11 @@ EL::StatusCode TauCalibrator :: initialize ()
 
   ANA_MSG_INFO( "TauCalibrator Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: execute ()
+StatusCode TauCalibrator :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -224,7 +224,7 @@ EL::StatusCode TauCalibrator :: execute ()
     //
     if ( m_tauSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure TauSmearingTool for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     // create shallow copy for calibration - one per syst
@@ -297,11 +297,11 @@ EL::StatusCode TauCalibrator :: execute ()
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   ANA_MSG_DEBUG( "Left ");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode TauCalibrator :: postExecute ()
+StatusCode TauCalibrator :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -309,11 +309,11 @@ EL::StatusCode TauCalibrator :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: finalize ()
+StatusCode TauCalibrator :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -325,10 +325,10 @@ EL::StatusCode TauCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TauCalibrator :: histFinalize ()
+StatusCode TauCalibrator :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -343,5 +343,5 @@ EL::StatusCode TauCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

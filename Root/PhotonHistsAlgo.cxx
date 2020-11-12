@@ -15,18 +15,18 @@ PhotonHistsAlgo :: PhotonHistsAlgo () :
 IParticleHistsAlgo("PhotonHistsAlgo")
 { }
 
-EL::StatusCode PhotonHistsAlgo :: setupJob (EL::Job& job)
+StatusCode PhotonHistsAlgo :: setupJob (EL::Job& job)
 {
   job.useXAOD();
   xAOD::Init("PhotonHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
+StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<PhotonHists>(name);
 }
 
-EL::StatusCode PhotonHistsAlgo :: execute () {
+StatusCode PhotonHistsAlgo :: execute () {
   return IParticleHistsAlgo::execute<PhotonHists, xAOD::PhotonContainer>();
 }

@@ -247,15 +247,15 @@ public:
   OverlapRemover (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode setupJob (EL::Job& job);
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode postExecute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
   /**
@@ -264,7 +264,7 @@ public:
      @param overlapFlag      The string identifying objects not overlapping with another object, to be kept (default is `"passOR"`)
      @param selectFlag       The string identifying selected objects (default is `"passSel"`)
   */
-  virtual EL::StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont,
+  virtual StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont,
 					    const std::string& overlapFlag = "passOR",
 					    const std::string& selectFlag = "passSel");
 
@@ -278,7 +278,7 @@ public:
      @param syst_type      The type of object for which input systematics should be considered. Default is `NOMINAL`
      @param sysVec         The list of the input systematics for a given object. Must match with the choice of `syst_type`. Default is `nullptr`
   */
-  virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons,
+  virtual StatusCode executeOR( const xAOD::ElectronContainer* inElectrons,
 				    const xAOD::MuonContainer* inMuons,
 				    const xAOD::JetContainer* inJets,
 				    const xAOD::PhotonContainer* inPhotons,
@@ -288,9 +288,9 @@ public:
             std::vector<std::string>* sysVecOut = nullptr);
 
   /** @brief Setup cutflow histograms */
-  EL::StatusCode setCutFlowHist();
+  StatusCode setCutFlowHist();
   /** @brief Initialise counters for events/objects */
-  EL::StatusCode setCounters();
+  StatusCode setCounters();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

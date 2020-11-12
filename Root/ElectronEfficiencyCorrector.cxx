@@ -56,7 +56,7 @@ ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (const std::string& n
 }
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: setupJob (EL::Job& job)
+StatusCode ElectronEfficiencyCorrector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object
   // so that it is ready to work with your algorithm, e.g. you can
@@ -71,43 +71,43 @@ EL::StatusCode ElectronEfficiencyCorrector :: setupJob (EL::Job& job)
   job.useXAOD ();
   xAOD::Init( "ElectronEfficiencyCorrector" ).ignore(); // call before opening first file
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: histInitialize ()
+StatusCode ElectronEfficiencyCorrector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: fileExecute ()
+StatusCode ElectronEfficiencyCorrector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: changeInput (bool /*firstFile*/)
+StatusCode ElectronEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
+StatusCode ElectronEfficiencyCorrector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -127,7 +127,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -415,11 +415,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "ElectronEfficiencyCorrector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: execute ()
+StatusCode ElectronEfficiencyCorrector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -430,7 +430,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   if ( !isMC() ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Electron Efficiency correction... "); }
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Applying Electron Efficiency Correction... ");
@@ -481,11 +481,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
   //
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: postExecute ()
+StatusCode ElectronEfficiencyCorrector :: postExecute ()
 {
   // Here you do everything that needs to be done after the main event
   // processing.  This is typically very rare, particularly in user
@@ -493,12 +493,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: postExecute ()
 
   ANA_MSG_DEBUG( "Calling postExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
+StatusCode ElectronEfficiencyCorrector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -518,12 +518,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
   if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name) ) delete m_asgElEffCorrTool_elSF_Trig;
   if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) delete m_asgElEffCorrTool_elSF_TrigMCEff;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
+StatusCode ElectronEfficiencyCorrector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -538,10 +538,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames )
+StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames )
 {
 
   // In the following, every electron gets decorated with several vector<double>'s (for various SFs),
@@ -586,7 +586,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_PID->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_PID for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_PID->appliedSystematics().name() );
 
@@ -621,7 +621,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in PID getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of PID efficiency validity range");
        }
@@ -679,7 +679,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_Iso->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Iso for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Iso->appliedSystematics().name() );
 
@@ -714,7 +714,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Iso->getEfficiencyScaleFactor( *el_itr, IsoEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in Iso getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of Iso efficiency validity range");
        }
@@ -772,7 +772,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_Reco->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Reco for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Reco->appliedSystematics().name() );
 
@@ -806,7 +806,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in Reco getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of Reco efficiency validity range");
        }
@@ -874,13 +874,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_Trig->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Trig for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Trig->appliedSystematics().name() );
 
       if ( m_asgElEffCorrTool_elSF_TrigMCEff->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_TrigMCEff for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_TrigMCEff->appliedSystematics().name() );
 
@@ -924,7 +924,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in Trig getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of Trig efficiency validity range");
        }
@@ -936,7 +936,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode statusEff = m_asgElEffCorrTool_elSF_TrigMCEff->getEfficiencyScaleFactor( *el_itr, trigMCEff );
        if ( statusEff == CP::CorrectionCode::Error ) {
          ANA_MSG_ERROR( "Problem in TrigMCEff getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
        } else if ( statusEff == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of TrigMCEff efficiency validity range");
        }
@@ -972,5 +972,5 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

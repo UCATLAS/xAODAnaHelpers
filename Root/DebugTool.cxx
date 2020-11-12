@@ -42,43 +42,43 @@ DebugTool :: DebugTool (const std::string& name, ISvcLocator *pSvcLocator) :
 {
 }
 
-EL::StatusCode DebugTool :: setupJob (EL::Job& job)
+StatusCode DebugTool :: setupJob (EL::Job& job)
 {
   ANA_MSG_INFO( "Calling setupJob");
   job.useXAOD ();
   xAOD::Init( "DebugTool" ).ignore(); // call before opening first file
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode DebugTool :: histInitialize ()
+StatusCode DebugTool :: histInitialize ()
 {
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode DebugTool :: fileExecute ()
+StatusCode DebugTool :: fileExecute ()
 {
   ANA_MSG_INFO( "Calling fileExecute");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode DebugTool :: changeInput (bool /*firstFile*/)
+StatusCode DebugTool :: changeInput (bool /*firstFile*/)
 {
   ANA_MSG_INFO( "Calling changeInput");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode DebugTool :: initialize ()
+StatusCode DebugTool :: initialize ()
 {
   ANA_MSG_INFO( " ");
 
@@ -87,12 +87,12 @@ EL::StatusCode DebugTool :: initialize ()
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode DebugTool :: execute ()
+StatusCode DebugTool :: execute ()
 {
   ANA_MSG_INFO( m_name);
 
@@ -103,32 +103,32 @@ EL::StatusCode DebugTool :: execute ()
     m_store->print();
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
 
-EL::StatusCode DebugTool :: postExecute ()
+StatusCode DebugTool :: postExecute ()
 {
   ANA_MSG_DEBUG("Calling postExecute");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode DebugTool :: finalize ()
+StatusCode DebugTool :: finalize ()
 {
   ANA_MSG_INFO( m_name );
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode DebugTool :: histFinalize ()
+StatusCode DebugTool :: histFinalize ()
 {
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
