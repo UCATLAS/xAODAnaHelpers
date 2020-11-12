@@ -75,7 +75,8 @@ ElectronSelector :: ElectronSelector (const std::string& name, ISvcLocator *pSvc
     declareProperty("TrackBasedIsoType", m_TrackBasedIsoType),
     declareProperty("singleElTrigChains", m_singleElTrigChains),
     declareProperty("diElTrigChains", m_diElTrigChains),
-    declareProperty("minDeltaR", m_minDeltaR)
+    declareProperty("minDeltaR", m_minDeltaR),
+    declareProperty("applyCrackVetoCleaning", m_applyCrackVetoCleaning)
 {
 }
 
