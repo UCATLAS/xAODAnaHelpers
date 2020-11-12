@@ -266,8 +266,8 @@ namespace xAH {
       // passSel
       char passSel;
 
-      const Muon* matchedMuon =nullptr; //!
-      const Jet * matchedJet  =nullptr; //!
+      const Muon* matchedMuon =nullptr; 
+      const Jet * matchedJet  =nullptr; 
 
     public:
       int is_btag(BTaggerOP op) const;

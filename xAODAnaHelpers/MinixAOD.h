@@ -146,28 +146,28 @@ public:
 
 private:
   /// A vector of containers that are in TEvent that just need to be written to the output
-  std::vector<std::string> m_simpleCopyKeys_vec; //!
+  std::vector<std::string> m_simpleCopyKeys_vec; 
   /// A vector of (container name, parent name) pairs for shallow-copied objects -- if parent is empty, deep-copy it
-  std::vector<std::pair<std::string, std::string>> m_shallowCopyKeys_vec; //!
+  std::vector<std::pair<std::string, std::string>> m_shallowCopyKeys_vec; 
   /// A vector of (in container, output container) that need to be deep-copied first before moving to TStore
-  std::vector<std::pair<std::string, std::string>> m_deepCopyKeys_vec; //!
+  std::vector<std::pair<std::string, std::string>> m_deepCopyKeys_vec; 
   /// A vector of (name of vector of container names, parent name) pairs for shallow-copied objects (like systematics) -- if parent is empty, deep-copy it
-  std::vector<std::pair<std::string, std::string>> m_vectorCopyKeys_vec; //!
+  std::vector<std::pair<std::string, std::string>> m_vectorCopyKeys_vec; 
 
   /// A vector of containers (and aux-pairs) in TStore to record in TEvent
-  std::vector<std::string> m_copyFromStoreToEventKeys_vec; //!
+  std::vector<std::string> m_copyFromStoreToEventKeys_vec; 
 
   /// Pointer for the File MetaData Tool
-  xAODMaker::FileMetaDataTool          *m_fileMetaDataTool = nullptr;    //!
+  xAODMaker::FileMetaDataTool          *m_fileMetaDataTool = nullptr;    
   /// Pointer for the TriggerMenu MetaData Tool
-  xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool = nullptr; //!
+  xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool = nullptr; 
 
   /// Pointer for our CutBookkeeper
-  xAOD::CutBookkeeperContainer    *m_outputCBKContainer = nullptr;       //!
-  xAOD::CutBookkeeperAuxContainer *m_outputCBKContainer_aux = nullptr;   //!
-  xAOD::CutBookkeeperContainer    *m_outputInCBKContainer = nullptr;     //!
-  xAOD::CutBookkeeperAuxContainer *m_outputInCBKContainer_aux = nullptr; //!
-  xAOD::CutBookkeeper             *m_outputCBK = nullptr;                //!
+  xAOD::CutBookkeeperContainer    *m_outputCBKContainer = nullptr;       
+  xAOD::CutBookkeeperAuxContainer *m_outputCBKContainer_aux = nullptr;   
+  xAOD::CutBookkeeperContainer    *m_outputInCBKContainer = nullptr;     
+  xAOD::CutBookkeeperAuxContainer *m_outputInCBKContainer_aux = nullptr; 
+  xAOD::CutBookkeeper             *m_outputCBK = nullptr;                
 
 public:
   // this is a standard constructor

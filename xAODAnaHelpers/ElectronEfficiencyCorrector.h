@@ -86,34 +86,34 @@ public:
   std::string m_overrideMapFilePath = "";
 
 private:
-  int m_numEvent;         //!
-  int m_numObject;        //!
+  int m_numEvent;         
+  int m_numObject;        
 
-  std::vector<CP::SystematicSet> m_systListPID;  //!
-  std::vector<CP::SystematicSet> m_systListIso;  //!
-  std::vector<CP::SystematicSet> m_systListReco; //!
-  std::vector<CP::SystematicSet> m_systListTrig; //!
+  std::vector<CP::SystematicSet> m_systListPID;  
+  std::vector<CP::SystematicSet> m_systListIso;  
+  std::vector<CP::SystematicSet> m_systListReco; 
+  std::vector<CP::SystematicSet> m_systListTrig; 
 
   // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  //!
-  std::string m_pidEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso = nullptr;  //!
-  std::string m_IsoEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco = nullptr; //!
-  std::string m_RecoEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig = nullptr; //!
-  std::string m_TrigEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; //!
-  std::string m_TrigMCEff_tool_name;                                  //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  
+  std::string m_pidEffSF_tool_name;                                   
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso = nullptr;  
+  std::string m_IsoEffSF_tool_name;                                   
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco = nullptr; 
+  std::string m_RecoEffSF_tool_name;                                  
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig = nullptr; 
+  std::string m_TrigEffSF_tool_name;                                  
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; 
+  std::string m_TrigMCEff_tool_name;                                  
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
 
-  // Tree *myTree; //!
-  // TH1 *myHist;  //!
+  // Tree *myTree; 
+  // TH1 *myHist;  
 
 
   // this is a standard constructor

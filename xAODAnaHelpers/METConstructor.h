@@ -113,22 +113,22 @@ public:
 
 private:
   // tools
-  asg::AnaToolHandle<IMETMaker> m_metmaker_handle{"met::METMaker/METMaker", this}; //!
-  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool/METSystematicsTool", this}; //!
-  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance/METSignificance", this}; //!
+  asg::AnaToolHandle<IMETMaker> m_metmaker_handle{"met::METMaker/METMaker", this}; 
+  asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool/METSystematicsTool", this}; 
+  asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance/METSignificance", this}; 
 
-  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool", this}; //!
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool", this}; 
 
-  std::vector<CP::SystematicSet> m_sysList; //!
+  std::vector<CP::SystematicSet> m_sysList; 
 
-  int m_numEvent;         //!
+  int m_numEvent;         
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree; 
+  // TH1 *myHist; 
 
   // this is a standard constructor
   METConstructor (const std::string& name, ISvcLocator *pSvcLocator);

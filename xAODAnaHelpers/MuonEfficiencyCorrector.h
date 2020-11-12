@@ -80,36 +80,36 @@ public:
   std::string   m_outputSystNamesTTVA = "MuonEfficiencyCorrector_TTVASyst";
 
 private:
-  int m_numEvent;         //!
-  int m_numObject;        //!
+  int m_numEvent;         
+  int m_numObject;        
 
-  std::vector<CP::SystematicSet> m_systListReco; //!
-  std::vector<CP::SystematicSet> m_systListIso;  //!
-  std::vector<CP::SystematicSet> m_systListTrig; //!
-  std::vector<CP::SystematicSet> m_systListTTVA; //!
+  std::vector<CP::SystematicSet> m_systListReco; 
+  std::vector<CP::SystematicSet> m_systListIso;  
+  std::vector<CP::SystematicSet> m_systListTrig; 
+  std::vector<CP::SystematicSet> m_systListTTVA; 
 
-  std::string m_outputSystNamesTrigBase; //!
+  std::string m_outputSystNamesTrigBase; 
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool = nullptr;               //!
-  std::string m_recoEffSF_tool_name;                                       //!
-  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
-  std::string m_isoEffSF_tool_name;                                        //!
-  CP::MuonTriggerScaleFactors* m_muTrigSF_tool = nullptr;                  //!
-  std::string m_trigEffSF_tool_name;                                       //!
-  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               //!
-  std::string m_TTVAEffSF_tool_name;                                       //!
-  std::map<std::string, std::string> m_SingleMuTriggerMap; //!
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; 
+  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool = nullptr;               
+  std::string m_recoEffSF_tool_name;                                       
+  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                
+  std::string m_isoEffSF_tool_name;                                        
+  CP::MuonTriggerScaleFactors* m_muTrigSF_tool = nullptr;                  
+  std::string m_trigEffSF_tool_name;                                       
+  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               
+  std::string m_TTVAEffSF_tool_name;                                       
+  std::map<std::string, std::string> m_SingleMuTriggerMap; 
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
 
-  // Tree *myTree; //!
-  // TH1 *myHist;  //!
+  // Tree *myTree; 
+  // TH1 *myHist;  
 
   // this is a standard constructor
   MuonEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);

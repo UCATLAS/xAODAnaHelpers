@@ -60,38 +60,38 @@ public:
   std::string    m_IsoWPList = "FixedCutTightCaloOnly,FixedCutTight,FixedCutLoose";
 
 private:
-  std::string    m_outAuxContainerName; //!
+  std::string    m_outAuxContainerName; 
 
-  int m_numEvent;           //!
-  int m_numObject;          //!
-  int m_numEventPass;       //!
-  int m_weightNumEventPass; //!
-  int m_numObjectPass;      //!
+  int m_numEvent;           
+  int m_numObject;          
+  int m_numEventPass;       
+  int m_weightNumEventPass; 
+  int m_numObjectPass;      
 
   /* event-level cutflow */
 
-  TH1D* m_cutflowHist = nullptr;      //!
-  TH1D* m_cutflowHistW = nullptr;     //!
-  int   m_cutflow_bin;      //!
+  TH1D* m_cutflowHist = nullptr;      
+  TH1D* m_cutflowHistW = nullptr;     
+  int   m_cutflow_bin;      
 
   /* object-level cutflow */
 
-  TH1D* m_ph_cutflowHist_1 = nullptr;            //!
+  TH1D* m_ph_cutflowHist_1 = nullptr;            
 
-  int   m_ph_cutflow_all;              //!
-  int   m_ph_cutflow_author_cut;       //!
-  int   m_ph_cutflow_OQ_cut;           //!
-  int   m_ph_cutflow_PID_cut;          //!
-  int   m_ph_cutflow_ptmax_cut;        //!
-  int   m_ph_cutflow_ptmin_cut;        //!
-  int   m_ph_cutflow_eta_cut;          //!
-  int   m_ph_cutflow_iso_cut;          //!
+  int   m_ph_cutflow_all;              
+  int   m_ph_cutflow_author_cut;       
+  int   m_ph_cutflow_OQ_cut;           
+  int   m_ph_cutflow_PID_cut;          
+  int   m_ph_cutflow_ptmax_cut;        
+  int   m_ph_cutflow_ptmin_cut;        
+  int   m_ph_cutflow_eta_cut;          
+  int   m_ph_cutflow_iso_cut;          
 
 
-  std::vector<std::string> m_IsoKeys;  //!
+  std::vector<std::string> m_IsoKeys;  
 
   /* tools */
-  CP::IsolationSelectionTool* m_IsolationSelectionTool = nullptr; //!
+  CP::IsolationSelectionTool* m_IsolationSelectionTool = nullptr; 
 
 public:
 

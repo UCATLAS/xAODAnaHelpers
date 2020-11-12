@@ -79,33 +79,33 @@ public:
   int m_autoFlush = 0;
 
 protected:
-  std::vector<std::string> m_jetDetails; //!
-  std::vector<std::string> m_trigJetDetails; //!
-  std::vector<std::string> m_fatJetDetails; //!
+  std::vector<std::string> m_jetDetails; 
+  std::vector<std::string> m_trigJetDetails; 
+  std::vector<std::string> m_fatJetDetails; 
 
-  std::vector<std::string> m_jetContainers; //!
-  std::vector<std::string> m_truthJetContainers; //!
-  std::vector<std::string> m_trigJetContainers; //!
-  std::vector<std::string> m_fatJetContainers; //!
-  std::vector<std::string> m_l1JetContainers; //!
-  std::vector<std::string> m_vertexContainers; //!
-  std::vector<std::string> m_truthParticlesContainers; //!
+  std::vector<std::string> m_jetContainers; 
+  std::vector<std::string> m_truthJetContainers; 
+  std::vector<std::string> m_trigJetContainers; 
+  std::vector<std::string> m_fatJetContainers; 
+  std::vector<std::string> m_l1JetContainers; 
+  std::vector<std::string> m_vertexContainers; 
+  std::vector<std::string> m_truthParticlesContainers; 
 
-  std::vector<std::string> m_jetBranches; //!
-  std::vector<std::string> m_truthJetBranches; //!
-  std::vector<std::string> m_trigJetBranches; //!
-  std::vector<std::string> m_fatJetBranches; //!
-  std::vector<std::string> m_l1JetBranches; //!
-  std::vector<std::string> m_vertexBranches; //!
-  std::vector<std::string> m_truthParticlesBranches; //!
+  std::vector<std::string> m_jetBranches; 
+  std::vector<std::string> m_truthJetBranches; 
+  std::vector<std::string> m_trigJetBranches; 
+  std::vector<std::string> m_fatJetBranches; 
+  std::vector<std::string> m_l1JetBranches; 
+  std::vector<std::string> m_vertexBranches; 
+  std::vector<std::string> m_truthParticlesBranches; 
 
-  std::vector<std::string> m_clusterDetails; //!
-  std::vector<std::string> m_clusterContainers; //!
-  std::vector<std::string> m_clusterBranches; //!
+  std::vector<std::string> m_clusterDetails; 
+  std::vector<std::string> m_clusterContainers; 
+  std::vector<std::string> m_clusterBranches; 
 
-  std::vector<std::string> m_vertexDetails; //!
+  std::vector<std::string> m_vertexDetails; 
 
-  std::map<std::string, HelpTreeBase*> m_trees;            //!
+  std::map<std::string, HelpTreeBase*> m_trees;            
 
 public:
 
@@ -113,22 +113,22 @@ public:
   TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);           //!
-  virtual EL::StatusCode fileExecute ();                    //!
-  virtual EL::StatusCode histInitialize ();                 //!
-  virtual EL::StatusCode changeInput (bool firstFile);      //!
-  virtual EL::StatusCode initialize ();                     //!
-  virtual EL::StatusCode execute ();                        //!
-  virtual EL::StatusCode postExecute ();                    //!
-  virtual EL::StatusCode finalize ();                       //!
-  virtual EL::StatusCode histFinalize ();                   //!
+  virtual EL::StatusCode setupJob (EL::Job& job);           
+  virtual EL::StatusCode fileExecute ();                    
+  virtual EL::StatusCode histInitialize ();                 
+  virtual EL::StatusCode changeInput (bool firstFile);      
+  virtual EL::StatusCode initialize ();                     
+  virtual EL::StatusCode execute ();                        
+  virtual EL::StatusCode postExecute ();                    
+  virtual EL::StatusCode finalize ();                       
+  virtual EL::StatusCode histFinalize ();                   
 
   // Help tree creator function
-  virtual HelpTreeBase* createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store); //!
+  virtual HelpTreeBase* createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store); 
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TreeAlgo, 1);                                 //!
+  ClassDef(TreeAlgo, 1);                                 
   /// @endcond
 };
 

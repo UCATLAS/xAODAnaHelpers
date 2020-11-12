@@ -26,22 +26,22 @@ class TracksInJetHists : public HistogramManager
 
   private:
 
-    TrackHists*       m_trkPlots; //!
+    TrackHists*       m_trkPlots; 
 
     // Histograms
-    TH1F* m_trk_d0                ; //!
-    TH1F* m_trk_d0Sig     	    ; //!
-    TH1F* m_trk_d0SigPDF  	    ; //!
-    TH2F* m_trk_z0sinTd0  	    ; //!
-    TH1F* m_trk_z0_signed         ; //!
-    TH1F* m_trk_z0sinT_signed     ; //!
-    TH1F* m_trk_z0Sig_signed      ; //!
-    TH1F* m_trk_z0Sig_signed_pdf  ; //!
-    TH1F* m_trk_z0SigsinT_signed  ; //!
-    TH1F* m_trk_jetdPhi 	    ; //!
-    TH1F* m_trk_jetdEta 	    ; //!
-    TH1F* m_trk_jetdR      	    ; //!
-    TH1F* m_trk_jetdR_l              ; //!
+    TH1F* m_trk_d0                ; 
+    TH1F* m_trk_d0Sig     	    ; 
+    TH1F* m_trk_d0SigPDF  	    ; 
+    TH2F* m_trk_z0sinTd0  	    ; 
+    TH1F* m_trk_z0_signed         ; 
+    TH1F* m_trk_z0sinT_signed     ; 
+    TH1F* m_trk_z0Sig_signed      ; 
+    TH1F* m_trk_z0Sig_signed_pdf  ; 
+    TH1F* m_trk_z0SigsinT_signed  ; 
+    TH1F* m_trk_jetdPhi 	    ; 
+    TH1F* m_trk_jetdEta 	    ; 
+    TH1F* m_trk_jetdR      	    ; 
+    TH1F* m_trk_jetdR_l              ; 
 
 
 };

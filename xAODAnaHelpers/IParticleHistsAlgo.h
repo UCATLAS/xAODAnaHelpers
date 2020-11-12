@@ -28,14 +28,14 @@ public:
   std::string m_histTitle;
 
 private:
-  std::map< std::string, IParticleHists* > m_plots; //!
+  std::map< std::string, IParticleHists* > m_plots; 
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree; 
+  // TH1 *myHist; 
 
   // this is a standard constructor
   IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, const std::string& className="IParticleHistsAlgo");

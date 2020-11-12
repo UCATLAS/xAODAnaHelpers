@@ -151,15 +151,15 @@ class OverlapRemover : public xAH::Algorithm
  protected:
 
   /** @brief A counter for the number of processed events */
-  int m_numEvent;           //!
+  int m_numEvent;           
   /** @brief A counter for the number of processed objects */
-  int m_numObject;          //!
+  int m_numObject;          
   /** @brief A counter for the number of passed events */
-  int m_numEventPass;       //!
+  int m_numEventPass;       
   /** @brief A counter for the number of passed *weighted* events */
-  int m_weightNumEventPass; //!
+  int m_weightNumEventPass; 
   /** @brief A counter for the number of passed objects */
-  int m_numObjectPass;      //!
+  int m_numObjectPass;      
 
   /**
      @brief Consider electrons in the OLR
@@ -206,7 +206,7 @@ class OverlapRemover : public xAH::Algorithm
   std::string  m_outAuxContainerName_Taus;
 
   /** @brief Pointer to the CP Tool which performs the actual OLR. */
-  ORUtils::ToolBox m_ORToolbox;        //!
+  ORUtils::ToolBox m_ORToolbox;        
 
   /** @brief An enum encoding systematics according to the various objects */
   enum SystType {
@@ -221,25 +221,25 @@ class OverlapRemover : public xAH::Algorithm
   // object-level cutflow
 
   /**  @brief Pointer to the histogram for the electron cutflow */
-  TH1D* m_el_cutflowHist_1 = nullptr;    //!
+  TH1D* m_el_cutflowHist_1 = nullptr;    
   /**  @brief Pointer to the histogram for the muon cutflow */
-  TH1D* m_mu_cutflowHist_1 = nullptr;    //!
+  TH1D* m_mu_cutflowHist_1 = nullptr;    
   /**  @brief Pointer to the histogram for the jet cutflow */
-  TH1D* m_jet_cutflowHist_1 = nullptr;   //!
+  TH1D* m_jet_cutflowHist_1 = nullptr;   
   /**  @brief Pointer to the histogram for the photon cutflow */
-  TH1D* m_ph_cutflowHist_1 = nullptr;    //!
+  TH1D* m_ph_cutflowHist_1 = nullptr;    
   /**  @brief Pointer to the histogram for the tau cutflow */
-  TH1D* m_tau_cutflowHist_1 = nullptr;   //!
+  TH1D* m_tau_cutflowHist_1 = nullptr;   
 
-  int m_el_cutflow_OR_cut;     //!
-  int m_mu_cutflow_OR_cut;     //!
-  int m_jet_cutflow_OR_cut;    //!
-  int m_ph_cutflow_OR_cut;     //!
-  int m_tau_cutflow_OR_cut;    //!
+  int m_el_cutflow_OR_cut;     
+  int m_mu_cutflow_OR_cut;     
+  int m_jet_cutflow_OR_cut;    
+  int m_ph_cutflow_OR_cut;     
+  int m_tau_cutflow_OR_cut;    
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
 

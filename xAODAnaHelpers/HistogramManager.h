@@ -55,9 +55,9 @@ class HistogramManager {
     /** @brief a detail level in the form of a string */
     std::string m_detailStr;
     /** @brief a container holding all generated histograms */
-    std::vector< TH1* > m_allHists; //!
+    std::vector< TH1* > m_allHists; 
     /** @brief hold the MsgStream object */
-    mutable MsgStream m_msg; //!
+    mutable MsgStream m_msg; 
 
   public:
     /**

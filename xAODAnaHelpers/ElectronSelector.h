@@ -206,79 +206,79 @@ private:
   std::string    m_outAuxContainerName;
 
   /// @brief keep track of the total number of events processed
-  int m_numEvent;           //!
+  int m_numEvent;           
   /// @brief keep track of the total number of objects processed
-  int m_numObject;          //!
+  int m_numObject;          
   /** @rst
     keep track of the number of passed events, and fill the cutflow (relevant only if using the algo to skim events: see :cpp:member:`~ElectronSelector::m_pass_max` and :cpp:member:`~ElectronSelector::m_pass_min` above)
   @endrst */
-  int m_numEventPass;       //!
+  int m_numEventPass;       
   /** @rst
     keep track of the number of weighted passed events, and fill the cutflow (relevant only if using the algo to skim events: see :cpp:member:`~ElectronSelector::m_pass_max` and :cpp:member:`~ElectronSelector::m_pass_min` above)
   @endrst */
-  int m_weightNumEventPass; //!
+  int m_weightNumEventPass; 
   /// @brief keep track of the number of selected objects
-  int m_numObjectPass;      //!
+  int m_numObjectPass;      
 
 /* event-level cutflow */
 
   /// @brief histogram for event cutflow
-  TH1D* m_cutflowHist = nullptr;      //!
+  TH1D* m_cutflowHist = nullptr;      
   /// @brief histgram for weighted event cutflow
-  TH1D* m_cutflowHistW = nullptr;     //!
+  TH1D* m_cutflowHistW = nullptr;     
   /// @brief index of bin corresponding to this step of the full cutflow
-  int   m_cutflow_bin;      //!
+  int   m_cutflow_bin;      
   /// @brief checks if the algorithm has been used already
-  bool  m_isUsedBefore = false;     //!
+  bool  m_isUsedBefore = false;     
 
   /* object-level cutflow */
 
-  TH1D* m_el_cutflowHist_1 = nullptr;            //!
-  TH1D* m_el_cutflowHist_2 = nullptr;            //!
+  TH1D* m_el_cutflowHist_1 = nullptr;            
+  TH1D* m_el_cutflowHist_2 = nullptr;            
 
-  int   m_el_cutflow_all;              //!
-  int   m_el_cutflow_author_cut;       //!
-  int   m_el_cutflow_OQ_cut;           //!
-  int   m_el_cutflow_ptmax_cut;        //!
-  int   m_el_cutflow_ptmin_cut;        //!
-  int   m_el_cutflow_eta_cut;          //!
-  int   m_el_cutflow_z0sintheta_cut;   //!
-  int   m_el_cutflow_d0_cut;           //!
-  int   m_el_cutflow_d0sig_cut;        //!
-  int   m_el_cutflow_BL_cut;           //!
-  int   m_el_cutflow_PID_cut;          //!
-  int   m_el_cutflow_iso_cut;          //!
+  int   m_el_cutflow_all;              
+  int   m_el_cutflow_author_cut;       
+  int   m_el_cutflow_OQ_cut;           
+  int   m_el_cutflow_ptmax_cut;        
+  int   m_el_cutflow_ptmin_cut;        
+  int   m_el_cutflow_eta_cut;          
+  int   m_el_cutflow_z0sintheta_cut;   
+  int   m_el_cutflow_d0_cut;           
+  int   m_el_cutflow_d0sig_cut;        
+  int   m_el_cutflow_BL_cut;           
+  int   m_el_cutflow_PID_cut;          
+  int   m_el_cutflow_iso_cut;          
 
-  std::vector<std::string> m_IsoKeys;  //!
+  std::vector<std::string> m_IsoKeys;  
 
   /* tools */
 
   /// @brief MC15 ASG tool for isolation
-  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; //!
+  asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; 
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
-  CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                                                                 //!
-  asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle; //!
+  CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                                                                 
+  asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; 
+  asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle; 
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true;
 
   /* PID manager(s) */
   /// @brief class to manage LH PID selection/decorations - see ISSUE for explaination
-  ElectronLHPIDManager*                    m_el_LH_PIDManager = nullptr;        //!
+  ElectronLHPIDManager*                    m_el_LH_PIDManager = nullptr;        
   /// @brief class to manage cut-based PID selection/decorations - see ISSUE for explaination
-  ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager = nullptr;  //!
+  ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager = nullptr;  
 
   /* other private members */
 
   /** @rst
     contains all the HLT trigger chains tokens extracted from :cpp:member:`~ElectronSelector::m_singleElTrigChains`
   @endrst */
-  std::vector<std::string>            m_singleElTrigChainsList;  //!
+  std::vector<std::string>            m_singleElTrigChainsList;  
   /** @rst
     contains all the HLT trigger chains tokens extracted from :cpp:member:`~ElectronSelector::m_diElTrigChains`
   @endrst */
-  std::vector<std::string>            m_diElTrigChainsList;      //!
+  std::vector<std::string>            m_diElTrigChainsList;      
 
 public:
 
