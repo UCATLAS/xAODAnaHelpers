@@ -82,7 +82,9 @@ find_package( ROOT COMPONENTS Core RIO Hist Tree )
 
 # build a dictionary for the library
 atlas_add_root_dictionary ( xAODAnaHelpersLib xAODAnaHelpersDictSource
-                            ROOT_HEADERS xAODAnaHelpers/*.h Root/LinkDef.h
+                            ROOT_HEADERS xAODAnaHelpers/*.h
+                                         xAODAnaHelpers/xAODAnaHelpersDict.h
+                                         xAODAnaHelpers/selection.xml
                             EXTERNAL_PACKAGES ROOT
 )
 

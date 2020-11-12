@@ -1,0 +1,64 @@
+<lcgdict>
+
+  <!-- This file contains a list of all classes for which a dictionary
+       should be created. -->
+
+  <!-- Algorithm Wrapper -->
+  <class name="Algorithm" />
+
+  <!-- Event and Jet Selectors -->
+  <class name="BasicEventSelection" />
+  <class name="ElectronSelector" />
+  <class name="PhotonSelector" />
+  <class name="TauSelector" />
+  <class name="JetSelector" />
+  <class name="DebugTool" />
+  <class name="TruthSelector" />
+  <class name="TrackSelector" />
+  <class name="MuonSelector" />
+
+  <!-- Calibrations -->
+  <class name="ElectronCalibrator" />
+  <class name="PhotonCalibrator" />
+  <class name="JetCalibrator" />
+  <class name="MuonCalibrator" />
+  <class name="TauCalibrator" />
+  <!--  <class name="GroomedFatJets" />-->
+  <class name="HLTJetRoIBuilder" />
+  <class name="HLTJetGetter" />
+
+  <!-- Missing Energy Reconstruction -->
+  <class name="METConstructor" />
+
+  <!-- Scale Factors -->
+  <class name="ElectronEfficiencyCorrector" />
+  <class name="MuonEfficiencyCorrector" />
+  <class name="TauEfficiencyCorrector" />
+  <class name="BJetEfficiencyCorrector" />
+
+  <!-- Plotting Tools -->
+  <class name="IParticleHistsAlgo" />
+  <class name="JetHistsAlgo" />
+  <class name="MuonHistsAlgo" />
+  <class name="PhotonHistsAlgo" />
+  <class name="ElectronHistsAlgo" />
+  <class name="MetHistsAlgo" />
+  <class name="TrackHistsAlgo" />
+  <class name="ClusterHistsAlgo" />
+
+  <!-- Tree -->
+  <class name="TreeAlgo" />
+
+  <!-- Mini xAOD -->
+  <class name="MinixAOD" />
+
+  <!-- Other -->
+  <class name="HelperFunctions" />
+  <class name="OverlapRemover" />
+  <class name="TrigMatcher" />
+  <class name="TauJetMatching" />
+  <class name="Writer" />
+  <class name="MessagePrinterAlgo" />
+  <class name="MuonInFatJetCorrector" />
+
+</lcgdict>

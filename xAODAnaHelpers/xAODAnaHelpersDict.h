@@ -1,3 +1,9 @@
+#ifndef XAODANAHELPERS_XAODANAHELPERS_DICT_H
+#define XAODANAHELPERS_XAODANAHELPERS_DICT_H
+
+// This file includes all the header files that you need to create
+// dictionaries for.
+
 /* Algorithm Wrapper */
 #include <xAODAnaHelpers/Algorithm.h>
 
@@ -55,63 +61,5 @@
 #include <xAODAnaHelpers/Writer.h>
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 #include <xAODAnaHelpers/MuonInFatJetCorrector.h>
-
-#ifdef __CINT__
-
-#pragma link off all globals;
-#pragma link off all classes;
-#pragma link off all functions;
-#pragma link C++ nestedclass;
-
-#pragma link C++ namespace xAH;
-#pragma link C++ function xAH::addRucio;
-
-#pragma link C++ class xAH::Algorithm+;
-
-#pragma link C++ class BasicEventSelection+;
-#pragma link C++ class ElectronSelector+;
-#pragma link C++ class PhotonSelector+;
-#pragma link C++ class TauSelector+;
-#pragma link C++ class JetSelector+;
-#pragma link C++ class DebugTool+;
-#pragma link C++ class TruthSelector+;
-#pragma link C++ class TrackSelector+;
-#pragma link C++ class MuonSelector+;
-
-#pragma link C++ class ElectronCalibrator+;
-#pragma link C++ class PhotonCalibrator+;
-#pragma link C++ class JetCalibrator+;
-#pragma link C++ class HLTJetRoIBuilder+;
-#pragma link C++ class MuonCalibrator+;
-#pragma link C++ class TauCalibrator+;
-#pragma link C++ class HLTJetGetter+;
-/*#pragma link C++ class GroomedFatJets+;*/
-
-#pragma link C++ class METConstructor+;
-
-#pragma link C++ class ElectronEfficiencyCorrector+;
-#pragma link C++ class MuonEfficiencyCorrector+;
-#pragma link C++ class TauEfficiencyCorrector+;
-#pragma link C++ class BJetEfficiencyCorrector+;
-
-#pragma link C++ class IParticleHistsAlgo+;
-#pragma link C++ class JetHistsAlgo+;
-#pragma link C++ class MuonHistsAlgo+;
-#pragma link C++ class PhotonHistsAlgo+;
-#pragma link C++ class ElectronHistsAlgo+;
-#pragma link C++ class MetHistsAlgo+;
-#pragma link C++ class TrackHistsAlgo+;
-#pragma link C++ class ClusterHistsAlgo+;
-
-#pragma link C++ class TreeAlgo+;
-
-#pragma link C++ class MinixAOD+;
-
-#pragma link C++ class OverlapRemover+;
-#pragma link C++ class TrigMatcher+;
-#pragma link C++ class TauJetMatching+;
-#pragma link C++ class Writer+;
-#pragma link C++ class MessagePrinterAlgo+;
-#pragma link C++ class MuonInFatJetCorrector+;
 
 #endif
