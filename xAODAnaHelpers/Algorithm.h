@@ -201,7 +201,7 @@ namespace xAH {
             @endrst
          */
         bool isMC();
-        
+
         /**
             @rst
                 Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isFastSim` can be used
