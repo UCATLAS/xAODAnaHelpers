@@ -37,7 +37,38 @@
 ClassImp(MuonSelector)
 
 MuonSelector :: MuonSelector (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "MuonSelector")
+    Algorithm(name, pSvcLocator, "MuonSelector"),
+    declareProperty("useCutFlow", m_useCutFlow),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("outContainerName", m_outContainerName),
+    declareProperty("outAuxContainerName", m_outAuxContainerName),
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames),
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames),
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects),
+    declareProperty("createSelectedContainer", m_createSelectedContainer),
+    declareProperty("nToProcess", m_nToProcess),
+    declareProperty("pass_min", m_pass_min),
+    declareProperty("pass_max", m_pass_max),
+    declareProperty("pT_max", m_pT_max),
+    declareProperty("pT_min", m_pT_min),
+    declareProperty("muonQualityStr", m_muonQualityStr),
+    declareProperty("muonType", m_muonType),
+    declareProperty("eta_max", m_eta_max),
+    declareProperty("d0_max", m_d0_max),
+    declareProperty("d0sig_max", m_d0sig_max),
+    declareProperty("z0sintheta_max", m_z0sintheta_max),
+    declareProperty("removeCosmicMuon", m_removeCosmicMuon),
+    declareProperty("removeEventBadMuon", m_removeEventBadMuon),
+    declareProperty("doIsolation", m_doIsolation),
+    declareProperty("MinIsoWPCut", m_MinIsoWPCut),
+    declareProperty("IsoWPList", m_IsoWPList),
+    declareProperty("CaloIsoEff", m_CaloIsoEff),
+    declareProperty("TrackIsoEff", m_TrackIsoEff),
+    declareProperty("CaloBasedIsoType", m_CaloBasedIsoType),
+    declareProperty("TrackBasedIsoType", m_TrackBasedIsoType),
+    declareProperty("singleMuTrigChains", m_singleMuTrigChains),
+    declareProperty("diMuTrigChains", m_diMuTrigChains),
+    declareProperty("minDeltaR", m_minDeltaR)
 {
 }
 

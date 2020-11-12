@@ -13,8 +13,24 @@ std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className) :
-  EL::AnaAlgorithm(name, pSvcLocator),
-  m_className(className)
+    EL::AnaAlgorithm(name, pSvcLocator),
+    m_className(className),
+    declareProperty("name", m_name),
+    declareProperty("debug", m_debug),
+    declareProperty("verbose", m_verbose),
+    declareProperty("msgLevel", m_msgLevel),
+    declareProperty("systName", m_systName),
+    declareProperty("systVal", m_systVal),
+    declareProperty("systValVectorString", m_systValVectorString),
+    declareProperty("eventInfoContainerName", m_eventInfoContainerName),
+    declareProperty("vertexContainerName", m_vertexContainerName),
+    declareProperty("isMC", m_isMC),
+    declareProperty("isFastSim", m_isFastSim),
+    declareProperty("forceFastSim", m_forceFastSim),
+    declareProperty("forceFullSim", m_forceFullSim),
+    declareProperty("forceData", m_forceData),
+    declareProperty("setAFII", m_setAFII),
+    declareProperty("className", m_className)
 {
 }
 

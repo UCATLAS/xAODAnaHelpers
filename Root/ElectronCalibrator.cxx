@@ -43,7 +43,16 @@ ClassImp(ElectronCalibrator)
 
 
 ElectronCalibrator :: ElectronCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "ElectronCalibrator")
+    Algorithm(name, pSvcLocator, "ElectronCalibrator"),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("outContainerName", m_outContainerName),
+    declareProperty("sort", m_sort),
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames),
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames),
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata),
+    declareProperty("esModel", m_esModel),
+    declareProperty("decorrelationModel", m_decorrelationModel),
+    declareProperty("applyIsolationCorrection", m_applyIsolationCorrection)
 {
 }
 

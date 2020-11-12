@@ -35,7 +35,28 @@ ClassImp(MuonEfficiencyCorrector)
 
 
 MuonEfficiencyCorrector :: MuonEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "MuonEfficiencyCorrector")
+    Algorithm(name, pSvcLocator, "MuonEfficiencyCorrector"),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("overrideCalibRelease", m_overrideCalibRelease),
+    declareProperty("WorkingPointReco", m_WorkingPointReco),
+    declareProperty("WorkingPointIso", m_WorkingPointIso),
+    declareProperty("AllowZeroSF", m_AllowZeroSF),
+    declareProperty("MuTrigLegs", m_MuTrigLegs),
+    declareProperty("WorkingPointTTVA", m_WorkingPointTTVA),
+    declareProperty("inputSystNamesMuons", m_inputSystNamesMuons),
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata),
+    declareProperty("systValReco", m_systValReco),
+    declareProperty("systValIso", m_systValIso),
+    declareProperty("systValTrig", m_systValTrig),
+    declareProperty("systValTTVA", m_systValTTVA),
+    declareProperty("systNameReco", m_systNameReco),
+    declareProperty("systNameIso", m_systNameIso),
+    declareProperty("systNameTrig", m_systNameTrig),
+    declareProperty("systNameTTVA", m_systNameTTVA),
+    declareProperty("outputSystNamesReco", m_outputSystNamesReco),
+    declareProperty("outputSystNamesIso", m_outputSystNamesIso),
+    declareProperty("outputSystNamesTrig", m_outputSystNamesTrig),
+    declareProperty("outputSystNamesTTVA", m_outputSystNamesTTVA)
 {
 }
 

@@ -30,7 +30,28 @@ ClassImp(ElectronEfficiencyCorrector)
 
 
 ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "ElectronEfficiencyCorrector")
+    Algorithm(name, pSvcLocator, "ElectronEfficiencyCorrector"),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("inputSystNamesElectrons", m_inputSystNamesElectrons),
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata),
+    declareProperty("systValPID", m_systValPID),
+    declareProperty("systValIso", m_systValIso),
+    declareProperty("systValReco", m_systValReco),
+    declareProperty("systValTrig", m_systValTrig),
+    declareProperty("systNamePID", m_systNamePID),
+    declareProperty("systNameIso", m_systNameIso),
+    declareProperty("systNameReco", m_systNameReco),
+    declareProperty("systNameTrig", m_systNameTrig),
+    declareProperty("outputSystNamesPID", m_outputSystNamesPID),
+    declareProperty("outputSystNamesIso", m_outputSystNamesIso),
+    declareProperty("outputSystNamesReco", m_outputSystNamesReco),
+    declareProperty("outputSystNamesTrig", m_outputSystNamesTrig),
+    declareProperty("correlationModel", m_correlationModel),
+    declareProperty("WorkingPointPID", m_WorkingPointPID),
+    declareProperty("WorkingPointIso", m_WorkingPointIso),
+    declareProperty("WorkingPointReco", m_WorkingPointReco),
+    declareProperty("WorkingPointTrig", m_WorkingPointTrig),
+    declareProperty("overrideMapFilePath", m_overrideMapFilePath)
 {
 }
 

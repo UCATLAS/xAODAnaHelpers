@@ -11,7 +11,9 @@
 ClassImp(MetHistsAlgo)
 
 MetHistsAlgo :: MetHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "MetHistsAlgo")
+    Algorithm(name, pSvcLocator, "MetHistsAlgo"),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("detailStr", m_detailStr)
 {
 }
 

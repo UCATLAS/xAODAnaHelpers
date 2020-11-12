@@ -41,7 +41,30 @@
 ClassImp(TruthSelector)
 
 TruthSelector :: TruthSelector (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "TruthSelector")
+    Algorithm(name, pSvcLocator, "TruthSelector"),
+    declareProperty("useCutFlow", m_useCutFlow),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("outContainerName", m_outContainerName),
+    declareProperty("decor", m_decor),
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects),
+    declareProperty("createSelectedContainer", m_createSelectedContainer),
+    declareProperty("nToProcess", m_nToProcess),
+    declareProperty("pass_min", m_pass_min),
+    declareProperty("pass_max", m_pass_max),
+    declareProperty("pT_max", m_pT_max),
+    declareProperty("pT_min", m_pT_min),
+    declareProperty("eta_max", m_eta_max),
+    declareProperty("eta_min", m_eta_min),
+    declareProperty("mass_max", m_mass_max),
+    declareProperty("mass_min", m_mass_min),
+    declareProperty("rapidity_max", m_rapidity_max),
+    declareProperty("rapidity_min", m_rapidity_min),
+    declareProperty("t m_type", int m_type),
+    declareProperty("t m_origin", int m_origin),
+    declareProperty("originOptions; // this will apply no selection", m_originOptions; // this will apply no selection),
+    declareProperty("pT_dressed_min", m_pT_dressed_min),
+    declareProperty("eta_dressed_min", m_eta_dressed_min),
+    declareProperty("eta_dressed_max", m_eta_dressed_max)
 {
 }
 

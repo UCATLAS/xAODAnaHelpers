@@ -11,7 +11,9 @@
 ClassImp(ClusterHistsAlgo)
 
 ClusterHistsAlgo :: ClusterHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "ClusterHistsAlgo")
+    Algorithm(name, pSvcLocator, "ClusterHistsAlgo"),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("detailStr", m_detailStr)
 {
 }
 

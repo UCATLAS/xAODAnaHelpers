@@ -31,8 +31,11 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(TrigMatcher)
 
-TrigMatcher :: TrigMatcher (const std::string& name, ISvcLocator *pSvcLocator)
-: Algorithm(name, pSvcLocator, "TrigMatcher")
+TrigMatcher :: TrigMatcher (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TrigMatcher"),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("systNames", m_systNames),
+    declareProperty("trigChains", m_trigChains)
 {
 }
 

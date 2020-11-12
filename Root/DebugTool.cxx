@@ -37,7 +37,8 @@ ClassImp(DebugTool)
 
 
 DebugTool :: DebugTool (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "DebugTool")
+    Algorithm(name, pSvcLocator, "DebugTool"),
+    declareProperty("printStore", m_printStore)
 {
 }
 

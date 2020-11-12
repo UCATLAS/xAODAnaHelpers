@@ -39,7 +39,17 @@ using HelperClasses::ToolName;
 ClassImp(TauCalibrator)
 
 TauCalibrator :: TauCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "TauCalibrator")
+    Algorithm(name, pSvcLocator, "TauCalibrator"),
+    declareProperty("inContainerName", m_inContainerName),
+    declareProperty("outContainerName", m_outContainerName),
+    declareProperty("RecommendationTag", m_RecommendationTag),
+    declareProperty("applyMVATES", m_applyMVATES),
+    declareProperty("applyCombinedTES", m_applyCombinedTES),
+    declareProperty("setAFII", m_setAFII),
+    declareProperty("sort", m_sort),
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames),
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames),
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata)
 {
 }
 

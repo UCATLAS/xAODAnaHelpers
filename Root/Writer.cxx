@@ -16,7 +16,11 @@ ClassImp(Writer)
 
 
 Writer :: Writer (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "Writer")
+    Algorithm(name, pSvcLocator, "Writer"),
+    declareProperty("outputLabel", m_outputLabel),
+    declareProperty("jetContainerNamesStr", m_jetContainerNamesStr),
+    declareProperty("electronContainerNamesStr", m_electronContainerNamesStr),
+    declareProperty("muonContainerNamesStr", m_muonContainerNamesStr)
 {
 }
 
