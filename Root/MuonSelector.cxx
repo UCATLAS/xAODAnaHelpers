@@ -53,7 +53,7 @@ MuonSelector :: MuonSelector (const std::string& name, ISvcLocator *pSvcLocator)
     declareProperty("pT_max", m_pT_max);
     declareProperty("pT_min", m_pT_min);
     declareProperty("muonQualityStr", m_muonQualityStr);
-    declareProperty("muonType", m_muonType);
+    //declareProperty("muonType", m_muonType);
     declareProperty("eta_max", m_eta_max);
     declareProperty("d0_max", m_d0_max);
     declareProperty("d0sig_max", m_d0sig_max);
