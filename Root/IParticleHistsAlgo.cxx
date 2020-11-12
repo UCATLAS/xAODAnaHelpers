@@ -14,7 +14,7 @@
 ClassImp(IParticleHistsAlgo)
 
 IParticleHistsAlgo :: IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, std::string className) :
-    Algorithm(className)
+    Algorithm(name, pSvcLocator, className)
 {
     declareProperty("inContainerName", m_inContainerName);
     declareProperty("detailStr", m_detailStr);

@@ -17,7 +17,7 @@ public:
   // TH1 *myHist;
 
   // this is a standard constructor
-  PhotonHistsAlgo ();
+  PhotonHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
   virtual StatusCode execute ();

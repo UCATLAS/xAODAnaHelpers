@@ -11,8 +11,8 @@
 // this is needed to distribute the algorithm to the workers
 ClassImp(ElectronHistsAlgo)
 
-ElectronHistsAlgo :: ElectronHistsAlgo () :
-IParticleHistsAlgo("ElectronHistsAlgo")
+ElectronHistsAlgo :: ElectronHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+IParticleHistsAlgo(name, pSvcLocator, "ElectronHistsAlgo")
 { }
 
 
