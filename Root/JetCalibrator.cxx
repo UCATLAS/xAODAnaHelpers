@@ -47,6 +47,48 @@ ClassImp(JetCalibrator)
 JetCalibrator :: JetCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "JetCalibrator")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("jetAlgo", m_jetAlgo);
+    declareProperty("outputAlgo", m_outputAlgo);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("calibConfigDir", m_calibConfigDir);
+    declareProperty("calibConfigData", m_calibConfigData);
+    declareProperty("calibConfigFullSim", m_calibConfigFullSim);
+    declareProperty("calibConfigAFII", m_calibConfigAFII);
+    declareProperty("calibSequence", m_calibSequence);
+    declareProperty("uncertConfig", m_uncertConfig);
+    declareProperty("uncertMCType", m_uncertMCType);
+    declareProperty("overrideCalibArea", m_overrideCalibArea);
+    declareProperty("overrideUncertCalibArea", m_overrideUncertCalibArea);
+    declareProperty("overrideAnalysisFile", m_overrideAnalysisFile);
+    declareProperty("overrideUncertPath", m_overrideUncertPath);
+    declareProperty("forceInsitu", m_forceInsitu);
+    declareProperty("forceSmear", m_forceSmear);
+    declareProperty("jetCalibToolsDEV", m_jetCalibToolsDEV);
+    declareProperty("addGhostMuonsToJets", m_addGhostMuonsToJets);
+    declareProperty("doCleaning", m_doCleaning);
+    declareProperty("jetCleanCutLevel", m_jetCleanCutLevel);
+    declareProperty("saveAllCleanDecisions", m_saveAllCleanDecisions);
+    declareProperty("jetCleanUgly", m_jetCleanUgly);
+    declareProperty("redoJVT", m_redoJVT);
+    declareProperty("calculatefJVT", m_calculatefJVT);
+    declareProperty("fJVTCentralMaxPt", m_fJVTCentralMaxPt);
+    declareProperty("fJVTWorkingPoint", m_fJVTWorkingPoint);
+    declareProperty("JvtAuxName", m_JvtAuxName);
+    declareProperty("sort", m_sort);
+    declareProperty("cleanParent", m_cleanParent);
+    declareProperty("applyFatJetPreSel", m_applyFatJetPreSel);
+    declareProperty("useLargeRTruthLabelingTool", m_useLargeRTruthLabelingTool);
+    declareProperty("truthLabelName", m_truthLabelName);
+    declareProperty("isTruthJetCol", m_isTruthJetCol);
+    declareProperty("useTRUTH3", m_useTRUTH3);
+    declareProperty("truthParticleContainerName", m_truthParticleContainerName);
+    declareProperty("truthBosonContainerName", m_truthBosonContainerName);
+    declareProperty("truthTopQuarkContainerName", m_truthTopQuarkContainerName);
+    declareProperty("doJetTileCorr", m_doJetTileCorr);
+    declareProperty("pseudoData", m_pseudoData);
+    declareProperty("mcAndPseudoData", m_mcAndPseudoData);
 }
 
 StatusCode JetCalibrator :: setupJob (EL::Job& job)

@@ -11,6 +11,7 @@ ClassImp(MessagePrinterAlgo)
 MessagePrinterAlgo :: MessagePrinterAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "MessagePrinterAlgo")
 {
+    declareProperty("sourceWidth", m_sourceWidth);
 }
 
 

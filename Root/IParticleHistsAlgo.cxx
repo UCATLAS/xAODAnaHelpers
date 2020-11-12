@@ -16,6 +16,11 @@ ClassImp(IParticleHistsAlgo)
 IParticleHistsAlgo :: IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, std::string className) :
     Algorithm(className)
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("detailStr", m_detailStr);
+    declareProperty("inputAlgo", m_inputAlgo);
+    declareProperty("histPrefix", m_histPrefix);
+    declareProperty("histTitle", m_histTitle);
 }
 
 StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)

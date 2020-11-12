@@ -36,6 +36,40 @@ ClassImp(METConstructor)
 METConstructor :: METConstructor (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "METConstructor")
 {
+    declareProperty("referenceMETContainer", m_referenceMETContainer);
+    declareProperty("mapName", m_mapName);
+    declareProperty("coreName", m_coreName);
+    declareProperty("outputContainer", m_outputContainer);
+    declareProperty("inputJets", m_inputJets);
+    declareProperty("inputElectrons", m_inputElectrons);
+    declareProperty("inputPhotons", m_inputPhotons);
+    declareProperty("inputTaus", m_inputTaus);
+    declareProperty("inputMuons", m_inputMuons);
+    declareProperty("doElectronCuts", m_doElectronCuts);
+    declareProperty("doPhotonCuts", m_doPhotonCuts);
+    declareProperty("doTauCuts", m_doTauCuts);
+    declareProperty("doMuonCuts", m_doMuonCuts);
+    declareProperty("doMuonEloss", m_doMuonEloss);
+    declareProperty("doIsolMuonEloss", m_doIsolMuonEloss);
+    declareProperty("doJVTCut", m_doJVTCut);
+    declareProperty("dofJVTCut", m_dofJVTCut);
+    declareProperty("fJVTdecorName", m_fJVTdecorName);
+    declareProperty("doPFlow", m_doPFlow);
+    declareProperty("rebuildUsingTracksInJets", m_rebuildUsingTracksInJets);
+    declareProperty("addSoftClusterTerms", m_addSoftClusterTerms);
+    declareProperty("calculateSignificance", m_calculateSignificance);
+    declareProperty("significanceTreatPUJets", m_significanceTreatPUJets);
+    declareProperty("significanceSoftTermReso", m_significanceSoftTermReso);
+    declareProperty("runNominal", m_runNominal);
+    declareProperty("systName", m_systName);
+    declareProperty("systVal", m_systVal);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("jetSystematics", m_jetSystematics);
+    declareProperty("eleSystematics", m_eleSystematics);
+    declareProperty("muonSystematics", m_muonSystematics);
+    declareProperty("tauSystematics", m_tauSystematics);
+    declareProperty("phoSystematics", m_phoSystematics);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
 }
 
 StatusCode METConstructor :: setupJob (EL::Job& job)

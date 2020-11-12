@@ -45,6 +45,25 @@ ClassImp(TauSelector)
 TauSelector :: TauSelector (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "TauSelector")
 {
+    declareProperty("useCutFlow", m_useCutFlow);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("outAuxContainerName", m_outAuxContainerName);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("decorateWithTracks", m_decorateWithTracks);
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects);
+    declareProperty("createSelectedContainer", m_createSelectedContainer);
+    declareProperty("nToProcess", m_nToProcess);
+    declareProperty("pass_min", m_pass_min);
+    declareProperty("pass_max", m_pass_max);
+    declareProperty("ConfigPath", m_ConfigPath);
+    declareProperty("minPtDAOD", m_minPtDAOD);
+    declareProperty("JetIDWP", m_JetIDWP);
+    declareProperty("EleBDTWP", m_EleBDTWP);
+    declareProperty("EleOLR", m_EleOLR);
+    declareProperty("singleTauTrigChains", m_singleTauTrigChains);
+    declareProperty("diTauTrigChains", m_diTauTrigChains);
 }
 
 StatusCode TauSelector :: setupJob (EL::Job& job)

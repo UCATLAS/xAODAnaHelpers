@@ -21,6 +21,60 @@ ClassImp(TreeAlgo)
 TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "TreeAlgo")
 {
+    declareProperty("outHistDir", m_outHistDir);
+    declareProperty("evtDetailStr", m_evtDetailStr);
+    declareProperty("trigDetailStr", m_trigDetailStr);
+    declareProperty("muDetailStr", m_muDetailStr);
+    declareProperty("elDetailStr", m_elDetailStr);
+    declareProperty("jetDetailStr", m_jetDetailStr);
+    declareProperty("trigJetDetailStr", m_trigJetDetailStr);
+    declareProperty("truthJetDetailStr", m_truthJetDetailStr);
+    declareProperty("fatJetDetailStr", m_fatJetDetailStr);
+    declareProperty("truthFatJetDetailStr", m_truthFatJetDetailStr);
+    declareProperty("tauDetailStr", m_tauDetailStr);
+    declareProperty("METDetailStr", m_METDetailStr);
+    declareProperty("METReferenceDetailStr", m_METReferenceDetailStr);
+    declareProperty("photonDetailStr", m_photonDetailStr);
+    declareProperty("clusterDetailStr", m_clusterDetailStr);
+    declareProperty("truthParticlesDetailStr", m_truthParticlesDetailStr);
+    declareProperty("trackParticlesDetailStr", m_trackParticlesDetailStr);
+    declareProperty("vertexDetailStr", m_vertexDetailStr);
+    declareProperty("evtContainerName", m_evtContainerName);
+    declareProperty("muContainerName", m_muContainerName);
+    declareProperty("elContainerName", m_elContainerName);
+    declareProperty("jetContainerName", m_jetContainerName);
+    declareProperty("jetBranchName", m_jetBranchName);
+    declareProperty("truthJetContainerName", m_truthJetContainerName);
+    declareProperty("truthJetBranchName", m_truthJetBranchName);
+    declareProperty("trigJetContainerName", m_trigJetContainerName);
+    declareProperty("trigJetBranchName", m_trigJetBranchName);
+    declareProperty("fatJetContainerName", m_fatJetContainerName);
+    declareProperty("fatJetBranchName", m_fatJetBranchName);
+    declareProperty("truthFatJetContainerName", m_truthFatJetContainerName);
+    declareProperty("truthFatJetBranchName", m_truthFatJetBranchName);
+    declareProperty("tauContainerName", m_tauContainerName);
+    declareProperty("METContainerName", m_METContainerName);
+    declareProperty("METReferenceContainerName", m_METReferenceContainerName);
+    declareProperty("photonContainerName", m_photonContainerName);
+    declareProperty("clusterContainerName", m_clusterContainerName);
+    declareProperty("clusterBranchName", m_clusterBranchName);
+    declareProperty("truthParticlesContainerName", m_truthParticlesContainerName);
+    declareProperty("truthParticlesBranchName", m_truthParticlesBranchName);
+    declareProperty("trackParticlesContainerName", m_trackParticlesContainerName);
+    declareProperty("l1JetContainerName", m_l1JetContainerName);
+    declareProperty("l1JetBranchName", m_l1JetBranchName);
+    declareProperty("vertexBranchName", m_vertexBranchName);
+    declareProperty("sortL1Jets", m_sortL1Jets);
+    declareProperty("retrievePV", m_retrievePV);
+    declareProperty("muSystsVec", m_muSystsVec);
+    declareProperty("elSystsVec", m_elSystsVec);
+    declareProperty("tauSystsVec", m_tauSystsVec);
+    declareProperty("jetSystsVec", m_jetSystsVec);
+    declareProperty("photonSystsVec", m_photonSystsVec);
+    declareProperty("fatJetSystsVec", m_fatJetSystsVec);
+    declareProperty("metSystsVec", m_metSystsVec);
+    declareProperty("units", m_units);
+    declareProperty("autoFlush", m_autoFlush);
 }
 
 StatusCode TreeAlgo :: setupJob (EL::Job& job)

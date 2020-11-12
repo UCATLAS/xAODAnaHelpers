@@ -30,6 +30,13 @@ ClassImp(TauJetMatching)
 TauJetMatching :: TauJetMatching (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "TauJetMatching")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("outAuxContainerName", m_outAuxContainerName);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("inJetContainerName", m_inJetContainerName);
+    declareProperty("DeltaR", m_DeltaR);
 }
 
 StatusCode TauJetMatching :: setupJob (EL::Job& job)

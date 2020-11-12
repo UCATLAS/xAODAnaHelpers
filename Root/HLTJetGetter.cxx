@@ -36,6 +36,9 @@ ClassImp(HLTJetGetter)
 HLTJetGetter :: HLTJetGetter (const std::string& name, ISvcLocator *pSvcLocator) :
 Algorithm(name, pSvcLocator, "HLTJetGetter")
 {
+    declareProperty("triggerList", m_triggerList);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
 }
 
 

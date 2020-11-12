@@ -14,6 +14,8 @@ ClassImp(TrackHistsAlgo)
 TrackHistsAlgo :: TrackHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "TrackHistsAlgo")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("detailStr", m_detailStr);
 }
 
 StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)

@@ -41,6 +41,43 @@ ClassImp(ElectronSelector)
 ElectronSelector :: ElectronSelector (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "ElectronSelector")
 {
+    declareProperty("useCutFlow", m_useCutFlow);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects);
+    declareProperty("createSelectedContainer", m_createSelectedContainer);
+    declareProperty("nToProcess", m_nToProcess);
+    declareProperty("pass_min", m_pass_min);
+    declareProperty("pass_max", m_pass_max);
+    declareProperty("pT_max", m_pT_max);
+    declareProperty("pT_min", m_pT_min);
+    declareProperty("eta_max", m_eta_max);
+    declareProperty("vetoCrack", m_vetoCrack);
+    declareProperty("d0_max", m_d0_max);
+    declareProperty("d0sig_max", m_d0sig_max);
+    declareProperty("z0sintheta_max", m_z0sintheta_max);
+    declareProperty("doAuthorCut", m_doAuthorCut);
+    declareProperty("doOQCut", m_doOQCut);
+    declareProperty("readIDFlagsFromDerivation", m_readIDFlagsFromDerivation);
+    declareProperty("doModifiedEleId", m_doModifiedEleId);
+    declareProperty("doLHPID", m_doLHPID);
+    declareProperty("doLHPIDcut", m_doLHPIDcut);
+    declareProperty("LHOperatingPoint", m_LHOperatingPoint);
+    declareProperty("doCutBasedPID", m_doCutBasedPID);
+    declareProperty("doCutBasedPIDcut", m_doCutBasedPIDcut);
+    declareProperty("CutBasedOperatingPoint", m_CutBasedOperatingPoint);
+    declareProperty("MinIsoWPCut", m_MinIsoWPCut);
+    declareProperty("IsoWPList", m_IsoWPList);
+    declareProperty("CaloIsoEff", m_CaloIsoEff);
+    declareProperty("TrackIsoEff", m_TrackIsoEff);
+    declareProperty("CaloBasedIsoType", m_CaloBasedIsoType);
+    declareProperty("TrackBasedIsoType", m_TrackBasedIsoType);
+    declareProperty("singleElTrigChains", m_singleElTrigChains);
+    declareProperty("diElTrigChains", m_diElTrigChains);
+    declareProperty("minDeltaR", m_minDeltaR);
+    declareProperty("applyCrackVetoCleaning", m_applyCrackVetoCleaning);
 }
 
 StatusCode ElectronSelector :: setupJob (EL::Job& job)

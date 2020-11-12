@@ -41,6 +41,26 @@ ClassImp(BJetEfficiencyCorrector)
 BJetEfficiencyCorrector :: BJetEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "BJetEfficiencyCorrector")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("inputAlgo", m_inputAlgo);
+    declareProperty("systName", m_systName);
+    declareProperty("outputSystName", m_outputSystName);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("corrFileName", m_corrFileName);
+    declareProperty("jetAuthor", m_jetAuthor);
+    declareProperty("minPt", m_minPt);
+    declareProperty("taggerName", m_taggerName);
+    declareProperty("useDevelopmentFile", m_useDevelopmentFile);
+    declareProperty("coneFlavourLabel", m_coneFlavourLabel);
+    declareProperty("systematicsStrategy", m_systematicsStrategy);
+    declareProperty("errorOnTagWeightFailure", m_errorOnTagWeightFailure);
+    declareProperty("operatingPt", m_operatingPt);
+    declareProperty("operatingPtCDI", m_operatingPtCDI);
+    declareProperty("getScaleFactors", m_getScaleFactors);
+    declareProperty("useContinuous", m_useContinuous);
+    declareProperty("decor", m_decor);
+    declareProperty("orBJetPtUpperThres", m_orBJetPtUpperThres);
+    declareProperty("EfficiencyCalibration", m_EfficiencyCalibration);
 }
 
 
