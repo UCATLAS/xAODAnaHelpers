@@ -92,7 +92,7 @@ atlas_add_root_dictionary ( xAODAnaHelpersLib xAODAnaHelpersDictSource
 atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xAODAnaHelpersDictSource}
                    PUBLIC_HEADERS xAODAnaHelpers
                    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-                   LINK_LIBRARIES ${ROOT_LIBRARIES} EventLoop xAODBase xAODRootAccess
+                   LINK_LIBRARIES ${ROOT_LIBRARIES} AnaAlgorithmLib EventLoop xAODBase xAODRootAccess
                    xAODEventInfo GoodRunsListsLib PileupReweightingLib PATInterfaces
                    PathResolver xAODTau xAODJet xAODMuon xAODEgamma
                    xAODTracking xAODTruth MuonMomentumCorrectionsLib
