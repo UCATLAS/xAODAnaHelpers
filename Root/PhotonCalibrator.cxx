@@ -54,23 +54,7 @@ ClassImp(PhotonCalibrator)
 
 
 PhotonCalibrator :: PhotonCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "PhotonCalibrator"),
-    declareProperty("inContainerName", m_inContainerName),
-    declareProperty("outContainerName", m_outContainerName),
-    declareProperty("overridePhotonCalibMap", m_overridePhotonCalibMap),
-    declareProperty("tightIDConfigPath", m_tightIDConfigPath),
-    declareProperty("mediumIDConfigPath", m_mediumIDConfigPath),
-    declareProperty("looseIDConfigPath", m_looseIDConfigPath),
-    declareProperty("sort", m_sort),
-    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames),
-    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames),
-    declareProperty("useAFII", m_useAFII),
-    declareProperty("systVal", m_systVal),
-    declareProperty("systName", m_systName),
-    declareProperty("esModel", m_esModel),
-    declareProperty("decorrelationModel", m_decorrelationModel),
-    declareProperty("randomRunNumber", m_randomRunNumber),
-    declareProperty("readIDFlagsFromDerivation", m_readIDFlagsFromDerivation)
+    Algorithm(name, pSvcLocator, "PhotonCalibrator")
 {
 }
 

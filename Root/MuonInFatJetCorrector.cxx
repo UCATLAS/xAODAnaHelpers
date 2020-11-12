@@ -21,20 +21,7 @@
 ClassImp(MuonInFatJetCorrector)
 
 MuonInFatJetCorrector :: MuonInFatJetCorrector(const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "MuonInFatJetCorrector"),
-    declareProperty("fatJetContainerName", m_fatJetContainerName),
-    declareProperty("trackJetContainerName", m_trackJetContainerName),
-    declareProperty("muonContainerName", m_muonContainerName),
-    declareProperty("trackJetLinkName", m_trackJetLinkName),
-    declareProperty("calibratedMassDecoratorData", m_calibratedMassDecoratorData),
-    declareProperty("calibratedMassDecoratorFullSim", m_calibratedMassDecoratorFullSim),
-    declareProperty("inputAlgo", m_inputAlgo),
-    declareProperty("trackJetPtMin", m_trackJetPtMin),
-    declareProperty("trackJetEtaMax", m_trackJetEtaMax),
-    declareProperty("trackJetNConst", m_trackJetNConst),
-    declareProperty("muonPtMin", m_muonPtMin),
-    declareProperty("muonEtaMax", m_muonEtaMax),
-    declareProperty("muonDrMax", m_muonDrMax)
+  Algorithm(name, pSvcLocator, "MuonInFatJetCorrector")
 {
 }
 

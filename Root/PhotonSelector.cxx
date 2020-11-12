@@ -35,27 +35,7 @@
 ClassImp(PhotonSelector)
 
 PhotonSelector :: PhotonSelector (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "PhotonSelector"),
-    declareProperty("useCutFlow", m_useCutFlow),
-    declareProperty("inContainerName", m_inContainerName),
-    declareProperty("outContainerName", m_outContainerName),
-    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames),
-    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames),
-    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects),
-    declareProperty("createSelectedContainer", m_createSelectedContainer),
-    declareProperty("nToProcess", m_nToProcess),
-    declareProperty("pass_min", m_pass_min),
-    declareProperty("pass_max", m_pass_max),
-    declareProperty("pT_max", m_pT_max),
-    declareProperty("pT_min", m_pT_min),
-    declareProperty("eta_max", m_eta_max),
-    declareProperty("vetoCrack", m_vetoCrack),
-    declareProperty("doAuthorCut", m_doAuthorCut),
-    declareProperty("doOQCut", m_doOQCut),
-    declareProperty("readOQFromDerivation", m_readOQFromDerivation),
-    declareProperty("photonIdCut", m_photonIdCut),
-    declareProperty("MinIsoWPCut", m_MinIsoWPCut),
-    declareProperty("IsoWPList", m_IsoWPList)
+    Algorithm(name, pSvcLocator, "PhotonSelector")
 {
 }
 

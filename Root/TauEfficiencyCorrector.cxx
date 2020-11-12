@@ -33,19 +33,7 @@ ClassImp(TauEfficiencyCorrector)
 
 
 TauEfficiencyCorrector :: TauEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "TauEfficiencyCorrector"),
-    declareProperty("RecommendationTag", m_RecommendationTag),
-    declareProperty("inContainerName", m_inContainerName),
-    declareProperty("WorkingPointReco", m_WorkingPointReco),
-    declareProperty("WorkingPointEleOLRHadTau", m_WorkingPointEleOLRHadTau),
-    declareProperty("WorkingPointEleOLRElectron", m_WorkingPointEleOLRElectron),
-    declareProperty("WorkingPointTauID", m_WorkingPointTauID),
-    declareProperty("TriggerName", m_TriggerName),
-    declareProperty("inputSystNamesTaus", m_inputSystNamesTaus),
-    declareProperty("writeSystToMetadata", m_writeSystToMetadata),
-    declareProperty("systVal", m_systVal),
-    declareProperty("systName", m_systName),
-    declareProperty("outputSystNames", m_outputSystNames)
+    Algorithm(name, pSvcLocator, "TauEfficiencyCorrector")
 {
 }
 

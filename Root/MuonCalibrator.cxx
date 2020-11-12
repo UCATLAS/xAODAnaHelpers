@@ -37,32 +37,7 @@ using HelperClasses::ToolName;
 ClassImp(MuonCalibrator)
 
 MuonCalibrator :: MuonCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "MuonCalibrator"),
-    declareProperty("inContainerName", m_inContainerName),
-    declareProperty("outContainerName", m_outContainerName),
-    declareProperty("overrideRelease", m_overrideRelease),
-    declareProperty("overrideSagittaRelease1516", m_overrideSagittaRelease1516),
-    declareProperty("overrideSagittaRelease17", m_overrideSagittaRelease17),
-    declareProperty("overrideSagittaRelease18", m_overrideSagittaRelease18),
-    declareProperty("statComb1516", m_statComb1516),
-    declareProperty("statComb17", m_statComb17),
-    declareProperty("statComb18", m_statComb18),
-    declareProperty("sagittaCorr1516", m_sagittaCorr1516),
-    declareProperty("sagittaCorr17", m_sagittaCorr17),
-    declareProperty("sagittaCorr18", m_sagittaCorr18),
-    declareProperty("doSagittaMCDistortion1516", m_doSagittaMCDistortion1516),
-    declareProperty("doSagittaMCDistortion17", m_doSagittaMCDistortion17),
-    declareProperty("doSagittaMCDistortion18", m_doSagittaMCDistortion18),
-    declareProperty("sagittaCorrPhaseSpace1516", m_sagittaCorrPhaseSpace1516),
-    declareProperty("sagittaCorrPhaseSpace17", m_sagittaCorrPhaseSpace17),
-    declareProperty("sagittaCorrPhaseSpace18", m_sagittaCorrPhaseSpace18),
-    declareProperty("sort", m_sort),
-    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames),
-    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames),
-    declareProperty("writeSystToMetadata", m_writeSystToMetadata),
-    declareProperty("systVal", m_systVal),
-    declareProperty("systName", m_systName),
-    declareProperty("forceDataCalib", m_forceDataCalib)
+    Algorithm(name, pSvcLocator, "MuonCalibrator")
 {
 }
 

@@ -41,17 +41,7 @@
 ClassImp(MinixAOD)
 
 MinixAOD :: MinixAOD (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "MinixAOD"),
-    declareProperty("outputFileName", m_outputFileName),
-    declareProperty("createOutputFile", m_createOutputFile),
-    declareProperty("copyFileMetaData", m_copyFileMetaData),
-    declareProperty("copyTriggerInfo", m_copyTriggerInfo),
-    declareProperty("copyCutBookkeeper", m_copyCutBookkeeper),
-    declareProperty("simpleCopyKeys", m_simpleCopyKeys),
-    declareProperty("storeCopyKeys", m_storeCopyKeys),
-    declareProperty("shallowCopyKeys", m_shallowCopyKeys),
-    declareProperty("deepCopyKeys", m_deepCopyKeys),
-    declareProperty("vectorCopyKeys", m_vectorCopyKeys)
+    Algorithm(name, pSvcLocator, "MinixAOD")
 {
 }
 

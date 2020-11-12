@@ -39,14 +39,7 @@
 ClassImp(HLTJetRoIBuilder)
 
 HLTJetRoIBuilder :: HLTJetRoIBuilder (const std::string& name, ISvcLocator *pSvcLocator) :
-    Algorithm(name, pSvcLocator, "HLTJetRoIBuilder"),
-    declareProperty("trigItem", m_trigItem),
-    declareProperty("trigItemVeto", m_trigItemVeto),
-    declareProperty("doHLTBJet", m_doHLTBJet),
-    declareProperty("doHLTJet", m_doHLTJet),
-    declareProperty("readHLTTracks", m_readHLTTracks),
-    declareProperty("readHLTVtx", m_readHLTVtx),
-    declareProperty("outContainerName", m_outContainerName)
+  Algorithm(name, pSvcLocator, "HLTJetRoIBuilder")
 {
 }
 
