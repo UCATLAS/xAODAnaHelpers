@@ -32,8 +32,6 @@ TauJetMatching :: TauJetMatching (const std::string& name, ISvcLocator *pSvcLoca
 {
 }
 
-TauJetMatching::~TauJetMatching() {}
-
 EL::StatusCode TauJetMatching :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object

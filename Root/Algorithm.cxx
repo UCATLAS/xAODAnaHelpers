@@ -18,10 +18,6 @@ xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, con
 {
 }
 
-xAH::Algorithm::~Algorithm()
-{
-}
-
 StatusCode xAH::Algorithm::algInitialize(){
     // register an instance of the the class
     registerInstance();

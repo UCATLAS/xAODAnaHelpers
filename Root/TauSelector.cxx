@@ -47,8 +47,6 @@ TauSelector :: TauSelector (const std::string& name, ISvcLocator *pSvcLocator) :
 {
 }
 
-TauSelector::~TauSelector() {}
-
 EL::StatusCode TauSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object

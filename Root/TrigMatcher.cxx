@@ -36,8 +36,6 @@ TrigMatcher :: TrigMatcher (const std::string& name, ISvcLocator *pSvcLocator)
 {
 }
 
-TrigMatcher::~TrigMatcher() {}
-
 EL::StatusCode TrigMatcher :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object

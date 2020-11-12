@@ -41,8 +41,6 @@ MuonSelector :: MuonSelector (const std::string& name, ISvcLocator *pSvcLocator)
 {
 }
 
-MuonSelector::~MuonSelector() {}
-
 EL::StatusCode MuonSelector :: setupJob (EL::Job& job)
 {
   // Here you put code that sets up the job on the submission object

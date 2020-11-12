@@ -74,7 +74,6 @@ namespace xAH {
             @param className    This is the name of the algorithm that inherits from :cpp:namespace:`~xAH::Algorithm`
          */
         Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className = "Algorithm");
-        ~Algorithm();
         /// @cond
         ClassDef(Algorithm, 1);
         /// @endcond
