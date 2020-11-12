@@ -5,7 +5,7 @@
 
 
 namespace xAH {
-  
+
   class Photon : public Particle
   {
   public:
@@ -23,12 +23,12 @@ namespace xAH {
       float  topoetcone20;
       float  topoetcone30;
       float  topoetcone40;
-    
+
       // PID
       int   IsLoose;
       int   IsMedium;
       int   IsTight;
-    
+
       //Purity
       float  radhad1;
       float  radhad;

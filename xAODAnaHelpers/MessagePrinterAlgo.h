@@ -25,8 +25,8 @@ class MessagePrinterAlgo : public xAH::Algorithm
 
   private:
 
-    std::unique_ptr<asg::MessagePrinter>        m_messagePrinter{nullptr}; 
-    std::unique_ptr<asg::MessagePrinterOverlay> m_messagePrinterOverlay{nullptr}; 
+    std::unique_ptr<asg::MessagePrinter>        m_messagePrinter{nullptr};
+    std::unique_ptr<asg::MessagePrinterOverlay> m_messagePrinterOverlay{nullptr};
 
   public:
     // this is a standard constructor

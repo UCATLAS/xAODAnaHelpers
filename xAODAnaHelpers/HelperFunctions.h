@@ -527,7 +527,7 @@ namespace HelperFunctions {
     @param sample_name      The name of the sample, usualy the dataset name
 
     @rst
-    The name of the generator is determined using some common definitions in the ATLAS MC dataset naming scheme. The 
+    The name of the generator is determined using some common definitions in the ATLAS MC dataset naming scheme. The
     case independent strings that are searched for are:
      * PYTHIA8EVTGEN or Py8EG or PYTHIA : Pythia8
      * HERWIG : Herwig7

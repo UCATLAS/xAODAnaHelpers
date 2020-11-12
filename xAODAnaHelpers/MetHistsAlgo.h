@@ -17,14 +17,14 @@ public:
   std::string m_detailStr = "";
 
 private:
-  MetHists* m_plots = nullptr; 
+  MetHists* m_plots = nullptr;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the )
 public:
-  // Tree *myTree; 
-  // TH1 *myHist; 
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   MetHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator);

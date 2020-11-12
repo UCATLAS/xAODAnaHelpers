@@ -27,17 +27,17 @@ class MetHists : public HistogramManager
 
   private:
 
-    TH1F*   m_metFinalClus      ; 
-    TH1F*   m_metFinalClusPx    ; 
-    TH1F*   m_metFinalClusPy    ; 
-    TH1F*   m_metFinalClusSumEt ; 
-    TH1F*   m_metFinalClusPhi   ; 
+    TH1F*   m_metFinalClus      ;
+    TH1F*   m_metFinalClusPx    ;
+    TH1F*   m_metFinalClusPy    ;
+    TH1F*   m_metFinalClusSumEt ;
+    TH1F*   m_metFinalClusPhi   ;
 
-    TH1F*   m_metFinalTrk       ; 
-    TH1F*   m_metFinalTrkPx     ; 
-    TH1F*   m_metFinalTrkPy     ; 
-    TH1F*   m_metFinalTrkSumEt  ; 
-    TH1F*   m_metFinalTrkPhi    ; 
+    TH1F*   m_metFinalTrk       ;
+    TH1F*   m_metFinalTrkPx     ;
+    TH1F*   m_metFinalTrkPy     ;
+    TH1F*   m_metFinalTrkSumEt  ;
+    TH1F*   m_metFinalTrkPhi    ;
 
 };
 

@@ -275,7 +275,7 @@ void HelpTreeBase::FillTrigger( const xAOD::EventInfo* eventInfo ) {
     if( isPassBitsNames.isAvailable( *eventInfo ) ) { m_isPassBitsNames = isPassBitsNames( *eventInfo ); }
 
   }
-  
+
   this->FillTriggerUser(eventInfo);
 }
 
@@ -632,7 +632,7 @@ void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, const std::str
   this->ClearL1Jets(jetName);
 
   xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
-  
+
   thisL1Jet->FillL1Jets(jets,sortL1Jets);
 
 }

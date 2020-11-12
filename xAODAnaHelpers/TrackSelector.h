@@ -128,17 +128,17 @@ private:
   std::vector<std::string> m_passKeys;
   std::vector<std::string> m_failKeys;
 
-  asg::AnaToolHandle <InDet::IInDetTrackSelectionTool> m_trkSelTool_handle{"InDet::InDetTrackSelectionTool/TrackSelectionTool", this}; 
+  asg::AnaToolHandle <InDet::IInDetTrackSelectionTool> m_trkSelTool_handle{"InDet::InDetTrackSelectionTool/TrackSelectionTool", this};
 
-  int m_numEvent;         
-  int m_numObject;        
-  int m_numEventPass;     
-  int m_numObjectPass;    
+  int m_numEvent;
+  int m_numObject;
+  int m_numEventPass;
+  int m_numObjectPass;
 
   // cutflow
-  TH1D* m_cutflowHist = nullptr;          
-  TH1D* m_cutflowHistW = nullptr;         
-  int   m_cutflow_bin;          
+  TH1D* m_cutflowHist = nullptr;
+  TH1D* m_cutflowHistW = nullptr;
+  int   m_cutflow_bin;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

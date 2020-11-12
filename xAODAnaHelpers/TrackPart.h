@@ -9,10 +9,10 @@ namespace xAH {
   public:
     // TrackPart() { };
     // virtual ~TrackPart();
-    
+
     float chiSquared;
     float d0;
-    
+
     std::vector<float> definingParametersCovMatrix;
     unsigned char expectInnermostPixelLayerHit;
     unsigned char expectNextToInnermostPixelLayerHit;

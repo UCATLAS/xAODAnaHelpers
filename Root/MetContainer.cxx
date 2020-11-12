@@ -286,14 +286,14 @@ void MetContainer::FillMET( const xAOD::MissingETContainer* met) {
     m_metFinalClusPy    = final_clus->mpy() / m_units;
     m_metFinalClusSumEt = final_clus->sumet() / m_units;
     m_metFinalClusPhi   = final_clus->phi();
-    
+
     if ( m_infoSwitch.m_sigClus ) {
       m_metFinalClusOverSqrtSumEt  = final_clus->auxdecor<double>("METOverSqrtSumET");
       m_metFinalClusOverSqrtHt     = final_clus->auxdecor<double>("METOverSqrtHT");
       m_metFinalClusSignificance   = final_clus->auxdecor<double>("Significance");
       m_metFinalClusSigDirectional = final_clus->auxdecor<double>("SigDirectional");
     }
-    
+
     if ( m_infoSwitch.m_sigResolutionClus ) {
       m_metFinalClusRho  = final_clus->auxdecor<double>("Rho");
       m_metFinalClusVarL = final_clus->auxdecor<double>("VarL");

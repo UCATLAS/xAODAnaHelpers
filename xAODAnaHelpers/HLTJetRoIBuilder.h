@@ -59,12 +59,12 @@ class HLTJetRoIBuilder : public xAH::Algorithm
 
   private:
 
-    asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; 
+    asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"};
 
-    std::string                  m_jetName = "EFJet";       
-    std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";       
-    std::string                  m_vtxName = "EFHistoPrmVtx";       
-    xAH::OnlineBeamSpotTool      m_onlineBSTool;  
+    std::string                  m_jetName = "EFJet";
+    std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";
+    std::string                  m_vtxName = "EFHistoPrmVtx";
+    xAH::OnlineBeamSpotTool      m_onlineBSTool;
 
     EL::StatusCode buildHLTBJets ();
     EL::StatusCode buildHLTJets  ();

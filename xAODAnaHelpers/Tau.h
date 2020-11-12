@@ -5,7 +5,7 @@
 
 
 namespace xAH {
-  
+
   class Tau : public Particle
   {
   public:
@@ -14,13 +14,13 @@ namespace xAH {
     int                 isTrigMatched;
     std::vector<int>    isTrigMatchedToChain;
     std::string         listTrigChains;
-    
+
     int                 ntrk;
     float               charge;
-    
+
     std::map< std::string, std::vector< float > > TauEff_SF;
     std::map< std::string, std::vector< float > > TauTrigEff_SF;
-    
+
     // might need to delete these
     int                 isJetBDTSigVeryLoose;
     int                 isJetBDTSigLoose;
@@ -33,14 +33,14 @@ namespace xAH {
     int                 isEleBDTLoose;
     int                 isEleBDTMedium;
     int                 isEleBDTTight;
- 
+
     float               EleBDTScore;
 
     int                 passEleOLR;
 
     float               matchedJetWidth;
     float               matchedJetJvt;
-    
+
     std::vector<float>  tracks_pt;
     std::vector<float>  tracks_eta;
     std::vector<float>  tracks_phi;

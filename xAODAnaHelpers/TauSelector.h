@@ -84,43 +84,43 @@ public:
 
 private:
 
-  int m_numEvent;           
-  int m_numObject;          
-  int m_numEventPass;       
-  int m_weightNumEventPass; 
-  int m_numObjectPass;      
+  int m_numEvent;
+  int m_numObject;
+  int m_numEventPass;
+  int m_weightNumEventPass;
+  int m_numObjectPass;
 
   // cutflow
-  TH1D* m_cutflowHist;      
-  TH1D* m_cutflowHistW;     
-  int   m_cutflow_bin;      
+  TH1D* m_cutflowHist;
+  TH1D* m_cutflowHistW;
+  int   m_cutflow_bin;
 
-  bool  m_isUsedBefore;     
+  bool  m_isUsedBefore;
 
   // object cutflow
-  TH1D* m_tau_cutflowHist_1;                
-  TH1D* m_tau_cutflowHist_2;                
+  TH1D* m_tau_cutflowHist_1;
+  TH1D* m_tau_cutflowHist_2;
 
-  int   m_tau_cutflow_all;		    
-  int   m_tau_cutflow_selected;             
+  int   m_tau_cutflow_all;
+  int   m_tau_cutflow_selected;
 
   // tools
   std::vector<std::string>            m_singleTauTrigChainsList;   /* contains all the HLT trigger chains tokens extracted from m_singleTauTrigChains */
   std::vector<std::string>            m_diTauTrigChainsList;       /* contains all the HLT trigger chains tokens extracted from m_diTauTrigChains */
-  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this}; 
-  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; 
-  asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle; 
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this};
+  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    };
+  asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle;
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
-  bool m_doTrigMatch = true; 
+  bool m_doTrigMatch = true;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the )
 
 public:
-  // Tree *myTree; 
-  // TH1 *myHist; 
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   TauSelector (const std::string& name, ISvcLocator *pSvcLocator);

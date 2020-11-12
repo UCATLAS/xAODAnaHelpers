@@ -13,8 +13,8 @@ public:
   // protected from being send from the submission node to the worker
   // node (done by the )
 public:
-  // Tree *myTree; 
-  // TH1 *myHist; 
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   ElectronHistsAlgo ();

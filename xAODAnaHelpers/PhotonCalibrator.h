@@ -71,26 +71,26 @@ private:
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
 
-  std::vector<CP::SystematicSet> m_systList; 
+  std::vector<CP::SystematicSet> m_systList;
 
   EL::StatusCode decorate(xAOD::Photon * photon);
 
   // tools
-  CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; 
-  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle  {"CP::IsolationCorrectionTool/IsolationCorrectionTool", this}; 
+  CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr;
+  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle  {"CP::IsolationCorrectionTool/IsolationCorrectionTool", this};
 
-  ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr; 
-  AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; 
-  AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; 
-  AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr; 
+  ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr;
+  AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr;
+  AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr;
+  AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr;
 
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/tight"            , this}; 
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"           , this}; 
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/loose"            , this}; 
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/tight"            , this};
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"           , this};
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/loose"            , this};
 
 public:
-  // Tree *myTree; 
-  // TH1 *myHist; 
+  // Tree *myTree;
+  // TH1 *myHist;
 
 
   // this is a standard constructor

@@ -31,11 +31,11 @@ namespace xAH {
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
     protected:
-      
+
       virtual void updateParticle(uint idx, TrackPart& track);
 
     private:
-      // 
+      //
       // Vector branches
       //
 

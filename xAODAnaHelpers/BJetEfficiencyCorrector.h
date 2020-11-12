@@ -77,15 +77,15 @@ private:
   std::string m_decorQuantile = ""; // only for continuous b-tagging
   std::string m_decorInefficiencySF = ""; // only for continuous b-tagging
 
-  std::vector<std::string> m_inputAlgoList; 
+  std::vector<std::string> m_inputAlgoList;
 
-  bool m_runAllSyst = false; 
+  bool m_runAllSyst = false;
 
   // tools
-  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , this}; 
-  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", this}; 
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , this};
+  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", this};
 
-  std::vector<CP::SystematicSet> m_systList; 
+  std::vector<CP::SystematicSet> m_systList;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker

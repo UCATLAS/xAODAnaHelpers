@@ -67,7 +67,7 @@ void L1JetContainer::FillL1Jets( const xAOD::JetRoIContainer* jets, bool sort){
       row.push_back(jet_itr->phi());
       vec.push_back(row);
     }
-    
+
     std::sort(vec.begin(), vec.end(), [&](const std::vector<float> a, const std::vector<float> b) { return a.at(0) < b.at(0);});
     for (int i = int(vec.size())-1; i >= 0; i--) {
       m_l1Jet_et8x8->push_back((vec.at(i)).at(0) / m_units);

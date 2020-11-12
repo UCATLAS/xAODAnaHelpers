@@ -20,7 +20,7 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     m_isTrigMatchedToChain   = new     vector<vector<int> >      ();
     m_listTrigChains         = new     vector<vector<std::string> >();
   }
-    
+
   // isolation
   if ( m_infoSwitch.m_isolation ) {
     m_isIsolated = new std::map< std::string, std::vector< int >* >();
@@ -56,7 +56,7 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     m_RecoEff_SF = new std::map< std::string, std::vector< std::vector< float > >* >();
     m_IsoEff_SF  = new std::map< std::string, std::vector< std::vector< float > >* >();
     m_TrigEff_SF = new std::map< std::string, std::vector< std::vector< float > >* >();
@@ -74,9 +74,9 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     for (auto& isol : m_infoSwitch.m_isolWPs) {
       (*m_IsoEff_SF)[ isol ] = new std::vector< std::vector< float > >;
     }
-  
+
     m_TTVAEff_SF = new vector< vector< float > > ();
-  
+
   }
       // track parameters
   if ( m_infoSwitch.m_trackparams ) {
@@ -144,7 +144,7 @@ MuonContainer::~MuonContainer()
     delete m_isTrigMatchedToChain  ;
     delete m_listTrigChains        ;
   }
-    
+
   // isolation
   if ( m_infoSwitch.m_isolation ) {
     for (auto& isol : m_infoSwitch.m_isolWPs) {
@@ -166,7 +166,7 @@ MuonContainer::~MuonContainer()
     delete m_topoetcone30                               ;
     delete m_topoetcone40                               ;
   }
-  
+
   // quality
   if ( m_infoSwitch.m_quality ) {
     for (auto& quality : m_infoSwitch.m_recoWPs) {
@@ -174,9 +174,9 @@ MuonContainer::~MuonContainer()
         delete (*m_quality)[ quality ];
       }
     }
-    delete m_quality;  
+    delete m_quality;
   }
-  
+
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -193,12 +193,12 @@ MuonContainer::~MuonContainer()
     for (auto& isol : m_infoSwitch.m_isolWPs) {
       delete (*m_IsoEff_SF)[ isol ];
     }
-    
+
     delete m_RecoEff_SF ;
     delete m_IsoEff_SF  ;
     delete m_TrigEff_SF ;
     delete m_TrigMCEff  ;
-    
+
     delete m_TTVAEff_SF ;
 
   }
@@ -380,7 +380,7 @@ void MuonContainer::setTree(TTree *tree)
 
 void MuonContainer::updateParticle(uint idx, Muon& muon)
 {
-  ParticleContainer::updateParticle(idx,muon);  
+  ParticleContainer::updateParticle(idx,muon);
 
   if ( m_infoSwitch.m_kinematic ) {
     muon.charge = m_charge->at(idx);
@@ -392,7 +392,7 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.isTrigMatchedToChain  =     m_isTrigMatchedToChain  ->at(idx);
     muon.listTrigChains        =     m_listTrigChains        ->at(idx);
   }
-    
+
   // isolation
   if ( m_infoSwitch.m_isolation ) {
     for (auto& isol : m_infoSwitch.m_isolWPs) {
@@ -413,20 +413,20 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.topoetcone30                             =     m_topoetcone30                               ->at(idx);
     muon.topoetcone40                             =     m_topoetcone40                               ->at(idx);
   }
-  
+
   // quality
   if ( m_infoSwitch.m_quality ) {
     for (auto& quality : m_infoSwitch.m_recoWPs) {
       if (!quality.empty()) {
         muon.quality[quality] = (*m_quality)[ quality ]->at(idx);
       }
-    } 
+    }
   }
-  
+
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& reco : m_infoSwitch.m_recoWPs) {
       muon.RecoEff_SF[ reco ] = (*m_RecoEff_SF)[ reco ]->at(idx);
 
@@ -537,22 +537,22 @@ void MuonContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& reco : m_infoSwitch.m_recoWPs) {
       tree->Branch( (m_name + "_RecoEff_SF_Reco" + reco).c_str() , (*m_RecoEff_SF)[ reco ] );
-      
+
       for (auto& trig : m_infoSwitch.m_trigWPs) {
         tree->Branch( (m_name + "_TrigEff_SF_" + trig + "_Reco" + reco).c_str() , (*m_TrigEff_SF)[ trig+reco ] );
         tree->Branch( (m_name + "_TrigMCEff_" + trig + "_Reco" + reco).c_str() , (*m_TrigMCEff)[ trig+reco ] );
       }
     }
-    
+
     for (auto& isol : m_infoSwitch.m_isolWPs) {
       tree->Branch( (m_name + "_IsoEff_SF_Iso" + isol).c_str() , (*m_IsoEff_SF)[ isol ] );
     }
-    
+
     setBranch<vector<float> >(tree,"TTVAEff_SF",  m_TTVAEff_SF);
-    
+
   }
 
   if ( m_infoSwitch.m_quality ) {
@@ -597,7 +597,7 @@ void MuonContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"ParamEnergyLossSigmaMinus" ,  m_ParamEnergyLossSigmaMinus);
     setBranch<float>(tree,"ParamEnergyLossSigmaPlus"  ,  m_ParamEnergyLossSigmaPlus );
   }
-  
+
   if ( m_infoSwitch.m_promptlepton ) {
     setBranch<float>(tree, "PromptLeptonInput_DL1mu",           m_PromptLeptonInput_DL1mu);
     setBranch<float>(tree, "PromptLeptonInput_DRlj",            m_PromptLeptonInput_DRlj);
@@ -620,7 +620,7 @@ void MuonContainer::setBranches(TTree *tree)
 
 void MuonContainer::clear()
 {
-  
+
   ParticleContainer::clear();
 
   if ( m_infoSwitch.m_kinematic ) {
@@ -697,7 +697,7 @@ void MuonContainer::clear()
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& reco : m_infoSwitch.m_recoWPs) {
       (*m_RecoEff_SF)[ reco ]->clear();
 
@@ -733,7 +733,7 @@ void MuonContainer::FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primar
   return FillMuon(static_cast<const xAOD::IParticle*>(muon), primaryVertex);
 }
 
-void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Vertex* primaryVertex ) 
+void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Vertex* primaryVertex )
 {
 
   ParticleContainer::FillParticle(particle);
@@ -767,14 +767,14 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
 
     m_isTrigMatchedToChain->push_back(matches);
     m_listTrigChains->push_back(trigChains);
-    
+
     // if at least one match among the chains is found, say this muon is trigger matched
     if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
     else { m_isTrigMatched->push_back(0); }
-    
+
   }
-  
-  
+
+
   if ( m_infoSwitch.m_isolation ) {
     static std::map< std::string, SG::AuxElement::Accessor<char> > accIsol;
 
@@ -797,7 +797,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     m_topoetcone20->push_back( muon->isolation( xAOD::Iso::topoetcone20 )/m_units );
     m_topoetcone30->push_back( muon->isolation( xAOD::Iso::topoetcone30 )/m_units );
     m_topoetcone40->push_back( muon->isolation( xAOD::Iso::topoetcone40 )/m_units );
-    
+
   }
 
   if ( m_infoSwitch.m_quality ) {
@@ -808,9 +808,9 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
         accQuality.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( quality , SG::AuxElement::Accessor<char>( "is" + quality + "Q" ) ) );
         safeFill<char, int, xAOD::Muon>( muon, accQuality.at( quality ), m_quality->at( quality ), -1 );
       }
-    } 
+    }
   }
-  
+
   const xAOD::TrackParticle* trk = muon->primaryTrackParticle();
 
   if ( m_infoSwitch.m_trackparams ) {
@@ -832,7 +832,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
         m_trkz0->push_back( trk->z0()  - ( primaryVertex->z() - trk->vz() ) );
       else
         m_trkz0->push_back( -999.0 );
-	    
+
       static SG::AuxElement::Accessor<float> z0sinthetaAcc("z0sintheta");
       float z0sintheta =  ( z0sinthetaAcc.isAvailable( *muon ) ) ? z0sinthetaAcc( *muon ) : -999.0;
       m_trkz0sintheta->push_back( z0sintheta );
@@ -840,7 +840,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
       m_trktheta ->push_back( trk->theta() );
       m_trkcharge->push_back( trk->charge() );
       m_trkqOverP->push_back( trk->qOverP() );
-    
+
     } else {
       m_trkd0          -> push_back( -999.0 );
       m_trkd0sig       -> push_back( -999.0 );
@@ -857,7 +857,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
   if ( m_infoSwitch.m_trackhitcont ) {
     uint8_t nPixHits(-1), nPixHoles(-1), nSCTHits(-1), nSCTHoles(-1), nTRTHits(-1), nTRTHoles(-1), nBLayerHits(-1), nInnermostPixLayHits(-1);
     float pixdEdX(-1.0);
-    
+
     if ( trk ) {
       trk->summaryValue( nPixHits,     xAOD::numberOfPixelHits );
       trk->summaryValue( nPixHoles,    xAOD::numberOfPixelHoles );
@@ -869,7 +869,7 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
       trk->summaryValue( nInnermostPixLayHits, xAOD::numberOfInnermostPixelLayerHits );
       trk->summaryValue( pixdEdX,   xAOD::pixeldEdx);
     }
-    
+
     m_trknSiHits               ->  push_back( nPixHits + nSCTHits );
     m_trknPixHits              ->  push_back( nPixHits );
     m_trknPixHoles             ->  push_back( nPixHoles );
@@ -972,6 +972,6 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     safeFill<float, float, xAOD::Muon>(muon, accMuon_ParamEnergyLossSigmaPlus, m_ParamEnergyLossSigmaPlus, -1);
 
   }
-  
+
   return;
 }

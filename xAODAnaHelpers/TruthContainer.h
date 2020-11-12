@@ -22,7 +22,7 @@ namespace xAH {
     public:
       TruthContainer(const std::string& name = "truth", const std::string& detailStr="", float units = 1e3);
       virtual ~TruthContainer();
-    
+
       virtual void setTree    (TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
@@ -40,12 +40,12 @@ namespace xAH {
       //
       // Vector branches
       //
-      
+
       // All
       std::vector<int>* m_pdgId;
       std::vector<int>* m_status;
       std::vector<int>* m_barcode;
-    
+
       // type
       std::vector<int>* m_is_higgs;
       std::vector<int>* m_is_bhad;

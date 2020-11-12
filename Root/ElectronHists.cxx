@@ -86,7 +86,7 @@ StatusCode ElectronHists::execute( const xAOD::IParticle* particle, float eventW
       if (!isol.empty() && isol != "NONE") {
         std::string isolWP = "isIsolated_" + isol;
         accIsol.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( isol , SG::AuxElement::Accessor<char>( isolWP ) ) );
-        
+
         if (accIsol.at(isol).isAvailable(*electron)) {
             m_isIsolated[isol]->Fill(accIsol.at(isol)(*electron), eventWeight);
         } else {

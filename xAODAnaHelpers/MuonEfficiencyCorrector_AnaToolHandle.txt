@@ -77,34 +77,34 @@ public:
 
 private:
 
-  xAOD::TEvent *m_event;  
-  xAOD::TStore *m_store;  
+  xAOD::TEvent *m_event;
+  xAOD::TStore *m_store;
 
-  int m_numEvent;         
-  int m_numObject;        
+  int m_numEvent;
+  int m_numObject;
 
-  std::vector<CP::SystematicSet> m_systListReco; 
-  std::vector<CP::SystematicSet> m_systListIso;  
-  std::vector<CP::SystematicSet> m_systListTrig; 
-  std::vector<CP::SystematicSet> m_systListTTVA; 
+  std::vector<CP::SystematicSet> m_systListReco;
+  std::vector<CP::SystematicSet> m_systListIso;
+  std::vector<CP::SystematicSet> m_systListTrig;
+  std::vector<CP::SystematicSet> m_systListTTVA;
 
   // tools
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool_handle;  
-  std::string m_recoEffSF_tool_name;                                           
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool_handle;   
-  std::string m_isoEffSF_tool_name;                                            
-  asg::AnaToolHandle<CP::IMuonTriggerScaleFactors> m_muTrigSF_tool_handle;     
-  std::string m_trigEffSF_tool_name;                                           
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool_handle;
+  std::string m_recoEffSF_tool_name;
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool_handle;
+  std::string m_isoEffSF_tool_name;
+  asg::AnaToolHandle<CP::IMuonTriggerScaleFactors> m_muTrigSF_tool_handle;
+  std::string m_trigEffSF_tool_name;
   /*
 
   TEMP! Commenting this out b/c stupid AnaToolHandle does not work as it should...
 
-  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muTTVASF_tool_handle;  
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muTTVASF_tool_handle;
 
   */
-  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool;                             
-  std::string m_TTVAEffSF_tool_name;                                           
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;         
+  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool;
+  std::string m_TTVAEffSF_tool_name;
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -112,8 +112,8 @@ private:
 
 public:
 
-  // Tree *myTree; 
-  // TH1 *myHist;  
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   MuonEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);

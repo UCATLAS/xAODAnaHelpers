@@ -34,32 +34,32 @@ class ElectronHists : public IParticleHists
   private:
 
     // Isolation
-    std::map<std::string, TH1F *> m_isIsolated; 
+    std::map<std::string, TH1F *> m_isIsolated;
 
     // PID
-    std::map<std::string, TH1F *> m_PID; 
+    std::map<std::string, TH1F *> m_PID;
 
     // clean
-    TH1F* m_ptcone20;                
-    TH1F* m_ptcone30;                
-    TH1F* m_ptcone40;                
-    TH1F* m_ptvarcone20;             
-    TH1F* m_ptvarcone30;             
-    TH1F* m_ptvarcone40;             
-    TH1F* m_topoetcone20;            
-    TH1F* m_topoetcone30;            
-    TH1F* m_topoetcone40;            
+    TH1F* m_ptcone20;
+    TH1F* m_ptcone30;
+    TH1F* m_ptcone40;
+    TH1F* m_ptvarcone20;
+    TH1F* m_ptvarcone30;
+    TH1F* m_ptvarcone40;
+    TH1F* m_topoetcone20;
+    TH1F* m_topoetcone30;
+    TH1F* m_topoetcone40;
 
     // rel
-    TH1F* m_ptcone20_rel;            
-    TH1F* m_ptcone30_rel;            
-    TH1F* m_ptcone40_rel;            
-    TH1F* m_ptvarcone20_rel;         
-    TH1F* m_ptvarcone30_rel;         
-    TH1F* m_ptvarcone40_rel;         
-    TH1F* m_topoetcone20_rel;        
-    TH1F* m_topoetcone30_rel;        
-    TH1F* m_topoetcone40_rel;        
+    TH1F* m_ptcone20_rel;
+    TH1F* m_ptcone30_rel;
+    TH1F* m_ptcone40_rel;
+    TH1F* m_ptvarcone20_rel;
+    TH1F* m_ptvarcone30_rel;
+    TH1F* m_ptvarcone40_rel;
+    TH1F* m_topoetcone20_rel;
+    TH1F* m_topoetcone30_rel;
+    TH1F* m_topoetcone40_rel;
 
 
 

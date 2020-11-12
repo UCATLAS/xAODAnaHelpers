@@ -31,15 +31,15 @@ class PhotonHists : public IParticleHists
   private:
 
     // clean
-    TH1F* m_ptcone20;                
-    TH1F* m_ptcone30;                
-    TH1F* m_ptcone40;                
-    TH1F* m_ptvarcone20;             
-    TH1F* m_ptvarcone30;             
-    TH1F* m_ptvarcone40;             
-    TH1F* m_topoetcone20;            
-    TH1F* m_topoetcone30;            
-    TH1F* m_topoetcone40;            
+    TH1F* m_ptcone20;
+    TH1F* m_ptcone30;
+    TH1F* m_ptcone40;
+    TH1F* m_ptvarcone20;
+    TH1F* m_ptvarcone30;
+    TH1F* m_ptvarcone40;
+    TH1F* m_topoetcone20;
+    TH1F* m_topoetcone30;
+    TH1F* m_topoetcone40;
 
 };
 

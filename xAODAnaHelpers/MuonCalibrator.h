@@ -80,24 +80,24 @@ public:
   bool    m_forceDataCalib = false;
 
 private:
-  int m_numEvent;         
-  int m_numObject;        
+  int m_numEvent;
+  int m_numObject;
 
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
 
-  std::vector<CP::SystematicSet> m_systList; 
+  std::vector<CP::SystematicSet> m_systList;
 
   // tools
-  asg::AnaToolHandle<CP::IMuonCalibrationAndSmearingTool> m_muonCalibrationTool_handle{"CP::MuonCalibrationPeriodTool/MuonCalibrationAndSmearingTool", this}; 
+  asg::AnaToolHandle<CP::IMuonCalibrationAndSmearingTool> m_muonCalibrationTool_handle{"CP::MuonCalibrationPeriodTool/MuonCalibrationAndSmearingTool", this};
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the )
 public:
-  // Tree *myTree; 
-  // TH1 *myHist; 
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   MuonCalibrator (const std::string& name, ISvcLocator *pSvcLocator);

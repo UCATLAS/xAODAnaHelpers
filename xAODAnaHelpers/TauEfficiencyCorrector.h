@@ -70,16 +70,16 @@ public:
   std::string   m_outputSystNames = "TauEfficiencyCorrector_Syst";
 
 private:
-  int m_numEvent;         
-  int m_numObject;        
+  int m_numEvent;
+  int m_numObject;
 
-  std::vector<CP::SystematicSet> m_systList;  
+  std::vector<CP::SystematicSet> m_systList;
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; 
-  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",           this}; 
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"};
+  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",           this};
   // the selection tool is needed for baseline configuration
-  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool"}; 
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool"};
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
@@ -87,8 +87,8 @@ private:
 
 public:
 
-  // Tree *myTree; 
-  // TH1 *myHist;  
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   TauEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);

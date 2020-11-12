@@ -159,7 +159,7 @@ void HistogramManager::record(TH1* hist) {
       ANA_MSG_WARNING( "The histogram with name=" << histName << " already exists! "
                        << " NOT entering into the hist map, but prepare for unexpected behaviour" );
       return;
-    }  
+    }
   m_histMap.insert( m_histMap.end(), std::pair< std::string, TH1* >( histName, hist ) );
 }
 

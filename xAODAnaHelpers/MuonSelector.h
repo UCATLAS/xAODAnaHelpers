@@ -107,37 +107,37 @@ public:
 
 private:
 
-  int            m_muonQuality; 
+  int            m_muonQuality;
 
-  int m_numEvent;           
-  int m_numObject;          
-  int m_numEventPass;       
-  int m_weightNumEventPass; 
-  int m_numObjectPass;      
+  int m_numEvent;
+  int m_numObject;
+  int m_numEventPass;
+  int m_weightNumEventPass;
+  int m_numObjectPass;
 
   // cutflow
-  TH1D* m_cutflowHist = nullptr;      
-  TH1D* m_cutflowHistW = nullptr;     
-  int   m_cutflow_bin;      
+  TH1D* m_cutflowHist = nullptr;
+  TH1D* m_cutflowHistW = nullptr;
+  int   m_cutflow_bin;
 
-  bool  m_isUsedBefore = false;     
+  bool  m_isUsedBefore = false;
 
   // object cutflow
-  TH1D* m_mu_cutflowHist_1 = nullptr;                 
-  TH1D* m_mu_cutflowHist_2 = nullptr;                 
+  TH1D* m_mu_cutflowHist_1 = nullptr;
+  TH1D* m_mu_cutflowHist_2 = nullptr;
 
-  int   m_mu_cutflow_all;		    
-  int   m_mu_cutflow_eta_and_quaility_cut;  
-  int   m_mu_cutflow_ptmax_cut;  	    
-  int   m_mu_cutflow_ptmin_cut;  	    
-  int   m_mu_cutflow_type_cut;		    
-  int   m_mu_cutflow_z0sintheta_cut;	    
-  int   m_mu_cutflow_d0_cut;		    
-  int   m_mu_cutflow_d0sig_cut;  	    
-  int   m_mu_cutflow_iso_cut;		    
-  int   m_mu_cutflow_cosmic_cut;		    
+  int   m_mu_cutflow_all;
+  int   m_mu_cutflow_eta_and_quaility_cut;
+  int   m_mu_cutflow_ptmax_cut;
+  int   m_mu_cutflow_ptmin_cut;
+  int   m_mu_cutflow_type_cut;
+  int   m_mu_cutflow_z0sintheta_cut;
+  int   m_mu_cutflow_d0_cut;
+  int   m_mu_cutflow_d0sig_cut;
+  int   m_mu_cutflow_iso_cut;
+  int   m_mu_cutflow_cosmic_cut;
 
-  std::vector<std::string> m_IsoKeys;       
+  std::vector<std::string> m_IsoKeys;
 
   /* other private members */
 
@@ -145,23 +145,23 @@ private:
   std::vector<std::string>            m_diMuTrigChainsList;       /* contains all the HLT trigger chains tokens extracted from m_diMuTrigChains */
 
   // tools
-  asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; 
+  asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this};
   // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
-  CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr}; 
-  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle     {"CP::MuonSelectionTool/MuonSelectionTool"          , this}; 
-  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle; 
-  asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; 
+  CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr};
+  asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle     {"CP::MuonSelectionTool/MuonSelectionTool"          , this};
+  asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle;
+  asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       };
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
-  bool m_doTrigMatch = true; 
+  bool m_doTrigMatch = true;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the )
 
 public:
-  // Tree *myTree; 
-  // TH1 *myHist; 
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   MuonSelector (const std::string& name, ISvcLocator *pSvcLocator);

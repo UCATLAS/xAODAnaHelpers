@@ -108,7 +108,7 @@ namespace xAH {
       std::vector<float> *m_truth_pt;
       std::vector<float> *m_truth_phi;
       std::vector<float> *m_truth_eta;
-      
+
       // bosonCount
       std::vector< int > *m_nTQuarks;
       std::vector< int > *m_nHBosons;

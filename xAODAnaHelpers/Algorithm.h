@@ -180,12 +180,12 @@ namespace xAH {
 
             @endrst
          */
-        std::string m_className = "Algorithm"; 
+        std::string m_className = "Algorithm";
 
         /** The TEvent object */
-        xAOD::TEvent* m_event = nullptr; 
+        xAOD::TEvent* m_event = nullptr;
         /** The TStore object */
-        xAOD::TStore* m_store = nullptr; 
+        xAOD::TStore* m_store = nullptr;
 
         /**
             @rst
@@ -323,7 +323,7 @@ namespace xAH {
 
             @endrst
         */
-        bool m_registered = false; 
+        bool m_registered = false;
 
         /**
             @rst
@@ -331,7 +331,7 @@ namespace xAH {
 
             @endrst
          */
-        static std::map<std::string, int> m_instanceRegistry; 
+        static std::map<std::string, int> m_instanceRegistry;
 
         /**
             @rst
@@ -341,7 +341,7 @@ namespace xAH {
 
             @endrst
          */
-        std::map<std::string, bool> m_toolAlreadyUsed; 
+        std::map<std::string, bool> m_toolAlreadyUsed;
   };
 
 }

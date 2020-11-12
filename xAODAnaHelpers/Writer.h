@@ -16,7 +16,7 @@ public:
   TString m_muonContainerNamesStr = "";
 
 private:
-  int m_numEvent;         
+  int m_numEvent;
 
   std::vector<TString> m_jetContainerNames;
   std::vector<TString> m_electronContainerNames;
@@ -26,8 +26,8 @@ private:
   // protected from being send from the submission node to the worker
   // node (done by the )
 public:
-  // Tree *myTree; 
-  // TH1 *myHist; 
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
   Writer (const std::string& name, ISvcLocator *pSvcLocator);

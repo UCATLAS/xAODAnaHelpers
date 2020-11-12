@@ -55,9 +55,9 @@ class HistogramManager {
     /** @brief a detail level in the form of a string */
     std::string m_detailStr;
     /** @brief a container holding all generated histograms */
-    std::vector< TH1* > m_allHists; 
+    std::vector< TH1* > m_allHists;
     /** @brief hold the MsgStream object */
-    mutable MsgStream m_msg; 
+    mutable MsgStream m_msg;
 
   public:
     /**
@@ -220,7 +220,7 @@ class HistogramManager {
 
     /**
      * @brief Fill a histogram by name. Can be overloaded with weight.
-     * 
+     *
      * @param histName   The name of the histogram to be filled
      * @param value      The value to fill the histogram with
      */

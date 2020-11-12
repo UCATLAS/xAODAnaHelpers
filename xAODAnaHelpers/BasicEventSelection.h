@@ -194,65 +194,65 @@ class BasicEventSelection : public xAH::Algorithm
 
   private:
 
-    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; 
+    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr;
     // trigger unprescale chains
-    std::vector<std::string> m_triggerUnprescaleList; 
+    std::vector<std::string> m_triggerUnprescaleList;
     // decisions of triggers which are saved but not cut on, converted into a list
-    std::vector<std::string> m_extraTriggerSelectionList; 
+    std::vector<std::string> m_extraTriggerSelectionList;
 
     // tools
-    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; 
-    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle          {"CP::PileupReweightingTool/Pileup"                                            }; 
-    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle         {"TrigConf::xAODConfigTool/xAODConfigTool"                        , this}; 
-    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle          {"Trig::TrigDecisionTool/TrigDecisionTool"                                     }; 
-    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", this}; 
+    asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this};
+    asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle          {"CP::PileupReweightingTool/Pileup"                                            };
+    asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle         {"TrigConf::xAODConfigTool/xAODConfigTool"                        , this};
+    asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle          {"Trig::TrigDecisionTool/TrigDecisionTool"                                     };
+    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", this};
 
-    int m_eventCounter;     
+    int m_eventCounter;
 
     // sumW
-    TH1D* m_histSumW = nullptr;     
+    TH1D* m_histSumW = nullptr;
 
     // read from MetaData
-    TH1D* m_histEventCount = nullptr;          
-    uint64_t m_MD_initialNevents;    
-    uint64_t m_MD_finalNevents;      
-    double m_MD_initialSumW;         
-    double m_MD_finalSumW;	     
-    double m_MD_initialSumWSquared;  
-    double m_MD_finalSumWSquared;    
-    std::string m_mcCampaignMD; 
+    TH1D* m_histEventCount = nullptr;
+    uint64_t m_MD_initialNevents;
+    uint64_t m_MD_finalNevents;
+    double m_MD_initialSumW;
+    double m_MD_finalSumW;
+    double m_MD_initialSumWSquared;
+    double m_MD_finalSumWSquared;
+    std::string m_mcCampaignMD;
 
     // cutflow
-    TH1D* m_cutflowHist = nullptr;      
-    TH1D* m_cutflowHistW = nullptr;     
-    int m_cutflow_all;        
-    int m_cutflow_init;       
-    int m_cutflow_duplicates; 
-    int m_cutflow_grl;        
-    int m_cutflow_lar;        
-    int m_cutflow_tile;       
-    int m_cutflow_SCT;        
-    int m_cutflow_core;       
-    int m_cutflow_jetcleaning; 
-    int m_cutflow_isbadbatman; 
-    int m_cutflow_npv;        
-    int m_cutflow_trigger;    
+    TH1D* m_cutflowHist = nullptr;
+    TH1D* m_cutflowHistW = nullptr;
+    int m_cutflow_all;
+    int m_cutflow_init;
+    int m_cutflow_duplicates;
+    int m_cutflow_grl;
+    int m_cutflow_lar;
+    int m_cutflow_tile;
+    int m_cutflow_SCT;
+    int m_cutflow_core;
+    int m_cutflow_jetcleaning;
+    int m_cutflow_isbadbatman;
+    int m_cutflow_npv;
+    int m_cutflow_trigger;
 
     // object cutflow
-    TH1D* m_el_cutflowHist_1 = nullptr;    
-    TH1D* m_el_cutflowHist_2 = nullptr;    
-    TH1D* m_mu_cutflowHist_1 = nullptr;    
-    TH1D* m_mu_cutflowHist_2 = nullptr;    
-    TH1D* m_ph_cutflowHist_1 = nullptr;    
-    TH1D* m_tau_cutflowHist_1 = nullptr;   
-    TH1D* m_tau_cutflowHist_2 = nullptr;   
-    TH1D* m_jet_cutflowHist_1 = nullptr;   
-    TH1D* m_trk_cutflowHist_1 = nullptr;   
-    TH1D* m_truth_cutflowHist_1= nullptr; 
+    TH1D* m_el_cutflowHist_1 = nullptr;
+    TH1D* m_el_cutflowHist_2 = nullptr;
+    TH1D* m_mu_cutflowHist_1 = nullptr;
+    TH1D* m_mu_cutflowHist_2 = nullptr;
+    TH1D* m_ph_cutflowHist_1 = nullptr;
+    TH1D* m_tau_cutflowHist_1 = nullptr;
+    TH1D* m_tau_cutflowHist_2 = nullptr;
+    TH1D* m_jet_cutflowHist_1 = nullptr;
+    TH1D* m_trk_cutflowHist_1 = nullptr;
+    TH1D* m_truth_cutflowHist_1= nullptr;
 
     /** TTree for duplicates bookeeping */
 
-    TTree*   m_duplicatesTree = nullptr;  
+    TTree*   m_duplicatesTree = nullptr;
     int      m_duplRunNumber;
     long int m_duplEventNumber;
 
@@ -272,8 +272,8 @@ class BasicEventSelection : public xAH::Algorithm
     StatusCode autoconfigurePileupRWTool();
 
   public:
-    // Tree *myTree; 
-    // TH1 *myHist; 
+    // Tree *myTree;
+    // TH1 *myHist;
     //
 
     // this is a standard constructor
