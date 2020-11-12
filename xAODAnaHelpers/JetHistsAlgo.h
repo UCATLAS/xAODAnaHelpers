@@ -23,7 +23,6 @@ public:
   JetHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual StatusCode setupJob (EL::Job& job);
   virtual StatusCode execute ();
 
   // these are the functions not inherited from Algorithm

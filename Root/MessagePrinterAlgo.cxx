@@ -15,15 +15,6 @@ MessagePrinterAlgo :: MessagePrinterAlgo (const std::string& name, ISvcLocator *
 }
 
 
-StatusCode MessagePrinterAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("MessagePrinterAlgo").ignore(); // call before opening first file
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode MessagePrinterAlgo :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());

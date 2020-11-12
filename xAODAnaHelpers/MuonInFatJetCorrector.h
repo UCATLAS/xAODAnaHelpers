@@ -51,7 +51,6 @@ public:
   /// @brief DR cut to use when matching muons to track jets
   float m_muonDrMax = 0.4;
 
-  virtual StatusCode setupJob(EL::Job& job);
   virtual StatusCode histInitialize();
   virtual StatusCode fileExecute();
   virtual StatusCode changeInput(bool firstFile);

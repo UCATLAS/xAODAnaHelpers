@@ -17,15 +17,6 @@ MetHistsAlgo :: MetHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator)
     declareProperty("detailStr", m_detailStr);
 }
 
-StatusCode MetHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-
-  // let's initialize the algorithm to use the xAODRootAccess package
-  xAOD::Init("MetHistsAlgo").ignore(); // call before opening first file
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode MetHistsAlgo :: histInitialize ()
 {

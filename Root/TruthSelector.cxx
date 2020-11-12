@@ -68,17 +68,6 @@ TruthSelector :: TruthSelector (const std::string& name, ISvcLocator *pSvcLocato
     declareProperty("eta_dressed_max", m_eta_dressed_max);
 }
 
-StatusCode TruthSelector :: setupJob (EL::Job& job)
-{
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "TruthSelector" ).ignore(); // call before opening first file
-
-  return StatusCode::SUCCESS;
-}
-
-
 
 StatusCode TruthSelector :: histInitialize ()
 {

@@ -23,13 +23,6 @@ IParticleHistsAlgo :: IParticleHistsAlgo (const std::string& name, ISvcLocator *
     declareProperty("histTitle", m_histTitle);
 }
 
-StatusCode IParticleHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("IParticleHistsAlgo").ignore();
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode IParticleHistsAlgo :: histInitialize ()
 {

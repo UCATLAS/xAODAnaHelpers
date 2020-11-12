@@ -15,13 +15,6 @@ JetHistsAlgo :: JetHistsAlgo () :
 IParticleHistsAlgo("JetHistsAlgo")
 { }
 
-StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("JetHistsAlgo").ignore();
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode JetHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<JetHists>(name);

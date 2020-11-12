@@ -42,16 +42,6 @@ Algorithm(name, pSvcLocator, "HLTJetGetter")
 }
 
 
-StatusCode HLTJetGetter :: setupJob (EL::Job& job)
-{
-    ANA_MSG_INFO( "Calling setupJob");
-    job.useXAOD ();
-    xAOD::Init( "HLTJetGetter" ).ignore(); // call before opening first file
-    return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode HLTJetGetter :: histInitialize ()
 {
     ANA_CHECK( xAH::Algorithm::algInitialize());

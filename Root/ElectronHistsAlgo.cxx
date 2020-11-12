@@ -15,13 +15,6 @@ ElectronHistsAlgo :: ElectronHistsAlgo () :
 IParticleHistsAlgo("ElectronHistsAlgo")
 { }
 
-StatusCode ElectronHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("ElectronHistsAlgo").ignore();
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode ElectronHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<ElectronHists>(name);

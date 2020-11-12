@@ -17,15 +17,6 @@ ClusterHistsAlgo :: ClusterHistsAlgo (const std::string& name, ISvcLocator *pSvc
     declareProperty("detailStr", m_detailStr);
 }
 
-StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-
-  // let's initialize the algorithm to use the xAODRootAccess package
-  xAOD::Init("ClusterHistsAlgo").ignore(); // call before opening first file
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode ClusterHistsAlgo :: histInitialize ()
 {

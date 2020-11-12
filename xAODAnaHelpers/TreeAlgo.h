@@ -78,6 +78,9 @@ public:
   /// @brief Set to a large negative number, such as -1000000, to ensure that the tree flushes memory after a reasonable amount of time. Otherwise, jobs with a lot of systematics use too much memory.
   int m_autoFlush = 0;
 
+  /// @brief output stream name for the tree
+  std::string m_outputStreamName;
+
 protected:
   std::vector<std::string> m_jetDetails;
   std::vector<std::string> m_trigJetDetails;
@@ -113,7 +116,6 @@ public:
   TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual StatusCode setupJob (EL::Job& job);
   virtual StatusCode fileExecute ();
   virtual StatusCode histInitialize ();
   virtual StatusCode changeInput (bool firstFile);

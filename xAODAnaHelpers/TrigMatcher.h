@@ -88,7 +88,6 @@ public:
 
   /* these are the functions inherited from Algorithm */
 
-  virtual StatusCode setupJob (EL::Job& job);
   virtual StatusCode initialize ();
   virtual StatusCode execute ();
 

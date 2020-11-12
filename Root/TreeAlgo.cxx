@@ -75,18 +75,9 @@ TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     declareProperty("metSystsVec", m_metSystsVec);
     declareProperty("units", m_units);
     declareProperty("autoFlush", m_autoFlush);
+    declareProperty("outputStreamName", m_outputStreamName);
 }
 
-StatusCode TreeAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("TreeAlgo").ignore();
-
-  EL::OutputStream outForTree("tree");
-  job.outputAdd (outForTree);
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode TreeAlgo :: initialize ()
 {
@@ -95,7 +86,7 @@ StatusCode TreeAlgo :: initialize ()
   m_store = wk()->xaodStore();
 
   // get the file we created already
-  TFile* treeFile = wk()->getOutputFile ("tree");
+  TFile* treeFile = wk()->getOutputFile (m_outputStreamName);
   treeFile->mkdir(m_name.c_str());
   treeFile->cd(m_name.c_str());
 
@@ -347,7 +338,7 @@ StatusCode TreeAlgo :: execute ()
     }
   }
 
-  TFile* treeFile = wk()->getOutputFile ("tree");
+  TFile* treeFile = wk()->getOutputFile (m_outputStreamName);
 
   // let's make the tdirectory and ttrees
   for(const auto& systName: event_systNames){

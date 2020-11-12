@@ -15,13 +15,6 @@ MuonHistsAlgo :: MuonHistsAlgo () :
 IParticleHistsAlgo("MuonHistsAlgo")
 { }
 
-StatusCode MuonHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("MuonHistsAlgo").ignore();
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode MuonHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<MuonHists>(name);

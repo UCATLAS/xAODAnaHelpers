@@ -15,13 +15,6 @@ PhotonHistsAlgo :: PhotonHistsAlgo () :
 IParticleHistsAlgo("PhotonHistsAlgo")
 { }
 
-StatusCode PhotonHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("PhotonHistsAlgo").ignore();
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<PhotonHists>(name);

@@ -485,8 +485,15 @@ if __name__ == "__main__":
           xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
     for output in configurator._outputs:
+      if job.outputHas(output):
+        xAH_logger.info('Output stream "{}" already exists'.format(output))
+        continue
       xAH_logger.info('Creating output stream "{}"'.format(output))
-      job.outputAdd(ROOT.EL.OutputStream(output))
+      if 'XAOD' in output:
+        _stream = ROOT.EL.OutputStream(output, "xAOD")
+      else:
+        _stream = ROOT.EL.OutputStream(output)
+      job.outputAdd(_stream)
 
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service

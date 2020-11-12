@@ -43,7 +43,7 @@ ClassImp(MinixAOD)
 MinixAOD :: MinixAOD (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "MinixAOD")
 {
-    declareProperty("outputFileName", m_outputFileName);
+    declareProperty("outputFileName", m_outputXAODStreamName);
     declareProperty("createOutputFile", m_createOutputFile);
     declareProperty("copyFileMetaData", m_copyFileMetaData);
     declareProperty("copyTriggerInfo", m_copyTriggerInfo);
@@ -54,23 +54,6 @@ MinixAOD :: MinixAOD (const std::string& name, ISvcLocator *pSvcLocator) :
     declareProperty("deepCopyKeys", m_deepCopyKeys);
     declareProperty("vectorCopyKeys", m_vectorCopyKeys);
 }
-
-StatusCode MinixAOD :: setupJob (EL::Job& job)
-{
-  ANA_MSG_DEBUG("Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "MinixAOD" ).ignore(); // call before opening first file
-
-  // only create the output xaod if requested
-  if(m_createOutputFile){
-    EL::OutputStream out_xAOD (m_outputFileName, "xAOD");
-    job.outputAdd (out_xAOD);
-  }
-
-  return StatusCode::SUCCESS;
-}
-
 
 
 StatusCode MinixAOD :: histInitialize ()
@@ -124,7 +107,7 @@ StatusCode MinixAOD :: initialize ()
   m_store = wk()->xaodStore();
 
   // always do this, obviously
-  TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
+  TFile *file_xAOD = wk()->getOutputFile(m_outputXAODStreamName);
   ANA_CHECK( m_event->writeTo(file_xAOD));
 
   if(m_copyFileMetaData){
@@ -339,7 +322,7 @@ StatusCode MinixAOD :: finalize () {
 
   //
   // Close file
-  TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
+  TFile *file_xAOD = wk()->getOutputFile(m_outputXAODStreamName);
   ANA_CHECK( m_event->finishWritingTo(file_xAOD));
 
   if(m_fileMetaDataTool) delete m_fileMetaDataTool;

@@ -42,15 +42,6 @@ DebugTool :: DebugTool (const std::string& name, ISvcLocator *pSvcLocator) :
     declareProperty("printStore", m_printStore);
 }
 
-StatusCode DebugTool :: setupJob (EL::Job& job)
-{
-  ANA_MSG_INFO( "Calling setupJob");
-  job.useXAOD ();
-  xAOD::Init( "DebugTool" ).ignore(); // call before opening first file
-  return StatusCode::SUCCESS;
-}
-
-
 
 StatusCode DebugTool :: histInitialize ()
 {

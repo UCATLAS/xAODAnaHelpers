@@ -18,41 +18,11 @@ ClassImp(Writer)
 Writer :: Writer (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "Writer")
 {
-    declareProperty("outputLabel", m_outputLabel);
+    declareProperty("outputLabel", m_outputStreamName);
     declareProperty("jetContainerNamesStr", m_jetContainerNamesStr);
     declareProperty("electronContainerNamesStr", m_electronContainerNamesStr);
     declareProperty("muonContainerNamesStr", m_muonContainerNamesStr);
 }
-
-StatusCode Writer :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-  // let's initialize the algorithm to use the xAODRootAccess package
-  job.useXAOD ();
-  xAOD::Init( "Writer" ).ignore(); // call before opening first file
-
-  m_jetContainerNames       = HelperFunctions::SplitString( m_jetContainerNamesStr,      ',' );
-  m_electronContainerNames  = HelperFunctions::SplitString( m_electronContainerNamesStr, ',' );
-  m_muonContainerNames      = HelperFunctions::SplitString( m_muonContainerNamesStr,     ',' );
-
-  if ( m_outputLabel.Length() == 0 ) {
-    ANA_MSG_ERROR( "No OutputLabel specified!");
-    return StatusCode::FAILURE;
-  }
-
-  // tell EventLoop about our output xAOD:
-  EL::OutputStream out(m_outputLabel.Data());
-  job.outputAdd (out);
-
-  return StatusCode::SUCCESS;
-}
-
 
 
 StatusCode Writer :: histInitialize ()
@@ -61,6 +31,10 @@ StatusCode Writer :: histInitialize ()
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
+  m_jetContainerNames       = HelperFunctions::SplitString( m_jetContainerNamesStr,      ',' );
+  m_electronContainerNames  = HelperFunctions::SplitString( m_electronContainerNamesStr, ',' );
+  m_muonContainerNames      = HelperFunctions::SplitString( m_muonContainerNamesStr,     ',' );
+
   ANA_CHECK( xAH::Algorithm::algInitialize());
   return StatusCode::SUCCESS;
 }
@@ -101,7 +75,7 @@ StatusCode Writer :: initialize ()
   m_numEvent      = 0;
 
   // output xAOD
-  TFile * file = wk()->getOutputFile (m_outputLabel.Data());
+  TFile * file = wk()->getOutputFile (m_outputStreamName.Data());
   ANA_CHECK( m_event->writeTo(file));
 
   //FIXME add this as well
@@ -207,7 +181,7 @@ StatusCode Writer :: finalize ()
   // gets called on worker nodes that processed input events.
 
   // finalize and close our output xAOD file ( and write MetaData tree )
-  TFile * file = wk()->getOutputFile(m_outputLabel.Data());
+  TFile * file = wk()->getOutputFile(m_outputStreamName.Data());
   ANA_CHECK( m_event->finishWritingTo( file ));
 
   return StatusCode::SUCCESS;

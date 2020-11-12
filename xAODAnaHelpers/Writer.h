@@ -9,7 +9,7 @@ class Writer : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  TString m_outputLabel = "";
+  TString m_outputStreamName = "";
 
   TString m_jetContainerNamesStr = "";
   TString m_electronContainerNamesStr = "";
@@ -33,7 +33,6 @@ public:
   Writer (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual StatusCode setupJob (EL::Job& job);
   virtual StatusCode fileExecute ();
   virtual StatusCode histInitialize ();
   virtual StatusCode changeInput (bool firstFile);

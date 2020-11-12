@@ -51,16 +51,6 @@ HLTJetRoIBuilder :: HLTJetRoIBuilder (const std::string& name, ISvcLocator *pSvc
 }
 
 
-StatusCode HLTJetRoIBuilder :: setupJob (EL::Job& job)
-{
-  ANA_MSG_DEBUG( "Calling setupJob");
-  job.useXAOD ();
-  xAOD::Init( "HLTJetRoIBuilder" ).ignore(); // call before opening first file
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode HLTJetRoIBuilder :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());

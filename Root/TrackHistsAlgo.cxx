@@ -18,15 +18,6 @@ TrackHistsAlgo :: TrackHistsAlgo (const std::string& name, ISvcLocator *pSvcLoca
     declareProperty("detailStr", m_detailStr);
 }
 
-StatusCode TrackHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-
-  // let's initialize the algorithm to use the xAODRootAccess package
-  xAOD::Init("TrackHistsAlgo").ignore(); // call before opening first file
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode TrackHistsAlgo :: histInitialize ()
 {

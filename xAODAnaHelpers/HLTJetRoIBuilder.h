@@ -75,7 +75,6 @@ class HLTJetRoIBuilder : public xAH::Algorithm
     HLTJetRoIBuilder (const std::string& name, ISvcLocator *pSvcLocator);
 
     // these are the functions inherited from Algorithm
-    virtual StatusCode setupJob (EL::Job& job);
     virtual StatusCode fileExecute ();
     virtual StatusCode histInitialize ();
     virtual StatusCode changeInput (bool firstFile);

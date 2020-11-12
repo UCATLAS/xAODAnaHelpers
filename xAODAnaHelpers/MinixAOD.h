@@ -45,7 +45,7 @@ class MinixAOD : public xAH::Algorithm
 {
 public:
   /// @brief name of the output file to use for xAOD dumping
-  std::string m_outputFileName = "out_miniXAOD";
+  std::string m_outputXAODStreamName = "out_miniXAOD";
 
   /// @brief enable to create the output file for xAOD dumping
   bool m_createOutputFile = true;
@@ -174,7 +174,6 @@ public:
   MinixAOD (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual StatusCode setupJob (EL::Job& job);
   virtual StatusCode fileExecute ();
   virtual StatusCode histInitialize ();
   virtual StatusCode changeInput (bool firstFile);

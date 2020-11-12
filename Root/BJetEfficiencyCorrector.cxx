@@ -64,18 +64,6 @@ BJetEfficiencyCorrector :: BJetEfficiencyCorrector (const std::string& name, ISv
 }
 
 
-StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
-{
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "BJetEfficiencyCorrector" ).ignore(); // call before opening first file
-
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());

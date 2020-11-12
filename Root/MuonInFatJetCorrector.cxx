@@ -38,14 +38,6 @@ MuonInFatJetCorrector :: MuonInFatJetCorrector(const std::string& name, ISvcLoca
     declareProperty("muonDrMax", m_muonDrMax);
 }
 
-StatusCode MuonInFatJetCorrector :: setupJob(EL::Job& job)
-{
-  ANA_MSG_DEBUG("Calling setupJob");
-  job.useXAOD();
-  xAOD::Init("MuonInFatJetCorrector").ignore();
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode MuonInFatJetCorrector :: histInitialize()
 {

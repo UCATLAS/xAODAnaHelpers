@@ -28,7 +28,7 @@ class Config(object):
     logger.warning("\tPossible call stack: {0:s}({1:d}): {2:s}".format(path, lineno, lines[0].strip()))
     return self.algorithm(className, options)
 
-  def algorithm(self, className, options):
+  def algorithm(self, className, options, streamName='StreamName'):
     # check first argument
     if isinstance(className, unicode): className = className.encode('utf-8')
     if not isinstance(className, str):
@@ -83,6 +83,7 @@ class Config(object):
           raise AttributeError(k)
         elif hasattr(alg_obj, k):
           self._set_algo_attribute(alg_obj, k, v, className, algName)
+
     elif ROOT.EL.AnaAlgorithm in parents:
       alg_obj = AnaAlgorithmConfig(className)
       alg_obj.setName(algName)
@@ -104,14 +105,15 @@ class Config(object):
       value = value.encode('utf-8')
     elif isinstance(value, (list, tuple)):
       # manually call vector in user code when this fails on an empty list/tuple
-      value = vector(value) 
+      value = vector(value)
     self._log.append((algName, name, value))
     try:
       setattr(alg_obj, name, value)
     except:
       logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(name, value, className, algName))
       raise
-    
+    if streamName in name:
+      self.output(name)
 
   # set based on patterns
   def sample(self, pattern, **kwargs):

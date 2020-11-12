@@ -59,23 +59,6 @@ PhotonSelector :: PhotonSelector (const std::string& name, ISvcLocator *pSvcLoca
     declareProperty("IsoWPList", m_IsoWPList);
 }
 
-StatusCode PhotonSelector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "PhotonSelector" ).ignore(); // call before opening first file
-
-  return StatusCode::SUCCESS;
-}
 
 StatusCode PhotonSelector :: histInitialize ()
 {
