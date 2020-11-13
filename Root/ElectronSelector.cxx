@@ -579,11 +579,6 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
       continue;
     }
 
-    // check DFCommonCrackVetoCleaning flag for topocluster association bugfix
-    if (m_applyCrackVetoCleaning){
-      if ( !acc_CrackVetoCleaning( *el_itr ) ) passCrackVetoCleaning = false;
-    }
-
     nObj++;
     bool passSel = this->passCuts( el_itr, pvx );
     if ( m_decorateSelectedObjects ) {
