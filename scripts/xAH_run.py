@@ -436,6 +436,10 @@ if __name__ == "__main__":
       xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
       job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
+    if not args.no_usexAOD:
+      xAH_logger.info("\tusing xAOD: EL::Job::usexAOD()")
+      job.usexAOD()
+
     # formatted string
     algorithmConfiguration_string = []
 
