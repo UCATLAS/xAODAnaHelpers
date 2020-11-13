@@ -104,7 +104,6 @@ public:
   StatusCode executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
 					     const xAOD::EventInfo* eventInfo,
 					     bool doNominal);
-  virtual StatusCode postExecute ();
   virtual StatusCode finalize ();
   virtual StatusCode histFinalize ();
 

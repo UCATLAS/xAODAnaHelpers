@@ -157,7 +157,6 @@ public:
   virtual StatusCode execute ();
   StatusCode executeTrackCollection (float mcEvtWeight);
   StatusCode executeTracksInJets ();
-  virtual StatusCode postExecute ();
   virtual StatusCode finalize ();
   virtual StatusCode histFinalize ();
 

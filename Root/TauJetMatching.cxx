@@ -247,18 +247,6 @@ bool TauJetMatching :: executeDecoration ( std::unordered_map<int, std::pair<con
   return true;
 }
 
-StatusCode TauJetMatching :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return StatusCode::SUCCESS;
-}
-
-
 
 StatusCode TauJetMatching :: finalize ()
 {

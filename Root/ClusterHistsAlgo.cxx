@@ -68,7 +68,6 @@ StatusCode ClusterHistsAlgo :: execute ()
   return StatusCode::SUCCESS;
 }
 
-StatusCode ClusterHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
 StatusCode ClusterHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
 StatusCode ClusterHistsAlgo :: histFinalize ()
 {

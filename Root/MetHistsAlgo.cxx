@@ -66,7 +66,6 @@ StatusCode MetHistsAlgo :: execute ()
   return StatusCode::SUCCESS;
 }
 
-StatusCode MetHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
 StatusCode MetHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
 StatusCode MetHistsAlgo :: histFinalize ()
 {

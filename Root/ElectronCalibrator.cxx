@@ -317,18 +317,6 @@ StatusCode ElectronCalibrator :: execute ()
   return StatusCode::SUCCESS;
 }
 
-StatusCode ElectronCalibrator :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG("Calling postExecute");
-
-  return StatusCode::SUCCESS;
-}
-
-
 
 StatusCode ElectronCalibrator :: finalize ()
 {

@@ -285,7 +285,6 @@ class BasicEventSelection : public xAH::Algorithm
     virtual StatusCode changeInput (bool firstFile);
     virtual StatusCode initialize ();
     virtual StatusCode execute ();
-    virtual StatusCode postExecute ();
     virtual StatusCode finalize ();
     virtual StatusCode histFinalize ();
 

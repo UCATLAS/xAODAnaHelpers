@@ -49,7 +49,6 @@ public:
       @brief Calls execute<IParticleContainer>
    */
   virtual StatusCode execute ();
-  virtual StatusCode postExecute ();
   virtual StatusCode finalize ();
   virtual StatusCode histFinalize ();
 

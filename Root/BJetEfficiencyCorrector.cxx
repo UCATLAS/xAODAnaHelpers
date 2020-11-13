@@ -518,14 +518,6 @@ StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::Je
 }
 
 
-StatusCode BJetEfficiencyCorrector :: postExecute ()
-{
-  ANA_MSG_DEBUG("Calling postExecute");
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode BJetEfficiencyCorrector :: finalize ()
 {
   return StatusCode::SUCCESS;

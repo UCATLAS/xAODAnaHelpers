@@ -528,13 +528,6 @@ StatusCode HLTJetRoIBuilder :: buildHLTJets ()
 
 
 
-StatusCode HLTJetRoIBuilder :: postExecute ()
-{
-  ANA_MSG_DEBUG( "Calling postExecute");
-  return StatusCode::SUCCESS;
-}
-
-
 
 StatusCode HLTJetRoIBuilder :: finalize ()
 {

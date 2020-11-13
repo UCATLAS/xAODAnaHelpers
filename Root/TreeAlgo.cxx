@@ -714,8 +714,6 @@ StatusCode TreeAlgo :: execute ()
 
 }
 
-StatusCode TreeAlgo :: postExecute () { return StatusCode::SUCCESS; }
-
 StatusCode TreeAlgo :: finalize () {
 
   ANA_MSG_INFO( "Deleting tree instances...");

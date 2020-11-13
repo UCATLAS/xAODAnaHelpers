@@ -266,14 +266,6 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 }
 
 
-StatusCode TruthSelector :: postExecute ()
-{
-  ANA_MSG_DEBUG( "Calling postExecute");
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode TruthSelector :: finalize ()
 {
   ANA_MSG_INFO( m_name );

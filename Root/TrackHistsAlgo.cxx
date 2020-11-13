@@ -74,7 +74,6 @@ StatusCode TrackHistsAlgo :: execute ()
   return StatusCode::SUCCESS;
 }
 
-StatusCode TrackHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
 StatusCode TrackHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
 StatusCode TrackHistsAlgo :: histFinalize ()
 {

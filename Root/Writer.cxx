@@ -158,16 +158,6 @@ StatusCode Writer :: execute ()
 
 
 
-StatusCode Writer :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode Writer :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets

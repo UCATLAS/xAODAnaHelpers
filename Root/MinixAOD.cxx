@@ -305,8 +305,6 @@ StatusCode MinixAOD :: execute ()
 
 }
 
-StatusCode MinixAOD :: postExecute () { return StatusCode::SUCCESS; }
-
 StatusCode MinixAOD :: finalize () {
   //
   // Save cutbookkeeper

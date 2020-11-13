@@ -118,14 +118,6 @@ StatusCode MuonInFatJetCorrector :: execute()
   return StatusCode::SUCCESS;
 }
 
-StatusCode MuonInFatJetCorrector :: postExecute ()
-{
-  ANA_MSG_DEBUG("Calling postExecute");
-
-  return StatusCode::SUCCESS;
-}
-
-
 StatusCode MuonInFatJetCorrector :: finalize()
 {
   return StatusCode::SUCCESS;

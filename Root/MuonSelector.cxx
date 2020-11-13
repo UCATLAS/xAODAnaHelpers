@@ -707,18 +707,6 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 }
 
 
-StatusCode MuonSelector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return StatusCode::SUCCESS;
-}
-
-
 
 StatusCode MuonSelector :: finalize ()
 {

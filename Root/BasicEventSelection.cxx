@@ -1319,17 +1319,6 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 }
 
 
-StatusCode BasicEventSelection :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode BasicEventSelection :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets

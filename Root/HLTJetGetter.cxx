@@ -148,14 +148,6 @@ StatusCode HLTJetGetter :: execute ()
 
 
 
-StatusCode HLTJetGetter :: postExecute ()
-{
-    ANA_MSG_DEBUG( "Calling postExecute");
-    return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode HLTJetGetter :: finalize ()
 {
     ANA_MSG_INFO( "Deleting tool instances...");

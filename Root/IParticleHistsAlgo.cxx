@@ -70,8 +70,6 @@ StatusCode IParticleHistsAlgo :: execute ()
   return execute<IParticleHists, xAOD::IParticleContainer>();
 }
 
-StatusCode IParticleHistsAlgo :: postExecute () { return StatusCode::SUCCESS; }
-
 StatusCode IParticleHistsAlgo :: finalize () {
   ANA_MSG_DEBUG( m_name );
   for( auto plots : m_plots ) {

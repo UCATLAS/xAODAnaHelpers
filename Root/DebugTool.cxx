@@ -99,14 +99,6 @@ StatusCode DebugTool :: execute ()
 }
 
 
-StatusCode DebugTool :: postExecute ()
-{
-  ANA_MSG_DEBUG("Calling postExecute");
-  return StatusCode::SUCCESS;
-}
-
-
-
 StatusCode DebugTool :: finalize ()
 {
   ANA_MSG_INFO( m_name );

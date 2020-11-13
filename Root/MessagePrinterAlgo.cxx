@@ -34,7 +34,6 @@ StatusCode MessagePrinterAlgo :: fileExecute () { return StatusCode::SUCCESS; }
 StatusCode MessagePrinterAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 StatusCode MessagePrinterAlgo :: initialize () { return StatusCode::SUCCESS; }
 StatusCode MessagePrinterAlgo :: execute () { return StatusCode::SUCCESS; }
-StatusCode MessagePrinterAlgo :: postExecute () { return StatusCode::SUCCESS; }
 StatusCode MessagePrinterAlgo :: finalize () { return StatusCode::SUCCESS; }
 
 StatusCode MessagePrinterAlgo :: histFinalize ()
