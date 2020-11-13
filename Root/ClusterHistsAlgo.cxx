@@ -8,7 +8,6 @@
 #include <xAODAnaHelpers/ClusterHistsAlgo.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(ClusterHistsAlgo)
 
 ClusterHistsAlgo :: ClusterHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "ClusterHistsAlgo")

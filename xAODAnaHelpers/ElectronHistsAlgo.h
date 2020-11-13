@@ -27,7 +27,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(ElectronHistsAlgo, 1);
   /// @endcond
 
 };

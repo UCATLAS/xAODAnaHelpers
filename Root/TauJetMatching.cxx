@@ -24,7 +24,6 @@
 #include "TLorentzVector.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TauJetMatching)
 
 
 TauJetMatching :: TauJetMatching (const std::string& name, ISvcLocator *pSvcLocator) :

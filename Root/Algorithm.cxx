@@ -10,7 +10,6 @@
 std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(xAH::Algorithm)
 
 xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className) :
   EL::AnaAlgorithm(name, pSvcLocator),

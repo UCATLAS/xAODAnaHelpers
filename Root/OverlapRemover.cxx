@@ -39,7 +39,6 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(OverlapRemover)
 
 
 OverlapRemover :: OverlapRemover (const std::string& name, ISvcLocator *pSvcLocator) :

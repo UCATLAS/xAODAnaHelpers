@@ -64,7 +64,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TauJetMatching, 1);
   /// @endcond
 
 };

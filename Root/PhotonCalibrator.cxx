@@ -50,7 +50,6 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(PhotonCalibrator)
 
 
 PhotonCalibrator :: PhotonCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :

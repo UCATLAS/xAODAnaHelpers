@@ -50,7 +50,6 @@ namespace xAH {
             The above example is taken from our implementation in :cpp:class:`JetSelector`. Just remember that when you write your initializer, you will be expected to do something like::
 
                 // this is needed to distribute the algorithm to the workers
-                ClassImp(JetSelector)
 
 
                 JetSelector :: JetSelector () :
@@ -75,7 +74,6 @@ namespace xAH {
          */
         Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className = "Algorithm");
         /// @cond
-        ClassDef(Algorithm, 1);
         /// @endcond
 
         /**

@@ -39,7 +39,6 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(ElectronCalibrator)
 
 
 ElectronCalibrator :: ElectronCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :

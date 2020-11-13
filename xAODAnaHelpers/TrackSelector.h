@@ -166,7 +166,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TrackSelector, 1);
   /// @endcond
 };
 

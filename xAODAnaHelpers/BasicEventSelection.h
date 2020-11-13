@@ -290,7 +290,6 @@ class BasicEventSelection : public xAH::Algorithm
 
     /// @cond
     // this is needed to distribute the algorithm to the workers
-    ClassDef(BasicEventSelection, 1);
     /// @endcond
 };
 

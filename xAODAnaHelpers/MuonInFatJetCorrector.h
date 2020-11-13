@@ -68,7 +68,6 @@ private:
    /// @brief Name of calibrated jet mass decorator, without the TA/Calo suffix, for the given sample type
   std::string m_calibratedMassDecorator;
 
-  ClassDef(MuonInFatJetCorrector, 1);
 };
 
 #endif

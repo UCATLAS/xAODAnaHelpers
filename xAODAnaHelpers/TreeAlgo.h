@@ -129,7 +129,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TreeAlgo, 1);
   /// @endcond
 };
 

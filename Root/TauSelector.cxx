@@ -39,7 +39,6 @@
 #include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TauSelector)
 
 
 TauSelector :: TauSelector (const std::string& name, ISvcLocator *pSvcLocator) :

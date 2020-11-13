@@ -42,7 +42,6 @@
 #include "METUtilities/METHelpers.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(JetCalibrator)
 
 JetCalibrator :: JetCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "JetCalibrator")

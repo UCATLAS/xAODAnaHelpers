@@ -18,7 +18,6 @@
 
 
 // Needed to distribute the algorithm to the workers
-ClassImp(MuonInFatJetCorrector)
 
 MuonInFatJetCorrector :: MuonInFatJetCorrector(const std::string& name, ISvcLocator *pSvcLocator) :
   Algorithm(name, pSvcLocator, "MuonInFatJetCorrector")

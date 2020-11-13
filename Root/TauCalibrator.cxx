@@ -36,7 +36,6 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TauCalibrator)
 
 TauCalibrator :: TauCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "TauCalibrator")

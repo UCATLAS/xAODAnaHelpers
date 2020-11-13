@@ -42,7 +42,6 @@ public:
   virtual StatusCode histFinalize ();
 
   // this is needed to distribute the algorithm to the workers
-  ClassDef(Writer, 1);
 };
 
 #endif

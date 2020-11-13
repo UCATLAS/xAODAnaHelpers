@@ -95,7 +95,6 @@ public:
   StatusCode executeMatching( const xAOD::IParticleContainer* inParticles );
 
   /// @cond
-  ClassDef(TrigMatcher, 1);
   /// @endcond
 
 };

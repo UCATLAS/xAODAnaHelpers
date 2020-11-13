@@ -86,7 +86,6 @@ class HLTJetRoIBuilder : public xAH::Algorithm
 
     /// @cond
     // this is needed to distribute the algorithm to the workers
-    ClassDef(HLTJetRoIBuilder, 1);
     /// @endcond
 
     template<class Object, class Collection>

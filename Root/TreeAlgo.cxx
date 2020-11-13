@@ -16,7 +16,6 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TreeAlgo)
 
 TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "TreeAlgo")

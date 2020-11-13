@@ -33,7 +33,6 @@
 #include "TFile.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(DebugTool)
 
 
 DebugTool :: DebugTool (const std::string& name, ISvcLocator *pSvcLocator) :

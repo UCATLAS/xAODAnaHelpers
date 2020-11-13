@@ -43,7 +43,6 @@ class MessagePrinterAlgo : public xAH::Algorithm
 
     /// @cond
     // this is needed to distribute the algorithm to the workers
-    ClassDef(MessagePrinterAlgo, 1);
     /// @endcond
 };
 

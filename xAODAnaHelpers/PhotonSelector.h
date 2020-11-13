@@ -117,7 +117,6 @@ public:
 
 
   /// @cond
-  ClassDef(PhotonSelector, 1);
   /// @endcond
 
 };

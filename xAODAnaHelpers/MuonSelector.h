@@ -182,7 +182,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(MuonSelector, 1);
   /// @endcond
 
 };

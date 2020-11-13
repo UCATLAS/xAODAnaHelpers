@@ -38,7 +38,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(MinixAOD)
 
 MinixAOD :: MinixAOD (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "MinixAOD")

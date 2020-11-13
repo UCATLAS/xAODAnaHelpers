@@ -6,7 +6,6 @@
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(MessagePrinterAlgo)
 
 MessagePrinterAlgo :: MessagePrinterAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "MessagePrinterAlgo")

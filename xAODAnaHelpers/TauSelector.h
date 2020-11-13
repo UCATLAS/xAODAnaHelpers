@@ -141,7 +141,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TauSelector, 1);
   /// @endcond
 
 };

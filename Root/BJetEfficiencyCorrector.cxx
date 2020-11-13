@@ -35,7 +35,6 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(BJetEfficiencyCorrector)
 
 
 BJetEfficiencyCorrector :: BJetEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :

@@ -37,7 +37,6 @@
 #include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(JetSelector)
 
 
 JetSelector :: JetSelector (const std::string& name, ISvcLocator *pSvcLocator) :

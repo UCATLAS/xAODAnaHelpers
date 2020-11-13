@@ -113,7 +113,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(MuonCalibrator, 1);
   /// @endcond
 
 };

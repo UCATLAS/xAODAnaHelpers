@@ -133,7 +133,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(ElectronEfficiencyCorrector, 1);
   /// @endcond
 
 };

@@ -11,7 +11,6 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(IParticleHistsAlgo)
 
 IParticleHistsAlgo :: IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, const std::string& className) :
     Algorithm(name, pSvcLocator, className)

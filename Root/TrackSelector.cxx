@@ -19,7 +19,6 @@
 using std::vector;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TrackSelector)
 
 
 TrackSelector :: TrackSelector (const std::string& name, ISvcLocator *pSvcLocator) :

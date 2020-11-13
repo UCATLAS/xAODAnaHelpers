@@ -144,7 +144,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(METConstructor, 1);
   /// @endcond
 
 };

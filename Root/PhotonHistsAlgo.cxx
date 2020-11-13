@@ -9,7 +9,6 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(PhotonHistsAlgo)
 
 PhotonHistsAlgo :: PhotonHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
 IParticleHistsAlgo(name, pSvcLocator, "PhotonHistsAlgo")

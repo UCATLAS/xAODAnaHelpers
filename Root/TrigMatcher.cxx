@@ -29,7 +29,6 @@
 
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TrigMatcher)
 
 TrigMatcher :: TrigMatcher (const std::string& name, ISvcLocator *pSvcLocator)
 : Algorithm(name, pSvcLocator, "TrigMatcher")
