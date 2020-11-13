@@ -73,7 +73,7 @@ find_package( ROOT COMPONENTS Core RIO Hist Tree )
 atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx
                    PUBLIC_HEADERS xAODAnaHelpers
                    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-                   LINK_LIBRARIES ${ROOT_LIBRARIES} AnaAlgorithmLib EventLoop xAODBase xAODRootAccess
+                   LINK_LIBRARIES ${ROOT_LIBRARIES} AnaAlgorithmLib xAODBase xAODRootAccess
                    xAODEventInfo GoodRunsListsLib PileupReweightingLib PATInterfaces
                    PathResolver xAODTau xAODJet xAODMuon xAODEgamma
                    xAODTracking xAODTruth MuonMomentumCorrectionsLib

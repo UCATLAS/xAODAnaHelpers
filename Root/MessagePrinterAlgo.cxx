@@ -1,7 +1,3 @@
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/Worker.h>
-#include "EventLoop/OutputStream.h"
 
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 

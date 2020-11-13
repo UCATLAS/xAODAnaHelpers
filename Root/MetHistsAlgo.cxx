@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 #include "AthContainers/ConstDataVector.h"
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
@@ -30,7 +27,6 @@ StatusCode MetHistsAlgo :: histInitialize ()
   // declare class and add histograms to output
   m_plots = new MetHists(m_name, m_detailStr);
   ANA_CHECK( m_plots -> initialize());
-  m_plots -> record( wk() );
 
   return StatusCode::SUCCESS;
 }
@@ -68,6 +64,11 @@ StatusCode MetHistsAlgo :: execute ()
 StatusCode MetHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
 StatusCode MetHistsAlgo :: histFinalize ()
 {
+
+  for( auto hist : m_plots->hists() ){
+    ANA_CHECK(book(hist));
+  }
+
   // clean up memory
   if(m_plots) delete m_plots;
 

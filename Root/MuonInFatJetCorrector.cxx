@@ -1,9 +1,6 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <EventLoop/Job.h>
-#include <EventLoop/Algorithm.h>
-#include <EventLoop/Worker.h>
 
 #include "xAODJet/JetContainer.h"
 #include "xAODMuon/MuonContainer.h"

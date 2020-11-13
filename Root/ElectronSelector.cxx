@@ -4,10 +4,6 @@
 #include <sstream>
 #include <tuple>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"

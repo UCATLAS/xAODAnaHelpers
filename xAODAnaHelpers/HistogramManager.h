@@ -13,7 +13,6 @@
 #include <TH2F.h>
 #include <TH3F.h>
 #include <TProfile.h>
-#include <EventLoop/IWorker.h>
 #include <xAODRootAccess/TEvent.h>
 
 // for StatusCode::isSuccess
@@ -74,7 +73,7 @@ class HistogramManager {
     /**
         @brief Initialize and book all histograms.
         @rst
-            .. note:: This should call the overloaded functions :cpp:func:`HistogramManager::book` to create the histograms so that the user can call `hists->record(wk())` to record all histograms to the EventLoop worker.
+            .. note:: This should call the overloaded functions :cpp:func:`HistogramManager::book` to create the histograms that can be "booked" in histFinalize/finalize by the AnaAlgorithm.
 
             Example implementation::
 
@@ -108,6 +107,11 @@ class HistogramManager {
         @endrst
     */
     virtual StatusCode finalize(){        return StatusCode::SUCCESS; };
+
+    /**
+        @brief Return all histograms held internally
+    */
+    const std::vector<TH1*>& hists() const;
 
     /**
         @brief record a histogram and call various functions
@@ -188,11 +192,6 @@ class HistogramManager {
 		   std::string xlabel, int xbins, double xlow, double xhigh,
 		   std::string ylabel, double ylow, double yhigh,
 		   std::string option = "");
-
-    /**
-     * @brief record all histograms from HistogramManager#m_allHists to the worker
-     */
-    void record(EL::IWorker* wk);
 
     /**
       * @brief the standard message stream for this algorithm

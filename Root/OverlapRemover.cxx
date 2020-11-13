@@ -12,10 +12,6 @@
 #include <iostream>
 #include <sstream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODEgamma/ElectronContainer.h"

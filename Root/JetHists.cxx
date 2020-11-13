@@ -546,14 +546,6 @@ StatusCode JetHists::initialize() {
   return StatusCode::SUCCESS;
 }
 
-void JetHists::record(EL::IWorker* wk) {
-  HistogramManager::record(wk);
-
-  if(m_infoSwitch->m_tracksInJet){
-    m_tracksInJet -> record( wk );
-  }
-}
-
 StatusCode JetHists::execute( const xAOD::Jet* jet, float eventWeight, const xAOD::EventInfo* eventInfo  ) {
   return execute(static_cast<const xAOD::IParticle*>(jet), eventWeight, eventInfo);
 }
@@ -2135,6 +2127,15 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
 }
 
+const std::vector<TH1*>& JetHists::hists() const {
+  std::vector<TH1*> out(m_allHists);
+  if(m_infoSwitch->m_tracksInJet){
+    auto otherHists = m_tracksInJet->hists();
+    out.insert(out.end(), otherHists.begin(), otherHists.end());
+  }
+
+  return out;
+}
 
 StatusCode JetHists::finalize() {
     if(m_tracksInJet){

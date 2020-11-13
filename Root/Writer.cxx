@@ -1,9 +1,5 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 #include <xAODAnaHelpers/Writer.h>
 
-#include "EventLoop/OutputStream.h"
 #include "xAODCore/ShallowCopy.h"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"

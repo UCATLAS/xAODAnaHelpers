@@ -9,10 +9,6 @@
 
 #include <AnaAlgorithm/AnaAlgorithm.h>
 
-// EL include(s):
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
-
 #include <string>
 
 // for StatusCode::isSuccess

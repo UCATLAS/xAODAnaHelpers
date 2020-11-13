@@ -11,10 +11,6 @@
 // c++ include(s):
 #include <iostream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 #include <SampleHandler/MetaFields.h>
 

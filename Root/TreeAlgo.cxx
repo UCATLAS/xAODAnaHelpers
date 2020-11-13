@@ -1,7 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
-#include <EventLoop/OutputStream.h>
 
 #include <xAODJet/JetContainer.h>
 #include <xAODTracking/VertexContainer.h>

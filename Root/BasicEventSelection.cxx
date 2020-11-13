@@ -1,7 +1,3 @@
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/Worker.h>
-#include "EventLoop/OutputStream.h"
 
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"

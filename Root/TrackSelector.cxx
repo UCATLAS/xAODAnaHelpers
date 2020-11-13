@@ -1,5 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/Worker.h>
 
 #include "AthContainers/ConstDataVector.h"
 #include "xAODAnaHelpers/HelperFunctions.h"

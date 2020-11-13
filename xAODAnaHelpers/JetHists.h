@@ -24,10 +24,10 @@ class JetHists : public IParticleHists
     virtual StatusCode execute( const xAOD::Jet* jet, float eventWeight, const xAOD::EventInfo* eventInfo = 0 );
     virtual StatusCode execute( const xAH::Jet* jet,  float eventWeight, const xAH::EventInfo* eventInfo = 0);
     virtual StatusCode finalize();
+    const std::vector<TH1*>& hists() const;
 
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using IParticleHists::execute; // overload
-    virtual void record(EL::IWorker* wk);
 
   protected:
 

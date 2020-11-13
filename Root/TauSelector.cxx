@@ -12,10 +12,6 @@
 #include <typeinfo>
 #include <map>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODCore/ShallowCopy.h"

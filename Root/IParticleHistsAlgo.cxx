@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 #include <xAODBase/IParticleContainer.h>
 #include <xAODEventInfo/EventInfo.h>
@@ -37,7 +34,6 @@ StatusCode IParticleHistsAlgo::AddHists( std::string name ) {
   IParticleHists* particleHists = new IParticleHists( fullname, m_detailStr, m_histPrefix, m_histTitle ); // add systematic
   particleHists->m_debug = msgLvl(MSG::DEBUG);
   ANA_CHECK( particleHists->initialize());
-  particleHists->record( wk() );
   m_plots[name] = particleHists;
 
   return StatusCode::SUCCESS;
@@ -81,6 +77,10 @@ StatusCode IParticleHistsAlgo :: finalize () {
 }
 
 StatusCode IParticleHistsAlgo :: histFinalize () {
+  for( auto hist : particleHists->hists() ){
+    ANA_CHECK(book(hist));
+  }
+
   ANA_CHECK( xAH::Algorithm::algFinalize());
   return StatusCode::SUCCESS;
 }

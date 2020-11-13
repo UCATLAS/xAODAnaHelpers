@@ -33,6 +33,10 @@ HistogramManager::HistogramManager(std::string name, std::string detailStr):
 
 HistogramManager::~HistogramManager() {}
 
+const std::vector<TH1*>& HistogramManager::hists() const {
+  return m_allHists;
+}
+
 /* Main book() functions for 1D, 2D, 3D histograms */
 TH1F* HistogramManager::book(std::string name, std::string title,
                              std::string xlabel, int xbins, double xlow, double xhigh)
@@ -161,12 +165,6 @@ void HistogramManager::record(TH1* hist) {
       return;
     }
   m_histMap.insert( m_histMap.end(), std::pair< std::string, TH1* >( histName, hist ) );
-}
-
-void HistogramManager::record(EL::IWorker* wk) {
-  for( auto hist : m_allHists ){
-    wk->addOutput(hist);
-  }
 }
 
 void HistogramManager::SetLabel(TH1* hist, std::string xlabel)

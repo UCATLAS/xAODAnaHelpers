@@ -3,12 +3,7 @@
 #include <typeinfo>
 #include <sstream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 // output stream
-#include "EventLoop/OutputStream.h"
 
 // EDM include(s):
 #include "xAODCore/AuxContainerBase.h"

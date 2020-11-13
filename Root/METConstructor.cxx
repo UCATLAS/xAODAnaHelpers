@@ -1,8 +1,5 @@
 #include <iostream>
 
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 #include "xAODAnaHelpers/METConstructor.h"
 

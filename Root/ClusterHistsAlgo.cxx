@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 #include "AthContainers/ConstDataVector.h"
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
@@ -32,7 +29,6 @@ StatusCode ClusterHistsAlgo :: histInitialize ()
   // declare class and add histograms to output
   m_plots = new ClusterHists(m_name, m_detailStr);
   ANA_CHECK( m_plots -> initialize());
-  m_plots -> record( wk() );
 
   return StatusCode::SUCCESS;
 }
@@ -70,6 +66,11 @@ StatusCode ClusterHistsAlgo :: execute ()
 StatusCode ClusterHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
 StatusCode ClusterHistsAlgo :: histFinalize ()
 {
+
+  for( auto hist : m_plots->hists() ){
+    ANA_CHECK(book(hist));
+  }
+
   // clean up memory
   if(m_plots) delete m_plots;
   ANA_CHECK( xAH::Algorithm::algFinalize());
