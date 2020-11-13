@@ -84,7 +84,6 @@ OverlapRemover :: OverlapRemover (const std::string& name, ISvcLocator *pSvcLoca
     declareProperty("outAuxContainerName_Jets", m_outAuxContainerName_Jets);
     declareProperty("outAuxContainerName_Photons", m_outAuxContainerName_Photons);
     declareProperty("outAuxContainerName_Taus", m_outAuxContainerName_Taus);
-    declareProperty("ORToolbox", m_ORToolbox);
     declareProperty("el_cutflow_OR_cut", m_el_cutflow_OR_cut);
     declareProperty("mu_cutflow_OR_cut", m_mu_cutflow_OR_cut);
     declareProperty("jet_cutflow_OR_cut", m_jet_cutflow_OR_cut);
