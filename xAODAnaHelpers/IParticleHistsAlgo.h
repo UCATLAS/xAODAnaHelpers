@@ -133,7 +133,6 @@ public:
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
     particleHists->m_debug = msgLvl(MSG::DEBUG);
     ANA_CHECK( particleHists->initialize());
-    particleHists->record( wk() );
     m_plots[name] = particleHists;
 
     return StatusCode::SUCCESS;
