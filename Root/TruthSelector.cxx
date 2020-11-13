@@ -60,8 +60,8 @@ TruthSelector :: TruthSelector (const std::string& name, ISvcLocator *pSvcLocato
     declareProperty("mass_min", m_mass_min);
     declareProperty("rapidity_max", m_rapidity_max);
     declareProperty("rapidity_min", m_rapidity_min);
-    declareProperty("t m_type", int m_type);
-    declareProperty("t m_origin", int m_origin);
+    declareProperty("m_type", m_type);
+    declareProperty("m_origin", m_origin);
     declareProperty("originOptions; // this will apply no selection", m_originOptions; // this will apply no selection);
     declareProperty("pT_dressed_min", m_pT_dressed_min);
     declareProperty("eta_dressed_min", m_eta_dressed_min);
