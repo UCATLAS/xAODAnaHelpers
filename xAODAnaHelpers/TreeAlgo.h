@@ -79,7 +79,7 @@ public:
   int m_autoFlush = 0;
 
   /// @brief output stream name for the tree
-  std::string m_outputStreamName;
+  std::string m_outputStreamName = "tree";
 
 protected:
   std::vector<std::string> m_jetDetails;
