@@ -70,25 +70,6 @@ OverlapRemover :: OverlapRemover (const std::string& name, ISvcLocator *pSvcLoca
     declareProperty("outContainerName_Taus", m_outContainerName_Taus);
     declareProperty("inputAlgoTaus", m_inputAlgoTaus);
     declareProperty("doMuPFJetOR", m_doMuPFJetOR);
-    declareProperty("numEvent", m_numEvent);
-    declareProperty("numObject", m_numObject);
-    declareProperty("numEventPass", m_numEventPass);
-    declareProperty("weightNumEventPass", m_weightNumEventPass);
-    declareProperty("numObjectPass", m_numObjectPass);
-    declareProperty("useElectrons", m_useElectrons);
-    declareProperty("useMuons", m_useMuons);
-    declareProperty("usePhotons", m_usePhotons);
-    declareProperty("useTaus", m_useTaus);
-    declareProperty("outAuxContainerName_Electrons", m_outAuxContainerName_Electrons);
-    declareProperty("outAuxContainerName_Muons", m_outAuxContainerName_Muons);
-    declareProperty("outAuxContainerName_Jets", m_outAuxContainerName_Jets);
-    declareProperty("outAuxContainerName_Photons", m_outAuxContainerName_Photons);
-    declareProperty("outAuxContainerName_Taus", m_outAuxContainerName_Taus);
-    declareProperty("el_cutflow_OR_cut", m_el_cutflow_OR_cut);
-    declareProperty("mu_cutflow_OR_cut", m_mu_cutflow_OR_cut);
-    declareProperty("jet_cutflow_OR_cut", m_jet_cutflow_OR_cut);
-    declareProperty("ph_cutflow_OR_cut", m_ph_cutflow_OR_cut);
-    declareProperty("tau_cutflow_OR_cut", m_tau_cutflow_OR_cut);
 }
 
 
