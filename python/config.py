@@ -82,7 +82,7 @@ class Config(object):
         if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
           raise AttributeError(k)
         elif hasattr(alg_obj, k):
-          self._set_algo_attribute(alg_obj, k, v, className, algName)
+          self._set_algo_attribute(alg_obj, k, v, className, algName, streamName)
 
     elif ROOT.EL.AnaAlgorithm in parents:
       alg_obj = AnaAlgorithmConfig(className)
@@ -92,14 +92,14 @@ class Config(object):
       #setattr(alg_obj, "OutputLevel", msgLevel)
       for k,v in options.items():
         if k in ['m_msgLevel', 'm_name']: continue
-        self._set_algo_attribute(alg_obj, k, v, className, algName)
+        self._set_algo_attribute(alg_obj, k, v, className, algName, streamName)
     else:
       raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm. I do not know how to configure it. {1}".format(className, parents))
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
 
-  def _set_algo_attribute(self, alg_obj, name, value, className, algName):
+  def _set_algo_attribute(self, alg_obj, name, value, className, algName, streamName='StreamName'):
     #handle unicode from json
     if isinstance(value, unicode):
       value = value.encode('utf-8')

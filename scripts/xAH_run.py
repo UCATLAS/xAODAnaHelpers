@@ -494,8 +494,10 @@ if __name__ == "__main__":
         continue
       xAH_logger.info('Creating output stream "{}"'.format(output))
       if 'XAOD' in output:
+        xAH_logger.info('job.outputAdd(ROOT::EL::OutputStream("{}", "xAOD"))'.format(output))
         _stream = ROOT.EL.OutputStream(output, "xAOD")
       else:
+        xAH_logger.info('job.outputAdd(ROOT::EL::OutputStream("{}"))'.format(output))
         _stream = ROOT.EL.OutputStream(output)
       job.outputAdd(_stream)
 
