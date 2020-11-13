@@ -7,17 +7,6 @@ atlas_subdir( xAODAnaHelpers )
 
 set( release_libs xAODTriggerCnvLib )
 
-if( AnalysisBase_VERSION AND AnalysisBase_VERSION VERSION_GREATER 21.0 )
-  # 21.X
-  set( release_libs xAODTriggerCnvLib )
-elseif( AnalysisTop_VERSION AND AnalysisTop_VERSION VERSION_GREATER 21.0 )
-  # AnalysisTop 21.X
-  set( release_libs xAODTriggerCnvLib )
-else()
-  # 2.6.X
-  set( release_libs xAODTriggerCnv )
-endif()
-
 # Declare the package's dependencies:
 atlas_depends_on_subdirs( PUBLIC
                           Control/AthContainers

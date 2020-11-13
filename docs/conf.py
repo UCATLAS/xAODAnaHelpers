@@ -115,7 +115,7 @@ except:
 
 def release_to_color(release):
   if 'AnalysisBase' in release: return 'blue'
-  if 'AnalysisTop' in release: return 'green'
+  if 'AthAnalysis' in release: return 'green'
   return 'red'
 
 # http://sphinx-doc.org/config.html#confval-rst_epilog

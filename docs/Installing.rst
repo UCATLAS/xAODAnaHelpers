@@ -97,4 +97,4 @@ The last thing you need to do is get your environment set up correctly, so you w
 
   source build/*/setup.sh
 
-Environment variables like ``${AnalysisBase_PLATFORM}`` (or ``${AnalysisTop_PLATFORM}``) seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
+Environment variables like ``${AnalysisBase_PLATFORM}`` (or ``${AthAnalysis_PLATFORM}``) seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
