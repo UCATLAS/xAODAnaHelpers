@@ -555,7 +555,7 @@ StatusCode ElectronSelector :: execute ()
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if( !eventPass ) {
-    wk()->skipEvent();
+    setFilterPassed(false);
     return StatusCode::SUCCESS;
   }
 

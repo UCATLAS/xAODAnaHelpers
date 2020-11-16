@@ -727,7 +727,7 @@ StatusCode BasicEventSelection :: execute ()
         if( eventInfo->eventNumber() == 1652845 ) {
           ANA_MSG_INFO("Dropping huge weight event. Weight should be 352220000");
           ANA_MSG_INFO("WEIGHT : " << mcEvtWeight);
-          wk()->skipEvent();
+          setFilterPassed(false);
           return StatusCode::SUCCESS; // go to next event
         }
       }
@@ -798,7 +798,7 @@ StatusCode BasicEventSelection :: execute ()
 
       m_duplicatesTree->Fill();
 
-      wk()->skipEvent();
+      setFilterPassed(false);
       return StatusCode::SUCCESS; // go to next event
     }
 
@@ -841,7 +841,7 @@ StatusCode BasicEventSelection :: execute ()
   if ( m_actualMuMin > 0 ) {
       // apply minimum pile-up cut
       if ( eventInfo->actualInteractionsPerCrossing() < m_actualMuMin ) { // veto event
-          wk()->skipEvent();
+          setFilterPassed(false);
           return StatusCode::SUCCESS;
       }
   }
@@ -849,7 +849,7 @@ StatusCode BasicEventSelection :: execute ()
   if ( m_actualMuMax > 0 ) {
       // apply maximum pile-up cut
       if ( eventInfo->actualInteractionsPerCrossing() > m_actualMuMax ) { // veto event
-          wk()->skipEvent();
+          setFilterPassed(false);
           return StatusCode::SUCCESS;
       }
   }
@@ -870,7 +870,7 @@ StatusCode BasicEventSelection :: execute ()
     // GRL
     if ( m_applyGRLCut ) {
       if ( !m_grl_handle->passRunLB( *eventInfo ) ) {
-        wk()->skipEvent();
+        setFilterPassed(false);
         return StatusCode::SUCCESS; // go to next event
       }
       m_cutflowHist ->Fill( m_cutflow_grl, 1 );
@@ -884,28 +884,28 @@ StatusCode BasicEventSelection :: execute ()
     //------------------------------------------------------------
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) ) {
-      wk()->skipEvent();
+      setFilterPassed(false);
       return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_lar, 1 );
     m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
-      wk()->skipEvent();
+      setFilterPassed(false);
       return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_tile, 1 );
     m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error) ) {
-      wk()->skipEvent();
+      setFilterPassed(false);
       return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_SCT, 1 );
     m_cutflowHistW->Fill( m_cutflow_SCT, mcEvtWeight);
 
     if ( m_applyCoreFlagsCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
-      wk()->skipEvent();
+      setFilterPassed(false);
       return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
@@ -916,7 +916,7 @@ StatusCode BasicEventSelection :: execute ()
   // more info: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017
   if ( m_applyJetCleaningEventFlag && eventInfo->isAvailable<char>("DFCommonJets_eventClean_LooseBad") ) {
     if(eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad")<1) {
-	wk()->skipEvent();
+	setFilterPassed(false);
 	return StatusCode::SUCCESS;
       }
   }
@@ -927,7 +927,7 @@ StatusCode BasicEventSelection :: execute ()
   // details here: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017#IsBadBatMan_Event_Flag_and_EMEC
   if ( m_applyIsBadBatmanFlag && eventInfo->isAvailable<char>("DFCommonJets_isBadBatman") &&  !isMC() ) {
     if(eventInfo->auxdataConst<char>("DFCommonJets_isBadBatman")>0) {
-      wk()->skipEvent();
+      setFilterPassed(false);
       return StatusCode::SUCCESS;
     }
   }
@@ -943,7 +943,7 @@ StatusCode BasicEventSelection :: execute ()
     ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
 
     if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
-      wk()->skipEvent();
+      setFilterPassed(false);
       return StatusCode::SUCCESS;
     }
   }
@@ -961,7 +961,7 @@ StatusCode BasicEventSelection :: execute ()
     if ( m_applyTriggerCut ) {
 
       if ( !triggerChainGroup->isPassed() ) {
-        wk()->skipEvent();
+        setFilterPassed(false);
         return StatusCode::SUCCESS;
       }
       m_cutflowHist ->Fill( m_cutflow_trigger, 1 );

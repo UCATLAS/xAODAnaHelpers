@@ -184,7 +184,7 @@ StatusCode TruthSelector :: execute ()
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if ( !pass ) {
-    wk()->skipEvent();
+    setFilterPassed(false);
   }
 
   return StatusCode::SUCCESS;

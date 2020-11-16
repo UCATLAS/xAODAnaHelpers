@@ -521,7 +521,7 @@ StatusCode JetSelector :: execute ()
       if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
       if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > m_mcCleaningCut ) {
         ANA_MSG_DEBUG("Failed MC cleaning, skipping event");
-        wk()->skipEvent();
+        setFilterPassed(false);
       }
     }
 
@@ -587,7 +587,7 @@ StatusCode JetSelector :: execute ()
   if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if ( !pass ) {
-    wk()->skipEvent();
+    setFilterPassed(false);
   }
 
   ANA_MSG_DEBUG( "Leave Jet Selection... ");

@@ -279,11 +279,11 @@ StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts
   if( m_pass_min > 0 && nPass < m_pass_min ) {
-    wk()->skipEvent();
+    setFilterPassed(false);
     return StatusCode::SUCCESS;
   }
   if( m_pass_max >= 0 && nPass > m_pass_max ) {
-    wk()->skipEvent();
+    setFilterPassed(false);
     return StatusCode::SUCCESS;
   }
 
