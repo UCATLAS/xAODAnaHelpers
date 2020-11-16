@@ -39,13 +39,13 @@ HelpTreeBase::HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, TFile* file, co
   m_tree = tree;
   m_tree->SetDirectory( file );
   m_nominalTree = strcmp(m_tree->GetName(), "nominal") == 0;
-  m_event = evtStore;
+  m_evtStore = evtStore;
   Info("HelpTreeBase()", "HelpTreeBase setup");
 
   // turn things off it this is data...since TStore is not a needed input
   // default isMC to true so more is added to the tree than less
   const xAOD::EventInfo* eventInfo(nullptr);
-  m_event->retrieve(eventInfo, "EventInfo");
+  m_evtStore->retrieve(eventInfo, "EventInfo");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
 }
@@ -138,10 +138,10 @@ void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* /
 
   // only retrieve the vertex container if it's not set and the user asks for that information
   if( m_eventInfo->m_infoSwitch.m_pileup && !vertices ) {
-    m_event->retrieve( vertices, m_vertexContainerName);
+    m_evtStore->retrieve( vertices, m_vertexContainerName);
   }
 
-  m_eventInfo->FillEvent(eventInfo, m_event, vertices);
+  m_eventInfo->FillEvent(eventInfo, m_evtStore, vertices);
 
   this->FillEventUser(eventInfo);
 }
@@ -375,7 +375,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
         std::vector< std::string >* tmp_reco_sys(nullptr);
-        if ( m_event->retrieve(tmp_reco_sys, "MuonEfficiencyCorrector_RecoSyst_" + reco).isSuccess() ) {
+        if ( m_evtStore->retrieve(tmp_reco_sys, "MuonEfficiencyCorrector_RecoSyst_" + reco).isSuccess() ) {
           (m_MuonRecoEff_SF_sysNames)[ reco ] = *tmp_reco_sys;
         }
       }
@@ -384,7 +384,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     if ( muonInfoSwitch.m_isoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& isol : muonInfoSwitch.m_isolWPs ) {
         std::vector< std::string >* tmp_iso_sys(nullptr);
-        if ( m_event->retrieve(tmp_iso_sys, "MuonEfficiencyCorrector_IsoSyst_" + isol).isSuccess() ) {
+        if ( m_evtStore->retrieve(tmp_iso_sys, "MuonEfficiencyCorrector_IsoSyst_" + isol).isSuccess() ) {
           (m_MuonIsoEff_SF_sysNames)[ isol ] = *tmp_iso_sys;
         }
       }
@@ -393,7 +393,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& trig : muonInfoSwitch.m_trigWPs ) {
         std::vector< std::string >* tmp_trig_sys(nullptr);
-        if ( m_event->retrieve(tmp_trig_sys, "MuonEfficiencyCorrector_TrigSyst_" + trig).isSuccess() ) {
+        if ( m_evtStore->retrieve(tmp_trig_sys, "MuonEfficiencyCorrector_TrigSyst_" + trig).isSuccess() ) {
           (m_MuonTrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
         }
       }
@@ -401,7 +401,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       std::vector< std::string >* tmp_ttva_sys(nullptr);
-      if ( m_event->retrieve(tmp_ttva_sys, "MuonEfficiencyCorrector_TTVASyst_TTVA").isSuccess() ) {
+      if ( m_evtStore->retrieve(tmp_ttva_sys, "MuonEfficiencyCorrector_TTVASyst_TTVA").isSuccess() ) {
         m_MuonTTVAEff_SF_sysNames = *tmp_ttva_sys;
       }
     }
@@ -675,7 +675,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
   xAH::JetContainer* thisJet = m_jets[jetName];
 
   if( thisJet->m_infoSwitch.m_trackPV || thisJet->m_infoSwitch.m_allTrack ) {
-    m_event->retrieve( vertices, m_vertexContainerName;
+    m_evtStore->retrieve( vertices, m_vertexContainerName;
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
     if ( pvLocation >= 0 ) pv = vertices->at( pvLocation );
   }

@@ -308,7 +308,7 @@ StatusCode METConstructor :: execute ()
            suffix = systName;
          }
 
-         if ( evtStore()->contains<xAOD::ElectronContainer>(m_inputElectrons + suffix) || m_event->contains<xAOD::ElectronContainer>(m_inputElectrons + suffix) ) {
+         if ( evtStore()->contains<xAOD::ElectronContainer>(m_inputElectrons + suffix) ) {
            ANA_CHECK( evtStore()->retrieve(eleCont, m_inputElectrons + suffix));
            ANA_MSG_DEBUG("retrieving ele container " << m_inputElectrons + suffix << " to be added to the MET");
          } else {
@@ -339,7 +339,7 @@ StatusCode METConstructor :: execute ()
            suffix = systName;
          }
 
-         if ( evtStore()->contains<xAOD::PhotonContainer>(m_inputPhotons + suffix) || m_event->contains<xAOD::PhotonContainer>(m_inputPhotons + suffix) ) {
+         if ( evtStore()->contains<xAOD::PhotonContainer>(m_inputPhotons + suffix) ) {
            ANA_CHECK( evtStore()->retrieve(phoCont, m_inputPhotons + suffix));
            ANA_MSG_DEBUG("retrieving ph container " << m_inputPhotons + suffix << " to be added to the MET");
          } else {
@@ -386,7 +386,7 @@ StatusCode METConstructor :: execute ()
           suffix = systName;
         }
 
-        if ( evtStore()->contains<xAOD::TauJetContainer>(m_inputTaus + suffix) || m_event->contains<xAOD::TauJetContainer>(m_inputTaus + suffix) ) {
+        if ( evtStore()->contains<xAOD::TauJetContainer>(m_inputTaus + suffix) ) {
           ANA_CHECK( evtStore()->retrieve(tauCont, m_inputTaus + suffix));
           ANA_MSG_DEBUG("retrieving tau container " << m_inputTaus + suffix << " to be added to the MET");
         } else {
@@ -423,7 +423,7 @@ StatusCode METConstructor :: execute ()
           suffix = systName;
         }
 
-        if ( evtStore()->contains<xAOD::MuonContainer>(m_inputMuons + suffix) || m_event->contains<xAOD::MuonContainer>(m_inputMuons + suffix) ) {
+        if ( evtStore()->contains<xAOD::MuonContainer>(m_inputMuons + suffix) ) {
           ANA_CHECK( evtStore()->retrieve(muonCont, m_inputMuons + suffix));
           ANA_MSG_DEBUG("retrieving muon container " << m_inputMuons + suffix << " to be added to the MET");
         } else {
@@ -457,7 +457,7 @@ StatusCode METConstructor :: execute ()
        suffix = systName;
      }
 
-     if ( evtStore()->contains<xAOD::JetContainer>(m_inputJets + suffix) || m_event->contains<xAOD::JetContainer>(m_inputJets + suffix) ) {
+     if ( evtStore()->contains<xAOD::JetContainer>(m_inputJets + suffix) ) {
        ANA_CHECK( evtStore()->retrieve(jetCont, m_inputJets + suffix));
        ANA_MSG_DEBUG("retrieving jet container " << m_inputJets + suffix << " to be added to the MET");
      } else {

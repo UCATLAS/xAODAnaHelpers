@@ -323,7 +323,7 @@ namespace HelperFunctions {
       This is a very powerful templating function. The point is to remove the triviality of making deep copies by specifying all that is needed. The best way is to demonstrate via example::
 
         const xAOD::JetContainer* selected_jets(nullptr);
-        ANA_CHECK( m_event->retrieve( selected_jets, "SelectedJets" ));
+        ANA_CHECK( evtStore()->retrieve( selected_jets, "SelectedJets" ));
         ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::JetContainer, xAOD::JetAuxContainer, xAOD::Jet>(evtStore(), "BaselineJets", selected_jets)));
 
     @endrst

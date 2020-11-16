@@ -415,9 +415,9 @@ StatusCode BasicEventSelection :: initialize ()
 
     //Choose Jet Truth container, WZ has more information and is favored by the tool
     std::string pmg_TruthJetContainer = "";
-    if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthWZJets") ){
+    if( evtStore()->contains<xAOD::JetContainer>("AntiKt4TruthWZJets") ){
       pmg_TruthJetContainer = "AntiKt4TruthWZJets";
-    } else if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
+    } else if( evtStore()->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
       pmg_TruthJetContainer = "AntiKt4TruthJets";
     } else {
       ANA_MSG_WARNING( "No Truth Jet Container found for Sherpa 22 reweighting, weight_Sherpa22 will not be set.");
@@ -1112,7 +1112,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     return StatusCode::SUCCESS;
 
   const xAOD::EventInfo* eventInfo = 0;
-  ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
+  ANA_CHECK( evtStore()->retrieve( eventInfo, "EventInfo" ) );
 
   // Determine simulation flavour
   std::string SimulationFlavour = isFastSim() ? "AFII" : "FS";

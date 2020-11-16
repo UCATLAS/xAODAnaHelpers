@@ -108,7 +108,7 @@ public:
    **/
   static std::string FatJetCollectionName(const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
-  asg::SgTEvent* m_event;
+  asg::SgTEvent* m_evtStore;
 
   /// @brief Name of vertex container
   std::string m_vertexContainerName = "PrimaryVertices";
