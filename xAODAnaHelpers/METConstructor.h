@@ -4,9 +4,6 @@
 #include <xAODAnaHelpers/Algorithm.h>
 
 // Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
 #include "AsgTools/AnaToolHandle.h"
 
 #include "METInterface/IMETMaker.h"
