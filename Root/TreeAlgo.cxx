@@ -474,7 +474,7 @@ StatusCode TreeAlgo :: execute ()
 
     // for the containers the were supplied, fill the appropriate vectors
     if ( !m_muContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::MuonContainer>(m_muContainerName + muSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::MuonContainer>(m_muContainerName + muSuffix) ) continue;
 
       const xAOD::MuonContainer* inMuon(nullptr);
       ANA_CHECK( evtStore()->retrieve(inMuon, m_muContainerName+muSuffix) );
@@ -482,7 +482,7 @@ StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_elContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::ElectronContainer>(m_elContainerName + elSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::ElectronContainer>(m_elContainerName + elSuffix) ) continue;
 
       const xAOD::ElectronContainer* inElec(nullptr);
       ANA_CHECK( evtStore()->retrieve(inElec, m_elContainerName+elSuffix) );
@@ -493,7 +493,7 @@ StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_jetContainers.size(); ++ll ) { // Systs for all jet containers
         const xAOD::JetContainer* inJets(nullptr);
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix) ) {
           ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining jet collections");
           reject = true;
           break;
@@ -513,7 +513,7 @@ StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_l1JetContainers.size(); ++ll ) {
         const xAOD::JetRoIContainer* inL1Jets(nullptr);
-        if ( !HelperFunctions::isAvailable<xAOD::JetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
+        if ( !evtStore()->contains<xAOD::JetRoIContainer>(m_l1JetContainers.at(ll)) ){
           ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
           reject = true;
 	}
@@ -530,7 +530,7 @@ StatusCode TreeAlgo :: execute ()
     if ( !m_trigJetContainerName.empty() ) {
       bool reject = false;
       for(unsigned int ll=0;ll<m_trigJetContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainers.at(ll), m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_trigJetContainers.at(ll)) ) {
           ANA_MSG_DEBUG( "The trigger jet container " + m_trigJetContainers.at(ll) + " is not available. Skipping all remaining trigger jet collections");
           reject = true;
           break;
@@ -550,7 +550,7 @@ StatusCode TreeAlgo :: execute ()
     if ( !m_truthJetContainerName.empty() ) {
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_truthJetContainers.size(); ++ll) {
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthJetContainers.at(ll), m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_truthJetContainers.at(ll)) ) {
           ANA_MSG_DEBUG( "The truth jet container " + m_truthJetContainers.at(ll) + " is not available. Skipping all remaining truth jet collections");
           reject = true;
           break;
@@ -572,7 +572,7 @@ StatusCode TreeAlgo :: execute ()
       // std::string token;
       // std::istringstream ss(m_fatJetContainerName);
       // while ( std::getline(ss, token, ' ') ){
-        // if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(token+fatJetSuffix, m_event, m_store, msg()) ) {
+        // if ( !evtStore()->contains<xAOD::JetContainer>(token+fatJetSuffix) ) {
           // reject = true;
           // break;
         // }
@@ -586,7 +586,7 @@ StatusCode TreeAlgo :: execute ()
 
       bool reject = false;
       for(unsigned int ll=0;ll<m_fatJetContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_fatJetContainers.at(ll)+fatJetSuffix) ) {
           ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll)+fatJetSuffix + " was not retrieved. Skipping all remaining fat jet collections");
           reject = true;
           break;
@@ -605,7 +605,7 @@ StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_truthFatJetContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthFatJetContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::JetContainer>(m_truthFatJetContainerName) ) continue;
 
       const xAOD::JetContainer* inTruthFatJets(nullptr);
       ANA_CHECK( evtStore()->retrieve(inTruthFatJets, m_truthFatJetContainerName) );
@@ -613,7 +613,7 @@ StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_tauContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::TauJetContainer>(m_tauContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::TauJetContainer>(m_tauContainerName) ) continue;
 
       const xAOD::TauJetContainer* inTaus(nullptr);
       ANA_CHECK( evtStore()->retrieve(inTaus, m_tauContainerName) );
@@ -621,7 +621,7 @@ StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_METContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METContainerName + metSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::MissingETContainer>(m_METContainerName + metSuffix) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
       ANA_CHECK( evtStore()->retrieve(inMETCont, m_METContainerName + metSuffix) );
@@ -629,7 +629,7 @@ StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_METReferenceContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METReferenceContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::MissingETContainer>(m_METReferenceContainerName) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
       ANA_CHECK( evtStore()->retrieve(inMETCont, m_METReferenceContainerName) );
@@ -637,7 +637,7 @@ StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_photonContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix) ) continue;
 
       const xAOD::PhotonContainer* inPhotons(nullptr);
       ANA_CHECK( evtStore()->retrieve(inPhotons, m_photonContainerName+photonSuffix) );
@@ -646,7 +646,7 @@ StatusCode TreeAlgo :: execute ()
 
     if ( !m_truthParticlesContainerName.empty() ) {
       for ( unsigned int ll = 0; ll < m_truthParticlesContainers.size(); ++ll) {
-        if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainers.at(ll), m_event, m_store, msg()) ) continue;
+        if ( !evtStore()->contains<xAOD::TruthParticleContainer>(m_truthParticlesContainers.at(ll)) ) continue;
 
         const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
         ANA_CHECK( evtStore()->retrieve(inTruthParticles, m_truthParticlesContainers.at(ll)));
@@ -655,7 +655,7 @@ StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_trackParticlesContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::TrackParticleContainer>(m_trackParticlesContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::TrackParticleContainer>(m_trackParticlesContainerName) ) continue;
 
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
       ANA_CHECK( evtStore()->retrieve(inTrackParticles, m_trackParticlesContainerName));
@@ -666,7 +666,7 @@ StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_vertexContainers.size(); ++ll ) {
         const xAOD::VertexContainer* inVertices(nullptr);
-        if ( !HelperFunctions::isAvailable<xAOD::VertexContainer>(m_vertexContainers.at(ll), m_event, m_store, msg()) ){
+        if ( !evtStore()->contains<xAOD::VertexContainer>(m_vertexContainers.at(ll)) ){
           ANA_MSG_DEBUG( "The vertex container " + m_vertexContainers.at(ll) + " is not available. Skipping all remaining vertex collections");
           reject = true;
 	}
@@ -683,7 +683,7 @@ StatusCode TreeAlgo :: execute ()
     if ( !m_clusterContainerName.empty() ) {
       bool reject = false;
       for(unsigned int ll=0;ll<m_clusterContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::CaloClusterContainer>(m_clusterContainers.at(ll), m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::CaloClusterContainer>(m_clusterContainers.at(ll)) ) {
           ANA_MSG_DEBUG( "The cluster container " + m_clusterContainers.at(ll) + " is not available. Skipping all remaining cluster collections");
           reject = true;
           break;

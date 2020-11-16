@@ -236,57 +236,6 @@ namespace HelperFunctions {
   template< typename T1, typename T2 >
   StatusCode makeSubsetCont( T1*& intCont, T2*& outCont, const std::string& flagSelect = "", HelperClasses::ToolName tool_name = HelperClasses::ToolName::DEFAULT) { return makeSubsetCont<T1, T2>(intCont, outCont, msg(), flagSelect, tool_name); }
 
-  /** @brief Return true if an arbitrary object from TStore / TEvent is available
-    @param name  the name of the object to look up
-    @param event the TEvent, usually wk()->xaodEvent(). Set to 0 to not search TEvent.
-    @param store the TStore, usually wk()->xaodStore(). Set to 0 to not search TStore.
-    @param msg   the MsgStream object with appropriate level for debugging
-
-    @rst
-
-      This tries to make your life simple by providing a one-stop container check shop for all types
-
-      Example Usage::
-
-        const xAOD::JetContainer* jets(0);
-        // look for "AntiKt10LCTopoJets" in both TEvent and TStore
-        HelperFunctions::isAvailable<xAOD::JetContainer>("AntiKt10LCTopoJets", m_event, m_store)
-        // look for "AntiKt10LCTopoJets" in only TStore
-        HelperFunctions::isAvailable<xAOD::JetContainer>("AntiKt10LCTopoJets", 0, m_store)
-        // look for "AntiKt10LCTopoJets" in only TEvent, enable verbose output
-        HelperFunctions::isAvailable<xAOD::JetContainer>("AntiKt10LCTopoJets", m_event, 0, MSG::VERBOSE)
-
-    @endrst
-  */
-  template <typename T>
-  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store, MsgStream& msg){
-    /* Checking Order:
-        - check if store contains 'xAOD::JetContainer' named 'name'
-        --- checkstore store
-        - check if event contains 'xAOD::JetContainer' named 'name'
-        --- checkstore event
-    */
-    std::string funcName{"in isAvailable<"+type_name<T>()+">(" + name + "): "};
-    msg << MSG::DEBUG << funcName << "\tAttempting to retrieve " << name << " of type " << type_name<T>() << endmsg;
-    if(store == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TEvent" << endmsg;
-    if(event == NULL)                      msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore" << endmsg;
-    if((event != NULL) && (store != NULL)) msg << MSG::DEBUG << funcName << "\t\tLooking inside: xAOD::TStore, xAOD::TEvent" << endmsg;
-    if((store != NULL) && (store->contains<T>(name))){
-      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TStore" << endmsg;;
-      return true;
-    } else if((event != NULL) && (event->contains<T>(name))){
-      msg << MSG::DEBUG << funcName << "\t\t\tFound inside xAOD::TEvent" << endmsg;
-      return true;
-    } else {
-      msg << MSG::DEBUG << funcName << "\t\tNot found at all" << endmsg;
-      return false;
-    }
-    return false;
-  }
-  /* isAvailable() overload for no msgStream object passed in */
-  template <typename T>
-  bool isAvailable(std::string name, xAOD::TEvent* event, xAOD::TStore* store) { return isAvailable<T>(name, event, store, msg()); }
-
   // stolen from here
   // https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODEgamma/trunk/xAODEgamma/EgammaTruthxAODHelpers.h#L20
   // util becomes a general xAOD tool
