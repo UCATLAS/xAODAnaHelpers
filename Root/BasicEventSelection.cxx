@@ -69,9 +69,8 @@ BasicEventSelection :: BasicEventSelection (const std::string& name, ISvcLocator
     declareProperty("storePrescaleWeight", m_storePrescaleWeight);
     declareProperty("derivationName", m_derivationName);
     declareProperty("useMetaData", m_useMetaData);
-    declareProperty("metaDataStreamName", m_metaDataStreamName);
-    declareProperty("cutFlowStreamName", m_cutFlowStreamName);
-    declareProperty("duplicatesStreamName", m_duplicatesStreamName);
+    declareProperty("metaDataHistName", m_metaDataHistName);
+    declareProperty("duplicatesTreeName", m_duplicatesTreeName);
     declareProperty("checkDuplicatesData", m_checkDuplicatesData);
     declareProperty("checkDuplicatesMC", m_checkDuplicatesMC);
 }
@@ -87,76 +86,68 @@ StatusCode BasicEventSelection :: histInitialize ()
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  // write the metadata hist to this file so algos downstream can pick up the pointer
-  TFile *fileMD = wk()->getOutputFile (m_metaDataStreamName);
-  fileMD->cd();
+  ANA_CHECK(book(TH1D(m_metaDataHistName+"_EventCount", m_metaDataHistName+"_EventCount", 6, 0.5, 6.5)));
+  m_histEventCount = hist(m_metaDataHistName+"_EventCount");
+  // event counts from meta data
+  m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(3, "sumOfWeights initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights selected");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeightsSquared initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
 
   // event counts from meta data
-  if ( !m_histEventCount ) {
-    m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
-    m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(3, "sumOfWeights initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights selected");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeightsSquared initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
-  }
-
-  TFile *fileSumW = wk()->getOutputFile (m_metaDataStreamName);
-  fileSumW->cd();
-
-  // event counts from meta data
-  if ( !m_histSumW ) {
-    m_histSumW = new TH1D("MetaData_SumW", "MetaData_SumW", 1, -0.5, 0.5);
-    m_histSumW->SetCanExtend(TH1::kAllAxes);
-  }
+  ANA_CHECK(book(TH1D(m_metaDataHistName+"_SumW", m_metaDataHistName+"_SumW", 1, -0.5, 0.5)));
+  m_histSumW = hist(m_metaDataHistName+"_SumW");
+  m_histSumW->SetCanExtend(TH1::kAllAxes);
 
   ANA_MSG_INFO( "Creating histograms");
-
-  // write the cutflows to this file so algos downstream can pick up the pointer
-  //
-  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
-  fileCF->cd();
 
   // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
   // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
 
   //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
-  //
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
+  ANA_CHECK(book(TH1D(m_cutFlowHistName, m_cutFlowHistName, 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_weighted", m_cutFlowHistName+"_weighted", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_electrons_1", m_cutFlowHistName+"_electrons_1", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_electrons_2", m_cutFlowHistName+"_electrons_2", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_muons_1", m_cutFlowHistName+"_muons_1", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_muons_2", m_cutFlowHistName+"_muons_2", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_photons_1", m_cutFlowHistName+"_photons_1", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_taus_1", m_cutFlowHistName+"_taus_1", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_taus_2", m_cutFlowHistName+"_taus_2", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_jets_1", m_cutFlowHistName+"_jets_1", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_trks_1", m_cutFlowHistName+"_trks_1", 1, 1, 2)));
+  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_truths_1", m_cutFlowHistName+"_truths_1", 1, 1, 2)));
 
   // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  //
-  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
+  m_cutflowHist          = hist(m_cutFlowHistName)
+  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
+  m_cutflowHistW         = hist(m_cutFlowHistName+"_weighted");
+  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
+  m_el_cutflowHist_1     = hist(m_cutFlowHistName+"_electrons_1");
   m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
+  m_el_cutflowHist_2     = hist(m_cutFlowHistName+"_electrons_2");
   m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
+  m_mu_cutflowHist_1     = hist(m_cutFlowHistName+"_muons_1");
   m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
+  m_mu_cutflowHist_2     = hist(m_cutFlowHistName+"_muons_2");
   m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
+  m_ph_cutflowHist_1     = hist(m_cutFlowHistName+"_photons_1");
   m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
+  m_tau_cutflowHist_1     = hist(m_cutFlowHistName+"_taus_1");
   m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
+  m_tau_cutflowHist_2     = hist(m_cutFlowHistName+"_taus_2");
   m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
+  m_jet_cutflowHist_1    = hist(m_cutFlowHistName+"_jets_1");
   m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
+  m_trk_cutflowHist_1    = hist(m_cutFlowHistName+"_trks_1");
   m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
+  m_truth_cutflowHist_1  = hist(m_cutFlowHistName+"_truths_1");
   m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
 
   // start labelling the bins for the event cutflow
-  //
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
 
@@ -458,11 +449,8 @@ StatusCode BasicEventSelection :: initialize ()
   // -------------------------------------------------------------------------------------------------
 
   // Create TTree for bookeeeping duplicated events
-  //
-  TFile *fileDPL = wk()->getOutputFile (m_duplicatesStreamName);
-  fileDPL->cd();
-
-  m_duplicatesTree = new TTree("duplicates","Info on duplicated events");
+  ANA_CHECK(book(TTree(m_duplicatesTreeName,"Info on duplicated events")));
+  m_duplicatesTree = tree(m_duplicatesTreeName);
   m_duplicatesTree->Branch("runNumber",    &m_duplRunNumber,      "runNumber/I");
   m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/L");
 
