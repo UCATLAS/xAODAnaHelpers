@@ -27,7 +27,6 @@
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
-#include "TFile.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
@@ -144,20 +143,16 @@ StatusCode ElectronSelector :: initialize ()
 
   if ( m_useCutFlow ) {
 
-    // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-
     // retrieve the event cutflows
     //
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = hist(m_cutFlowHistName);
+    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_el_cutflowHist_1 = (TH1D*)file->Get("cutflow_electrons_1");
+    m_el_cutflowHist_1 = hist(m_cutFlowHistName+"_electrons_1");
 
     m_el_cutflow_all             = m_el_cutflowHist_1->GetXaxis()->FindBin("all");
     m_el_cutflow_author_cut      = m_el_cutflowHist_1->GetXaxis()->FindBin("author_cut");
@@ -173,7 +168,7 @@ StatusCode ElectronSelector :: initialize ()
     m_el_cutflow_iso_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
 
     if ( m_isUsedBefore ) {
-      m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
+      m_el_cutflowHist_2 = hist(m_cutFlowHistName+"_electrons_2");
 
       m_el_cutflow_all       = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
       m_el_cutflow_author_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");

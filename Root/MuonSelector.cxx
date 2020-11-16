@@ -25,7 +25,6 @@
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
-#include "TFile.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
@@ -136,20 +135,16 @@ StatusCode MuonSelector :: initialize ()
 
   if ( m_useCutFlow ) {
 
-    // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-
     // retrieve the event cutflows
     //
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = hist(m_cutFlowHistName);
+    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_mu_cutflowHist_1  = (TH1D*)file->Get("cutflow_muons_1");
+    m_mu_cutflowHist_1  = hist(m_cutFlowHistName+"_muons_1");
 
     m_mu_cutflow_all                  = m_mu_cutflowHist_1->GetXaxis()->FindBin("all");
     m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_1->GetXaxis()->FindBin("eta_and_quality_cut");
@@ -165,7 +160,7 @@ StatusCode MuonSelector :: initialize ()
 
 
     if ( m_isUsedBefore ) {
-      m_mu_cutflowHist_2 = (TH1D*)file->Get("cutflow_muons_2");
+      m_mu_cutflowHist_2 = hist(m_cutFlowHistName+"_muons_2");
 
       m_mu_cutflow_all 		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("all");
       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");

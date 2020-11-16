@@ -5,7 +5,6 @@
 #include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
 
 // ROOT include(s):
-#include "TFile.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
@@ -124,9 +123,8 @@ StatusCode TrackSelector :: initialize ()
   // input events.
 
   if(m_useCutFlow) {
-    TFile *file = wk()->getOutputFile ("cutflow");
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = hist(m_cutFlowHistName);
+    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
   }

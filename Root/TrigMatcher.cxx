@@ -19,7 +19,6 @@
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
-#include <TFile.h>
 #include <TObjArray.h>
 #include <TObjString.h>
 
