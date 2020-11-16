@@ -284,7 +284,7 @@ StatusCode TauSelector :: execute ()
   ANA_MSG_DEBUG( "Applying Tau Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   //
@@ -341,7 +341,7 @@ StatusCode TauSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inTaus, m_inContainerName) );
 
     // create output container (if requested)
     //
@@ -369,7 +369,7 @@ StatusCode TauSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgoSystNames) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -384,7 +384,7 @@ StatusCode TauSelector :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inTaus, m_inContainerName + systName) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -567,7 +567,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
       ANA_MSG_DEBUG( "Doing di-tau trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> ditau_trigmatch_pair;
       typedef std::multimap< std::string, ditau_trigmatch_pair >    ditau_trigmatch_pair_map;

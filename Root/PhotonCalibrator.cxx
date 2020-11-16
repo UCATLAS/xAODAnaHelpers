@@ -299,10 +299,10 @@ StatusCode PhotonCalibrator :: execute ()
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   const xAOD::PhotonContainer* inPhotons(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inPhotons, m_inContainerName) );
 
   ANA_MSG_DEBUG("Retrieve has been completed with container name = " << m_inContainerName);
 

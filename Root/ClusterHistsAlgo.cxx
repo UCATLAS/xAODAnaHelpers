@@ -47,7 +47,7 @@ StatusCode ClusterHistsAlgo :: initialize ()
 StatusCode ClusterHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
 
   float eventWeight(1);
@@ -56,7 +56,7 @@ StatusCode ClusterHistsAlgo :: execute ()
   }
 
   const xAOD::CaloClusterContainer* ccls(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(ccls, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(ccls, m_inContainerName) );
 
   ANA_CHECK( m_plots->execute( ccls, eventWeight ));
 

@@ -228,12 +228,12 @@ StatusCode TauEfficiencyCorrector :: execute ()
   ANA_MSG_DEBUG( "Applying Tau Efficiency corrections... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // if m_inputSystNamesTaus = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   std::vector<std::string>* systNames_ptr(nullptr);
-  if ( !m_inputSystNamesTaus.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesTaus, 0, m_store, msg()) );
+  if ( !m_inputSystNamesTaus.empty() ) ANA_CHECK( evtStore()->retrieve(systNames_ptr, m_inputSystNamesTaus) );
 
   std::vector<std::string> systNames{""};
   if (systNames_ptr) systNames = *systNames_ptr;
@@ -250,7 +250,7 @@ StatusCode TauEfficiencyCorrector :: execute ()
     // some systematics might have rejected the event
     if ( m_store->contains<xAOD::TauJetContainer>( m_inContainerName+systName ) ) {
       // retrieve input taus
-      ANA_CHECK( HelperFunctions::retrieve(inputTaus, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inputTaus, m_inContainerName+systName) );
 
       ANA_MSG_DEBUG( "Number of taus: " << static_cast<int>(inputTaus->size()) );
       ANA_MSG_DEBUG( "Input syst: " << systName );

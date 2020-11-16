@@ -274,7 +274,7 @@ StatusCode TreeAlgo :: execute ()
   // note that the way we set this up, none of the below ##SystNames vectors contain the nominal case
   // TODO: do we really need to check for duplicates? Maybe, maybe not.
   if(!m_muSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_muSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_muSystsVec) );
     for(const auto& systName: *systNames){
       muSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -283,7 +283,7 @@ StatusCode TreeAlgo :: execute ()
   }
 
   if(!m_elSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_elSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_elSystsVec) );
     for(const auto& systName: *systNames){
       elSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -292,7 +292,7 @@ StatusCode TreeAlgo :: execute ()
   }
 
   if(!m_tauSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_tauSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_tauSystsVec) );
     for(const auto& systName: *systNames){
       tauSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -301,7 +301,7 @@ StatusCode TreeAlgo :: execute ()
   }
 
   if(!m_jetSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_jetSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_jetSystsVec) );
     for(const auto& systName: *systNames){
       jetSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -309,7 +309,7 @@ StatusCode TreeAlgo :: execute ()
     }
   }
   if(!m_fatJetSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_fatJetSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_fatJetSystsVec) );
     for(const auto& systName: *systNames){
       fatJetSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -317,7 +317,7 @@ StatusCode TreeAlgo :: execute ()
     }
   }
   if(!m_photonSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_photonSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_photonSystsVec) );
     for(const auto& systName: *systNames){
       photonSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -325,7 +325,7 @@ StatusCode TreeAlgo :: execute ()
     }
   }
   if(!m_metSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_metSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_metSystsVec) );
     for(const auto& systName: *systNames){
       metSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -427,10 +427,10 @@ StatusCode TreeAlgo :: execute ()
   /* THIS IS WHERE WE START PROCESSING THE EVENT AND PLOTTING THINGS */
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   const xAOD::VertexContainer* vertices(nullptr);
   if (m_retrievePV) {
-    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainers.at(0), m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainers.at(0)) );
   }
   const xAOD::Vertex* primaryVertex = m_retrievePV ? HelperFunctions::getPrimaryVertex( vertices , msg() ) : nullptr;
 
@@ -478,7 +478,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::MuonContainer>(m_muContainerName + muSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::MuonContainer* inMuon(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inMuon, m_muContainerName+muSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMuon, m_muContainerName+muSuffix) );
       helpTree->FillMuons( inMuon, primaryVertex );
     }
 
@@ -486,7 +486,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::ElectronContainer>(m_elContainerName + elSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::ElectronContainer* inElec(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inElec, m_elContainerName+elSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inElec, m_elContainerName+elSuffix) );
       helpTree->FillElectrons( inElec, primaryVertex );
     }
 
@@ -499,7 +499,7 @@ StatusCode TreeAlgo :: execute ()
           reject = true;
           break;
         }
-        ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inJets, m_jetContainers.at(ll)+jetSuffix) );
 
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
@@ -518,7 +518,7 @@ StatusCode TreeAlgo :: execute ()
           ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
           reject = true;
 	}
-        ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inL1Jets, m_l1JetContainers.at(ll)) );
         helpTree->FillL1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets );
       }
 
@@ -538,7 +538,7 @@ StatusCode TreeAlgo :: execute ()
         }
 
         const xAOD::JetContainer* inTrigJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inTrigJets, m_trigJetContainers.at(ll)) );
         helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_trigJetBranches.at(ll) );
       }
 
@@ -558,7 +558,7 @@ StatusCode TreeAlgo :: execute ()
         }
 
         const xAOD::JetContainer* inTruthJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inTruthJets, m_truthJetContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inTruthJets, m_truthJetContainers.at(ll)) );
         helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthJetBranches.at(ll) );
       }
 
@@ -579,7 +579,7 @@ StatusCode TreeAlgo :: execute ()
         // }
 
       	// const xAOD::JetContainer* inFatJets(nullptr);
-	// ANA_CHECK( HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, msg()) );
+	// ANA_CHECK( evtStore()->retrieve(inFatJets, token+fatJetSuffix) );
       	// helpTree->FillFatJets( inFatJets, token );
       // }
 
@@ -594,7 +594,7 @@ StatusCode TreeAlgo :: execute ()
         }
 
         const xAOD::JetContainer* inFatJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inFatJets, m_fatJetContainers.at(ll)+fatJetSuffix) );
         helpTree->FillFatJets( inFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_fatJetBranches.at(ll) );
 
       }
@@ -609,7 +609,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthFatJetContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::JetContainer* inTruthFatJets(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inTruthFatJets, m_truthFatJetContainerName) );
       helpTree->FillTruthFatJets( inTruthFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthFatJetBranchName );
     }
 
@@ -617,7 +617,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::TauJetContainer>(m_tauContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::TauJetContainer* inTaus(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inTaus, m_tauContainerName) );
       helpTree->FillTaus( inTaus );
     }
 
@@ -625,7 +625,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METContainerName + metSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METContainerName + metSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMETCont, m_METContainerName + metSuffix) );
       helpTree->FillMET( inMETCont );
     }
 
@@ -633,7 +633,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METReferenceContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METReferenceContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMETCont, m_METReferenceContainerName) );
       helpTree->FillMET( inMETCont, "referenceMet" );
     }
 
@@ -641,7 +641,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix, m_event, m_store, msg()) ) continue;
 
       const xAOD::PhotonContainer* inPhotons(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_photonContainerName+photonSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inPhotons, m_photonContainerName+photonSuffix) );
       helpTree->FillPhotons( inPhotons );
     }
 
@@ -650,7 +650,7 @@ StatusCode TreeAlgo :: execute ()
         if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainers.at(ll), m_event, m_store, msg()) ) continue;
 
         const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainers.at(ll), m_event, m_store, msg()));
+        ANA_CHECK( evtStore()->retrieve(inTruthParticles, m_truthParticlesContainers.at(ll)));
         helpTree->FillTruth(inTruthParticles, m_truthParticlesBranches.at(ll));
       }
     }
@@ -659,7 +659,7 @@ StatusCode TreeAlgo :: execute ()
       if ( !HelperFunctions::isAvailable<xAOD::TrackParticleContainer>(m_trackParticlesContainerName, m_event, m_store, msg()) ) continue;
 
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));
+      ANA_CHECK( evtStore()->retrieve(inTrackParticles, m_trackParticlesContainerName));
       helpTree->FillTracks(inTrackParticles,m_trackParticlesContainerName);
     }
 
@@ -671,7 +671,7 @@ StatusCode TreeAlgo :: execute ()
           ANA_MSG_DEBUG( "The vertex container " + m_vertexContainers.at(ll) + " is not available. Skipping all remaining vertex collections");
           reject = true;
 	}
-        ANA_CHECK( HelperFunctions::retrieve(inVertices, m_vertexContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inVertices, m_vertexContainers.at(ll)) );
         helpTree->FillVertices( inVertices, m_vertexBranches.at(ll));
       }
 
@@ -691,7 +691,7 @@ StatusCode TreeAlgo :: execute ()
         }
 
         const xAOD::CaloClusterContainer* inClusters(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inClusters, m_clusterContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inClusters, m_clusterContainers.at(ll)) );
         helpTree->FillClusters( inClusters, m_clusterBranches.at(ll) );
       }
 

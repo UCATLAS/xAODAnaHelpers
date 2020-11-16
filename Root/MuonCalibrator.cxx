@@ -247,13 +247,13 @@ StatusCode MuonCalibrator :: execute ()
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // get the collections from TEvent or TStore
   //
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   const xAOD::MuonContainer* inMuons(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inMuons, m_inContainerName) );
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers

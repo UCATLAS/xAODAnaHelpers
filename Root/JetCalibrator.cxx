@@ -219,7 +219,7 @@ StatusCode JetCalibrator :: initialize ()
 
   // retrieve EventInfo to get sample information
   const xAOD::EventInfo* ei(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()));
+  ANA_CHECK(evtStore()->retrieve(ei, m_eventInfoContainerName));
 
   // initialize jet calibration tool
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
@@ -419,7 +419,7 @@ StatusCode JetCalibrator :: execute ()
 
   // get the collection from TEvent or TStore
   const xAOD::JetContainer* inJets(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName) );
 
   //
   // Perform nominal calibration
@@ -430,7 +430,7 @@ StatusCode JetCalibrator :: execute ()
   if ( m_addGhostMuonsToJets ) {
     ANA_MSG_VERBOSE("Run muon-to-jet ghost association");
     const xAOD::MuonContainer* muons(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(muons, "Muons", m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(muons, "Muons") );
     met::addGhostMuonsToJets( *muons, *calibJetsSC.first );
   }
 

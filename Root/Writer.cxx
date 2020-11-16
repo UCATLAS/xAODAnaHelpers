@@ -99,7 +99,7 @@ StatusCode Writer :: execute ()
 
     const xAOD::JetContainer* inJetsConst(nullptr);
     // look in event
-    if ( HelperFunctions::retrieve(inJetsConst, contName.Data(), m_event, 0, msg()).isSuccess() ) {
+    if ( evtStore()->retrieve(inJetsConst, contName.Data()).isSuccess() ) {
       // without modifying the contents of it:
       ANA_MSG_INFO( " Write a collection " << contName.Data() << inJetsConst->size() );
       m_event->copy( contName.Data() );
@@ -109,7 +109,7 @@ StatusCode Writer :: execute ()
 
     // look in store
     xAOD::JetContainer* inJets(nullptr);
-    if ( HelperFunctions::retrieve(inJets, contName.Data(), 0, m_store, msg()).isSuccess() ){
+    if ( evtStore()->retrieve(inJets, contName.Data()).isSuccess() ){
 //      // FIXME add something like this
 //      jets_shallowCopy.second->setShallowIO( false ); // true = shallow copy, false = deep copy
 //      // if true should have something like this line somewhere:
@@ -126,7 +126,7 @@ StatusCode Writer :: execute ()
       xAOD::JetAuxContainer* inJetsAux = 0;
       ANA_MSG_INFO( " Wrote a aux store " << contName.Data());
       TString auxName( contName + "Aux." );
-      if ( HelperFunctions::retrieve(inJetsAux, auxName.Data(), 0, m_store, msg()).isSuccess() ){
+      if ( evtStore()->retrieve(inJetsAux, auxName.Data()).isSuccess() ){
         ANA_MSG_ERROR(m_name << ": Could not get Aux data for " << contName.Data());
         return StatusCode::FAILURE;
       }

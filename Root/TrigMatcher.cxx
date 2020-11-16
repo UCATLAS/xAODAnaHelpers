@@ -108,7 +108,7 @@ StatusCode TrigMatcher :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inParticles, m_inContainerName) );
     ANA_CHECK( executeMatching( inParticles ) );
 
   } else { // get the list of systematics to run over
@@ -116,7 +116,7 @@ StatusCode TrigMatcher :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_systNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_systNames) );
 
     // loop over systematic sets
     //
@@ -124,7 +124,7 @@ StatusCode TrigMatcher :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name:  " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName + systName, m_event, m_store, msg()));
+      ANA_CHECK( evtStore()->retrieve(inParticles, m_inContainerName + systName));
       ANA_CHECK( executeMatching( inParticles ) );
     }
 

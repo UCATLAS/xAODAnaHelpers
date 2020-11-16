@@ -48,7 +48,7 @@ StatusCode TrackHistsAlgo :: initialize ()
 StatusCode TrackHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
 
   float eventWeight(1);
@@ -57,11 +57,11 @@ StatusCode TrackHistsAlgo :: execute ()
   }
 
   const xAOD::TrackParticleContainer* tracks(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(tracks, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(tracks, m_inContainerName) );
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   ANA_CHECK( m_plots->execute( tracks, pvx, eventWeight, eventInfo ));

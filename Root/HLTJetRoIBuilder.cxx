@@ -204,14 +204,14 @@ StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
   ANA_MSG_VERBOSE("Getting the PV ");
   const xAOD::VertexContainer *offline_vertices(nullptr);
   const xAOD::Vertex *offline_pvx(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(offline_vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(offline_vertices, m_vertexContainerName) );
   offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices, msg());
 
   //
   // get event info
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
 
   //

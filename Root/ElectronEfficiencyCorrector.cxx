@@ -410,12 +410,12 @@ StatusCode ElectronEfficiencyCorrector :: execute ()
 
   ANA_MSG_DEBUG( "Applying Electron Efficiency Correction... ");
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // if m_inputSystNamesElectrons = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   std::vector<std::string>* systNames_ptr(nullptr);
-  if ( !m_inputSystNamesElectrons.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesElectrons, 0, m_store, msg()) );
+  if ( !m_inputSystNamesElectrons.empty() ) ANA_CHECK( evtStore()->retrieve(systNames_ptr, m_inputSystNamesElectrons) );
 
   std::vector<std::string> systNames{""};
   if(systNames_ptr) systNames = *systNames_ptr;
@@ -433,7 +433,7 @@ StatusCode ElectronEfficiencyCorrector :: execute ()
     if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName ) ) {
 
       // retrieve input electrons
-      ANA_CHECK( HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inputElectrons, m_inContainerName+systName) );
 
       ANA_MSG_DEBUG( "Number of electrons: " << static_cast<int>(inputElectrons->size()) );
       ANA_MSG_DEBUG( "Input syst: " << systName );

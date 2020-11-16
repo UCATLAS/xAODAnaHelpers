@@ -172,7 +172,7 @@ StatusCode MinixAOD :: execute ()
   ANA_MSG_VERBOSE( "Dumping objects...");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, "EventInfo") );
 
   //
   // Fill cutbookkeeper
@@ -202,7 +202,7 @@ StatusCode MinixAOD :: execute ()
     auto out_key = keypair.second;
 
     const xAOD::IParticleContainer* cont(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(cont, in_key, nullptr, m_store, msg()));
+    ANA_CHECK( evtStore()->retrieve(cont, in_key));
 
     if(const xAOD::ElectronContainer* t_cont = dynamic_cast<const xAOD::ElectronContainer*>(cont)){
       ANA_CHECK( (HelperFunctions::makeDeepCopy<xAOD::ElectronContainer, xAOD::ElectronAuxContainer, xAOD::Electron>(m_store, out_key.c_str(), t_cont)));
@@ -245,7 +245,7 @@ StatusCode MinixAOD :: execute ()
     auto parent = keypair.second;
 
     std::vector<std::string>* vector(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(vector, vectorName, nullptr, m_store, msg()));
+    ANA_CHECK( evtStore()->retrieve(vector, vectorName));
 
     // only add the parent if it doesn't exist
     if(!parent.empty()) m_copyFromStoreToEventKeys_vec.push_back(parent);
@@ -269,7 +269,7 @@ StatusCode MinixAOD :: execute ()
   // all we need to do is retrieve it and figure out what type it is to record it and we're done
   for(const auto& key: m_copyFromStoreToEventKeys_vec){
     const xAOD::IParticleContainer* cont(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(cont, key, nullptr, m_store, msg()));
+    ANA_CHECK( evtStore()->retrieve(cont, key));
 
     if(dynamic_cast<const xAOD::ElectronContainer*>(cont)){
       ANA_CHECK( (HelperFunctions::recordOutput<xAOD::ElectronContainer, xAOD::ElectronAuxContainer>(m_event, m_store, key)));

@@ -207,7 +207,7 @@ StatusCode TrackSelector :: execute ()
   ANA_MSG_DEBUG("Applying Track Selection... " << m_name);
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   //
@@ -230,11 +230,11 @@ StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
 
   // get the collection from TEvent or TStore
   const xAOD::TrackParticleContainer* inTracks(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inTracks, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inTracks, m_inContainerName) );
 
   // get primary vertex
   const xAOD::VertexContainer *vertices(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
 
@@ -309,11 +309,11 @@ StatusCode TrackSelector :: executeTracksInJets ()
 
   // get input jet collection
   const xAOD::JetContainer* inJets(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inJets, m_inJetContainerName) );
 
   //// get primary vertex
   //const xAOD::VertexContainer *vertices(nullptr);
-  //ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  //ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
   //const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);

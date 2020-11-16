@@ -153,7 +153,7 @@ StatusCode TruthSelector :: execute ()
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -176,7 +176,7 @@ StatusCode TruthSelector :: execute ()
   // then get the one collection and be done with it
 
   // this will be the collection processed - no matter what!!
-  ANA_CHECK( HelperFunctions::retrieve(inTruthParts, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inTruthParts, m_inContainerName) );
 
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 

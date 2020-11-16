@@ -308,13 +308,13 @@ StatusCode BJetEfficiencyCorrector :: execute ()
   // retrieve event
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   ANA_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
   // if m_inputAlgo == "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   std::vector<std::string>* systNames_ptr(nullptr);
-  if ( !m_inputAlgo.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputAlgo, 0, m_store, msg()) );
+  if ( !m_inputAlgo.empty() ) ANA_CHECK( evtStore()->retrieve(systNames_ptr, m_inputAlgo) );
 
   std::vector<std::string> systNames{""};
   if (systNames_ptr) systNames = *systNames_ptr;
@@ -330,7 +330,7 @@ StatusCode BJetEfficiencyCorrector :: execute ()
     // some systematics might have rejected the event
     if ( m_store->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
       // Check the existence of the container
-      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName+systName) );
 
       ANA_CHECK( executeEfficiencyCorrection( inJets, eventInfo, doNominal ) );
     }

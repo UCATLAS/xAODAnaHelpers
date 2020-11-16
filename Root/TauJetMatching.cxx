@@ -138,12 +138,12 @@ StatusCode TauJetMatching :: execute ()
   ANA_MSG_DEBUG( "Applying Tau Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   const xAOD::TauJetContainer* inTaus(nullptr);
 
   const xAOD::JetContainer* inJets(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inJets, m_inJetContainerName) );
 
 
   // if input comes from xAOD, or just running one collection,
@@ -153,7 +153,7 @@ StatusCode TauJetMatching :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inTaus, m_inContainerName) );
 
     // fill truth-matching map
     //
@@ -168,7 +168,7 @@ StatusCode TauJetMatching :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgoSystNames) );
 
     ANA_MSG_DEBUG( " input list of syst size: " << static_cast<int>(systNames->size()) );
 
@@ -178,8 +178,8 @@ StatusCode TauJetMatching :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) );
-      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inJetContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inTaus, m_inContainerName + systName) );
+      ANA_CHECK( evtStore()->retrieve(inJets, m_inJetContainerName) );
 
       std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > > match_map_sys;
 

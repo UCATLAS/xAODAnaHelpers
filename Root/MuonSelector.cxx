@@ -356,7 +356,7 @@ StatusCode MuonSelector :: execute ()
   ANA_MSG_DEBUG( "Applying Muon Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   //
@@ -413,7 +413,7 @@ StatusCode MuonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inMuons, m_inContainerName) );
 
     // create output container (if requested)
     //
@@ -441,7 +441,7 @@ StatusCode MuonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgoSystNames) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -456,7 +456,7 @@ StatusCode MuonSelector :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMuons, m_inContainerName + systName) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -522,7 +522,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
   ANA_MSG_DEBUG( "In  executeSelection..." );
   const xAOD::VertexContainer* vertices(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
@@ -648,7 +648,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       ANA_MSG_DEBUG( "Doing di-muon trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> dimuon_trigmatch_pair;
       typedef std::multimap< std::string, dimuon_trigmatch_pair >    dimuon_trigmatch_pair_map;
@@ -845,7 +845,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   double d0_significance = xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() );
 

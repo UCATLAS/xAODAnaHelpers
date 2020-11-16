@@ -45,7 +45,7 @@ StatusCode MetHistsAlgo :: initialize ()
 StatusCode MetHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
 
   float eventWeight(1);
@@ -54,7 +54,7 @@ StatusCode MetHistsAlgo :: execute ()
   }
 
   const xAOD::MissingETContainer* met(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(met, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(met, m_inContainerName) );
 
   ANA_CHECK( m_plots->execute( met, eventWeight ));
 

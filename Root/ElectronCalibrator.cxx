@@ -203,9 +203,9 @@ StatusCode ElectronCalibrator :: execute ()
   // get the collection from TEvent or TStore
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   const xAOD::ElectronContainer* inElectrons(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inElectrons, m_inContainerName) );
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers

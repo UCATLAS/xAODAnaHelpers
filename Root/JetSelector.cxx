@@ -438,7 +438,7 @@ StatusCode JetSelector :: execute ()
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -490,14 +490,14 @@ StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( isMC() && (m_doJVT || m_doMCCleaning ) && m_haveTruthJets) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
+  if ( isMC() && (m_doJVT || m_doMCCleaning ) && m_haveTruthJets) ANA_CHECK( evtStore()->retrieve(truthJets, m_truthJetContainer) );
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName) );
 
     // decorate inJets with truth info
     if ( isMC() && m_doJVT && m_haveTruthJets ) {
@@ -531,7 +531,7 @@ StatusCode JetSelector :: execute ()
 
     // get vector of string giving the names
     std::vector<std::string>* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgo) );
 
     // loop over systematics
     auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
@@ -539,7 +539,7 @@ StatusCode JetSelector :: execute ()
     bool passMCcleaning(true);
     for ( auto systName : *systNames ) {
 
-      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName+systName) );
 
       // Check against pile-up only jets (if nominal do not pass the selection then throw the event for all systs too)
       if ( isMC() && m_doMCCleaning && m_haveTruthJets && systName.empty() ){
@@ -614,7 +614,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // if doing JVF or JVT get PV location
   if ( m_doJVF ) {
     const xAOD::VertexContainer* vertices(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices, msg() );
   }
 
@@ -984,7 +984,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // Decorator
     SG::AuxElement::Decorator< char > isCleanEventDecor( "cleanEvent_"+m_name );
     const xAOD::EventInfo* eventInfo(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
     isCleanEventDecor(*eventInfo) = passEventClean;
   }
@@ -1064,7 +1064,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       ANA_MSG_DEBUG( "Doing di-jet trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> dijet_trigmatch_pair;
       typedef std::multimap< std::string, dijet_trigmatch_pair >    dijet_trigmatch_pair_map;

@@ -386,7 +386,7 @@ StatusCode BasicEventSelection :: initialize ()
   m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
@@ -703,7 +703,7 @@ StatusCode BasicEventSelection :: execute ()
   // Grab event
   //------------------
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the MC event weight
@@ -940,7 +940,7 @@ StatusCode BasicEventSelection :: execute ()
 
   const xAOD::VertexContainer* vertices(nullptr);
   if ( !m_truthLevelOnly && m_applyPrimaryVertexCut ) {
-    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
 
     if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
       setFilterPassed(false);

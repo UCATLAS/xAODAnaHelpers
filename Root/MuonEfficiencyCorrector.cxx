@@ -346,12 +346,12 @@ StatusCode MuonEfficiencyCorrector :: execute ()
 
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // if m_inputSystNamesMuons = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   std::vector<std::string>* systNames_ptr(nullptr);
-  if ( !m_inputSystNamesMuons.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesMuons, 0, m_store, msg()) );
+  if ( !m_inputSystNamesMuons.empty() ) ANA_CHECK( evtStore()->retrieve(systNames_ptr, m_inputSystNamesMuons) );
 
   std::vector<std::string> systNames{""};
   if (systNames_ptr) systNames = *systNames_ptr;
@@ -368,7 +368,7 @@ StatusCode MuonEfficiencyCorrector :: execute ()
     // some systematics might have rejected the event
     if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName ) ) {
       // retrieve input muons
-      ANA_CHECK( HelperFunctions::retrieve(inputMuons, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inputMuons, m_inContainerName+systName) );
 
       ANA_MSG_DEBUG( "Number of muons: " << static_cast<int>(inputMuons->size()) );
       ANA_MSG_DEBUG( "Input syst: " << systName );

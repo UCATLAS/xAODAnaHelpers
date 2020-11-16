@@ -82,7 +82,7 @@ StatusCode MuonInFatJetCorrector :: execute()
   std::vector<std::string>* systNames(nullptr);
   if ( !m_inputAlgo.empty() )
     {
-      ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgo) );
     }
   else
     {
@@ -95,7 +95,7 @@ StatusCode MuonInFatJetCorrector :: execute()
     {
       // Retrieve calibrated fatjets.
       const xAOD::JetContainer *fatJets(nullptr);
-      ANA_CHECK(HelperFunctions::retrieve(fatJets, m_fatJetContainerName+systName, m_event, m_store, msg()));
+      ANA_CHECK(evtStore()->retrieve(fatJets, m_fatJetContainerName+systName));
 
       // Loop over fatjets
       for(const xAOD::Jet *fatJet : *fatJets)
@@ -235,11 +235,11 @@ StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
 {
   // retrieve muons from StoreGate
   const xAOD::MuonContainer *muons(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(muons, m_muonContainerName, m_event, m_store, msg()));
+  ANA_CHECK(evtStore()->retrieve(muons, m_muonContainerName));
 
   // retrieve track jets from StoreGate
   const xAOD::JetContainer *trackJets(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(trackJets, m_trackJetContainerName, m_event, m_store, msg()));
+  ANA_CHECK(evtStore()->retrieve(trackJets, m_trackJetContainerName));
 
   // decorate all track jets by default, no selection, no muon overlap removal (will be done later)
   static SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::MuonContainer>>> dec_MuonsInTrackJet("MuonsInTrackJet");
