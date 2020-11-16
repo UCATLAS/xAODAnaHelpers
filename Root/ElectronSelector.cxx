@@ -15,7 +15,7 @@
 #include "xAODEgamma/EgammaDefs.h"
 #include "xAODTracking/VertexContainer.h"
 #include "xAODTracking/TrackParticlexAODHelpers.h"
-#include "PATCore/TAccept.h"
+// #include "PATCore/TAccept.h"
 
 // package include(s):
 #include "xAODAnaHelpers/ElectronSelector.h"
@@ -1061,8 +1061,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
         const std::string decorWP =  "LH" + it.first;
         ANA_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
-        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<int>( it.second->accept( electron ) ) );
-        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( electron ) );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << " ? " << static_cast<bool>( it.second->accept( electron ) ) );
+        electron->auxdecor<char>(decorWP) = static_cast<bool>( it.second->accept( electron ) );
 
       }
 
@@ -1117,7 +1117,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       typedef std::multimap< std::string, AsgElectronIsEMSelector* > CutBasedToolsMap;
       CutBasedToolsMap myCutBasedTools = m_el_CutBased_PIDManager->getValidWPTools();
 
-      if ( m_doCutBasedPIDcut && !( ( myCutBasedTools.find( m_CutBasedOperatingPoint )->second )->accept( *electron ) ) ) {
+      if ( m_doCutBasedPIDcut && !( ( myCutBasedTools.find( m_CutBasedOperatingPoint )->second )->accept( electron ) ) ) {
         ANA_MSG_DEBUG( "Electron failed cut-based PID cut." );
         return 0;
       }
@@ -1127,9 +1127,9 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         const std::string decorWP = "IsEM"+it.second->getOperatingPointName( );
 
         ANA_MSG_DEBUG( "Decorating electron with decision for cut-based WP : " << decorWP );
-        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << static_cast<int>( it.second->accept( *electron ) ) );
+        ANA_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << static_cast<bool>( it.second->accept( electron ) ) );
 
-        electron->auxdecor<char>(decorWP) = static_cast<char>( it.second->accept( *electron ) );
+        electron->auxdecor<char>(decorWP) = static_cast<bool>( it.second->accept( electron ) );
       }
 
     }
@@ -1146,7 +1146,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // Get the "list" of input WPs with the accept() decision from the tool
   //
-  Root::TAccept accept_list = m_isolationSelectionTool_handle->accept( *electron );
+  auto accept_list = m_isolationSelectionTool_handle->accept( *electron );
 
   // Decorate w/ decision for all input WPs
   //
@@ -1156,7 +1156,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
     std::string decorWP = base_decor + "_" + WP_itr;
 
     ANA_MSG_DEBUG( "Decorate electron with " << decorWP << " - accept() ?" << accept_list.getCutResult( WP_itr.c_str()) );
-    electron->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
+    electron->auxdecor<char>(decorWP) = static_cast<bool>( accept_list.getCutResult( WP_itr.c_str() ) );
 
   }
 

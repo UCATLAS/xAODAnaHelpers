@@ -6,7 +6,7 @@
 
 //MetaData
 #include <xAODMetaDataCnv/FileMetaDataTool.h>
-#include <xAODTriggerCnv/TriggerMenuMetaDataTool.h>
+// #include <xAODTriggerCnv/TriggerMenuMetaDataTool.h>
 
 #include <xAODCutFlow/CutBookkeeper.h>
 #include <xAODCutFlow/CutBookkeeperContainer.h>
@@ -160,7 +160,7 @@ private:
   /// Pointer for the File MetaData Tool
   xAODMaker::FileMetaDataTool          *m_fileMetaDataTool = nullptr;    //!
   /// Pointer for the TriggerMenu MetaData Tool
-  xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool = nullptr; //!
+  // xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool = nullptr; //!
 
   /// Pointer for our CutBookkeeper
   xAOD::CutBookkeeperContainer    *m_outputCBKContainer = nullptr;       //!

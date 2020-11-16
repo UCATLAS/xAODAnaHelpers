@@ -2781,10 +2781,10 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
           // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
           if( track->pt() < 500 )                { continue; } // pT cut
           if( !m_trkSelTool->accept(*track,pv) ) { continue; } // ID quality cut
-          if( track->vertex() != pv ) {                        // if not in PV vertex fit
-            if( track->vertex() != 0 )           { continue; } // make sure in no vertex fits
-            if( fabs((track->z0()+track->vz()-pv->z())*sin(track->theta())) > 3.0 ) { continue; } // make sure close to PV in z
-          }
+          // if( track->vertex() != pv ) {                        // if not in PV vertex fit
+          //   if( track->vertex() != 0 )           { continue; } // make sure in no vertex fits
+          //   if( fabs((track->z0()+track->vz()-pv->z())*sin(track->theta())) > 3.0 ) { continue; } // make sure close to PV in z
+          // }
         }
         pt. push_back( track->pt() / m_units );
         qOverP.push_back( track->qOverP() * m_units );

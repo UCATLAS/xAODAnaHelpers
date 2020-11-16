@@ -10,7 +10,7 @@
 #include <xAODAnaHelpers/MetHists.h>
 #include <sstream>
 
-#include <AsgTools/MessageCheck.h>
+#include <AsgMessaging/MessageCheck.h>
 
 using std::vector;
 

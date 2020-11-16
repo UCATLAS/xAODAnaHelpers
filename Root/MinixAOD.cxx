@@ -128,12 +128,12 @@ EL::StatusCode MinixAOD :: initialize ()
   }
 
   if(m_copyTriggerInfo){
-    m_trigMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
+    // m_trigMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();
 
-    ANA_CHECK( m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ));
+    // ANA_CHECK( m_trigMetaDataTool->setProperty("OutputLevel", msg().level() ));
 
-    ANA_CHECK( m_trigMetaDataTool->initialize());
-    ANA_MSG_DEBUG("TriggerMenuMetaDataTool initialized...");
+    // ANA_CHECK( m_trigMetaDataTool->initialize());
+    // ANA_MSG_DEBUG("TriggerMenuMetaDataTool initialized...");
 
     ANA_MSG_DEBUG("Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file.");
     m_simpleCopyKeys_vec.push_back("xTrigDecision");
@@ -333,7 +333,7 @@ EL::StatusCode MinixAOD :: finalize () {
   ANA_CHECK( m_event->finishWritingTo(file_xAOD));
 
   if(m_fileMetaDataTool) delete m_fileMetaDataTool;
-  if(m_trigMetaDataTool) delete m_trigMetaDataTool;
+  // if(m_trigMetaDataTool) delete m_trigMetaDataTool;
 
   return EL::StatusCode::SUCCESS;
 }

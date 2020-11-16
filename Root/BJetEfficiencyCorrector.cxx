@@ -26,7 +26,7 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/BJetEfficiencyCorrector.h"
 
-#include <AsgTools/MessageCheck.h>
+#include <AsgMessaging/MessageCheck.h>
 
 // tools
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"

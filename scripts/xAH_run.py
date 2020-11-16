@@ -384,9 +384,9 @@ if __name__ == "__main__":
       xAH_logger.info("No datasets found. Exiting.")
       sys.exit(0)
 
-    if args.optEventsPerWorker is not None:
-      xAH_logger.info("Splitting up events onto each worker. optEventsPerWorker was set!")
-      ROOT.SH.scanNEvents(sh_all)
+    # if args.optEventsPerWorker is not None:
+    #   xAH_logger.info("Splitting up events onto each worker. optEventsPerWorker was set!")
+    #   ROOT.SH.scanNEvents(sh_all)
 
     # set the name of the tree in our files (should be configurable)
     sh_all.setMetaString( "nc_tree", args.treeName)
@@ -455,7 +455,9 @@ if __name__ == "__main__":
       #  Executing the python
       #   (configGlobals and configLocals are used to pass vars
       configGlobals, configLocals = {}, {'args': args}
-      execfile(args.config, configGlobals, configLocals)
+      exec(open(args.config).read(), configGlobals, configLocals)
+
+      # execfile(args.config, configGlobals, configLocals)
       # Find the created xAODAnaHelpers.config.Config object and add its _algorithms to the Job
       for k,v in configLocals.items():
         if isinstance(v, Config):
@@ -496,8 +498,9 @@ if __name__ == "__main__":
           job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
 
     # Add the algorithms to the job
-    map(job.algsAdd, configurator._algorithms)
-
+    for alg in configurator._algorithms:
+      job.algsAdd(alg)
+    
     for configLog in configurator._log:
       # this is when we have just the algorithm name
       if len(configLog) == 2:

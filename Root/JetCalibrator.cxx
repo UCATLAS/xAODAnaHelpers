@@ -38,7 +38,7 @@
 #include "JetUncertainties/JetUncertaintiesTool.h"
 #include "JetSelectorTools/JetCleaningTool.h"
 #include "JetMomentTools/JetVertexTaggerTool.h"
-#include "JetTileCorrection/JetTileCorrectionTool.h"
+// #include "JetTileCorrection/JetTileCorrectionTool.h"
 #include "METUtilities/METHelpers.h"
 
 // this is needed to distribute the algorithm to the workers
@@ -224,12 +224,12 @@ EL::StatusCode JetCalibrator :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_JetCalibrationTool_handle);
 
   // initialize jet tile correction tool
-  if(m_doJetTileCorr && !isMC()){ // Jet Tile Correction should only be applied to data
-    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetTileCorrectionTool_handle, CP::JetTileCorrectionTool));
-    ANA_CHECK( m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
-    ANA_CHECK( m_JetTileCorrectionTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_JetTileCorrectionTool_handle);
-  }
+  // if(m_doJetTileCorr && !isMC()){ // Jet Tile Correction should only be applied to data
+  //   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetTileCorrectionTool_handle, CP::JetTileCorrectionTool));
+  //   ANA_CHECK( m_JetTileCorrectionTool_handle.setProperty("OutputLevel", msg().level()));
+  //   ANA_CHECK( m_JetTileCorrectionTool_handle.retrieve());
+  //   ANA_MSG_DEBUG("Retrieved tool: " << m_JetTileCorrectionTool_handle);
+  // }
 
   if(m_doCleaning){
     // initialize and configure the jet cleaning tool
@@ -269,14 +269,14 @@ EL::StatusCode JetCalibrator :: initialize ()
     // Truth labelling is required for systematics on largeR jets.
     // TruthLabelName typically should not be changed until new recommendations are available
     // The other properties have default values but need to be configured by the user
-    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthLabelName" , m_truthLabelName));
-    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("IsTruthJetCollection" , m_isTruthJetCol));
-    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("UseTRUTH3" , m_useTRUTH3));
-    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthParticleContainerName" , m_truthParticleContainerName));
-    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthBosonContainerName" , m_truthBosonContainerName));
-    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthTopQuarkContainerName" , m_truthTopQuarkContainerName));
-    ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("OutputLevel" , msg().level()));
-    ANA_CHECK(m_JetTruthLabelingTool_handle.retrieve());
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthLabelName" , m_truthLabelName));
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("IsTruthJetCollection" , m_isTruthJetCol));
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("UseTRUTH3" , m_useTRUTH3));
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthParticleContainerName" , m_truthParticleContainerName));
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthBosonContainerName" , m_truthBosonContainerName));
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("TruthTopQuarkContainerName" , m_truthTopQuarkContainerName));
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.setProperty("OutputLevel" , msg().level()));
+    // ANA_CHECK(m_JetTruthLabelingTool_handle.retrieve());
   }// if MC && largeR
 
   // Generate nominal systematic
@@ -455,26 +455,26 @@ EL::StatusCode JetCalibrator :: execute ()
         static SG::AuxElement::ConstAccessor<int> JetTruthLabel (m_truthLabelName);
 
         // largeR jet truth labelling
-        if(m_JetTruthLabelingTool_handle.isInitialized() && !JetTruthLabel.isAvailable(*jet_itr)) {
-          m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
-        }
+        // if(m_JetTruthLabelingTool_handle.isInitialized() && !JetTruthLabel.isAvailable(*jet_itr)) {
+        //   m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
+        // }
       }
     
     }
 
     //
     // the calibration
-    if ( m_JetCalibrationTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-      ANA_MSG_ERROR( "JetCalibration tool reported a CP::CorrectionCode::Error");
-      ANA_MSG_ERROR( m_name );
-      return StatusCode::FAILURE;
-    }
+    // if ( m_JetCalibrationTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
+    //   ANA_MSG_ERROR( "JetCalibration tool reported a CP::CorrectionCode::Error");
+    //   ANA_MSG_ERROR( m_name );
+    //   return StatusCode::FAILURE;
+    // }
 
-    if(m_doJetTileCorr && !isMC()){
-      if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
-        ANA_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
-      }
-    }
+    // if(m_doJetTileCorr && !isMC()){
+    //   if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
+    //     ANA_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
+    //   }
+    // }
 
   }//for jets
 

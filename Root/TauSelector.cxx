@@ -27,7 +27,7 @@
 #include "xAODAnaHelpers/TauSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include "PATCore/TAccept.h"
+// #include "PATCore/TAccept.h"
 // tool includes
 #include "TauAnalysisTools/TauSelectionTool.h"  
 #include "TriggerMatchingTool/MatchingTool.h"

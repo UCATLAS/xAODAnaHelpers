@@ -8,7 +8,7 @@
 #include <xAODAnaHelpers/Jet.h>
 #include <xAODAnaHelpers/EventInfo.h>
 #include <xAODBase/IParticleContainer.h>
-#include <AsgTools/MessageCheck.h>
+#include <AsgMessaging/MessageCheck.h>
 
 ANA_MSG_HEADER(msgIParticleHists)
 

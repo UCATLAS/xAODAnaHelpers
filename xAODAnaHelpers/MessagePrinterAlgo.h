@@ -5,8 +5,8 @@
 #include "xAODAnaHelpers/Algorithm.h"
 
 // external tools include(s):
-#include <AsgTools/MessagePrinter.h>
-#include <AsgTools/MessagePrinterOverlay.h>
+#include <AsgMessaging/MessagePrinter.h>
+#include <AsgMessaging/MessagePrinterOverlay.h>
 
 // std include
 #include <memory>

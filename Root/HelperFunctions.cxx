@@ -1,5 +1,5 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include <AsgTools/MessageCheck.h>
+#include <AsgMessaging/MessageCheck.h>
 
 #include "xAODBase/IParticleContainer.h"
 
@@ -80,46 +80,46 @@ int HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer* verte
 bool HelperFunctions::applyPrimaryVertexSelection( const xAOD::JetContainer* jets, const xAOD::VertexContainer* vertices )
 {
 
-  if(jets->empty()) { return true; }
+  // if(jets->empty()) { return true; }
 
-  int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
-  if ( pvLocation < 0 ) { return false; }
-  const xAOD::Vertex* vertex = vertices->at( pvLocation );
+  // int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);
+  // if ( pvLocation < 0 ) { return false; }
+  // const xAOD::Vertex* vertex = vertices->at( pvLocation );
 
-  // check if the PV compatible Ghost Matched tracks are already here
-  static SG::AuxElement::ConstAccessor< std::vector<ElementLink< xAOD::IParticleContainer > > >ghostTrackPVAcc ("GhostTrackPV");
-  if( ghostTrackPVAcc.isAvailable( *(jets->at(0)) ) ) { return true; }
+  // // check if the PV compatible Ghost Matched tracks are already here
+  // static SG::AuxElement::ConstAccessor< std::vector<ElementLink< xAOD::IParticleContainer > > >ghostTrackPVAcc ("GhostTrackPV");
+  // if( ghostTrackPVAcc.isAvailable( *(jets->at(0)) ) ) { return true; }
 
-  // get the originals and apply selection
-  static SG::AuxElement::ConstAccessor< std::vector<ElementLink< xAOD::IParticleContainer > > >ghostTrack ("GhostTrack");
-  for( auto jet_itr : *jets ) {
+  // // get the originals and apply selection
+  // static SG::AuxElement::ConstAccessor< std::vector<ElementLink< xAOD::IParticleContainer > > >ghostTrack ("GhostTrack");
+  // for( auto jet_itr : *jets ) {
 
-    if ( !ghostTrack.isAvailable( *jet_itr ) ) { continue; }
-    std::vector<ElementLink<xAOD::IParticleContainer> > trackLinks = ghostTrack( *jet_itr );
+  //   if ( !ghostTrack.isAvailable( *jet_itr ) ) { continue; }
+  //   std::vector<ElementLink<xAOD::IParticleContainer> > trackLinks = ghostTrack( *jet_itr );
 
-    // store the selected tracks
-    std::vector<ElementLink< xAOD::IParticleContainer > > selectedTrackHolder;
+  //   // store the selected tracks
+  //   std::vector<ElementLink< xAOD::IParticleContainer > > selectedTrackHolder;
 
-    int originalIndex(-1);
-    for ( auto link_itr : trackLinks ) {
-      originalIndex++;
+  //   int originalIndex(-1);
+  //   for ( auto link_itr : trackLinks ) {
+  //     originalIndex++;
 
-      if( !link_itr.isValid() ) { continue; }
-      const xAOD::TrackParticle* track = dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
+  //     if( !link_itr.isValid() ) { continue; }
+  //     const xAOD::TrackParticle* track = dynamic_cast<const xAOD::TrackParticle*>( *link_itr );
 
-      if( track->pt() < 500 )                     { continue; } // pT cut
-      if( track->vertex() != vertex ) {                        // if not in PV vertex fit
-        if( track->vertex() != 0 )                { continue; } // make sure in no vertex fits
-        if( fabs((track->z0()+track->vz()-vertex->z())*sin(track->theta())) > 3.0 ) { continue; } // make sure close to PV in z
-      }
+  //     if( track->pt() < 500 )                     { continue; } // pT cut
+  //     if( track->vertex() != vertex ) {                        // if not in PV vertex fit
+  //       if( track->vertex() != 0 )                { continue; } // make sure in no vertex fits
+  //       if( fabs((track->z0()+track->vz()-vertex->z())*sin(track->theta())) > 3.0 ) { continue; } // make sure close to PV in z
+  //     }
 
-      selectedTrackHolder.push_back( link_itr );
+  //     selectedTrackHolder.push_back( link_itr );
 
-    } // loop over tracks
+  //   } // loop over tracks
 
-    jet_itr->auxdecor< std::vector< ElementLink< xAOD::IParticleContainer > > > ("GhostTrackPV") = selectedTrackHolder;
+  //   jet_itr->auxdecor< std::vector< ElementLink< xAOD::IParticleContainer > > > ("GhostTrackPV") = selectedTrackHolder;
 
-  } // loop over jets
+  // } // loop over jets
 
 
   return true;

@@ -17,8 +17,8 @@
 #include <xAODRootAccess/TEvent.h>
 
 // for StatusCode::isSuccess
-#include <AsgTools/StatusCode.h>
-#include <AsgTools/MessageCheck.h>
+#include <AsgMessaging/StatusCode.h>
+#include <AsgMessaging/MessageCheck.h>
 
 class MsgStream;
 

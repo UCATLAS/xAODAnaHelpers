@@ -20,7 +20,7 @@
 #include "xAODAnaHelpers/MuonSelector.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
-#include "PATCore/TAccept.h"
+// #include "PATCore/TAccept.h"
 #include "TrigConfxAOD/xAODConfigTool.h"
 // tool includes
 #include "IsolationSelection/IsolationSelectionTool.h"
@@ -905,7 +905,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
     // Get the "list" of input WPs with the accept() decision from the tool
     //
-    Root::TAccept accept_list = m_isolationSelectionTool_handle->accept( *muon );
+    auto accept_list = m_isolationSelectionTool_handle->accept( *muon );
 
     // Decorate w/ decision for all input WPs
     //
@@ -915,7 +915,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
       std::string decorWP = base_decor + "_" + WP_itr;
 
       ANA_MSG_DEBUG( "Decorate muon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
-      muon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
+      muon->auxdecor<char>(decorWP) = static_cast<bool>( accept_list.getCutResult( WP_itr.c_str() ) );
 
     }
 

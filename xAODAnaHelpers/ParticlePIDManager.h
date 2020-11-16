@@ -5,8 +5,8 @@
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
 
-#include <AsgTools/MessageCheck.h>
-#include "AsgTools/StatusCode.h"
+#include <AsgMessaging/MessageCheck.h>
+#include "AsgMessaging/StatusCode.h"
 
 #include "ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h"
 #include "ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h"

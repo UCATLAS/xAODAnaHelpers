@@ -8,8 +8,8 @@
 #include "AthContainers/normalizedTypeinfoName.h"
 
 // local includes
-#include "AsgTools/StatusCode.h"
-#include <AsgTools/MessageCheck.h>
+#include "AsgMessaging/StatusCode.h"
+#include <AsgMessaging/MessageCheck.h>
 
 #include <SampleHandler/SampleHandler.h>
 
@@ -36,7 +36,7 @@
 #include "TObjArray.h"
 
 // messaging includes
-#include <AsgTools/MsgStream.h>
+#include <AsgMessaging/MsgStream.h>
 
 // Functions that need to have a dictionary built. PyROOT does not
 // seem to like the HelperFunctions namespace for some reason.

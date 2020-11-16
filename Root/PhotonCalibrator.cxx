@@ -524,9 +524,9 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
         return EL::StatusCode::FAILURE;
       }
     }
-    isTight  = m_photonTightIsEMSelector->accept(photon);
-    isMedium = m_photonMediumIsEMSelector->accept(photon);
-    isLoose  = m_photonLooseIsEMSelector->accept(photon);
+    isTight  = bool(m_photonTightIsEMSelector->accept(photon));
+    isMedium = bool(m_photonMediumIsEMSelector->accept(photon));
+    isLoose  = bool(m_photonLooseIsEMSelector->accept(photon));
   }
   photon->auxdecor< bool >( "PhotonID_Tight"    ) = isTight;
   photon->auxdecor< bool >( "PhotonID_Medium"   ) = isMedium;

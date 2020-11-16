@@ -510,7 +510,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
 
   // Get the "list" of input WPs with the accept() decision from the tool
   //
-  Root::TAccept accept_list = m_IsolationSelectionTool->accept( *photon );
+  auto accept_list = m_IsolationSelectionTool->accept( *photon );
 
 
   // Decorate w/ decision for all input WPs
@@ -521,7 +521,7 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
     std::string decorWP = base_decor + "_" + WP_itr;
 
     ANA_MSG_DEBUG( "Decorate photon with " << decorWP << " - accept() ? " << accept_list.getCutResult( WP_itr.c_str()) );
-    photon->auxdecor<char>(decorWP) = static_cast<char>( accept_list.getCutResult( WP_itr.c_str() ) );
+    photon->auxdecor<char>(decorWP) = static_cast<bool>( accept_list.getCutResult( WP_itr.c_str() ) );
 
   }
 
