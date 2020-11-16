@@ -179,24 +179,12 @@ StatusCode BasicEventSelection :: fileExecute ()
   // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
   //
 
-  // get the MetaData tree once a new file is opened, with
-  //
-  TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
-  if ( !MetaData ) {
-    ANA_MSG_ERROR( "MetaData tree not found! Exiting.");
-    return StatusCode::FAILURE;
-  }
-  MetaData->LoadTree(0);
-
   //---------------------------
   // Meta data - CutBookkepers
   //---------------------------
   //
   // Metadata for intial N (weighted) events are used to correctly normalise MC
   // if running on a MC DAOD which had some skimming applied at the derivation stage
-
-  //check if file is from a DxAOD
-  bool m_isDerivation = !MetaData->GetBranch("StreamAOD");
 
   if (  m_useMetaData ) {
 
@@ -209,18 +197,16 @@ StatusCode BasicEventSelection :: fileExecute ()
       ANA_CHECK(inputMetaStore()->retrieve(incompleteCBC, "IncompleteCutBookkeepers"));
       bool allFromUnknownStream(true);
       if ( incompleteCBC->size() != 0 ) {
-
-	  std::string stream("");
-	  for ( auto cbk : *incompleteCBC ) {
-	      ANA_MSG_INFO("Incomplete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream());
-	      if ( cbk->inputStream() != "unknownStream" ) {
-		  allFromUnknownStream = false;
-		  stream = cbk->inputStream();
-		  break;
-	      }
-	  }
-	  if ( !allFromUnknownStream ) { ANA_MSG_WARNING("Found incomplete CBK from stream: " << stream << ". This is not necessarily a sign of file corruption (incomplete CBK appear when 'maxevents' is set in the AOD jo, for instance), but you may still want to check input file for potential corruption..." ); }
-
+          std::string stream("");
+          for ( auto cbk : *incompleteCBC ) {
+              ANA_MSG_INFO("Incomplete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream());
+              if ( cbk->inputStream() != "unknownStream" ) {
+                  allFromUnknownStream = false;
+                  stream = cbk->inputStream();
+                  break;
+              }
+          }
+          if ( !allFromUnknownStream ) { ANA_MSG_WARNING("Found incomplete CBK from stream: " << stream << ". This is not necessarily a sign of file corruption (incomplete CBK appear when 'maxevents' is set in the AOD jo, for instance), but you may still want to check input file for potential corruption..." ); }
       }
 
       // Now, let's find the actual information
@@ -238,7 +224,7 @@ StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeper* allEventsCBK(nullptr);
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
-      if ( m_isDerivation ) {
+      if ( m_isDAOD ) {
         if(m_derivationName != ""){
           ANA_MSG_INFO("Override auto config to look at DAOD made by Derivation Algorithm: " << m_derivationName);
         }else{
@@ -258,7 +244,7 @@ StatusCode BasicEventSelection :: fileExecute ()
 	    }
 
 	  // Find derivation book keeper
-	  if ( m_isDerivation )
+	  if ( m_isDAOD )
 	    {
 
 	      if(m_derivationName != "")
@@ -300,14 +286,14 @@ StatusCode BasicEventSelection :: fileExecute ()
         m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
       }
 
-      if ( m_isDerivation && !DxAODEventsCBK ) {
+      if ( m_isDAOD && !DxAODEventsCBK ) {
         ANA_MSG_ERROR( "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
         return StatusCode::FAILURE;
       }
 
-      m_MD_finalNevents	      = ( m_isDerivation ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
-      m_MD_finalSumW	      = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
-      m_MD_finalSumWSquared   = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeightsSquared() : m_MD_initialSumWSquared;
+      m_MD_finalNevents	      = ( m_isDAOD ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
+      m_MD_finalSumW	      = ( m_isDAOD ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
+      m_MD_finalSumWSquared   = ( m_isDAOD ) ? DxAODEventsCBK->sumOfEventWeightsSquared() : m_MD_initialSumWSquared;
 
       // Write metadata event bookkeepers to histogram
       //

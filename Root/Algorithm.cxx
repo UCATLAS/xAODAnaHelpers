@@ -31,6 +31,7 @@ xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, con
     declareProperty("forceData", m_forceData);
     declareProperty("setAFII", m_setAFII);
     declareProperty("className", m_className);
+    declareProperty("isDAOD", m_isDAOD);
     declareProperty("isPHYS", m_isPHYS);
 }
 
