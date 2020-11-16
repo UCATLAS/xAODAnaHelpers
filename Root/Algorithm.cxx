@@ -124,7 +124,7 @@ bool xAH::Algorithm::isFastSim(){
 
     std::string SimulationFlavour;
     const xAOD::FileMetaData* fmd = nullptr;
-    ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") );
+    ANA_CHECK( inputMetaStore()->retrieve(fmd, "FileMetaData") );
     fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
 
     if( SimulationFlavour == "AtlfastII" ){
