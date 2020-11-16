@@ -49,9 +49,6 @@
   <!-- Tree -->
   <class name="TreeAlgo" />
 
-  <!-- Mini xAOD -->
-  <class name="MinixAOD" />
-
   <!-- Other -->
   <class name="HelperFunctions" />
   <class name="OverlapRemover" />

@@ -50,9 +50,6 @@
 /* Tree */
 #include <xAODAnaHelpers/TreeAlgo.h>
 
-/* Mini xAOD */
-#include <xAODAnaHelpers/MinixAOD.h>
-
 /* Other */
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/OverlapRemover.h>

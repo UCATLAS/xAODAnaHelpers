@@ -46,9 +46,6 @@
 /* Tree */
 #include <xAODAnaHelpers/TreeAlgo.h>
 
-/* Mini xAOD */
-#include <xAODAnaHelpers/MinixAOD.h>
-
 /* Other */
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include <xAODAnaHelpers/OverlapRemover.h>
@@ -98,8 +95,6 @@ DECLARE_ALGORITHM_FACTORY (TrackHistsAlgo)
 DECLARE_ALGORITHM_FACTORY (ClusterHistsAlgo)
 
 DECLARE_ALGORITHM_FACTORY (TreeAlgo)
-
-DECLARE_ALGORITHM_FACTORY (MinixAOD)
 
 DECLARE_ALGORITHM_FACTORY (HelperFunctions)
 DECLARE_ALGORITHM_FACTORY (OverlapRemover)
