@@ -8,10 +8,3 @@ TTree Outputs
 
    HelpTreeBase
    TreeAlgo
-
-xAOD Outputs
-------------
-.. toctree::
-   :maxdepth: 2
-
-   MinixAOD
