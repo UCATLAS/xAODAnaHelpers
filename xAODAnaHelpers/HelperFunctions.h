@@ -7,6 +7,9 @@
 // Gaudi/Athena include(s):
 #include "AthContainers/normalizedTypeinfoName.h"
 
+// evtStore
+#include <AsgTools/SgTEvent.h>
+
 // local includes
 #include "AsgTools/StatusCode.h"
 #include <AsgTools/MessageCheck.h>
