@@ -125,7 +125,7 @@ public:
   virtual StatusCode histFinalize ();
 
   // Help tree creator function
-  virtual HelpTreeBase* createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store);
+  virtual HelpTreeBase* createTree(asg::SgTEvent *evtStore, TTree* tree, TFile* file, const float units, bool debug);
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

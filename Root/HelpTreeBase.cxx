@@ -27,7 +27,7 @@ using std::vector;
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store):
+HelpTreeBase::HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, TFile* file, const float units, bool debug):
   m_trigInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
@@ -39,14 +39,14 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_tree = tree;
   m_tree->SetDirectory( file );
   m_nominalTree = strcmp(m_tree->GetName(), "nominal") == 0;
-  m_event = event;
+  m_event = evtStore;
   m_store = store;
   Info("HelpTreeBase()", "HelpTreeBase setup");
 
   // turn things off it this is data...since TStore is not a needed input
   // default isMC to true so more is added to the tree than less
   const xAOD::EventInfo* eventInfo(nullptr);
-  HelperFunctions::retrieve(eventInfo, "EventInfo", m_event, m_store);
+  m_event->retrieve(eventInfo, "EventInfo");
   m_isMC = ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) );
 
 }
@@ -107,8 +107,8 @@ HelpTreeBase::~HelpTreeBase() {
 }
 
 
-HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug):
-  HelpTreeBase(event, tree, file, units, debug, store)
+HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, asg::SgTEvent *evtStore, const float units, bool debug):
+  HelpTreeBase(evtStore, tree, file, units, debug, store)
 {
   // use the other constructor for everything
 }
@@ -133,13 +133,13 @@ void HelpTreeBase::AddEvent( const std::string& detailStr ) {
   this->AddEventUser(detailStr);
 }
 
-void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/, const xAOD::VertexContainer* vertices ) {
+void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* /*event*/, const xAOD::VertexContainer* vertices ) {
 
   this->ClearEvent();
 
   // only retrieve the vertex container if it's not set and the user asks for that information
   if( m_eventInfo->m_infoSwitch.m_pileup && !vertices ) {
-    HelperFunctions::retrieve( vertices, m_vertexContainerName, m_event, 0);
+    m_event->retrieve( vertices, m_vertexContainerName);
   }
 
   m_eventInfo->FillEvent(eventInfo, m_event, vertices);
@@ -676,7 +676,7 @@ void HelpTreeBase::FillJets( const xAOD::JetContainer* jets, int pvLocation, con
   xAH::JetContainer* thisJet = m_jets[jetName];
 
   if( thisJet->m_infoSwitch.m_trackPV || thisJet->m_infoSwitch.m_allTrack ) {
-    HelperFunctions::retrieve( vertices, m_vertexContainerName, m_event, 0);
+    m_event->retrieve( vertices, m_vertexContainerName;
     pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices );
     if ( pvLocation >= 0 ) pv = vertices->at( pvLocation );
   }

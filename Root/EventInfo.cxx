@@ -265,7 +265,7 @@ void EventInfo::clear()
   return;
 }
 
-void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event, const xAOD::VertexContainer* vertices) {
+void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* evtStore, const xAOD::VertexContainer* vertices) {
 
   m_runNumber             = eventInfo->runNumber();
   m_eventNumber           = eventInfo->eventNumber();
@@ -373,7 +373,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
 
   if ( m_infoSwitch.m_shapeLC && event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4LCTopoOriginEventShape", event, 0 );
+    evtStore->retrieve( evtShape, "Kt4LCTopoOriginEventShape");
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoLC ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoLC = -999;
@@ -382,7 +382,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
 
   if ( m_infoSwitch.m_shapeEM && event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMTopoOriginEventShape", event, 0 );
+    evtStore->retrieve( evtShape, "Kt4EMTopoOriginEventShape");
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEM = -999;
@@ -391,7 +391,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
 
   if ( m_infoSwitch.m_shapeEMPFLOW && event ) {
     const xAOD::EventShape* evtShape(nullptr);
-    HelperFunctions::retrieve( evtShape, "Kt4EMPFlowEventShape", event, 0 );
+    evtStore->retrieve( evtShape, "Kt4EMPFlowEventShape");
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEMPFLOW ) ) {
       Info("FillEvent()","Could not retrieve xAOD::EventShape::Density from xAOD::EventShape");
       m_rhoEMPFLOW = -999;
@@ -400,7 +400,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
 
   if( m_infoSwitch.m_caloClus && event ) {
     const xAOD::CaloClusterContainer* caloClusters = 0;
-    HelperFunctions::retrieve( caloClusters, "CaloCalTopoClusters", event, 0);
+    evtStore->retrieve( caloClusters, "CaloCalTopoClusters");
     // save the clusters at the EM scale
     for( auto clus : * caloClusters ) {
       if ( clus->pt ( xAOD::CaloCluster::State::UNCALIBRATED ) < 2000 ) { continue; } // 2 GeV cut
@@ -414,7 +414,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
   if( m_infoSwitch.m_truth && event && m_mc ) {
     //MC Truth
     const xAOD::TruthEventContainer* truthE = 0;
-    HelperFunctions::retrieve( truthE, "TruthEvents", event, 0 );
+    evtStore->retrieve( truthE, "TruthEvents");
     if( truthE ) {
       const xAOD::TruthEvent* truthEvent = truthE->at(0);
       truthEvent->pdfInfoParameter(m_pdgId1,   xAOD::TruthEvent::PDGID1);

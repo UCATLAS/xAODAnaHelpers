@@ -723,6 +723,6 @@ StatusCode TreeAlgo :: finalize () {
 
 StatusCode TreeAlgo :: histFinalize () { return StatusCode::SUCCESS; }
 
-HelpTreeBase* TreeAlgo :: createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store) {
+HelpTreeBase* TreeAlgo :: createTree(asg::SgTEvent *evtStore, TTree* tree, TFile* file, const float units, bool debug) {
     return new HelpTreeBase( event, tree, file, units, debug, store );
 }
