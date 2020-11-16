@@ -16,7 +16,6 @@
 TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     Algorithm(name, pSvcLocator, "TreeAlgo")
 {
-    declareProperty("outHistDir", m_outHistDir);
     declareProperty("evtDetailStr", m_evtDetailStr);
     declareProperty("trigDetailStr", m_trigDetailStr);
     declareProperty("muDetailStr", m_muDetailStr);
@@ -70,18 +69,12 @@ TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
     declareProperty("metSystsVec", m_metSystsVec);
     declareProperty("units", m_units);
     declareProperty("autoFlush", m_autoFlush);
-    declareProperty("outputStreamName", m_outputStreamName);
 }
 
 
 StatusCode TreeAlgo :: initialize ()
 {
   ANA_MSG_INFO( m_name );
-
-  // get the file we created already
-  TFile* treeFile = wk()->getOutputFile (m_outputStreamName);
-  treeFile->mkdir(m_name.c_str());
-  treeFile->cd(m_name.c_str());
 
   // to handle more than one jet collections (reco, trig and truth)
   std::string token;
@@ -331,8 +324,6 @@ StatusCode TreeAlgo :: execute ()
     }
   }
 
-  TFile* treeFile = wk()->getOutputFile (m_outputStreamName);
-
   // let's make the tdirectory and ttrees
   for(const auto& systName: event_systNames){
     // check if we have already created the tree
@@ -341,24 +332,19 @@ StatusCode TreeAlgo :: execute ()
     if(systName.empty()) treeName = "nominal";
 
     ANA_MSG_INFO( "Making tree " << m_name << "/" << treeName );
-    TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
+    ANA_CHECK(book(TTree(treeName.c_str(),treeName.c_str())));
+    TTree * outTree = tree(treeName.c_str());
     if ( !outTree ) {
       ANA_MSG_ERROR("Failed to instantiate output tree!");
       return StatusCode::FAILURE;
     }
 
-    m_trees[systName] = createTree( evtStore(), outTree, treeFile, m_units, msgLvl(MSG::DEBUG) );
+    m_trees[systName] = new HelpTreeBase( evtStore(), outTree, m_units, msgLvl(MSG::DEBUG) );
     const auto& helpTree = m_trees[systName];
     helpTree->m_vertexContainerName = m_vertexContainers.at(0);
 
     // tell the tree to go into the file
-    outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
     if(m_autoFlush != 0) outTree->SetAutoFlush(m_autoFlush);
-    // choose if want to add tree to same directory as ouput histograms
-    if ( m_outHistDir ) {
-      if(m_trees.size() > 1) ANA_MSG_WARNING( "You're running systematics! You may find issues in writing all of the output TTrees to the output histogram file... Set `m_outHistDir = false` if you run into issues!");
-      wk()->addOutput( outTree );
-    }
 
     // initialize all branch addresses since we just added this tree
     helpTree->AddEvent( m_evtDetailStr );
@@ -720,7 +706,3 @@ StatusCode TreeAlgo :: finalize () {
 }
 
 StatusCode TreeAlgo :: histFinalize () { return StatusCode::SUCCESS; }
-
-HelpTreeBase* TreeAlgo :: createTree(asg::SgTEvent *evtStore, TTree* tree, TFile* file, const float units, bool debug) {
-    return new HelpTreeBase( event, tree, file, units, debug, store );
-}

@@ -27,7 +27,7 @@ using std::vector;
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, TFile* file, const float units, bool debug):
+HelpTreeBase::HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, const float units, bool debug):
   m_trigInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
@@ -37,7 +37,6 @@ HelpTreeBase::HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, TFile* file, co
   m_units = units;
   m_debug = debug;
   m_tree = tree;
-  m_tree->SetDirectory( file );
   m_nominalTree = strcmp(m_tree->GetName(), "nominal") == 0;
   m_evtStore = evtStore;
   Info("HelpTreeBase()", "HelpTreeBase setup");
@@ -106,8 +105,8 @@ HelpTreeBase::~HelpTreeBase() {
 }
 
 
-HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, asg::SgTEvent *evtStore, const float units, bool debug):
-  HelpTreeBase(evtStore, tree, file, units, debug, store)
+HelpTreeBase::HelpTreeBase(TTree* tree, asg::SgTEvent *evtStore, const float units, bool debug):
+  HelpTreeBase(evtStore, tree, units, debug, store)
 {
   // use the other constructor for everything
 }
@@ -1015,13 +1014,6 @@ void HelpTreeBase::ClearMET( const std::string& metName ) {
   this->ClearMETUser(metName);
 }
 
-
-bool HelpTreeBase::writeTo( TFile* file ) {
-  file->cd(); // necessary?
-  int status( m_tree->Write() );
-  if ( status == 0 ) { return false; }
-  return true;
-}
 
 /*********************
  *

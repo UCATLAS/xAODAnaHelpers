@@ -13,9 +13,6 @@ class TreeAlgo : public xAH::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  // choose whether the tree gets saved in the same directory as output histograms
-  bool m_outHistDir = false;
-
   // holds bools that control which branches are filled
   std::string m_evtDetailStr = "";
   std::string m_trigDetailStr = "";
@@ -78,9 +75,6 @@ public:
   /// @brief Set to a large negative number, such as -1000000, to ensure that the tree flushes memory after a reasonable amount of time. Otherwise, jobs with a lot of systematics use too much memory.
   int m_autoFlush = 0;
 
-  /// @brief output stream name for the tree
-  std::string m_outputStreamName = "tree";
-
 protected:
   std::vector<std::string> m_jetDetails;
   std::vector<std::string> m_trigJetDetails;
@@ -123,9 +117,6 @@ public:
   virtual StatusCode execute ();
   virtual StatusCode finalize ();
   virtual StatusCode histFinalize ();
-
-  // Help tree creator function
-  virtual HelpTreeBase* createTree(asg::SgTEvent *evtStore, TTree* tree, TFile* file, const float units, bool debug);
 
   /// @cond
   // this is needed to distribute the algorithm to the workers

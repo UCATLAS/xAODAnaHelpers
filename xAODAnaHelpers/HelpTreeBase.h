@@ -49,7 +49,6 @@
 
 // root includes
 #include "TTree.h"
-#include "TFile.h"
 
 namespace TrigConf {
   class xAODConfigTool;
@@ -65,8 +64,8 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, TFile* file, const float units = 1e3, bool debug = false );
-  HelpTreeBase(TTree* tree, TFile* file, asg::SgTEvent *evtStore = nullptr, const float units = 1e3, bool debug = false );
+  HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, const float units = 1e3, bool debug = false );
+  HelpTreeBase(TTree* tree, asg::SgTEvent *evtStore = nullptr, const float units = 1e3, bool debug = false );
   virtual ~HelpTreeBase();
 
   void AddEvent         (const std::string& detailStr = "");
@@ -188,8 +187,6 @@ public:
   void ClearMET           (const std::string& metName = "met");
   void ClearVertices      (const std::string& vertexName = "vertex");
   void ClearTruthVertices (const std::string& vertexName = "truth_vertex");
-
-  bool writeTo( TFile *file );
 
   virtual void AddEventUser(const std::string& detailStr = "")      {
     if(m_debug) Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
