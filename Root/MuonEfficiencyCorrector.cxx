@@ -101,7 +101,6 @@ StatusCode MuonEfficiencyCorrector :: initialize ()
   ANA_MSG_INFO( "Initializing MuonEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -366,7 +365,7 @@ StatusCode MuonEfficiencyCorrector :: execute ()
     const xAOD::MuonContainer* inputMuons(nullptr);
 
     // some systematics might have rejected the event
-    if ( m_store->contains<xAOD::MuonContainer>( m_inContainerName+systName ) ) {
+    if ( evtStore()->contains<xAOD::MuonContainer>( m_inContainerName+systName ) ) {
       // retrieve input muons
       ANA_CHECK( evtStore()->retrieve(inputMuons, m_inContainerName+systName) );
 
@@ -389,7 +388,7 @@ StatusCode MuonEfficiencyCorrector :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 
@@ -550,8 +549,8 @@ StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventIn
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
     }
 
   }
@@ -646,8 +645,8 @@ StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventIn
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
     }
 
   }
@@ -813,8 +812,8 @@ StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventIn
 
       // Add list of systematics names to TStore
       // We only do this once per event if the list does not exist yet
-      if ( writeSystNames && !m_store->contains<std::vector<std::string>>( sf_string ) ) {
-        ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), sf_string ));
+      if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( sf_string ) ) {
+        ANA_CHECK( evtStore()->record( std::move(sysVariationNamesTrig), sf_string ));
       }
     } // close  trigger loop
 
@@ -914,8 +913,8 @@ StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eventIn
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTTVA ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesTTVA), m_outputSystNamesTTVA ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesTTVA ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesTTVA), m_outputSystNamesTTVA ));
     }
   }
 

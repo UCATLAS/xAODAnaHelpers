@@ -130,7 +130,6 @@ StatusCode TruthSelector :: initialize ()
 
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -181,7 +180,7 @@ StatusCode TruthSelector :: execute ()
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 
   // look what we have in TStore
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   if ( !pass ) {
     setFilterPassed(false);
@@ -241,7 +240,7 @@ bool TruthSelector :: executeSelection ( const xAOD::TruthParticleContainer* inT
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
-    ANA_CHECK( m_store->record( selectedTruthParts, outContainerName ));
+    ANA_CHECK( evtStore()->record( selectedTruthParts, outContainerName ));
   }
 
   // apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts

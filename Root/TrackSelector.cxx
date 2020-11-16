@@ -150,7 +150,6 @@ StatusCode TrackSelector :: initialize ()
   }
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
 
@@ -289,7 +288,7 @@ StatusCode TrackSelector :: executeTrackCollection (float mcEvtWeight)
 
   // add output container to TStore
   if( m_createSelectedContainer ) {
-    ANA_CHECK( m_store->record( selectedTracks, m_outContainerName ));
+    ANA_CHECK( evtStore()->record( selectedTracks, m_outContainerName ));
   }
 
   m_numEventPass++;

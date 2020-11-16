@@ -172,7 +172,6 @@ StatusCode JetSelector :: initialize ()
   ANA_MSG_DEBUG( "Calling initialize");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   if ( m_useCutFlow ) {
 
@@ -578,13 +577,13 @@ StatusCode JetSelector :: execute ()
     }
 
     // save list of systs that should be considered down stream
-    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgo));
+    ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgo));
     //delete vecOutContainerNames;
 
   }
 
   // look what we have in TStore
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   if ( !pass ) {
     setFilterPassed(false);
@@ -844,7 +843,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // This will be the case when this executeSelection() function gets called for every syst varied input container,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( m_store->record( std::move(sysVariationNamesJVT), m_outputSystNamesJVT)); }
+    if ( !evtStore()->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( evtStore()->record( std::move(sysVariationNamesJVT), m_outputSystNamesJVT)); }
   } else if ( !isMC() && m_doJVT ) {
     // Loop over selected jets and decorate with JVT passed status
     for ( auto jet : *(selectedJets) ) {
@@ -956,7 +955,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // This will be the case when this executeSelection() function gets called for every syst varied input container,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( m_store->record( std::move(sysVariationNamesfJVT), m_outputSystNamesfJVT)); }
+    if ( !evtStore()->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( evtStore()->record( std::move(sysVariationNamesfJVT), m_outputSystNamesfJVT)); }
   } else if ( !isMC() && m_dofJVT ) {
     // Loop over selected jets and decorate with fJVT passed status
     for ( auto jet : *(selectedJets) ) {
@@ -968,7 +967,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
-    ANA_CHECK( m_store->record( selectedJets, outContainerName ));
+    ANA_CHECK( evtStore()->record( selectedJets, outContainerName ));
   }
 
   if ( count ) {

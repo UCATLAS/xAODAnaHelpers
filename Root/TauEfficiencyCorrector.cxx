@@ -90,7 +90,6 @@ StatusCode TauEfficiencyCorrector :: initialize ()
   ANA_MSG_INFO( "Initializing TauEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -248,7 +247,7 @@ StatusCode TauEfficiencyCorrector :: execute ()
     const xAOD::TauJetContainer* inputTaus(nullptr);
 
     // some systematics might have rejected the event
-    if ( m_store->contains<xAOD::TauJetContainer>( m_inContainerName+systName ) ) {
+    if ( evtStore()->contains<xAOD::TauJetContainer>( m_inContainerName+systName ) ) {
       // retrieve input taus
       ANA_CHECK( evtStore()->retrieve(inputTaus, m_inContainerName+systName) );
 
@@ -271,7 +270,7 @@ StatusCode TauEfficiencyCorrector :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 
@@ -411,8 +410,8 @@ StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventI
 
   // Add list of systematics names to TStore
   // We only do this once per event if the list does not exist yet
-  if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNames ) ) {
-    ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystNames ));
+  if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNames ) ) {
+    ANA_CHECK( evtStore()->record( std::move(sysVariationNames), m_outputSystNames ));
   }
 
   return StatusCode::SUCCESS;

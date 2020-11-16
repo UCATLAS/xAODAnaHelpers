@@ -69,7 +69,6 @@ StatusCode DebugTool :: initialize ()
   ANA_MSG_INFO( " ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -86,7 +85,7 @@ StatusCode DebugTool :: execute ()
   // look what we have in TStore
   //
   if ( m_printStore ) {
-    m_store->print();
+    evtStore()->print();
   }
 
   return StatusCode::SUCCESS;

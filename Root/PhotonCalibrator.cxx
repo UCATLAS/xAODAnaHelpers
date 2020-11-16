@@ -117,7 +117,6 @@ StatusCode PhotonCalibrator :: initialize ()
 
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -168,7 +167,7 @@ StatusCode PhotonCalibrator :: initialize ()
     SystPhotonsNames->push_back(syst_it.name());
     ANA_MSG_INFO("\t " << syst_it.name());
   }
-    ANA_CHECK(m_store->record(std::move(SystPhotonsNames), "photons_Syst"+m_name ));
+    ANA_CHECK(evtStore()->record(std::move(SystPhotonsNames), "photons_Syst"+m_name ));
 
   //isEM selector tools
   //------------------
@@ -397,21 +396,21 @@ StatusCode PhotonCalibrator :: execute ()
 
     // add SC container to TStore
     //
-    ANA_CHECK( m_store->record( calibPhotonsSC.first,  outSCContainerName  ));
-    ANA_CHECK( m_store->record( calibPhotonsSC.second, outSCAuxContainerName ));
+    ANA_CHECK( evtStore()->record( calibPhotonsSC.first,  outSCContainerName  ));
+    ANA_CHECK( evtStore()->record( calibPhotonsSC.second, outSCAuxContainerName ));
     // add ConstDataVector to TStore
     //
-    ANA_CHECK( m_store->record( calibPhotonsCDV, outContainerName));
+    ANA_CHECK( evtStore()->record( calibPhotonsCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
-  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+  ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 }

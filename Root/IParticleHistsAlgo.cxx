@@ -56,7 +56,6 @@ StatusCode IParticleHistsAlgo :: initialize ()
   // only running 1 collection
   if(m_inputAlgo.empty()) { AddHists( "" ); }
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
   return StatusCode::SUCCESS;
 }
 

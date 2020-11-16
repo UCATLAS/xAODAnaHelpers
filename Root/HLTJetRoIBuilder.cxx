@@ -74,7 +74,6 @@ StatusCode HLTJetRoIBuilder :: initialize ()
   ANA_MSG_DEBUG( "Initializing HLTJetRoIBuilder Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   // Grab the TrigDecTool from the ToolStore
   if(!m_trigDecTool_handle.isUserConfigured()){
@@ -131,7 +130,7 @@ StatusCode HLTJetRoIBuilder :: execute ()
 
 
 
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 }
@@ -480,8 +479,8 @@ StatusCode HLTJetRoIBuilder :: buildHLTBJets ()
 
   }// Combinations
 
-  ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
-  ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
+  ANA_CHECK( evtStore()->record( hltJets,    m_outContainerName));
+  ANA_CHECK( evtStore()->record( hltJetsAux, m_outContainerName+"Aux."));
 
   return StatusCode::SUCCESS;
 }
@@ -515,8 +514,8 @@ StatusCode HLTJetRoIBuilder :: buildHLTJets ()
     }
   }
 
-  ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
-  ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
+  ANA_CHECK( evtStore()->record( hltJets,    m_outContainerName));
+  ANA_CHECK( evtStore()->record( hltJetsAux, m_outContainerName+"Aux."));
   ANA_MSG_VERBOSE("Left buildHLTJets  ");
   return StatusCode::SUCCESS;
 }

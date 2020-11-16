@@ -101,7 +101,6 @@ StatusCode TauJetMatching :: initialize ()
   ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -191,7 +190,7 @@ StatusCode TauJetMatching :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 

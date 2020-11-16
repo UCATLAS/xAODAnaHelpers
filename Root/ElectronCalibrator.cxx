@@ -97,7 +97,6 @@ StatusCode ElectronCalibrator :: initialize ()
   ANA_MSG_INFO( "Initializing ElectronCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -157,7 +156,7 @@ StatusCode ElectronCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(std::move(SystElectronsNames), "ele_Syst"+m_name ));
+  ANA_CHECK(evtStore()->record(std::move(SystElectronsNames), "ele_Syst"+m_name ));
 
   // ***********************************************************
 
@@ -294,20 +293,20 @@ StatusCode ElectronCalibrator :: execute ()
 
     // add SC container to TStore
     //
-    ANA_CHECK( m_store->record( calibElectronsSC.first,  outSCContainerName  ));
-    ANA_CHECK( m_store->record( calibElectronsSC.second, outSCAuxContainerName ));
+    ANA_CHECK( evtStore()->record( calibElectronsSC.first,  outSCContainerName  ));
+    ANA_CHECK( evtStore()->record( calibElectronsSC.second, outSCAuxContainerName ));
     // add ConstDataVector to TStore
     //
-    ANA_CHECK( m_store->record( calibElectronsCDV, outContainerName));
+    ANA_CHECK( evtStore()->record( calibElectronsCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
-  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+  ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 }

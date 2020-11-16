@@ -4,7 +4,6 @@
 // Infrastructure include(s):
 #include "xAODRootAccess/Init.h"
 #include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
 #include "xAODMetaData/FileMetaData.h"
 
 #include <AnaAlgorithm/AnaAlgorithm.h>
@@ -177,8 +176,6 @@ namespace xAH {
 
         /** The TEvent object */
         xAOD::TEvent* m_event = nullptr;
-        /** The TStore object */
-        xAOD::TStore* m_store = nullptr;
 
         /**
             @rst

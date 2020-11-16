@@ -96,7 +96,6 @@ StatusCode ElectronEfficiencyCorrector :: initialize ()
   ANA_MSG_INFO( "Initializing ElectronEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -430,7 +429,7 @@ StatusCode ElectronEfficiencyCorrector :: execute ()
     const xAOD::ElectronContainer* inputElectrons(nullptr);
 
     // some systematics might have rejected the event
-    if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName ) ) {
+    if ( evtStore()->contains<xAOD::ElectronContainer>( m_inContainerName+systName ) ) {
 
       // retrieve input electrons
       ANA_CHECK( evtStore()->retrieve(inputElectrons, m_inContainerName+systName) );
@@ -454,7 +453,7 @@ StatusCode ElectronEfficiencyCorrector :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 }
@@ -608,8 +607,8 @@ StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContai
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesPID ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesPID), m_outputSystNamesPID ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesPID ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesPID), m_outputSystNamesPID ));
     }
 
   }
@@ -701,8 +700,8 @@ StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContai
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
     }
 
   }
@@ -793,8 +792,8 @@ StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContai
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
     }
 
   }
@@ -928,8 +927,8 @@ StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContai
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTrig ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesTrig ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
     }
 
   }

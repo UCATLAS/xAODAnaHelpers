@@ -41,7 +41,6 @@ StatusCode TrackHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "TrackHistsAlgo");
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
   return StatusCode::SUCCESS;
 }
 

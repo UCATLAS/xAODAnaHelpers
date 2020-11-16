@@ -42,7 +42,6 @@ StatusCode TrigMatcher :: initialize ()
 
   // Standard containers
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   // Configuration
   if ( m_inContainerName.empty() ) {

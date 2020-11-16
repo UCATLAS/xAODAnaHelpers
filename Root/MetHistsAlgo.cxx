@@ -38,7 +38,6 @@ StatusCode MetHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "MetHistsAlgo");
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
   return StatusCode::SUCCESS;
 }
 

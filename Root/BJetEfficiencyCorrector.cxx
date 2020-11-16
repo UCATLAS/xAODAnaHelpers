@@ -87,7 +87,6 @@ StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_MSG_INFO( "Initializing BJetEfficiencyCorrector Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -328,7 +327,7 @@ StatusCode BJetEfficiencyCorrector :: execute ()
     const xAOD::JetContainer* inJets(nullptr);
 
     // some systematics might have rejected the event
-    if ( m_store->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
+    if ( evtStore()->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
       // Check the existence of the container
       ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName+systName) );
 
@@ -501,7 +500,7 @@ StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::Je
     ANA_MSG_DEBUG("Size is " << sysVariationNames->size());
     for(auto sysName : *sysVariationNames) ANA_MSG_DEBUG(sysName);
 
-    ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystName));
+    ANA_CHECK( evtStore()->record( std::move(sysVariationNames), m_outputSystName));
   }
 
   return StatusCode::SUCCESS;

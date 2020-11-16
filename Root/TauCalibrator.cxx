@@ -91,7 +91,6 @@ StatusCode TauCalibrator :: initialize ()
   ANA_MSG_INFO( "Initializing TauCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -143,7 +142,7 @@ StatusCode TauCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(std::move(SystTausNames), "taus_Syst"+m_name ));
+  ANA_CHECK(evtStore()->record(std::move(SystTausNames), "taus_Syst"+m_name ));
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -253,25 +252,25 @@ StatusCode TauCalibrator :: execute ()
     // add SC container to TStore
     //
     ANA_MSG_DEBUG( "recording calibTausSC");
-    ANA_CHECK( m_store->record( calibTausSC.first,  outSCContainerName  ));
-    ANA_CHECK( m_store->record( calibTausSC.second, outSCAuxContainerName ));
+    ANA_CHECK( evtStore()->record( calibTausSC.first,  outSCContainerName  ));
+    ANA_CHECK( evtStore()->record( calibTausSC.second, outSCAuxContainerName ));
 
     //
     // add ConstDataVector to TStore
     //
     ANA_MSG_DEBUG( "record calibTausCDV");
-    ANA_CHECK( m_store->record( calibTausCDV, outContainerName));
+    ANA_CHECK( evtStore()->record( calibTausCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
   ANA_MSG_DEBUG( "record m_outputAlgoSystNames");
-  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+  ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   ANA_MSG_DEBUG( "Left ");
   return StatusCode::SUCCESS;

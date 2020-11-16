@@ -68,7 +68,7 @@ public:
     static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
 
     const xAOD::EventInfo* eventInfo(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
     float eventWeight(1);
     if ( mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
@@ -88,7 +88,7 @@ public:
     // if input comes from xAOD, or just running one collection,
     // then get the one collection and be done with it
     if( m_inputAlgo.empty() ) {
-      ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inParticles, m_inContainerName) );
 
       // pass the photon collection
       ANA_CHECK( static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight, eventInfo ));
@@ -97,13 +97,13 @@ public:
 
       // get vector of string giving the names
       std::vector<std::string>* systNames(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgo) );
 
       // loop over systematics
       for( auto systName : *systNames ) {
-	ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, msg()) );
-	if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
-	ANA_CHECK( static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ));
+        ANA_CHECK( evtStore()->retrieve(inParticles, m_inContainerName+systName) );
+        if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
+        ANA_CHECK( static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ));
       }
     }
 

@@ -183,7 +183,6 @@ StatusCode MuonSelector :: initialize ()
   }// if m_useCutFlow
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -428,7 +427,7 @@ StatusCode MuonSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        ANA_CHECK( m_store->record( selectedMuons, m_outContainerName ));
+        ANA_CHECK( evtStore()->record( selectedMuons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
 	//
@@ -485,7 +484,7 @@ StatusCode MuonSelector :: execute ()
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          ANA_CHECK( m_store->record( selectedMuons, m_outContainerName+systName ));
+          ANA_CHECK( evtStore()->record( selectedMuons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
           delete selectedMuons; selectedMuons = nullptr;
@@ -498,13 +497,13 @@ StatusCode MuonSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+    ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   }
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   if( !eventPass ) {
     setFilterPassed(false);

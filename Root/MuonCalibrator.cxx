@@ -107,7 +107,6 @@ StatusCode MuonCalibrator :: initialize ()
   ANA_MSG_INFO( "Initializing MuonCalibrator Interface... ");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -217,7 +216,7 @@ StatusCode MuonCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(std::move(SystMuonsNames), "muons_Syst"+m_name ));
+  ANA_CHECK(evtStore()->record(std::move(SystMuonsNames), "muons_Syst"+m_name ));
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -329,25 +328,25 @@ StatusCode MuonCalibrator :: execute ()
     // add SC container to TStore
     //
     ANA_MSG_DEBUG( "recording calibMuonsSC");
-    ANA_CHECK( m_store->record( calibMuonsSC.first,  outSCContainerName  ));
-    ANA_CHECK( m_store->record( calibMuonsSC.second, outSCAuxContainerName ));
+    ANA_CHECK( evtStore()->record( calibMuonsSC.first,  outSCContainerName  ));
+    ANA_CHECK( evtStore()->record( calibMuonsSC.second, outSCAuxContainerName ));
 
     //
     // add ConstDataVector to TStore
     //
     ANA_MSG_DEBUG( "record calibMuonsCDV");
-    ANA_CHECK( m_store->record( calibMuonsCDV, outContainerName));
+    ANA_CHECK( evtStore()->record( calibMuonsCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
   ANA_MSG_DEBUG( "record m_outputAlgoSystNames");
-  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+  ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   ANA_MSG_DEBUG( "Left ");
   return StatusCode::SUCCESS;

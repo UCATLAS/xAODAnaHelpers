@@ -66,7 +66,6 @@ StatusCode Writer :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
   m_numEvent      = 0;
 
   // output xAOD

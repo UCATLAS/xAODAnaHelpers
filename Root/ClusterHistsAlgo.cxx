@@ -40,7 +40,6 @@ StatusCode ClusterHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "ClusterHistsAlgo");
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
   return StatusCode::SUCCESS;
 }
 

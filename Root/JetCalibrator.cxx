@@ -134,7 +134,6 @@ StatusCode JetCalibrator :: initialize ()
   m_runSysts = false; //Ensure this starts false
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
@@ -392,7 +391,7 @@ StatusCode JetCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(std::move(SystJetsNames), "jets_Syst"+m_name ));
+  ANA_CHECK(evtStore()->record(std::move(SystJetsNames), "jets_Syst"+m_name ));
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
@@ -436,8 +435,8 @@ StatusCode JetCalibrator :: execute ()
 
   std::string outSCContainerName=m_outContainerName+"ShallowCopy";
   std::string outSCAuxContainerName=m_outContainerName+"ShallowCopyAux.";
-  ANA_CHECK( m_store->record( calibJetsSC.first,  outSCContainerName));
-  ANA_CHECK( m_store->record( calibJetsSC.second, outSCAuxContainerName));
+  ANA_CHECK( evtStore()->record( calibJetsSC.first,  outSCContainerName));
+  ANA_CHECK( evtStore()->record( calibJetsSC.second, outSCAuxContainerName));
 
   for ( auto jet_itr : *(calibJetsSC.first) ) {
     m_numObject++;
@@ -510,11 +509,11 @@ StatusCode JetCalibrator :: execute ()
   }
 
   // add vector of systematic names to TStore
-  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgo));
+  ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgo));
 
   // look what do we have in TStore
 
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
+  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 }
@@ -665,11 +664,11 @@ StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSyst, c
 
   // add shallow copy to TStore
   if(!nominal){ // nominal is always saved outside of systematics loop
-    ANA_CHECK( m_store->record( uncertCalibJetsSC.first, outSCContainerName));
-    ANA_CHECK( m_store->record( uncertCalibJetsSC.second, outSCAuxContainerName));
+    ANA_CHECK( evtStore()->record( uncertCalibJetsSC.first, outSCContainerName));
+    ANA_CHECK( evtStore()->record( uncertCalibJetsSC.second, outSCAuxContainerName));
   }
   // add ConstDataVector to TStore
-  ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
+  ANA_CHECK( evtStore()->record( uncertCalibJetsCDV, outContainerName));
 
   return StatusCode::SUCCESS;
 }

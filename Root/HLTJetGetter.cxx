@@ -64,7 +64,6 @@ StatusCode HLTJetGetter :: initialize ()
     ANA_MSG_INFO( "Initializing HLTJetGetter Interface... ");
 
     m_event = wk()->xaodEvent();
-    m_store = wk()->xaodStore();
 
     //
     // Grab the TrigDecTool from the ToolStore
@@ -125,8 +124,8 @@ StatusCode HLTJetGetter :: execute ()
 
     auto JetFeatureContainers = chainFeatures.containerFeature<xAOD::JetContainer>(m_inContainerName.c_str());
 
-    ANA_CHECK( m_store->record( hltJets,    m_outContainerName));
-    ANA_CHECK( m_store->record( hltJetsAux, m_outContainerName+"Aux."));
+    ANA_CHECK( evtStore()->record( hltJets,    m_outContainerName));
+    ANA_CHECK( evtStore()->record( hltJetsAux, m_outContainerName+"Aux."));
 
     for( auto fContainer : JetFeatureContainers ) {
         for( auto trigJet : *fContainer.cptr() ) {
@@ -136,7 +135,7 @@ StatusCode HLTJetGetter :: execute ()
         }//end trigJet loop
     }//end feature container loop
 
-    if(msgLvl(MSG::VERBOSE)) m_store->print();
+    if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
     return StatusCode::SUCCESS;
 }

@@ -179,7 +179,6 @@ StatusCode BasicEventSelection :: fileExecute ()
   // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
   //
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   // get the MetaData tree once a new file is opened, with
   //
@@ -383,7 +382,6 @@ StatusCode BasicEventSelection :: initialize ()
   // get TEvent and TStore
   //
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
   ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
@@ -656,7 +654,7 @@ StatusCode BasicEventSelection :: execute ()
   if ( (m_eventCounter % 1000) == 0 ) {
     ANA_MSG_INFO( "Entry number = " << m_eventCounter);
     ANA_MSG_VERBOSE( "Store Content:");
-    if(msgLvl(MSG::VERBOSE)) m_store->print();
+    if(msgLvl(MSG::VERBOSE)) evtStore()->print();
     ANA_MSG_VERBOSE( "End Content");
   }
 

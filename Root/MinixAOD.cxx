@@ -98,7 +98,6 @@ StatusCode MinixAOD :: initialize ()
   ANA_MSG_DEBUG("Calling initialize");
 
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   // always do this, obviously
   TFile *file_xAOD = wk()->getOutputFile(m_outputXAODStreamName);

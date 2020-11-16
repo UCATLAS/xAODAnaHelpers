@@ -78,7 +78,6 @@ StatusCode TreeAlgo :: initialize ()
 {
   ANA_MSG_INFO( m_name );
   m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile (m_outputStreamName);
@@ -349,7 +348,7 @@ StatusCode TreeAlgo :: execute ()
       return StatusCode::FAILURE;
     }
 
-    m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
+    m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG) );
     const auto& helpTree = m_trees[systName];
     helpTree->m_vertexContainerName = m_vertexContainers.at(0);
 
