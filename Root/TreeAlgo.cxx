@@ -347,7 +347,7 @@ StatusCode TreeAlgo :: execute ()
       return StatusCode::FAILURE;
     }
 
-    m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG) );
+    m_trees[systName] = createTree( evtStore(), outTree, treeFile, m_units, msgLvl(MSG::DEBUG) );
     const auto& helpTree = m_trees[systName];
     helpTree->m_vertexContainerName = m_vertexContainers.at(0);
 
@@ -459,7 +459,7 @@ StatusCode TreeAlgo :: execute ()
     if (std::find(fatJetSystNames.begin(), fatJetSystNames.end(), systName) != fatJetSystNames.end()) fatJetSuffix = systName;
     if (std::find(metSystNames.begin(), metSystNames.end(), systName) != metSystNames.end()) metSuffix = systName;
 
-    helpTree->FillEvent( eventInfo, m_event, vertices );
+    helpTree->FillEvent( eventInfo, evtStore(), vertices );
 
     // Fill trigger information
     if ( !m_trigDetailStr.empty() )    {

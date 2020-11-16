@@ -174,9 +174,6 @@ namespace xAH {
          */
         std::string m_className = "Algorithm";
 
-        /** The TEvent object */
-        xAOD::TEvent* m_event = nullptr;
-
         /**
             @rst
                 Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isMC` can be used

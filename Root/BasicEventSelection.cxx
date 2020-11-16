@@ -206,10 +206,7 @@ StatusCode BasicEventSelection :: fileExecute ()
       // unless ALL of them have inputStream == "unknownStream"
       //
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
-      if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
-	  ANA_MSG_ERROR("Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
-	  return StatusCode::FAILURE;
-      }
+      ANA_CHECK(inputMetaStore()->retrieve(incompleteCBC, "IncompleteCutBookkeepers"));
       bool allFromUnknownStream(true);
       if ( incompleteCBC->size() != 0 ) {
 
@@ -229,15 +226,12 @@ StatusCode BasicEventSelection :: fileExecute ()
       // Now, let's find the actual information
       //
       const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
-      if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
-	  ANA_MSG_ERROR("Failed to retrieve CutBookkeepers from MetaData! Exiting.");
-	  return StatusCode::FAILURE;
-      }
+      ANA_CHECK(inputMetaStore()->retrieve(completeCBC, "CutBookkeepers"));
 
       // Find the smallest cycle number, the original first processing step/cycle
       int minCycle(10000);
       for ( auto cbk : *completeCBC ) {
-	  if ( !( cbk->name().empty() )  && ( minCycle > cbk->cycle() ) ){ minCycle = cbk->cycle(); }
+        if ( !( cbk->name().empty() )  && ( minCycle > cbk->cycle() ) ){ minCycle = cbk->cycle(); }
       }
 
       // Now, let's actually find the right one that contains all the needed info...
@@ -245,11 +239,11 @@ StatusCode BasicEventSelection :: fileExecute ()
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
       if ( m_isDerivation ) {
-	if(m_derivationName != ""){
-	  ANA_MSG_INFO("Override auto config to look at DAOD made by Derivation Algorithm: " << m_derivationName);
-	}else{
-	  ANA_MSG_INFO("Will autoconfig to look at DAOD made by Derivation Algorithm.");
-	}
+        if(m_derivationName != ""){
+          ANA_MSG_INFO("Override auto config to look at DAOD made by Derivation Algorithm: " << m_derivationName);
+        }else{
+          ANA_MSG_INFO("Will autoconfig to look at DAOD made by Derivation Algorithm.");
+        }
       }
 
       int maxCycle(-1);
