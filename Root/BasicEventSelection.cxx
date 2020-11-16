@@ -85,7 +85,7 @@ StatusCode BasicEventSelection :: histInitialize ()
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  ANA_CHECK(book(TH1D(m_metaDataHistName+"_EventCount", m_metaDataHistName+"_EventCount", 6, 0.5, 6.5)));
+  ANA_CHECK(book(TH1D((m_metaDataHistName+"_EventCount").c_str(), (m_metaDataHistName+"_EventCount").c_str(), 6, 0.5, 6.5)));
   m_histEventCount = hist(m_metaDataHistName+"_EventCount");
   // event counts from meta data
   m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
@@ -96,7 +96,7 @@ StatusCode BasicEventSelection :: histInitialize ()
   m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
 
   // event counts from meta data
-  ANA_CHECK(book(TH1D(m_metaDataHistName+"_SumW", m_metaDataHistName+"_SumW", 1, -0.5, 0.5)));
+  ANA_CHECK(book(TH1D((m_metaDataHistName+"_SumW").c_str(), (m_metaDataHistName+"_SumW").c_str(), 1, -0.5, 0.5)));
   m_histSumW = hist(m_metaDataHistName+"_SumW");
   m_histSumW->SetCanExtend(TH1::kAllAxes);
 
@@ -107,43 +107,43 @@ StatusCode BasicEventSelection :: histInitialize ()
 
   //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  ANA_CHECK(book(TH1D(m_cutFlowHistName, m_cutFlowHistName, 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_weighted", m_cutFlowHistName+"_weighted", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_electrons_1", m_cutFlowHistName+"_electrons_1", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_electrons_2", m_cutFlowHistName+"_electrons_2", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_muons_1", m_cutFlowHistName+"_muons_1", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_muons_2", m_cutFlowHistName+"_muons_2", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_photons_1", m_cutFlowHistName+"_photons_1", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_taus_1", m_cutFlowHistName+"_taus_1", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_taus_2", m_cutFlowHistName+"_taus_2", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_jets_1", m_cutFlowHistName+"_jets_1", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_trks_1", m_cutFlowHistName+"_trks_1", 1, 1, 2)));
-  ANA_CHECK(book(TH1D(m_cutFlowHistName+"_truths_1", m_cutFlowHistName+"_truths_1", 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName).c_str(), (m_cutFlowHistName).c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_weighted").c_str(), (m_cutFlowHistName+"_weighted", 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_electrons_1").c_str(), (m_cutFlowHistName+"_electrons_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_electrons_2").c_str(), (m_cutFlowHistName+"_electrons_2").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_muons_1").c_str(), (m_cutFlowHistName+"_muons_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_muons_2").c_str(), (m_cutFlowHistName+"_muons_2").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_photons_1").c_str(), (m_cutFlowHistName+"_photons_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_taus_1").c_str(), (m_cutFlowHistName+"_taus_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_taus_2").c_str(), (m_cutFlowHistName+"_taus_2").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_jets_1").c_str(), (m_cutFlowHistName+"_jets_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_trks_1").c_str(), (m_cutFlowHistName+"_trks_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_truths_1").c_str(), (m_cutFlowHistName+"_truths_1").c_str(), 1, 1, 2)));
 
   // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  m_cutflowHist          = hist(m_cutFlowHistName)
+  m_cutflowHist          = (TH1D*)hist(m_cutFlowHistName)
   m_cutflowHist->SetCanExtend(TH1::kAllAxes);
-  m_cutflowHistW         = hist(m_cutFlowHistName+"_weighted");
+  m_cutflowHistW         = (TH1D*)hist(m_cutFlowHistName+"_weighted");
   m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
-  m_el_cutflowHist_1     = hist(m_cutFlowHistName+"_electrons_1");
+  m_el_cutflowHist_1     = (TH1D*)hist(m_cutFlowHistName+"_electrons_1");
   m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_el_cutflowHist_2     = hist(m_cutFlowHistName+"_electrons_2");
+  m_el_cutflowHist_2     = (TH1D*)hist(m_cutFlowHistName+"_electrons_2");
   m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_1     = hist(m_cutFlowHistName+"_muons_1");
+  m_mu_cutflowHist_1     = (TH1D*)hist(m_cutFlowHistName+"_muons_1");
   m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_2     = hist(m_cutFlowHistName+"_muons_2");
+  m_mu_cutflowHist_2     = (TH1D*)hist(m_cutFlowHistName+"_muons_2");
   m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_ph_cutflowHist_1     = hist(m_cutFlowHistName+"_photons_1");
+  m_ph_cutflowHist_1     = (TH1D*)hist(m_cutFlowHistName+"_photons_1");
   m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_1     = hist(m_cutFlowHistName+"_taus_1");
+  m_tau_cutflowHist_1     = (TH1D*)hist(m_cutFlowHistName+"_taus_1");
   m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_2     = hist(m_cutFlowHistName+"_taus_2");
+  m_tau_cutflowHist_2     = (TH1D*)hist(m_cutFlowHistName+"_taus_2");
   m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_jet_cutflowHist_1    = hist(m_cutFlowHistName+"_jets_1");
+  m_jet_cutflowHist_1    = (TH1D*)hist(m_cutFlowHistName+"_jets_1");
   m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_trk_cutflowHist_1    = hist(m_cutFlowHistName+"_trks_1");
+  m_trk_cutflowHist_1    = (TH1D*)hist(m_cutFlowHistName+"_trks_1");
   m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_truth_cutflowHist_1  = hist(m_cutFlowHistName+"_truths_1");
+  m_truth_cutflowHist_1  = (TH1D*)hist(m_cutFlowHistName+"_truths_1");
   m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
 
   // start labelling the bins for the event cutflow
