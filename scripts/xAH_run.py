@@ -493,12 +493,8 @@ if __name__ == "__main__":
         xAH_logger.info('Output stream "{}" already exists'.format(output))
         continue
       xAH_logger.info('Creating output stream "{}"'.format(output))
-      if 'XAOD' in output:
-        xAH_logger.info('job.outputAdd(ROOT::EL::OutputStream("{}", "xAOD"))'.format(output))
-        _stream = ROOT.EL.OutputStream(output, "xAOD")
-      else:
-        xAH_logger.info('job.outputAdd(ROOT::EL::OutputStream("{}"))'.format(output))
-        _stream = ROOT.EL.OutputStream(output)
+      xAH_logger.info('job.outputAdd(ROOT::EL::OutputStream("{}"))'.format(output))
+      _stream = ROOT.EL.OutputStream(output)
       job.outputAdd(_stream)
 
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
