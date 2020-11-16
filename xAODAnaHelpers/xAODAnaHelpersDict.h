@@ -55,7 +55,6 @@
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/TrigMatcher.h>
 #include <xAODAnaHelpers/TauJetMatching.h>
-#include <xAODAnaHelpers/Writer.h>
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 #include <xAODAnaHelpers/MuonInFatJetCorrector.h>
 

@@ -51,7 +51,6 @@
 #include <xAODAnaHelpers/OverlapRemover.h>
 #include <xAODAnaHelpers/TrigMatcher.h>
 #include <xAODAnaHelpers/TauJetMatching.h>
-#include <xAODAnaHelpers/Writer.h>
 #include <xAODAnaHelpers/MessagePrinterAlgo.h>
 #include <xAODAnaHelpers/MuonInFatJetCorrector.h>
 
@@ -100,6 +99,5 @@ DECLARE_ALGORITHM_FACTORY (HelperFunctions)
 DECLARE_ALGORITHM_FACTORY (OverlapRemover)
 DECLARE_ALGORITHM_FACTORY (TrigMatcher)
 DECLARE_ALGORITHM_FACTORY (TauJetMatching)
-DECLARE_ALGORITHM_FACTORY (Writer)
 DECLARE_ALGORITHM_FACTORY (MessagePrinterAlgo)
 DECLARE_ALGORITHM_FACTORY (MuonInFatJetCorrector)

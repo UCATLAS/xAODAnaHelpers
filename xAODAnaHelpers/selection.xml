@@ -54,7 +54,6 @@
   <class name="OverlapRemover" />
   <class name="TrigMatcher" />
   <class name="TauJetMatching" />
-  <class name="Writer" />
   <class name="MessagePrinterAlgo" />
   <class name="MuonInFatJetCorrector" />
 
