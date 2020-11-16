@@ -12,8 +12,6 @@
 #include <iostream>
 
 
-#include <SampleHandler/MetaFields.h>
-
 //EDM
 #include "xAODJet/JetAuxContainer.h"
 
@@ -197,12 +195,12 @@ StatusCode BJetEfficiencyCorrector :: initialize ()
     if(isMC() && !m_EfficiencyCalibration.empty()) {
       std::string calibration=m_EfficiencyCalibration;
       if(m_EfficiencyCalibration=="auto") {
-          std::string gridName("");
-          ANA_CHECK(inputMetaStore()->retrieve(gridName, SH::MetaFields::gridName));
+          const std::string* gridName(nullptr);
+          ANA_CHECK(inputMetaStore()->retrieve(gridName, "nc_grid"));
 
           HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
-          if(!gridName.empty()) { // Do not trust sample name on the grid, in case there are multiple samples per job
-              std::stringstream ss(gridName);
+          if(!gridName->empty()) { // Do not trust sample name on the grid, in case there are multiple samples per job
+              std::stringstream ss(*gridName);
               std::string sampleName;
               while(std::getline(ss,sampleName,',')) {
                   HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
@@ -212,8 +210,8 @@ StatusCode BJetEfficiencyCorrector :: initialize ()
                   sampleShowerType=mySampleShowerType;
               }
           } else { // Use sample name when running locally
-              ANA_CHECK(inputMetaStore()->retrieve(gridName, SH::MetaFields::sampleName));
-              sampleShowerType=HelperFunctions::getMCShowerType(gridName);
+              ANA_CHECK(inputMetaStore()->retrieve(gridName, "sample_name"));
+              sampleShowerType=HelperFunctions::getMCShowerType(*gridName);
           }
 
           switch(sampleShowerType) {
@@ -230,7 +228,7 @@ StatusCode BJetEfficiencyCorrector :: initialize ()
                   calibration="410250";
               break;
               case HelperFunctions::Unknown:
-                  ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                  ANA_MSG_ERROR("Cannot determine MC shower type for sample " << *gridName << ".");
                   return StatusCode::FAILURE;
               break;
           }
