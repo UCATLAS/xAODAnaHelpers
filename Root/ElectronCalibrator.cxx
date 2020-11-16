@@ -174,8 +174,7 @@ StatusCode ElectronCalibrator :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+    writeSystematicsListHist(m_systList, m_name);
   }
 
   // ***********************************************************

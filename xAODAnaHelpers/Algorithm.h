@@ -22,6 +22,9 @@
 #include <AsgTools/MsgStreamMacros.h>
 #include <AsgTools/MessageCheck.h>
 
+namespace CP {
+  class SystematicSet;
+}
 
 namespace xAH {
 
@@ -296,7 +299,7 @@ namespace xAH {
             @endrst
          */
         template <typename T>
-	void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const { }
+        void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const { }
 
         /// @brief Return a ``std::string`` representation of ``this``
         std::string getAddress() const {
@@ -305,6 +308,10 @@ namespace xAH {
           ss << address;
           return ss.str();
         }
+
+        /// @brief write systematics information to metadata
+        void writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, const std::string& histName );
+
 
       private:
         /**

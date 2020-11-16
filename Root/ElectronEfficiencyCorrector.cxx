@@ -376,11 +376,10 @@ StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systListPID, m_outputSystNamesPID, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListIso, m_outputSystNamesIso, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListReco, m_outputSystNamesReco, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig, fileMD);
+    writeSystematicsListHist(m_systListPID, m_outputSystNamesPID);
+    writeSystematicsListHist(m_systListIso, m_outputSystNamesIso);
+    writeSystematicsListHist(m_systListReco, m_outputSystNamesReco);
+    writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig);
   }
 
   // *********************************************************************************

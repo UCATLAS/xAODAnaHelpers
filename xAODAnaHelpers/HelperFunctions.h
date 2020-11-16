@@ -163,8 +163,6 @@ namespace HelperFunctions {
   */
   std::vector< CP::SystematicSet > getListofSystematics( const CP::SystematicSet inSysts, std::string systNames, float systVal, MsgStream& msg );
 
-  void writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, std::string histName, TFile *file );
-
   /*    type_name<T>()      The awesome type demangler!
           - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.
 

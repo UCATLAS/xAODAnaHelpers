@@ -347,9 +347,8 @@ StatusCode JetSelector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systListJVT, m_outputSystNamesJVT, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT, fileMD);
+    writeSystematicsListHist(m_systListJVT, m_outputSystNamesJVT);
+    writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT);
   }
 
 

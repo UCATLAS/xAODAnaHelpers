@@ -196,8 +196,7 @@ StatusCode TauEfficiencyCorrector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systList, m_outputSystNames, fileMD);
+    writeSystematicsListHist(m_systList, m_outputSystNames);
   }
 
   // *********************************************************************************

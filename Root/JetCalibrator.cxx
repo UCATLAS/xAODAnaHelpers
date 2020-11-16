@@ -393,8 +393,7 @@ StatusCode JetCalibrator :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+    writeSystematicsListHist(m_systList, m_name);
   }
 
   ANA_MSG_INFO( "JetCalibrator Interface succesfully initialized!" );

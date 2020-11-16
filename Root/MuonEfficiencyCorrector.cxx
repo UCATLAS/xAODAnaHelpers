@@ -310,11 +310,10 @@ StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systListReco, m_outputSystNamesReco, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListIso, m_outputSystNamesIso, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListTTVA, m_outputSystNamesTTVA, fileMD);
+    writeSystematicsListHist(m_systListReco, m_outputSystNamesReco);
+    writeSystematicsListHist(m_systListIso, m_outputSystNamesIso);
+    writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig);
+    writeSystematicsListHist(m_systListTTVA, m_outputSystNamesTTVA);
   }
 
   // *********************************************************************************
