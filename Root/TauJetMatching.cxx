@@ -101,7 +101,6 @@ StatusCode TauJetMatching :: initialize ()
   ANA_MSG_INFO( "Algorithm name: " << m_name << " - of type " << m_className );
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ){
     ANA_MSG_ERROR( "InputContainer is empty!");

@@ -91,7 +91,6 @@ StatusCode TauCalibrator :: initialize ()
   ANA_MSG_INFO( "Initializing TauCalibrator Interface... ");
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   // shallow copies are made with this output container name

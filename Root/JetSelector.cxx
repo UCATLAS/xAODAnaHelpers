@@ -357,7 +357,6 @@ StatusCode JetSelector :: initialize ()
     HelperFunctions::writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT, fileMD);
   }
 
-  ANA_MSG_DEBUG( "Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;

@@ -118,7 +118,6 @@ StatusCode OverlapRemover :: initialize ()
   }
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
 
   if ( m_inContainerName_Jets.empty() ) {

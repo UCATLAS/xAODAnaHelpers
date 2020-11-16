@@ -134,7 +134,6 @@ StatusCode JetCalibrator :: initialize ()
   m_runSysts = false; //Ensure this starts false
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   // If there is no InputContainer we must stop
   if ( m_inContainerName.empty() ) {

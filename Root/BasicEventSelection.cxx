@@ -626,7 +626,6 @@ StatusCode BasicEventSelection :: initialize ()
 
   // As a check, let's see the number of events in our file (long long int)
   //
-  ANA_MSG_INFO( "Number of events in file = " << m_event->getEntries());
 
   // Initialize counter for number of entries
   m_eventCounter   = 0;

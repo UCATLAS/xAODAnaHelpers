@@ -69,7 +69,6 @@ StatusCode DebugTool :: initialize ()
   ANA_MSG_INFO( " ");
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   return StatusCode::SUCCESS;
 }

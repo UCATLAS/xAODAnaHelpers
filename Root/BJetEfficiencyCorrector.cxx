@@ -87,7 +87,6 @@ StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_MSG_INFO( "Initializing BJetEfficiencyCorrector Interface... ");
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   // several lists of systematics could be configured
   // this is the case when MET sys should be added

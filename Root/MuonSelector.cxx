@@ -183,7 +183,6 @@ StatusCode MuonSelector :: initialize ()
   }// if m_useCutFlow
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
   m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );

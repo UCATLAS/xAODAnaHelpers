@@ -96,7 +96,6 @@ StatusCode ElectronEfficiencyCorrector :: initialize ()
   ANA_MSG_INFO( "Initializing ElectronEfficiencyCorrector Interface... ");
 
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");

@@ -150,7 +150,6 @@ StatusCode TrackSelector :: initialize ()
   }
 
 
-  ANA_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
