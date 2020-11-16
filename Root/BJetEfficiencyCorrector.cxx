@@ -197,64 +197,59 @@ StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
 
-    if(isMC() && !m_EfficiencyCalibration.empty())
-      {
-	std::string calibration=m_EfficiencyCalibration;
-	if(m_EfficiencyCalibration=="auto")
-	  {
-	    std::string gridName=wk()->metaData()->castString(SH::MetaFields::gridName);
+    if(isMC() && !m_EfficiencyCalibration.empty()) {
+      std::string calibration=m_EfficiencyCalibration;
+      if(m_EfficiencyCalibration=="auto") {
+          std::string gridName("");
+          ANA_CHECK(inputMetaStore()->retrieve(gridName, SH::MetaFields::gridName));
 
-	    HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
-	    if(!gridName.empty())
-	      { // Do not trust sample name on the grid, in case there are multiple samples per job
-		std::stringstream ss(gridName);
-		std::string sampleName;
-		while(std::getline(ss,sampleName,','))
-		  {
-		    HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
-		    if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown)
-		      ANA_MSG_ERROR("Cannot have different shower types per grid task.");
-		    sampleShowerType=mySampleShowerType;
-		  }
-	      }
-	    else // Use sample name when running locally
-	      {
-		gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
-		sampleShowerType=HelperFunctions::getMCShowerType(gridName);
-	      }
+          HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
+          if(!gridName.empty()) { // Do not trust sample name on the grid, in case there are multiple samples per job
+              std::stringstream ss(gridName);
+              std::string sampleName;
+              while(std::getline(ss,sampleName,',')) {
+                  HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
+                  if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown){
+                    ANA_MSG_ERROR("Cannot have different shower types per grid task.");
+                  }
+                  sampleShowerType=mySampleShowerType;
+              }
+          } else { // Use sample name when running locally
+              ANA_CHECK(inputMetaStore()->retrieve(gridName, SH::MetaFields::sampleName));
+              sampleShowerType=HelperFunctions::getMCShowerType(gridName);
+          }
 
-	    switch(sampleShowerType)
-	      {
-	      case HelperFunctions::Pythia8:
-		calibration="410470";
-		break;
-	      case HelperFunctions::Herwig7:
-		calibration="410558";
-		break;
-	      case HelperFunctions::Sherpa21:
-		calibration="426131";
-		break;
-	      case HelperFunctions::Sherpa22:
-		calibration="410250";
-		break;
-	      case HelperFunctions::Unknown:
-		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-		return StatusCode::FAILURE;
-		break;
-	      }
-	  }
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
+          switch(sampleShowerType) {
+              case HelperFunctions::Pythia8:
+                  calibration="410470";
+              break;
+              case HelperFunctions::Herwig7:
+                  calibration="410558";
+              break;
+              case HelperFunctions::Sherpa21:
+                  calibration="426131";
+              break;
+              case HelperFunctions::Sherpa22:
+                  calibration="410250";
+              break;
+              case HelperFunctions::Unknown:
+                  ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                  return StatusCode::FAILURE;
+              break;
+          }
       }
-
-    ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
-
-  } else {
-    ANA_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
   }
+
+  ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
+
+} else {
+  ANA_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
+}
 
   //
   // Print out
