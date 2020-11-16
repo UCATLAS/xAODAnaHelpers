@@ -13,7 +13,6 @@
 #include <TH2F.h>
 #include <TH3F.h>
 #include <TProfile.h>
-#include <xAODRootAccess/TEvent.h>
 
 // for StatusCode::isSuccess
 #include <AsgTools/StatusCode.h>

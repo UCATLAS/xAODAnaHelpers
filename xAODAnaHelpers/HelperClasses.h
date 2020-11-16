@@ -11,9 +11,6 @@
 #include <RootCoreUtils/ThrowMsg.h>
 #include <AthContainers/ConstDataVector.h>
 
-#include <xAODRootAccess/TEvent.h>
-#include <xAODRootAccess/TStore.h>
-
 #include <xAODEventInfo/EventInfo.h>
 
 namespace HelperClasses {
