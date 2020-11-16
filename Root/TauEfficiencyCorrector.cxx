@@ -196,7 +196,7 @@ StatusCode TauEfficiencyCorrector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    writeSystematicsListHist(m_systList, m_outputSystNames);
+    ANA_CHECK(writeSystematicsListHist(m_systList, m_outputSystNames));
   }
 
   // *********************************************************************************

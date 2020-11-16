@@ -347,8 +347,8 @@ StatusCode JetSelector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    writeSystematicsListHist(m_systListJVT, m_outputSystNamesJVT);
-    writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT);
+    ANA_CHECK(writeSystematicsListHist(m_systListJVT, m_outputSystNamesJVT));
+    ANA_CHECK(writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT));
   }
 
 

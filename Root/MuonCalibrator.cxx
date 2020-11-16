@@ -218,7 +218,7 @@ StatusCode MuonCalibrator :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    writeSystematicsListHist(m_systList, m_name);
+    ANA_CHECK(writeSystematicsListHist(m_systList, m_name));
   }
 
   ANA_MSG_INFO( "MuonCalibrator Interface succesfully initialized!" );

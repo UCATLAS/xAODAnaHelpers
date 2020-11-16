@@ -310,7 +310,7 @@ namespace xAH {
         }
 
         /// @brief write systematics information to metadata
-        void writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, const std::string& histName );
+        StatusCode writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, const std::string& histName );
 
 
       private:

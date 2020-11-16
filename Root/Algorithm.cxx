@@ -163,10 +163,10 @@ void xAH::Algorithm::unregisterInstance(){
 }
 
 
-void xAH::Algorithm::writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, const std::string& histName )
+StatusCode xAH::Algorithm::writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, const std::string& histName )
 {
   if (!systs.size() || histName.empty()) {
-    return;
+    return StatusCode::SUCCESS;
   }
   std::string name = m_metaDataHistName + "/" + "systematics" + "/" + histName;
 
@@ -179,5 +179,6 @@ void xAH::Algorithm::writeSystematicsListHist( const std::vector< CP::Systematic
       hist->GetXaxis()->SetBinLabel(i + 1, systs[i].name().c_str());
     }
   }
-  hist->Write();
+
+  return StatusCode::SUCCESS;
 }

@@ -288,7 +288,7 @@ StatusCode BJetEfficiencyCorrector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    writeSystematicsListHist(m_systList, m_outputSystName);
+    ANA_CHECK(writeSystematicsListHist(m_systList, m_outputSystName));
   }
 
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );

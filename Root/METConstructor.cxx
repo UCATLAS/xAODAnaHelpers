@@ -172,7 +172,7 @@ StatusCode METConstructor :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    writeSystematicsListHist(m_sysList, m_name);
+    ANA_CHECK(writeSystematicsListHist(m_sysList, m_name));
   }
 
   return StatusCode::SUCCESS;
