@@ -304,10 +304,10 @@ StatusCode MinixAOD :: finalize () {
   // Save cutbookkeeper
   if(m_copyCutBookkeeper)
     {
-      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputCBKContainer      ,"CutBookkeepers")              );
-      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputCBKContainer_aux  ,"CutBookkeepersAux.")          );
-      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputInCBKContainer    ,"IncompleteCutBookkeepers")    );
-      ANA_CHECK( wk()->xaodEvent()->recordMeta(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux."));
+      ANA_CHECK( outputMetaStore()->record(m_outputCBKContainer      ,"CutBookkeepers")              );
+      ANA_CHECK( outputMetaStore()->record(m_outputCBKContainer_aux  ,"CutBookkeepersAux.")          );
+      ANA_CHECK( outputMetaStore()->record(m_outputInCBKContainer    ,"IncompleteCutBookkeepers")    );
+      ANA_CHECK( outputMetaStore()->record(m_outputInCBKContainer_aux,"IncompleteCutBookkeepersAux."));
 
       m_outputCBKContainer->push_back(m_outputCBK);
     }
