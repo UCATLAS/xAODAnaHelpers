@@ -73,7 +73,6 @@ StatusCode HLTJetRoIBuilder :: initialize ()
 
   ANA_MSG_DEBUG( "Initializing HLTJetRoIBuilder Interface... ");
 
-  m_event = wk()->xaodEvent();
 
   // Grab the TrigDecTool from the ToolStore
   if(!m_trigDecTool_handle.isUserConfigured()){

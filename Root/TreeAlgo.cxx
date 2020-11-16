@@ -77,7 +77,6 @@ TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
 StatusCode TreeAlgo :: initialize ()
 {
   ANA_MSG_INFO( m_name );
-  m_event = wk()->xaodEvent();
 
   // get the file we created already
   TFile* treeFile = wk()->getOutputFile (m_outputStreamName);

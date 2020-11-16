@@ -133,7 +133,6 @@ StatusCode JetCalibrator :: initialize ()
   ANA_MSG_INFO( "Initializing JetCalibrator Interface... ");
   m_runSysts = false; //Ensure this starts false
 
-  m_event = wk()->xaodEvent();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 

@@ -61,7 +61,6 @@ StatusCode MuonInFatJetCorrector :: initialize()
 {
   ANA_MSG_DEBUG("Calling initialize");
 
-  m_event = wk()->xaodEvent();
 
   //
   // Automatically determine calibrated mass decorators, if asked

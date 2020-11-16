@@ -40,7 +40,6 @@ StatusCode TrackHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusCod
 StatusCode TrackHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "TrackHistsAlgo");
-  m_event = wk()->xaodEvent();
   return StatusCode::SUCCESS;
 }
 

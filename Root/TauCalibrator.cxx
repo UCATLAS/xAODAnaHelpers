@@ -90,7 +90,6 @@ StatusCode TauCalibrator :: initialize ()
 
   ANA_MSG_INFO( "Initializing TauCalibrator Interface... ");
 
-  m_event = wk()->xaodEvent();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 

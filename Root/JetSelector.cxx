@@ -171,7 +171,6 @@ StatusCode JetSelector :: initialize ()
 
   ANA_MSG_DEBUG( "Calling initialize");
 
-  m_event = wk()->xaodEvent();
 
   if ( m_useCutFlow ) {
 

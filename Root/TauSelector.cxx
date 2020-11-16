@@ -156,7 +156,6 @@ StatusCode TauSelector :: initialize ()
 
   }
 
-  m_event = wk()->xaodEvent();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 

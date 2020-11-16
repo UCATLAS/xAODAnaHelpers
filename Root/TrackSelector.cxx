@@ -149,7 +149,6 @@ StatusCode TrackSelector :: initialize ()
     return StatusCode::FAILURE;
   }
 
-  m_event = wk()->xaodEvent();
 
   ANA_MSG_DEBUG("Number of events in file: " << m_event->getEntries() );
 

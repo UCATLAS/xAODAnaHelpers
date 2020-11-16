@@ -63,7 +63,6 @@ StatusCode HLTJetGetter :: initialize ()
 
     ANA_MSG_INFO( "Initializing HLTJetGetter Interface... ");
 
-    m_event = wk()->xaodEvent();
 
     //
     // Grab the TrigDecTool from the ToolStore

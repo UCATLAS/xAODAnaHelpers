@@ -89,7 +89,6 @@ StatusCode TauEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "Initializing TauEfficiencyCorrector Interface... ");
 
-  m_event = wk()->xaodEvent();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 

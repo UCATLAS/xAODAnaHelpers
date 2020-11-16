@@ -117,7 +117,6 @@ StatusCode OverlapRemover :: initialize ()
     return StatusCode::FAILURE;
   }
 
-  m_event = wk()->xaodEvent();
 
   ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 

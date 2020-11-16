@@ -113,7 +113,6 @@ StatusCode METConstructor :: initialize ()
 
   ANA_MSG_INFO( "Initializing METConstructor Interface...");
 
-  m_event = wk()->xaodEvent();
 
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
 

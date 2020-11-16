@@ -41,7 +41,6 @@ StatusCode TrigMatcher :: initialize ()
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   // Standard containers
-  m_event = wk()->xaodEvent();
 
   // Configuration
   if ( m_inContainerName.empty() ) {

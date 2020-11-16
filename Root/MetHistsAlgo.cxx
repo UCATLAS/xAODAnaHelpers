@@ -37,7 +37,6 @@ StatusCode MetHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusCode:
 StatusCode MetHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "MetHistsAlgo");
-  m_event = wk()->xaodEvent();
   return StatusCode::SUCCESS;
 }
 

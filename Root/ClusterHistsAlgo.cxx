@@ -39,7 +39,6 @@ StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusC
 StatusCode ClusterHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "ClusterHistsAlgo");
-  m_event = wk()->xaodEvent();
   return StatusCode::SUCCESS;
 }
 
