@@ -171,12 +171,12 @@ StatusCode xAH::Algorithm::writeSystematicsListHist( const std::vector< CP::Syst
   std::string name = m_metaDataHistName + "/" + "systematics" + "/" + histName;
 
   ANA_CHECK(book(TH1D(name.c_str(), name.c_str(), systs.size(), 0.5, systs.size() + 0.5)));
-  TH1D* hist = hist(name);
+  TH1D* myhist = hist(name);
   for (size_t i = 0; i < systs.size(); i++) {
     if (systs[i].name().empty()) {
-      hist->GetXaxis()->SetBinLabel(i + 1, "nominal");
+      myhist->GetXaxis()->SetBinLabel(i + 1, "nominal");
     } else {
-      hist->GetXaxis()->SetBinLabel(i + 1, systs[i].name().c_str());
+      myhist->GetXaxis()->SetBinLabel(i + 1, systs[i].name().c_str());
     }
   }
 
