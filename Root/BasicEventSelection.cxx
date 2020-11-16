@@ -69,7 +69,6 @@ BasicEventSelection :: BasicEventSelection (const std::string& name, ISvcLocator
     declareProperty("storePrescaleWeight", m_storePrescaleWeight);
     declareProperty("derivationName", m_derivationName);
     declareProperty("useMetaData", m_useMetaData);
-    declareProperty("metaDataHistName", m_metaDataHistName);
     declareProperty("duplicatesTreeName", m_duplicatesTreeName);
     declareProperty("checkDuplicatesData", m_checkDuplicatesData);
     declareProperty("checkDuplicatesMC", m_checkDuplicatesMC);

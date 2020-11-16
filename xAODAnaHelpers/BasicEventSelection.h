@@ -182,9 +182,7 @@ class BasicEventSelection : public xAH::Algorithm
         streams. E.g. can combine all outputs into a single stream
     */
 
-    // output stream names
-    std::string m_metaDataHistName = "metadata";
-    std::string m_cutFlowHistName = "cutflow";
+    /// @brief output tree name for duplicates
     std::string m_duplicatesTreeName = "duplicates";
 
     /** Check for duplicated events in data */

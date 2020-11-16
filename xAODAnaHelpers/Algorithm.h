@@ -168,6 +168,11 @@ namespace xAH {
         /** If using DAOD_PHYS or not. */
         bool m_isPHYS = false;
 
+        /** output metadata hist name prefixes **/
+        std::string m_metaDataHistName = "metadata";
+        /** output cutflow hist name prefixes **/
+        std::string m_cutFlowHistName = "cutflow";
+
       protected:
         /**
             @rst

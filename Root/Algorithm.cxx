@@ -33,6 +33,8 @@ xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, con
     declareProperty("className", m_className);
     declareProperty("isDAOD", m_isDAOD);
     declareProperty("isPHYS", m_isPHYS);
+    declareProperty("cutFlowHistName", m_cutFlowHistName);
+    declareProperty("metaDataHistName", m_metaDataHistName);
 }
 
 StatusCode xAH::Algorithm::algInitialize(){
