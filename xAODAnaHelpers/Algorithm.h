@@ -164,6 +164,9 @@ namespace xAH {
         /** Backwards compatibility, same as m_forceFastSim */
         bool m_setAFII = false;
 
+        /** If using DAOD_PHYS or not. */
+        bool m_isPHYS = false;
+
 
       protected:
         /**
@@ -209,9 +212,6 @@ namespace xAH {
             @endrst
          */
         bool isFastSim();
-
-	/** Determines if using DAOD_PHYS or not. */
-	bool isPHYS();
 
         /**
             @rst

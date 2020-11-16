@@ -31,6 +31,7 @@ xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, con
     declareProperty("forceData", m_forceData);
     declareProperty("setAFII", m_setAFII);
     declareProperty("className", m_className);
+    declareProperty("isPHYS", m_isPHYS);
 }
 
 StatusCode xAH::Algorithm::algInitialize(){
@@ -133,17 +134,6 @@ bool xAH::Algorithm::isFastSim(){
     }
 
     return m_isFastSim;
-}
-
-bool xAH::Algorithm::isPHYS(){
-    TTree* metaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
-    if(metaData){
-      metaData->LoadTree(0);
-      return metaData->GetBranch("StreamDAOD_PHYS");
-    } else {
-      ANA_MSG_ERROR("MetaData tree missing from input file!");
-      return 0;
-    }
 }
 
 void xAH::Algorithm::registerInstance(){
