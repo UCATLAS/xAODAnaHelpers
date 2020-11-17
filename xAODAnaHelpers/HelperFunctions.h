@@ -11,10 +11,6 @@
 #include "AsgTools/StatusCode.h"
 #include <AsgTools/MessageCheck.h>
 
-#ifdef XAOD_STANDALONE
-#include <SampleHandler/SampleHandler.h>
-#endif
-
 // jet reclustering and trimming
 #include <fastjet/JetDefinition.hh>
 #include "xAODJet/JetContainer.h"
@@ -39,21 +35,6 @@
 
 // messaging includes
 #include <AsgTools/MsgStream.h>
-
-#ifdef XAOD_STANDALONE
-// Functions that need to have a dictionary built. PyROOT does not
-// seem to like the HelperFunctions namespace for some reason.
-namespace xAH {
-
-  /**
-   * @brief Directly add a SampleGrid to a SamplerHandler listing several datasets.
-   * @param sh SampleHander to which the sample will be added to
-   * @param name Name of the sample
-   * @param list List of datasets to be included in the sample
-   */
-  void addRucio(SH::SampleHandler& sh, const std::string& name, const std::string& dslist);
-} // close namespace xAH
-#endif
 
 namespace HelperFunctions {
   /**
