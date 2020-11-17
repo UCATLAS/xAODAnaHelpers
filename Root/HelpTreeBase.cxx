@@ -106,7 +106,7 @@ HelpTreeBase::~HelpTreeBase() {
 
 
 HelpTreeBase::HelpTreeBase(TTree* tree, asg::SgTEvent *evtStore, const float units, bool debug):
-  HelpTreeBase(evtStore, tree, units, debug, store)
+  HelpTreeBase(evtStore, tree, units, debug)
 {
   // use the other constructor for everything
 }
