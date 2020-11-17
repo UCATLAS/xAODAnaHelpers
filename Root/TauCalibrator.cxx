@@ -267,7 +267,6 @@ StatusCode TauCalibrator :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   ANA_MSG_DEBUG( "Left ");
   return StatusCode::SUCCESS;

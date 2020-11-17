@@ -310,7 +310,6 @@ StatusCode PhotonSelector :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   if( !eventPass ) {
     setFilterPassed(false);

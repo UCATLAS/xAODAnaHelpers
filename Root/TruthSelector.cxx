@@ -173,7 +173,6 @@ StatusCode TruthSelector :: execute ()
   pass = executeSelection( inTruthParts, mcEvtWeight, count, m_outContainerName);
 
   // look what we have in TStore
-  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   if ( !pass ) {
     setFilterPassed(false);

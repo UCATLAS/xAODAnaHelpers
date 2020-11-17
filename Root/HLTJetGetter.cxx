@@ -134,7 +134,6 @@ StatusCode HLTJetGetter :: execute ()
         }//end trigJet loop
     }//end feature container loop
 
-    if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
     return StatusCode::SUCCESS;
 }

@@ -129,7 +129,6 @@ StatusCode HLTJetRoIBuilder :: execute ()
 
 
 
-  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 }

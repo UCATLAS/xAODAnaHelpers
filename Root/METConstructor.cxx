@@ -593,7 +593,6 @@ StatusCode METConstructor :: execute ()
       ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
    }
 
-   if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 

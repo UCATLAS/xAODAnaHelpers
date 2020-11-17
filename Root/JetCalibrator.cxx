@@ -510,7 +510,6 @@ StatusCode JetCalibrator :: execute ()
 
   // look what do we have in TStore
 
-  if(msgLvl(MSG::VERBOSE)) evtStore()->print();
 
   return StatusCode::SUCCESS;
 }

@@ -78,7 +78,6 @@ StatusCode DebugTool :: execute ()
   // look what we have in TStore
   //
   if ( m_printStore ) {
-    evtStore()->print();
   }
 
   return StatusCode::SUCCESS;

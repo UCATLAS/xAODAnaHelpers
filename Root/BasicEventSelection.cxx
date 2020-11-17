@@ -618,7 +618,6 @@ StatusCode BasicEventSelection :: execute ()
   if ( (m_eventCounter % 1000) == 0 ) {
     ANA_MSG_INFO( "Entry number = " << m_eventCounter);
     ANA_MSG_VERBOSE( "Store Content:");
-    if(msgLvl(MSG::VERBOSE)) evtStore()->print();
     ANA_MSG_VERBOSE( "End Content");
   }
 
