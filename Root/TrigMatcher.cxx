@@ -72,7 +72,7 @@ StatusCode TrigMatcher :: initialize ()
 
   //  everything went fine, let's initialise the tool!
   //
-  if( !isPHYS() ) {
+  if( !m_isPHYS ) {
     m_trigMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
     ANA_CHECK( m_trigMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
   } else { // For DAOD_PHYS samples
