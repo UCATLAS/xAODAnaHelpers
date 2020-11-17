@@ -18,7 +18,7 @@ jobs:
       matrix:
         release_type:
           - analysisbase
-          - athanalysis
+          #- athanalysis
         release_version:
           - 21.2.114
           - 21.2.115

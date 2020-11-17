@@ -7,9 +7,6 @@
 // Gaudi/Athena include(s):
 #include "AthContainers/normalizedTypeinfoName.h"
 
-// evtStore
-#include <AsgTools/SgTEvent.h>
-
 // local includes
 #include "AsgTools/StatusCode.h"
 #include <AsgTools/MessageCheck.h>
@@ -332,8 +329,8 @@ namespace HelperFunctions {
 
     @endrst
    */
-  template <typename T1, typename T2, typename T3>
-  StatusCode makeDeepCopy(asg::SgTEvent* m_store, std::string containerName, const T1* cont){
+  template <typename T, typename T1, typename T2, typename T3>
+  StatusCode makeDeepCopy(T* m_store, std::string containerName, const T1* cont){
     T1* cont_new = new T1;
     T2* auxcont_new = new T2;
     cont_new->setStore(auxcont_new);

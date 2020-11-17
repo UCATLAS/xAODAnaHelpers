@@ -2,7 +2,6 @@
 #define xAODAnaHelpers_Algorithm_H
 
 // Infrastructure include(s):
-#include <AsgTools/SgTEvent.h>
 #include "xAODMetaData/FileMetaData.h"
 
 #include <AnaAlgorithm/AnaAlgorithm.h>
