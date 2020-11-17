@@ -86,7 +86,7 @@ StatusCode BasicEventSelection :: histInitialize ()
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   ANA_CHECK(book(TH1D((m_metaDataHistName+"_EventCount").c_str(), (m_metaDataHistName+"_EventCount").c_str(), 6, 0.5, 6.5)));
-  m_histEventCount = hist(m_metaDataHistName+"_EventCount");
+  m_histEventCount = static_cast<TH1D*>(hist(m_metaDataHistName+"_EventCount"));
   // event counts from meta data
   m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
   m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected");
@@ -97,7 +97,7 @@ StatusCode BasicEventSelection :: histInitialize ()
 
   // event counts from meta data
   ANA_CHECK(book(TH1D((m_metaDataHistName+"_SumW").c_str(), (m_metaDataHistName+"_SumW").c_str(), 1, -0.5, 0.5)));
-  m_histSumW = hist(m_metaDataHistName+"_SumW");
+  m_histSumW = static_cast<TH1D*>(hist(m_metaDataHistName+"_SumW"));
   m_histSumW->SetCanExtend(TH1::kAllAxes);
 
   ANA_MSG_INFO( "Creating histograms");
@@ -108,7 +108,7 @@ StatusCode BasicEventSelection :: histInitialize ()
   //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
   ANA_CHECK(book(TH1D((m_cutFlowHistName).c_str(), (m_cutFlowHistName).c_str(), 1, 1, 2)));
-  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_weighted").c_str(), (m_cutFlowHistName+"_weighted", 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_weighted").c_str(), (m_cutFlowHistName+"_weighted").c_str(), 1, 1, 2)));
   ANA_CHECK(book(TH1D((m_cutFlowHistName+"_electrons_1").c_str(), (m_cutFlowHistName+"_electrons_1").c_str(), 1, 1, 2)));
   ANA_CHECK(book(TH1D((m_cutFlowHistName+"_electrons_2").c_str(), (m_cutFlowHistName+"_electrons_2").c_str(), 1, 1, 2)));
   ANA_CHECK(book(TH1D((m_cutFlowHistName+"_muons_1").c_str(), (m_cutFlowHistName+"_muons_1").c_str(), 1, 1, 2)));
