@@ -121,7 +121,7 @@ StatusCode BasicEventSelection :: histInitialize ()
   ANA_CHECK(book(TH1D((m_cutFlowHistName+"_truths_1").c_str(), (m_cutFlowHistName+"_truths_1").c_str(), 1, 1, 2)));
 
   // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  m_cutflowHist          = (TH1D*)hist(m_cutFlowHistName)
+  m_cutflowHist          = (TH1D*)hist(m_cutFlowHistName);
   m_cutflowHist->SetCanExtend(TH1::kAllAxes);
   m_cutflowHistW         = (TH1D*)hist(m_cutFlowHistName+"_weighted");
   m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
@@ -448,7 +448,7 @@ StatusCode BasicEventSelection :: initialize ()
   // -------------------------------------------------------------------------------------------------
 
   // Create TTree for bookeeeping duplicated events
-  ANA_CHECK(book(TTree(m_duplicatesTreeName,"Info on duplicated events")));
+  ANA_CHECK(book(TTree(m_duplicatesTreeName.c_str(),"Info on duplicated events")));
   m_duplicatesTree = tree(m_duplicatesTreeName);
   m_duplicatesTree->Branch("runNumber",    &m_duplRunNumber,      "runNumber/I");
   m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/L");
