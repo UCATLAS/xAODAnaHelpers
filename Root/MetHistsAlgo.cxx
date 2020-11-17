@@ -63,7 +63,7 @@ StatusCode MetHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
 StatusCode MetHistsAlgo :: histFinalize ()
 {
 
-  for( auto hist : m_plots->hists() ){
+  for( auto& hist : m_plots->hists() ){
     ANA_CHECK(book(hist));
   }
 

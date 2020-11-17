@@ -65,7 +65,7 @@ StatusCode IParticleHistsAlgo :: execute ()
 
 StatusCode IParticleHistsAlgo :: finalize () {
   ANA_MSG_DEBUG( m_name );
-  for( auto plots : m_plots ) {
+  for( auto& plots : m_plots ) {
     if(plots.second){
       plots.second->finalize();
       delete plots.second;
@@ -75,8 +75,8 @@ StatusCode IParticleHistsAlgo :: finalize () {
 }
 
 StatusCode IParticleHistsAlgo :: histFinalize () {
-  for( auto plots : m_plots ) {
-    for( auto hist : plots.second->hists() ){
+  for( auto& plots : m_plots ) {
+    for( auto& hist : plots.second->hists() ){
       ANA_CHECK(book(hist));
     }
   }
