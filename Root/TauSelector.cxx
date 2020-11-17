@@ -129,20 +129,20 @@ StatusCode TauSelector :: initialize ()
   if ( m_useCutFlow ) {
 
     // retrieve the event cutflows
-    m_cutflowHist  = hist(m_cutFlowHistName);
-    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_tau_cutflowHist_1  = hist(m_cutFlowHistName+"_taus_1");
+    m_tau_cutflowHist_1  = static_cast<TH1D*>(hist(m_cutFlowHistName+"_taus_1"));
 
     m_tau_cutflow_all                  = m_tau_cutflowHist_1->GetXaxis()->FindBin("all");
     m_tau_cutflow_selected             = m_tau_cutflowHist_1->GetXaxis()->FindBin("selected");
 
     if ( m_isUsedBefore ) {
-      m_tau_cutflowHist_2 = hist(m_cutFlowHistName+"_taus_2");
+      m_tau_cutflowHist_2 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_taus_2"));
 
       m_tau_cutflow_all                  = m_tau_cutflowHist_2->GetXaxis()->FindBin("all");
       m_tau_cutflow_selected             = m_tau_cutflowHist_2->GetXaxis()->FindBin("selected");
