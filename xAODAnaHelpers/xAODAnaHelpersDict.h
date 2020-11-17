@@ -13,7 +13,6 @@
 #include <xAODAnaHelpers/PhotonSelector.h>
 #include <xAODAnaHelpers/TauSelector.h>
 #include <xAODAnaHelpers/JetSelector.h>
-#include <xAODAnaHelpers/DebugTool.h>
 #include <xAODAnaHelpers/TruthSelector.h>
 #include <xAODAnaHelpers/TrackSelector.h>
 #include <xAODAnaHelpers/MuonSelector.h>

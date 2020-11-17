@@ -12,7 +12,6 @@
   <class name="PhotonSelector" />
   <class name="TauSelector" />
   <class name="JetSelector" />
-  <class name="DebugTool" />
   <class name="TruthSelector" />
   <class name="TrackSelector" />
   <class name="MuonSelector" />
