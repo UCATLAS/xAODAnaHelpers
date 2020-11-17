@@ -7,6 +7,7 @@
  *  @bug No known bugs
  */
 
+#include <unordered_map>
 #include <ctype.h>
 #include <TH1.h>
 #include <TH1F.h>
