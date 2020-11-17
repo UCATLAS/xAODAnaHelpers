@@ -175,14 +175,14 @@ StatusCode JetSelector :: initialize ()
   if ( m_useCutFlow ) {
 
     // retrieve the event cutflows
-    m_cutflowHist  = hist(m_cutFlowHistName);
-    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_jet_cutflowHist_1 = hist(m_cutFlowHistName+"_jets_1");
+    m_jet_cutflowHist_1 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_jets_1"));
 
     m_jet_cutflow_all             = m_jet_cutflowHist_1->GetXaxis()->FindBin("all");
     m_jet_cutflow_ptmax_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");

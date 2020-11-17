@@ -44,6 +44,7 @@
 #include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODAnaHelpers/TauContainer.h"
 
+#include <AsgTools/SgTEvent.h>
 
 #include <map>
 

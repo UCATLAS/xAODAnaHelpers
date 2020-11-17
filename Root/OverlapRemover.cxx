@@ -1101,15 +1101,15 @@ StatusCode OverlapRemover :: setCutFlowHist( )
   if ( m_useCutFlow ) {
     // retrieve the object cutflow
     //
-    m_el_cutflowHist_1    = hist(m_cutFlowHistName+"_electrons_1");
+    m_el_cutflowHist_1    = static_cast<TH1D*>(hist(m_cutFlowHistName+"_electrons_1"));
     m_el_cutflow_OR_cut   = m_el_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_mu_cutflowHist_1    = hist(m_cutFlowHistName+"_muons_1");
+    m_mu_cutflowHist_1    = static_cast<TH1D*>(hist(m_cutFlowHistName+"_muons_1"));
     m_mu_cutflow_OR_cut   = m_mu_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_jet_cutflowHist_1   = hist(m_cutFlowHistName+"_jets_1");
+    m_jet_cutflowHist_1   = static_cast<TH1D*>(hist(m_cutFlowHistName+"_jets_1"));
     m_jet_cutflow_OR_cut  = m_jet_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_ph_cutflowHist_1    = hist(m_cutFlowHistName+"_photons_1");
+    m_ph_cutflowHist_1    = static_cast<TH1D*>(hist(m_cutFlowHistName+"_photons_1"));
     m_ph_cutflow_OR_cut   = m_ph_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
-    m_tau_cutflowHist_1   = hist(m_cutFlowHistName+"_taus_1");
+    m_tau_cutflowHist_1   = static_cast<TH1D*>(hist(m_cutFlowHistName+"_taus_1"));
     m_tau_cutflow_OR_cut  = m_tau_cutflowHist_1->GetXaxis()->FindBin("OR_cut");
   }
 

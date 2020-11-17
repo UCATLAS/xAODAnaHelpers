@@ -96,14 +96,14 @@ StatusCode TruthSelector :: initialize ()
 
     // retrieve the event cutflows
     //
-    m_cutflowHist  = hist(m_cutFlowHistName);
-    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_truth_cutflowHist_1 = hist(m_cutFlowHistName+"_truths_1");
+    m_truth_cutflowHist_1 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_truths_1"));
 
     m_truth_cutflow_all             = m_truth_cutflowHist_1->GetXaxis()->FindBin("all");
     m_truth_cutflow_ptmax_cut       = m_truth_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");

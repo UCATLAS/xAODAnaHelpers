@@ -123,8 +123,8 @@ StatusCode TrackSelector :: initialize ()
   // input events.
 
   if(m_useCutFlow) {
-    m_cutflowHist  = hist(m_cutFlowHistName);
-    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
   }

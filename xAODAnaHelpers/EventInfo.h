@@ -3,6 +3,7 @@
 
 #include <TTree.h>
 #include <string>
+#include <AsgTools/SgTEvent.h>
 
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODTracking/VertexContainer.h"

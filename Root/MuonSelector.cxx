@@ -137,14 +137,14 @@ StatusCode MuonSelector :: initialize ()
 
     // retrieve the event cutflows
     //
-    m_cutflowHist  = hist(m_cutFlowHistName);
-    m_cutflowHistW = hist(m_cutFlowHistName+"_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_mu_cutflowHist_1  = hist(m_cutFlowHistName+"_muons_1");
+    m_mu_cutflowHist_1  = static_cast<TH1D*>(hist(m_cutFlowHistName+"_muons_1"));
 
     m_mu_cutflow_all                  = m_mu_cutflowHist_1->GetXaxis()->FindBin("all");
     m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_1->GetXaxis()->FindBin("eta_and_quality_cut");
@@ -160,7 +160,7 @@ StatusCode MuonSelector :: initialize ()
 
 
     if ( m_isUsedBefore ) {
-      m_mu_cutflowHist_2 = hist(m_cutFlowHistName+"_muons_2");
+      m_mu_cutflowHist_2 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_muons_2"));
 
       m_mu_cutflow_all 		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("all");
       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");
