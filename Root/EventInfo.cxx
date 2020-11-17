@@ -371,7 +371,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* evtS
 
   }
 
-  if ( m_infoSwitch.m_shapeLC && event ) {
+  if ( m_infoSwitch.m_shapeLC && evtStore ) {
     const xAOD::EventShape* evtShape(nullptr);
     evtStore->retrieve( evtShape, "Kt4LCTopoOriginEventShape");
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoLC ) ) {
@@ -380,7 +380,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* evtS
     }
   }
 
-  if ( m_infoSwitch.m_shapeEM && event ) {
+  if ( m_infoSwitch.m_shapeEM && evtStore ) {
     const xAOD::EventShape* evtShape(nullptr);
     evtStore->retrieve( evtShape, "Kt4EMTopoOriginEventShape");
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEM ) ) {
@@ -389,7 +389,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* evtS
     }
   }
 
-  if ( m_infoSwitch.m_shapeEMPFLOW && event ) {
+  if ( m_infoSwitch.m_shapeEMPFLOW && evtStore ) {
     const xAOD::EventShape* evtShape(nullptr);
     evtStore->retrieve( evtShape, "Kt4EMPFlowEventShape");
     if ( !evtShape->getDensity( xAOD::EventShape::Density, m_rhoEMPFLOW ) ) {
@@ -398,7 +398,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* evtS
     }
   }
 
-  if( m_infoSwitch.m_caloClus && event ) {
+  if( m_infoSwitch.m_caloClus && evtStore ) {
     const xAOD::CaloClusterContainer* caloClusters = 0;
     evtStore->retrieve( caloClusters, "CaloCalTopoClusters");
     // save the clusters at the EM scale
@@ -411,7 +411,7 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* evtS
     }
   }
 
-  if( m_infoSwitch.m_truth && event && m_mc ) {
+  if( m_infoSwitch.m_truth && evtStore && m_mc ) {
     //MC Truth
     const xAOD::TruthEventContainer* truthE = 0;
     evtStore->retrieve( truthE, "TruthEvents");
