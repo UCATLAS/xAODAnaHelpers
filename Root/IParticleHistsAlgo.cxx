@@ -77,7 +77,7 @@ StatusCode IParticleHistsAlgo :: finalize () {
 StatusCode IParticleHistsAlgo :: histFinalize () {
   for( auto plots : m_plots ) {
     for( auto hist : plots.second->hists() ){
-      ANA_CHECK(book(hist));
+      ANA_CHECK(book(*hist));
     }
   }
 

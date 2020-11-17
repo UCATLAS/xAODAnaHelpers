@@ -64,7 +64,7 @@ StatusCode MetHistsAlgo :: histFinalize ()
 {
 
   for( auto hist : m_plots->hists() ){
-    ANA_CHECK(book(hist));
+    ANA_CHECK(book(*hist));
   }
 
   // clean up memory
