@@ -9,6 +9,7 @@ import json
 import os
 import random
 import re
+import ROOT
 
 class NameGenerator(object):
   adjectives = None
@@ -122,3 +123,73 @@ def update_clioption_defaults(argdict, newvalues):
 
   for key,value in newvalues.items():
     if key in argdict: argdict[key]['default']=value
+
+# helper function to deal with type madness in vector(...)
+def _find_element_type(iterable, element_type):
+  supported = (int, float)
+
+  if element_type is None:
+    try:
+      element_type = type(iterable[0])
+    except IndexError: 
+      # for empty iterables, c++ still needs a type, 
+      raise ValueError(
+          '`vector` cannot determine the element type of an empty input iterable.'
+          ' Please specify the expected type using the element_type argument.')
+    
+    if element_type not in supported:
+      raise NotImplementedError(
+          '`vector` recieved iterable with elements of '
+          + 'unsupported type "{}". '.format(element_type.__name__)
+          + 'The following types are supported: "'
+          + '", "'.join([s.__name__ for s in supported])
+          + '"')
+  else:
+    if element_type not in supported:
+      raise NotImplementedError(
+        'The specified element_type ("{}")'.format(element_type.__name__)
+        + ' is not supported. The following types are supported: "'
+        + '", "'.join([s.__name__ for s in supported])
+        + '"')
+    
+    if iterable and not isinstance(iterable[0], element_type):
+      raise ValueError(
+          'The specified element_type ("{}") '.format(element_type.__name__)
+          + 'does not match the types of the iterable elements.')
+
+
+  if not all(isinstance(e, element_type) for e in iterable):
+    raise TypeError(
+        '`vector` needs a single element type, '
+        'iterable {} has more than one type of element'.format(iterable))
+
+  return element_type
+
+def vector(iterable, element_type = None):
+  """
+  Convert a list or tuple of ints or floats into a c++ std::vector.
+
+
+  Input elements need to have a single shared type.
+  >>> my_vector = vector([0.8, 2.3, -0.7]) # a vector of floats
+
+  Inputs may be empty (specify element_type to avoid type mismatches).
+  >>> my_vector = vector([], element_type = float) # an empty vector of floats
+  
+  Arguments:
+     - iterable : a list or tuple of numbers, to be converted into a vector
+     - element_type : type of the vector elements. With non-empty
+                      iterables, the element type is deduced, so 
+                      this argument is optional. On empty iterables,
+                      you need to specify it.
+  Returns:
+    A new vector containing the elements of the input iterable.
+  
+  Raises an exception if the element types are not matching, or not supported.
+  """
+  
+  element_type = _find_element_type(iterable, element_type)
+  vector = ROOT.std.vector(element_type.__name__)()
+  for element in iterable:
+    vector.push_back(element)
+  return vector
