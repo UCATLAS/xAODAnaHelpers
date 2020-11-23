@@ -124,6 +124,7 @@ def update_clioption_defaults(argdict, newvalues):
   for key,value in newvalues.items():
     if key in argdict: argdict[key]['default']=value
 
+# helper function to deal with type madness in vector(...)
 def _find_element_type(iterable, element_type):
   supported = (int, float)
 
@@ -164,7 +165,29 @@ def _find_element_type(iterable, element_type):
 
   return element_type
 
-def to_vector(iterable, element_type = None):
+def vector(iterable, element_type = None):
+  """
+  Convert a list or tuple of ints or floats into a c++ std::vector.
+
+
+  Input elements need to have a single shared type.
+  >>> my_vector = vector([0.8, 2.3, -0.7]) # a vector of floats
+
+  Inputs may be empty (specify element_type to avoid type mismatches).
+  >>> my_vector = vector([], element_type = float) # an empty vector of floats
+  
+  Arguments:
+     - iterable : a list or tuple of numbers, to be converted into a vector
+     - element_type : type of the vector elements. With non-empty
+                      iterables, the element type is deduced, so 
+                      this argument is optional. On empty iterables,
+                      you need to specify it.
+  Returns:
+    A new vector containing the elements of the input iterable.
+  
+  Raises an exception if the element types are not matching, or not supported.
+  """
+  
   element_type = _find_element_type(iterable, element_type)
   vector = ROOT.std.vector(element_type.__name__)()
   for element in iterable:
