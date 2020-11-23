@@ -12,7 +12,7 @@ ROOT.gROOT.SetBatch(True)
 import inspect
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
 
-from .utils import NameGenerator
+from .utils import NameGenerator, vector
 
 class Config(object):
   def __init__(self):
@@ -100,7 +100,11 @@ class Config(object):
 
   def _set_algo_attribute(self, alg_obj, name, value, className, algName):
     #handle unicode from json
-    if isinstance(value, unicode): value = value.encode('utf-8')
+    if isinstance(value, unicode):
+      value = value.encode('utf-8')
+    elif isinstance(value, (list, tuple)):
+      # manually call vector in user code when this fails on an empty list/tuple
+      value = vector(value) 
     self._log.append((algName, name, value))
     try:
       setattr(alg_obj, name, value)
