@@ -248,7 +248,7 @@ EL::StatusCode ElectronCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }

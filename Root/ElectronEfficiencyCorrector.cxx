@@ -563,7 +563,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
       // apply syst
       //
-      if ( m_asgElEffCorrTool_elSF_PID->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_asgElEffCorrTool_elSF_PID->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_PID for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
@@ -656,7 +656,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
       // apply syst
       //
-      if ( m_asgElEffCorrTool_elSF_Iso->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_asgElEffCorrTool_elSF_Iso->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Iso for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
@@ -749,7 +749,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
       // apply syst
       //
-      if ( m_asgElEffCorrTool_elSF_Reco->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_asgElEffCorrTool_elSF_Reco->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Reco for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
@@ -851,13 +851,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
       // apply syst
       //
-      if ( m_asgElEffCorrTool_elSF_Trig->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_asgElEffCorrTool_elSF_Trig->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Trig for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Trig->appliedSystematics().name() );
 
-      if ( m_asgElEffCorrTool_elSF_TrigMCEff->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_asgElEffCorrTool_elSF_TrigMCEff->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_TrigMCEff for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
       }

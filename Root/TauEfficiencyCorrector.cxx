@@ -380,7 +380,7 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
 
     // apply syst
     //
-    if ( m_tauEffCorrTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_tauEffCorrTool_handle->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR("Failed to configure TauEfficiencyScaleFactors for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }

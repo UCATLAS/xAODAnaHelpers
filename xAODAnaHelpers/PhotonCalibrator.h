@@ -6,7 +6,6 @@
 #include <PATInterfaces/SystematicSet.h>
 #include <PATInterfaces/SystematicsUtil.h>
 #include <PATInterfaces/SystematicVariation.h>
-#include <PATInterfaces/SystematicCode.h>
 #include <xAODEventInfo/EventInfo.h>
 
 // external tools include(s):

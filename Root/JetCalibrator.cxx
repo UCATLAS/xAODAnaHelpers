@@ -331,7 +331,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     if ( !m_systList.empty() ) {
       m_runSysts = true;
       // setup uncertainity tool for systematic evaluation
-      if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
+      if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != EL::StatusCode::SUCCESS ) {
         ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
         return EL::StatusCode::FAILURE;
       }
@@ -585,7 +585,7 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
   if ( m_runSysts ) {
     // Jet Uncertainty Systematic
     ANA_MSG_DEBUG("Configure for systematic variation : " << thisSyst.name());
-    if ( (*jetUncTool)->applySystematicVariation(thisSyst) != CP::SystematicCode::Ok ) {
+    if ( (*jetUncTool)->applySystematicVariation(thisSyst) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
       return EL::StatusCode::FAILURE;
     }

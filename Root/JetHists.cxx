@@ -1,4 +1,5 @@
 #include <xAODAnaHelpers/JetHists.h>
+#include "xAODBTagging/BTaggingUtilities.h"
 #include <sstream>
 #include <math.h>       /* hypot */
 
@@ -981,7 +982,7 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if(m_debug) std::cout << "JetHists: m_flavorTag " <<std::endl;
     const xAOD::BTagging *btag_info(0);
     if(m_infoSwitch->m_flavorTag){
-      btag_info = jet->btagging();
+      btag_info = xAOD::BTaggingUtilities::getBTagging(*jet);
     }else if(m_infoSwitch->m_flavorTagHLT){
       btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }

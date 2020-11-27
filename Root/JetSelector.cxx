@@ -16,7 +16,6 @@
 #include "AthContainers/ConstDataVector.h"
 #include "PATInterfaces/SystematicVariation.h"
 #include "PATInterfaces/SystematicRegistry.h"
-#include "PATInterfaces/SystematicCode.h"
 
 // package include(s):
 #include "xAODEventInfo/EventInfo.h"

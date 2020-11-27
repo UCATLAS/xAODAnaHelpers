@@ -212,7 +212,7 @@ EL::StatusCode TauCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_tauSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_tauSmearingTool_handle->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR( "Failed to configure TauSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }

@@ -494,7 +494,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
       // apply syst
       //
-      if ( m_muRecoSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_muRecoSF_tool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
         ANA_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
@@ -599,7 +599,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
       // apply syst
       //
-      if ( m_muIsoSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_muIsoSF_tool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
     	ANA_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
@@ -726,7 +726,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
         // apply syst
         //
-        if ( m_muTrigSF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+        if ( m_muTrigSF_tool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
           ANA_MSG_ERROR( "Failed to configure MuonTriggerScaleFactors for trigger " << trig_it << " systematic " << syst_it.name());
           return EL::StatusCode::FAILURE;
         }
@@ -867,7 +867,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
       // TEMP! Commenting this out b/c stupid AnaToolHandle does not work as it should...
       //
       //if ( m_muTTVASF_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
-      if ( m_muTTVASF_tool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+      if ( m_muTTVASF_tool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
        	ANA_MSG_ERROR("Failed to configure MuonEfficiencyScaleFactors for systematic " << syst_it.name());
     	return EL::StatusCode::FAILURE;
       }
