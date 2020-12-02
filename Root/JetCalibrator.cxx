@@ -344,6 +344,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the JVT correction tool
 
   if( m_redoJVT ){
+    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JetContainer", m_inContainerName));
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
 
     if( ! m_JvtAuxName.empty() ){
@@ -406,8 +407,6 @@ EL::StatusCode JetCalibrator :: execute ()
   //
   // Perform nominal calibration
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
-  // ConstDataVector<xAOD::JetContainer>* calibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-  // calibJetsCDV->reserve( calibJetsSC.first->size() );
 
   if ( m_addGhostMuonsToJets ) {
     ANA_MSG_VERBOSE("Run muon-to-jet ghost association");
@@ -462,21 +461,21 @@ EL::StatusCode JetCalibrator :: execute ()
     
     }
 
-    //
-    // the calibration
-    // if ( m_JetCalibrationTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-    //   ANA_MSG_ERROR( "JetCalibration tool reported a CP::CorrectionCode::Error");
-    //   ANA_MSG_ERROR( m_name );
-    //   return StatusCode::FAILURE;
-    // }
-
-    // if(m_doJetTileCorr && !isMC()){
-    //   if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
-    //     ANA_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
-    //   }
-    // }
-
   }//for jets
+
+  // Apply the calibration
+  if ( m_JetCalibrationTool_handle->applyCalibration( *(calibJetsSC.first) ) == EL::StatusCode::FAILURE ) {
+    ANA_MSG_ERROR( "JetCalibration tool reported a EL::StatusCode::FAILURE");
+    ANA_MSG_ERROR( m_name );
+    return StatusCode::FAILURE;
+  }
+
+  // Need to be adapted to use full jet container (once tool works in R22)
+  // if(m_doJetTileCorr && !isMC()){
+  //   if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
+  //     ANA_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
+  //   }
+  // }
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
   auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
