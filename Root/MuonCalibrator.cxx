@@ -195,7 +195,6 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   // Get a list of recommended systematics for this tool
   //
-  //const CP::SystematicSet recSyst = CP::SystematicSet();
   const CP::SystematicSet& recSyst = m_muonCalibrationTool_handle->recommendedSystematics();
 
   ANA_MSG_INFO(" Initializing Muon Calibrator Systematics :");
