@@ -20,7 +20,7 @@
 #include "GoodRunsLists/GoodRunsListSelectionTool.h"
 #include "PileupReweighting/PileupReweightingTool.h"
 #include "TrigConfxAOD/xAODConfigTool.h"
-#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
+//#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -401,35 +401,35 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   //////// Initialize Tool for Sherpa 2.2 Reweighting ////////////
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
-  m_reweightSherpa22 = false;
-  if( isMC() &&
-      ( (eventInfo->mcChannelNumber() >= 363331 && eventInfo->mcChannelNumber() <= 363483 ) ||
-        (eventInfo->mcChannelNumber() >= 363102 && eventInfo->mcChannelNumber() <= 363122 ) ||
-        (eventInfo->mcChannelNumber() >= 363361 && eventInfo->mcChannelNumber() <= 363435 ) ) ){
-    ANA_MSG_INFO( "This is Sherpa 2.2 dataset and should be reweighted.  An extra weight will be saved to EventInfo called \"weight_Sherpa22\".");
-    m_reweightSherpa22 = true;
+  //m_reweightSherpa22 = false;
+  //if( isMC() &&
+  //    ( (eventInfo->mcChannelNumber() >= 363331 && eventInfo->mcChannelNumber() <= 363483 ) ||
+  //      (eventInfo->mcChannelNumber() >= 363102 && eventInfo->mcChannelNumber() <= 363122 ) ||
+  //      (eventInfo->mcChannelNumber() >= 363361 && eventInfo->mcChannelNumber() <= 363435 ) ) ){
+  //  ANA_MSG_INFO( "This is Sherpa 2.2 dataset and should be reweighted.  An extra weight will be saved to EventInfo called \"weight_Sherpa22\".");
+  //  m_reweightSherpa22 = true;
 
-    //Choose Jet Truth container, WZ has more information and is favored by the tool
-    std::string pmg_TruthJetContainer = "";
-    if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthWZJets") ){
-      pmg_TruthJetContainer = "AntiKt4TruthWZJets";
-    } else if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
-      pmg_TruthJetContainer = "AntiKt4TruthJets";
-    } else {
-      ANA_MSG_WARNING( "No Truth Jet Container found for Sherpa 22 reweighting, weight_Sherpa22 will not be set.");
-      m_reweightSherpa22 = false;
-    }
+  //  //Choose Jet Truth container, WZ has more information and is favored by the tool
+  //  std::string pmg_TruthJetContainer = "";
+  //  if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthWZJets") ){
+  //    pmg_TruthJetContainer = "AntiKt4TruthWZJets";
+  //  } else if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
+  //    pmg_TruthJetContainer = "AntiKt4TruthJets";
+  //  } else {
+  //    ANA_MSG_WARNING( "No Truth Jet Container found for Sherpa 22 reweighting, weight_Sherpa22 will not be set.");
+  //    m_reweightSherpa22 = false;
+  //  }
 
-    //Initialize Tool
-    if( m_reweightSherpa22 ){
+  //  //Initialize Tool
+  //  if( m_reweightSherpa22 ){
 
-      ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ));
-      ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ));
-      ANA_CHECK( m_reweightSherpa22_tool_handle.retrieve());
-      ANA_MSG_DEBUG("Retrieved tool: " << m_reweightSherpa22_tool_handle);
+  //    ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "TruthJetContainer", pmg_TruthJetContainer ));
+  //    ANA_CHECK( m_reweightSherpa22_tool_handle.setProperty( "OutputLevel", msg().level() ));
+  //    ANA_CHECK( m_reweightSherpa22_tool_handle.retrieve());
+  //    ANA_MSG_DEBUG("Retrieved tool: " << m_reweightSherpa22_tool_handle);
 
-    }
-  }//if isMC and a Sherpa 2.2 sample
+  //  }
+  //}//if isMC and a Sherpa 2.2 sample
 
   ANA_MSG_INFO( "Setting up histograms based on isMC()");
 
@@ -736,18 +736,18 @@ EL::StatusCode BasicEventSelection :: execute ()
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
   //------------------------------------------------------------------------------------------
 
-  if ( m_reweightSherpa22 ){
-    static SG::AuxElement::Decorator< float > weight_Sherpa22Decor("weight_Sherpa22");
-    // Check if weight needs to be added
-    if ( !weight_Sherpa22Decor.isAvailable(*eventInfo) ) {
+  //if ( m_reweightSherpa22 ){
+  //  static SG::AuxElement::Decorator< float > weight_Sherpa22Decor("weight_Sherpa22");
+  //  // Check if weight needs to be added
+  //  if ( !weight_Sherpa22Decor.isAvailable(*eventInfo) ) {
 
-      float weight_Sherpa22 = -999.;
-      weight_Sherpa22 = m_reweightSherpa22_tool_handle->getWeight();
-      weight_Sherpa22Decor( *eventInfo ) = weight_Sherpa22;
-      ANA_MSG_DEBUG("Setting Sherpa 2.2 reweight to " << weight_Sherpa22);
+  //    float weight_Sherpa22 = -999.;
+  //    weight_Sherpa22 = m_reweightSherpa22_tool_handle->getWeight();
+  //    weight_Sherpa22Decor( *eventInfo ) = weight_Sherpa22;
+  //    ANA_MSG_DEBUG("Setting Sherpa 2.2 reweight to " << weight_Sherpa22);
 
-    } // If not already decorated
-  } // if m_reweightSherpa22
+  //  } // If not already decorated
+  //} // if m_reweightSherpa22
 
 
   //------------------------------------------------------------------------------------------
