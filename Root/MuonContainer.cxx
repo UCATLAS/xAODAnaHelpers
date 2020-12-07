@@ -18,7 +18,7 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
   if ( m_infoSwitch.m_trigger ) {
     m_isTrigMatched          = new     vector<int>               ();
     m_isTrigMatchedToChain   = new     vector<vector<int> >      ();
-    m_listTrigChains         = new     vector<std::string>       ();
+    m_listTrigChains         = new     vector<vector<std::string> >();
   }
     
   // isolation
@@ -269,7 +269,7 @@ void MuonContainer::setTree(TTree *tree)
   if ( m_infoSwitch.m_trigger ){
     connectBranch<int>         (tree, "isTrigMatched",        &m_isTrigMatched);
     connectBranch<vector<int> >(tree, "isTrigMatchedToChain", &m_isTrigMatchedToChain );
-    connectBranch<string>      (tree, "listTrigChains",       &m_listTrigChains );
+    connectBranch<vector<string> >(tree, "listTrigChains",    &m_listTrigChains );
   }
 
   if ( m_infoSwitch.m_isolation ) {
@@ -513,7 +513,7 @@ void MuonContainer::setBranches(TTree *tree)
     // a vector of trigger match decision for each muon trigger chain
     setBranch<vector<int> >(tree,"isTrigMatchedToChain", m_isTrigMatchedToChain );
     // a vector of strings for each muon trigger chain - 1:1 correspondence w/ vector above
-    setBranch<string>(tree, "listTrigChains", m_listTrigChains );
+    setBranch<vector<string> >(tree, "listTrigChains", m_listTrigChains );
   }
 
   if ( m_infoSwitch.m_isolation ) {
@@ -751,20 +751,22 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapMuAcc("isTrigMatchedMapMu");
 
     std::vector<int> matches;
+    std::vector<string> trigChains;
 
     if ( isTrigMatchedMapMuAcc.isAvailable( *muon ) ) {
       // loop over map and fill branches
       //
       for ( auto const &it : (isTrigMatchedMapMuAcc( *muon )) ) {
 	matches.push_back( static_cast<int>(it.second) );
-	m_listTrigChains->push_back( it.first );
+	trigChains.push_back( static_cast<string>(it.first) );
       }
     } else {
       matches.push_back( -1 );
-      m_listTrigChains->push_back("NONE");
+      trigChains.push_back("NONE");
     }
 
     m_isTrigMatchedToChain->push_back(matches);
+    m_listTrigChains->push_back(trigChains);
     
     // if at least one match among the chains is found, say this muon is trigger matched
     if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
