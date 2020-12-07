@@ -199,10 +199,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
-  // retrieve EventInfo to get sample information
-  const xAOD::EventInfo* ei(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()));
-
   // initialize jet calibration tool
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
