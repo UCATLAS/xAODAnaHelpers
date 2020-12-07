@@ -165,9 +165,10 @@ EL::StatusCode OverlapRemover :: initialize ()
   orFlags.doMuPFJetOR = m_doMuPFJetOR;
 
   ANA_CHECK( ORUtils::recommendedTools(orFlags, m_ORToolbox));
+  if(m_applyRelPt) ANA_CHECK( m_ORToolbox.muJetORT.setProperty("ApplyRelPt", true) );
   ANA_CHECK( m_ORToolbox.initialize());
   ANA_MSG_INFO( "OverlapRemover Interface succesfully initialized!" );
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

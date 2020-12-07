@@ -17,7 +17,7 @@ namespace xAH {
     // trigger
     int               isTrigMatched;
     std::vector<int>  isTrigMatchedToChain;
-    std::string       listTrigChains;
+    std::vector<std::string> listTrigChains;
 
     // isolation
     std::map< std::string, int > isIsolated;
