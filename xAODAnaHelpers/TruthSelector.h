@@ -68,46 +68,44 @@ public:
   float m_eta_dressed_max = 1e8;
 
 private:
-  int m_numEvent;         //!
-  int m_numObject;        //!
-  int m_numEventPass;     //!
-  int m_weightNumEventPass; //!
-  int m_numObjectPass;    //!
+  int m_numEvent;
+  int m_numObject;
+  int m_numEventPass;
+  int m_weightNumEventPass;
+  int m_numObjectPass;
 
   // cutflow
-  TH1D* m_cutflowHist = nullptr;          //!
-  TH1D* m_cutflowHistW = nullptr;         //!
-  int   m_cutflow_bin;          //!
+  TH1D* m_cutflowHist = nullptr;
+  TH1D* m_cutflowHistW = nullptr;
+  int   m_cutflow_bin;
 
   /* object-level cutflow */
 
-  TH1D* m_truth_cutflowHist_1 = nullptr;  //!
+  TH1D* m_truth_cutflowHist_1 = nullptr;
 
-  int   m_truth_cutflow_all;           //!
-  int   m_truth_cutflow_ptmax_cut;     //!
-  int   m_truth_cutflow_ptmin_cut;     //!
-  int   m_truth_cutflow_eta_cut;       //!
+  int   m_truth_cutflow_all;
+  int   m_truth_cutflow_ptmax_cut;
+  int   m_truth_cutflow_ptmin_cut;
+  int   m_truth_cutflow_eta_cut;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
-  TruthSelector ();
+  TruthSelector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
   virtual bool executeSelection( const xAOD::TruthParticleContainer* inTruthParts, float mcEvtWeight, bool count, std::string outContainerName );
@@ -118,7 +116,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TruthSelector, 1);
   /// @endcond
 
 };

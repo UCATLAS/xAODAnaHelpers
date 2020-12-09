@@ -11,12 +11,6 @@
 // c++ include(s):
 #include <iostream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
-
-#include <SampleHandler/MetaFields.h>
 
 //EDM
 #include "xAODJet/JetAuxContainer.h"
@@ -35,58 +29,62 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(BJetEfficiencyCorrector)
 
 
-BJetEfficiencyCorrector :: BJetEfficiencyCorrector () :
-    Algorithm("BJetEfficiencyCorrector")
+BJetEfficiencyCorrector :: BJetEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "BJetEfficiencyCorrector")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("inputAlgo", m_inputAlgo);
+    declareProperty("systName", m_systName);
+    declareProperty("outputSystName", m_outputSystName);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("corrFileName", m_corrFileName);
+    declareProperty("jetAuthor", m_jetAuthor);
+    declareProperty("minPt", m_minPt);
+    declareProperty("taggerName", m_taggerName);
+    declareProperty("useDevelopmentFile", m_useDevelopmentFile);
+    declareProperty("coneFlavourLabel", m_coneFlavourLabel);
+    declareProperty("systematicsStrategy", m_systematicsStrategy);
+    declareProperty("errorOnTagWeightFailure", m_errorOnTagWeightFailure);
+    declareProperty("operatingPt", m_operatingPt);
+    declareProperty("operatingPtCDI", m_operatingPtCDI);
+    declareProperty("getScaleFactors", m_getScaleFactors);
+    declareProperty("useContinuous", m_useContinuous);
+    declareProperty("decor", m_decor);
+    declareProperty("orBJetPtUpperThres", m_orBJetPtUpperThres);
+    declareProperty("EfficiencyCalibration", m_EfficiencyCalibration);
 }
 
 
-EL::StatusCode BJetEfficiencyCorrector :: setupJob (EL::Job& job)
-{
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "BJetEfficiencyCorrector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode BJetEfficiencyCorrector :: histInitialize ()
+StatusCode BJetEfficiencyCorrector :: histInitialize ()
 {
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
   m_corrFileName = PathResolverFindCalibFile(m_corrFileName);
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: fileExecute ()
+StatusCode BJetEfficiencyCorrector :: fileExecute ()
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: changeInput (bool /*firstFile*/)
+StatusCode BJetEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode BJetEfficiencyCorrector :: initialize ()
+StatusCode BJetEfficiencyCorrector :: initialize ()
 {
   ANA_MSG_INFO( "Initializing BJetEfficiencyCorrector Interface... ");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   // several lists of systematics could be configured
   // this is the case when MET sys should be added
@@ -128,7 +126,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // make unique name
@@ -158,7 +156,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   if( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( !isMC() && m_getScaleFactors ) {
@@ -194,64 +192,59 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
 
-    if(isMC() && !m_EfficiencyCalibration.empty())
-      {
-	std::string calibration=m_EfficiencyCalibration;
-	if(m_EfficiencyCalibration=="auto")
-	  {
-	    std::string gridName=wk()->metaData()->castString(SH::MetaFields::gridName);
+    if(isMC() && !m_EfficiencyCalibration.empty()) {
+      std::string calibration=m_EfficiencyCalibration;
+      if(m_EfficiencyCalibration=="auto") {
+          const std::string* gridName(nullptr);
+          ANA_CHECK(inputMetaStore()->retrieve(gridName, "nc_grid"));
 
-	    HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
-	    if(!gridName.empty())
-	      { // Do not trust sample name on the grid, in case there are multiple samples per job
-		std::stringstream ss(gridName);
-		std::string sampleName;
-		while(std::getline(ss,sampleName,','))
-		  {
-		    HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
-		    if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown)
-		      ANA_MSG_ERROR("Cannot have different shower types per grid task.");
-		    sampleShowerType=mySampleShowerType;
-		  }
-	      }
-	    else // Use sample name when running locally
-	      {
-		gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
-		sampleShowerType=HelperFunctions::getMCShowerType(gridName);
-	      }
+          HelperFunctions::ShowerType sampleShowerType=HelperFunctions::Unknown;
+          if(!gridName->empty()) { // Do not trust sample name on the grid, in case there are multiple samples per job
+              std::stringstream ss(*gridName);
+              std::string sampleName;
+              while(std::getline(ss,sampleName,',')) {
+                  HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
+                  if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown){
+                    ANA_MSG_ERROR("Cannot have different shower types per grid task.");
+                  }
+                  sampleShowerType=mySampleShowerType;
+              }
+          } else { // Use sample name when running locally
+              ANA_CHECK(inputMetaStore()->retrieve(gridName, "sample_name"));
+              sampleShowerType=HelperFunctions::getMCShowerType(*gridName);
+          }
 
-	    switch(sampleShowerType)
-	      {
-	      case HelperFunctions::Pythia8:
-		calibration="410470";
-		break;
-	      case HelperFunctions::Herwig7:
-		calibration="410558";
-		break;
-	      case HelperFunctions::Sherpa21:
-		calibration="426131";
-		break;
-	      case HelperFunctions::Sherpa22:
-		calibration="410250";
-		break;
-	      case HelperFunctions::Unknown:
-		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-		return EL::StatusCode::FAILURE;
-		break;
-	      }
-	  }
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
-	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
+          switch(sampleShowerType) {
+              case HelperFunctions::Pythia8:
+                  calibration="410470";
+              break;
+              case HelperFunctions::Herwig7:
+                  calibration="410558";
+              break;
+              case HelperFunctions::Sherpa21:
+                  calibration="426131";
+              break;
+              case HelperFunctions::Sherpa22:
+                  calibration="410250";
+              break;
+              case HelperFunctions::Unknown:
+                  ANA_MSG_ERROR("Cannot determine MC shower type for sample " << *gridName << ".");
+                  return StatusCode::FAILURE;
+              break;
+          }
       }
-
-    ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
-
-  } else {
-    ANA_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
+      ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
   }
+
+  ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
+  ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
+
+} else {
+  ANA_MSG_WARNING( "Input operating point is not calibrated - no SFs will be obtained");
+}
 
   //
   // Print out
@@ -293,16 +286,15 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systList, m_outputSystName, fileMD);
+    ANA_CHECK(writeSystematicsListHist(m_systList, m_outputSystName));
   }
 
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode BJetEfficiencyCorrector :: execute ()
+StatusCode BJetEfficiencyCorrector :: execute ()
 {
   ANA_MSG_DEBUG( "Applying BJetEfficiencyCorrector for " << m_taggerName << " tagger... ");
 
@@ -310,13 +302,13 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
   // retrieve event
   //
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   ANA_MSG_DEBUG("\n\n eventNumber: " << eventInfo->eventNumber() << std::endl );
 
   // if m_inputAlgo == "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   std::vector<std::string>* systNames_ptr(nullptr);
-  if ( !m_inputAlgo.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputAlgo, 0, m_store, msg()) );
+  if ( !m_inputAlgo.empty() ) ANA_CHECK( evtStore()->retrieve(systNames_ptr, m_inputAlgo) );
 
   std::vector<std::string> systNames{""};
   if (systNames_ptr) systNames = *systNames_ptr;
@@ -330,9 +322,9 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
     const xAOD::JetContainer* inJets(nullptr);
 
     // some systematics might have rejected the event
-    if ( m_store->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
+    if ( evtStore()->contains<xAOD::JetContainer>( m_inContainerName+systName ) ) {
       // Check the existence of the container
-      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName+systName) );
 
       ANA_CHECK( executeEfficiencyCorrection( inJets, eventInfo, doNominal ) );
     }
@@ -341,14 +333,14 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
   ANA_MSG_DEBUG( "Leave Efficency Selection... ");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
+StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
 								      const xAOD::EventInfo* /*eventInfo*/,
 								      bool doNominal)
 {
@@ -396,7 +388,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	  if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok )
 	    {
 	      ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
-	      return EL::StatusCode::FAILURE;
+	      return StatusCode::FAILURE;
 	    }
 	  int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
 	  ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
@@ -427,7 +419,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	  if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok)
 	    {
 	      ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
-	      return EL::StatusCode::FAILURE;
+	      return StatusCode::FAILURE;
 	    }
 	  ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
@@ -457,7 +449,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error)
 		{
 		  ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
-		  return EL::StatusCode::FAILURE;
+		  return StatusCode::FAILURE;
 		}
 	      else if (BJetEffCode == CP::CorrectionCode::OutOfValidityRange)
 		{
@@ -503,32 +495,24 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
     ANA_MSG_DEBUG("Size is " << sysVariationNames->size());
     for(auto sysName : *sysVariationNames) ANA_MSG_DEBUG(sysName);
 
-    ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystName));
+    ANA_CHECK( evtStore()->record( std::move(sysVariationNames), m_outputSystName));
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode BJetEfficiencyCorrector :: postExecute ()
+StatusCode BJetEfficiencyCorrector :: finalize ()
 {
-  ANA_MSG_DEBUG("Calling postExecute");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BJetEfficiencyCorrector :: finalize ()
-{
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
+StatusCode BJetEfficiencyCorrector :: histFinalize ()
 {
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

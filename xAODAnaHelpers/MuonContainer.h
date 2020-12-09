@@ -21,7 +21,7 @@ namespace xAH {
     public:
       MuonContainer(const std::string& name = "muon", const std::string& detailStr="", float units = 1e3, bool mc = false, bool storeSystSFs = true);
       virtual ~MuonContainer();
-    
+
       virtual void setTree(TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
@@ -31,7 +31,7 @@ namespace xAH {
 
     protected:
       virtual void updateParticle(uint idx, Muon& muon);
-    
+
     private:
 
       // kinematic
@@ -41,7 +41,6 @@ namespace xAH {
       std::vector<int>               *m_isTrigMatched;
       std::vector<std::vector<int> > *m_isTrigMatchedToChain;
       std::vector<std::vector<std::string> > *m_listTrigChains;
-    
       // isolation
       std::map< std::string, std::vector< int >* >* m_isIsolated;
       std::vector<float> *m_ptcone20;
@@ -60,12 +59,12 @@ namespace xAH {
       // scale factors w/ sys
       // per object
       std::vector< std::vector< float > > *m_TTVAEff_SF;
-      
+
       std::map< std::string, std::vector< std::vector< float > >* >* m_RecoEff_SF;
       std::map< std::string, std::vector< std::vector< float > >* >* m_IsoEff_SF;
       std::map< std::string, std::vector< std::vector< float > >* >* m_TrigEff_SF;
       std::map< std::string, std::vector< std::vector< float > >* >* m_TrigMCEff;
-      
+
       // track parameters
       std::vector<float> *m_trkd0;
       std::vector<float> *m_trkd0sig;
@@ -75,7 +74,7 @@ namespace xAH {
       std::vector<float> *m_trktheta;
       std::vector<float> *m_trkcharge;
       std::vector<float> *m_trkqOverP;
-    
+
       // track hit content
       std::vector<int>   *m_trknSiHits;
       std::vector<int>   *m_trknPixHits;
@@ -87,7 +86,7 @@ namespace xAH {
       std::vector<int>   *m_trknBLayerHits;
       std::vector<int>   *m_trknInnermostPixLayHits; // not available in DC14
       std::vector<float> *m_trkPixdEdX;            // not available in DC14
-    
+
       std::vector<float>         *m_EnergyLoss;
       std::vector<float>         *m_EnergyLossSigma;
       std::vector<unsigned char> *m_energyLossType;

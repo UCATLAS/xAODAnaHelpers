@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 #include <xAODEgamma/ElectronContainer.h>
 
@@ -9,24 +6,16 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(ElectronHistsAlgo)
 
-ElectronHistsAlgo :: ElectronHistsAlgo () :
-IParticleHistsAlgo("ElectronHistsAlgo")
+ElectronHistsAlgo :: ElectronHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+IParticleHistsAlgo(name, pSvcLocator, "ElectronHistsAlgo")
 { }
 
-EL::StatusCode ElectronHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("ElectronHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode ElectronHistsAlgo::AddHists( std::string name ) {
+StatusCode ElectronHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<ElectronHists>(name);
 }
 
-EL::StatusCode ElectronHistsAlgo :: execute () {
+StatusCode ElectronHistsAlgo :: execute () {
   return IParticleHistsAlgo::execute<ElectronHists, xAOD::ElectronContainer>();
 }

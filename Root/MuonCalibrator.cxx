@@ -9,10 +9,6 @@
 // c++ include(s):
 #include <iostream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -34,65 +30,70 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(MuonCalibrator)
 
-MuonCalibrator :: MuonCalibrator () :
-    Algorithm("MuonCalibrator")
+MuonCalibrator :: MuonCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "MuonCalibrator")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("overrideRelease", m_overrideRelease);
+    declareProperty("overrideSagittaRelease1516", m_overrideSagittaRelease1516);
+    declareProperty("overrideSagittaRelease17", m_overrideSagittaRelease17);
+    declareProperty("overrideSagittaRelease18", m_overrideSagittaRelease18);
+    declareProperty("statComb1516", m_statComb1516);
+    declareProperty("statComb17", m_statComb17);
+    declareProperty("statComb18", m_statComb18);
+    declareProperty("sagittaCorr1516", m_sagittaCorr1516);
+    declareProperty("sagittaCorr17", m_sagittaCorr17);
+    declareProperty("sagittaCorr18", m_sagittaCorr18);
+    declareProperty("doSagittaMCDistortion1516", m_doSagittaMCDistortion1516);
+    declareProperty("doSagittaMCDistortion17", m_doSagittaMCDistortion17);
+    declareProperty("doSagittaMCDistortion18", m_doSagittaMCDistortion18);
+    declareProperty("sagittaCorrPhaseSpace1516", m_sagittaCorrPhaseSpace1516);
+    declareProperty("sagittaCorrPhaseSpace17", m_sagittaCorrPhaseSpace17);
+    declareProperty("sagittaCorrPhaseSpace18", m_sagittaCorrPhaseSpace18);
+    declareProperty("sort", m_sort);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("systVal", m_systVal);
+    declareProperty("systName", m_systName);
+    declareProperty("forceDataCalib", m_forceDataCalib);
 }
 
-EL::StatusCode MuonCalibrator :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
 
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "MuonCalibrator" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode MuonCalibrator :: histInitialize ()
+StatusCode MuonCalibrator :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: fileExecute ()
+StatusCode MuonCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: changeInput (bool /*firstFile*/)
+StatusCode MuonCalibrator :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: initialize ()
+StatusCode MuonCalibrator :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -105,10 +106,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   ANA_MSG_INFO( "Initializing MuonCalibrator Interface... ");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   // shallow copies are made with this output container name
@@ -117,7 +115,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -216,21 +214,20 @@ EL::StatusCode MuonCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(std::move(SystMuonsNames), "muons_Syst"+m_name ));
+  ANA_CHECK(evtStore()->record(std::move(SystMuonsNames), "muons_Syst"+m_name ));
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+    ANA_CHECK(writeSystematicsListHist(m_systList, m_name));
   }
 
   ANA_MSG_INFO( "MuonCalibrator Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode MuonCalibrator :: execute ()
+StatusCode MuonCalibrator :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -246,13 +243,13 @@ EL::StatusCode MuonCalibrator :: execute ()
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // get the collections from TEvent or TStore
   //
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   const xAOD::MuonContainer* inMuons(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inMuons, m_inContainerName) );
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -277,7 +274,7 @@ EL::StatusCode MuonCalibrator :: execute ()
     //
     if ( m_muonCalibrationTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure MuonCalibrationAndSmearingTool for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     // create shallow copy for calibration - one per syst
@@ -328,45 +325,32 @@ EL::StatusCode MuonCalibrator :: execute ()
     // add SC container to TStore
     //
     ANA_MSG_DEBUG( "recording calibMuonsSC");
-    ANA_CHECK( m_store->record( calibMuonsSC.first,  outSCContainerName  ));
-    ANA_CHECK( m_store->record( calibMuonsSC.second, outSCAuxContainerName ));
+    ANA_CHECK( evtStore()->record( calibMuonsSC.first,  outSCContainerName  ));
+    ANA_CHECK( evtStore()->record( calibMuonsSC.second, outSCAuxContainerName ));
 
     //
     // add ConstDataVector to TStore
     //
     ANA_MSG_DEBUG( "record calibMuonsCDV");
-    ANA_CHECK( m_store->record( calibMuonsCDV, outContainerName));
+    ANA_CHECK( evtStore()->record( calibMuonsCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
   ANA_MSG_DEBUG( "record m_outputAlgoSystNames");
-  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+  ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   ANA_MSG_DEBUG( "Left ");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode MuonCalibrator :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
 
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode MuonCalibrator :: finalize ()
+StatusCode MuonCalibrator :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -380,12 +364,12 @@ EL::StatusCode MuonCalibrator :: finalize ()
 
   ANA_MSG_DEBUG( "Calling finalize");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonCalibrator :: histFinalize ()
+StatusCode MuonCalibrator :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -400,5 +384,5 @@ EL::StatusCode MuonCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

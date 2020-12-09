@@ -71,45 +71,42 @@ private:
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
 
-  std::vector<CP::SystematicSet> m_systList; //!
+  std::vector<CP::SystematicSet> m_systList;
 
-  EL::StatusCode decorate(xAOD::Photon * photon);
+  StatusCode decorate(xAOD::Photon * photon);
 
   // tools
-  CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; //!
-  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle  {"CP::IsolationCorrectionTool/IsolationCorrectionTool", this}; //!
+  CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr;
+  asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle  {"CP::IsolationCorrectionTool/IsolationCorrectionTool", this};
 
-  ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr; //!
-  AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; //!
-  AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; //!
-  AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr; //!
+  ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr;
+  AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr;
+  AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr;
+  AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr;
 
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/tight"            , this}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"           , this}; //!
-  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/loose"            , this}; //!
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonTightEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/tight"            , this};
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonMediumEffTool_handle{"AsgPhotonEfficiencyCorrectionTool/medium"           , this};
+  asg::AnaToolHandle<IAsgPhotonEfficiencyCorrectionTool> m_photonLooseEffTool_handle {"AsgPhotonEfficiencyCorrectionTool/loose"            , this};
 
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
 
   // this is a standard constructor
-  PhotonCalibrator ();
+  PhotonCalibrator (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(PhotonCalibrator, 1);
   /// @endcond
 
 };

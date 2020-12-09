@@ -41,7 +41,7 @@ namespace xAH {
     float m_metFinalClusPy;
     float m_metFinalClusPhi;
     float m_metFinalClusSumEt;
-    
+
     float m_metFinalClusOverSqrtSumEt;
     float m_metFinalClusOverSqrtHt;
     float m_metFinalClusSignificance;
@@ -55,7 +55,7 @@ namespace xAH {
     float m_metFinalTrkPy;
     float m_metFinalTrkPhi;
     float m_metFinalTrkSumEt;
-    
+
     float m_metFinalTrkOverSqrtSumEt;
     float m_metFinalTrkOverSqrtHt;
     float m_metFinalTrkSignificance;

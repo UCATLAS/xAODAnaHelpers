@@ -2,15 +2,9 @@
 #define xAODAnaHelpers_Algorithm_H
 
 // Infrastructure include(s):
-#include "xAODRootAccess/Init.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
 #include "xAODMetaData/FileMetaData.h"
 
-// EL include(s):
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Algorithm.h>
-#include <EventLoop/Worker.h>
+#include <AnaAlgorithm/AnaAlgorithm.h>
 
 #include <string>
 
@@ -27,6 +21,9 @@
 #include <AsgTools/MsgStreamMacros.h>
 #include <AsgTools/MessageCheck.h>
 
+namespace CP {
+  class SystematicSet;
+}
 
 namespace xAH {
 
@@ -49,7 +46,6 @@ namespace xAH {
             The above example is taken from our implementation in :cpp:class:`JetSelector`. Just remember that when you write your initializer, you will be expected to do something like::
 
                 // this is needed to distribute the algorithm to the workers
-                ClassImp(JetSelector)
 
 
                 JetSelector :: JetSelector () :
@@ -64,16 +60,16 @@ namespace xAH {
         @endrst
 
      */
-  class Algorithm : public EL::Algorithm {
+  class Algorithm : public EL::AnaAlgorithm {
       public:
         /**
             @brief Initialization
-            @param className    This is the name of the class that inherits from :cpp:namespace:`~xAH::Algorithm`
+            @param name         This is the name of the algorithm instance
+            @param pSvcLocator  This is the service locator object (internal to atlas/athena)
+            @param className    This is the name of the algorithm that inherits from :cpp:namespace:`~xAH::Algorithm`
          */
-        Algorithm(std::string className = "Algorithm");
-        ~Algorithm();
+        Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className = "Algorithm");
         /// @cond
-        ClassDef(Algorithm, 1);
         /// @endcond
 
         /**
@@ -169,6 +165,15 @@ namespace xAH {
         /** Backwards compatibility, same as m_forceFastSim */
         bool m_setAFII = false;
 
+        /** If using DAOD or not */
+        bool m_isDAOD = true;
+        /** If using DAOD_PHYS or not. */
+        bool m_isPHYS = false;
+
+        /** output metadata hist name prefixes **/
+        std::string m_metaDataHistName = "metadata";
+        /** output cutflow hist name prefixes **/
+        std::string m_cutFlowHistName = "cutflow";
 
       protected:
         /**
@@ -177,12 +182,7 @@ namespace xAH {
 
             @endrst
          */
-        std::string m_className = "Algorithm"; //!
-
-        /** The TEvent object */
-        xAOD::TEvent* m_event = nullptr; //!
-        /** The TStore object */
-        xAOD::TStore* m_store = nullptr; //!
+        std::string m_className = "Algorithm";
 
         /**
             @rst
@@ -201,7 +201,7 @@ namespace xAH {
             @endrst
          */
         bool isMC();
-        
+
         /**
             @rst
                 Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isFastSim` can be used
@@ -219,9 +219,6 @@ namespace xAH {
             @endrst
          */
         bool isFastSim();
-
-	/** Determines if using DAOD_PHYS or not. */
-	bool isPHYS();
 
         /**
             @rst
@@ -301,7 +298,7 @@ namespace xAH {
             @endrst
          */
         template <typename T>
-	void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const { }
+        void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const { }
 
         /// @brief Return a ``std::string`` representation of ``this``
         std::string getAddress() const {
@@ -310,6 +307,10 @@ namespace xAH {
           ss << address;
           return ss.str();
         }
+
+        /// @brief write systematics information to metadata
+        StatusCode writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, const std::string& histName );
+
 
       private:
         /**
@@ -320,7 +321,7 @@ namespace xAH {
 
             @endrst
         */
-        bool m_registered = false; //!
+        bool m_registered = false;
 
         /**
             @rst
@@ -328,7 +329,7 @@ namespace xAH {
 
             @endrst
          */
-        static std::map<std::string, int> m_instanceRegistry; //!
+        static std::map<std::string, int> m_instanceRegistry;
 
         /**
             @rst
@@ -338,7 +339,7 @@ namespace xAH {
 
             @endrst
          */
-        std::map<std::string, bool> m_toolAlreadyUsed; //!
+        std::map<std::string, bool> m_toolAlreadyUsed;
   };
 
 }

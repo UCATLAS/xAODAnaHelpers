@@ -5,7 +5,7 @@ xAODAnaHelpers is a volunteer effort. We encourage you to pitch in. If you're a 
 [Please file an issue.](https://github.com/UCATLAS/xAODAnaHelpers/issues/new) When submitting a bug report, we need as much information as possible to duplicate the issue.
 
 At a minimum, it would be helpful to know...
-* the AnalysisBase/AnalysisTop release you are using
+* the AnalysisBase/AthAnalysis release you are using
 * the packages you are using
 * where you ran your script. Often, this might be UChicago's tier3 or lxplus - location may be important!
 * how your ran your script

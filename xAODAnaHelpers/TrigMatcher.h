@@ -75,30 +75,26 @@ public:
 private:
 
   /* tools */
-  asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle  {"Trig::TrigDecisionTool/TrigDecisionTool"             }; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>    m_trigMatchTool_handle; //!
+  asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle  {"Trig::TrigDecisionTool/TrigDecisionTool"             };
+  asg::AnaToolHandle<Trig::IMatchingTool>    m_trigMatchTool_handle;
 
-  std::vector<std::string> m_trigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_trigChains */
+  std::vector<std::string> m_trigChainsList;   /* contains all the HLT trigger chains tokens extracted from m_trigChains */
 
 public:
 
   /* this is a standard constructor */
 
-  TrigMatcher ();
-
-  ~TrigMatcher();
+  TrigMatcher (const std::string& name, ISvcLocator *pSvcLocator);
 
   /* these are the functions inherited from Algorithm */
 
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
 
   /* these are the functions not inherited from Algorithm */
-  EL::StatusCode executeMatching( const xAOD::IParticleContainer* inParticles );
+  StatusCode executeMatching( const xAOD::IParticleContainer* inParticles );
 
   /// @cond
-  ClassDef(TrigMatcher, 1);
   /// @endcond
 
 };

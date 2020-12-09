@@ -63,8 +63,8 @@ namespace xAH {
 
       // truth
       TLorentzVector truth_p4;
-      
-      // bosons 
+
+      // bosons
       int nTQuarks;
       int nHBosons;
       int nWBosons;

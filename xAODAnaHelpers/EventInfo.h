@@ -3,6 +3,7 @@
 
 #include <TTree.h>
 #include <string>
+#include <AsgTools/SgTEvent.h>
 
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODTracking/VertexContainer.h"
@@ -20,7 +21,7 @@ namespace xAH {
     void setTree    (TTree *tree);
     void setBranches(TTree *tree);
     void clear();
-    void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr, const xAOD::VertexContainer* vertices = nullptr);
+    void FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent* evtStore = nullptr, const xAOD::VertexContainer* vertices = nullptr);
     template <typename T_BR>
       void connectBranch(TTree *tree, std::string name, T_BR *variable);
 

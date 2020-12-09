@@ -86,56 +86,53 @@ public:
   std::string m_overrideMapFilePath = "";
 
 private:
-  int m_numEvent;         //!
-  int m_numObject;        //!
+  int m_numEvent;
+  int m_numObject;
 
-  std::vector<CP::SystematicSet> m_systListPID;  //!
-  std::vector<CP::SystematicSet> m_systListIso;  //!
-  std::vector<CP::SystematicSet> m_systListReco; //!
-  std::vector<CP::SystematicSet> m_systListTrig; //!
+  std::vector<CP::SystematicSet> m_systListPID;
+  std::vector<CP::SystematicSet> m_systListIso;
+  std::vector<CP::SystematicSet> m_systListReco;
+  std::vector<CP::SystematicSet> m_systListTrig;
 
   // tools
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  //!
-  std::string m_pidEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso = nullptr;  //!
-  std::string m_IsoEffSF_tool_name;                                   //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco = nullptr; //!
-  std::string m_RecoEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig = nullptr; //!
-  std::string m_TrigEffSF_tool_name;                                  //!
-  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; //!
-  std::string m_TrigMCEff_tool_name;                                  //!
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;
+  std::string m_pidEffSF_tool_name;
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso = nullptr;
+  std::string m_IsoEffSF_tool_name;
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco = nullptr;
+  std::string m_RecoEffSF_tool_name;
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig = nullptr;
+  std::string m_TrigEffSF_tool_name;
+  AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr;
+  std::string m_TrigMCEff_tool_name;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
 
-  // Tree *myTree; //!
-  // TH1 *myHist;  //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
 
   // this is a standard constructor
-  ElectronEfficiencyCorrector ();
+  ElectronEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames );
+  virtual StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(ElectronEfficiencyCorrector, 1);
   /// @endcond
 
 };

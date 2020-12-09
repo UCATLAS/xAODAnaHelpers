@@ -41,31 +41,28 @@ public:
 
 private:
 
-  //Trig::TrigDecisionTool*        m_trigDecTool = nullptr;   //!
-  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //! 
-  TrigConf::xAODConfigTool*      m_trigConfTool = nullptr;   //!
+  //Trig::TrigDecisionTool*        m_trigDecTool = nullptr;
+  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    };
+  TrigConf::xAODConfigTool*      m_trigConfTool = nullptr;
   /// @brief flag to own TDT and TCT
-  bool                           m_ownTDTAndTCT = false;   //!
+  bool                           m_ownTDTAndTCT = false;
 
 public:
 
   // this is a standard constructor
-  HLTJetGetter ();
+  HLTJetGetter (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(HLTJetGetter, 1);
   /// @endcond
 
 };

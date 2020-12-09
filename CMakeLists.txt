@@ -7,17 +7,6 @@ atlas_subdir( xAODAnaHelpers )
 
 set( release_libs xAODTriggerCnvLib )
 
-if( AnalysisBase_VERSION AND AnalysisBase_VERSION VERSION_GREATER 21.0 )
-  # 21.X
-  set( release_libs xAODTriggerCnvLib )
-elseif( AnalysisTop_VERSION AND AnalysisTop_VERSION VERSION_GREATER 21.0 )
-  # AnalysisTop 21.X
-  set( release_libs xAODTriggerCnvLib )
-else()
-  # 2.6.X
-  set( release_libs xAODTriggerCnv )
-endif()
-
 # Declare the package's dependencies:
 atlas_depends_on_subdirs( PUBLIC
                           Control/AthContainers
@@ -80,17 +69,11 @@ atlas_depends_on_subdirs( PUBLIC
 # Find the needed external(s):
 find_package( ROOT COMPONENTS Core RIO Hist Tree )
 
-# build a dictionary for the library
-atlas_add_root_dictionary ( xAODAnaHelpersLib xAODAnaHelpersDictSource
-                            ROOT_HEADERS xAODAnaHelpers/*.h Root/LinkDef.h
-                            EXTERNAL_PACKAGES ROOT
-)
-
 # build a shared library
-atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xAODAnaHelpersDictSource}
+atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx
                    PUBLIC_HEADERS xAODAnaHelpers
                    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-                   LINK_LIBRARIES ${ROOT_LIBRARIES} EventLoop xAODBase xAODRootAccess
+                   LINK_LIBRARIES ${ROOT_LIBRARIES} AnaAlgorithmLib xAODBase xAODRootAccess
                    xAODEventInfo GoodRunsListsLib PileupReweightingLib PATInterfaces
                    PathResolver xAODTau xAODJet xAODMuon xAODEgamma
                    xAODTracking xAODTruth MuonMomentumCorrectionsLib
@@ -110,6 +93,22 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    JetJvtEfficiencyLib PMGToolsLib JetSubStructureUtils JetTileCorrectionLib BoostedJetTaggersLib
                    ${release_libs}
 )
+
+if (XAOD_STANDALONE)
+ # Add the dictionary (for AnalysisBase only):
+ atlas_add_dictionary( xAODAnaHelpersDict
+                       xAODAnaHelpers/xAODAnaHelpersDict.h
+                       xAODAnaHelpers/selection.xml
+                       LINK_LIBRARIES xAODAnaHelpersLib)
+endif ()
+
+if (NOT XAOD_STANDALONE)
+  # Add a component library for AthAnalysis only:
+  atlas_add_component( xAODAnaHelpers
+                       src/components/*.cxx
+                       LINK_LIBRARIES xAODAnaHelpersLib)
+endif ()
+
 
 # Install files from the package:
 atlas_install_python_modules( python/*.py )

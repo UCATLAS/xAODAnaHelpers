@@ -43,15 +43,13 @@
 #include "xAODAnaHelpers/TrackContainer.h"
 #include "xAODAnaHelpers/MuonContainer.h"
 #include "xAODAnaHelpers/TauContainer.h"
-#include "xAODRootAccess/TEvent.h"
-#include "xAODRootAccess/TStore.h"
 
+#include <AsgTools/SgTEvent.h>
 
 #include <map>
 
 // root includes
 #include "TTree.h"
-#include "TFile.h"
 
 namespace TrigConf {
   class xAODConfigTool;
@@ -67,8 +65,8 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr );
-  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false );
+  HelpTreeBase(asg::SgTEvent *evtStore, TTree* tree, const float units = 1e3, bool debug = false );
+  HelpTreeBase(TTree* tree, asg::SgTEvent *evtStore = nullptr, const float units = 1e3, bool debug = false );
   virtual ~HelpTreeBase();
 
   void AddEvent         (const std::string& detailStr = "");
@@ -110,8 +108,7 @@ public:
    **/
   static std::string FatJetCollectionName(const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
-  xAOD::TEvent* m_event;
-  xAOD::TStore* m_store;
+  asg::SgTEvent* m_evtStore;
 
   /// @brief Name of vertex container
   std::string m_vertexContainerName = "PrimaryVertices";
@@ -124,7 +121,7 @@ public:
   TrigConf::xAODConfigTool*    m_trigConfTool;
   Trig::TrigDecisionTool*      m_trigDecTool;
 
-  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr, const xAOD::VertexContainer* vertices = nullptr );
+  void FillEvent( const xAOD::EventInfo* eventInfo, asg::SgTEvent *evtStore = nullptr, const xAOD::VertexContainer* vertices = nullptr );
 
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();
@@ -191,8 +188,6 @@ public:
   void ClearMET           (const std::string& metName = "met");
   void ClearVertices      (const std::string& vertexName = "vertex");
   void ClearTruthVertices (const std::string& vertexName = "truth_vertex");
-
-  bool writeTo( TFile *file );
 
   virtual void AddEventUser(const std::string& detailStr = "")      {
     if(m_debug) Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str());

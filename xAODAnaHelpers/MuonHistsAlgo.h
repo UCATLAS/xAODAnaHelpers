@@ -11,24 +11,22 @@ public:
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
-  MuonHistsAlgo ();
+  MuonHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode execute ();
+  virtual StatusCode execute ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode AddHists( std::string name );
+  virtual StatusCode AddHists( std::string name );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(MuonHistsAlgo, 1);
   /// @endcond
 
 };

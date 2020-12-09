@@ -9,10 +9,6 @@
 #include <typeinfo>
 #include <sstream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include <xAODEventInfo/EventInfo.h>
@@ -26,40 +22,39 @@
 #include <IsolationSelection/IsolationSelectionTool.h>
 
 // ROOT include(s):
-#include <TFile.h>
 #include <TObjArray.h>
 #include <TObjString.h>
 
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(PhotonSelector)
 
-PhotonSelector :: PhotonSelector () :
-    Algorithm("PhotonSelector")
+PhotonSelector :: PhotonSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "PhotonSelector")
 {
+    declareProperty("useCutFlow", m_useCutFlow);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects);
+    declareProperty("createSelectedContainer", m_createSelectedContainer);
+    declareProperty("nToProcess", m_nToProcess);
+    declareProperty("pass_min", m_pass_min);
+    declareProperty("pass_max", m_pass_max);
+    declareProperty("pT_max", m_pT_max);
+    declareProperty("pT_min", m_pT_min);
+    declareProperty("eta_max", m_eta_max);
+    declareProperty("vetoCrack", m_vetoCrack);
+    declareProperty("doAuthorCut", m_doAuthorCut);
+    declareProperty("doOQCut", m_doOQCut);
+    declareProperty("readOQFromDerivation", m_readOQFromDerivation);
+    declareProperty("photonIdCut", m_photonIdCut);
+    declareProperty("MinIsoWPCut", m_MinIsoWPCut);
+    declareProperty("IsoWPList", m_IsoWPList);
 }
 
-PhotonSelector::~PhotonSelector() {}
 
-EL::StatusCode PhotonSelector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "PhotonSelector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode PhotonSelector :: histInitialize ()
+StatusCode PhotonSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -69,20 +64,20 @@ EL::StatusCode PhotonSelector :: histInitialize ()
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonSelector :: fileExecute ()
+StatusCode PhotonSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonSelector :: changeInput (bool /*firstFile*/)
+StatusCode PhotonSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -90,10 +85,10 @@ EL::StatusCode PhotonSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_INFO( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode PhotonSelector :: initialize ()
+StatusCode PhotonSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -116,20 +111,16 @@ EL::StatusCode PhotonSelector :: initialize ()
 
   if ( m_useCutFlow ) {
 
-    // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-
     // retrieve the event cutflows
     //
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_ph_cutflowHist_1 = (TH1D*)file->Get("cutflow_photons_1");
+    m_ph_cutflowHist_1 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_photons_1"));
 
     m_ph_cutflow_all             = m_ph_cutflowHist_1->GetXaxis()->FindBin("all");
     m_ph_cutflow_author_cut      = m_ph_cutflowHist_1->GetXaxis()->FindBin("author_cut");
@@ -143,10 +134,7 @@ EL::StatusCode PhotonSelector :: initialize ()
 
   }
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
@@ -161,7 +149,7 @@ EL::StatusCode PhotonSelector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -195,11 +183,11 @@ EL::StatusCode PhotonSelector :: initialize ()
 
   ANA_MSG_INFO( "PhotonSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode PhotonSelector :: execute ()
+StatusCode PhotonSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -209,7 +197,7 @@ EL::StatusCode PhotonSelector :: execute ()
   ANA_MSG_DEBUG( "Applying Photon Selection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   //
@@ -217,7 +205,7 @@ EL::StatusCode PhotonSelector :: execute ()
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
@@ -234,7 +222,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inPhotons, m_inContainerName) );
 
     // create output container (if requested)
     ConstDataVector<xAOD::PhotonContainer>* selectedPhotons(nullptr);
@@ -248,7 +236,7 @@ EL::StatusCode PhotonSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        ANA_CHECK( m_store->record( selectedPhotons, m_outContainerName ));
+        ANA_CHECK( evtStore()->record( selectedPhotons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
         delete selectedPhotons; selectedPhotons = nullptr;
@@ -260,7 +248,7 @@ EL::StatusCode PhotonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgoSystNames) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -275,7 +263,7 @@ EL::StatusCode PhotonSelector :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName + systName, m_event, m_store, msg()));
+      ANA_CHECK( evtStore()->retrieve(inPhotons, m_inContainerName + systName));
 
       // create output container (if requested) - one for each systematic
       //
@@ -304,7 +292,7 @@ EL::StatusCode PhotonSelector :: execute ()
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          ANA_CHECK( m_store->record( selectedPhotons, m_outContainerName+systName ));
+          ANA_CHECK( evtStore()->record( selectedPhotons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
 	  //
@@ -317,19 +305,18 @@ EL::StatusCode PhotonSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+    ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
   }
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if( !eventPass ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    setFilterPassed(false);
+    return StatusCode::SUCCESS;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 bool PhotonSelector :: executeSelection ( const xAOD::PhotonContainer* inPhotons,
@@ -537,20 +524,9 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
 }
 
 
-EL::StatusCode PhotonSelector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
 
 
-
-EL::StatusCode PhotonSelector :: finalize ()
+StatusCode PhotonSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -589,12 +565,12 @@ EL::StatusCode PhotonSelector :: finalize ()
   ANA_MSG_DEBUG("Matching Tool deleted");
 
   ANA_MSG_INFO( "Finalization done.");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode PhotonSelector :: histFinalize ()
+StatusCode PhotonSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -610,5 +586,5 @@ EL::StatusCode PhotonSelector :: histFinalize ()
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

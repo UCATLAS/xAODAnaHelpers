@@ -134,7 +134,7 @@ namespace xAH
         for(int i=0;i<m_n;i++)
 	  updateParticle(i,m_particles[i]);
       }
-      
+
       std::vector<T_PARTICLE>& particles()
       { return m_particles; }
 

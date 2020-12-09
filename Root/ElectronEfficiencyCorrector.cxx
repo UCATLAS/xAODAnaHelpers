@@ -2,10 +2,6 @@
 #include <iostream>
 #include <memory>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -26,67 +22,67 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(ElectronEfficiencyCorrector)
 
 
-ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector () :
-    Algorithm("ElectronEfficiencyCorrector")
+ElectronEfficiencyCorrector :: ElectronEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "ElectronEfficiencyCorrector")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("inputSystNamesElectrons", m_inputSystNamesElectrons);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("systValPID", m_systValPID);
+    declareProperty("systValIso", m_systValIso);
+    declareProperty("systValReco", m_systValReco);
+    declareProperty("systValTrig", m_systValTrig);
+    declareProperty("systNamePID", m_systNamePID);
+    declareProperty("systNameIso", m_systNameIso);
+    declareProperty("systNameReco", m_systNameReco);
+    declareProperty("systNameTrig", m_systNameTrig);
+    declareProperty("outputSystNamesPID", m_outputSystNamesPID);
+    declareProperty("outputSystNamesIso", m_outputSystNamesIso);
+    declareProperty("outputSystNamesReco", m_outputSystNamesReco);
+    declareProperty("outputSystNamesTrig", m_outputSystNamesTrig);
+    declareProperty("correlationModel", m_correlationModel);
+    declareProperty("WorkingPointPID", m_WorkingPointPID);
+    declareProperty("WorkingPointIso", m_WorkingPointIso);
+    declareProperty("WorkingPointReco", m_WorkingPointReco);
+    declareProperty("WorkingPointTrig", m_WorkingPointTrig);
+    declareProperty("overrideMapFilePath", m_overrideMapFilePath);
 }
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "ElectronEfficiencyCorrector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode ElectronEfficiencyCorrector :: histInitialize ()
+StatusCode ElectronEfficiencyCorrector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: fileExecute ()
+StatusCode ElectronEfficiencyCorrector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: changeInput (bool /*firstFile*/)
+StatusCode ElectronEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
+StatusCode ElectronEfficiencyCorrector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -99,14 +95,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "Initializing ElectronEfficiencyCorrector Interface... ");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -383,22 +376,21 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systListPID, m_outputSystNamesPID, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListIso, m_outputSystNamesIso, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListReco, m_outputSystNamesReco, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig, fileMD);
+    ANA_CHECK(writeSystematicsListHist(m_systListPID, m_outputSystNamesPID));
+    ANA_CHECK(writeSystematicsListHist(m_systListIso, m_outputSystNamesIso));
+    ANA_CHECK(writeSystematicsListHist(m_systListReco, m_outputSystNamesReco));
+    ANA_CHECK(writeSystematicsListHist(m_systListTrig, m_outputSystNamesTrig));
   }
 
   // *********************************************************************************
 
   ANA_MSG_INFO( "ElectronEfficiencyCorrector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: execute ()
+StatusCode ElectronEfficiencyCorrector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -409,17 +401,17 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   if ( !isMC() ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Electron Efficiency correction... "); }
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Applying Electron Efficiency Correction... ");
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // if m_inputSystNamesElectrons = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   std::vector<std::string>* systNames_ptr(nullptr);
-  if ( !m_inputSystNamesElectrons.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesElectrons, 0, m_store, msg()) );
+  if ( !m_inputSystNamesElectrons.empty() ) ANA_CHECK( evtStore()->retrieve(systNames_ptr, m_inputSystNamesElectrons) );
 
   std::vector<std::string> systNames{""};
   if(systNames_ptr) systNames = *systNames_ptr;
@@ -434,10 +426,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
     const xAOD::ElectronContainer* inputElectrons(nullptr);
 
     // some systematics might have rejected the event
-    if ( m_store->contains<xAOD::ElectronContainer>( m_inContainerName+systName ) ) {
+    if ( evtStore()->contains<xAOD::ElectronContainer>( m_inContainerName+systName ) ) {
 
       // retrieve input electrons
-      ANA_CHECK( HelperFunctions::retrieve(inputElectrons, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inputElectrons, m_inContainerName+systName) );
 
       ANA_MSG_DEBUG( "Number of electrons: " << static_cast<int>(inputElectrons->size()) );
       ANA_MSG_DEBUG( "Input syst: " << systName );
@@ -458,26 +450,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
+StatusCode ElectronEfficiencyCorrector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -497,12 +475,12 @@ EL::StatusCode ElectronEfficiencyCorrector :: finalize ()
   if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigEffSF_tool_name) ) delete m_asgElEffCorrTool_elSF_Trig;
   if ( !asg::ToolStore::contains<AsgElectronEfficiencyCorrectionTool>(m_TrigMCEff_tool_name) ) delete m_asgElEffCorrTool_elSF_TrigMCEff;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
+StatusCode ElectronEfficiencyCorrector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -517,10 +495,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames )
+StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames )
 {
 
   // In the following, every electron gets decorated with several vector<double>'s (for various SFs),
@@ -565,7 +543,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_PID->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_PID for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_PID->appliedSystematics().name() );
 
@@ -600,7 +578,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_PID->getEfficiencyScaleFactor( *el_itr, pidEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in PID getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of PID efficiency validity range");
        }
@@ -625,8 +603,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesPID ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesPID), m_outputSystNamesPID ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesPID ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesPID), m_outputSystNamesPID ));
     }
 
   }
@@ -658,7 +636,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_Iso->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Iso for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Iso->appliedSystematics().name() );
 
@@ -693,7 +671,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Iso->getEfficiencyScaleFactor( *el_itr, IsoEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in Iso getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of Iso efficiency validity range");
        }
@@ -718,8 +696,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesIso ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesIso), m_outputSystNamesIso ));
     }
 
   }
@@ -751,7 +729,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_Reco->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Reco for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Reco->appliedSystematics().name() );
 
@@ -785,7 +763,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in Reco getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of Reco efficiency validity range");
        }
@@ -810,8 +788,8 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesReco ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesReco), m_outputSystNamesReco ));
     }
 
   }
@@ -853,13 +831,13 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       //
       if ( m_asgElEffCorrTool_elSF_Trig->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
     	ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_Trig for systematic " << syst_it.name());
-    	return EL::StatusCode::FAILURE;
+    	return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_Trig->appliedSystematics().name() );
 
       if ( m_asgElEffCorrTool_elSF_TrigMCEff->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR("Failed to configure AsgElectronEfficiencyCorrectionTool_TrigMCEff for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_TrigMCEff->appliedSystematics().name() );
 
@@ -903,7 +881,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in Trig getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of Trig efficiency validity range");
        }
@@ -915,7 +893,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
        CP::CorrectionCode::ErrorCode statusEff = m_asgElEffCorrTool_elSF_TrigMCEff->getEfficiencyScaleFactor( *el_itr, trigMCEff );
        if ( statusEff == CP::CorrectionCode::Error ) {
          ANA_MSG_ERROR( "Problem in TrigMCEff getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+         return StatusCode::FAILURE;
        } else if ( statusEff == CP::CorrectionCode::OutOfValidityRange ) {
          ANA_MSG_DEBUG( "Electron of of TrigMCEff efficiency validity range");
        }
@@ -945,11 +923,11 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
 
     // Add list of systematics names to TStore
     // We only do this once per event if the list does not exist yet
-    if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNamesTrig ) ) {
-      ANA_CHECK( m_store->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
+    if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNamesTrig ) ) {
+      ANA_CHECK( evtStore()->record( std::move(sysVariationNamesTrig), m_outputSystNamesTrig ));
     }
 
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

@@ -4,10 +4,6 @@
 #include <sstream>
 #include <tuple>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -31,41 +27,55 @@
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
-#include "TFile.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(ElectronSelector)
 
-ElectronSelector :: ElectronSelector () :
-    Algorithm("ElectronSelector")
+ElectronSelector :: ElectronSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "ElectronSelector")
 {
+    declareProperty("useCutFlow", m_useCutFlow);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects);
+    declareProperty("createSelectedContainer", m_createSelectedContainer);
+    declareProperty("nToProcess", m_nToProcess);
+    declareProperty("pass_min", m_pass_min);
+    declareProperty("pass_max", m_pass_max);
+    declareProperty("pT_max", m_pT_max);
+    declareProperty("pT_min", m_pT_min);
+    declareProperty("eta_max", m_eta_max);
+    declareProperty("vetoCrack", m_vetoCrack);
+    declareProperty("d0_max", m_d0_max);
+    declareProperty("d0sig_max", m_d0sig_max);
+    declareProperty("z0sintheta_max", m_z0sintheta_max);
+    declareProperty("doAuthorCut", m_doAuthorCut);
+    declareProperty("doOQCut", m_doOQCut);
+    declareProperty("readIDFlagsFromDerivation", m_readIDFlagsFromDerivation);
+    declareProperty("doModifiedEleId", m_doModifiedEleId);
+    declareProperty("doLHPID", m_doLHPID);
+    declareProperty("doLHPIDcut", m_doLHPIDcut);
+    declareProperty("LHOperatingPoint", m_LHOperatingPoint);
+    declareProperty("doCutBasedPID", m_doCutBasedPID);
+    declareProperty("doCutBasedPIDcut", m_doCutBasedPIDcut);
+    declareProperty("CutBasedOperatingPoint", m_CutBasedOperatingPoint);
+    declareProperty("MinIsoWPCut", m_MinIsoWPCut);
+    declareProperty("IsoWPList", m_IsoWPList);
+    declareProperty("CaloIsoEff", m_CaloIsoEff);
+    declareProperty("TrackIsoEff", m_TrackIsoEff);
+    declareProperty("CaloBasedIsoType", m_CaloBasedIsoType);
+    declareProperty("TrackBasedIsoType", m_TrackBasedIsoType);
+    declareProperty("singleElTrigChains", m_singleElTrigChains);
+    declareProperty("diElTrigChains", m_diElTrigChains);
+    declareProperty("minDeltaR", m_minDeltaR);
+    declareProperty("applyCrackVetoCleaning", m_applyCrackVetoCleaning);
 }
 
-ElectronSelector::~ElectronSelector() {}
 
-EL::StatusCode ElectronSelector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "ElectronSelector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode ElectronSelector :: histInitialize ()
+StatusCode ElectronSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -80,24 +90,24 @@ EL::StatusCode ElectronSelector :: histInitialize ()
     ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: fileExecute ()
+StatusCode ElectronSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
+StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -105,12 +115,12 @@ EL::StatusCode ElectronSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_INFO( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: initialize ()
+StatusCode ElectronSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -133,20 +143,16 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if ( m_useCutFlow ) {
 
-    // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-
     // retrieve the event cutflows
     //
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_el_cutflowHist_1 = (TH1D*)file->Get("cutflow_electrons_1");
+    m_el_cutflowHist_1 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_electrons_1"));
 
     m_el_cutflow_all             = m_el_cutflowHist_1->GetXaxis()->FindBin("all");
     m_el_cutflow_author_cut      = m_el_cutflowHist_1->GetXaxis()->FindBin("author_cut");
@@ -162,7 +168,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_el_cutflow_iso_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("iso_cut");
 
     if ( m_isUsedBefore ) {
-      m_el_cutflowHist_2 = (TH1D*)file->Get("cutflow_electrons_2");
+      m_el_cutflowHist_2 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_electrons_2"));
 
       m_el_cutflow_all       = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
       m_el_cutflow_author_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
@@ -180,10 +186,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   }
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
@@ -197,13 +200,13 @@ EL::StatusCode ElectronSelector :: initialize ()
        m_LHOperatingPoint != "Medium"          &&
        m_LHOperatingPoint != "Tight"     ) {
     ANA_MSG_ERROR( "Unknown electron likelihood PID requested " << m_LHOperatingPoint);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   if ( m_CutBasedOperatingPoint != "Loose"  &&
        m_CutBasedOperatingPoint != "Medium" &&
        m_CutBasedOperatingPoint != "Tight"  ) {
     ANA_MSG_ERROR( "Unknown electron cut-based PID requested " << m_CutBasedOperatingPoint);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // Parse input isolation WP list, split by comma, and put into a vector for later use
@@ -220,7 +223,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
@@ -346,11 +349,11 @@ EL::StatusCode ElectronSelector :: initialize ()
   //     do not initialise if there are no input trigger chains
   if(  !( m_singleElTrigChains.empty() && m_diElTrigChains.empty() ) ) {
 
-    if( !isPHYS() ) {
+    if( !m_isPHYS ) {
       // Grab the TrigDecTool from the ToolStore
       if(!m_trigDecTool_handle.isUserConfigured()){
         ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -385,10 +388,10 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   ANA_MSG_INFO( "ElectronSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ElectronSelector :: execute ()
+StatusCode ElectronSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -398,7 +401,7 @@ EL::StatusCode ElectronSelector :: execute ()
   ANA_MSG_DEBUG( "Applying Electron Selection... ");
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   //
@@ -406,7 +409,7 @@ EL::StatusCode ElectronSelector :: execute ()
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
@@ -455,7 +458,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inElectrons, m_inContainerName) );
 
     // create output container (if requested)
     ConstDataVector<xAOD::ElectronContainer>* selectedElectrons(nullptr);
@@ -468,7 +471,7 @@ EL::StatusCode ElectronSelector :: execute ()
     if ( m_createSelectedContainer) {
       if ( eventPass ) {
         // add ConstDataVector to TStore
-        ANA_CHECK( m_store->record( selectedElectrons, m_outContainerName ));
+        ANA_CHECK( evtStore()->record( selectedElectrons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
         delete selectedElectrons; selectedElectrons = nullptr;
@@ -480,7 +483,7 @@ EL::StatusCode ElectronSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgoSystNames) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -495,7 +498,7 @@ EL::StatusCode ElectronSelector :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inElectrons, m_inContainerName + systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inElectrons, m_inContainerName + systName) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -522,7 +525,7 @@ EL::StatusCode ElectronSelector :: execute ()
       if ( m_createSelectedContainer ) {
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
-          ANA_CHECK( m_store->record( selectedElectrons, m_outContainerName+systName ));
+          ANA_CHECK( evtStore()->record( selectedElectrons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
           delete selectedElectrons; selectedElectrons = nullptr;
@@ -535,20 +538,19 @@ EL::StatusCode ElectronSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+    ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   }
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if( !eventPass ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    setFilterPassed(false);
+    return StatusCode::SUCCESS;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -557,7 +559,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 {
 
   const xAOD::VertexContainer* vertices(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
@@ -687,7 +689,7 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
       ANA_MSG_DEBUG( "Doing di-electron trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char>     dielectron_trigmatch_pair;
       typedef std::multimap< std::string, dielectron_trigmatch_pair >    dielectron_trigmatch_pair_map;
@@ -737,20 +739,8 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
 }
 
-EL::StatusCode ElectronSelector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
 
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode ElectronSelector :: finalize ()
+StatusCode ElectronSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -772,12 +762,12 @@ EL::StatusCode ElectronSelector :: finalize ()
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode ElectronSelector :: histFinalize ()
+StatusCode ElectronSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -793,7 +783,7 @@ EL::StatusCode ElectronSelector :: histFinalize ()
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex ) {
@@ -898,7 +888,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   double d0_significance = xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() );
 

@@ -8,7 +8,7 @@ namespace xAH {
   class TruthPart : public Particle
     {
     public:
-      
+
       //TruthPart() { };
       //virtual ~TruthPart();
       int pdgId;
@@ -23,7 +23,7 @@ namespace xAH {
       float Bdecay_x;
       float Bdecay_y;
       float Bdecay_z;
-      
+
       // Parents
       int nParents;
       std::vector<int> parent_pdgId;

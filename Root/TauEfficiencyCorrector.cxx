@@ -4,10 +4,6 @@
 #include <random>
 #include <algorithm>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 
 // EDM include(s):
@@ -29,67 +25,58 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TauEfficiencyCorrector)
 
 
-TauEfficiencyCorrector :: TauEfficiencyCorrector () :
-    Algorithm("TauEfficiencyCorrector")
+TauEfficiencyCorrector :: TauEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TauEfficiencyCorrector")
 {
+    declareProperty("RecommendationTag", m_RecommendationTag);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("WorkingPointReco", m_WorkingPointReco);
+    declareProperty("WorkingPointEleOLRHadTau", m_WorkingPointEleOLRHadTau);
+    declareProperty("WorkingPointEleOLRElectron", m_WorkingPointEleOLRElectron);
+    declareProperty("WorkingPointTauID", m_WorkingPointTauID);
+    declareProperty("TriggerName", m_TriggerName);
+    declareProperty("inputSystNamesTaus", m_inputSystNamesTaus);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("systVal", m_systVal);
+    declareProperty("systName", m_systName);
+    declareProperty("outputSystNames", m_outputSystNames);
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "TauEfficiencyCorrector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode TauEfficiencyCorrector :: histInitialize ()
+StatusCode TauEfficiencyCorrector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: fileExecute ()
+StatusCode TauEfficiencyCorrector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: changeInput (bool /*firstFile*/)
+StatusCode TauEfficiencyCorrector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauEfficiencyCorrector :: initialize ()
+StatusCode TauEfficiencyCorrector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -102,14 +89,11 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( "Initializing TauEfficiencyCorrector Interface... ");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -123,54 +107,54 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   if( isMC() ){
     if(!m_pileup_tool_handle.isUserConfigured()){
       ANA_MSG_FATAL("A configured " << m_pileup_tool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     ANA_CHECK( m_pileup_tool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_pileup_tool_handle);
   }
-  
-  if (!m_RecommendationTag.empty()) { 
-    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("RecommendationTag",m_RecommendationTag)) 
+
+  if (!m_RecommendationTag.empty()) {
+    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("RecommendationTag",m_RecommendationTag))
   };
-  
+
   // just the tool default settings
-  // https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/TauID/TauAnalysisTools/trunk/doc/README-TauEfficiencyCorrectionsTool.rst 
-  
-  // initialise reco and EleOLRHadTau SF no matter what 
+  // https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/TauID/TauAnalysisTools/trunk/doc/README-TauEfficiencyCorrectionsTool.rst
+
+  // initialise reco and EleOLRHadTau SF no matter what
   std::vector<int> configVec;
   configVec.push_back({TauAnalysisTools::SFRecoHadTau});
   configVec.push_back({TauAnalysisTools::SFEleOLRHadTau});
-  
+
   if ( !m_WorkingPointTauID.empty() ) {
      configVec.push_back({TauAnalysisTools::SFJetIDHadTau});
-     
+
      if      ( m_WorkingPointTauID == "VeryLoose") { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTVERYLOOSE)); }
      else if ( m_WorkingPointTauID == "Loose")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTLOOSE));     }
      else if ( m_WorkingPointTauID == "Medium")    { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTMEDIUM));    }
      else if ( m_WorkingPointTauID == "Tight")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTTIGHT));     }
-     else { 
+     else {
        ANA_MSG_ERROR("Failed to configure WorkingPointTauID with unknown " << m_WorkingPointTauID);
-       return EL::StatusCode::FAILURE;
+       return StatusCode::FAILURE;
      }
-  } else if ( m_WorkingPointTauID.empty() )      { 
-    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDNONE));     
+  } else if ( m_WorkingPointTauID.empty() )      {
+    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDNONE));
     // still consider this a working point
     m_WorkingPointTauID = "None";
   }
 
   if (!m_WorkingPointEleOLRElectron.empty()) {
     configVec.push_back({TauAnalysisTools::SFEleOLRElectron});
-    
+
     if      (m_WorkingPointEleOLRElectron == "TauEleOLR")            { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::TAUELEOLR));            }
     else if (m_WorkingPointEleOLRElectron == "EleBDTLoose")          { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTLOOSE));          }
     else if (m_WorkingPointEleOLRElectron == "EleBDTLoosePlusVeto")  { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTLOOSEPLUSVETO));  }
     else if (m_WorkingPointEleOLRElectron == "EleBDTMedium")         { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTMEDIUM));         }
     else if (m_WorkingPointEleOLRElectron == "EleBDTMediumPlusVeto") { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTMEDIUMPLUSVETO)); }
-    else { 
+    else {
        ANA_MSG_ERROR("Failed to configure WorkingPointEleOLRElectron with unknown " << m_WorkingPointEleOLRElectron);
-       return EL::StatusCode::FAILURE;
+       return StatusCode::FAILURE;
     }
-  } else if ( m_WorkingPointEleOLRElectron.empty() )      { 
+  } else if ( m_WorkingPointEleOLRElectron.empty() )      {
     // still consider this a working point
     m_WorkingPointEleOLRElectron = "None";
   }
@@ -178,53 +162,52 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   if (!m_TriggerName.empty()) {
     // We always want trigger to be individual
     configVec = {TauAnalysisTools::SFTriggerHadTau};
-     
+
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("TriggerName", m_TriggerName));
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("PileupReweightingTool",m_pileup_tool_handle));
-    
-  }           
-  
+
+  }
+
   ANA_CHECK(m_tauEffCorrTool_handle.setProperty("EfficiencyCorrectionTypes",configVec));
   ANA_CHECK(m_tauEffCorrTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool for Tau Efficiency corrections: " << m_tauEffCorrTool_handle);
 
   // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!  First fill a 
+  // Use HelperFunctions::getListofSystematics() for this!  First fill a
   // list of identically inclusive lists and then remove unwanted elements
 
   const CP::SystematicSet recSysts = m_tauEffCorrTool_handle->recommendedSystematics();
   m_systList = HelperFunctions::getListofSystematics( recSysts, m_systName, m_systVal, msg() );
-  
+
   ANA_MSG_INFO("Will be using TauEfficiencyScaleFactors tool efficiency systematic:");
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() ) {
   	ANA_MSG_INFO("\t Running w/ nominal configuration only!");
   	break;
-    } 
+    }
     // IMPORTANT: for the trigger iteration remove the sys if it does not
     // contain the word TRIGGER (?)
     //else if (syst_it.name().find("RECO") == std::string::npos) {
-    //  m_systListReco.erase(std::remove(m_systListReco.begin(), m_systListReco.end(), syst_it), m_systListReco.end()); 
+    //  m_systListReco.erase(std::remove(m_systListReco.begin(), m_systListReco.end(), syst_it), m_systListReco.end());
     //}
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  
+
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systList, m_outputSystNames, fileMD);
+    ANA_CHECK(writeSystematicsListHist(m_systList, m_outputSystNames));
   }
-  
+
   // *********************************************************************************
 
   ANA_MSG_INFO( "TauEfficiencyCorrector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: execute ()
+StatusCode TauEfficiencyCorrector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -235,18 +218,18 @@ EL::StatusCode TauEfficiencyCorrector :: execute ()
 
   if ( !isMC() ) {
     if ( m_numEvent == 1 ) { ANA_MSG_INFO( "Sample is Data! Do not apply any Tau Efficiency correction... "); }
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Applying Tau Efficiency corrections... ");
- 
+
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // if m_inputSystNamesTaus = "" --> input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   std::vector<std::string>* systNames_ptr(nullptr);
-  if ( !m_inputSystNamesTaus.empty() ) ANA_CHECK( HelperFunctions::retrieve(systNames_ptr, m_inputSystNamesTaus, 0, m_store, msg()) );
+  if ( !m_inputSystNamesTaus.empty() ) ANA_CHECK( evtStore()->retrieve(systNames_ptr, m_inputSystNamesTaus) );
 
   std::vector<std::string> systNames{""};
   if (systNames_ptr) systNames = *systNames_ptr;
@@ -261,9 +244,9 @@ EL::StatusCode TauEfficiencyCorrector :: execute ()
     const xAOD::TauJetContainer* inputTaus(nullptr);
 
     // some systematics might have rejected the event
-    if ( m_store->contains<xAOD::TauJetContainer>( m_inContainerName+systName ) ) {
+    if ( evtStore()->contains<xAOD::TauJetContainer>( m_inContainerName+systName ) ) {
       // retrieve input taus
-      ANA_CHECK( HelperFunctions::retrieve(inputTaus, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inputTaus, m_inContainerName+systName) );
 
       ANA_MSG_DEBUG( "Number of taus: " << static_cast<int>(inputTaus->size()) );
       ANA_MSG_DEBUG( "Input syst: " << systName );
@@ -284,27 +267,13 @@ EL::StatusCode TauEfficiencyCorrector :: execute ()
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
-  
-  return EL::StatusCode::SUCCESS;
+
+  return StatusCode::SUCCESS;
 
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode TauEfficiencyCorrector :: finalize ()
+StatusCode TauEfficiencyCorrector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -318,11 +287,11 @@ EL::StatusCode TauEfficiencyCorrector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauEfficiencyCorrector :: histFinalize ()
+StatusCode TauEfficiencyCorrector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -337,13 +306,13 @@ EL::StatusCode TauEfficiencyCorrector :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::TauJetContainer* inputTaus, bool nominal, bool writeSystNames )
+StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*eventInfo*/, const xAOD::TauJetContainer* inputTaus, bool nominal, bool writeSystNames )
 {
-  //**************************** 
-  
+  //****************************
+
   //
   // In the following, every tau gets decorated with 2 vector<double>'s (for reco/iso efficiency SFs),
   // and the event w/ 1 vector<double> (for trigger efficiency SFs)
@@ -361,9 +330,9 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
   // Firstly, loop over available systematics for this tool - remember: syst == EMPTY_STRING --> nominal
   // Every systematic will correspond to a different SF!
   //
-  
+
   std::unique_ptr< std::vector< std::string > > sysVariationNames = nullptr;
-  
+
   if ( writeSystNames ) sysVariationNames = std::make_unique< std::vector< std::string > >();
 
   for ( const auto& syst_it : m_systList ) {
@@ -382,7 +351,7 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
     //
     if ( m_tauEffCorrTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR("Failed to configure TauEfficiencyScaleFactors for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     ANA_MSG_DEBUG( "Successfully applied systematic: " << syst_it.name());
 
@@ -437,9 +406,9 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
 
   // Add list of systematics names to TStore
   // We only do this once per event if the list does not exist yet
-  if ( writeSystNames && !m_store->contains<std::vector<std::string>>( m_outputSystNames ) ) {
-    ANA_CHECK( m_store->record( std::move(sysVariationNames), m_outputSystNames ));
+  if ( writeSystNames && !evtStore()->contains<std::vector<std::string>>( m_outputSystNames ) ) {
+    ANA_CHECK( evtStore()->record( std::move(sysVariationNames), m_outputSystNames ));
   }
-  
-  return EL::StatusCode::SUCCESS;
+
+  return StatusCode::SUCCESS;
 }

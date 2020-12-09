@@ -5,7 +5,7 @@
 
 
 namespace xAH {
-  
+
   class Muon : public Particle
   {
   public:
@@ -20,7 +20,6 @@ namespace xAH {
     int               isTrigMatched;
     std::vector<int>  isTrigMatchedToChain;
     std::vector<std::string> listTrigChains;
-    
       // isolation
     std::map< std::string, int > isIsolated;
     float ptcone20;
@@ -32,7 +31,7 @@ namespace xAH {
     float topoetcone20;
     float topoetcone30;
     float topoetcone40;
-    
+
     // quality
     std::map< std::string, int > quality;
 
@@ -42,7 +41,7 @@ namespace xAH {
     std::map< std::string, std::vector< float > > IsoEff_SF;
     std::map< std::string, std::vector< float > > TrigEff_SF;
     std::map< std::string, std::vector< float > > TrigMCEff;
-    
+
     std::vector< float >  TTVAEff_SF;
 
     // track parameters
@@ -54,7 +53,7 @@ namespace xAH {
     float trktheta;
     float trkcharge;
     float trkqOverP;
-    
+
       // track hit content
     int   trknSiHits;
     int   trknPixHits;
@@ -66,7 +65,7 @@ namespace xAH {
     int   trknBLayerHits;
     int   trknInnermostPixLayHits; // not available in DC14
     float trkPixdEdX;            // not available in DC14
-    
+
     float         EnergyLoss;
     float         EnergyLossSigma;
     unsigned char energyLossType;

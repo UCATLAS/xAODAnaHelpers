@@ -16,19 +16,19 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
     m_isTrigMatchedToChain   = new     vector<vector<int> >      ();
     m_listTrigChains         = new     vector<std::string>       ();
   }
-  
+
   if( m_infoSwitch.m_kinematic) {
     m_ntrk    = new  std::vector<int>   ();
     m_charge  = new  std::vector<float> ();
   }
-  
-  // might need to delete these  
+
+  // might need to delete these
   if( m_infoSwitch.m_JetID) {
     m_isJetBDTSigVeryLoose = new  std::vector<int>   ();
     m_isJetBDTSigLoose     = new  std::vector<int>   ();
     m_isJetBDTSigMedium    = new  std::vector<int>   ();
     m_isJetBDTSigTight     = new  std::vector<int>   ();
-    
+
     m_JetBDTScore          = new  std::vector<float>   ();
     m_JetBDTScoreSigTrans  = new  std::vector<float>   ();
   }
@@ -37,7 +37,7 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
     m_isEleBDTLoose  = new  std::vector<int>   ();
     m_isEleBDTMedium = new  std::vector<int>   ();
     m_isEleBDTTight  = new  std::vector<int>   ();
-    
+
     m_EleBDTScore    = new  std::vector<float> ();
     m_passEleOLR     = new  std::vector<int>   ();
   }
@@ -65,24 +65,24 @@ TauContainer::TauContainer(const std::string& name, const std::string& detailStr
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     m_TauEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
     m_TauTrigEff_SF = new std::map< std::string, std::vector< std::vector< float > > >();
-  
+
   }
 
 }
 
 TauContainer::~TauContainer()
 {
-  
+
   // trigger
   if ( m_infoSwitch.m_trigger ) {
     delete m_isTrigMatched         ;
     delete m_isTrigMatchedToChain  ;
     delete m_listTrigChains        ;
   }
-  
+
   if (m_infoSwitch.m_kinematic){
     delete m_ntrk;
     delete m_charge;
@@ -91,7 +91,7 @@ TauContainer::~TauContainer()
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     delete m_TauEff_SF;
     delete m_TauTrigEff_SF;
 
@@ -103,7 +103,7 @@ TauContainer::~TauContainer()
     delete m_isJetBDTSigLoose;
     delete m_isJetBDTSigMedium;
     delete m_isJetBDTSigTight;
-    
+
     delete m_JetBDTScore;
     delete m_JetBDTScoreSigTrans;
   }
@@ -112,15 +112,15 @@ TauContainer::~TauContainer()
     delete m_isEleBDTLoose;
     delete m_isEleBDTMedium;
     delete m_isEleBDTTight;
-    
+
     delete m_EleBDTScore;
 
     delete m_passEleOLR;
   }
 
   if( m_infoSwitch.m_xahTauJetMatching) {
-    delete m_tau_matchedJetWidth; 
-    delete m_tau_matchedJetJvt; 
+    delete m_tau_matchedJetWidth;
+    delete m_tau_matchedJetJvt;
   }
 
   if( m_infoSwitch.m_trackAll) {
@@ -151,14 +151,14 @@ void TauContainer::setTree(TTree *tree)
     connectBranch<vector<int> >(tree, "isTrigMatchedToChain", &m_isTrigMatchedToChain );
     connectBranch<string>      (tree, "listTrigChains",       &m_listTrigChains );
   }
-  
+
   if ( m_infoSwitch.m_kinematic ){
     connectBranch<int>    (tree, "ntrk",       &m_ntrk);
     connectBranch<float>  (tree, "charge",     &m_charge );
   }
-  
+
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       tree->SetBranchStatus ( (m_name + "_TauEff_SF_" + taueff).c_str() , 1);
       tree->SetBranchAddress( (m_name + "_TauEff_SF_" + taueff).c_str() , & (*m_TauEff_SF)[ taueff ] );
@@ -172,13 +172,13 @@ void TauContainer::setTree(TTree *tree)
     }
   }
 
-  // might need to delete these 
+  // might need to delete these
   if ( m_infoSwitch.m_JetID ){
     connectBranch<int>    (tree, "isJetBDTSigVeryLoose",   &m_isJetBDTSigVeryLoose);
     connectBranch<int>    (tree, "isJetBDTSigLoose",       &m_isJetBDTSigLoose);
     connectBranch<int>    (tree, "isJetBDTSigMedium",      &m_isJetBDTSigMedium);
     connectBranch<int>    (tree, "isJetBDTSigTight",       &m_isJetBDTSigTight);
-    
+
     connectBranch<float>  (tree, "JetBDTScore",         &m_JetBDTScore);
     connectBranch<float>  (tree, "JetBDTScoreSigTrans", &m_JetBDTScoreSigTrans);
   }
@@ -187,7 +187,7 @@ void TauContainer::setTree(TTree *tree)
     connectBranch<int>    (tree, "isEleBDTLoose",    &m_isEleBDTLoose);
     connectBranch<int>    (tree, "isEleBDTMedium",   &m_isEleBDTMedium);
     connectBranch<int>    (tree, "isEleBDTTight",    &m_isEleBDTTight);
-    
+
     connectBranch<float>  (tree, "EleBDTScore",    &m_EleBDTScore);
     connectBranch<int>    (tree, "passEleOLR",     &m_passEleOLR);
   }
@@ -236,7 +236,7 @@ void TauContainer::setTree(TTree *tree)
 
 void TauContainer::updateParticle(uint idx, Tau& tau)
 {
-  ParticleContainer::updateParticle(idx,tau);  
+  ParticleContainer::updateParticle(idx,tau);
 
   // trigger
   if ( m_infoSwitch.m_trigger ) {
@@ -244,20 +244,20 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     tau.isTrigMatchedToChain  =     m_isTrigMatchedToChain  ->at(idx);
     tau.listTrigChains        =     m_listTrigChains        ->at(idx);
   }
-  
+
   if ( m_infoSwitch.m_kinematic ) {
     tau.ntrk    =     m_ntrk    ->at(idx);
     tau.charge  =     m_charge  ->at(idx);
   }
-  
+
   // scale factors w/ sys
   // per object
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       tau.TauEff_SF[ taueff ] = (*m_TauEff_SF)[ taueff ].at(idx);
     }
-    
+
     for (auto& trig : m_infoSwitch.m_trigWPs) {
       tau.TauTrigEff_SF[ trig ] = (*m_TauTrigEff_SF)[ trig ].at(idx);
     }
@@ -269,7 +269,7 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     tau.isJetBDTSigLoose       =   m_isJetBDTSigLoose       ->at(idx);
     tau.isJetBDTSigMedium      =   m_isJetBDTSigMedium      ->at(idx);
     tau.isJetBDTSigTight       =   m_isJetBDTSigTight       ->at(idx);
-    
+
     tau.JetBDTScore         =   m_JetBDTScore         ->at(idx);
     tau.JetBDTScoreSigTrans =   m_JetBDTScoreSigTrans ->at(idx);
   }
@@ -278,9 +278,9 @@ void TauContainer::updateParticle(uint idx, Tau& tau)
     tau.isEleBDTLoose   =  m_isEleBDTLoose   ->at(idx);
     tau.isEleBDTMedium  =  m_isEleBDTMedium  ->at(idx);
     tau.isEleBDTTight   =  m_isEleBDTTight   ->at(idx);
-    
+
     tau.EleBDTScore     =  m_EleBDTScore     ->at(idx);
-    
+
     tau.passEleOLR      =  m_passEleOLR      ->at(idx);
   }
 
@@ -328,11 +328,11 @@ void TauContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       tree->Branch( (m_name + "_TauEff_SF_" + taueff).c_str() , & (*m_TauEff_SF)[ taueff ] );
     }
-    
+
     for (auto& trig : m_infoSwitch.m_trigWPs) {
       tree->Branch( (m_name + "_TauTrigEff_SF_" + trig).c_str() , & (*m_TauTrigEff_SF)[ trig ] );
     }
@@ -344,32 +344,32 @@ void TauContainer::setBranches(TTree *tree)
     setBranch<int>   (tree,"isJetBDTSigLoose", m_isJetBDTSigLoose);
     setBranch<int>   (tree,"isJetBDTSigMedium", m_isJetBDTSigMedium);
     setBranch<int>   (tree,"isJetBDTSigTight", m_isJetBDTSigTight);
-    
+
     setBranch<float> (tree,"JetBDTScore", m_JetBDTScore);
     setBranch<float> (tree,"JetBDTScoreSigTrans", m_JetBDTScoreSigTrans);
 
   }
-  
+
   if ( m_infoSwitch.m_EleVeto ){
     setBranch<int>   (tree,"isEleBDTLoose", m_isEleBDTLoose);
     setBranch<int>   (tree,"isEleBDTMedium", m_isEleBDTMedium);
     setBranch<int>   (tree,"isEleBDTTight", m_isEleBDTTight);
-    
+
     setBranch<float> (tree,"EleBDTScore", m_EleBDTScore);
 
     setBranch<int>   (tree,"passEleOLR", m_passEleOLR);
   }
- 
+
   if( m_infoSwitch.m_xahTauJetMatching) {
     setBranch<float>  (tree, "matchedJetWidth",    m_tau_matchedJetWidth);
     setBranch<float>  (tree, "matchedJetJvt",    m_tau_matchedJetJvt);
-  } 
-  
+  }
+
   if( m_infoSwitch.m_trackAll) {
     tree->Branch( (m_name + "_tracks_pt").c_str() , &m_tau_tracks_pt );
     tree->Branch( (m_name + "_tracks_eta").c_str() , &m_tau_tracks_eta );
     tree->Branch( (m_name + "_tracks_phi").c_str() , &m_tau_tracks_phi );
-    
+
     tree->Branch( (m_name + "_tracks_isCore").c_str() , &m_tau_tracks_isCore );
     tree->Branch( (m_name + "_tracks_isWide").c_str() , &m_tau_tracks_isWide );
     tree->Branch( (m_name + "_tracks_failTrackFilter").c_str() , &m_tau_tracks_failTrackFilter );
@@ -387,7 +387,7 @@ void TauContainer::setBranches(TTree *tree)
 
 void TauContainer::clear()
 {
-  
+
   ParticleContainer::clear();
 
   if ( m_infoSwitch.m_trigger ) {
@@ -400,9 +400,9 @@ void TauContainer::clear()
     m_ntrk->clear();
     m_charge->clear();
   }
- 
+
   if ( m_infoSwitch.m_effSF && m_mc ) {
-    
+
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       (*m_TauEff_SF)[ taueff ].clear();
     }
@@ -418,7 +418,7 @@ void TauContainer::clear()
     m_isJetBDTSigLoose->clear();
     m_isJetBDTSigMedium->clear();
     m_isJetBDTSigTight->clear();
-    
+
     m_JetBDTScore->clear();
     m_JetBDTScoreSigTrans->clear();
   }
@@ -427,7 +427,7 @@ void TauContainer::clear()
     m_isEleBDTLoose->clear();
     m_isEleBDTMedium->clear();
     m_isEleBDTTight->clear();
-    
+
     m_EleBDTScore->clear();
     m_passEleOLR->clear();
   }
@@ -459,7 +459,7 @@ void TauContainer::FillTau( const xAOD::TauJet* tau ){
   return FillTau(static_cast<const xAOD::IParticle*>(tau));
 }
 
-void TauContainer::FillTau( const xAOD::IParticle* particle ) 
+void TauContainer::FillTau( const xAOD::IParticle* particle )
 {
 
   ParticleContainer::FillParticle(particle);
@@ -487,11 +487,11 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
     }
 
     m_isTrigMatchedToChain->push_back(matches);
-    
+
     // if at least one match among the chains is found, say this tau is trigger matched
     if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
     else { m_isTrigMatched->push_back(0); }
-    
+
   }
 
   if ( m_infoSwitch.m_kinematic ) {
@@ -506,7 +506,7 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
 
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTauEffSF;
     static std::map< std::string, SG::AuxElement::Accessor< std::vector< float > > > accTauTrigSF;
-    
+
     for (auto& taueff : m_infoSwitch.m_tauEffWPs) {
       std::string tauEffSF = "TauEff_SF_syst_" + taueff;
       accTauEffSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( taueff , SG::AuxElement::Accessor< std::vector< float > >( tauEffSF ) ) );
@@ -518,12 +518,12 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
       accTauTrigSF.insert( std::pair<std::string, SG::AuxElement::Accessor< std::vector< float > > > ( trig , SG::AuxElement::Accessor< std::vector< float > >( trigEffSF ) ) );
       safeSFVecFill<float, xAOD::TauJet>( tau, accTauTrigSF.at( trig ), &m_TauTrigEff_SF->at( trig ), junkSF );
     }
-  
+
   }
 
   // might need to delete these
   if ( m_infoSwitch.m_JetID ) {
-    
+
     static SG::AuxElement::Accessor<int> isJetBDTSigVeryLooseAcc ("isJetBDTSigVeryLoose");
     safeFill<int, int, xAOD::TauJet>(tau, isJetBDTSigVeryLooseAcc, m_isJetBDTSigVeryLoose, -1);
 
@@ -535,7 +535,7 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
 
     static SG::AuxElement::Accessor<int> isJetBDTSigTightAcc ("isJetBDTSigTight");
     safeFill<int, int, xAOD::TauJet>(tau, isJetBDTSigTightAcc, m_isJetBDTSigTight, -1);
-    
+
     static SG::AuxElement::Accessor<float> JetBDTScoreAcc ("JetBDTScore");
     safeFill<float, float, xAOD::TauJet>(tau, JetBDTScoreAcc, m_JetBDTScore, -999.);
 
@@ -544,7 +544,7 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
   }
 
   if ( m_infoSwitch.m_EleVeto ) {
-    
+
     static SG::AuxElement::Accessor<int> isEleBDTLooseAcc ("isEleBDTLoose");
     safeFill<int, int, xAOD::TauJet>(tau, isEleBDTLooseAcc, m_isEleBDTLoose, -1);
 
@@ -571,35 +571,35 @@ void TauContainer::FillTau( const xAOD::IParticle* particle )
   if( m_infoSwitch.m_trackAll) {
     static SG::AuxElement::ConstAccessor< std::vector<float>   >   tauTrackPtAcc("trackPt");
     safeVecFill<float, float, xAOD::TauJet>(tau, tauTrackPtAcc, m_tau_tracks_pt);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<float>   >   tauTrackEtaAcc("trackEta");
     safeVecFill<float, float, xAOD::TauJet>(tau, tauTrackEtaAcc, m_tau_tracks_eta);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<float>   >   tauTrackPhiAcc("trackPhi");
     safeVecFill<float, float, xAOD::TauJet>(tau, tauTrackPhiAcc, m_tau_tracks_phi);
-    
+
     // track classification
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsCoreAcc("trackIsCore");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsCoreAcc, m_tau_tracks_isCore);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsWideAcc("trackIsWide");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsWideAcc, m_tau_tracks_isWide);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackFailTrackFilterAcc("trackFailTrackFilter");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackFailTrackFilterAcc, m_tau_tracks_failTrackFilter);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackPassTrkSelAcc("trackPassTrkSel");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackPassTrkSelAcc, m_tau_tracks_passTrkSel);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClChargedAcc("trackIsClCharged");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClChargedAcc, m_tau_tracks_isClCharged);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClIsoAcc("trackIsClIso");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClIsoAcc, m_tau_tracks_isClIso);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClConvAcc("trackIsClConv");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClConvAcc, m_tau_tracks_isClConv);
-    
+
     static SG::AuxElement::ConstAccessor< std::vector<int>   >   tauTrackIsClFakeAcc("trackIsClFake");
     safeVecFill<int, int, xAOD::TauJet>(tau, tauTrackIsClFakeAcc, m_tau_tracks_isClFake);
   }

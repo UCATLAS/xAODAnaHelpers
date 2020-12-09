@@ -95,7 +95,7 @@ StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeigh
       if (!isol.empty() && isol != "NONE") {
         std::string isolWP = "isIsolated_" + isol;
         accIsol.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( isol , SG::AuxElement::Accessor<char>( isolWP ) ) );
-          
+
         if (accIsol.at(isol).isAvailable(*muon)) {
           m_isIsolated[isol]->Fill(accIsol.at(isol)(*muon), eventWeight);
         } else {
@@ -135,7 +135,7 @@ StatusCode MuonHists::execute( const xAOD::IParticle* particle, float eventWeigh
     for (auto& quality : m_infoSwitch->m_recoWPs) {
       if (!quality.empty()) {
         accQuality.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( quality , SG::AuxElement::Accessor<char>( quality ) ) );
-        
+
         if (accQuality.at(quality).isAvailable(*muon)) {
           m_quality[quality]->Fill(accQuality.at(quality)(*muon), eventWeight);
         } else {

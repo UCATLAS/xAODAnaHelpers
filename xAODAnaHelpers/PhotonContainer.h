@@ -23,7 +23,7 @@ namespace xAH {
     public:
       PhotonContainer(const std::string& name = "ph", const std::string& detailStr="", float units = 1e3, bool mc = false);
       virtual ~PhotonContainer();
-    
+
       virtual void setTree(TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
@@ -33,7 +33,7 @@ namespace xAH {
 
     protected:
       virtual void updateParticle(uint idx, Photon& photon);
-    
+
     private:
 
       // isolation
@@ -50,7 +50,7 @@ namespace xAH {
       std::vector<float>* m_topoetcone20;
       std::vector<float>* m_topoetcone30;
       std::vector<float>* m_topoetcone40;
-    
+
       // PID
       int m_n_IsLoose;
       std::vector<int>*   m_IsLoose;
@@ -58,7 +58,7 @@ namespace xAH {
       std::vector<int>*   m_IsMedium;
       int m_n_IsTight;
       std::vector<int>*   m_IsTight;
-    
+
       //Purity
       std::vector<float>* m_radhad1;
       std::vector<float>* m_radhad;
@@ -71,7 +71,7 @@ namespace xAH {
       //std::vector<float>* m_w1;
       std::vector<float>* m_deltae;
       std::vector<float>* m_eratio;
-    
+
       // effSF
       std::vector<float> *m_LooseEffSF;
       std::vector<float> *m_MediumEffSF;

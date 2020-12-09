@@ -1,4 +1,4 @@
-# provide xAH on top of the AnalysisBase/AnalysisTop image
+# provide xAH on top of the AnalysisBase/AthAnalysis image
 ARG DOCKER_BASE_REPO
 ARG DOCKER_IMG
 ARG DOCKER_TAG
@@ -36,7 +36,7 @@ USER root
 # 4. Clean up
 # 5. Call the MOTD
 # 6. Call the environment setup script in .bashrc
-RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AnalysisTop") \
+RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisBase" || echo "AthAnalysis") \
     && envsubst '\$RELEASE_TYPE' < /workarea/src/CMakeLists.txt.tmp > /workarea/src/CMakeLists.txt \
     && source /release_setup.sh \
     && mkdir -p /workarea/build \

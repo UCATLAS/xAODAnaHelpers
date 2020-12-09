@@ -1,7 +1,3 @@
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/Worker.h>
-#include "EventLoop/OutputStream.h"
 
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -31,45 +27,55 @@
 #include "xAODCore/tools/ReadStats.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(BasicEventSelection)
 
-BasicEventSelection :: BasicEventSelection () :
-    Algorithm("BasicEventSelection")
+BasicEventSelection :: BasicEventSelection (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "BasicEventSelection")
 {
+    declareProperty("truthLevelOnly", m_truthLevelOnly);
+    declareProperty("setAFII", m_setAFII);
+    declareProperty("setFS", m_setFS);
+    declareProperty("applyGRLCut", m_applyGRLCut);
+    declareProperty("GRLxml", m_GRLxml);
+    declareProperty("GRLExcludeList", m_GRLExcludeList);
+    declareProperty("cleanPowheg", m_cleanPowheg);
+    declareProperty("reweightSherpa22", m_reweightSherpa22);
+    declareProperty("doPUreweighting", m_doPUreweighting);
+    declareProperty("doPUreweightingSys", m_doPUreweightingSys);
+    declareProperty("lumiCalcFileNames", m_lumiCalcFileNames);
+    declareProperty("PRWFileNames", m_PRWFileNames);
+    declareProperty("autoconfigPRW", m_autoconfigPRW);
+    declareProperty("prwActualMu2016File", m_prwActualMu2016File);
+    declareProperty("prwActualMu2017File", m_prwActualMu2017File);
+    declareProperty("prwActualMu2018File", m_prwActualMu2018File);
+    declareProperty("mcCampaign", m_mcCampaign);
+    declareProperty("periodConfig", m_periodConfig);
+    declareProperty("actualMuMin", m_actualMuMin);
+    declareProperty("actualMuMax", m_actualMuMax);
+    declareProperty("calcBCIDInfo", m_calcBCIDInfo);
+    declareProperty("applyPrimaryVertexCut", m_applyPrimaryVertexCut);
+    declareProperty("PVNTrack", m_PVNTrack);
+    declareProperty("applyEventCleaningCut", m_applyEventCleaningCut);
+    declareProperty("applyCoreFlagsCut", m_applyCoreFlagsCut);
+    declareProperty("applyJetCleaningEventFlag", m_applyJetCleaningEventFlag);
+    declareProperty("applyIsBadBatmanFlag", m_applyIsBadBatmanFlag);
+    declareProperty("printBranchList", m_printBranchList);
+    declareProperty("triggerSelection", m_triggerSelection);
+    declareProperty("extraTriggerSelection", m_extraTriggerSelection);
+    declareProperty("applyTriggerCut", m_applyTriggerCut);
+    declareProperty("storeTrigDecisions", m_storeTrigDecisions);
+    declareProperty("storePassL1", m_storePassL1);
+    declareProperty("storePassHLT", m_storePassHLT);
+    declareProperty("storeTrigKeys", m_storeTrigKeys);
+    declareProperty("storePrescaleWeight", m_storePrescaleWeight);
+    declareProperty("derivationName", m_derivationName);
+    declareProperty("useMetaData", m_useMetaData);
+    declareProperty("duplicatesTreeName", m_duplicatesTreeName);
+    declareProperty("checkDuplicatesData", m_checkDuplicatesData);
+    declareProperty("checkDuplicatesMC", m_checkDuplicatesMC);
 }
 
 
-EL::StatusCode BasicEventSelection :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-  //
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD();
-  // let's initialize the algorithm to use the xAODRootAccess package
-  xAOD::Init("BasicEventSelection").ignore(); // call before opening first file
-
-  EL::OutputStream outForCFlow(m_cutFlowStreamName);
-  if(!job.outputHas(m_cutFlowStreamName) ){ job.outputAdd ( outForCFlow ); }
-
-  EL::OutputStream outForMetadata(m_metaDataStreamName);
-  if(!job.outputHas(m_metaDataStreamName) ){ job.outputAdd ( outForMetadata ); }
-
-  EL::OutputStream outForDuplicates(m_duplicatesStreamName);
-  if(!job.outputHas(m_duplicatesStreamName) ){ job.outputAdd ( outForDuplicates ); }
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode BasicEventSelection :: histInitialize ()
+StatusCode BasicEventSelection :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -79,76 +85,68 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   ANA_MSG_INFO( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  // write the metadata hist to this file so algos downstream can pick up the pointer
-  TFile *fileMD = wk()->getOutputFile (m_metaDataStreamName);
-  fileMD->cd();
+  ANA_CHECK(book(TH1D((m_metaDataHistName+"_EventCount").c_str(), (m_metaDataHistName+"_EventCount").c_str(), 6, 0.5, 6.5)));
+  m_histEventCount = static_cast<TH1D*>(hist(m_metaDataHistName+"_EventCount"));
+  // event counts from meta data
+  m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(3, "sumOfWeights initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights selected");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeightsSquared initial");
+  m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
 
   // event counts from meta data
-  if ( !m_histEventCount ) {
-    m_histEventCount = new TH1D("MetaData_EventCount", "MetaData_EventCount", 6, 0.5, 6.5);
-    m_histEventCount -> GetXaxis() -> SetBinLabel(1, "nEvents initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(2, "nEvents selected");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(3, "sumOfWeights initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(4, "sumOfWeights selected");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(5, "sumOfWeightsSquared initial");
-    m_histEventCount -> GetXaxis() -> SetBinLabel(6, "sumOfWeightsSquared selected");
-  }
-
-  TFile *fileSumW = wk()->getOutputFile (m_metaDataStreamName);
-  fileSumW->cd();
-
-  // event counts from meta data
-  if ( !m_histSumW ) {
-    m_histSumW = new TH1D("MetaData_SumW", "MetaData_SumW", 1, -0.5, 0.5);
-    m_histSumW->SetCanExtend(TH1::kAllAxes);
-  }
+  ANA_CHECK(book(TH1D((m_metaDataHistName+"_SumW").c_str(), (m_metaDataHistName+"_SumW").c_str(), 1, -0.5, 0.5)));
+  m_histSumW = static_cast<TH1D*>(hist(m_metaDataHistName+"_SumW"));
+  m_histSumW->SetCanExtend(TH1::kAllAxes);
 
   ANA_MSG_INFO( "Creating histograms");
-
-  // write the cutflows to this file so algos downstream can pick up the pointer
-  //
-  TFile *fileCF = wk()->getOutputFile (m_cutFlowStreamName);
-  fileCF->cd();
 
   // Note: the following code is needed for anyone developing/running in ROOT 6.04.10+
   // Bin extension is not done anymore via TH1::SetBit(TH1::kCanRebin), but with TH1::SetCanExtend(TH1::kAllAxes)
 
   //initialise event cutflow, which will be picked ALSO by the algos downstream where an event selection is applied (or at least can be applied)
-  //
   // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHist  = new TH1D("cutflow", "cutflow", 1, 1, 2);
-  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
-  // use 1,1,2 so Fill(bin) and GetBinContent(bin) refer to the same bin
-  //
-  m_cutflowHistW = new TH1D("cutflow_weighted", "cutflow_weighted", 1, 1, 2);
-  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
+  ANA_CHECK(book(TH1D((m_cutFlowHistName).c_str(), (m_cutFlowHistName).c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_weighted").c_str(), (m_cutFlowHistName+"_weighted").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_electrons_1").c_str(), (m_cutFlowHistName+"_electrons_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_electrons_2").c_str(), (m_cutFlowHistName+"_electrons_2").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_muons_1").c_str(), (m_cutFlowHistName+"_muons_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_muons_2").c_str(), (m_cutFlowHistName+"_muons_2").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_photons_1").c_str(), (m_cutFlowHistName+"_photons_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_taus_1").c_str(), (m_cutFlowHistName+"_taus_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_taus_2").c_str(), (m_cutFlowHistName+"_taus_2").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_jets_1").c_str(), (m_cutFlowHistName+"_jets_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_trks_1").c_str(), (m_cutFlowHistName+"_trks_1").c_str(), 1, 1, 2)));
+  ANA_CHECK(book(TH1D((m_cutFlowHistName+"_truths_1").c_str(), (m_cutFlowHistName+"_truths_1").c_str(), 1, 1, 2)));
 
   // initialise object cutflows, which will be picked by the object selector algos downstream and filled.
-  //
-  m_el_cutflowHist_1     = new TH1D("cutflow_electrons_1", "cutflow_electrons_1", 1, 1, 2);
+  m_cutflowHist          = static_cast<TH1D*>(hist(m_cutFlowHistName));
+  m_cutflowHist->SetCanExtend(TH1::kAllAxes);
+  m_cutflowHistW         = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
+  m_cutflowHistW->SetCanExtend(TH1::kAllAxes);
+  m_el_cutflowHist_1     = static_cast<TH1D*>(hist(m_cutFlowHistName+"_electrons_1"));
   m_el_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_el_cutflowHist_2     = new TH1D("cutflow_electrons_2", "cutflow_electrons_2", 1, 1, 2);
+  m_el_cutflowHist_2     = static_cast<TH1D*>(hist(m_cutFlowHistName+"_electrons_2"));
   m_el_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_1     = new TH1D("cutflow_muons_1", "cutflow_muons_1", 1, 1, 2);
+  m_mu_cutflowHist_1     = static_cast<TH1D*>(hist(m_cutFlowHistName+"_muons_1"));
   m_mu_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_mu_cutflowHist_2     = new TH1D("cutflow_muons_2", "cutflow_muons_2", 1, 1, 2);
+  m_mu_cutflowHist_2     = static_cast<TH1D*>(hist(m_cutFlowHistName+"_muons_2"));
   m_mu_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_ph_cutflowHist_1     = new TH1D("cutflow_photons_1", "cutflow_photons_1", 1, 1, 2);
+  m_ph_cutflowHist_1     = static_cast<TH1D*>(hist(m_cutFlowHistName+"_photons_1"));
   m_ph_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_1     = new TH1D("cutflow_taus_1", "cutflow_taus_1", 1, 1, 2);
+  m_tau_cutflowHist_1     = static_cast<TH1D*>(hist(m_cutFlowHistName+"_taus_1"));
   m_tau_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_tau_cutflowHist_2     = new TH1D("cutflow_taus_2", "cutflow_taus_2", 1, 1, 2);
+  m_tau_cutflowHist_2     = static_cast<TH1D*>(hist(m_cutFlowHistName+"_taus_2"));
   m_tau_cutflowHist_2->SetCanExtend(TH1::kAllAxes);
-  m_jet_cutflowHist_1    = new TH1D("cutflow_jets_1", "cutflow_jets_1", 1, 1, 2);
+  m_jet_cutflowHist_1    = static_cast<TH1D*>(hist(m_cutFlowHistName+"_jets_1"));
   m_jet_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_trk_cutflowHist_1    = new TH1D("cutflow_trks_1", "cutflow_trks_1", 1, 1, 2);
+  m_trk_cutflowHist_1    = static_cast<TH1D*>(hist(m_cutFlowHistName+"_trks_1"));
   m_trk_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
-  m_truth_cutflowHist_1  = new TH1D("cutflow_truths_1", "cutflow_truths_1", 1, 1, 2);
+  m_truth_cutflowHist_1  = static_cast<TH1D*>(hist(m_cutFlowHistName+"_truths_1"));
   m_truth_cutflowHist_1->SetCanExtend(TH1::kAllAxes);
 
   // start labelling the bins for the event cutflow
-  //
   m_cutflow_all  = m_cutflowHist->GetXaxis()->FindBin("all");
   m_cutflowHistW->GetXaxis()->FindBin("all");
 
@@ -157,11 +155,11 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   ANA_MSG_INFO( "Finished creating histograms");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode BasicEventSelection :: fileExecute ()
+StatusCode BasicEventSelection :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
@@ -170,17 +168,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 
   // get TEvent and TStore - must be done here b/c we need to retrieve CutBookkeepers container from TEvent!
   //
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
-
-  // get the MetaData tree once a new file is opened, with
-  //
-  TTree* MetaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
-  if ( !MetaData ) {
-    ANA_MSG_ERROR( "MetaData tree not found! Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
-  MetaData->LoadTree(0);
 
   //---------------------------
   // Meta data - CutBookkepers
@@ -188,9 +175,6 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
   //
   // Metadata for intial N (weighted) events are used to correctly normalise MC
   // if running on a MC DAOD which had some skimming applied at the derivation stage
-
-  //check if file is from a DxAOD
-  bool m_isDerivation = !MetaData->GetBranch("StreamAOD");
 
   if (  m_useMetaData ) {
 
@@ -200,50 +184,42 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       // unless ALL of them have inputStream == "unknownStream"
       //
       const xAOD::CutBookkeeperContainer* incompleteCBC(nullptr);
-      if ( !m_event->retrieveMetaInput(incompleteCBC, "IncompleteCutBookkeepers").isSuccess() ) {
-	  ANA_MSG_ERROR("Failed to retrieve IncompleteCutBookkeepers from MetaData! Exiting.");
-	  return EL::StatusCode::FAILURE;
-      }
+      ANA_CHECK(inputMetaStore()->retrieve(incompleteCBC, "IncompleteCutBookkeepers"));
       bool allFromUnknownStream(true);
       if ( incompleteCBC->size() != 0 ) {
-
-	  std::string stream("");
-	  for ( auto cbk : *incompleteCBC ) {
-	      ANA_MSG_INFO("Incomplete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream());
-	      if ( cbk->inputStream() != "unknownStream" ) {
-		  allFromUnknownStream = false;
-		  stream = cbk->inputStream();
-		  break;
-	      }
-	  }
-	  if ( !allFromUnknownStream ) { ANA_MSG_WARNING("Found incomplete CBK from stream: " << stream << ". This is not necessarily a sign of file corruption (incomplete CBK appear when 'maxevents' is set in the AOD jo, for instance), but you may still want to check input file for potential corruption..." ); }
-
+          std::string stream("");
+          for ( auto cbk : *incompleteCBC ) {
+              ANA_MSG_INFO("Incomplete cbk name: " << cbk->name() << " - stream: " << cbk->inputStream());
+              if ( cbk->inputStream() != "unknownStream" ) {
+                  allFromUnknownStream = false;
+                  stream = cbk->inputStream();
+                  break;
+              }
+          }
+          if ( !allFromUnknownStream ) { ANA_MSG_WARNING("Found incomplete CBK from stream: " << stream << ". This is not necessarily a sign of file corruption (incomplete CBK appear when 'maxevents' is set in the AOD jo, for instance), but you may still want to check input file for potential corruption..." ); }
       }
 
       // Now, let's find the actual information
       //
       const xAOD::CutBookkeeperContainer* completeCBC(nullptr);
-      if ( !m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess() ) {
-	  ANA_MSG_ERROR("Failed to retrieve CutBookkeepers from MetaData! Exiting.");
-	  return EL::StatusCode::FAILURE;
-      }
+      ANA_CHECK(inputMetaStore()->retrieve(completeCBC, "CutBookkeepers"));
 
       // Find the smallest cycle number, the original first processing step/cycle
       int minCycle(10000);
       for ( auto cbk : *completeCBC ) {
-	  if ( !( cbk->name().empty() )  && ( minCycle > cbk->cycle() ) ){ minCycle = cbk->cycle(); }
+        if ( !( cbk->name().empty() )  && ( minCycle > cbk->cycle() ) ){ minCycle = cbk->cycle(); }
       }
 
       // Now, let's actually find the right one that contains all the needed info...
       const xAOD::CutBookkeeper* allEventsCBK(nullptr);
       const xAOD::CutBookkeeper* DxAODEventsCBK(nullptr);
 
-      if ( m_isDerivation ) {
-	if(m_derivationName != ""){
-	  ANA_MSG_INFO("Override auto config to look at DAOD made by Derivation Algorithm: " << m_derivationName);
-	}else{
-	  ANA_MSG_INFO("Will autoconfig to look at DAOD made by Derivation Algorithm.");
-	}
+      if ( m_isDAOD ) {
+        if(m_derivationName != ""){
+          ANA_MSG_INFO("Override auto config to look at DAOD made by Derivation Algorithm: " << m_derivationName);
+        }else{
+          ANA_MSG_INFO("Will autoconfig to look at DAOD made by Derivation Algorithm.");
+        }
       }
 
       int maxCycle(-1);
@@ -258,7 +234,7 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
 	    }
 
 	  // Find derivation book keeper
-	  if ( m_isDerivation )
+	  if ( m_isDAOD )
 	    {
 
 	      if(m_derivationName != "")
@@ -300,14 +276,14 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
         m_MD_initialSumWSquared = allEventsCBK->sumOfEventWeightsSquared();
       }
 
-      if ( m_isDerivation && !DxAODEventsCBK ) {
+      if ( m_isDAOD && !DxAODEventsCBK ) {
         ANA_MSG_ERROR( "No CutBookkeeper corresponds to the selected Derivation Framework algorithm name. Check it with your DF experts! Aborting.");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
 
-      m_MD_finalNevents	      = ( m_isDerivation ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
-      m_MD_finalSumW	      = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
-      m_MD_finalSumWSquared   = ( m_isDerivation ) ? DxAODEventsCBK->sumOfEventWeightsSquared() : m_MD_initialSumWSquared;
+      m_MD_finalNevents	      = ( m_isDAOD ) ? DxAODEventsCBK->nAcceptedEvents() : m_MD_initialNevents;
+      m_MD_finalSumW	      = ( m_isDAOD ) ? DxAODEventsCBK->sumOfEventWeights() : m_MD_initialSumW;
+      m_MD_finalSumWSquared   = ( m_isDAOD ) ? DxAODEventsCBK->sumOfEventWeightsSquared() : m_MD_initialSumWSquared;
 
       // Write metadata event bookkeepers to histogram
       //
@@ -332,21 +308,21 @@ EL::StatusCode BasicEventSelection :: fileExecute ()
       m_histEventCount -> Fill(6, m_MD_finalSumWSquared);
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode BasicEventSelection :: changeInput (bool /*firstFile*/)
+StatusCode BasicEventSelection :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: initialize ()
+StatusCode BasicEventSelection :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -374,11 +350,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // get TEvent and TStore
   //
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
@@ -411,9 +385,9 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
     //Choose Jet Truth container, WZ has more information and is favored by the tool
     std::string pmg_TruthJetContainer = "";
-    if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthWZJets") ){
+    if( evtStore()->contains<xAOD::JetContainer>("AntiKt4TruthWZJets") ){
       pmg_TruthJetContainer = "AntiKt4TruthWZJets";
-    } else if( m_event->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
+    } else if( evtStore()->contains<xAOD::JetContainer>("AntiKt4TruthJets") ){
       pmg_TruthJetContainer = "AntiKt4TruthJets";
     } else {
       ANA_MSG_WARNING( "No Truth Jet Container found for Sherpa 22 reweighting, weight_Sherpa22 will not be set.");
@@ -474,11 +448,8 @@ EL::StatusCode BasicEventSelection :: initialize ()
   // -------------------------------------------------------------------------------------------------
 
   // Create TTree for bookeeeping duplicated events
-  //
-  TFile *fileDPL = wk()->getOutputFile (m_duplicatesStreamName);
-  fileDPL->cd();
-
-  m_duplicatesTree = new TTree("duplicates","Info on duplicated events");
+  ANA_CHECK(book(TTree(m_duplicatesTreeName.c_str(),"Info on duplicated events")));
+  m_duplicatesTree = tree(m_duplicatesTreeName);
   m_duplicatesTree->Branch("runNumber",    &m_duplRunNumber,      "runNumber/I");
   m_duplicatesTree->Branch("eventNumber",  &m_duplEventNumber,    "eventNumber/L");
 
@@ -611,7 +582,7 @@ EL::StatusCode BasicEventSelection :: initialize ()
       asg::AnaToolHandle<Trig::ITrigDecisionTool> iTrigDecTool_handle {"Trig::TrigDecisionTool/TrigDecisionTool"};
       if ( !iTrigDecTool_handle.isUserConfigured() ) {
         ANA_MSG_FATAL("A configured " << iTrigDecTool_handle.typeAndName() << " must have been previously created!");
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( iTrigDecTool_handle.retrieve() );
       ANA_CHECK( m_pileup_tool_handle.setProperty("TrigDecisionTool", iTrigDecTool_handle ));
@@ -622,19 +593,18 @@ EL::StatusCode BasicEventSelection :: initialize ()
 
   // As a check, let's see the number of events in our file (long long int)
   //
-  ANA_MSG_INFO( "Number of events in file = " << m_event->getEntries());
 
   // Initialize counter for number of entries
   m_eventCounter   = 0;
 
   ANA_MSG_INFO( "BasicEventSelection succesfully initialized!");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: execute ()
+StatusCode BasicEventSelection :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -648,7 +618,6 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( (m_eventCounter % 1000) == 0 ) {
     ANA_MSG_INFO( "Entry number = " << m_eventCounter);
     ANA_MSG_VERBOSE( "Store Content:");
-    if(msgLvl(MSG::VERBOSE)) m_store->print();
     ANA_MSG_VERBOSE( "End Content");
   }
 
@@ -695,7 +664,7 @@ EL::StatusCode BasicEventSelection :: execute ()
   // Grab event
   //------------------
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the MC event weight
@@ -719,8 +688,8 @@ EL::StatusCode BasicEventSelection :: execute ()
         if( eventInfo->eventNumber() == 1652845 ) {
           ANA_MSG_INFO("Dropping huge weight event. Weight should be 352220000");
           ANA_MSG_INFO("WEIGHT : " << mcEvtWeight);
-          wk()->skipEvent();
-          return EL::StatusCode::SUCCESS; // go to next event
+          setFilterPassed(false);
+          return StatusCode::SUCCESS; // go to next event
         }
       }
     }
@@ -790,8 +759,8 @@ EL::StatusCode BasicEventSelection :: execute ()
 
       m_duplicatesTree->Fill();
 
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS; // go to next event
+      setFilterPassed(false);
+      return StatusCode::SUCCESS; // go to next event
     }
 
     m_RunNr_VS_EvtNr.insert(thispair);
@@ -833,16 +802,16 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( m_actualMuMin > 0 ) {
       // apply minimum pile-up cut
       if ( eventInfo->actualInteractionsPerCrossing() < m_actualMuMin ) { // veto event
-          wk()->skipEvent();
-          return EL::StatusCode::SUCCESS;
+          setFilterPassed(false);
+          return StatusCode::SUCCESS;
       }
   }
 
   if ( m_actualMuMax > 0 ) {
       // apply maximum pile-up cut
       if ( eventInfo->actualInteractionsPerCrossing() > m_actualMuMax ) { // veto event
-          wk()->skipEvent();
-          return EL::StatusCode::SUCCESS;
+          setFilterPassed(false);
+          return StatusCode::SUCCESS;
       }
   }
 
@@ -862,8 +831,8 @@ EL::StatusCode BasicEventSelection :: execute ()
     // GRL
     if ( m_applyGRLCut ) {
       if ( !m_grl_handle->passRunLB( *eventInfo ) ) {
-        wk()->skipEvent();
-        return EL::StatusCode::SUCCESS; // go to next event
+        setFilterPassed(false);
+        return StatusCode::SUCCESS; // go to next event
       }
       m_cutflowHist ->Fill( m_cutflow_grl, 1 );
       m_cutflowHistW->Fill( m_cutflow_grl, mcEvtWeight);
@@ -876,29 +845,29 @@ EL::StatusCode BasicEventSelection :: execute ()
     //------------------------------------------------------------
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::LAr)==xAOD::EventInfo::Error ) ) {
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      setFilterPassed(false);
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_lar, 1 );
     m_cutflowHistW->Fill( m_cutflow_lar, mcEvtWeight);
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error ) ) {
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      setFilterPassed(false);
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_tile, 1 );
     m_cutflowHistW->Fill( m_cutflow_tile, mcEvtWeight);
 
     if ( m_applyEventCleaningCut && (eventInfo->errorState(xAOD::EventInfo::SCT)==xAOD::EventInfo::Error) ) {
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      setFilterPassed(false);
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_SCT, 1 );
     m_cutflowHistW->Fill( m_cutflow_SCT, mcEvtWeight);
 
     if ( m_applyCoreFlagsCut && (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18) ) ) {
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      setFilterPassed(false);
+      return StatusCode::SUCCESS;
     }
     m_cutflowHist ->Fill( m_cutflow_core, 1 );
     m_cutflowHistW->Fill( m_cutflow_core, mcEvtWeight);
@@ -908,8 +877,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   // more info: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017
   if ( m_applyJetCleaningEventFlag && eventInfo->isAvailable<char>("DFCommonJets_eventClean_LooseBad") ) {
     if(eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad")<1) {
-	wk()->skipEvent();
-	return EL::StatusCode::SUCCESS;
+	setFilterPassed(false);
+	return StatusCode::SUCCESS;
       }
   }
   m_cutflowHist ->Fill( m_cutflow_jetcleaning, 1 );
@@ -919,8 +888,8 @@ EL::StatusCode BasicEventSelection :: execute ()
   // details here: https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017#IsBadBatMan_Event_Flag_and_EMEC
   if ( m_applyIsBadBatmanFlag && eventInfo->isAvailable<char>("DFCommonJets_isBadBatman") &&  !isMC() ) {
     if(eventInfo->auxdataConst<char>("DFCommonJets_isBadBatman")>0) {
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      setFilterPassed(false);
+      return StatusCode::SUCCESS;
     }
   }
   m_cutflowHist ->Fill( m_cutflow_isbadbatman, 1 );
@@ -932,11 +901,11 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   const xAOD::VertexContainer* vertices(nullptr);
   if ( !m_truthLevelOnly && m_applyPrimaryVertexCut ) {
-    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
 
     if ( !HelperFunctions::passPrimaryVertexSelection( vertices, m_PVNTrack ) ) {
-      wk()->skipEvent();
-      return EL::StatusCode::SUCCESS;
+      setFilterPassed(false);
+      return StatusCode::SUCCESS;
     }
   }
   m_cutflowHist ->Fill( m_cutflow_npv, 1 );
@@ -953,8 +922,8 @@ EL::StatusCode BasicEventSelection :: execute ()
     if ( m_applyTriggerCut ) {
 
       if ( !triggerChainGroup->isPassed() ) {
-        wk()->skipEvent();
-        return EL::StatusCode::SUCCESS;
+        setFilterPassed(false);
+        return StatusCode::SUCCESS;
       }
       m_cutflowHist ->Fill( m_cutflow_trigger, 1 );
       m_cutflowHistW->Fill( m_cutflow_trigger, mcEvtWeight);
@@ -1096,7 +1065,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }//if data
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 // "Borrowed" from SUSYTools
@@ -1109,7 +1078,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     return StatusCode::SUCCESS;
 
   const xAOD::EventInfo* eventInfo = 0;
-  ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
+  ANA_CHECK( evtStore()->retrieve( eventInfo, "EventInfo" ) );
 
   // Determine simulation flavour
   std::string SimulationFlavour = isFastSim() ? "AFII" : "FS";
@@ -1306,18 +1275,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 }
 
 
-EL::StatusCode BasicEventSelection :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode BasicEventSelection :: finalize ()
+StatusCode BasicEventSelection :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -1345,12 +1303,12 @@ EL::StatusCode BasicEventSelection :: finalize ()
     xAOD::IOStats::instance().stats().printSmartSlimmingBranchList();
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode BasicEventSelection :: histFinalize ()
+StatusCode BasicEventSelection :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -1363,5 +1321,5 @@ EL::StatusCode BasicEventSelection :: histFinalize ()
   // that it gets called on all worker nodes regardless of whether
   // they processed input events.
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

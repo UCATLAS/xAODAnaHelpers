@@ -12,10 +12,6 @@
 #include <typeinfo>
 #include <map>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODCore/ShallowCopy.h"
@@ -29,47 +25,42 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 #include "PATCore/TAccept.h"
 // tool includes
-#include "TauAnalysisTools/TauSelectionTool.h"  
+#include "TauAnalysisTools/TauSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
-#include "TFile.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TauSelector)
 
 
-TauSelector :: TauSelector () :
-    Algorithm("TauSelector")
+TauSelector :: TauSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TauSelector")
 {
+    declareProperty("useCutFlow", m_useCutFlow);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("outAuxContainerName", m_outAuxContainerName);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("decorateWithTracks", m_decorateWithTracks);
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects);
+    declareProperty("createSelectedContainer", m_createSelectedContainer);
+    declareProperty("nToProcess", m_nToProcess);
+    declareProperty("pass_min", m_pass_min);
+    declareProperty("pass_max", m_pass_max);
+    declareProperty("ConfigPath", m_ConfigPath);
+    declareProperty("minPtDAOD", m_minPtDAOD);
+    declareProperty("JetIDWP", m_JetIDWP);
+    declareProperty("EleBDTWP", m_EleBDTWP);
+    declareProperty("EleOLR", m_EleOLR);
+    declareProperty("singleTauTrigChains", m_singleTauTrigChains);
+    declareProperty("diTauTrigChains", m_diTauTrigChains);
 }
 
-TauSelector::~TauSelector() {}
-
-EL::StatusCode TauSelector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "TauSelector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode TauSelector :: histInitialize ()
+StatusCode TauSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -84,24 +75,24 @@ EL::StatusCode TauSelector :: histInitialize ()
     ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauSelector :: fileExecute ()
+StatusCode TauSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauSelector :: changeInput (bool /*firstFile*/)
+StatusCode TauSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -109,12 +100,12 @@ EL::StatusCode TauSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_INFO( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauSelector :: initialize ()
+StatusCode TauSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -137,26 +128,21 @@ EL::StatusCode TauSelector :: initialize ()
 
   if ( m_useCutFlow ) {
 
-    // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-
     // retrieve the event cutflows
-    //
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_tau_cutflowHist_1  = (TH1D*)file->Get("cutflow_taus_1");
+    m_tau_cutflowHist_1  = static_cast<TH1D*>(hist(m_cutFlowHistName+"_taus_1"));
 
     m_tau_cutflow_all                  = m_tau_cutflowHist_1->GetXaxis()->FindBin("all");
     m_tau_cutflow_selected             = m_tau_cutflowHist_1->GetXaxis()->FindBin("selected");
 
     if ( m_isUsedBefore ) {
-      m_tau_cutflowHist_2 = (TH1D*)file->Get("cutflow_taus_2");
+      m_tau_cutflowHist_2 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_taus_2"));
 
       m_tau_cutflow_all                  = m_tau_cutflowHist_2->GetXaxis()->FindBin("all");
       m_tau_cutflow_selected             = m_tau_cutflowHist_2->GetXaxis()->FindBin("selected");
@@ -164,17 +150,14 @@ EL::StatusCode TauSelector :: initialize ()
 
   }
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
 
   if ( m_inContainerName.empty() ){
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -192,9 +175,9 @@ EL::StatusCode TauSelector :: initialize ()
   // IMPORTANT: if no working point is specified the one in this configuration will be used
   ANA_CHECK( m_tauSelTool_handle.setProperty("ConfigPath",PathResolverFindDataFile(m_ConfigPath).c_str()));
   if (!m_JetIDWP.empty()) {
-    
+
     std::map <std::string, int> jetid_wp_map;
-    
+
     jetid_wp_map["JETIDNONE"] = int(TauAnalysisTools::JETIDNONE);
     jetid_wp_map["JETIDBDTLOOSE"] = int(TauAnalysisTools::JETIDBDTLOOSE);
     jetid_wp_map["JETIDBDTMEDIUM"] = int(TauAnalysisTools::JETIDBDTMEDIUM);
@@ -204,29 +187,29 @@ EL::StatusCode TauSelector :: initialize ()
     jetid_wp_map["JETIDBDTMEDIUMNOTTIGHT"] = int(TauAnalysisTools::JETIDBDTMEDIUMNOTTIGHT);
     jetid_wp_map["JETIDBDTNOTLOOSE"] = int(TauAnalysisTools::JETIDBDTNOTLOOSE);
     jetid_wp_map["JETIDBDTVERYLOOSE"] = int(TauAnalysisTools::JETIDBDTVERYLOOSE);
-    
+
     if (jetid_wp_map.count(m_JetIDWP) != 0 ) {
       ANA_CHECK( m_tauSelTool_handle.setProperty("JetIDWP", jetid_wp_map[m_JetIDWP]));
     } else {
       ANA_MSG_ERROR( "Unknown requested tau JetIDWP " << m_JetIDWP);
-      return EL::StatusCode::FAILURE; 
+      return StatusCode::FAILURE;
     }
   }
 
   if (!m_EleBDTWP.empty()) {
-    
+
     std::map <std::string, int> elebdt_wp_map;
-    
+
     elebdt_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
     elebdt_wp_map["ELEIDBDTLOOSE"] = int(TauAnalysisTools::ELEIDBDTLOOSE);
     elebdt_wp_map["ELEIDBDTMEDIUM"] = int(TauAnalysisTools::ELEIDBDTMEDIUM);
     elebdt_wp_map["ELEIDBDTTIGHT"] = int(TauAnalysisTools::ELEIDBDTTIGHT);
-    
+
     if (elebdt_wp_map.count(m_EleBDTWP) != 0 ) {
       ANA_CHECK( m_tauSelTool_handle.setProperty("EleBDTWP", elebdt_wp_map[m_EleBDTWP]));
     } else {
       ANA_MSG_ERROR( "Unknown requested tau EleBDTWP " << m_EleBDTWP);
-      return EL::StatusCode::FAILURE; 
+      return StatusCode::FAILURE;
     }
   }
 
@@ -242,11 +225,11 @@ EL::StatusCode TauSelector :: initialize ()
   // **************************************
   if( !( m_singleTauTrigChains.empty() && m_diTauTrigChains.empty() ) ) {
 
-    if( !isPHYS() ) {
+    if( !m_isPHYS ) {
       // Grab the TrigDecTool from the ToolStore
       if(!m_trigDecTool_handle.isUserConfigured()){
         ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -279,10 +262,10 @@ EL::StatusCode TauSelector :: initialize ()
 
   ANA_MSG_INFO( "TauSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TauSelector :: execute ()
+StatusCode TauSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -292,7 +275,7 @@ EL::StatusCode TauSelector :: execute ()
   ANA_MSG_DEBUG( "Applying Tau Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   //
@@ -300,7 +283,7 @@ EL::StatusCode TauSelector :: execute ()
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
@@ -349,7 +332,7 @@ EL::StatusCode TauSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inTaus, m_inContainerName) );
 
     // create output container (if requested)
     //
@@ -364,7 +347,7 @@ EL::StatusCode TauSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        ANA_CHECK( m_store->record( selectedTaus, m_outContainerName ));
+        ANA_CHECK( evtStore()->record( selectedTaus, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
 	//
@@ -377,7 +360,7 @@ EL::StatusCode TauSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgoSystNames) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -392,7 +375,7 @@ EL::StatusCode TauSelector :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName + systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inTaus, m_inContainerName + systName) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -421,7 +404,7 @@ EL::StatusCode TauSelector :: execute ()
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          ANA_CHECK( m_store->record( selectedTaus, m_outContainerName+systName ));
+          ANA_CHECK( evtStore()->record( selectedTaus, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
           delete selectedTaus; selectedTaus = nullptr;
@@ -434,20 +417,19 @@ EL::StatusCode TauSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+    ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   }
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if( !eventPass ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    setFilterPassed(false);
+    return StatusCode::SUCCESS;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -575,7 +557,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
       ANA_MSG_DEBUG( "Doing di-tau trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> ditau_trigmatch_pair;
       typedef std::multimap< std::string, ditau_trigmatch_pair >    ditau_trigmatch_pair_map;
@@ -625,20 +607,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
 }
 
 
-EL::StatusCode TauSelector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode TauSelector :: finalize ()
+StatusCode TauSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -656,12 +625,12 @@ EL::StatusCode TauSelector :: finalize ()
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode TauSelector :: histFinalize ()
+StatusCode TauSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -676,7 +645,7 @@ EL::StatusCode TauSelector :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
@@ -699,7 +668,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
 
   static SG::AuxElement::Decorator< float > JetBDTScore("JetBDTScore");
   static SG::AuxElement::Decorator< float > JetBDTScoreSigTrans("JetBDTScoreSigTrans");
-  
+
 
   isJetBDTSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigVeryLoose));
   isJetBDTSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
@@ -716,7 +685,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   static SG::AuxElement::Decorator< int > isEleBDTTight("isEleBDTTight");
 
   static SG::AuxElement::Decorator< float > EleBDTScore("EleBDTScore");
-  
+
 
   isEleBDTLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTLoose));
   isEleBDTMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTMedium));
@@ -728,7 +697,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   // EleOLR decoration
   // -----------------
   static SG::AuxElement::Decorator< int > passEleOLR("passEleOLR");
-  
+
   passEleOLR( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::PassEleOLR));
 
   if (m_decorateWithTracks) {
@@ -746,43 +715,43 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
      SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClIso( "trackIsClIso" );
      SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClConv( "trackIsClConv" );
      SG::AuxElement::Decorator< std::vector<int> > tauTrackIsClFake( "trackIsClFake" );
-     
-     
+
+
      for (const xAOD::TauTrack* trk : tau->allTracks()){
-      
+
         tauTrackPt( *tau ).push_back(trk->pt());
         tauTrackEta( *tau ).push_back(trk->eta());
         tauTrackPhi( *tau ).push_back(trk->phi());
-     
-     
+
+
         if (!trk->flag(xAOD::TauJetParameters::coreTrack)) tauTrackIsCore(*tau).push_back(1);
         else tauTrackIsCore(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::wideTrack)) tauTrackIsWide(*tau).push_back(1);
         else tauTrackIsWide(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::failTrackFilter)) tauTrackFailTrackFilter(*tau).push_back(1);
         else tauTrackFailTrackFilter(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::passTrkSelector)) tauTrackPassTrkSel(*tau).push_back(1);
         else tauTrackPassTrkSel(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedCharged)) tauTrackIsClCharged(*tau).push_back(1);
         else tauTrackIsClCharged(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedIsolation)) tauTrackIsClIso(*tau).push_back(1);
         else tauTrackIsClIso(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedConversion)) tauTrackIsClConv(*tau).push_back(1);
         else tauTrackIsClConv(*tau).push_back(0);
-     
+
         if (!trk->flag(xAOD::TauJetParameters::classifiedFake)) tauTrackIsClFake(*tau).push_back(1);
         else tauTrackIsClFake(*tau).push_back(0);
-     
+
      }
 
   } // if decorate with tracks
-  
+
   ANA_MSG_DEBUG( "Got decoration values" );
 
 

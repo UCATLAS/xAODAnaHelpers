@@ -18,8 +18,8 @@ class MuonInFatJetCorrector : public xAH::Algorithm
 public:
   /// @brief Different schemes for the muon in jet correction
   enum Scheme {Calorimeter, TrackAssisted, Combined, SimpleMuon};
-  
-  MuonInFatJetCorrector();
+
+  MuonInFatJetCorrector (const std::string& name, ISvcLocator *pSvcLocator);
 
   /// @brief The name of the container with fat jets to be corrected
   std::string m_fatJetContainerName = "";
@@ -51,17 +51,15 @@ public:
   /// @brief DR cut to use when matching muons to track jets
   float m_muonDrMax = 0.4;
 
-  virtual EL::StatusCode setupJob(EL::Job& job);
-  virtual EL::StatusCode histInitialize();
-  virtual EL::StatusCode fileExecute();
-  virtual EL::StatusCode changeInput(bool firstFile);
-  virtual EL::StatusCode initialize();
-  virtual EL::StatusCode execute();
-  virtual EL::StatusCode postExecute();
-  virtual EL::StatusCode finalize();
-  virtual EL::StatusCode histFinalize();
+  virtual StatusCode histInitialize();
+  virtual StatusCode fileExecute();
+  virtual StatusCode changeInput(bool firstFile);
+  virtual StatusCode initialize();
+  virtual StatusCode execute();
+  virtual StatusCode finalize();
+  virtual StatusCode histFinalize();
 
-  EL::StatusCode matchTrackJetsToMuons() const;
+  StatusCode matchTrackJetsToMuons() const;
   TLorentzVector getHbbCorrectedVector(const xAOD::Jet &jet);
   const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
 						      Scheme scheme, bool useJMSScale = false) const;
@@ -69,8 +67,7 @@ public:
 private:
    /// @brief Name of calibrated jet mass decorator, without the TA/Calo suffix, for the given sample type
   std::string m_calibratedMassDecorator;
- 
-  ClassDef(MuonInFatJetCorrector, 1);
+
 };
 
 #endif

@@ -7,18 +7,36 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include "xAODEventInfo/EventInfo.h"
 
+#include "PATInterfaces/SystematicSet.h"
+
 std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(xAH::Algorithm)
 
-xAH::Algorithm::Algorithm(std::string className) :
+xAH::Algorithm::Algorithm(const std::string& name, ISvcLocator *pSvcLocator, const std::string& className) :
+  EL::AnaAlgorithm(name, pSvcLocator),
   m_className(className)
 {
-}
-
-xAH::Algorithm::~Algorithm()
-{
+    declareProperty("name", m_name);
+    declareProperty("debug", m_debug);
+    declareProperty("verbose", m_verbose);
+    declareProperty("msgLevel", m_msgLevel);
+    declareProperty("systName", m_systName);
+    declareProperty("systVal", m_systVal);
+    declareProperty("systValVectorString", m_systValVectorString);
+    declareProperty("eventInfoContainerName", m_eventInfoContainerName);
+    declareProperty("vertexContainerName", m_vertexContainerName);
+    declareProperty("isMC", m_isMC);
+    declareProperty("isFastSim", m_isFastSim);
+    declareProperty("forceFastSim", m_forceFastSim);
+    declareProperty("forceFullSim", m_forceFullSim);
+    declareProperty("forceData", m_forceData);
+    declareProperty("setAFII", m_setAFII);
+    declareProperty("className", m_className);
+    declareProperty("isDAOD", m_isDAOD);
+    declareProperty("isPHYS", m_isPHYS);
+    declareProperty("cutFlowHistName", m_cutFlowHistName);
+    declareProperty("metaDataHistName", m_metaDataHistName);
 }
 
 StatusCode xAH::Algorithm::algInitialize(){
@@ -42,7 +60,7 @@ StatusCode xAH::Algorithm::algInitialize(){
       ANA_MSG_ERROR("Multiple input-type flags are set, be sure only one of m_forceData(" << m_forceData << "), m_forceFastSim(" << m_forceFastSim << "), and m_forceFullSim(" << m_forceFullSim << ") are true.");
       return StatusCode::FAILURE;
     }
-  
+
     return StatusCode::SUCCESS;
 }
 
@@ -66,10 +84,10 @@ StatusCode xAH::Algorithm::parseSystValVector(){
 }
 
 bool xAH::Algorithm::isMC(){
-    
+
     // If decision is established, return the decision
     if(m_isMC == 0 || m_isMC == 1) return m_isMC;
-    
+
     // If overriding decision by boolean flags
     if( m_forceData ){
       m_isMC = 0;
@@ -81,7 +99,7 @@ bool xAH::Algorithm::isMC(){
 
     const xAOD::EventInfo* ei(nullptr);
     // couldn't retrieve it
-    if(!HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()).isSuccess()){
+    if(!evtStore()->retrieve(ei, m_eventInfoContainerName).isSuccess()){
       RCU_THROW_MSG( "Could not retrieve eventInfo container (" + m_eventInfoContainerName+") for isMC() check.");
     }
 
@@ -99,7 +117,7 @@ bool xAH::Algorithm::isFastSim(){
 
     // If decision is established, return the decision
     if(m_isFastSim == 0 || m_isFastSim == 1) return m_isFastSim;
-      
+
     // If overriding decision by boolean flags
     if( m_forceData || m_forceFullSim ){
       m_isFastSim = 0;
@@ -108,30 +126,19 @@ bool xAH::Algorithm::isFastSim(){
       m_isFastSim = 1;
       return m_isFastSim;
     }
-   
-    std::string SimulationFlavour; 
+
+    std::string SimulationFlavour;
     const xAOD::FileMetaData* fmd = nullptr;
-    ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") );
+    ANA_CHECK( inputMetaStore()->retrieve(fmd, "FileMetaData") );
     fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
-  
+
     if( SimulationFlavour == "AtlfastII" ){
       m_isFastSim = 1;
     }else{
       m_isFastSim = 0;
     }
-  
-    return m_isFastSim;
-}
 
-bool xAH::Algorithm::isPHYS(){
-    TTree* metaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
-    if(metaData){
-      metaData->LoadTree(0);
-      return metaData->GetBranch("StreamDAOD_PHYS");
-    } else {
-      ANA_MSG_ERROR("MetaData tree missing from input file!");
-      return 0;
-    }
+    return m_isFastSim;
 }
 
 void xAH::Algorithm::registerInstance(){
@@ -153,4 +160,24 @@ void xAH::Algorithm::unregisterInstance(){
         ANA_MSG_ERROR("unregisterInstance: we seem to have recorded zero instances of " << m_className << ". This should not happen.");
     }
     m_instanceRegistry[m_className]--;
+}
+
+
+StatusCode xAH::Algorithm::writeSystematicsListHist( const std::vector< CP::SystematicSet > &systs, const std::string& histName )
+{
+  if (!systs.size() || histName.empty()) {
+    return StatusCode::SUCCESS;
+  }
+  std::string name = m_metaDataHistName + "/" + "systematics" + "/" + histName;
+
+  ANA_CHECK(book(TH1D(name.c_str(), name.c_str(), systs.size(), 0.5, systs.size() + 0.5)));
+  for (size_t i = 0; i < systs.size(); i++) {
+    if (systs[i].name().empty()) {
+      hist(name)->GetXaxis()->SetBinLabel(i + 1, "nominal");
+    } else {
+      hist(name)->GetXaxis()->SetBinLabel(i + 1, systs[i].name().c_str());
+    }
+  }
+
+  return StatusCode::SUCCESS;
 }

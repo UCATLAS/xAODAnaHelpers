@@ -25,27 +25,24 @@ class MessagePrinterAlgo : public xAH::Algorithm
 
   private:
 
-    std::unique_ptr<asg::MessagePrinter>        m_messagePrinter{nullptr}; //!
-    std::unique_ptr<asg::MessagePrinterOverlay> m_messagePrinterOverlay{nullptr}; //!
+    std::unique_ptr<asg::MessagePrinter>        m_messagePrinter{nullptr};
+    std::unique_ptr<asg::MessagePrinterOverlay> m_messagePrinterOverlay{nullptr};
 
   public:
     // this is a standard constructor
-    MessagePrinterAlgo ();
+    MessagePrinterAlgo (const std::string& name, ISvcLocator *pSvcLocator);
 
     // these are the functions inherited from Algorithm
-    virtual EL::StatusCode setupJob (EL::Job& job);
-    virtual EL::StatusCode fileExecute ();
-    virtual EL::StatusCode histInitialize ();
-    virtual EL::StatusCode changeInput (bool firstFile);
-    virtual EL::StatusCode initialize ();
-    virtual EL::StatusCode execute ();
-    virtual EL::StatusCode postExecute ();
-    virtual EL::StatusCode finalize ();
-    virtual EL::StatusCode histFinalize ();
+    virtual StatusCode fileExecute ();
+    virtual StatusCode histInitialize ();
+    virtual StatusCode changeInput (bool firstFile);
+    virtual StatusCode initialize ();
+    virtual StatusCode execute ();
+    virtual StatusCode finalize ();
+    virtual StatusCode histFinalize ();
 
     /// @cond
     // this is needed to distribute the algorithm to the workers
-    ClassDef(MessagePrinterAlgo, 1);
     /// @endcond
 };
 

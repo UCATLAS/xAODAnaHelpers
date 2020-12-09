@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 #include <xAODMuon/MuonContainer.h>
 
@@ -9,24 +6,16 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(MuonHistsAlgo)
 
-MuonHistsAlgo :: MuonHistsAlgo () :
-IParticleHistsAlgo("MuonHistsAlgo")
+MuonHistsAlgo :: MuonHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+IParticleHistsAlgo(name, pSvcLocator, "MuonHistsAlgo")
 { }
 
-EL::StatusCode MuonHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("MuonHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode MuonHistsAlgo::AddHists( std::string name ) {
+StatusCode MuonHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<MuonHists>(name);
 }
 
-EL::StatusCode MuonHistsAlgo :: execute () {
+StatusCode MuonHistsAlgo :: execute () {
   return IParticleHistsAlgo::execute<MuonHists, xAOD::MuonContainer>();
 }

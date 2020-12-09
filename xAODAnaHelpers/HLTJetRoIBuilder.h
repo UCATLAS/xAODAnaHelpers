@@ -59,36 +59,33 @@ class HLTJetRoIBuilder : public xAH::Algorithm
 
   private:
 
-    asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; //!
+    asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"};
 
-    std::string                  m_jetName = "EFJet";       //!
-    std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";       //!
-    std::string                  m_vtxName = "EFHistoPrmVtx";       //!
-    xAH::OnlineBeamSpotTool      m_onlineBSTool;  //!
+    std::string                  m_jetName = "EFJet";
+    std::string                  m_trkName = "InDetTrigTrackingxAODCnv_Bjet_IDTrig";
+    std::string                  m_vtxName = "EFHistoPrmVtx";
+    xAH::OnlineBeamSpotTool      m_onlineBSTool;
 
-    EL::StatusCode buildHLTBJets ();
-    EL::StatusCode buildHLTJets  ();
+    StatusCode buildHLTBJets ();
+    StatusCode buildHLTJets  ();
 
   public:
 
     // this is a standard constructor
-    HLTJetRoIBuilder ();
+    HLTJetRoIBuilder (const std::string& name, ISvcLocator *pSvcLocator);
 
     // these are the functions inherited from Algorithm
-    virtual EL::StatusCode setupJob (EL::Job& job);
-    virtual EL::StatusCode fileExecute ();
-    virtual EL::StatusCode histInitialize ();
-    virtual EL::StatusCode changeInput (bool firstFile);
-    virtual EL::StatusCode initialize ();
-    virtual EL::StatusCode execute ();
-    virtual EL::StatusCode postExecute ();
-    virtual EL::StatusCode finalize ();
-    virtual EL::StatusCode histFinalize ();
+    virtual StatusCode fileExecute ();
+    virtual StatusCode histInitialize ();
+    virtual StatusCode changeInput (bool firstFile);
+    virtual StatusCode initialize ();
+    virtual StatusCode execute ();
+    virtual StatusCode finalize ();
+    virtual StatusCode histFinalize ();
 
 
     /// @cond
     // this is needed to distribute the algorithm to the workers
-    ClassDef(HLTJetRoIBuilder, 1);
     /// @endcond
 
     template<class Object, class Collection>

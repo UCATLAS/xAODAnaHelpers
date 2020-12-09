@@ -53,13 +53,6 @@ StatusCode TracksInJetHists::initialize() {
 }
 
 
-void TracksInJetHists::record(EL::IWorker* wk) {
-  HistogramManager::record(wk);
-  m_trkPlots -> record( wk );
-}
-
-
-
 StatusCode TracksInJetHists::execute( const xAOD::TrackParticle* trk, const xAOD::Jet* jet,  const xAOD::Vertex *pvx, float eventWeight,  const xAOD::EventInfo* eventInfo ) {
   using namespace msgTracksInJetHists;
   //

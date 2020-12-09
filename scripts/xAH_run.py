@@ -436,6 +436,10 @@ if __name__ == "__main__":
       xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
       job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
 
+    if not args.no_usexAOD:
+      xAH_logger.info("\tusing xAOD: EL::Job::usexAOD()")
+      job.usexAOD()
+
     # formatted string
     algorithmConfiguration_string = []
 
@@ -485,8 +489,13 @@ if __name__ == "__main__":
           xAH_logger.warning("No matching sample found for pattern {0}".format(pattern))
 
     for output in configurator._outputs:
+      if job.outputHas(output):
+        xAH_logger.info('Output stream "{}" already exists'.format(output))
+        continue
       xAH_logger.info('Creating output stream "{}"'.format(output))
-      job.outputAdd(ROOT.EL.OutputStream(output))
+      xAH_logger.info('job.outputAdd(ROOT::EL::OutputStream("{}"))'.format(output))
+      _stream = ROOT.EL.OutputStream(output)
+      job.outputAdd(_stream)
 
     # If we wish to add an NTupleSvc, make sure an output stream (NB: must have the same name of the service itself!)
     # is created and added to the job *before* the service

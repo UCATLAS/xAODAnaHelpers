@@ -28,31 +28,29 @@ public:
   std::string m_histTitle;
 
 private:
-  std::map< std::string, IParticleHists* > m_plots; //!
+  std::map< std::string, IParticleHists* > m_plots;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
-  IParticleHistsAlgo (std::string className = "IParticleHistsAlgo");
+  IParticleHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator, const std::string& className="IParticleHistsAlgo");
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
   /**
       @brief Calls execute<IParticleContainer>
    */
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /**
       @brief Fill histograms with particles in a container
@@ -65,12 +63,12 @@ public:
 	  where the sample-weights are taken from SampleHandler and set to 1 by default.
       @endrst
   */
-  template<class HIST_T, class CONT_T> EL::StatusCode execute ()
+  template<class HIST_T, class CONT_T> StatusCode execute ()
   {
     static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
 
     const xAOD::EventInfo* eventInfo(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
     float eventWeight(1);
     if ( mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
@@ -90,7 +88,7 @@ public:
     // if input comes from xAOD, or just running one collection,
     // then get the one collection and be done with it
     if( m_inputAlgo.empty() ) {
-      ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inParticles, m_inContainerName) );
 
       // pass the photon collection
       ANA_CHECK( static_cast<HIST_T*>(m_plots[""])->execute( inParticles, eventWeight, eventInfo ));
@@ -99,17 +97,17 @@ public:
 
       // get vector of string giving the names
       std::vector<std::string>* systNames(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgo) );
 
       // loop over systematics
       for( auto systName : *systNames ) {
-	ANA_CHECK( HelperFunctions::retrieve(inParticles, m_inContainerName+systName, m_event, m_store, msg()) );
-	if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
-	ANA_CHECK( static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ));
+        ANA_CHECK( evtStore()->retrieve(inParticles, m_inContainerName+systName) );
+        if( m_plots.find( systName ) == m_plots.end() ) { this->AddHists( systName ); }
+        ANA_CHECK( static_cast<HIST_T*>(m_plots[systName])->execute( inParticles, eventWeight, eventInfo ));
       }
     }
 
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   // these are the functions not inherited from Algorithm
@@ -117,7 +115,7 @@ public:
       @brief Calls AddHists<IParticleHists>
       @param name Name of the systematic
    */
-  virtual EL::StatusCode AddHists( std::string name);
+  virtual StatusCode AddHists( std::string name);
 
   /**
       @brief Create histograms
@@ -129,21 +127,19 @@ public:
 	  IParticleHists.
       @endrst
   */
-  template<class HIST_T> EL::StatusCode AddHists( std::string name ) {
+  template<class HIST_T> StatusCode AddHists( std::string name ) {
     std::string fullname(m_name);
     fullname += name; // add systematic
     HIST_T* particleHists = new HIST_T( fullname, m_detailStr ); // add systematic
     particleHists->m_debug = msgLvl(MSG::DEBUG);
     ANA_CHECK( particleHists->initialize());
-    particleHists->record( wk() );
     m_plots[name] = particleHists;
 
-    return EL::StatusCode::SUCCESS;
+    return StatusCode::SUCCESS;
   }
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(IParticleHistsAlgo, 1);
   /// @endcond
 
 };

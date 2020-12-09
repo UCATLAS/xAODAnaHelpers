@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 #include <xAODEgamma/PhotonContainer.h>
 
@@ -9,24 +6,16 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(PhotonHistsAlgo)
 
-PhotonHistsAlgo :: PhotonHistsAlgo () :
-IParticleHistsAlgo("PhotonHistsAlgo")
+PhotonHistsAlgo :: PhotonHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+IParticleHistsAlgo(name, pSvcLocator, "PhotonHistsAlgo")
 { }
 
-EL::StatusCode PhotonHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("PhotonHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
+StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<PhotonHists>(name);
 }
 
-EL::StatusCode PhotonHistsAlgo :: execute () {
+StatusCode PhotonHistsAlgo :: execute () {
   return IParticleHistsAlgo::execute<PhotonHists, xAOD::PhotonContainer>();
 }

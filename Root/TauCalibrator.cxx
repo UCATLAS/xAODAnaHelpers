@@ -9,10 +9,6 @@
 // c++ include(s):
 #include <iostream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODEventInfo/EventInfo.h"
@@ -36,61 +32,52 @@
 using HelperClasses::ToolName;
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TauCalibrator)
 
-TauCalibrator :: TauCalibrator () :
-    Algorithm("TauCalibrator")
+TauCalibrator :: TauCalibrator (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TauCalibrator")
 {
-}
-
-EL::StatusCode TauCalibrator :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "TauCalibrator" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("RecommendationTag", m_RecommendationTag);
+    declareProperty("applyMVATES", m_applyMVATES);
+    declareProperty("applyCombinedTES", m_applyCombinedTES);
+    declareProperty("setAFII", m_setAFII);
+    declareProperty("sort", m_sort);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
 }
 
 
-EL::StatusCode TauCalibrator :: histInitialize ()
+StatusCode TauCalibrator :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
   // trees.  This method gets called before any input files are
   // connected.
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: fileExecute ()
+StatusCode TauCalibrator :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: changeInput (bool /*firstFile*/)
+StatusCode TauCalibrator :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: initialize ()
+StatusCode TauCalibrator :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -103,10 +90,7 @@ EL::StatusCode TauCalibrator :: initialize ()
 
   ANA_MSG_INFO( "Initializing TauCalibrator Interface... ");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   m_outAuxContainerName     = m_outContainerName + "Aux."; // the period is very important!
   // shallow copies are made with this output container name
@@ -115,7 +99,7 @@ EL::StatusCode TauCalibrator :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -156,21 +140,20 @@ EL::StatusCode TauCalibrator :: initialize ()
     ANA_MSG_INFO("\t " << syst_it.name());
   }
 
-  ANA_CHECK(m_store->record(std::move(SystTausNames), "taus_Syst"+m_name ));
+  ANA_CHECK(evtStore()->record(std::move(SystTausNames), "taus_Syst"+m_name ));
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systList, m_name, fileMD);
+    ANA_CHECK(writeSystematicsListHist(m_systList, m_name));
   }
 
   ANA_MSG_INFO( "TauCalibrator Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-EL::StatusCode TauCalibrator :: execute ()
+StatusCode TauCalibrator :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -182,14 +165,14 @@ EL::StatusCode TauCalibrator :: execute ()
   m_numEvent++;
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
 
   // get the collections from TEvent or TStore
   //
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   const xAOD::TauJetContainer* inTaus(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(inTaus, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(inTaus, m_inContainerName) );
 
   // loop over available systematics - remember syst == EMPTY_STRING --> baseline
   // prepare a vector of the names of CDV containers
@@ -214,7 +197,7 @@ EL::StatusCode TauCalibrator :: execute ()
     //
     if ( m_tauSmearingTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
       ANA_MSG_ERROR( "Failed to configure TauSmearingTool for systematic " << syst_it.name());
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
     // create shallow copy for calibration - one per syst
@@ -238,7 +221,7 @@ EL::StatusCode TauCalibrator :: execute ()
 	    ANA_MSG_WARNING( "TauSmearingTool returned Error CorrectionCode");		  // If OutOfValidityRange is returned no modification is made and the original tau values are taken.
 	  }
 	}
-	
+
         ANA_MSG_DEBUG( "  corrected tau pt = " << tauSC_itr->pt()*1e-3 << " GeV");
 
 	++idx;
@@ -266,44 +249,32 @@ EL::StatusCode TauCalibrator :: execute ()
     // add SC container to TStore
     //
     ANA_MSG_DEBUG( "recording calibTausSC");
-    ANA_CHECK( m_store->record( calibTausSC.first,  outSCContainerName  ));
-    ANA_CHECK( m_store->record( calibTausSC.second, outSCAuxContainerName ));
+    ANA_CHECK( evtStore()->record( calibTausSC.first,  outSCContainerName  ));
+    ANA_CHECK( evtStore()->record( calibTausSC.second, outSCAuxContainerName ));
 
     //
     // add ConstDataVector to TStore
     //
     ANA_MSG_DEBUG( "record calibTausCDV");
-    ANA_CHECK( m_store->record( calibTausCDV, outContainerName));
+    ANA_CHECK( evtStore()->record( calibTausCDV, outContainerName));
 
   } // close loop on systematics
 
   // add vector<string container_names_syst> to TStore
   //
   ANA_MSG_DEBUG( "record m_outputAlgoSystNames");
-  ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+  ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   ANA_MSG_DEBUG( "Left ");
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode TauCalibrator :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
 
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-EL::StatusCode TauCalibrator :: finalize ()
+StatusCode TauCalibrator :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -315,10 +286,10 @@ EL::StatusCode TauCalibrator :: finalize ()
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TauCalibrator :: histFinalize ()
+StatusCode TauCalibrator :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -333,5 +304,5 @@ EL::StatusCode TauCalibrator :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

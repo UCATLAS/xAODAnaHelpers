@@ -3,10 +3,6 @@
 #include <typeinfo>
 #include <tuple>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include "xAODCore/ShallowCopy.h"
@@ -29,41 +25,49 @@
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
 
 // ROOT include(s):
-#include "TFile.h"
 #include "TObjArray.h"
 #include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(MuonSelector)
 
-MuonSelector :: MuonSelector () :
-    Algorithm("MuonSelector")
+MuonSelector :: MuonSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "MuonSelector")
 {
+    declareProperty("useCutFlow", m_useCutFlow);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("outAuxContainerName", m_outAuxContainerName);
+    declareProperty("inputAlgoSystNames", m_inputAlgoSystNames);
+    declareProperty("outputAlgoSystNames", m_outputAlgoSystNames);
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects);
+    declareProperty("createSelectedContainer", m_createSelectedContainer);
+    declareProperty("nToProcess", m_nToProcess);
+    declareProperty("pass_min", m_pass_min);
+    declareProperty("pass_max", m_pass_max);
+    declareProperty("pT_max", m_pT_max);
+    declareProperty("pT_min", m_pT_min);
+    declareProperty("muonQualityStr", m_muonQualityStr);
+    //declareProperty("muonType", m_muonType);
+    declareProperty("eta_max", m_eta_max);
+    declareProperty("d0_max", m_d0_max);
+    declareProperty("d0sig_max", m_d0sig_max);
+    declareProperty("z0sintheta_max", m_z0sintheta_max);
+    declareProperty("removeCosmicMuon", m_removeCosmicMuon);
+    declareProperty("removeEventBadMuon", m_removeEventBadMuon);
+    declareProperty("doIsolation", m_doIsolation);
+    declareProperty("MinIsoWPCut", m_MinIsoWPCut);
+    declareProperty("IsoWPList", m_IsoWPList);
+    declareProperty("CaloIsoEff", m_CaloIsoEff);
+    declareProperty("TrackIsoEff", m_TrackIsoEff);
+    declareProperty("CaloBasedIsoType", m_CaloBasedIsoType);
+    declareProperty("TrackBasedIsoType", m_TrackBasedIsoType);
+    declareProperty("singleMuTrigChains", m_singleMuTrigChains);
+    declareProperty("diMuTrigChains", m_diMuTrigChains);
+    declareProperty("minDeltaR", m_minDeltaR);
 }
 
-MuonSelector::~MuonSelector() {}
 
-EL::StatusCode MuonSelector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-
-  ANA_MSG_INFO( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "MuonSelector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode MuonSelector :: histInitialize ()
+StatusCode MuonSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -78,24 +82,24 @@ EL::StatusCode MuonSelector :: histInitialize ()
     ANA_MSG_INFO( "\t An algorithm of the same type has been already used " << numInstances() << " times" );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonSelector :: fileExecute ()
+StatusCode MuonSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_INFO( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonSelector :: changeInput (bool /*firstFile*/)
+StatusCode MuonSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -103,12 +107,12 @@ EL::StatusCode MuonSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_INFO( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonSelector :: initialize ()
+StatusCode MuonSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -131,20 +135,16 @@ EL::StatusCode MuonSelector :: initialize ()
 
   if ( m_useCutFlow ) {
 
-    // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-
     // retrieve the event cutflows
     //
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_mu_cutflowHist_1  = (TH1D*)file->Get("cutflow_muons_1");
+    m_mu_cutflowHist_1  = static_cast<TH1D*>(hist(m_cutFlowHistName+"_muons_1"));
 
     m_mu_cutflow_all                  = m_mu_cutflowHist_1->GetXaxis()->FindBin("all");
     m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_1->GetXaxis()->FindBin("eta_and_quality_cut");
@@ -160,7 +160,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
 
     if ( m_isUsedBefore ) {
-      m_mu_cutflowHist_2 = (TH1D*)file->Get("cutflow_muons_2");
+      m_mu_cutflowHist_2 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_muons_2"));
 
       m_mu_cutflow_all 		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("all");
       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");
@@ -177,10 +177,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
   }// if m_useCutFlow
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
-  ANA_MSG_INFO( "Number of events in file: " << m_event->getEntries() );
 
   HelperClasses::EnumParser<xAOD::Muon::Quality> muQualityParser;
   m_muonQuality             = static_cast<int>( muQualityParser.parseEnum(m_muonQualityStr) );
@@ -198,7 +195,7 @@ EL::StatusCode MuonSelector :: initialize ()
   muonQualitySet.insert(5);
   if ( muonQualitySet.find(m_muonQuality) == muonQualitySet.end() ) {
     ANA_MSG_ERROR( "Unknown muon quality requested: " << m_muonQuality);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   //std::set<std::string> muonTypeSet;
@@ -210,7 +207,7 @@ EL::StatusCode MuonSelector :: initialize ()
   //muonTypeSet.insert("SiliconAssociatedForwardMuon");
   //if ( muonTypeSet.find(m_muonType) == muonTypeSet.end() ) {
   //  ANA_MSG_ERROR( "Unknown muon type requested: %s!",m_muonType.c_str());
-  //  return EL::StatusCode::FAILURE;
+  //  return StatusCode::FAILURE;
   //}
 
   // Parse input isolation WP list, split by comma, and put into a vector for later use
@@ -228,7 +225,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
   if ( m_inContainerName.empty() ){
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   m_numEvent      = 0;
@@ -301,11 +298,11 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // **************************************
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
-    if( !isPHYS() ) {
+    if( !m_isPHYS ) {
       // Grab the TrigDecTool from the ToolStore
       if(!m_trigDecTool_handle.isUserConfigured()){
         ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -338,10 +335,10 @@ EL::StatusCode MuonSelector :: initialize ()
 
   ANA_MSG_INFO( "MuonSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonSelector :: execute ()
+StatusCode MuonSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -351,7 +348,7 @@ EL::StatusCode MuonSelector :: execute ()
   ANA_MSG_DEBUG( "Applying Muon Selection..." );
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   //
@@ -359,7 +356,7 @@ EL::StatusCode MuonSelector :: execute ()
   static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
   if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
     ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   mcEvtWeight = mcEvtWeightAcc( *eventInfo );
 
@@ -408,7 +405,7 @@ EL::StatusCode MuonSelector :: execute ()
 
     // this will be the collection processed - no matter what!!
     //
-    ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inMuons, m_inContainerName) );
 
     // create output container (if requested)
     //
@@ -423,7 +420,7 @@ EL::StatusCode MuonSelector :: execute ()
       if ( eventPass ) {
         // add ConstDataVector to TStore
 	//
-        ANA_CHECK( m_store->record( selectedMuons, m_outContainerName ));
+        ANA_CHECK( evtStore()->record( selectedMuons, m_outContainerName ));
       } else {
         // if the event does not pass the selection, CDV won't be ever recorded to TStore, so we have to delete it!
 	//
@@ -436,7 +433,7 @@ EL::StatusCode MuonSelector :: execute ()
     // get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)
     //
     std::vector< std::string >* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgoSystNames, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgoSystNames) );
 
     // prepare a vector of the names of CDV containers for usage by downstream algos
     // must be a pointer to be recorded in TStore
@@ -451,7 +448,7 @@ EL::StatusCode MuonSelector :: execute ()
 
       ANA_MSG_DEBUG( " syst name: " << systName << "  input container name: " << m_inContainerName+systName );
 
-      ANA_CHECK( HelperFunctions::retrieve(inMuons, m_inContainerName + systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMuons, m_inContainerName + systName) );
 
       // create output container (if requested) - one for each systematic
       //
@@ -480,7 +477,7 @@ EL::StatusCode MuonSelector :: execute ()
         if ( eventPassThisSyst ) {
           // add ConstDataVector to TStore
 	  //
-          ANA_CHECK( m_store->record( selectedMuons, m_outContainerName+systName ));
+          ANA_CHECK( evtStore()->record( selectedMuons, m_outContainerName+systName ));
         } else {
           // if the event does not pass the selection for this syst, CDV won't be ever recorded to TStore, so we have to delete it!
           delete selectedMuons; selectedMuons = nullptr;
@@ -493,21 +490,20 @@ EL::StatusCode MuonSelector :: execute ()
 
     // record in TStore the list of systematics names that should be considered down stream
     //
-    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
+    ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
 
   }
 
   // look what we have in TStore
   //
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if( !eventPass ) {
-    wk()->skipEvent();
-    return EL::StatusCode::SUCCESS;
+    setFilterPassed(false);
+    return StatusCode::SUCCESS;
   }
 
   ANA_MSG_DEBUG( "Left Muon Selection..." );
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -517,7 +513,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 
   ANA_MSG_DEBUG( "In  executeSelection..." );
   const xAOD::VertexContainer* vertices(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
   const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());
 
   int nPass(0); int nObj(0);
@@ -643,7 +639,7 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
       ANA_MSG_DEBUG( "Doing di-muon trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> dimuon_trigmatch_pair;
       typedef std::multimap< std::string, dimuon_trigmatch_pair >    dimuon_trigmatch_pair_map;
@@ -697,20 +693,8 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
 }
 
 
-EL::StatusCode MuonSelector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
 
-  ANA_MSG_DEBUG( "Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode MuonSelector :: finalize ()
+StatusCode MuonSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -730,12 +714,12 @@ EL::StatusCode MuonSelector :: finalize ()
     m_cutflowHistW->SetBinContent( m_cutflow_bin, m_weightNumEventPass  );
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode MuonSelector :: histFinalize ()
+StatusCode MuonSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -750,7 +734,7 @@ EL::StatusCode MuonSelector :: histFinalize ()
 
   ANA_MSG_INFO( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex  ) {
@@ -852,7 +836,7 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   double d0_significance = xAOD::TrackingHelpers::d0significance( tp, eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY() );
 

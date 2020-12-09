@@ -1,9 +1,6 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <EventLoop/Job.h>
-#include <EventLoop/Algorithm.h>
-#include <EventLoop/Worker.h>
 
 #include "xAODJet/JetContainer.h"
 #include "xAODMuon/MuonContainer.h"
@@ -18,59 +15,61 @@
 
 
 // Needed to distribute the algorithm to the workers
-ClassImp(MuonInFatJetCorrector)
 
-MuonInFatJetCorrector :: MuonInFatJetCorrector() :
-  Algorithm("MuonInFatJetCorrector")
+MuonInFatJetCorrector :: MuonInFatJetCorrector(const std::string& name, ISvcLocator *pSvcLocator) :
+  Algorithm(name, pSvcLocator, "MuonInFatJetCorrector")
 {
+    declareProperty("fatJetContainerName", m_fatJetContainerName);
+    declareProperty("trackJetContainerName", m_trackJetContainerName);
+    declareProperty("muonContainerName", m_muonContainerName);
+    declareProperty("trackJetLinkName", m_trackJetLinkName);
+    declareProperty("calibratedMassDecoratorData", m_calibratedMassDecoratorData);
+    declareProperty("calibratedMassDecoratorFullSim", m_calibratedMassDecoratorFullSim);
+    declareProperty("inputAlgo", m_inputAlgo);
+    declareProperty("trackJetPtMin", m_trackJetPtMin);
+    declareProperty("trackJetEtaMax", m_trackJetEtaMax);
+    declareProperty("trackJetNConst", m_trackJetNConst);
+    declareProperty("muonPtMin", m_muonPtMin);
+    declareProperty("muonEtaMax", m_muonEtaMax);
+    declareProperty("muonDrMax", m_muonDrMax);
 }
 
-EL::StatusCode MuonInFatJetCorrector :: setupJob(EL::Job& job)
-{
-  ANA_MSG_DEBUG("Calling setupJob");
-  job.useXAOD();
-  xAOD::Init("MuonInFatJetCorrector").ignore();
-  
-  return EL::StatusCode::SUCCESS;
-}
 
-EL::StatusCode MuonInFatJetCorrector :: histInitialize()
+StatusCode MuonInFatJetCorrector :: histInitialize()
 {
   ANA_MSG_DEBUG("Calling histInitialize");
   ANA_CHECK(xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: fileExecute()
+StatusCode MuonInFatJetCorrector :: fileExecute()
 {
   ANA_MSG_DEBUG("Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: changeInput(bool /*firstFile*/)
+StatusCode MuonInFatJetCorrector :: changeInput(bool /*firstFile*/)
 {
   ANA_MSG_DEBUG("Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: initialize()
+StatusCode MuonInFatJetCorrector :: initialize()
 {
   ANA_MSG_DEBUG("Calling initialize");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   //
   // Automatically determine calibrated mass decorators, if asked
   m_calibratedMassDecorator=(isMC())?m_calibratedMassDecoratorFullSim:m_calibratedMassDecoratorData;
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: execute()
+StatusCode MuonInFatJetCorrector :: execute()
 {
   //
   // Do muon matching
@@ -81,7 +80,7 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
   std::vector<std::string>* systNames(nullptr);
   if ( !m_inputAlgo.empty() )
     {
-      ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgo) );
     }
   else
     {
@@ -89,12 +88,12 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
     }
 
   // Decorator holding muon in fatjet corrected fatjets.
-  static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");  
+  static SG::AuxElement::Decorator<TLorentzVector> dec_correctedFatJets_tlv("correctedFatJets_tlv");
   for(const std::string& systName : *systNames)
     {
       // Retrieve calibrated fatjets.
       const xAOD::JetContainer *fatJets(nullptr);
-      ANA_CHECK(HelperFunctions::retrieve(fatJets, m_fatJetContainerName+systName, m_event, m_store, msg()));
+      ANA_CHECK(evtStore()->retrieve(fatJets, m_fatJetContainerName+systName));
 
       // Loop over fatjets
       for(const xAOD::Jet *fatJet : *fatJets)
@@ -110,28 +109,20 @@ EL::StatusCode MuonInFatJetCorrector :: execute()
   if(m_inputAlgo.empty())
     delete systNames;
 
-  return EL::StatusCode::SUCCESS;
-} 
-
-EL::StatusCode MuonInFatJetCorrector :: postExecute ()
-{
-  ANA_MSG_DEBUG("Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-
-EL::StatusCode MuonInFatJetCorrector :: finalize()
+StatusCode MuonInFatJetCorrector :: finalize()
 {
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode MuonInFatJetCorrector :: histFinalize ()
+StatusCode MuonInFatJetCorrector :: histFinalize ()
 {
 
   ANA_MSG_DEBUG( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
@@ -161,7 +152,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
       ANA_MSG_FATAL("Parent link is not valid.");
       return TLorentzVector();
     }
-  
+
   // access the track jets
   const xAOD::Jet* parentJet = *parentEL;
   if (!parentJet->getAssociatedObjects<xAOD::Jet>(m_trackJetLinkName, associated_trackJets))
@@ -169,7 +160,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
       ANA_MSG_FATAL("No associated track jets found on parent jet.");
       return TLorentzVector();
     }
-  
+
   // get trackjets of interest
   std::vector<const xAOD::Jet*> associated_trackJets_filtered;
   for (const xAOD::Jet* trackJet : associated_trackJets)
@@ -200,7 +191,7 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
 	  return TLorentzVector();
 	}
 
-      std::vector<ElementLink<xAOD::MuonContainer>> associated_muons=acc_MuonsInTrackJet(*trackJet);	    
+      std::vector<ElementLink<xAOD::MuonContainer>> associated_muons=acc_MuonsInTrackJet(*trackJet);
       for (const ElementLink<xAOD::MuonContainer>& muonEL : associated_muons)
 	{
 	  const xAOD::Muon* muon=(*muonEL);
@@ -238,15 +229,15 @@ TLorentzVector MuonInFatJetCorrector::getHbbCorrectedVector(const xAOD::Jet& jet
   return corrected_jet;
 }
 
-EL::StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
+StatusCode MuonInFatJetCorrector::matchTrackJetsToMuons() const
 {
   // retrieve muons from StoreGate
   const xAOD::MuonContainer *muons(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(muons, m_muonContainerName, m_event, m_store, msg()));
+  ANA_CHECK(evtStore()->retrieve(muons, m_muonContainerName));
 
   // retrieve track jets from StoreGate
   const xAOD::JetContainer *trackJets(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(trackJets, m_trackJetContainerName, m_event, m_store, msg()));
+  ANA_CHECK(evtStore()->retrieve(trackJets, m_trackJetContainerName));
 
   // decorate all track jets by default, no selection, no muon overlap removal (will be done later)
   static SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::MuonContainer>>> dec_MuonsInTrackJet("MuonsInTrackJet");

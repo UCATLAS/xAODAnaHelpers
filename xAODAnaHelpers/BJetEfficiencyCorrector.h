@@ -77,41 +77,38 @@ private:
   std::string m_decorQuantile = ""; // only for continuous b-tagging
   std::string m_decorInefficiencySF = ""; // only for continuous b-tagging
 
-  std::vector<std::string> m_inputAlgoList; //!
+  std::vector<std::string> m_inputAlgoList;
 
-  bool m_runAllSyst = false; //!
+  bool m_runAllSyst = false;
 
   // tools
-  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , this}; //!
-  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", this}; //!
+  asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool" , this};
+  asg::AnaToolHandle<IBTaggingEfficiencyTool> m_BJetEffSFTool_handle{"BTaggingEfficiencyTool", this};
 
-  std::vector<CP::SystematicSet> m_systList; //!
+  std::vector<CP::SystematicSet> m_systList;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 public:
 
   // this is a standard constructor
-  BJetEfficiencyCorrector ();
+  BJetEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  EL::StatusCode executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  StatusCode executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
 					     const xAOD::EventInfo* eventInfo,
 					     bool doNominal);
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(BJetEfficiencyCorrector, 1);
   /// @endcond
 
 };

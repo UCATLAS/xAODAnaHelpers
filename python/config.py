@@ -28,7 +28,7 @@ class Config(object):
     logger.warning("\tPossible call stack: {0:s}({1:d}): {2:s}".format(path, lineno, lines[0].strip()))
     return self.algorithm(className, options)
 
-  def algorithm(self, className, options):
+  def algorithm(self, className, options, streamName='StreamName'):
     # check first argument
     if isinstance(className, unicode): className = className.encode('utf-8')
     if not isinstance(className, str):
@@ -82,7 +82,8 @@ class Config(object):
         if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
           raise AttributeError(k)
         elif hasattr(alg_obj, k):
-          self._set_algo_attribute(alg_obj, k, v, className, algName)
+          self._set_algo_attribute(alg_obj, k, v, className, algName, streamName)
+
     elif ROOT.EL.AnaAlgorithm in parents:
       alg_obj = AnaAlgorithmConfig(className)
       alg_obj.setName(algName)
@@ -91,27 +92,28 @@ class Config(object):
       #setattr(alg_obj, "OutputLevel", msgLevel)
       for k,v in options.items():
         if k in ['m_msgLevel', 'm_name']: continue
-        self._set_algo_attribute(alg_obj, k, v, className, algName)
+        self._set_algo_attribute(alg_obj, k, v, className, algName, streamName)
     else:
       raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm. I do not know how to configure it. {1}".format(className, parents))
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
 
-  def _set_algo_attribute(self, alg_obj, name, value, className, algName):
+  def _set_algo_attribute(self, alg_obj, name, value, className, algName, streamName='StreamName'):
     #handle unicode from json
     if isinstance(value, unicode):
       value = value.encode('utf-8')
     elif isinstance(value, (list, tuple)):
       # manually call vector in user code when this fails on an empty list/tuple
-      value = vector(value) 
+      value = vector(value)
     self._log.append((algName, name, value))
     try:
       setattr(alg_obj, name, value)
     except:
       logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(name, value, className, algName))
       raise
-    
+    if streamName in name:
+      self.output(name)
 
   # set based on patterns
   def sample(self, pattern, **kwargs):

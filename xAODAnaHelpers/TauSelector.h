@@ -63,80 +63,76 @@ public:
   bool           m_EleOLR = true;
 
   /* trigger matching */
-  
+
   /*
-   * A comma-separated string w/ all the HLT 
-   * single muon trigger chains for which you want 
-   * to perform the matching. If left empty (as it is by default), 
-   * no trigger matching will be attempted at all 
+   * A comma-separated string w/ all the HLT
+   * single muon trigger chains for which you want
+   * to perform the matching. If left empty (as it is by default),
+   * no trigger matching will be attempted at all
    */
-  
+
   std::string    m_singleTauTrigChains = "";
-  
+
   /*
-   * A comma-separated string w/ all the HLT 
-   * dimuon trigger chains for which you want 
-   * to perform the matching.  If left empty (as it is by default), 
-   * no trigger matching will be attempted at all 
+   * A comma-separated string w/ all the HLT
+   * dimuon trigger chains for which you want
+   * to perform the matching.  If left empty (as it is by default),
+   * no trigger matching will be attempted at all
    */
-  
+
   std::string    m_diTauTrigChains = "";
 
 private:
 
-  int m_numEvent;           //!
-  int m_numObject;          //!
-  int m_numEventPass;       //!
-  int m_weightNumEventPass; //!
-  int m_numObjectPass;      //!
+  int m_numEvent;
+  int m_numObject;
+  int m_numEventPass;
+  int m_weightNumEventPass;
+  int m_numObjectPass;
 
   // cutflow
-  TH1D* m_cutflowHist;      //!
-  TH1D* m_cutflowHistW;     //!
-  int   m_cutflow_bin;      //!
+  TH1D* m_cutflowHist;
+  TH1D* m_cutflowHistW;
+  int   m_cutflow_bin;
 
-  bool  m_isUsedBefore;     //!
+  bool  m_isUsedBefore;
 
   // object cutflow
-  TH1D* m_tau_cutflowHist_1;                //!
-  TH1D* m_tau_cutflowHist_2;                //!
+  TH1D* m_tau_cutflowHist_1;
+  TH1D* m_tau_cutflowHist_2;
 
-  int   m_tau_cutflow_all;		    //!
-  int   m_tau_cutflow_selected;             //!
+  int   m_tau_cutflow_all;
+  int   m_tau_cutflow_selected;
 
   // tools
-  std::vector<std::string>            m_singleTauTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleTauTrigChains */
-  std::vector<std::string>            m_diTauTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diTauTrigChains */
-  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this}; //!
-  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //!
-  asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle; //!
+  std::vector<std::string>            m_singleTauTrigChainsList;   /* contains all the HLT trigger chains tokens extracted from m_singleTauTrigChains */
+  std::vector<std::string>            m_diTauTrigChainsList;       /* contains all the HLT trigger chains tokens extracted from m_diTauTrigChains */
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this};
+  asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    };
+  asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle;
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
-  bool m_doTrigMatch = true; //!
-  
+  bool m_doTrigMatch = true;
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
-  TauSelector ();
-
-  ~TauSelector();
+  TauSelector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // added functions not from Algorithm
   bool executeSelection( const xAOD::TauJetContainer* inTaus, float mcEvtWeight, bool countPass,
@@ -145,7 +141,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TauSelector, 1);
   /// @endcond
 
 };

@@ -30,7 +30,7 @@ class TauEfficiencyCorrector : public xAH::Algorithm
   // that way they can be set directly from CINT and python.
 
 public:
- 
+
   std::string m_RecommendationTag = "";
 
   // configuration variables
@@ -38,17 +38,17 @@ public:
 
   // Reco efficiency SF
   std::string   m_WorkingPointReco = "";
-  
+
   // EleOLR efficiency SF if the the reco tau is a true tau
   std::string   m_WorkingPointEleOLRHadTau = "";
 
   // EleOLR efficiency SF if the the reco tau is a true electron
   std::string   m_WorkingPointEleOLRElectron = "";
-  
+
   // TauID efficiency SF
   std::string   m_WorkingPointTauID = "";
 
-  // working point for tauID used in 
+  // working point for tauID used in
   // combination with the trigger
   std::string   m_TriggerName = "";
 
@@ -64,52 +64,49 @@ public:
   bool          m_writeSystToMetadata = false;
 
   float         m_systVal = 0.0;
-  
+
   std::string   m_systName = "";
-  
+
   std::string   m_outputSystNames = "TauEfficiencyCorrector_Syst";
 
 private:
-  int m_numEvent;         //!
-  int m_numObject;        //!
+  int m_numEvent;
+  int m_numObject;
 
-  std::vector<CP::SystematicSet> m_systList;  //!
+  std::vector<CP::SystematicSet> m_systList;
 
   // tools
-  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",           this}; //! 
+  asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"};
+  asg::AnaToolHandle<TauAnalysisTools::ITauEfficiencyCorrectionsTool> m_tauEffCorrTool_handle{"TauAnalysisTools::TauEfficiencyCorrectionsTool/TauEfficiencyCorrectionsTool",           this};
   // the selection tool is needed for baseline configuration
-  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool"}; //!
-  
+  asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool"};
+
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
 
-  // Tree *myTree; //!
-  // TH1 *myHist;  //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
-  TauEfficiencyCorrector ();
+  TauEfficiencyCorrector (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
-  virtual EL::StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::TauJetContainer* inputTaus, bool nominal, bool writeSystNames );
+  virtual StatusCode executeSF ( const xAOD::EventInfo* eventInfo, const xAOD::TauJetContainer* inputTaus, bool nominal, bool writeSystNames );
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TauEfficiencyCorrector, 1);
   /// @endcond
 
 };

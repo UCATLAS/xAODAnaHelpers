@@ -151,15 +151,15 @@ class OverlapRemover : public xAH::Algorithm
  protected:
 
   /** @brief A counter for the number of processed events */
-  int m_numEvent;           //!
+  int m_numEvent;
   /** @brief A counter for the number of processed objects */
-  int m_numObject;          //!
+  int m_numObject;
   /** @brief A counter for the number of passed events */
-  int m_numEventPass;       //!
+  int m_numEventPass;
   /** @brief A counter for the number of passed *weighted* events */
-  int m_weightNumEventPass; //!
+  int m_weightNumEventPass;
   /** @brief A counter for the number of passed objects */
-  int m_numObjectPass;      //!
+  int m_numObjectPass;
 
   /**
      @brief Consider electrons in the OLR
@@ -206,7 +206,7 @@ class OverlapRemover : public xAH::Algorithm
   std::string  m_outAuxContainerName_Taus;
 
   /** @brief Pointer to the CP Tool which performs the actual OLR. */
-  ORUtils::ToolBox m_ORToolbox;        //!
+  ORUtils::ToolBox m_ORToolbox;
 
   /** @brief An enum encoding systematics according to the various objects */
   enum SystType {
@@ -221,41 +221,39 @@ class OverlapRemover : public xAH::Algorithm
   // object-level cutflow
 
   /**  @brief Pointer to the histogram for the electron cutflow */
-  TH1D* m_el_cutflowHist_1 = nullptr;    //!
+  TH1D* m_el_cutflowHist_1 = nullptr;
   /**  @brief Pointer to the histogram for the muon cutflow */
-  TH1D* m_mu_cutflowHist_1 = nullptr;    //!
+  TH1D* m_mu_cutflowHist_1 = nullptr;
   /**  @brief Pointer to the histogram for the jet cutflow */
-  TH1D* m_jet_cutflowHist_1 = nullptr;   //!
+  TH1D* m_jet_cutflowHist_1 = nullptr;
   /**  @brief Pointer to the histogram for the photon cutflow */
-  TH1D* m_ph_cutflowHist_1 = nullptr;    //!
+  TH1D* m_ph_cutflowHist_1 = nullptr;
   /**  @brief Pointer to the histogram for the tau cutflow */
-  TH1D* m_tau_cutflowHist_1 = nullptr;   //!
+  TH1D* m_tau_cutflowHist_1 = nullptr;
 
-  int m_el_cutflow_OR_cut;     //!
-  int m_mu_cutflow_OR_cut;     //!
-  int m_jet_cutflow_OR_cut;    //!
-  int m_ph_cutflow_OR_cut;     //!
-  int m_tau_cutflow_OR_cut;    //!
+  int m_el_cutflow_OR_cut;
+  int m_mu_cutflow_OR_cut;
+  int m_jet_cutflow_OR_cut;
+  int m_ph_cutflow_OR_cut;
+  int m_tau_cutflow_OR_cut;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
 
   // this is a standard constructor
-  OverlapRemover ();
+  OverlapRemover (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // these are the functions not inherited from Algorithm
   /**
@@ -264,7 +262,7 @@ public:
      @param overlapFlag      The string identifying objects not overlapping with another object, to be kept (default is `"passOR"`)
      @param selectFlag       The string identifying selected objects (default is `"passSel"`)
   */
-  virtual EL::StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont,
+  virtual StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont,
 					    const std::string& overlapFlag = "passOR",
 					    const std::string& selectFlag = "passSel");
 
@@ -278,7 +276,7 @@ public:
      @param syst_type      The type of object for which input systematics should be considered. Default is `NOMINAL`
      @param sysVec         The list of the input systematics for a given object. Must match with the choice of `syst_type`. Default is `nullptr`
   */
-  virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons,
+  virtual StatusCode executeOR( const xAOD::ElectronContainer* inElectrons,
 				    const xAOD::MuonContainer* inMuons,
 				    const xAOD::JetContainer* inJets,
 				    const xAOD::PhotonContainer* inPhotons,
@@ -288,13 +286,12 @@ public:
             std::vector<std::string>* sysVecOut = nullptr);
 
   /** @brief Setup cutflow histograms */
-  EL::StatusCode setCutFlowHist();
+  StatusCode setCutFlowHist();
   /** @brief Initialise counters for events/objects */
-  EL::StatusCode setCounters();
+  StatusCode setCounters();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(OverlapRemover, 1);
   /// @endcond
 
 };

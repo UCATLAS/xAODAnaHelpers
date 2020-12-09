@@ -1,7 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
-#include <EventLoop/OutputStream.h>
 
 #include <xAODJet/JetContainer.h>
 #include <xAODTracking/VertexContainer.h>
@@ -16,34 +12,69 @@
 #include <xAODAnaHelpers/HelperClasses.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(TreeAlgo)
 
-TreeAlgo :: TreeAlgo () :
-    Algorithm("TreeAlgo")
+TreeAlgo :: TreeAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "TreeAlgo")
 {
+    declareProperty("evtDetailStr", m_evtDetailStr);
+    declareProperty("trigDetailStr", m_trigDetailStr);
+    declareProperty("muDetailStr", m_muDetailStr);
+    declareProperty("elDetailStr", m_elDetailStr);
+    declareProperty("jetDetailStr", m_jetDetailStr);
+    declareProperty("trigJetDetailStr", m_trigJetDetailStr);
+    declareProperty("truthJetDetailStr", m_truthJetDetailStr);
+    declareProperty("fatJetDetailStr", m_fatJetDetailStr);
+    declareProperty("truthFatJetDetailStr", m_truthFatJetDetailStr);
+    declareProperty("tauDetailStr", m_tauDetailStr);
+    declareProperty("METDetailStr", m_METDetailStr);
+    declareProperty("METReferenceDetailStr", m_METReferenceDetailStr);
+    declareProperty("photonDetailStr", m_photonDetailStr);
+    declareProperty("clusterDetailStr", m_clusterDetailStr);
+    declareProperty("truthParticlesDetailStr", m_truthParticlesDetailStr);
+    declareProperty("trackParticlesDetailStr", m_trackParticlesDetailStr);
+    declareProperty("vertexDetailStr", m_vertexDetailStr);
+    declareProperty("evtContainerName", m_evtContainerName);
+    declareProperty("muContainerName", m_muContainerName);
+    declareProperty("elContainerName", m_elContainerName);
+    declareProperty("jetContainerName", m_jetContainerName);
+    declareProperty("jetBranchName", m_jetBranchName);
+    declareProperty("truthJetContainerName", m_truthJetContainerName);
+    declareProperty("truthJetBranchName", m_truthJetBranchName);
+    declareProperty("trigJetContainerName", m_trigJetContainerName);
+    declareProperty("trigJetBranchName", m_trigJetBranchName);
+    declareProperty("fatJetContainerName", m_fatJetContainerName);
+    declareProperty("fatJetBranchName", m_fatJetBranchName);
+    declareProperty("truthFatJetContainerName", m_truthFatJetContainerName);
+    declareProperty("truthFatJetBranchName", m_truthFatJetBranchName);
+    declareProperty("tauContainerName", m_tauContainerName);
+    declareProperty("METContainerName", m_METContainerName);
+    declareProperty("METReferenceContainerName", m_METReferenceContainerName);
+    declareProperty("photonContainerName", m_photonContainerName);
+    declareProperty("clusterContainerName", m_clusterContainerName);
+    declareProperty("clusterBranchName", m_clusterBranchName);
+    declareProperty("truthParticlesContainerName", m_truthParticlesContainerName);
+    declareProperty("truthParticlesBranchName", m_truthParticlesBranchName);
+    declareProperty("trackParticlesContainerName", m_trackParticlesContainerName);
+    declareProperty("l1JetContainerName", m_l1JetContainerName);
+    declareProperty("l1JetBranchName", m_l1JetBranchName);
+    declareProperty("vertexBranchName", m_vertexBranchName);
+    declareProperty("sortL1Jets", m_sortL1Jets);
+    declareProperty("retrievePV", m_retrievePV);
+    declareProperty("muSystsVec", m_muSystsVec);
+    declareProperty("elSystsVec", m_elSystsVec);
+    declareProperty("tauSystsVec", m_tauSystsVec);
+    declareProperty("jetSystsVec", m_jetSystsVec);
+    declareProperty("photonSystsVec", m_photonSystsVec);
+    declareProperty("fatJetSystsVec", m_fatJetSystsVec);
+    declareProperty("metSystsVec", m_metSystsVec);
+    declareProperty("units", m_units);
+    declareProperty("autoFlush", m_autoFlush);
 }
 
-EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("TreeAlgo").ignore();
 
-  EL::OutputStream outForTree("tree");
-  job.outputAdd (outForTree);
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode TreeAlgo :: initialize ()
+StatusCode TreeAlgo :: initialize ()
 {
   ANA_MSG_INFO( m_name );
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
-
-  // get the file we created already
-  TFile* treeFile = wk()->getOutputFile ("tree");
-  treeFile->mkdir(m_name.c_str());
-  treeFile->cd(m_name.c_str());
 
   // to handle more than one jet collections (reco, trig and truth)
   std::string token;
@@ -57,7 +88,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_jetContainerName.empty() && m_jetContainers.size()!=m_jetBranches.size()){
     ANA_MSG_ERROR( "The number of jet containers must be equal to the number of jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   std::istringstream ss_trig_containers(m_trigJetContainerName);
   while ( std::getline(ss_trig_containers, token, ' ') ){
@@ -69,7 +100,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_trigJetContainerName.empty() && m_trigJetContainers.size()!=m_trigJetBranches.size()){
     ANA_MSG_ERROR( "The number of trig jet containers must be equal to the number of trig jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   std::istringstream ss_truth_containers(m_truthJetContainerName);
   while ( std::getline(ss_truth_containers, token, ' ') ){
@@ -81,7 +112,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_truthJetContainerName.empty() && m_truthJetContainers.size()!=m_truthJetBranches.size()){
     ANA_MSG_ERROR( "The number of truth jet containers must be equal to the number of truth jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_fat_containers(m_fatJetContainerName);
@@ -99,7 +130,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_fatJetContainerName.empty() && m_fatJetContainers.size()!=m_fatJetBranches.size()){
     ANA_MSG_ERROR( "The number of fat jet containers must be equal to the number of fat jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_l1_containers(m_l1JetContainerName);
@@ -112,7 +143,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_l1JetContainerName.empty() && m_l1JetContainers.size()!=m_l1JetBranches.size()){
     ANA_MSG_ERROR( "The number of L1 jet containers must be equal to the number of L1 jet name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_vertex_containers(m_vertexContainerName);
@@ -125,7 +156,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_vertexContainers.size()!=m_vertexBranches.size()){
     ANA_MSG_ERROR( "The number of vertex containers must be equal to the number of vertex name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_cluster_containers(m_clusterContainerName);
@@ -138,7 +169,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_clusterContainerName.empty() && m_clusterContainers.size()!=m_clusterBranches.size()){
     ANA_MSG_ERROR( "The number of cluster containers must be equal to the number of cluster name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // allow to store different variables for each jet collection (reco, trig, fat only, default: store the same)
@@ -148,7 +179,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_jetDetails.size()!=1  && m_jetContainers.size()!=m_jetDetails.size()){
     ANA_MSG_ERROR( "The size of m_jetContainers should be equal to the size of m_jetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
   std::istringstream ss_trig_details(m_trigJetDetailStr);
   while ( std::getline(ss_trig_details, token, '|') ){
@@ -156,7 +187,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_trigJetDetails.size()!=1  && m_trigJetContainers.size()!=m_trigJetDetails.size()){
     ANA_MSG_ERROR( "The size of m_trigJetContainers should be equal to the size of m_trigJetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_vertex_details(m_vertexDetailStr);
@@ -165,7 +196,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_vertexDetails.size()>1 && m_vertexContainers.size()!=m_vertexDetails.size()){
     ANA_MSG_ERROR( "The size of m_vertexContainers should be equal to the size of m_vertexDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_fat_details(m_fatJetDetailStr);
@@ -174,7 +205,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_fatJetDetails.size()!=1  && m_fatJetContainers.size()!=m_fatJetDetails.size()){
     ANA_MSG_ERROR( "The size of m_fatJetContainers should be equal to the size of m_fatJetDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   std::istringstream ss_cluster_details(m_clusterDetailStr);
@@ -183,7 +214,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( m_clusterDetails.size()!=1  && m_clusterContainers.size()!=m_clusterDetails.size()){
     ANA_MSG_ERROR( "The size of m_clusterContainers should be equal to the size of m_clusterDetailStr. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   // to handle more than one truth particles collections
@@ -197,24 +228,24 @@ EL::StatusCode TreeAlgo :: initialize ()
   }
   if( !m_truthParticlesContainerName.empty() && m_truthParticlesContainers.size()!=m_truthParticlesBranches.size()){
     ANA_MSG_ERROR( "The number of truth particles containers must be equal to the number of truth particles name branches. Exiting");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: histInitialize ()
+StatusCode TreeAlgo :: histInitialize ()
 {
   ANA_MSG_INFO( m_name );
   ANA_CHECK( xAH::Algorithm::algInitialize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+StatusCode TreeAlgo :: fileExecute () { return StatusCode::SUCCESS; }
+StatusCode TreeAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 
 
-EL::StatusCode TreeAlgo :: execute ()
+StatusCode TreeAlgo :: execute ()
 {
 
   // what systematics do we need to process for this event?
@@ -234,7 +265,7 @@ EL::StatusCode TreeAlgo :: execute ()
   // note that the way we set this up, none of the below ##SystNames vectors contain the nominal case
   // TODO: do we really need to check for duplicates? Maybe, maybe not.
   if(!m_muSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_muSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_muSystsVec) );
     for(const auto& systName: *systNames){
       muSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -243,7 +274,7 @@ EL::StatusCode TreeAlgo :: execute ()
   }
 
   if(!m_elSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_elSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_elSystsVec) );
     for(const auto& systName: *systNames){
       elSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -252,7 +283,7 @@ EL::StatusCode TreeAlgo :: execute ()
   }
 
   if(!m_tauSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_tauSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_tauSystsVec) );
     for(const auto& systName: *systNames){
       tauSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -261,7 +292,7 @@ EL::StatusCode TreeAlgo :: execute ()
   }
 
   if(!m_jetSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_jetSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_jetSystsVec) );
     for(const auto& systName: *systNames){
       jetSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -269,7 +300,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
   }
   if(!m_fatJetSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_fatJetSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_fatJetSystsVec) );
     for(const auto& systName: *systNames){
       fatJetSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -277,7 +308,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
   }
   if(!m_photonSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_photonSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_photonSystsVec) );
     for(const auto& systName: *systNames){
       photonSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
@@ -285,15 +316,13 @@ EL::StatusCode TreeAlgo :: execute ()
     }
   }
   if(!m_metSystsVec.empty()){
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_metSystsVec, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_metSystsVec) );
     for(const auto& systName: *systNames){
       metSystNames.push_back(systName);
       if (std::find(event_systNames.begin(), event_systNames.end(), systName) != event_systNames.end()) continue;
       event_systNames.push_back(systName);
     }
   }
-
-  TFile* treeFile = wk()->getOutputFile ("tree");
 
   // let's make the tdirectory and ttrees
   for(const auto& systName: event_systNames){
@@ -303,24 +332,19 @@ EL::StatusCode TreeAlgo :: execute ()
     if(systName.empty()) treeName = "nominal";
 
     ANA_MSG_INFO( "Making tree " << m_name << "/" << treeName );
-    TTree * outTree = new TTree(treeName.c_str(),treeName.c_str());
+    ANA_CHECK(book(TTree(treeName.c_str(),treeName.c_str())));
+    TTree * outTree = tree(treeName.c_str());
     if ( !outTree ) {
       ANA_MSG_ERROR("Failed to instantiate output tree!");
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
 
-    m_trees[systName] = createTree( m_event, outTree, treeFile, m_units, msgLvl(MSG::DEBUG), m_store );
+    m_trees[systName] = new HelpTreeBase( evtStore(), outTree, m_units, msgLvl(MSG::DEBUG) );
     const auto& helpTree = m_trees[systName];
     helpTree->m_vertexContainerName = m_vertexContainers.at(0);
 
     // tell the tree to go into the file
-    outTree->SetDirectory( treeFile->GetDirectory(m_name.c_str()) );
     if(m_autoFlush != 0) outTree->SetAutoFlush(m_autoFlush);
-    // choose if want to add tree to same directory as ouput histograms
-    if ( m_outHistDir ) {
-      if(m_trees.size() > 1) ANA_MSG_WARNING( "You're running systematics! You may find issues in writing all of the output TTrees to the output histogram file... Set `m_outHistDir = false` if you run into issues!");
-      wk()->addOutput( outTree );
-    }
 
     // initialize all branch addresses since we just added this tree
     helpTree->AddEvent( m_evtDetailStr );
@@ -387,10 +411,10 @@ EL::StatusCode TreeAlgo :: execute ()
   /* THIS IS WHERE WE START PROCESSING THE EVENT AND PLOTTING THINGS */
 
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
   const xAOD::VertexContainer* vertices(nullptr);
   if (m_retrievePV) {
-    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainers.at(0), m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainers.at(0)) );
   }
   const xAOD::Vertex* primaryVertex = m_retrievePV ? HelperFunctions::getPrimaryVertex( vertices , msg() ) : nullptr;
 
@@ -421,7 +445,7 @@ EL::StatusCode TreeAlgo :: execute ()
     if (std::find(fatJetSystNames.begin(), fatJetSystNames.end(), systName) != fatJetSystNames.end()) fatJetSuffix = systName;
     if (std::find(metSystNames.begin(), metSystNames.end(), systName) != metSystNames.end()) metSuffix = systName;
 
-    helpTree->FillEvent( eventInfo, m_event, vertices );
+    helpTree->FillEvent( eventInfo, evtStore(), vertices );
 
     // Fill trigger information
     if ( !m_trigDetailStr.empty() )    {
@@ -435,18 +459,18 @@ EL::StatusCode TreeAlgo :: execute ()
 
     // for the containers the were supplied, fill the appropriate vectors
     if ( !m_muContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::MuonContainer>(m_muContainerName + muSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::MuonContainer>(m_muContainerName + muSuffix) ) continue;
 
       const xAOD::MuonContainer* inMuon(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inMuon, m_muContainerName+muSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMuon, m_muContainerName+muSuffix) );
       helpTree->FillMuons( inMuon, primaryVertex );
     }
 
     if ( !m_elContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::ElectronContainer>(m_elContainerName + elSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::ElectronContainer>(m_elContainerName + elSuffix) ) continue;
 
       const xAOD::ElectronContainer* inElec(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inElec, m_elContainerName+elSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inElec, m_elContainerName+elSuffix) );
       helpTree->FillElectrons( inElec, primaryVertex );
     }
 
@@ -454,12 +478,12 @@ EL::StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_jetContainers.size(); ++ll ) { // Systs for all jet containers
         const xAOD::JetContainer* inJets(nullptr);
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_jetContainers.at(ll)+jetSuffix) ) {
           ANA_MSG_DEBUG( "The jet container " + m_jetContainers.at(ll)+jetSuffix + " is not available. Skipping all remaining jet collections");
           reject = true;
           break;
         }
-        ANA_CHECK( HelperFunctions::retrieve(inJets, m_jetContainers.at(ll)+jetSuffix, m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inJets, m_jetContainers.at(ll)+jetSuffix) );
 
         helpTree->FillJets( inJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_jetBranches.at(ll) );
       }
@@ -474,11 +498,11 @@ EL::StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_l1JetContainers.size(); ++ll ) {
         const xAOD::JetRoIContainer* inL1Jets(nullptr);
-        if ( !HelperFunctions::isAvailable<xAOD::JetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
+        if ( !evtStore()->contains<xAOD::JetRoIContainer>(m_l1JetContainers.at(ll)) ){
           ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
           reject = true;
 	}
-        ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inL1Jets, m_l1JetContainers.at(ll)) );
         helpTree->FillL1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets );
       }
 
@@ -491,14 +515,14 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_trigJetContainerName.empty() ) {
       bool reject = false;
       for(unsigned int ll=0;ll<m_trigJetContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_trigJetContainers.at(ll), m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_trigJetContainers.at(ll)) ) {
           ANA_MSG_DEBUG( "The trigger jet container " + m_trigJetContainers.at(ll) + " is not available. Skipping all remaining trigger jet collections");
           reject = true;
           break;
         }
 
         const xAOD::JetContainer* inTrigJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inTrigJets, m_trigJetContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inTrigJets, m_trigJetContainers.at(ll)) );
         helpTree->FillJets( inTrigJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_trigJetBranches.at(ll) );
       }
 
@@ -511,14 +535,14 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_truthJetContainerName.empty() ) {
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_truthJetContainers.size(); ++ll) {
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthJetContainers.at(ll), m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_truthJetContainers.at(ll)) ) {
           ANA_MSG_DEBUG( "The truth jet container " + m_truthJetContainers.at(ll) + " is not available. Skipping all remaining truth jet collections");
           reject = true;
           break;
         }
 
         const xAOD::JetContainer* inTruthJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inTruthJets, m_truthJetContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inTruthJets, m_truthJetContainers.at(ll)) );
         helpTree->FillJets( inTruthJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthJetBranches.at(ll) );
       }
 
@@ -533,13 +557,13 @@ EL::StatusCode TreeAlgo :: execute ()
       // std::string token;
       // std::istringstream ss(m_fatJetContainerName);
       // while ( std::getline(ss, token, ' ') ){
-        // if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(token+fatJetSuffix, m_event, m_store, msg()) ) {
+        // if ( !evtStore()->contains<xAOD::JetContainer>(token+fatJetSuffix) ) {
           // reject = true;
           // break;
         // }
 
       	// const xAOD::JetContainer* inFatJets(nullptr);
-	// ANA_CHECK( HelperFunctions::retrieve(inFatJets, token+fatJetSuffix, m_event, m_store, msg()) );
+	// ANA_CHECK( evtStore()->retrieve(inFatJets, token+fatJetSuffix) );
       	// helpTree->FillFatJets( inFatJets, token );
       // }
 
@@ -547,14 +571,14 @@ EL::StatusCode TreeAlgo :: execute ()
 
       bool reject = false;
       for(unsigned int ll=0;ll<m_fatJetContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::JetContainer>(m_fatJetContainers.at(ll)+fatJetSuffix) ) {
           ANA_MSG_DEBUG( "The fatjet container " + m_fatJetContainers.at(ll)+fatJetSuffix + " was not retrieved. Skipping all remaining fat jet collections");
           reject = true;
           break;
         }
 
         const xAOD::JetContainer* inFatJets(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inFatJets, m_fatJetContainers.at(ll)+fatJetSuffix, m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inFatJets, m_fatJetContainers.at(ll)+fatJetSuffix) );
         helpTree->FillFatJets( inFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_fatJetBranches.at(ll) );
 
       }
@@ -566,60 +590,60 @@ EL::StatusCode TreeAlgo :: execute ()
     }
 
     if ( !m_truthFatJetContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::JetContainer>(m_truthFatJetContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::JetContainer>(m_truthFatJetContainerName) ) continue;
 
       const xAOD::JetContainer* inTruthFatJets(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTruthFatJets, m_truthFatJetContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inTruthFatJets, m_truthFatJetContainerName) );
       helpTree->FillTruthFatJets( inTruthFatJets, HelperFunctions::getPrimaryVertexLocation(vertices, msg()), m_truthFatJetBranchName );
     }
 
     if ( !m_tauContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::TauJetContainer>(m_tauContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::TauJetContainer>(m_tauContainerName) ) continue;
 
       const xAOD::TauJetContainer* inTaus(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTaus, m_tauContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inTaus, m_tauContainerName) );
       helpTree->FillTaus( inTaus );
     }
 
     if ( !m_METContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METContainerName + metSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::MissingETContainer>(m_METContainerName + metSuffix) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METContainerName + metSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMETCont, m_METContainerName + metSuffix) );
       helpTree->FillMET( inMETCont );
     }
 
     if ( !m_METReferenceContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::MissingETContainer>(m_METReferenceContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::MissingETContainer>(m_METReferenceContainerName) ) continue;
 
       const xAOD::MissingETContainer* inMETCont(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inMETCont, m_METReferenceContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inMETCont, m_METReferenceContainerName) );
       helpTree->FillMET( inMETCont, "referenceMet" );
     }
 
     if ( !m_photonContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::PhotonContainer>(m_photonContainerName + photonSuffix) ) continue;
 
       const xAOD::PhotonContainer* inPhotons(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_photonContainerName+photonSuffix, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inPhotons, m_photonContainerName+photonSuffix) );
       helpTree->FillPhotons( inPhotons );
     }
 
     if ( !m_truthParticlesContainerName.empty() ) {
       for ( unsigned int ll = 0; ll < m_truthParticlesContainers.size(); ++ll) {
-        if ( !HelperFunctions::isAvailable<xAOD::TruthParticleContainer>(m_truthParticlesContainers.at(ll), m_event, m_store, msg()) ) continue;
+        if ( !evtStore()->contains<xAOD::TruthParticleContainer>(m_truthParticlesContainers.at(ll)) ) continue;
 
         const xAOD::TruthParticleContainer* inTruthParticles(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inTruthParticles, m_truthParticlesContainers.at(ll), m_event, m_store, msg()));
+        ANA_CHECK( evtStore()->retrieve(inTruthParticles, m_truthParticlesContainers.at(ll)));
         helpTree->FillTruth(inTruthParticles, m_truthParticlesBranches.at(ll));
       }
     }
 
     if ( !m_trackParticlesContainerName.empty() ) {
-      if ( !HelperFunctions::isAvailable<xAOD::TrackParticleContainer>(m_trackParticlesContainerName, m_event, m_store, msg()) ) continue;
+      if ( !evtStore()->contains<xAOD::TrackParticleContainer>(m_trackParticlesContainerName) ) continue;
 
       const xAOD::TrackParticleContainer* inTrackParticles(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(inTrackParticles, m_trackParticlesContainerName, m_event, m_store, msg()));
+      ANA_CHECK( evtStore()->retrieve(inTrackParticles, m_trackParticlesContainerName));
       helpTree->FillTracks(inTrackParticles,m_trackParticlesContainerName);
     }
 
@@ -627,11 +651,11 @@ EL::StatusCode TreeAlgo :: execute ()
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_vertexContainers.size(); ++ll ) {
         const xAOD::VertexContainer* inVertices(nullptr);
-        if ( !HelperFunctions::isAvailable<xAOD::VertexContainer>(m_vertexContainers.at(ll), m_event, m_store, msg()) ){
+        if ( !evtStore()->contains<xAOD::VertexContainer>(m_vertexContainers.at(ll)) ){
           ANA_MSG_DEBUG( "The vertex container " + m_vertexContainers.at(ll) + " is not available. Skipping all remaining vertex collections");
           reject = true;
 	}
-        ANA_CHECK( HelperFunctions::retrieve(inVertices, m_vertexContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inVertices, m_vertexContainers.at(ll)) );
         helpTree->FillVertices( inVertices, m_vertexBranches.at(ll));
       }
 
@@ -644,14 +668,14 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_clusterContainerName.empty() ) {
       bool reject = false;
       for(unsigned int ll=0;ll<m_clusterContainers.size();++ll){
-        if ( !HelperFunctions::isAvailable<xAOD::CaloClusterContainer>(m_clusterContainers.at(ll), m_event, m_store, msg()) ) {
+        if ( !evtStore()->contains<xAOD::CaloClusterContainer>(m_clusterContainers.at(ll)) ) {
           ANA_MSG_DEBUG( "The cluster container " + m_clusterContainers.at(ll) + " is not available. Skipping all remaining cluster collections");
           reject = true;
           break;
         }
 
         const xAOD::CaloClusterContainer* inClusters(nullptr);
-        ANA_CHECK( HelperFunctions::retrieve(inClusters, m_clusterContainers.at(ll), m_event, m_store, msg()) );
+        ANA_CHECK( evtStore()->retrieve(inClusters, m_clusterContainers.at(ll)) );
         helpTree->FillClusters( inClusters, m_clusterBranches.at(ll) );
       }
 
@@ -665,13 +689,11 @@ EL::StatusCode TreeAlgo :: execute ()
     helpTree->Fill();
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
-EL::StatusCode TreeAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
-
-EL::StatusCode TreeAlgo :: finalize () {
+StatusCode TreeAlgo :: finalize () {
 
   ANA_MSG_INFO( "Deleting tree instances...");
 
@@ -680,11 +702,7 @@ EL::StatusCode TreeAlgo :: finalize () {
   }
   m_trees.clear();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode TreeAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
-
-HelpTreeBase* TreeAlgo :: createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store) {
-    return new HelpTreeBase( event, tree, file, units, debug, store );
-}
+StatusCode TreeAlgo :: histFinalize () { return StatusCode::SUCCESS; }

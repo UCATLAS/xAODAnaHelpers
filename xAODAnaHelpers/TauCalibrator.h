@@ -19,7 +19,7 @@ public:
   std::string m_outContainerName = "";
 
   std::string m_RecommendationTag = "";
-  
+
   bool m_applyMVATES = false;
   bool m_applyCombinedTES = false;
   bool m_setAFII = false;
@@ -36,43 +36,40 @@ public:
   bool        m_writeSystToMetadata = false;
 
 private:
-  int m_numEvent;         //!
-  int m_numObject;        //!
+  int m_numEvent;
+  int m_numObject;
 
   std::string m_outAuxContainerName;
   std::string m_outSCContainerName;
   std::string m_outSCAuxContainerName;
 
-  std::vector<CP::SystematicSet> m_systList; //!
+  std::vector<CP::SystematicSet> m_systList;
 
   // tools
-  asg::AnaToolHandle<TauAnalysisTools::ITauSmearingTool> m_tauSmearingTool_handle{"TauAnalysisTools::TauSmearingTool/TauSmearingTool",     this}; //!
+  asg::AnaToolHandle<TauAnalysisTools::ITauSmearingTool> m_tauSmearingTool_handle{"TauAnalysisTools::TauSmearingTool/TauSmearingTool",     this};
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
-  TauCalibrator ();
+  TauCalibrator (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TauCalibrator, 1);
   /// @endcond
 
 };

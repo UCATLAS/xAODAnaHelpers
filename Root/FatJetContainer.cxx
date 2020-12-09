@@ -67,7 +67,7 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_constituent_e       = new std::vector< std::vector<float> >();
   }
 
-  
+
   if ( m_infoSwitch.m_truth && m_mc ) {
     m_truth_m  =new std::vector<float>;
     m_truth_pt =new std::vector<float>;
@@ -168,14 +168,14 @@ FatJetContainer::~FatJetContainer()
     delete m_truth_phi;
     delete m_truth_eta;
   }
-  
+
   if ( m_infoSwitch.m_bosonCount && m_mc) {
     delete m_nTQuarks;
     delete m_nHBosons;
     delete m_nWBosons;
     delete m_nZBosons;
   }
-  
+
   if ( m_infoSwitch.m_muonCorrection) {
     delete m_muonCorrected_pt;
     delete m_muonCorrected_eta;
@@ -278,8 +278,8 @@ void FatJetContainer::setTree(TTree *tree)
     connectBranch< float >(tree, "muonCorrected_eta", &m_muonCorrected_eta);
     connectBranch< float >(tree, "muonCorrected_phi", &m_muonCorrected_phi);
     connectBranch< float >(tree, "muonCorrected_m"  , &m_muonCorrected_m  );
-	
-  } 
+
+  }
 
   for(const std::pair< std::string, std::vector<std::vector<unsigned int>>* >& kv : m_trkJetsIdx)
     {
@@ -359,14 +359,14 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
 				   m_truth_phi->at(idx),
 				   m_truth_m  ->at(idx));
     }
-  
+
   if (m_infoSwitch.m_bosonCount) {
     fatjet.nTQuarks = m_nTQuarks->at(idx);
     fatjet.nHBosons = m_nHBosons->at(idx);
     fatjet.nWBosons = m_nWBosons->at(idx);
     fatjet.nZBosons = m_nZBosons->at(idx);
   }
-  
+
   if (m_infoSwitch.m_muonCorrection) {
     fatjet.muonCorrected_pt  = m_muonCorrected_pt ->at(idx);
     fatjet.muonCorrected_eta = m_muonCorrected_eta->at(idx);
@@ -459,7 +459,7 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch<float>(tree, "truth_phi", m_truth_phi);
     setBranch<float>(tree, "truth_eta", m_truth_eta);
   }
-    
+
   if ( m_infoSwitch.m_bosonCount && m_mc ) {
     setBranch< int >(tree, "nTQuarks",       m_nTQuarks);
     setBranch< int >(tree, "nHBosons",       m_nHBosons);
@@ -550,7 +550,7 @@ void FatJetContainer::clear()
     m_truth_phi->clear();
     m_truth_eta->clear();
   }
-  
+
   if ( m_infoSwitch.m_bosonCount && m_mc) {
     m_nTQuarks->clear();
     m_nHBosons->clear();
@@ -564,7 +564,7 @@ void FatJetContainer::clear()
     m_muonCorrected_phi->clear();
     m_muonCorrected_m  ->clear();
   }
-  
+
   for(const std::pair< std::string, std::vector<std::vector<unsigned int>>* >& kv : m_trkJetsIdx)
     {
       m_trkJets   [kv.first]->clear();
@@ -698,7 +698,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle, int pvLocatio
         static SG::AuxElement::ConstAccessor< std::vector<int> > acc_NumTrkPt500("NumTrkPt500");
         if ( acc_NumTrkPt500.isAvailable( *fatjetParent ) ) {
           m_ungrtrk500->push_back( acc_NumTrkPt500( *fatjetParent )[pvLocation] );
-        } else { 
+        } else {
 	  //Perhaps the case if we are dealing with reclustered jets
 	  int sumUngrtrk500 = 0;
 	  const xAOD::Jet* subjet(nullptr);
@@ -717,7 +717,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle, int pvLocatio
     }
 
     m_EMFrac->push_back(GetEMFrac (*fatjet));
-	
+
     static SG::AuxElement::ConstAccessor<int> acc_nChargedParticles("nChargedParticles");
     if( acc_nChargedParticles.isAvailable( *fatjet ) ) {
       m_nChargedParticles->push_back( acc_nChargedParticles( *fatjet ));
@@ -775,7 +775,7 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle, int pvLocatio
 
   if(m_infoSwitch.m_bosonCount && m_mc){
 
-    const xAOD::Jet* fatjet_parent = fatjet; // Trimmed jet area will be used for leading calo-jet if parent link fails    
+    const xAOD::Jet* fatjet_parent = fatjet; // Trimmed jet area will be used for leading calo-jet if parent link fails
 
     try
       {
@@ -867,9 +867,9 @@ bool FatJetContainer::SelectTrackJet(const xAOD::Jet* TrackJet)
 }
 
 float FatJetContainer::GetEMFrac(const xAOD::Jet& jet) {
-    float eInSample = 0.; 
-    float eInSampleFull = 0.; 
-    float emfrac = 0.; 
+    float eInSample = 0.;
+    float eInSampleFull = 0.;
+    float emfrac = 0.;
     const xAOD::JetConstituentVector constituents = jet.getConstituents();
     if (!constituents.isValid()){
       //ATH_MSG_WARNING("Unable to retrieve valid constituents from parent of large R jet");
@@ -881,7 +881,7 @@ float FatJetContainer::GetEMFrac(const xAOD::Jet& jet) {
         //ATH_MSG_WARNING("Tried to call fillEperSamplingCluster with a jet constituent that is not a cluster!");
         continue;
       }
-      const xAOD::CaloCluster* constit = static_cast<const xAOD::CaloCluster*>(constituent->rawConstituent());  
+      const xAOD::CaloCluster* constit = static_cast<const xAOD::CaloCluster*>(constituent->rawConstituent());
       if(!constit) continue;
       for (int s=0;s<CaloSampling::Unknown; s++){
           eInSampleFull += constit->eSample(CaloSampling::CaloSample(s));

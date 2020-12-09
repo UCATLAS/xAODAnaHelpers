@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 #include "AthContainers/ConstDataVector.h"
 #include "xAODEventInfo/EventInfo.h"
 #include "xAODAnaHelpers/HelperFunctions.h"
@@ -8,24 +5,16 @@
 #include <xAODAnaHelpers/ClusterHistsAlgo.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(ClusterHistsAlgo)
 
-ClusterHistsAlgo :: ClusterHistsAlgo () :
-    Algorithm("ClusterHistsAlgo")
+ClusterHistsAlgo :: ClusterHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "ClusterHistsAlgo")
 {
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("detailStr", m_detailStr);
 }
 
-EL::StatusCode ClusterHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
 
-  // let's initialize the algorithm to use the xAODRootAccess package
-  xAOD::Init("ClusterHistsAlgo").ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode ClusterHistsAlgo :: histInitialize ()
+StatusCode ClusterHistsAlgo :: histInitialize ()
 {
 
   ANA_MSG_INFO( m_name );
@@ -33,33 +22,30 @@ EL::StatusCode ClusterHistsAlgo :: histInitialize ()
   // needed here and not in initalize since this is called first
   if( m_inContainerName.empty() || m_detailStr.empty() ){
     ANA_MSG_ERROR( "One or more required configuration values are empty");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
 
   // declare class and add histograms to output
   m_plots = new ClusterHists(m_name, m_detailStr);
   ANA_CHECK( m_plots -> initialize());
-  m_plots -> record( wk() );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ClusterHistsAlgo :: fileExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return EL::StatusCode::SUCCESS; }
+StatusCode ClusterHistsAlgo :: fileExecute () { return StatusCode::SUCCESS; }
+StatusCode ClusterHistsAlgo :: changeInput (bool /*firstFile*/) { return StatusCode::SUCCESS; }
 
-EL::StatusCode ClusterHistsAlgo :: initialize ()
+StatusCode ClusterHistsAlgo :: initialize ()
 {
   ANA_MSG_INFO( "ClusterHistsAlgo");
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ClusterHistsAlgo :: execute ()
+StatusCode ClusterHistsAlgo :: execute ()
 {
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
 
   float eventWeight(1);
@@ -68,19 +54,23 @@ EL::StatusCode ClusterHistsAlgo :: execute ()
   }
 
   const xAOD::CaloClusterContainer* ccls(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(ccls, m_inContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(ccls, m_inContainerName) );
 
   ANA_CHECK( m_plots->execute( ccls, eventWeight ));
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
-EL::StatusCode ClusterHistsAlgo :: postExecute () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode ClusterHistsAlgo :: finalize () { return EL::StatusCode::SUCCESS; }
-EL::StatusCode ClusterHistsAlgo :: histFinalize ()
+StatusCode ClusterHistsAlgo :: finalize () { return StatusCode::SUCCESS; }
+StatusCode ClusterHistsAlgo :: histFinalize ()
 {
+
+  for( auto hist : m_plots->hists() ){
+    ANA_CHECK(book(*hist));
+  }
+
   // clean up memory
   if(m_plots) delete m_plots;
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }

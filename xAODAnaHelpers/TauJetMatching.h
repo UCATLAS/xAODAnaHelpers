@@ -32,32 +32,28 @@ public:
 
 private:
 
-  int m_numEvent;           //!
-  int m_numObject;          //!
+  int m_numEvent;
+  int m_numObject;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
-  // node (done by the //!)
+  // node (done by the )
 
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  // Tree *myTree;
+  // TH1 *myHist;
 
   // this is a standard constructor
-  TauJetMatching ();
-
-  ~TauJetMatching();
+  TauJetMatching (const std::string& name, ISvcLocator *pSvcLocator);
 
   // these are the functions inherited from Algorithm
-  virtual EL::StatusCode setupJob (EL::Job& job);
-  virtual EL::StatusCode fileExecute ();
-  virtual EL::StatusCode histInitialize ();
-  virtual EL::StatusCode changeInput (bool firstFile);
-  virtual EL::StatusCode initialize ();
-  virtual EL::StatusCode execute ();
-  virtual EL::StatusCode postExecute ();
-  virtual EL::StatusCode finalize ();
-  virtual EL::StatusCode histFinalize ();
+  virtual StatusCode fileExecute ();
+  virtual StatusCode histInitialize ();
+  virtual StatusCode changeInput (bool firstFile);
+  virtual StatusCode initialize ();
+  virtual StatusCode execute ();
+  virtual StatusCode finalize ();
+  virtual StatusCode histFinalize ();
 
   // added functions not from Algorithm
   bool executeDecoration( std::unordered_map<int, std::pair<const xAOD::TauJet*, const xAOD::Jet* > >, const xAOD::TauJetContainer* tauCont);
@@ -68,7 +64,6 @@ public:
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
-  ClassDef(TauJetMatching, 1);
   /// @endcond
 
 };

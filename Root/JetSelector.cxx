@@ -3,10 +3,6 @@
 #include <typeinfo>
 #include <sstream>
 
-// EL include(s):
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 // EDM include(s):
 #include <xAODJet/JetContainer.h>
@@ -37,35 +33,92 @@
 #include "TObjString.h"
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(JetSelector)
 
 
-JetSelector :: JetSelector () :
-    Algorithm("JetSelector")
+JetSelector :: JetSelector (const std::string& name, ISvcLocator *pSvcLocator) :
+    Algorithm(name, pSvcLocator, "JetSelector")
 {
+    declareProperty("useCutFlow", m_useCutFlow);
+    declareProperty("inContainerName", m_inContainerName);
+    declareProperty("outContainerName", m_outContainerName);
+    declareProperty("truthJetContainer", m_truthJetContainer);
+    declareProperty("inputAlgo", m_inputAlgo);
+    declareProperty("outputAlgo", m_outputAlgo);
+    declareProperty("writeSystToMetadata", m_writeSystToMetadata);
+    declareProperty("jetScaleType", m_jetScaleType);
+    declareProperty("decor", m_decor);
+    declareProperty("decorateSelectedObjects", m_decorateSelectedObjects);
+    declareProperty("createSelectedContainer", m_createSelectedContainer);
+    declareProperty("nToProcess", m_nToProcess);
+    declareProperty("cleanJets", m_cleanJets);
+    declareProperty("cleanEvtLeadJets", m_cleanEvtLeadJets);
+    declareProperty("cleanEvent", m_cleanEvent);
+    declareProperty("markCleanEvent", m_markCleanEvent);
+    declareProperty("jetScale4Selection", m_jetScale4Selection);
+    declareProperty("doMCCleaning", m_doMCCleaning);
+    declareProperty("mcCleaningCut", m_mcCleaningCut);
+    declareProperty("pass_min", m_pass_min);
+    declareProperty("pass_max", m_pass_max);
+    declareProperty("pT_max", m_pT_max);
+    declareProperty("pT_min", m_pT_min);
+    declareProperty("eta_max", m_eta_max);
+    declareProperty("eta_min", m_eta_min);
+    declareProperty("detEta_max", m_detEta_max);
+    declareProperty("detEta_min", m_detEta_min);
+    declareProperty("mass_max", m_mass_max);
+    declareProperty("mass_min", m_mass_min);
+    declareProperty("rapidity_max", m_rapidity_max);
+    declareProperty("rapidity_min", m_rapidity_min);
+    declareProperty("truthLabel", m_truthLabel);
+    declareProperty("useHadronConeExcl", m_useHadronConeExcl);
+    declareProperty("doJVF", m_doJVF);
+    declareProperty("pt_max_JVF", m_pt_max_JVF);
+    declareProperty("eta_max_JVF", m_eta_max_JVF);
+    declareProperty("JVFCut", m_JVFCut);
+    declareProperty("doJVT", m_doJVT);
+    declareProperty("noJVTVeto", m_noJVTVeto);
+    declareProperty("dofJVT", m_dofJVT);
+    declareProperty("dofJVTVeto", m_dofJVTVeto);
+    declareProperty("pt_max_JVT", m_pt_max_JVT);
+    declareProperty("eta_max_JVT", m_eta_max_JVT);
+    declareProperty("jvtUsedBefore", m_jvtUsedBefore);
+    declareProperty("haveTruthJets", m_haveTruthJets);
+    declareProperty("JVTCut", m_JVTCut);
+    declareProperty("WorkingPointJVT", m_WorkingPointJVT);
+    declareProperty("SFFileJVT", m_SFFileJVT);
+    declareProperty("outputSystNamesJVT", m_outputSystNamesJVT);
+    declareProperty("systValJVT", m_systValJVT);
+    declareProperty("systNameJVT", m_systNameJVT);
+    declareProperty("WorkingPointfJVT", m_WorkingPointfJVT);
+    declareProperty("SFFilefJVT", m_SFFilefJVT);
+    declareProperty("UseMuSFFormatfJVT", m_UseMuSFFormatfJVT);
+    declareProperty("outputSystNamesfJVT", m_outputSystNamesfJVT);
+    declareProperty("systValfJVT", m_systValfJVT);
+    declareProperty("systNamefJVT", m_systNamefJVT);
+    declareProperty("fjvtUsedBefore", m_fjvtUsedBefore);
+    declareProperty("doBTagCut", m_doBTagCut);
+    declareProperty("corrFileName", m_corrFileName);
+    declareProperty("jetAuthor", m_jetAuthor);
+    declareProperty("taggerName", m_taggerName);
+    declareProperty("operatingPt", m_operatingPt);
+    declareProperty("b_eta_max", m_b_eta_max);
+    declareProperty("b_pt_min", m_b_pt_min);
+    declareProperty("doHLTBTagCut", m_doHLTBTagCut);
+    declareProperty("HLTBTagTaggerName", m_HLTBTagTaggerName);
+    declareProperty("HLTBTagCutValue", m_HLTBTagCutValue);
+    declareProperty("requireHLTVtx", m_requireHLTVtx);
+    declareProperty("requireNoHLTVtx", m_requireNoHLTVtx);
+    declareProperty("passAuxDecorKeys", m_passAuxDecorKeys);
+    declareProperty("failAuxDecorKeys", m_failAuxDecorKeys);
+    declareProperty("singleJetTrigChains", m_singleJetTrigChains);
+    declareProperty("diJetTrigChains", m_diJetTrigChains);
+    declareProperty("removeDuplicates", m_removeDuplicates);
+    declareProperty("count_events_with_duplicates", m_count_events_with_duplicates);
+    declareProperty("sort", m_sort);
 }
 
-EL::StatusCode JetSelector :: setupJob (EL::Job& job)
-{
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
 
-  ANA_MSG_DEBUG( "Calling setupJob");
-
-  job.useXAOD ();
-  xAOD::Init( "JetSelector" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode JetSelector :: histInitialize ()
+StatusCode JetSelector :: histInitialize ()
 {
   // Here you do everything that needs to be done at the very
   // beginning on each worker node, e.g. create histograms and output
@@ -75,24 +128,24 @@ EL::StatusCode JetSelector :: histInitialize ()
   ANA_MSG_DEBUG( "Calling histInitialize");
   ANA_CHECK( xAH::Algorithm::algInitialize());
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: fileExecute ()
+StatusCode JetSelector :: fileExecute ()
 {
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
   ANA_MSG_DEBUG( "Calling fileExecute");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
+StatusCode JetSelector :: changeInput (bool /*firstFile*/)
 {
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
@@ -100,12 +153,12 @@ EL::StatusCode JetSelector :: changeInput (bool /*firstFile*/)
 
   ANA_MSG_DEBUG( "Calling changeInput");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: initialize ()
+StatusCode JetSelector :: initialize ()
 {
   // Here you do everything that you need to do after the first input
   // file has been connected and before the first event is processed,
@@ -118,25 +171,18 @@ EL::StatusCode JetSelector :: initialize ()
 
   ANA_MSG_DEBUG( "Calling initialize");
 
-  m_event = wk()->xaodEvent();
-  m_store = wk()->xaodStore();
 
   if ( m_useCutFlow ) {
 
-   // retrieve the file in which the cutflow hists are stored
-    //
-    TFile *file     = wk()->getOutputFile ("cutflow");
-
     // retrieve the event cutflows
-    //
-    m_cutflowHist  = (TH1D*)file->Get("cutflow");
-    m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
+    m_cutflowHist  = static_cast<TH1D*>(hist(m_cutFlowHistName));
+    m_cutflowHistW = static_cast<TH1D*>(hist(m_cutFlowHistName+"_weighted"));
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
     m_cutflowHistW->GetXaxis()->FindBin(m_name.c_str());
 
     // retrieve the object cutflow
     //
-    m_jet_cutflowHist_1 = (TH1D*)file->Get("cutflow_jets_1");
+    m_jet_cutflowHist_1 = static_cast<TH1D*>(hist(m_cutFlowHistName+"_jets_1"));
 
     m_jet_cutflow_all             = m_jet_cutflowHist_1->GetXaxis()->FindBin("all");
     m_jet_cutflow_ptmax_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
@@ -182,7 +228,7 @@ EL::StatusCode JetSelector :: initialize ()
 
   if ( m_inContainerName.empty() ) {
     ANA_MSG_ERROR( "InputContainer is empty!");
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   bool allOK(true);
@@ -205,7 +251,7 @@ EL::StatusCode JetSelector :: initialize ()
 
   if( !allOK ) {
     ANA_MSG_ERROR( "Requested operating point is not known to xAH. Arrow v Indian? " << m_operatingPt);
-    return EL::StatusCode::FAILURE;
+    return StatusCode::FAILURE;
   }
 
   if ( m_decorateSelectedObjects ) {
@@ -301,12 +347,10 @@ EL::StatusCode JetSelector :: initialize ()
 
   // Write output sys names
   if ( m_writeSystToMetadata ) {
-    TFile *fileMD = wk()->getOutputFile ("metadata");
-    HelperFunctions::writeSystematicsListHist(m_systListJVT, m_outputSystNamesJVT, fileMD);
-    HelperFunctions::writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT, fileMD);
+    ANA_CHECK(writeSystematicsListHist(m_systListJVT, m_outputSystNamesJVT));
+    ANA_CHECK(writeSystematicsListHist(m_systListfJVT, m_outputSystNamesfJVT));
   }
 
-  ANA_MSG_DEBUG( "Number of events in file: " << m_event->getEntries() );
 
   m_numEvent      = 0;
   m_numObject     = 0;
@@ -322,11 +366,11 @@ EL::StatusCode JetSelector :: initialize ()
   // **************************************
   if( !( m_singleJetTrigChains.empty() && m_diJetTrigChains.empty() ) ) {
 
-    if( !isPHYS() ) {
+    if( !m_isPHYS ) {
       // Grab the TrigDecTool from the ToolStore
       if(!m_trigDecTool_handle.isUserConfigured()){
         ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-        return EL::StatusCode::FAILURE;
+        return StatusCode::FAILURE;
       }
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
@@ -369,12 +413,12 @@ EL::StatusCode JetSelector :: initialize ()
 
   ANA_MSG_DEBUG( "JetSelector Interface succesfully initialized!" );
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: execute ()
+StatusCode JetSelector :: execute ()
 {
   // Here you do everything that needs to be done on every single
   // events, e.g. read input variables, apply cuts, and fill
@@ -385,7 +429,7 @@ EL::StatusCode JetSelector :: execute ()
 
   // retrieve event
   const xAOD::EventInfo* eventInfo(nullptr);
-  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+  ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
   // MC event weight
   float mcEvtWeight(1.0);
@@ -393,7 +437,7 @@ EL::StatusCode JetSelector :: execute ()
     static SG::AuxElement::Accessor< float > mcEvtWeightAcc("mcEventWeight");
     if ( ! mcEvtWeightAcc.isAvailable( *eventInfo ) ) {
       ANA_MSG_ERROR( "mcEventWeight is not available as decoration! Aborting" );
-      return EL::StatusCode::FAILURE;
+      return StatusCode::FAILURE;
     }
     mcEvtWeight = mcEvtWeightAcc( *eventInfo );
   }
@@ -437,14 +481,14 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( isMC() && (m_doJVT || m_doMCCleaning ) && m_haveTruthJets) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
+  if ( isMC() && (m_doJVT || m_doMCCleaning ) && m_haveTruthJets) ANA_CHECK( evtStore()->retrieve(truthJets, m_truthJetContainer) );
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
   if ( m_inputAlgo.empty() ) {
 
     // this will be the collection processed - no matter what!!
-    ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName) );
 
     // decorate inJets with truth info
     if ( isMC() && m_doJVT && m_haveTruthJets ) {
@@ -468,7 +512,7 @@ EL::StatusCode JetSelector :: execute ()
       if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
       if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > m_mcCleaningCut ) {
         ANA_MSG_DEBUG("Failed MC cleaning, skipping event");
-        wk()->skipEvent();
+        setFilterPassed(false);
       }
     }
 
@@ -478,7 +522,7 @@ EL::StatusCode JetSelector :: execute ()
 
     // get vector of string giving the names
     std::vector<std::string>* systNames(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(systNames, m_inputAlgo, 0, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(systNames, m_inputAlgo) );
 
     // loop over systematics
     auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
@@ -486,7 +530,7 @@ EL::StatusCode JetSelector :: execute ()
     bool passMCcleaning(true);
     for ( auto systName : *systNames ) {
 
-      ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName+systName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(inJets, m_inContainerName+systName) );
 
       // Check against pile-up only jets (if nominal do not pass the selection then throw the event for all systs too)
       if ( isMC() && m_doMCCleaning && m_haveTruthJets && systName.empty() ){
@@ -525,21 +569,20 @@ EL::StatusCode JetSelector :: execute ()
     }
 
     // save list of systs that should be considered down stream
-    ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgo));
+    ANA_CHECK( evtStore()->record( std::move(vecOutContainerNames), m_outputAlgo));
     //delete vecOutContainerNames;
 
   }
 
   // look what we have in TStore
-  if(msgLvl(MSG::VERBOSE)) m_store->print();
 
   if ( !pass ) {
-    wk()->skipEvent();
+    setFilterPassed(false);
   }
 
   ANA_MSG_DEBUG( "Leave Jet Selection... ");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 
 }
 
@@ -561,7 +604,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // if doing JVF or JVT get PV location
   if ( m_doJVF ) {
     const xAOD::VertexContainer* vertices(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(vertices, m_vertexContainerName) );
     m_pvLocation = HelperFunctions::getPrimaryVertexLocation( vertices, msg() );
   }
 
@@ -611,7 +654,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
         // if made it to the end with no duplicates, then we're done
         if(i_etaPair==int(etaPairs.size())-1)
-          allChecked = true; 
+          allChecked = true;
       }
     }
 
@@ -640,7 +683,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       }
       i_jet++;
     }
-      
+
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
@@ -730,7 +773,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 	  //
 	  if ( m_JVT_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
 	    ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
-	    return EL::StatusCode::FAILURE;
+	    return StatusCode::FAILURE;
 	  }
 	  ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
 
@@ -755,7 +798,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               }
               if ( m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in JVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             } else { // otherwise classic efficiency scale factor
               if ( syst_it.name().empty() ) {
@@ -763,7 +806,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               }
               if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in JVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             }
           }
@@ -791,7 +834,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // This will be the case when this executeSelection() function gets called for every syst varied input container,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( m_store->record( std::move(sysVariationNamesJVT), m_outputSystNamesJVT)); }
+    if ( !evtStore()->contains<std::vector<std::string> >(m_outputSystNamesJVT) ) { ANA_CHECK( evtStore()->record( std::move(sysVariationNamesJVT), m_outputSystNamesJVT)); }
   } else if ( !isMC() && m_doJVT ) {
     // Loop over selected jets and decorate with JVT passed status
     for ( auto jet : *(selectedJets) ) {
@@ -851,7 +894,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 	  //
 	  if ( m_fJVT_eff_tool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
 	    ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
-	    return EL::StatusCode::FAILURE;
+	    return StatusCode::FAILURE;
 	  }
 	  ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
 
@@ -870,12 +913,12 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
             if ( !m_dofJVTVeto && jet->auxdata<char>("passFJVT") != 1 ) {
               if ( m_fJVT_eff_tool_handle->getInefficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in fJVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             } else { // otherwise classic efficiency scale factor
               if ( m_fJVT_eff_tool_handle->getEfficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in fJVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+                return StatusCode::FAILURE;
               }
             }
           }
@@ -903,7 +946,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // This will be the case when this executeSelection() function gets called for every syst varied input container,
     // e.g. the different SC containers w/ calibration systematics upstream.
     //
-    if ( !m_store->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( m_store->record( std::move(sysVariationNamesfJVT), m_outputSystNamesfJVT)); }
+    if ( !evtStore()->contains<std::vector<std::string> >(m_outputSystNamesfJVT) ) { ANA_CHECK( evtStore()->record( std::move(sysVariationNamesfJVT), m_outputSystNamesfJVT)); }
   } else if ( !isMC() && m_dofJVT ) {
     // Loop over selected jets and decorate with fJVT passed status
     for ( auto jet : *(selectedJets) ) {
@@ -915,7 +958,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
   // add ConstDataVector to TStore
   if ( m_createSelectedContainer ) {
-    ANA_CHECK( m_store->record( selectedJets, outContainerName ));
+    ANA_CHECK( evtStore()->record( selectedJets, outContainerName ));
   }
 
   if ( count ) {
@@ -931,7 +974,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     // Decorator
     SG::AuxElement::Decorator< char > isCleanEventDecor( "cleanEvent_"+m_name );
     const xAOD::EventInfo* eventInfo(nullptr);
-    ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+    ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
     isCleanEventDecor(*eventInfo) = passEventClean;
   }
@@ -1011,7 +1054,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       ANA_MSG_DEBUG( "Doing di-jet trigger matching...");
 
       const xAOD::EventInfo* eventInfo(nullptr);
-      ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );
+      ANA_CHECK( evtStore()->retrieve(eventInfo, m_eventInfoContainerName) );
 
       typedef std::pair< std::pair<unsigned int,unsigned int>, char> dijet_trigmatch_pair;
       typedef std::multimap< std::string, dijet_trigmatch_pair >    dijet_trigmatch_pair_map;
@@ -1069,20 +1112,10 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 }
 
 
-EL::StatusCode JetSelector :: postExecute ()
-{
-  // Here you do everything that needs to be done after the main event
-  // processing.  This is typically very rare, particularly in user
-  // code.  It is mainly used in implementing the NTupleSvc.
-
-  ANA_MSG_DEBUG("Calling postExecute");
-
-  return EL::StatusCode::SUCCESS;
-}
 
 
 
-EL::StatusCode JetSelector :: finalize ()
+StatusCode JetSelector :: finalize ()
 {
   // This method is the mirror image of initialize(), meaning it gets
   // called after the last event has been processed on the worker node
@@ -1106,12 +1139,12 @@ EL::StatusCode JetSelector :: finalize ()
     ANA_MSG_INFO("removed duplicate " << m_inContainerName << " from " << m_count_events_with_duplicates << " events");
   }
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode JetSelector :: histFinalize ()
+StatusCode JetSelector :: histFinalize ()
 {
   // This method is the mirror image of histInitialize(), meaning it
   // gets called after the last event has been processed on the worker
@@ -1126,7 +1159,7 @@ EL::StatusCode JetSelector :: histFinalize ()
 
   ANA_MSG_DEBUG( "Calling histFinalize");
   ANA_CHECK( xAH::Algorithm::algFinalize());
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 int JetSelector :: PassCuts( const xAOD::Jet* jet ) {

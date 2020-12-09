@@ -1,6 +1,3 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
 
 #include <xAODJet/JetContainer.h>
 
@@ -9,25 +6,17 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 
 // this is needed to distribute the algorithm to the workers
-ClassImp(JetHistsAlgo)
 
-JetHistsAlgo :: JetHistsAlgo () :
-IParticleHistsAlgo("JetHistsAlgo")
+JetHistsAlgo :: JetHistsAlgo (const std::string& name, ISvcLocator *pSvcLocator) :
+IParticleHistsAlgo(name, pSvcLocator, "JetHistsAlgo")
 { }
 
-EL::StatusCode JetHistsAlgo :: setupJob (EL::Job& job)
-{
-  job.useXAOD();
-  xAOD::Init("JetHistsAlgo").ignore();
 
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode JetHistsAlgo::AddHists( std::string name ) {
+StatusCode JetHistsAlgo::AddHists( std::string name ) {
   return IParticleHistsAlgo::AddHists<JetHists>(name);
 }
 
-EL::StatusCode JetHistsAlgo :: execute ()
+StatusCode JetHistsAlgo :: execute ()
 {
   return IParticleHistsAlgo::execute<JetHists, xAOD::JetContainer>();
 }
