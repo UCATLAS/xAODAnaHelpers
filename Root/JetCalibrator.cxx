@@ -449,17 +449,7 @@ EL::StatusCode JetCalibrator :: execute ()
         static SG::AuxElement::Decorator<char> accIsBjet("IsBjet"); // char due to limitations of ROOT I/O, still treat it as a bool
         accIsBjet(*jet_itr) = isBjet;
 
-      }
-
-      if(m_useLargeRTruthLabelingTool){
-        static SG::AuxElement::ConstAccessor<int> JetTruthLabel (m_truthLabelName);
-
-        // largeR jet truth labelling
-        if(m_JetTruthLabelingTool_handle.isInitialized() && !JetTruthLabel.isAvailable(*jet_itr)) {
-          m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
-        }
-      }
-    
+      } 
     }
 
     //
@@ -477,6 +467,11 @@ EL::StatusCode JetCalibrator :: execute ()
     }
 
   }//for jets
+
+  if(isMC() && m_useLargeRTruthLabelingTool && m_JetTruthLabelingTool_handle.isInitialized()){
+    // largeR jet truth labelling
+    m_JetTruthLabelingTool_handle->modify(*(calibJetsSC.first));
+  }
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
   auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
