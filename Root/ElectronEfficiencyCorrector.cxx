@@ -783,7 +783,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
         // obtain efficiency SF's for Reco
         //
         double recoEffSF(-1.0); // tool wants a double
-        C::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF );
+        CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF );
         if ( status == CP::CorrectionCode::Error ) {
           ANA_MSG_ERROR( "Problem in Reco getEfficiencyScaleFactor Tool");
           return EL::StatusCode::FAILURE;
