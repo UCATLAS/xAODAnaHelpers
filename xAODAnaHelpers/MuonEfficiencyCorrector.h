@@ -51,6 +51,8 @@ public:
 
   /// @brief list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed
   std::string   m_MuTrigLegs = "HLT_mu26_imedium";
+  /// @brief Get per-muon trigger SF (default: true) [if false it will take into account combinatorics using all muons from the input muon container]
+  bool          m_usePerMuonTriggerSFs = true;
 
   // TTVA efficiency SF
   std::string   m_WorkingPointTTVA = "TTVA";

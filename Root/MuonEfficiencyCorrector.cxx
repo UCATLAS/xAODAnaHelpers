@@ -732,12 +732,24 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
         }
         ANA_MSG_DEBUG( "Successfully applied systematic " << syst_it.name() << " for trigger " << trig_it);
 
-        // and now apply trigger efficiency SF!
+        //------------------------------
+        // Get trigger efficiency SF(s)
+        //------------------------------
+        ANA_MSG_DEBUG( "Applying trigger efficiency SF and MC efficiency" );
+
+        ANA_MSG_DEBUG( "===>>>");
+        ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+        ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
+        ANA_MSG_DEBUG( "Trigger MC efficiency decoration: " << effName );
+
+        // ugly ass hardcoding
         //
+        std::string full_scan_chain = "HLT_mu8noL1";
+
         unsigned int idx(0);
         for ( auto mu_itr : *(inputMuons) ) {
 
-           ANA_MSG_DEBUG( "Applying trigger efficiency SF and MC efficiency" );
+           ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
 
            // Pass a container with only the muon in question to the tool
            // (use a view container to be light weight)
@@ -757,10 +769,6 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
              sfVecTrig( *mu_itr ) = std::vector<float>();
            }
 
-           // ugly ass hardcoding
-           //
-           std::string full_scan_chain = "HLT_mu8noL1";
-
            double triggerMCEff(-1.0); // tool wants a double
            if ( m_muTrigSF_tool->getTriggerEfficiency( *mu_itr, triggerMCEff, trig_it, !isMC() ) != CP::CorrectionCode::Ok ) {
              if ( m_AllowZeroSF ) {
@@ -775,8 +783,9 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            //
            effMC( *mu_itr ).push_back(triggerMCEff);
 
-           // retrieve MC efficiency for full scan chain
-           //
+           ANA_MSG_DEBUG( "Trigger MC efficiency:");
+           ANA_MSG_DEBUG( "\t " << triggerMCEff << " (from getTriggerEfficiency())" );
+
            double triggerDataEff(-1.0); // tool wants a double
            if ( trig_it == full_scan_chain ) {
              if ( m_muTrigSF_tool->getTriggerEfficiency( *mu_itr, triggerDataEff, trig_it, isMC() ) != CP::CorrectionCode::Ok ) {
@@ -790,9 +799,45 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
              }
            }
 
+	   // Get per-muon trigger efficiency SFs
+	   if(m_usePerMuonTriggerSFs){
+             double triggerEffSF(1.0); // tool wants a double
+             if ( trig_it != full_scan_chain ) {
+               if ( m_muTrigSF_tool->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, trig_it ) != CP::CorrectionCode::Ok ) {
+                 if ( m_AllowZeroSF ) {
+                   ANA_MSG_WARNING( "Problem in getTriggerScaleFactor - trigger: " << trig_it);
+                   triggerEffSF = -1.0;
+                 } else {
+                   ANA_MSG_ERROR( "Could not get trigger efficiency scale factor - trigger: " << trig_it);
+                   return EL::StatusCode::FAILURE;
+                 }
+               }
+             } else {
+               if ( triggerMCEff > 0.0 ) {
+                 triggerEffSF = triggerDataEff / triggerMCEff;
+               }
+             }
+
+             // Add it to decoration vector
+             //
+             sfVecTrig( *mu_itr ).push_back(triggerEffSF);
+
+             ANA_MSG_DEBUG( "Trigger efficiency SF:");
+             ANA_MSG_DEBUG( "\t " << triggerEffSF << " (from getTriggerScaleFactor())" );
+	   }
+
+           ANA_MSG_DEBUG( "--------------------------------------");
+
+           ++idx;
+
+        } // close muon loop
+	
+	// Get global trigger efficiency SF (using all muons)
+	if(!m_usePerMuonTriggerSFs){
+           // Get SF
            double triggerEffSF(1.0); // tool wants a double
            if ( trig_it != full_scan_chain ) {
-             if ( m_muTrigSF_tool->getTriggerScaleFactor( *mySingleMuonCont.asDataVector(), triggerEffSF, trig_it ) != CP::CorrectionCode::Ok ) {
+             if ( m_muTrigSF_tool->getTriggerScaleFactor( *inputMuons, triggerEffSF, trig_it ) != CP::CorrectionCode::Ok ) {
                if ( m_AllowZeroSF ) {
                  ANA_MSG_WARNING( "Problem in getTriggerScaleFactor - trigger: " << trig_it);
                  triggerEffSF = -1.0;
@@ -801,31 +846,23 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
                  return EL::StatusCode::FAILURE;
                }
              }
-           } else {
-             if ( triggerMCEff > 0.0 ) {
-               triggerEffSF = triggerDataEff / triggerMCEff;
-             }
+           } else { // if needed can be implemented
+             ANA_MSG_ERROR( "Could not get event-level trigger efficiency scale factor - trigger: " << trig_it);
+             return EL::StatusCode::FAILURE;
            }
-
-           // Add it to decoration vector
-           //
-           sfVecTrig( *mu_itr ).push_back(triggerEffSF);
-
-
-           ANA_MSG_DEBUG( "===>>>");
-           ANA_MSG_DEBUG( "Muon " << idx << ", pt = " << mu_itr->pt()*1e-3 << " GeV " );
-           ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
-           ANA_MSG_DEBUG( "Trigger MC efficiency decoration: " << effName );
-           ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
            ANA_MSG_DEBUG( "Trigger efficiency SF:");
            ANA_MSG_DEBUG( "\t " << triggerEffSF << " (from getTriggerScaleFactor())" );
-           ANA_MSG_DEBUG( "Trigger MC efficiency:");
-           ANA_MSG_DEBUG( "\t " << triggerDataEff << " (from getTriggerEfficiency())" );
-           ANA_MSG_DEBUG( "--------------------------------------");
+           // Decorate muons, all with the same event-level SF
+           for ( auto mu_itr : *(inputMuons) ) {// Loop over muons
+             SG::AuxElement::Decorator< std::vector<float> > sfVecTrig( sfName );
+             if ( !sfVecTrig.isAvailable( *mu_itr ) ) {
+               sfVecTrig( *mu_itr ) = std::vector<float>();
+             }
+             // Add it to decoration vector
+             sfVecTrig( *mu_itr ).push_back(triggerEffSF);
+	   }
+	}
 
-           ++idx;
-
-        } // close muon loop
       }  // close loop on trigger efficiency SF systematics
 
       // Add list of systematics names to TStore

@@ -345,6 +345,7 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
       }
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("TriggerKey", "Eff_" + m_WorkingPointTrig));
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrelationModel",m_correlationModel));
+      ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("OutputLevel",msg().level()));
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->initialize());
     }
 
@@ -760,49 +761,49 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       unsigned int idx(0);
       for ( auto el_itr : *(inputElectrons) ) {
 
-    	 ANA_MSG_DEBUG( "Applying Reco efficiency SF" );
+        ANA_MSG_DEBUG( "Applying Reco efficiency SF" );
 
-       // NB: derivations might remove CaloCluster for low pt electrons: add a safety check!
-       if ( !el_itr->caloCluster() ) {
-         ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
-         continue;
-       }
+        // NB: derivations might remove CaloCluster for low pt electrons: add a safety check!
+        if ( !el_itr->caloCluster() ) {
+          ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
+          continue;
+        }
 
-    	 //
-    	 // obtain Reco efficiency SF as a float (to be stored away separately)
-    	 //
-    	 //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
-    	 //
-    	 SG::AuxElement::Decorator< std::vector<float> > sfVecReco ( sfName  );
-    	 if ( !sfVecReco.isAvailable( *el_itr )  ) {
-    	   sfVecReco ( *el_itr ) = std::vector<float>();
-    	 }
+        //
+        // obtain Reco efficiency SF as a float (to be stored away separately)
+        //
+        //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
+        //
+        SG::AuxElement::Decorator< std::vector<float> > sfVecReco ( sfName  );
+        if ( !sfVecReco.isAvailable( *el_itr )  ) {
+          sfVecReco ( *el_itr ) = std::vector<float>();
+        }
 
-    	 //
-    	 // obtain efficiency SF's for Reco
-    	 //
-    	 double recoEffSF(-1.0); // tool wants a double
-       CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF );
-    	 if ( status == CP::CorrectionCode::Error ) {
-    	   ANA_MSG_ERROR( "Problem in Reco getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
-    	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
-         ANA_MSG_DEBUG( "Electron of of Reco efficiency validity range");
-       }
-    	 //
-    	 // Add it to decoration vector
-    	 //
-       sfVecReco( *el_itr ).push_back( recoEffSF );
+        //
+        // obtain efficiency SF's for Reco
+        //
+        double recoEffSF(-1.0); // tool wants a double
+        C::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Reco->getEfficiencyScaleFactor( *el_itr, recoEffSF );
+        if ( status == CP::CorrectionCode::Error ) {
+          ANA_MSG_ERROR( "Problem in Reco getEfficiencyScaleFactor Tool");
+          return EL::StatusCode::FAILURE;
+        } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
+          ANA_MSG_DEBUG( "Electron of of Reco efficiency validity range");
+        }
+        //
+        // Add it to decoration vector
+        //
+        sfVecReco( *el_itr ).push_back( recoEffSF );
 
-       ANA_MSG_DEBUG( "===>>>");
-       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
-       ANA_MSG_DEBUG( "Reco SF decoration: " << sfName );
-       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-       ANA_MSG_DEBUG( "Reco efficiency SF:");
-       ANA_MSG_DEBUG( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
-       ANA_MSG_DEBUG( "--------------------------------------");
+        ANA_MSG_DEBUG( "===>>>");
+        ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
+        ANA_MSG_DEBUG( "Reco SF decoration: " << sfName );
+        ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+        ANA_MSG_DEBUG( "Reco efficiency SF:");
+        ANA_MSG_DEBUG( "\t " << recoEffSF << " (from getEfficiencyScaleFactor())" );
+        ANA_MSG_DEBUG( "--------------------------------------");
 
-    	 ++idx;
+        ++idx;
 
       } // close electron loop
 
@@ -863,18 +864,30 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
       }
       ANA_MSG_DEBUG( "Successfully applied systematics: " << m_asgElEffCorrTool_elSF_TrigMCEff->appliedSystematics().name() );
 
+      //------------------------------
+      // Get trigger efficiency SF(s)
+      //------------------------------
+      ANA_MSG_DEBUG( "Applying trigger efficiency SF and MC efficiency" );
+
+      ANA_MSG_DEBUG( "===>>>");
+      ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
+      ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
+      ANA_MSG_DEBUG( "Trigger MC efficiency decoration: " << effName );
+
       // and now apply trigger efficiency SF!
       //
       unsigned int idx(0);
+      double       totalIneff = 1;
+      double       totalIneffScaled = 1;
       for ( auto el_itr : *(inputElectrons) ) {
 
-    	 ANA_MSG_DEBUG( "Applying Trigger efficiency SF" );
+         ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
 
-       // NB: derivations might remove CaloCluster and tracks for low pt electrons: add a safety check!
-       if ( !el_itr->caloCluster() ) {
-         ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
-         continue;
-       }
+         // NB: derivations might remove CaloCluster and tracks for low pt electrons: add a safety check!
+         if ( !el_itr->caloCluster() ) {
+           ANA_MSG_DEBUG( "Apply SF: skipping electron " << idx << ", it has no caloCluster info");
+           continue;
+         }
 
     	 //
     	 // obtain Trigger efficiency SF as a float (to be stored away separately)
@@ -886,60 +899,76 @@ EL::StatusCode ElectronEfficiencyCorrector :: executeSF ( const xAOD::ElectronCo
     	   sfVecTrig ( *el_itr ) = std::vector<float>();
     	 }
 
-       //
-       // obtain Trigger MC efficiency as a float (to be stored away separately)
-       //
-       //  If efficiency decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
-       //
-       SG::AuxElement::Decorator< std::vector<float> > effVecTrig ( effName );
-       if ( !effVecTrig.isAvailable( *el_itr )  ) {
-         effVecTrig ( *el_itr ) = std::vector<float>();
-       }
+         //
+         // obtain Trigger MC efficiency as a float (to be stored away separately)
+         //
+         //  If efficiency decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* electron)
+         //
+         SG::AuxElement::Decorator< std::vector<float> > effVecTrig ( effName );
+         if ( !effVecTrig.isAvailable( *el_itr )  ) {
+           effVecTrig ( *el_itr ) = std::vector<float>();
+         }
 
     	 //
     	 // obtain efficiency SF for Trig
     	 //
     	 double trigEffSF(-1.0); // tool wants a double
-       CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF );
+         CP::CorrectionCode::ErrorCode status = m_asgElEffCorrTool_elSF_Trig->getEfficiencyScaleFactor( *el_itr, trigEffSF );
     	 if ( status == CP::CorrectionCode::Error ) {
     	   ANA_MSG_ERROR( "Problem in Trig getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
+           return EL::StatusCode::FAILURE;
     	 } else if ( status == CP::CorrectionCode::OutOfValidityRange ) {
-         ANA_MSG_DEBUG( "Electron of of Trig efficiency validity range");
-       }
+           ANA_MSG_DEBUG( "Electron of of Trig efficiency validity range");
+         }
+         if(m_usePerElectronTriggerSFs){
+           // Add them to decoration vectors
+           sfVecTrig( *el_itr ).push_back( trigEffSF );
+           ANA_MSG_DEBUG( "Trigger efficiency SF:");
+           ANA_MSG_DEBUG( "\t " << trigEffSF << "(from getEfficiencyScaleFactor())" );
+         }
 
-       //
-       // obtain Trig MC efficiency
-       //
-       double trigMCEff(-1.0); // tool wants a double
-       CP::CorrectionCode::ErrorCode statusEff = m_asgElEffCorrTool_elSF_TrigMCEff->getEfficiencyScaleFactor( *el_itr, trigMCEff );
-       if ( statusEff == CP::CorrectionCode::Error ) {
-         ANA_MSG_ERROR( "Problem in TrigMCEff getEfficiencyScaleFactor Tool");
-         return EL::StatusCode::FAILURE;
-       } else if ( statusEff == CP::CorrectionCode::OutOfValidityRange ) {
-         ANA_MSG_DEBUG( "Electron of of TrigMCEff efficiency validity range");
-       }
+         //
+         // obtain Trig MC efficiency
+         //
+         double trigMCEff(-1.0); // tool wants a double
+         CP::CorrectionCode::ErrorCode statusEff = m_asgElEffCorrTool_elSF_TrigMCEff->getEfficiencyScaleFactor( *el_itr, trigMCEff );
+         if ( statusEff == CP::CorrectionCode::Error ) {
+           ANA_MSG_ERROR( "Problem in TrigMCEff getEfficiencyScaleFactor Tool");
+           return EL::StatusCode::FAILURE;
+         } else if ( statusEff == CP::CorrectionCode::OutOfValidityRange ) {
+           ANA_MSG_DEBUG( "Electron of of TrigMCEff efficiency validity range");
+         }
+         // Add them to decoration vectors
+         effVecTrig( *el_itr ).push_back( trigMCEff );
 
-    	 //
-    	 // Add them to decoration vectors
-    	 //
-       sfVecTrig( *el_itr ).push_back( trigEffSF );
-       effVecTrig( *el_itr ).push_back( trigMCEff );
+         ANA_MSG_DEBUG( "Trigger MC efficiency:");
+         ANA_MSG_DEBUG( "\t " << trigMCEff << "(from getEfficiencyScaleFactor())" );
 
-       ANA_MSG_DEBUG( "===>>>");
-       ANA_MSG_DEBUG( "Electron " << idx << ", pt = " << el_itr->pt() * 1e-3 << " GeV" );
-       ANA_MSG_DEBUG( "Trigger efficiency SF decoration: " << sfName );
-       ANA_MSG_DEBUG( "Trigger efficiency decoration: " << effName );
-       ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
-       ANA_MSG_DEBUG( "Trigger efficiency SF:");
-       ANA_MSG_DEBUG( "\t " << trigEffSF << "(from getEfficiencyScaleFactor())" );
-       ANA_MSG_DEBUG( "Trigger efficiency:");
-       ANA_MSG_DEBUG( "\t " << trigMCEff << "(from getEfficiencyScaleFactor())" );
-       ANA_MSG_DEBUG( "--------------------------------------");
+         ANA_MSG_DEBUG( "--------------------------------------");
+
+         // Needed for global trigger efficiency SF
+         if(!m_usePerElectronTriggerSFs){
+           totalIneff       *= (1 - trigMCEff);
+           totalIneffScaled *= (1 - trigMCEff * trigEffSF);
+	 }
 
     	 ++idx;
 
       } // close electron loop
+
+      // obtain global trigger efficiency SF (using all electrons)
+      if(!m_usePerElectronTriggerSFs){
+        double trigEffSF = (1 - totalIneffScaled) / (1 - totalIneff);
+        // Decorate electrons, all with the same global trigger SF
+        for ( auto el_itr : *(inputElectrons) ) {
+          SG::AuxElement::Decorator< std::vector<float> > sfVecTrig ( sfName  );
+          if ( !sfVecTrig.isAvailable( *el_itr )  ) {
+            sfVecTrig ( *el_itr ) = std::vector<float>();
+          }
+          // Add them to decoration vectors
+          sfVecTrig( *el_itr ).push_back( trigEffSF);
+        }
+      }
 
     }  // close loop on Trig efficiency SF systematics
 
