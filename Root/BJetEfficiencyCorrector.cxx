@@ -424,7 +424,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	    }
 
 	  // configure tool with syst variation
-	  if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok)
+	  if (m_BJetEffSFTool_handle->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS)
 	    {
 	      ANA_MSG_ERROR( "Failed to configure BJetEfficiencyCorrections for systematic " << syst_it.name());
 	      return EL::StatusCode::FAILURE;

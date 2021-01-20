@@ -3,6 +3,7 @@
 #include <iostream>
 #include <exception> // std::domain_error
 #include "xAODTruth/TruthEventContainer.h"
+#include "xAODBTagging/BTaggingUtilities.h"
 
 using namespace xAH;
 
@@ -2881,7 +2882,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     const xAOD::BTagging * myBTag(0);
 
     if(m_infoSwitch.m_flavorTag){
-      myBTag = jet->btagging();
+      myBTag = xAOD::BTaggingUtilities::getBTagging(*jet);
     }else if(m_infoSwitch.m_flavorTagHLT){
       myBTag = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }

@@ -205,7 +205,7 @@ class BasicEventSelection : public xAH::Algorithm
     asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle          {"CP::PileupReweightingTool/Pileup"                                            }; //!
     asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle         {"TrigConf::xAODConfigTool/xAODConfigTool"                        , this}; //!
     asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle          {"Trig::TrigDecisionTool/TrigDecisionTool"                                     }; //!
-    asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", this}; //!
+    //asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", this}; //!
 
     int m_eventCounter;     //!
 

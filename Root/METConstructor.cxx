@@ -491,7 +491,7 @@ EL::StatusCode METConstructor :: execute ()
      // assert(   m_metSyst_handle->applySystematicVariation(systSet) );
      if (isMC()) {
        CP::SystematicSet systSet({systName}); // to pass from SystematicVariation to SystematicSet
-       if( m_metSyst_handle->applySystematicVariation(systSet) != CP::SystematicCode::Ok) {
+       if( m_metSyst_handle->applySystematicVariation(systSet) != EL::StatusCode::SUCCESS) {
          ANA_MSG_ERROR("not able to applySystematicVariation ");
        }
      }

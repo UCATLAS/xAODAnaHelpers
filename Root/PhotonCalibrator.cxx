@@ -342,7 +342,7 @@ EL::StatusCode PhotonCalibrator :: execute ()
     //
     ANA_MSG_DEBUG("syst_it.name()=" << syst_it.name());
 
-    if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_EgammaCalibrationAndSmearingTool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR( "Failed to configure EgammaCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }

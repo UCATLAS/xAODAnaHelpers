@@ -195,7 +195,6 @@ EL::StatusCode MuonCalibrator :: initialize ()
 
   // Get a list of recommended systematics for this tool
   //
-  //const CP::SystematicSet recSyst = CP::SystematicSet();
   const CP::SystematicSet& recSyst = m_muonCalibrationTool_handle->recommendedSystematics();
 
   ANA_MSG_INFO(" Initializing Muon Calibrator Systematics :");
@@ -275,7 +274,7 @@ EL::StatusCode MuonCalibrator :: execute ()
 
     // apply syst
     //
-    if ( m_muonCalibrationTool_handle->applySystematicVariation(syst_it) != CP::SystematicCode::Ok ) {
+    if ( m_muonCalibrationTool_handle->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR( "Failed to configure MuonCalibrationAndSmearingTool for systematic " << syst_it.name());
       return EL::StatusCode::FAILURE;
     }

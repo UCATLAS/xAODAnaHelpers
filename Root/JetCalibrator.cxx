@@ -199,10 +199,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
-  // retrieve EventInfo to get sample information
-  const xAOD::EventInfo* ei(nullptr);
-  ANA_CHECK(HelperFunctions::retrieve(ei, m_eventInfoContainerName, m_event, m_store, msg()));
-
   // initialize jet calibration tool
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JetCalibrationTool_handle, JetCalibrationTool));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("JetCollection",m_jetAlgo));
@@ -331,7 +327,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     if ( !m_systList.empty() ) {
       m_runSysts = true;
       // setup uncertainity tool for systematic evaluation
-      if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != CP::SystematicCode::Ok ) {
+      if ( m_JetUncertaintiesTool_handle->applySystematicVariation(m_systList.at(0)) != EL::StatusCode::SUCCESS ) {
         ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
         return EL::StatusCode::FAILURE;
       }
@@ -344,6 +340,7 @@ EL::StatusCode JetCalibrator :: initialize ()
   // initialize and configure the JVT correction tool
 
   if( m_redoJVT ){
+    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JetContainer", m_inContainerName));
     ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
 
     if( ! m_JvtAuxName.empty() ){
@@ -406,8 +403,6 @@ EL::StatusCode JetCalibrator :: execute ()
   //
   // Perform nominal calibration
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
-  // ConstDataVector<xAOD::JetContainer>* calibJetsCDV = new ConstDataVector<xAOD::JetContainer>(SG::VIEW_ELEMENTS);
-  // calibJetsCDV->reserve( calibJetsSC.first->size() );
 
   if ( m_addGhostMuonsToJets ) {
     ANA_MSG_VERBOSE("Run muon-to-jet ghost association");
@@ -462,21 +457,21 @@ EL::StatusCode JetCalibrator :: execute ()
     
     }
 
-    //
-    // the calibration
-    // if ( m_JetCalibrationTool_handle->applyCorrection( *jet_itr ) == CP::CorrectionCode::Error ) {
-    //   ANA_MSG_ERROR( "JetCalibration tool reported a CP::CorrectionCode::Error");
-    //   ANA_MSG_ERROR( m_name );
-    //   return StatusCode::FAILURE;
-    // }
-
-    // if(m_doJetTileCorr && !isMC()){
-    //   if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
-    //     ANA_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
-    //   }
-    // }
-
   }//for jets
+
+  // Apply the calibration
+  if ( m_JetCalibrationTool_handle->applyCalibration( *(calibJetsSC.first) ) == EL::StatusCode::FAILURE ) {
+    ANA_MSG_ERROR( "JetCalibration tool reported a EL::StatusCode::FAILURE");
+    ANA_MSG_ERROR( m_name );
+    return StatusCode::FAILURE;
+  }
+
+  // Need to be adapted to use full jet container (once tool works in R22)
+  // if(m_doJetTileCorr && !isMC()){
+  //   if( m_JetTileCorrectionTool_handle->applyCorrection(*jet_itr) == CP::CorrectionCode::Error ){
+  //     ANA_MSG_ERROR( "JetTileCorrection tool reported a CP::CorrectionCode::Error");
+  //   }
+  // }
 
   // loop over available systematics - remember syst == "Nominal" --> baseline
   auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
@@ -585,7 +580,7 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
   if ( m_runSysts ) {
     // Jet Uncertainty Systematic
     ANA_MSG_DEBUG("Configure for systematic variation : " << thisSyst.name());
-    if ( (*jetUncTool)->applySystematicVariation(thisSyst) != CP::SystematicCode::Ok ) {
+    if ( (*jetUncTool)->applySystematicVariation(thisSyst) != EL::StatusCode::SUCCESS ) {
       ANA_MSG_ERROR( "Cannot configure JetUncertaintiesTool for systematic " << m_systName);
       return EL::StatusCode::FAILURE;
     }
