@@ -3,8 +3,8 @@
 # Set the minimum required CMake version.
 cmake_minimum_required( VERSION 3.4 FATAL_ERROR )
 
-# Look for any $RELEASE_TYPE-21.2.X release:
-find_package( $RELEASE_TYPE 21.2 REQUIRED )
+# Look for any $RELEASE_TYPE-22.2.X release:
+find_package( $RELEASE_TYPE 22.2 REQUIRED )
 
 # Set up the usage of CTest:
 atlas_ctest_setup()
