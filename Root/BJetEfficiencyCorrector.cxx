@@ -18,6 +18,8 @@
 
 #include <SampleHandler/MetaFields.h>
 
+#include "PathResolver/PathResolver.h"
+
 //EDM
 #include "xAODJet/JetAuxContainer.h"
 
@@ -193,6 +195,13 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
+    if(m_setMapIndex){
+      // pythia8, sherpa 2.2.1, herwig7, aMC@NLO+Pythia8
+      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations","410470;410250;410558;410464"));
+      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations","410470;410250;410558;410464"));
+      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations","410470;410250;410558;410464"));
+      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations","410470;410250;410558;410464"));
+    }
 
     if(isMC() && !m_EfficiencyCalibration.empty())
       {
@@ -297,6 +306,37 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     HelperFunctions::writeSystematicsListHist(m_systList, m_outputSystName, fileMD);
   }
 
+  // Get DSID to Generator map (if needed)
+  if (m_setMapIndex){
+    ANA_MSG_DEBUG("Fill DSID->Generator map");
+    // open input file
+    std::ifstream file;
+    std::string fn = PathResolverFindCalibFile(m_DSIDtoGenerator_filename);
+    //file.open(gSystem->ExpandPathName(m_DSIDtoGenerator_filename.c_str()));
+    file.open(fn.c_str());
+    if (!file.good()) {
+      ANA_MSG_ERROR("Can't open file " << m_DSIDtoGenerator_filename.c_str());
+      return EL::StatusCode::FAILURE;
+    }
+    // process file
+    while (!file.eof()) {
+      // read line
+      std::string lineString;
+      getline(file, lineString);
+      // store in map
+      std::stringstream line(lineString);
+      int dsid;
+      std::string gen;
+      line >> dsid >> gen;
+      if (m_DSIDtoGenerator.count(dsid) != 0) {
+        ANA_MSG_WARNING("Skipping duplicated DSID for line " << lineString.c_str());
+        continue;
+      }
+      m_DSIDtoGenerator[dsid] = gen;
+    }
+    file.close();
+  }
+
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -349,7 +389,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
 
 EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
-								      const xAOD::EventInfo* /*eventInfo*/,
+								      const xAOD::EventInfo* eventInfo,
 								      bool doNominal)
 {
   ANA_MSG_DEBUG("Applying BJet Cuts and Efficiency Correction (when applicable...) ");
@@ -410,7 +450,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   // get the scale factors for all jets
   //
   if(m_getScaleFactors)
-    { // loop over available systematics
+    { 
+      // loop over available systematics
       for(const CP::SystematicSet& syst_it : m_systList)
 	{
 	  //  If not nominal input jet collection, dont calculate systematics
@@ -433,6 +474,15 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 	  for( const xAOD::Jet* jet_itr : *(inJets))
 	    {
+              if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
+                auto DSID = eventInfo->mcChannelNumber();
+                ANA_MSG_DEBUG( "DSID = " << DSID ); // Temporary
+		auto MCindex   = getMCIndex(DSID);
+                ANA_MSG_DEBUG( "MCIndex = " << MCindex ); // Temporary
+		auto FlavLabel = getFlavorLabel(*jet_itr);
+                ANA_MSG_DEBUG( "FlavLabel = " << FlavLabel); // Temporary
+                ANA_CHECK( m_BJetEffSFTool_handle->setMapIndex(FlavLabel,MCindex));
+              }
 	      // get the scale factor
 	      float SF(-1.0);
 	      float inefficiencySF(-1.0); // only for continuous b-tagging
@@ -532,3 +582,58 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 
   return EL::StatusCode::SUCCESS;
 }
+
+unsigned int BJetEfficiencyCorrector :: getMCIndex (int dsid)
+{
+  ANA_MSG_DEBUG( "Calling getMCIndex");
+
+  auto name = m_DSIDtoGenerator[dsid];
+
+  // Pythia 8
+  if ((name.find("Pythia8_") != std::string::npos) ||
+      (name.find("Pythia8B_") != std::string::npos) ||
+      (name.find("MGPy8EG_") != std::string::npos) ||
+      (name.find("MadGraphPythia8_") != std::string::npos) ||
+      (name.find("MadGraphPythia8EvtGen_") != std::string::npos) ||
+      (name.find("PowhegPythia8EvtGen_CT10_") != std::string::npos) ||
+      (name.find("PowhegPythia8EvtGen_") != std::string::npos) ||
+      (name.find("Pythia8EvtGen_") != std::string::npos) ||
+      (name.find("Pythia8EG_") != std::string::npos) ||
+      (name.find("PwPy8EG_CT10_") != std::string::npos) ||
+      (name.find("PowhegPythia8_") != std::string::npos) ||
+      (name.find("PowhegPythia8EG_") != std::string::npos) ||
+      (name.find("PhPy8EG_CT10_") != std::string::npos) ||
+      (name.find("Py8EG_") != std::string::npos) ||
+      (name.find("Py8") != std::string::npos)) { return 0; }
+
+  // Sherpa 2.2
+  if ((name.find("Sh_22") != std::string::npos) ||
+      (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
+      (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return 1; }
+
+  // Herwig 7
+  if ( (name.find("Herwig") != std::string::npos) ){ return 2; }
+
+  // aMC@NLO+Pythia8
+  if ( (name.find("aMC@NLO+Pythia8") != std::string::npos) ){ return 3; }
+
+  // for all other samples, use the default map (pythia8).
+  return 0;
+}
+
+std::string BJetEfficiencyCorrector :: getFlavorLabel (const xAOD::Jet &jet) const
+{
+  int label;
+  bool status = jet.getAttribute<int>( "HadronConeExclTruthLabelID", label );
+  ANA_MSG_DEBUG( "HadronConeExclTruthLabelID = " << label ); // Temporary
+  if(status){
+    if ((label == 5) || (label == -5)){          return "B";
+    } else if ((label == 4) || (label == -4)){   return "C";
+    } else if ((label == 15) || (label == -15)){ return "T";
+    } else { return "Light";}
+  } else {
+    ANA_MSG_WARNING( "HadronConeExclTruthLabelID was not found, using Light as jet flavour for retrieving b-tagging SF." );
+    return "Light";
+  }
+}
+

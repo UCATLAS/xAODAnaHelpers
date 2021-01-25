@@ -63,6 +63,10 @@ public:
   /// @brief The decoration key written to passing objects
   std::string m_decor = "BTag";
 
+  /// @brief Select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
+  bool m_setMapIndex = false;
+  std::string m_DSIDtoGenerator_filename = "xAODAnaHelpers/DSIDtoGenerator.txt";
+
   /// @brief upper pt threshold of b-jet in OR in unit of GeV, negative value means no pt threshold
   float m_orBJetPtUpperThres=-1;
 
@@ -76,6 +80,8 @@ private:
   std::string m_decorWeight = ""; // only for continuous b-tagging
   std::string m_decorQuantile = ""; // only for continuous b-tagging
   std::string m_decorInefficiencySF = ""; // only for continuous b-tagging
+
+  std::map<int,std::string> m_DSIDtoGenerator; //!
 
   std::vector<std::string> m_inputAlgoList; //!
 
@@ -108,6 +114,10 @@ public:
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
+
+  // Functions needed only if m_setMapIndex is true
+  unsigned int getMCIndex (int dsid);
+  std::string getFlavorLabel (const xAOD::Jet &jet) const;
 
   /// @cond
   // this is needed to distribute the algorithm to the workers
