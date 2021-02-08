@@ -418,6 +418,7 @@ namespace HelperClasses {
         m_kinematic      kinematic      exact
         m_trigger        trigger        exact
         m_substructure   substructure   exact
+        m_ntrimsubjets   ntrimsubjets   exact
         m_bosonCount     bosonCount     exact
         m_VTags          VTags          exact
         m_rapidity       rapidity       exact
@@ -487,6 +488,7 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_substructure;
+    bool m_ntrimsubjets;
     bool m_bosonCount;
     bool m_VTags;
     bool m_rapidity;
