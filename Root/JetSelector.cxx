@@ -696,8 +696,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Do it only if a tool with *this* name hasn't already been used
     //
-    if(false){
-    // if ( m_JVT_tool_handle.isInitialized() && !m_jvtUsedBefore) {
+    if ( m_JVT_tool_handle.isInitialized() && !m_jvtUsedBefore) {
       //
       //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
       //
@@ -1252,7 +1251,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
         result = true;
       }
     } else {
-      // result = m_JVT_tool_handle->passesJvtCut(*jet);
+      result = m_JVT_tool_handle->passesJvtCut(*jet);
     }
 
     if(result) ANA_MSG_DEBUG(" ... jet passes Jvt cut");
