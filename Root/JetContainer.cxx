@@ -66,6 +66,9 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_clean_passLooseBadLLP        =new std::vector<int>();
     }
   }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    m_Timing = new std::vector<float>();
+  }
 
   // energy
   if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
@@ -489,6 +492,9 @@ JetContainer::~JetContainer()
       delete m_clean_passLooseBadLLP;
     }
   }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    delete m_Timing;
+  }
 
   // energy
   if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
@@ -903,6 +909,9 @@ void JetContainer::setTree(TTree *tree)
         connectBranch<int>  (tree, "clean_passLooseBadLLP",         &m_clean_passLooseBadLLP);
       }
     }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    connectBranch<float>(tree, "Timing", &m_Timing);
+  }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight )
     {
@@ -1154,6 +1163,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_infoSwitch.m_cleanLLP) {
         jet.clean_passLooseBadLLP        =m_clean_passLooseBadLLP        ->at(idx);
       }
+    }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    jet.Timing = m_Timing->at(idx);
     }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight)
@@ -1507,6 +1519,9 @@ void JetContainer::setBranches(TTree *tree)
     if(m_infoSwitch.m_cleanLLP) {
       setBranch<int>  (tree,"clean_passLooseBadLLP",            m_clean_passLooseBadLLP             );
     }
+  }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    setBranch<float>(tree,"Timing",m_Timing);
   }
 
 
@@ -1915,6 +1930,9 @@ void JetContainer::clear()
     if(m_infoSwitch.m_cleanLLP) {
       m_clean_passLooseBadLLP        ->clear();
     }
+  }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    m_Timing->clear();
   }
 
 
@@ -2389,6 +2407,10 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
   } // clean
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
+    safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
+  }
 
 
   if ( m_infoSwitch.m_energy | m_infoSwitch.m_energyLight ) {

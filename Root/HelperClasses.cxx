@@ -255,6 +255,7 @@ namespace HelperClasses{
 
     m_trigger       = has_exact("trigger");
     m_substructure  = has_exact("substructure");
+    m_ntrimsubjets  = has_exact("ntrimsubjets");
     m_bosonCount    = has_exact("bosonCount");
     m_VTags         = has_exact("VTags");
     m_rapidity      = has_exact("rapidity");
@@ -262,6 +263,7 @@ namespace HelperClasses{
     m_cleanLight    = has_exact("cleanLight");
     m_cleanTrig     = has_exact("cleanTrig");
     m_cleanLLP      = has_exact("cleanLLP");
+    m_timing        = has_exact("timing");
     m_energy        = has_exact("energy");
     m_energyLight   = has_exact("energyLight");
     m_scales        = has_exact("scales");

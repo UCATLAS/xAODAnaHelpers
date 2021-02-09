@@ -420,6 +420,7 @@ namespace HelperClasses {
         m_kinematic      kinematic      exact
         m_trigger        trigger        exact
         m_substructure   substructure   exact
+        m_ntrimsubjets   ntrimsubjets   exact
         m_bosonCount     bosonCount     exact
         m_VTags          VTags          exact
         m_rapidity       rapidity       exact
@@ -427,6 +428,7 @@ namespace HelperClasses {
         m_cleanLight     cleanLight     exact
         m_cleanLightLLP  cleanLightLLP  exact
         m_cleanTrig      cleanTrig      exact
+        m_timing         timing         exact
         m_energy         energy         exact
         m_energyLight    energyLight    exact
         m_scales         scales         exact
@@ -489,6 +491,7 @@ namespace HelperClasses {
   public:
     bool m_trigger;
     bool m_substructure;
+    bool m_ntrimsubjets;
     bool m_bosonCount;
     bool m_VTags;
     bool m_rapidity;
@@ -496,6 +499,7 @@ namespace HelperClasses {
     bool m_cleanLight;
     bool m_cleanLLP;
     bool m_cleanTrig;
+    bool m_timing;
     bool m_energy;
     bool m_energyLight;
     bool m_scales;
