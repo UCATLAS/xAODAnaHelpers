@@ -1251,7 +1251,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
         result = true;
       }
     } else {
-      result = m_JVT_tool_handle->passesJvtCut(*jet); // Temporary
+      result = m_JVT_tool_handle->passesJvtCut(*jet);
     }
 
     if(result) ANA_MSG_DEBUG(" ... jet passes Jvt cut");
