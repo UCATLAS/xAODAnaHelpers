@@ -52,7 +52,10 @@ FatJetContainer::FatJetContainer(const std::string& name, const std::string& det
     m_ungrtrk500	= new std::vector<int>  ();
     m_EMFrac		= new std::vector<float>();
     m_nChargedParticles = new std::vector<int>();
+  }
 
+  if ( m_infoSwitch.m_ntrimsubjets && !m_infoSwitch.m_substructure ) {
+    m_NTrimSubjets = new std::vector<float>();
   }
 
   if ( m_infoSwitch.m_constituent) {
@@ -148,6 +151,10 @@ FatJetContainer::~FatJetContainer()
     delete m_ungrtrk500		;
     delete m_EMFrac		;
     delete m_nChargedParticles	;
+  }
+
+  if ( m_infoSwitch.m_ntrimsubjets && !m_infoSwitch.m_substructure ){
+    delete m_NTrimSubjets;
   }
 
   if ( m_infoSwitch.m_constituent) {
@@ -246,6 +253,10 @@ void FatJetContainer::setTree(TTree *tree)
     connectBranch<int>  (tree, "nChargedParticles",	&m_nChargedParticles);
   }
 
+  if ( m_infoSwitch.m_ntrimsubjets && !m_infoSwitch.m_substructure ){
+    connectBranch<float>(tree, "NTrimSubjets", &m_NTrimSubjets);
+  }
+
   if ( m_infoSwitch.m_constituent) {
     connectBranch<int>  (tree, "numConstituents",    &m_numConstituents);
   }
@@ -338,6 +349,10 @@ void FatJetContainer::updateParticle(uint idx, FatJet& fatjet)
     fatjet.ungrtrk500		= m_ungrtrk500  	->at(idx);
     fatjet.EMFrac		= m_EMFrac		->at(idx);
     fatjet.nChargedParticles	= m_nChargedParticles	->at(idx);
+  }
+
+  if ( m_infoSwitch.m_ntrimsubjets && !m_infoSwitch.m_substructure ){
+    fatjet.NTrimSubjets = m_NTrimSubjets->at(idx);
   }
 
   if ( m_infoSwitch.m_constituent) {
@@ -441,6 +456,10 @@ void FatJetContainer::setBranches(TTree *tree)
     setBranch<int>  (tree, "nChargedParticles",	m_nChargedParticles);
   }
 
+  if ( m_infoSwitch.m_ntrimsubjets && !m_infoSwitch.m_substructure){
+    setBranch<float>(tree, "NTrimSubjets", m_NTrimSubjets);
+  }
+
   if ( m_infoSwitch.m_constituent) {
     setBranch<int>  (tree, "numConstituents",    m_numConstituents);
   }
@@ -530,6 +549,10 @@ void FatJetContainer::clear()
     m_ungrtrk500  	->clear();
     m_EMFrac	  	->clear();
     m_nChargedParticles	->clear();
+  }
+
+  if ( m_infoSwitch.m_ntrimsubjets && !m_infoSwitch.m_substructure ){
+    m_NTrimSubjets->clear();
   }
 
   if ( m_infoSwitch.m_constituent) {
@@ -723,6 +746,11 @@ void FatJetContainer::FillFatJet( const xAOD::IParticle* particle, int pvLocatio
       m_nChargedParticles->push_back( acc_nChargedParticles( *fatjet ));
     } else { m_nChargedParticles->push_back(-999); }
 
+  }
+
+  if ( m_infoSwitch.m_ntrimsubjets && !m_infoSwitch.m_substructure ){
+    static SG::AuxElement::ConstAccessor<int> NTrimSubjets("NTrimSubjets");
+    safeFill<int, float, xAOD::Jet>(fatjet, NTrimSubjets, m_NTrimSubjets, -999);
   }
 
   if( m_infoSwitch.m_constituent ){
