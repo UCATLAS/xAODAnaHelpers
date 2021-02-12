@@ -229,6 +229,7 @@ class HistogramManager {
      * @overload
      */
     void fillHist(const std::string& histName, double value, double weight);
+    void fillHist(const std::string& histName, double valueX, double valueY, double weight);
 
 
   private:
