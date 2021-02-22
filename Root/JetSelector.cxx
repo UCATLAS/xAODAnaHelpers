@@ -140,6 +140,8 @@ EL::StatusCode JetSelector :: initialize ()
     m_jet_cutflow_all             = m_jet_cutflowHist_1->GetXaxis()->FindBin("all");
     m_jet_cutflow_ptmax_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_jet_cutflow_ptmin_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
+    m_jet_cutflow_etmax_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("etmax_cut");
+    m_jet_cutflow_etmin_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("etmin_cut");
     m_jet_cutflow_eta_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("eta_cut");
     m_jet_cutflow_jvt_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("JVT_cut");
     m_jet_cutflow_btag_cut        = m_jet_cutflowHist_1->GetXaxis()->FindBin("BTag_cut");
@@ -1137,12 +1139,14 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   ANA_MSG_DEBUG("In pass cuts");
 
   double jetPt       = 0;
+  double jetET       = 0;
   double jetEta      = 0;
   double jetPhi      = 0;
   double jetM        = 0;
   double jetRapidity = 0;
   if(m_jetScale4Selection=="Final"){ // default
     jetPt       = jet->pt();
+    jetET       = jet->p4().Et();
     jetEta      = jet->eta();
     jetPhi      = jet->phi();
     jetM        = jet->m();
@@ -1154,6 +1158,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
       return 0;
     } else {
       jetPt       = jet->jetP4(m_jetScale4Selection.c_str()).Pt();
+      jetET       = jet->jetP4(m_jetScale4Selection.c_str()).Et();
       jetEta      = jet->jetP4(m_jetScale4Selection.c_str()).Eta();
       jetPhi      = jet->jetP4(m_jetScale4Selection.c_str()).Phi();
       jetM        = jet->jetP4(m_jetScale4Selection.c_str()).M();
@@ -1174,6 +1179,17 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     if ( jetPt < m_pT_min ) { return 0; }
   }
   if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_ptmin_cut, 1 );
+
+  // ET
+  if ( m_ET_max != 1e8 ) {
+    if ( jetET > m_ET_max ) { return 0; }
+  }
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_etmax_cut, 1 );
+
+  if ( m_ET_min != 1e8 ) {
+    if ( jetET < m_ET_min ) { return 0; }
+  }
+  if(m_useCutFlow) m_jet_cutflowHist_1->Fill( m_jet_cutflow_etmin_cut, 1 );
 
   // eta
   if ( m_eta_max != 1e8 ) {
