@@ -442,11 +442,9 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   // get the scale factors for all jets
   //
   if(m_getScaleFactors)
-    { 
-      // loop over available systematics
+    { // loop over available systematics
       for(const CP::SystematicSet& syst_it : m_systList)
 	{
-
 	  //  If not nominal input jet collection, dont calculate systematics
 	  if ( !doNominal )
 	    {
