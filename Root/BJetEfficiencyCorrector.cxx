@@ -18,6 +18,8 @@
 
 #include <SampleHandler/MetaFields.h>
 
+#include "PathResolver/PathResolver.h"
+
 //EDM
 #include "xAODJet/JetAuxContainer.h"
 
@@ -194,8 +196,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
 
-    if(isMC() && !m_EfficiencyCalibration.empty())
-      {
+    if(!m_EfficiencyCalibration.empty()){
 	std::string calibration=m_EfficiencyCalibration;
 	if(m_EfficiencyCalibration=="auto")
 	  {
@@ -239,7 +240,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		return EL::StatusCode::FAILURE;
 		break;
 	      }
-	  }
+	  } else { makeMCIndexMap(m_EfficiencyCalibration); }
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
@@ -297,6 +298,37 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     HelperFunctions::writeSystematicsListHist(m_systList, m_outputSystName, fileMD);
   }
 
+  // Get DSID to Generator map (if needed)
+  if (m_setMapIndex){
+    ANA_MSG_DEBUG("Fill DSID->Generator map");
+    // open input file
+    std::ifstream file;
+    std::string fn = PathResolverFindCalibFile(m_DSIDtoGenerator_filename);
+    //file.open(gSystem->ExpandPathName(m_DSIDtoGenerator_filename.c_str()));
+    file.open(fn.c_str());
+    if (!file.good()) {
+      ANA_MSG_ERROR("Can't open file " << m_DSIDtoGenerator_filename.c_str());
+      return EL::StatusCode::FAILURE;
+    }
+    // process file
+    while (!file.eof()) {
+      // read line
+      std::string lineString;
+      getline(file, lineString);
+      // store in map
+      std::stringstream line(lineString);
+      int dsid;
+      std::string gen;
+      line >> dsid >> gen;
+      if (m_DSIDtoGenerator.count(dsid) != 0) {
+        ANA_MSG_WARNING("Skipping duplicated DSID for line " << lineString.c_str());
+        continue;
+      }
+      m_DSIDtoGenerator[dsid] = gen;
+    }
+    file.close();
+  }
+
   ANA_MSG_INFO( "BJetEfficiencyCorrector Interface succesfully initialized!" );
 
   return EL::StatusCode::SUCCESS;
@@ -349,7 +381,7 @@ EL::StatusCode BJetEfficiencyCorrector :: execute ()
 
 
 EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD::JetContainer* inJets,
-								      const xAOD::EventInfo* /*eventInfo*/,
+								      const xAOD::EventInfo* eventInfo,
 								      bool doNominal)
 {
   ANA_MSG_DEBUG("Applying BJet Cuts and Efficiency Correction (when applicable...) ");
@@ -431,8 +463,14 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	    }
 	  ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
-	  for( const xAOD::Jet* jet_itr : *(inJets))
+          for( const xAOD::Jet* jet_itr : *(inJets))
 	    {
+              if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
+                auto FlavLabel = getFlavorLabel(*jet_itr);
+                auto DSID      = eventInfo->mcChannelNumber();
+                auto MCindex   = getMCIndex(DSID);
+                ANA_CHECK( m_BJetEffSFTool_handle->setMapIndex(FlavLabel,MCindex));
+              }
 	      // get the scale factor
 	      float SF(-1.0);
 	      float inefficiencySF(-1.0); // only for continuous b-tagging
@@ -532,3 +570,90 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
 
   return EL::StatusCode::SUCCESS;
 }
+
+void BJetEfficiencyCorrector :: makeMCIndexMap (std::string effCalib)
+{
+  ANA_MSG_DEBUG( "Calling makeMCIndexMap()");
+
+  // Interprete m_EfficiencyCalibration string to identify the corresponding indexes
+  char delim = ';';
+  std::vector<std::string> samples;
+  std::stringstream ss(effCalib);
+  std::string item;
+  while (std::getline(ss, item, delim)) {
+    samples.push_back(item);
+  }
+
+  // Find index for Pythia8, Sherpa 2.2, Herwig7 and aMC@NLO+Pythia8
+  for (unsigned int i = 0; i < samples.size(); ++i){
+    if (samples.at(i) == "410470") m_MCIndexes["Pythia8"]  = i;
+    if (samples.at(i) == "410250") m_MCIndexes["Sherpa22"] = i;
+    if (samples.at(i) == "410558") m_MCIndexes["Herwig7"]  = i;
+    if (samples.at(i) == "410464") m_MCIndexes["aMC@NLO"]  = i;
+  }
+
+}
+
+unsigned int BJetEfficiencyCorrector :: getMCIndex (int dsid)
+{
+  ANA_MSG_DEBUG( "Calling getMCIndex");
+
+  auto name = m_DSIDtoGenerator[dsid];
+
+  if(m_EfficiencyCalibration=="auto") {
+    return 0; // there is only one index when m_EfficiencyCalibration == 'auto'
+  } else {
+    // Pythia 8
+    if ((name.find("Pythia8_") != std::string::npos) ||
+        (name.find("Pythia8B_") != std::string::npos) ||
+        (name.find("MGPy8EG_") != std::string::npos) ||
+        (name.find("MadGraphPythia8_") != std::string::npos) ||
+        (name.find("MadGraphPythia8EvtGen_") != std::string::npos) ||
+        (name.find("PowhegPythia8EvtGen_CT10_") != std::string::npos) ||
+        (name.find("PowhegPythia8EvtGen_") != std::string::npos) ||
+        (name.find("Pythia8EvtGen_") != std::string::npos) ||
+        (name.find("Pythia8EG_") != std::string::npos) ||
+        (name.find("PwPy8EG_CT10_") != std::string::npos) ||
+        (name.find("PowhegPythia8_") != std::string::npos) ||
+        (name.find("PowhegPythia8EG_") != std::string::npos) ||
+        (name.find("PhPy8EG_CT10_") != std::string::npos) ||
+        (name.find("Py8EG_") != std::string::npos) ||
+        (name.find("Py8") != std::string::npos)) { return m_MCIndexes["Pythia8"]; }
+
+    // Sherpa 2.2
+    if ((name.find("Sh_22") != std::string::npos) ||
+        (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
+        (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
+
+    // Sherpa 2.2
+    if ((name.find("Sh_22") != std::string::npos) ||
+        (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
+        (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
+
+    // Herwig 7
+    if ( (name.find("Herwig") != std::string::npos) ){ return m_MCIndexes["Herwig"]; }
+
+    // aMC@NLO+Pythia8
+    if ( (name.find("aMC@NLO+Pythia8") != std::string::npos) ){ return m_MCIndexes["aMC@NLO"]; }
+
+    // for all other samples, use the default map (pythia8).
+    ANA_MSG_WARNING( "MC index not recognized, using default (0)." );
+    return 0;
+  }
+}
+
+std::string BJetEfficiencyCorrector :: getFlavorLabel (const xAOD::Jet &jet) const
+{
+  int label;
+  bool status = jet.getAttribute<int>( "HadronConeExclTruthLabelID", label );
+  if(status){
+    if ((label == 5) || (label == -5)){          return "B";
+    } else if ((label == 4) || (label == -4)){   return "C";
+    } else if ((label == 15) || (label == -15)){ return "T";
+    } else { return "Light";}
+  } else {
+    ANA_MSG_WARNING( "HadronConeExclTruthLabelID was not found, using Light as jet flavour for retrieving b-tagging SF." );
+    return "Light";
+  }
+}
+
