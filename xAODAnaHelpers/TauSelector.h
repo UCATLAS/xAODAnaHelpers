@@ -44,6 +44,8 @@ public:
   bool       	 m_decorateWithTracks = false;
   /* decorate selected objects - default "passSel" */
   bool       	 m_decorateSelectedObjects = true;
+  /* Name for selected object decoration*/
+  std::string  m_decorationName = "passSel";
   /* fill using SG::VIEW_ELEMENTS to be light weight */
   bool       	 m_createSelectedContainer = false;
   /* look at n objects */

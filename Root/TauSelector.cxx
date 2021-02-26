@@ -456,7 +456,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
 {
 
   int nPass(0); int nObj(0);
-  static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
+  static SG::AuxElement::Decorator< char > passSelDecor( m_decorationName.c_str() );
 
   ANA_MSG_DEBUG( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) );
 
