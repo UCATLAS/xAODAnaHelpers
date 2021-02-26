@@ -467,8 +467,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	    {
               auto FlavLabel = getFlavorLabel(*jet_itr);
               if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
-                auto DSID = eventInfo->mcChannelNumber();
-                auto MCindex   = getMCIndex(DSID);
+                auto DSID    = eventInfo->mcChannelNumber();
+                auto MCindex = getMCIndex(DSID);
                 ANA_CHECK( m_BJetEffSFTool_handle->setMapIndex(FlavLabel,MCindex));
               }
 	      // get the scale factor
