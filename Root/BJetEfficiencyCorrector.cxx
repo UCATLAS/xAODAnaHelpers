@@ -195,16 +195,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
-    if(m_setMapIndex){
-      // pythia8, sherpa 2.2.1, herwig7, aMC@NLO+Pythia8
-      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations","410470;410250;410558;410464"));
-      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations","410470;410250;410558;410464"));
-      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations","410470;410250;410558;410464"));
-      ANA_CHECK(m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations","410470;410250;410558;410464"));
-    }
 
-    if(isMC() && !m_EfficiencyCalibration.empty())
-      {
+    if(!m_EfficiencyCalibration.empty()){
 	std::string calibration=m_EfficiencyCalibration;
 	if(m_EfficiencyCalibration=="auto")
 	  {
@@ -454,6 +446,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
       // loop over available systematics
       for(const CP::SystematicSet& syst_it : m_systList)
 	{
+
 	  //  If not nominal input jet collection, dont calculate systematics
 	  if ( !doNominal )
 	    {
@@ -474,13 +467,10 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
 	  for( const xAOD::Jet* jet_itr : *(inJets))
 	    {
+              auto FlavLabel = getFlavorLabel(*jet_itr);
               if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
                 auto DSID = eventInfo->mcChannelNumber();
-                ANA_MSG_DEBUG( "DSID = " << DSID ); // Temporary
-		auto MCindex   = getMCIndex(DSID);
-                ANA_MSG_DEBUG( "MCIndex = " << MCindex ); // Temporary
-		auto FlavLabel = getFlavorLabel(*jet_itr);
-                ANA_MSG_DEBUG( "FlavLabel = " << FlavLabel); // Temporary
+                auto MCindex   = getMCIndex(DSID);
                 ANA_CHECK( m_BJetEffSFTool_handle->setMapIndex(FlavLabel,MCindex));
               }
 	      // get the scale factor
@@ -625,7 +615,6 @@ std::string BJetEfficiencyCorrector :: getFlavorLabel (const xAOD::Jet &jet) con
 {
   int label;
   bool status = jet.getAttribute<int>( "HadronConeExclTruthLabelID", label );
-  ANA_MSG_DEBUG( "HadronConeExclTruthLabelID = " << label ); // Temporary
   if(status){
     if ((label == 5) || (label == -5)){          return "B";
     } else if ((label == 4) || (label == -4)){   return "C";
