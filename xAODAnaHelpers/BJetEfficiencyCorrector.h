@@ -70,7 +70,8 @@ public:
   /// @brief upper pt threshold of b-jet in OR in unit of GeV, negative value means no pt threshold
   float m_orBJetPtUpperThres=-1;
 
-  /// @brief Calibration to use for MC (EfficiencyB/C/T/LightCalibrations), "auto" to determine from sample name
+  /// @brief Calibration to use for MC (EfficiencyB/C/T/LightCalibrations), "auto" to determine from sample name (multiple samples can be provided as long as they are separated by ';')
+  /// @brief Example: "410470;410250;410558;410464" (Pythia8,Sherpa22,Herwig7,MG)
   std::string m_EfficiencyCalibration = "";
 
 private:
@@ -82,6 +83,7 @@ private:
   std::string m_decorInefficiencySF = ""; // only for continuous b-tagging
 
   std::map<int,std::string> m_DSIDtoGenerator; //!
+  std::map<std::string,unsigned int> m_MCIndexes; //!
 
   std::vector<std::string> m_inputAlgoList; //!
 
@@ -117,6 +119,7 @@ public:
 
   // Functions needed only if m_setMapIndex is true
   unsigned int getMCIndex (int dsid);
+  void makeMCIndexMap (std::string effCalib);
   std::string getFlavorLabel (const xAOD::Jet &jet) const;
 
   /// @cond

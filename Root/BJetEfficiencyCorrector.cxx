@@ -240,7 +240,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		return EL::StatusCode::FAILURE;
 		break;
 	      }
-	  }
+	  } else { makeMCIndexMap(m_EfficiencyCalibration); }
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyTCalibrations"    ,  calibration));
@@ -463,12 +463,15 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	    }
 	  ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
-	  for( const xAOD::Jet* jet_itr : *(inJets))
+          unsigned int MCindex = 0;
+          if(m_setMapIndex){
+            auto DSID = eventInfo->mcChannelNumber();
+            MCindex   = getMCIndex(DSID);}
+          }
+          for( const xAOD::Jet* jet_itr : *(inJets))
 	    {
               auto FlavLabel = getFlavorLabel(*jet_itr);
               if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
-                auto DSID    = eventInfo->mcChannelNumber();
-                auto MCindex = getMCIndex(DSID);
                 ANA_CHECK( m_BJetEffSFTool_handle->setMapIndex(FlavLabel,MCindex));
               }
 	      // get the scale factor
@@ -571,42 +574,75 @@ EL::StatusCode BJetEfficiencyCorrector :: histFinalize ()
   return EL::StatusCode::SUCCESS;
 }
 
+void BJetEfficiencyCorrector :: makeMCIndexMap (std::string effCalib)
+{
+  ANA_MSG_DEBUG( "Calling makeMCIndexMap()");
+
+  // Interprete m_EfficiencyCalibration string to identify the corresponding indexes
+  char delim = ';';
+  std::vector<std::string> samples;
+  std::stringstream ss(effCalib);
+  std::string item;
+  while (std::getline(ss, item, delim)) {
+    samples.push_back(item);
+  }
+
+  // Find index for Pythia8, Sherpa 2.2, Herwig7 and aMC@NLO+Pythia8
+  for (unsigned int i = 0; i < samples.size(); ++i){
+    if (samples.at(i) == "410470") m_MCIndexes["Pythia8"]  = i;
+    if (samples.at(i) == "410250") m_MCIndexes["Sherpa22"] = i;
+    if (samples.at(i) == "410558") m_MCIndexes["Herwig7"]  = i;
+    if (samples.at(i) == "410464") m_MCIndexes["aMC@NLO"]  = i;
+  }
+
+}
+
 unsigned int BJetEfficiencyCorrector :: getMCIndex (int dsid)
 {
   ANA_MSG_DEBUG( "Calling getMCIndex");
 
   auto name = m_DSIDtoGenerator[dsid];
 
-  // Pythia 8
-  if ((name.find("Pythia8_") != std::string::npos) ||
-      (name.find("Pythia8B_") != std::string::npos) ||
-      (name.find("MGPy8EG_") != std::string::npos) ||
-      (name.find("MadGraphPythia8_") != std::string::npos) ||
-      (name.find("MadGraphPythia8EvtGen_") != std::string::npos) ||
-      (name.find("PowhegPythia8EvtGen_CT10_") != std::string::npos) ||
-      (name.find("PowhegPythia8EvtGen_") != std::string::npos) ||
-      (name.find("Pythia8EvtGen_") != std::string::npos) ||
-      (name.find("Pythia8EG_") != std::string::npos) ||
-      (name.find("PwPy8EG_CT10_") != std::string::npos) ||
-      (name.find("PowhegPythia8_") != std::string::npos) ||
-      (name.find("PowhegPythia8EG_") != std::string::npos) ||
-      (name.find("PhPy8EG_CT10_") != std::string::npos) ||
-      (name.find("Py8EG_") != std::string::npos) ||
-      (name.find("Py8") != std::string::npos)) { return 0; }
+  if(m_EfficiencyCalibration=="auto") {
+    return 0; // there is only one index when m_EfficiencyCalibration == 'auto'
+  } else {
+    // Pythia 8
+    if ((name.find("Pythia8_") != std::string::npos) ||
+        (name.find("Pythia8B_") != std::string::npos) ||
+        (name.find("MGPy8EG_") != std::string::npos) ||
+        (name.find("MadGraphPythia8_") != std::string::npos) ||
+        (name.find("MadGraphPythia8EvtGen_") != std::string::npos) ||
+        (name.find("PowhegPythia8EvtGen_CT10_") != std::string::npos) ||
+        (name.find("PowhegPythia8EvtGen_") != std::string::npos) ||
+        (name.find("Pythia8EvtGen_") != std::string::npos) ||
+        (name.find("Pythia8EG_") != std::string::npos) ||
+        (name.find("PwPy8EG_CT10_") != std::string::npos) ||
+        (name.find("PowhegPythia8_") != std::string::npos) ||
+        (name.find("PowhegPythia8EG_") != std::string::npos) ||
+        (name.find("PhPy8EG_CT10_") != std::string::npos) ||
+        (name.find("Py8EG_") != std::string::npos) ||
+        (name.find("Py8") != std::string::npos)) { return m_MCIndexes["Pythia8"]; }
 
-  // Sherpa 2.2
-  if ((name.find("Sh_22") != std::string::npos) ||
-      (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
-      (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return 1; }
+    // Sherpa 2.2
+    if ((name.find("Sh_22") != std::string::npos) ||
+        (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
+        (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
 
-  // Herwig 7
-  if ( (name.find("Herwig") != std::string::npos) ){ return 2; }
+    // Sherpa 2.2
+    if ((name.find("Sh_22") != std::string::npos) ||
+        (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
+        (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
 
-  // aMC@NLO+Pythia8
-  if ( (name.find("aMC@NLO+Pythia8") != std::string::npos) ){ return 3; }
+    // Herwig 7
+    if ( (name.find("Herwig") != std::string::npos) ){ return m_MCIndexes["Herwig"]; }
 
-  // for all other samples, use the default map (pythia8).
-  return 0;
+    // aMC@NLO+Pythia8
+    if ( (name.find("aMC@NLO+Pythia8") != std::string::npos) ){ return m_MCIndexes["aMC@NLO"]; }
+
+    // for all other samples, use the default map (pythia8).
+    ANA_MSG_WARNING( "MC index not recognized, using default (0)." );
+    return 0;
+  }
 }
 
 std::string BJetEfficiencyCorrector :: getFlavorLabel (const xAOD::Jet &jet) const
