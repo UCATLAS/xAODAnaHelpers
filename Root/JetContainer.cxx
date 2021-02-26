@@ -62,6 +62,9 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_clean_passTightBad        =new std::vector<int>();
     }
   }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    m_Timing = new std::vector<float>();
+  }
 
   // energy
   if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
@@ -490,6 +493,9 @@ JetContainer::~JetContainer()
       delete m_clean_passTightBad;
     }
   }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    delete m_Timing;
+  }
 
   // energy
   if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
@@ -908,6 +914,9 @@ void JetContainer::setTree(TTree *tree)
         connectBranch<int>  (tree, "clean_passTightBad",         &m_clean_passTightBad);
       }
     }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    connectBranch<float>(tree, "Timing", &m_Timing);
+  }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight )
     {
@@ -1162,6 +1171,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
         jet.clean_passLooseBad        =m_clean_passLooseBad        ->at(idx);
         jet.clean_passTightBad        =m_clean_passTightBad        ->at(idx);
       }
+    }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    jet.Timing = m_Timing->at(idx);
     }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight)
@@ -1517,6 +1529,9 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<int>  (tree,"clean_passLooseBad",            m_clean_passLooseBad             );
       setBranch<int>  (tree,"clean_passTightBad",            m_clean_passTightBad             );
     }
+  }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    setBranch<float>(tree,"Timing",m_Timing);
   }
 
 
@@ -1928,6 +1943,9 @@ void JetContainer::clear()
       m_clean_passLooseBad        ->clear();
       m_clean_passTightBad        ->clear();
     }
+  }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    m_Timing->clear();
   }
 
 
@@ -2400,6 +2418,10 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
   } // clean
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
+    safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
+  }
 
 
   if ( m_infoSwitch.m_energy | m_infoSwitch.m_energyLight ) {

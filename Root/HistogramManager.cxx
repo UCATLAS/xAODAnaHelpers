@@ -210,4 +210,15 @@ void HistogramManager::fillHist(const std::string& histName, double value, doubl
   histPointer->Fill(value, weight);
 }
 
-
+void HistogramManager::fillHist(const std::string& histName, double valueX, double valueY, double weight) {
+  TH2* histPointer(NULL);
+  HistMap_t::const_iterator it = m_histMap.find( histName );
+  if ( it == m_histMap.end() ) {
+    ANA_MSG_ERROR("Histogram name " << histName << " not found");
+    return;
+  }
+  else {
+    histPointer = (TH2*)it->second;
+  }
+  histPointer->Fill(valueX, valueY, weight);
+}

@@ -17,6 +17,7 @@ matrix:
         - docker
       env: JOB="uncrustify check"
       before_script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker pull unibeautify/uncrustify
       script:
         - docker run -it -v "$(pwd)":/workdir -w /workdir unibeautify/uncrustify -c ci/uncrustify.cfg --check **/**.cxx || exit 0
