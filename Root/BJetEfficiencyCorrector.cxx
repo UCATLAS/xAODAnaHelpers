@@ -463,15 +463,12 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	    }
 	  ANA_MSG_DEBUG("Successfully configured BJetEfficiencyCorrections for systematic: " << syst_it.name());
 
-          unsigned int MCindex = 0;
-          if(m_setMapIndex){
-            auto DSID = eventInfo->mcChannelNumber();
-            MCindex   = getMCIndex(DSID);}
-          }
           for( const xAOD::Jet* jet_itr : *(inJets))
 	    {
               if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
                 auto FlavLabel = getFlavorLabel(*jet_itr);
+                auto DSID      = eventInfo->mcChannelNumber();
+                auto MCindex   = getMCIndex(DSID);
                 ANA_CHECK( m_BJetEffSFTool_handle->setMapIndex(FlavLabel,MCindex));
               }
 	      // get the scale factor
