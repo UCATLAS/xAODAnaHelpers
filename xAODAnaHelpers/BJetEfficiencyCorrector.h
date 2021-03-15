@@ -47,6 +47,8 @@ public:
   std::string m_systematicsStrategy = "SFEigen";
   /// @brief BTaggingSelectionTool throws an error on missing tagging weights. If false, a warning is given instead
   bool        m_errorOnTagWeightFailure = true;
+  /// @brief Decorate tag weights even if we're not doing pseudocontinuous b-tagging
+  bool        m_alwaysGetTagWeight = false;
 
   // allowed operating points:
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
