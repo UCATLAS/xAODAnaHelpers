@@ -167,6 +167,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_MSG_WARNING( "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
     m_getScaleFactors = false;
   }
+  if ( m_tagDecisionOnly && m_getScaleFactors ) {
+    ANA_MSG_WARNING( "BTagging scale factors have been manually disabled. This is not recommended!" );
+    m_getScaleFactors = false;
+  }
 
   // initialize the BJetSelectionTool
   // A few which are not configurable as of yet....
