@@ -167,6 +167,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_MSG_WARNING( "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
     m_getScaleFactors = false;
   }
+  if ( m_tagDecisionOnly && m_getScaleFactors ) {
+    ANA_MSG_WARNING( "BTagging scale factors have been manually disabled. This is not recommended!" );
+    m_getScaleFactors = false;
+  }
 
   // initialize the BJetSelectionTool
   // A few which are not configurable as of yet....
@@ -399,44 +403,43 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   // run the btagging decision or get weight and quantile if running continuous
   //
-  for( const xAOD::Jet* jet_itr : *(inJets))
-    {
+  for( const xAOD::Jet* jet_itr : *(inJets)){
 
-      if(!m_useContinuous)
-	{ // get tagging decision
-	  ANA_MSG_DEBUG(" Getting tagging decision ");
+    if(!m_useContinuous){
+      // get tagging decision
+      ANA_MSG_DEBUG(" Getting tagging decision ");
 
-	  // Add decorator for decision
-	  if( m_BJetSelectTool_handle->accept( *jet_itr ) )
-	    dec_isBTag( *jet_itr ) = 1;
-	  else
-	    dec_isBTag( *jet_itr ) = 0;
-
-	  // Add pT-dependent b-tag decision decorator (intended for use in OR)
-	  if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
-	      && m_BJetSelectTool_handle->accept( *jet_itr ) )
-	    dec_isBTagOR( *jet_itr ) = 1;
-	  else
-	    dec_isBTagOR( *jet_itr ) = 0;
-	}
+      // Add decorator for decision
+      if( m_BJetSelectTool_handle->accept( *jet_itr ) )
+        dec_isBTag( *jet_itr ) = 1;
       else
-	{ // continuous b-tagging
+        dec_isBTag( *jet_itr ) = 0;
 
-	  ANA_MSG_DEBUG(" Getting TaggerWeight and Quantile");
-
-	  double tagWeight;
-	  if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok )
-	    {
-	      ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
-	      return EL::StatusCode::FAILURE;
-	    }
-	  int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
-	  ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
-	  ANA_MSG_DEBUG( "quantile: " << quantile );
-	  dec_Weight( *jet_itr)    = tagWeight;
-	  dec_Quantile( *jet_itr ) = quantile;
-	}
+      // Add pT-dependent b-tag decision decorator (intended for use in OR)
+      if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
+          && m_BJetSelectTool_handle->accept( *jet_itr ) )
+        dec_isBTagOR( *jet_itr ) = 1;
+      else
+        dec_isBTagOR( *jet_itr ) = 0;
     }
+    else{
+      ANA_MSG_DEBUG(" Getting Quantile");
+      int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
+      ANA_MSG_DEBUG( "quantile: " << quantile );
+      dec_Quantile( *jet_itr ) = quantile;
+    }
+    if(m_useContinuous || m_alwaysGetTagWeight){
+      ANA_MSG_DEBUG(" Getting TaggerWeight");
+      
+      double tagWeight;
+      if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok ){
+        ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
+	    dec_Weight( *jet_itr)    = tagWeight;
+    }
+  }
 
   //
   // get the scale factors for all jets
