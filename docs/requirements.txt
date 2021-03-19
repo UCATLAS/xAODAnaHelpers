@@ -9,7 +9,7 @@ docutils==0.15.2
 exhale==0.2.3
 idna==2.8
 imagesize==1.1.0
-Jinja2==2.10.3
+Jinja2==2.11.3
 lxml==4.6.2
 MarkupSafe==1.1.1
 packaging==19.2
