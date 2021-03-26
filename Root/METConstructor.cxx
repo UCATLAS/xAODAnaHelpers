@@ -7,6 +7,7 @@
 #include "xAODAnaHelpers/METConstructor.h"
 
 #include "METUtilities/CutsMETMaker.h"
+#include "METUtilities/METHelpers.h"
 #include "PATInterfaces/SystematicVariation.h"
 
 #include "xAODEventInfo/EventInfo.h"
@@ -198,6 +199,9 @@ EL::StatusCode METConstructor :: execute ()
 
    const xAOD::MissingETAssociationMap* metMap = 0;
    ANA_CHECK( HelperFunctions::retrieve(metMap, m_mapName, m_event, m_store, msg()));
+   xAOD::MissingETAssociationHelper metHelper(metMap);
+   // Reset all the met map associations
+   metHelper.resetObjSelectionFlags();
 
    std::vector<CP::SystematicSet>::const_iterator sysListItr;
    auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
@@ -289,8 +293,6 @@ EL::StatusCode METConstructor :: execute ()
       auto metAuxCont = std::make_unique<xAOD::MissingETAuxContainer>();
       newMet->setStore(metAuxCont.get());
 
-      // metMap->resetObjSelectionFlags();
-
       // now retrieve the object containers and build the met
       // if the syst varied container exists take it, otherwise take the nominal one
 
@@ -318,9 +320,9 @@ EL::StatusCode METConstructor :: execute ()
          if (m_doElectronCuts) {
            ConstDataVector<xAOD::ElectronContainer> metElectrons(SG::VIEW_ELEMENTS);
            for (const auto& el : *eleCont) if (CutsMETMaker::accept(el)) metElectrons.push_back(el);
-          //  ANA_CHECK( m_metmaker_handle->rebuildMET("RefEle", xAOD::Type::Electron, newMet.get(), metElectrons.asDataVector(), metMap));
+           ANA_CHECK( m_metmaker_handle->rebuildMET("RefEle", xAOD::Type::Electron, newMet.get(), metElectrons.asDataVector(), metHelper));
          } else {
-          //  ANA_CHECK( m_metmaker_handle->rebuildMET("RefEle", xAOD::Type::Electron, newMet.get(), eleCont, metMap));
+           ANA_CHECK( m_metmaker_handle->rebuildMET("RefEle", xAOD::Type::Electron, newMet.get(), eleCont, metHelper));
          }
       } // close "if( m_inputElectrons.Length() > 0 )"
 
@@ -365,10 +367,10 @@ EL::StatusCode METConstructor :: execute ()
           metPhotons.push_back(ph);
         }
 
-        // ANA_CHECK( m_metmaker_handle->rebuildMET("RefGamma", xAOD::Type::Photon, newMet.get(), metPhotons.asDataVector(), metMap));
+        ANA_CHECK( m_metmaker_handle->rebuildMET("RefGamma", xAOD::Type::Photon, newMet.get(), metPhotons.asDataVector(), metHelper));
 
       } else {
-        // ANA_CHECK( m_metmaker_handle->rebuildMET("RefGamma", xAOD::Type::Photon, newMet.get(), phoCont, metMap));
+        ANA_CHECK( m_metmaker_handle->rebuildMET("RefGamma", xAOD::Type::Photon, newMet.get(), phoCont, metHelper));
        }
      }
 
@@ -403,9 +405,9 @@ EL::StatusCode METConstructor :: execute ()
 
            metTaus.push_back(tau);
          }
-        //  ANA_CHECK( m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet.get(), metTaus.asDataVector(), metMap));
+         ANA_CHECK( m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet.get(), metTaus.asDataVector(), metHelper));
        } else {
-        //  ANA_CHECK( m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet.get(), tauCont, metMap));
+         ANA_CHECK( m_metmaker_handle->rebuildMET("RefTau", xAOD::Type::Tau, newMet.get(), tauCont, metHelper));
        }
      }
 
@@ -433,9 +435,9 @@ EL::StatusCode METConstructor :: execute ()
         if (m_doMuonCuts) {
           ConstDataVector<xAOD::MuonContainer> metMuons(SG::VIEW_ELEMENTS);
           for (const auto& mu : *muonCont) if (CutsMETMaker::accept(mu)) metMuons.push_back(mu);
-          // ANA_CHECK( m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet.get(), metMuons.asDataVector(), metMap));
+          ANA_CHECK( m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet.get(), metMuons.asDataVector(), metHelper));
         } else {
-          // ANA_CHECK( m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet.get(), muonCont, metMap));
+          ANA_CHECK( m_metmaker_handle->rebuildMET("Muons", xAOD::Type::Muon, newMet.get(), muonCont, metHelper));
         }
      }
 
@@ -476,14 +478,14 @@ EL::StatusCode METConstructor :: execute ()
      if( !m_rebuildUsingTracksInJets ) {
        if( m_addSoftClusterTerms ){
          ANA_MSG_DEBUG("rebuilding MET term: RefJet + SoftClus + PVSoftTrk");
-        //  ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet.get(), jetCont, coreMet, metMap, m_doJVTCut));
+         ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk", newMet.get(), jetCont, coreMet, metHelper, m_doJVTCut));
        } else {
          ANA_MSG_DEBUG("rebuilding MET term: RefJet + PVSoftTrk");
-        //  ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "PVSoftTrk", newMet.get(), jetCont, coreMet, metMap, m_doJVTCut));
+         ANA_CHECK( m_metmaker_handle->rebuildJetMET("RefJet", "PVSoftTrk", newMet.get(), jetCont, coreMet, metHelper, m_doJVTCut));
        }
      } else {
        ANA_MSG_DEBUG("rebuilding MET term: RefJetTrk");
-      //  ANA_CHECK( m_metmaker_handle->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet.get(), jetCont, coreMet, metMap, m_doJVTCut));
+       ANA_CHECK( m_metmaker_handle->rebuildTrackMET("RefJetTrk", "PVSoftTrk", newMet.get(), jetCont, coreMet, metHelper, m_doJVTCut));
      }
 
      //now tell the m_metSyst_handle that we are using this SystematicSet (of one SystematicVariation for now)
@@ -498,9 +500,9 @@ EL::StatusCode METConstructor :: execute ()
 
      if(!m_rebuildUsingTracksInJets && m_addSoftClusterTerms){
        //get the soft cluster term, and applyCorrection
-       xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
+       xAOD::MissingET * softClusMet = (*newMet)["SoftClusCore"];
        //assert( softClusMet != 0); //check we retrieved the clust term
-       if( isMC() && m_metSyst_handle->applyCorrection(*softClusMet) != CP::CorrectionCode::Ok) {
+       if( isMC() && m_metSyst_handle->applyCorrection(*softClusMet, metHelper) != CP::CorrectionCode::Ok) {
          ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
        }
        ANA_MSG_DEBUG("Soft cluster met term met : " << softClusMet->met());
@@ -508,7 +510,7 @@ EL::StatusCode METConstructor :: execute ()
 
      //get the track soft term, and applyCorrection
      xAOD::MissingET * softTrkMet = (*newMet)["PVSoftTrk"];
-     if( isMC() && m_metSyst_handle->applyCorrection(*softTrkMet) != CP::CorrectionCode::Ok) {
+     if( isMC() && m_metSyst_handle->applyCorrection(*softTrkMet, metHelper) != CP::CorrectionCode::Ok) {
        ANA_MSG_ERROR( "Could not apply correction to soft track met !!!! ");
      }
      ANA_MSG_DEBUG("track met soft term : " << softTrkMet->met());
@@ -522,8 +524,8 @@ EL::StatusCode METConstructor :: execute ()
 
      // build met:
 
-    //  ANA_CHECK( m_metmaker_handle->buildMETSum("FinalClus", newMet.get(), MissingETBase::Source::LCTopo));
-    //  ANA_CHECK( m_metmaker_handle->buildMETSum("FinalTrk",  newMet.get(), MissingETBase::Source::Track));
+     ANA_CHECK( met::buildMETSum("FinalClus", newMet.get(), MissingETBase::Source::LCTopo));
+     ANA_CHECK( met::buildMETSum("FinalTrk",  newMet.get(), MissingETBase::Source::Track));
 
      // Calculate MET significance if enabled
      if ( m_calculateSignificance ) {
