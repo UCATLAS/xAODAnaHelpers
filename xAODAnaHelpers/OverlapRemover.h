@@ -110,6 +110,8 @@ class OverlapRemover : public xAH::Algorithm
   bool m_useBoostedLeptons = false;
   /** @brief Do overlap removal between electrons (HSG2 prescription) */
   bool m_doEleEleOR = false;
+  /** @brief Turn ON ApplyRelPt in MuJetOverlapTool (default is false) */
+  bool m_applyRelPt = false;
 
   /** @brief Output systematics list container name */
   std::string  m_outputAlgoSystNames = "ORAlgo_Syst";

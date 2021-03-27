@@ -81,6 +81,8 @@ public:
 
   /// @brief Trigger working point
   std::string m_WorkingPointTrig = "";
+  // @brief Get per-electron trigger SF (default: true) [if false it will take into account combinatorics using all electrons from the input electron container]
+  bool        m_usePerElectronTriggerSFs = true;
 
   /// @brief Override corrections map file (not recommended)
   std::string m_overrideMapFilePath = "";

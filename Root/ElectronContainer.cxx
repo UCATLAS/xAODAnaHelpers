@@ -18,7 +18,7 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   if ( m_infoSwitch.m_trigger ){
     m_isTrigMatched               = new std::vector<int>               ();
     m_isTrigMatchedToChain        = new std::vector<std::vector<int> > ();
-    m_listTrigChains              = new std::vector<std::string>       ();
+    m_listTrigChains              = new std::vector<std::vector<std::string> > ();
   }
 
   if ( m_infoSwitch.m_isolation ) {
@@ -243,7 +243,7 @@ void ElectronContainer::setTree(TTree *tree)
   if ( m_infoSwitch.m_trigger ){
     connectBranch<int>         (tree,"isTrigMatched",        &m_isTrigMatched);
     connectBranch<vector<int> >(tree,"isTrigMatchedToChain", &m_isTrigMatchedToChain);
-    connectBranch<std::string> (tree,"listTrigChains",       &m_listTrigChains);
+    connectBranch<vector<std::string> > (tree,"listTrigChains",       &m_listTrigChains);
   }
 
   if ( m_infoSwitch.m_isolation ) {
@@ -476,7 +476,7 @@ void ElectronContainer::setBranches(TTree *tree)
   if ( m_infoSwitch.m_trigger ){
     setBranch<int>         (tree,"isTrigMatched",        m_isTrigMatched);
     setBranch<vector<int> >(tree,"isTrigMatchedToChain", m_isTrigMatchedToChain);
-    setBranch<std::string> (tree,"listTrigChains",       m_listTrigChains);
+    setBranch<vector<std::string> > (tree,"listTrigChains",       m_listTrigChains);
   }
 
   if ( m_infoSwitch.m_isolation ) {
@@ -706,20 +706,22 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     static SG::AuxElement::Accessor< std::map<std::string,char> > isTrigMatchedMapElAcc("isTrigMatchedMapEl");
 
     std::vector<int> matches;
+    std::vector<string> trigChains;
 
     if ( isTrigMatchedMapElAcc.isAvailable( *elec ) ) {
       // loop over map and fill branches
       //
       for ( auto const &it : (isTrigMatchedMapElAcc( *elec )) ) {
         matches.push_back( static_cast<int>(it.second) );
-        m_listTrigChains->push_back( it.first );
+        trigChains.push_back( static_cast<string>(it.first) );
       }
     } else {
       matches.push_back( -1 );
-      m_listTrigChains->push_back("NONE");
+      trigChains.push_back("NONE");
     }
 
     m_isTrigMatchedToChain->push_back(matches);
+    m_listTrigChains->push_back(trigChains);
 
     // if at least one match among the chains is found, say this electron is trigger matched
     if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
