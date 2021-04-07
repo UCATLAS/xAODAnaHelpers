@@ -2893,45 +2893,45 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     // MV2c taggers
-    double val;
+    float val;
 
     val=-999;
-    myBTag->variable<double>("MV2c00"   , "discriminant", val);
+    myBTag->variable<float>("MV2c00"   , "discriminant", val);
     m_MV2c00   ->push_back( val );
 
     val=-999;
-    myBTag->variable<double>("MV2c10"   , "discriminant", val);
+    myBTag->variable<float>("MV2c10"   , "discriminant", val);
     m_MV2c10   ->push_back( val );
     val=-999;
-    myBTag->variable<double>("MV2c10mu" , "discriminant", val);
+    myBTag->variable<float>("MV2c10mu" , "discriminant", val);
     m_MV2c10mu ->push_back( val );
 
     val=-999;
-    myBTag->variable<double>("MV2c10rnn", "discriminant", val);
+    myBTag->variable<float>("MV2c10rnn", "discriminant", val);
     m_MV2c10rnn->push_back( val );
     val=-999;
-    myBTag->variable<double>("MV2c20"   , "discriminant", val);
+    myBTag->variable<float>("MV2c20"   , "discriminant", val);
     m_MV2c20   ->push_back( val );
     
     val=-999;
-    myBTag->variable<double>("MV2rmu" , "discriminant", val);
+    myBTag->variable<float>("MV2rmu" , "discriminant", val);
     m_MV2rmu ->push_back( val );
 
     val=-999;
-    myBTag->variable<double>("MV2r", "discriminant", val);
+    myBTag->variable<float>("MV2r", "discriminant", val);
     m_MV2r->push_back( val );
 
     val=-999;
-    myBTag->variable<double>("MV2c100"  , "discriminant", val);
+    myBTag->variable<float>("MV2c100"  , "discriminant", val);
     m_MV2c100  ->push_back( val );
 
     // DL1 taggers
-    double pu, pb, pc, score;
+    float pu, pb, pc, score;
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<double>("DL1" , "pu", pu);
-    myBTag->variable<double>("DL1" , "pc", pc);
-    myBTag->variable<double>("DL1" , "pb", pb);
+    myBTag->variable<float>("DL1" , "pu", pu);
+    myBTag->variable<float>("DL1" , "pc", pc);
+    myBTag->variable<float>("DL1" , "pb", pb);
     score=log( pb / (0.08*pc+0.92*pu) );
     m_DL1_pu->push_back(pu);
     m_DL1_pc->push_back(pc);
@@ -2939,9 +2939,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1->push_back( score );
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<double>("DL1mu" , "pu", pu);
-    myBTag->variable<double>("DL1mu" , "pc", pc);
-    myBTag->variable<double>("DL1mu" , "pb", pb);
+    myBTag->variable<float>("DL1mu" , "pu", pu);
+    myBTag->variable<float>("DL1mu" , "pc", pc);
+    myBTag->variable<float>("DL1mu" , "pb", pb);
     score=log( pb / (0.08*pc+0.92*pu) );
     m_DL1mu_pu->push_back(pu);
     m_DL1mu_pc->push_back(pc);
@@ -2949,9 +2949,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1mu->push_back( score );
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<double>("DL1rnn" , "pu", pu);
-    myBTag->variable<double>("DL1rnn" , "pc", pc);
-    myBTag->variable<double>("DL1rnn" , "pb", pb);
+    myBTag->variable<float>("DL1rnn" , "pu", pu);
+    myBTag->variable<float>("DL1rnn" , "pc", pc);
+    myBTag->variable<float>("DL1rnn" , "pb", pb);
     score=log( pb / (0.03*pc+0.97*pu) );
     m_DL1rnn_pu->push_back(pu);
     m_DL1rnn_pc->push_back(pc);
@@ -2959,9 +2959,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1rnn->push_back( score );
     
     pu=0; pb=0; pc=0;
-    myBTag->variable<double>("DL1rmu" , "pu", pu);
-    myBTag->variable<double>("DL1rmu" , "pc", pc);
-    myBTag->variable<double>("DL1rmu" , "pb", pb);
+    myBTag->variable<float>("DL1rmu" , "pu", pu);
+    myBTag->variable<float>("DL1rmu" , "pc", pc);
+    myBTag->variable<float>("DL1rmu" , "pb", pb);
     score=log( pb / (0.08*pc+0.92*pu) );
     m_DL1rmu_pu->push_back(pu);
     m_DL1rmu_pc->push_back(pc);
@@ -2969,9 +2969,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1rmu->push_back( score );
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<double>("DL1r" , "pu", pu);
-    myBTag->variable<double>("DL1r" , "pc", pc);
-    myBTag->variable<double>("DL1r" , "pb", pb);
+    myBTag->variable<float>("DL1r" , "pu", pu);
+    myBTag->variable<float>("DL1r" , "pc", pc);
+    myBTag->variable<float>("DL1r" , "pb", pb);
     score=log( pb / (0.03*pc+0.97*pu) );
     m_DL1r_pu->push_back(pu);
     m_DL1r_pc->push_back(pc);
