@@ -54,6 +54,9 @@ public:
   /// @brief To turn on p-flow MET calculation set m_doPFlow to true
   bool    m_doPFlow = false;
 
+  /// @brief Set DoMuonPFlowBugfix property
+  bool    m_doMuonPFlowBugfix = false;
+
   /// Rebuild MET using tracks in calo jets
   bool    m_rebuildUsingTracksInJets = false;
   /**
