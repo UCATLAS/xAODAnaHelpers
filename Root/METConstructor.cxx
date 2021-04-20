@@ -122,6 +122,9 @@ EL::StatusCode METConstructor :: initialize ()
   if ( m_doPFlow ) {
     ANA_CHECK(m_metmaker_handle.setProperty("DoPFlow", true));
   }
+  if ( m_doMuonPFlowBugfix ) {
+    ANA_CHECK(m_metmaker_handle.setProperty("DoMuonPFlowBugfix", true));
+  }
   ANA_CHECK(m_metmaker_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
