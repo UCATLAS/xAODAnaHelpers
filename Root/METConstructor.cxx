@@ -127,6 +127,7 @@ EL::StatusCode METConstructor :: initialize ()
 
   ///////////// IMETSystematicsTool ///////////////////
   if ( m_doPFlow ) { // do TST
+    ANA_CHECK(m_metSyst_handle.setProperty("ConfigPrefix", "METUtilities/run2_13TeV/"));
     ANA_CHECK(m_metSyst_handle.setProperty("ConfigSoftTrkFile", "TrackSoftTerms-pflow.config"));
   }
   ANA_CHECK(m_metSyst_handle.retrieve());
