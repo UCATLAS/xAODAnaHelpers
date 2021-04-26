@@ -586,10 +586,12 @@ void BJetEfficiencyCorrector :: makeMCIndexMap (std::string effCalib)
 
   // Find index for Pythia8, Sherpa 2.2, Herwig7 and aMC@NLO+Pythia8
   for (unsigned int i = 0; i < samples.size(); ++i){
-    if (samples.at(i) == "410470") m_MCIndexes["Pythia8"]  = i;
-    if (samples.at(i) == "410250") m_MCIndexes["Sherpa22"] = i;
-    if (samples.at(i) == "410558") m_MCIndexes["Herwig7"]  = i;
-    if (samples.at(i) == "410464") m_MCIndexes["aMC@NLO"]  = i;
+    if (samples.at(i) == "410470") m_MCIndexes["Pythia8"]    = i;
+    if (samples.at(i) == "700122") m_MCIndexes["Sherpa2210"] = i;
+    if (samples.at(i) == "410250") m_MCIndexes["Sherpa22"]   = i;
+    if (samples.at(i) == "600666") m_MCIndexes["Herwig721"]  = i;
+    if (samples.at(i) == "410558") m_MCIndexes["Herwig7"]    = i;
+    if (samples.at(i) == "410464") m_MCIndexes["aMC@NLO"]    = i;
   }
 
 }
@@ -620,15 +622,16 @@ unsigned int BJetEfficiencyCorrector :: getMCIndex (int dsid)
         (name.find("Py8EG_") != std::string::npos) ||
         (name.find("Py8") != std::string::npos)) { return m_MCIndexes["Pythia8"]; }
 
-    // Sherpa 2.2
-    if ((name.find("Sh_22") != std::string::npos) ||
-        (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
-        (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
+    // Sherpa 2.2.10
+    if ((name.find("Sh_2210") != std::string::npos)){ return m_MCIndexes["Sherpa2210"]; }
 
     // Sherpa 2.2
     if ((name.find("Sh_22") != std::string::npos) ||
         (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
         (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
+
+    // Herwig 7.2.1
+    if ( (name.find("Herwig721") != std::string::npos) ){ return m_MCIndexes["Herwig721"]; }
 
     // Herwig 7
     if ( (name.find("Herwig") != std::string::npos) ){ return m_MCIndexes["Herwig"]; }
