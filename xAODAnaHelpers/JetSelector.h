@@ -135,6 +135,8 @@ public:
   bool m_jvtUsedBefore=false;
   /// @brief Does the input have truth jets? If not, cannot decorate with true hard scatter / pileup info
   bool m_haveTruthJets = true;
+  /// @brief Retrieve JVT SFs (true by default, when false: allows to get JVT decision w/o needing truth jets)
+  bool m_getJVTSF = true;
 
   /**
     @brief Minimum value of JVT for selecting jets.

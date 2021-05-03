@@ -690,7 +690,11 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
-  if ( isMC() && m_doJVT && m_haveTruthJets ) {
+  if ( !m_haveTruthJets && m_getJVTSF) {
+    ANA_MSG_ERROR("Truth jets are needed to retrieve JVT SFs (set m_haveTruthJets to True to retrieve SFs OR set m_getJVTSF to False not to retrieve SFs");
+    return EL::StatusCode::FAILURE;
+  }
+  if ( isMC() && m_doJVT) {
 
     auto sysVariationNamesJVT = std::make_unique< std::vector< std::string > >();
 
@@ -752,7 +756,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               if ( syst_it.name().empty() ) {
                 passedJVT( *jet ) = 0; // mark as not passed
               }
-              if ( m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
+              if ( m_getJVTSF && m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in JVT Tool getInefficiencyScaleFactor");
                 return EL::StatusCode::FAILURE;
               }
@@ -760,7 +764,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
               if ( syst_it.name().empty() ) {
                 passedJVT( *jet ) = 1;
               }
-              if ( m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
+              if ( m_getJVTSF && m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
                 ANA_MSG_ERROR( "Error in JVT Tool getEfficiencyScaleFactor");
                 return EL::StatusCode::FAILURE;
               }
