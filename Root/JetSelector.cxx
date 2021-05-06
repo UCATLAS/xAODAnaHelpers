@@ -690,7 +690,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
-  if ( !m_haveTruthJets && m_getJVTSF) {
+  if ( !m_haveTruthJets && m_getJVTSF && m_doJVT) {
     ANA_MSG_ERROR("Truth jets are needed to retrieve JVT SFs (set m_haveTruthJets to True to retrieve SFs OR set m_getJVTSF to False not to retrieve SFs");
     return EL::StatusCode::FAILURE;
   }
