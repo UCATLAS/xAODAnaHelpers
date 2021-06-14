@@ -73,6 +73,10 @@ namespace xAH {
       float Jvt;
       float JvtJvfcorr;
       float JvtRpt;
+
+      // chargedPFOPV 
+      float SumPtChargedPFOPt500PV;
+      float fCharged;
     
       //JVC
       float JVC;

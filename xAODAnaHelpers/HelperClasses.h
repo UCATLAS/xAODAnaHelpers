@@ -435,6 +435,7 @@ namespace HelperClasses {
         m_layer          layer          exact
         m_trackPV        trackPV        exact
         m_trackAll       trackAll       exact
+        m_chargedPFOPV   chargedPFOPV   exact 
         m_jvt            JVT            exact
         m_sfJVTName      sfJVT          partial
         m_sffJVTName     sffJVT         partial
@@ -504,6 +505,7 @@ namespace HelperClasses {
     bool m_layer;
     bool m_trackPV;
     bool m_trackAll;
+    bool m_chargedPFOPV; 
     bool m_jvt;
     bool m_allTrack;
     bool m_allTrackDetail;
