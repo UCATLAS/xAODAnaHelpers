@@ -171,6 +171,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     }
   }
 
+  // chargedPFOPV 
+  if ( m_infoSwitch.m_chargedPFOPV ) {
+    m_SumPtChargedPFOPt500PV = new std::vector<float> ();
+    m_fCharged = new std::vector<float> ();
+  }
 
   // allTrack
   // trackAll or trackPV
@@ -601,6 +606,12 @@ JetContainer::~JetContainer()
     }
   }
 
+  // chargedPFOPV 
+  if ( m_infoSwitch.m_chargedPFOPV ) {
+    delete m_SumPtChargedPFOPt500PV;
+    delete m_fCharged;
+  }
+
   // allTrack
   // trackAll or trackPV
   if ( m_infoSwitch.m_allTrack ) {
@@ -944,6 +955,12 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree, "Jvt",        &m_Jvt);
     }
 
+  
+  if ( m_infoSwitch.m_chargedPFOPV ) {
+    connectBranch<float>(tree, "SumPtChargedPFOPt500PV", &m_SumPtChargedPFOPt500PV);
+    connectBranch<float>(tree, "fCharged", &m_fCharged);
+  }
+
   if(m_infoSwitch.m_JVC)
     {
       connectBranch<double>(tree,"JetVertexCharge_discriminant", &m_JetVertexCharge_discriminant);
@@ -1199,6 +1216,12 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       }
       jet.Jvt       =m_Jvt       ->at(idx);
     }
+
+  
+  if ( m_infoSwitch.m_chargedPFOPV ) {
+    jet.SumPtChargedPFOPt500PV=m_SumPtChargedPFOPt500PV->at(idx);
+    jet.fCharged=m_fCharged->at(idx);
+  }
 
   if( m_infoSwitch.m_JVC ) {
     if(m_debug) std::cout << "updating JVC " << std::endl;
@@ -1623,6 +1646,12 @@ void JetContainer::setBranches(TTree *tree)
     }
   }
 
+  
+  if ( m_infoSwitch.m_chargedPFOPV ) {
+    setBranch<float>(tree,"SumPtChargedPFOPt500PV", m_SumPtChargedPFOPt500PV);
+    setBranch<float>(tree,"fCharged", m_fCharged);
+  }
+
 
   if ( m_infoSwitch.m_allTrack ) {
     // if want to apply the selection of the PV then need to setup track selection tool
@@ -2038,6 +2067,13 @@ void JetContainer::clear()
     if ( m_mc ) {
       m_fJvtEff_SF_Tight ->clear();
     }
+  }
+  
+  // chargedPFOPV 
+  if ( m_infoSwitch.m_chargedPFOPV ) {
+    m_SumPtChargedPFOPt500PV->clear();
+    m_fCharged->clear();
+
   }
 
   if ( m_infoSwitch.m_allTrack ) {
@@ -2551,7 +2587,8 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
   }
 
-  if ( m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt || m_infoSwitch.m_clean ) {
+  
+  if ( m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt || m_infoSwitch.m_clean || m_infoSwitch.m_chargedPFOPV ) {
 
     // several moments calculated from all verticies
     // one accessor for each and just use appropiately in the following
@@ -2562,6 +2599,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     static SG::AuxElement::ConstAccessor< std::vector<float> > sumPt500 ("SumPtTrkPt500");
     static SG::AuxElement::ConstAccessor< std::vector<float> > trkWidth500 ("TrackWidthPt500");
     static SG::AuxElement::ConstAccessor< std::vector<float> > jvf("JVF");
+
+    static SG::AuxElement::ConstAccessor< std::vector<float> > sumPtChargedPFO500 ("SumPtChargedPFOPt500");
+
 
     if ( m_infoSwitch.m_trackAll ) {
 
@@ -2606,7 +2646,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
     } // trackAll
 
-    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt ) {
+    if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_chargedPFOPV || m_infoSwitch.m_jvt ) {
 
       if ( m_infoSwitch.m_trackPV && pvLocation >= 0 ) {
 
@@ -2646,6 +2686,22 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       } // trackPV
 
+      
+      if ( m_infoSwitch.m_chargedPFOPV && pvLocation >= 0) {
+
+        if ( sumPtChargedPFO500.isAvailable( *jet ) ) {
+          m_SumPtChargedPFOPt500PV->push_back( sumPtChargedPFO500( *jet)[pvLocation] );
+
+          xAOD::JetFourMom_t jetconstitP4 = jet->jetP4("JetConstitScaleMomentum");
+          m_fCharged->push_back( sumPtChargedPFO500( *jet)[pvLocation] / jetconstitP4.Pt());
+
+        } else { 
+          m_SumPtChargedPFOPt500PV->push_back(-999);
+          m_fCharged->push_back(-999);
+        }
+
+      }
+
       static SG::AuxElement::ConstAccessor< float > jvt ("Jvt");
       safeFill<float, float, xAOD::Jet>(jet, jvt, m_Jvt, -999);
 
@@ -2654,7 +2710,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       //        m_ghostTrackAssFrac->push_back( ghostTrackAssFrac( *jet) );
       //      } else { m_ghostTrackAssFrac->push_back( -999 ) ; }
 
-    } // trackPV || JVT
+    } // trackPV || chargedPFOPV || JVT
 
     if ( m_infoSwitch.m_clean && pvLocation >= 0 ) {
 
