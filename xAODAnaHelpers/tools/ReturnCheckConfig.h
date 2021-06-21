@@ -1,9 +1,9 @@
-#warning Please use instead ANA_CHECK in AsgTools/MessageCheck.h
+#warning Please use instead ANA_CHECK in AsgMessaging/MessageCheck.h
 
 #ifndef xAODAnaHelpers_TOOLS_RETURNCHECKCONFIG_H
 #define xAODAnaHelpers_TOOLS_RETURNCHECKCONFIG_H
 
-#include "AsgTools/MessageCheck.h"
+#include "AsgMessaging/MessageCheck.h
 
 #define RETURN_CHECK_CONFIG( CONTEXT, CONFIG )                             \
      do {                                                                    \
