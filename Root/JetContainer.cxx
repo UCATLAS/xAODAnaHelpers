@@ -2693,7 +2693,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
           m_SumPtChargedPFOPt500PV->push_back( sumPtChargedPFO500( *jet)[pvLocation] );
 
           xAOD::JetFourMom_t jetconstitP4 = jet->jetP4("JetConstitScaleMomentum");
-          m_fCharged->push_back( sumPtChargedPFO500( *jet)[pvLocation] / jetconstitP4.Pt());
+          if (jetconstitP4.Pt()==0.0)
+          {
+            m_fCharged->push_back(-999);
+          }else
+          {
+            m_fCharged->push_back( sumPtChargedPFO500( *jet)[pvLocation] / jetconstitP4.Pt());
+          }
 
         } else { 
           m_SumPtChargedPFOPt500PV->push_back(-999);
