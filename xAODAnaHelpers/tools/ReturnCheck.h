@@ -1,6 +1,6 @@
-#warning Please use instead ANA_CHECK in AsgTools/MessageCheck.h
+#warning Please use instead ANA_CHECK in AsgMessaging/MessageCheck.h
 
-#include "AsgTools/MessageCheck.h"
+#include "AsgMessaging/MessageCheck.h"
 
 #ifndef xAODAnaHelpers_TOOLS_RETURNCHECK_H
 #define xAODAnaHelpers_TOOLS_RETURNCHECK_H
