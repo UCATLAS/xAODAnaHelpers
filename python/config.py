@@ -92,10 +92,11 @@ class Config(object):
       for k,v in options.items():
         if k in ['m_msgLevel', 'm_name']: continue
         self._set_algo_attribute(alg_obj, k, v, className, algName)
+
+      alg_obj.setUseXAODs(useXAOD)
     else:
       raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm. I do not know how to configure it. {1}".format(className, parents))
 
-    alg_obj.useXAOD(useXAOD)
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
 
