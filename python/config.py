@@ -28,7 +28,7 @@ class Config(object):
     logger.warning("\tPossible call stack: {0:s}({1:d}): {2:s}".format(path, lineno, lines[0].strip()))
     return self.algorithm(className, options)
 
-  def algorithm(self, className, options):
+  def algorithm(self, className, options, useXAOD=True):
     # check first argument
     if isinstance(className, unicode): className = className.encode('utf-8')
     if not isinstance(className, str):
@@ -95,6 +95,7 @@ class Config(object):
     else:
       raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm. I do not know how to configure it. {1}".format(className, parents))
 
+    alg_obj.useXAOD(useXAOD)
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
 
