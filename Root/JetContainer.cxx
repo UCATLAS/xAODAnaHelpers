@@ -447,11 +447,6 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_passOR  =new std::vector<char>();
   }
 
-  // custom chat decorations
-  if ( !m_infoSwitch.m_jetBTagCts.empty() ){ // Temporary
-    // Think what to do since technically I would like a separated branch for each of the requested decorations...
-  }
-
 }
 
 JetContainer::~JetContainer()
