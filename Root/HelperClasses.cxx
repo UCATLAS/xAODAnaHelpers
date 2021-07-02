@@ -119,6 +119,7 @@ namespace HelperClasses{
   */
 
   void EventInfoSwitch::initialize(){
+    m_noDataInfo    = has_exact("noDataInfo");
     m_pileup        = has_exact("pileup");
     m_pileupsys     = has_exact("pileupsys");
     m_eventCleaning = has_exact("eventCleaning");
@@ -142,6 +143,7 @@ namespace HelperClasses{
   }
 
   void IParticleInfoSwitch::initialize(){
+    m_noMultiplicity= has_exact("noMultiplicity");
     m_kinematic     = has_exact("kinematic");
 
     m_numLeading    = 0;
@@ -188,6 +190,11 @@ namespace HelperClasses{
         m_trigWPs.push_back(token.substr(5));
       }
     }
+
+    // passSel
+    m_passSel = has_exact("passSel");
+    // passOR
+    m_passOR = has_exact("passOR");
 
     m_recoEff_sysNames = has_exact("recoEff_sysNames");
     m_isoEff_sysNames  = has_exact("isoEff_sysNames");
@@ -236,6 +243,11 @@ namespace HelperClasses{
         m_trigWPs.push_back(token.substr(5));
       }
     }
+
+    // passSel
+    m_passSel = has_exact("passSel");
+    // passOR
+    m_passOR = has_exact("passOR");
   }
 
   void PhotonInfoSwitch::initialize(){
@@ -334,6 +346,7 @@ namespace HelperClasses{
     m_onlineBSTool        = has_exact("onlineBSTool");
 
     m_passSel             = has_exact("passSel");
+    m_passOR              = has_exact("passOR");
 
     m_charge              = has_exact("charge");
     m_etaPhiMap           = has_exact("etaPhiMap");
@@ -409,6 +422,7 @@ namespace HelperClasses{
   }
 
   void TrackInfoSwitch::initialize(){
+    m_noMultiplicity= has_exact("noMultiplicity");
     m_kinematic     = has_exact("kinematic");
     m_fitpars	    = has_exact("fitpars");
     m_numbers	    = has_exact("numbers");

@@ -130,6 +130,13 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     m_PromptLeptonVeto                  = new std::vector<float> ();
   }
 
+  if ( m_infoSwitch.m_passSel ) {
+    m_passSel = new std::vector<char>();
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    m_passOR = new std::vector<char>();
+  }
+
 }
 
 MuonContainer::~MuonContainer()
@@ -254,6 +261,13 @@ MuonContainer::~MuonContainer()
     delete m_PromptLeptonVeto                  ;
   }
 
+  if ( m_infoSwitch.m_passSel ) {
+    delete m_passSel;
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    delete m_passOR;
+  }
+
 }
 
 void MuonContainer::setTree(TTree *tree)
@@ -376,6 +390,9 @@ void MuonContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "PromptLeptonVeto",                 &m_PromptLeptonVeto);
   }
 
+  if(m_infoSwitch.m_passSel) connectBranch<char>(tree,"passSel",&m_passSel);
+  if(m_infoSwitch.m_passOR) connectBranch<char>(tree,"passOR",&m_passOR);
+
 }
 
 void MuonContainer::updateParticle(uint idx, Muon& muon)
@@ -495,6 +512,11 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.PromptLeptonVeto                  = m_PromptLeptonVeto                  ->at(idx);
   }
 
+  // passSel
+  if(m_infoSwitch.m_passSel) muon.passSel = m_passSel->at(idx);
+  // passOR
+  if(m_infoSwitch.m_passOR) muon.passOR = m_passOR->at(idx);
+
 }
 
 
@@ -613,6 +635,13 @@ void MuonContainer::setBranches(TTree *tree)
     setBranch<float>(tree, "PromptLeptonVeto",                  m_PromptLeptonVeto);
   }
 
+  if ( m_infoSwitch.m_passSel ) {
+    setBranch<char>(tree,"passSel",m_passSel);
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    setBranch<char>(tree,"passOR",m_passOR);
+  }
+
   return;
 }
 
@@ -724,6 +753,13 @@ void MuonContainer::clear()
     m_ParamEnergyLossSigmaMinus->clear();
     m_ParamEnergyLossSigmaPlus->clear();
 
+  }
+
+  if(m_infoSwitch.m_passSel){
+    m_passSel->clear();
+  }
+  if(m_infoSwitch.m_passOR){
+    m_passOR->clear();
   }
 
 }
@@ -972,6 +1008,15 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     safeFill<float, float, xAOD::Muon>(muon, accMuon_ParamEnergyLossSigmaPlus, m_ParamEnergyLossSigmaPlus, -1);
 
   }
-  
+
+  if ( m_infoSwitch.m_passSel ) {
+    static SG::AuxElement::Accessor<char> accMuon_passSel( "passSel" );
+    safeFill<char, char, xAOD::Muon>(muon, accMuon_passSel, m_passSel, -99);
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    static SG::AuxElement::Accessor<char> accMuon_passOR( "passOR" );
+    safeFill<char, char, xAOD::Muon>(muon, accMuon_passOR, m_passOR, -99);
+  }
+
   return;
 }
