@@ -502,6 +502,9 @@ namespace xAH {
 
       // passSel
       std::vector<char> *m_passSel;
+
+      // passOR
+      std::vector<char> *m_passOR;
     };
 }
 
