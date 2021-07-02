@@ -68,7 +68,7 @@ namespace xAH
 	}
 
 	tree->SetBranchStatus  (counterName.c_str() , 1);
-	tree->SetBranchAddress (counterName.c_str() , &m_n);
+	if(!m_infoSwitch.m_noMultiplicity) tree->SetBranchAddress (counterName.c_str() , &m_n);
 
         if(m_infoSwitch.m_kinematic)
           {
@@ -90,7 +90,7 @@ namespace xAH
 	std::string              counterName = "n"+m_name;
 	if (!m_suffix.empty()) { counterName += "_" + m_suffix; }
 
-	tree->Branch(counterName.c_str(),    &m_n, (counterName+"/I").c_str());
+	if(!m_infoSwitch.m_noMultiplicity) tree->Branch(counterName.c_str(),    &m_n, (counterName+"/I").c_str());
 
         if(m_infoSwitch.m_kinematic) {
 	  if(m_useMass)  setBranch<float>(tree,"m",                        m_M                );

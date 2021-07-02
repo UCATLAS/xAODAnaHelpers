@@ -21,11 +21,13 @@ EventInfo::~EventInfo()
 void EventInfo::setTree(TTree *tree)
 {
 
-  connectBranch<int>     (tree, "runNumber",   &m_runNumber);
-  connectBranch<Long64_t>(tree, "eventNumber", &m_eventNumber);
-  connectBranch<int>     (tree, "lumiBlock",   &m_lumiBlock);
-  connectBranch<uint32_t>(tree, "coreFlags",   &m_coreFlags);
-  connectBranch<int     >(tree, "bcid",                       &m_bcid);
+  if (!m_infoSwitch.m_noDataInfo){ // saved always (unless specifically requiring not to)
+    connectBranch<int>     (tree, "runNumber",   &m_runNumber);
+    connectBranch<Long64_t>(tree, "eventNumber", &m_eventNumber);
+    connectBranch<int>     (tree, "lumiBlock",   &m_lumiBlock);
+    connectBranch<uint32_t>(tree, "coreFlags",   &m_coreFlags);
+    connectBranch<int     >(tree, "bcid",                       &m_bcid);
+  }
 
   if(m_mc){
     connectBranch<int     >(tree, "mcEventNumber",              &m_mcEventNumber);
@@ -121,12 +123,13 @@ void EventInfo::setTree(TTree *tree)
 void EventInfo::setBranches(TTree *tree)
 {
 
-  // always
-  tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
-  tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/L");
-  tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
-  tree->Branch("coreFlags",          &m_coreFlags,      "coreFlags/i");
-  tree->Branch("bcid",               &m_bcid,           "bcid/I");
+  if (!m_infoSwitch.m_noDataInfo){ // saved always (unless specifically requiring not to)
+    tree->Branch("runNumber",          &m_runNumber,      "runNumber/I");
+    tree->Branch("eventNumber",        &m_eventNumber,    "eventNumber/L");
+    tree->Branch("lumiBlock",          &m_lumiBlock,      "lumiBlock/I");
+    tree->Branch("coreFlags",          &m_coreFlags,      "coreFlags/i");
+    tree->Branch("bcid",               &m_bcid,           "bcid/I");
+  }
 
   if( m_mc ) {
     tree->Branch("mcEventNumber",      &m_mcEventNumber,  "mcEventNumber/I");
@@ -267,11 +270,13 @@ void EventInfo::clear()
 
 void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event, const xAOD::VertexContainer* vertices) {
 
-  m_runNumber             = eventInfo->runNumber();
-  m_eventNumber           = eventInfo->eventNumber();
-  m_lumiBlock             = eventInfo->lumiBlock();
-  m_coreFlags             = eventInfo->eventFlags(xAOD::EventInfo::Core);
-  m_bcid                  = eventInfo->bcid();
+  if (!m_infoSwitch.m_noDataInfo){ // saved always (unless specifically requiring not to)
+    m_runNumber             = eventInfo->runNumber();
+    m_eventNumber           = eventInfo->eventNumber();
+    m_lumiBlock             = eventInfo->lumiBlock();
+    m_coreFlags             = eventInfo->eventFlags(xAOD::EventInfo::Core);
+    m_bcid                  = eventInfo->bcid();
+  }
 
   if ( m_mc ) {
     m_mcEventNumber         = eventInfo->mcEventNumber();

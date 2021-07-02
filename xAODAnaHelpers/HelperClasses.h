@@ -135,6 +135,7 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_noDataInfo     noDataInfo     exact
         m_eventCleaning  eventCleaning  exact
         m_bcidInfo       bcidInfo       exact
         m_pileup         pileup         exact
@@ -151,6 +152,7 @@ namespace HelperClasses {
    */
   class EventInfoSwitch : public InfoSwitch {
   public:
+    bool m_noDataInfo;
     bool m_eventCleaning;
     bool m_bcidInfo;
     bool m_pileup;
@@ -203,13 +205,14 @@ namespace HelperClasses {
     @rst
         The :cpp:class:`HelperClasses::InfoSwitch` struct for IParticle Information.
 
-        ============== ============ =======
-        Parameter      Pattern      Match
-        ============== ============ =======
-        m_kinematic    kinematic    exact
-        m_numLeading   NLeading     partial
-        m_useTheS      useTheS      exact
-        ============== ============ =======
+        ================ ============== =======
+        Parameter        Pattern        Match
+        ================ ============== =======
+        m_noMultiplicity noMultiplicity exact
+        m_kinematic      kinematic      exact
+        m_numLeading     NLeading       partial
+        m_useTheS        useTheS        exact
+        ================ ============== =======
 
         .. note::
             ``m_numLeading`` requires a number ``XX`` to follow it, defining the number of leading partiles and associate it with that variable.
@@ -225,6 +228,7 @@ namespace HelperClasses {
    */
   class IParticleInfoSwitch : public InfoSwitch {
   public:
+    bool m_noMultiplicity;
     bool m_kinematic;
     int  m_numLeading;
     bool m_useTheS;
@@ -255,6 +259,8 @@ namespace HelperClasses {
         m_isolWPs[""]          ISOL_NONE            exact
         m_isolWPs[XYZ]         ISOL_XYZ             pattern
         m_trigWPs[XYZ]         TRIG_XYZ             pattern
+        m_passSel              passSel              exact
+        m_passOR               passOR               exact
         ====================== ==================== =======
 
         .. note::
@@ -289,6 +295,9 @@ namespace HelperClasses {
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
 
+    bool m_passSel;
+    bool m_passOR;
+
     bool m_recoEff_sysNames;
     bool m_isoEff_sysNames;
     bool m_trigEff_sysNames;
@@ -321,6 +330,8 @@ namespace HelperClasses {
         m_isolWPs[""]         ISOL_NONE           exact
         m_isolWPs[XYZ]        ISOL_XYZ            pattern
         m_trigWPs[XYZ]        TRIG_XYZ            pattern
+        m_passSel             passSel             exact
+        m_passOR              passOR              exact
         ===================== =================== =======
 
         .. note::
@@ -355,6 +366,8 @@ namespace HelperClasses {
     std::vector< std::string > m_PIDSFWPs;
     std::vector< std::string > m_isolWPs;
     std::vector< std::string > m_trigWPs;
+    bool m_passSel;
+    bool m_passOR;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:
@@ -415,6 +428,7 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_noMultiplicity noMultiplicity exact
         m_kinematic      kinematic      exact
         m_trigger        trigger        exact
         m_substructure   substructure   exact
@@ -460,6 +474,7 @@ namespace HelperClasses {
         m_onlineBSTool   onlineBSTool   exact
         m_charge         charge         exact
         m_passSel        passSel        exact
+        m_passOR         passOR         exact
         m_vsLumiBlock    vsLumiBlock    exact
         m_vsActualMu     vsActualMu     exact
         m_lumiB_runN     lumiB_runN     exact
@@ -526,6 +541,7 @@ namespace HelperClasses {
     bool m_onlineBSTool;
     bool m_charge;
     bool m_passSel;
+    bool m_passOR;
     bool m_etaPhiMap;
     bool m_vsLumiBlock;
     bool m_vsActualMu;
@@ -554,6 +570,7 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_noMultiplicity noMultiplicity exact
         m_kinematic      kinematic      exact
         m_type           type           exact
         m_bVtx           bVtx           exact
@@ -586,6 +603,7 @@ namespace HelperClasses {
         ================ ============== =======
         Parameter        Pattern        Match
         ================ ============== =======
+        m_noMultiplicity noMultiplicity exact
         m_kinematic      kinematic      exact
         m_fitpars        fitpars        exact
         m_numbers        numbers        exact
@@ -598,6 +616,7 @@ namespace HelperClasses {
   */
   class TrackInfoSwitch : public InfoSwitch {
   public:
+    bool m_noMultiplicity;
     bool m_kinematic;
     bool m_fitpars;
     bool m_numbers;

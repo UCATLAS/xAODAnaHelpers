@@ -442,6 +442,16 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_passSel  =new std::vector<char>();
   }
 
+  // passOR
+  if ( m_infoSwitch.m_passOR ) {
+    m_passOR  =new std::vector<char>();
+  }
+
+  // custom chat decorations
+  if ( !m_infoSwitch.m_jetBTagCts.empty() ){ // Temporary
+    // Think what to do since technically I would like a separated branch for each of the requested decorations...
+  }
+
 }
 
 JetContainer::~JetContainer()
@@ -859,6 +869,11 @@ JetContainer::~JetContainer()
     delete m_passSel;
   }
 
+  // passOR
+  if ( m_infoSwitch.m_passOR ) {
+    delete m_passOR;
+  }
+
 }
 
 void JetContainer::setTree(TTree *tree)
@@ -1116,6 +1131,9 @@ void JetContainer::setTree(TTree *tree)
 
   // passSel
   if(m_infoSwitch.m_passSel) connectBranch<char>(tree,"passSel", &m_passSel);
+
+  // passOR
+  if(m_infoSwitch.m_passOR) connectBranch<char>(tree,"passOR", &m_passOR);
 
 }
 
@@ -1472,6 +1490,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
   // passSel
   if(m_infoSwitch.m_passSel) jet.passSel=m_passSel->at(idx);
+
+  // passOR
+  if(m_infoSwitch.m_passOR) jet.passOR=m_passOR->at(idx);
 
   if(m_debug) std::cout << "leave JetContainer::updateParticle " << std::endl;
   return;
@@ -1888,6 +1909,10 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<char>(tree,"passSel", m_passSel);
   }
 
+  if ( m_infoSwitch.m_passOR ) {
+    setBranch<char>(tree,"passOR", m_passOR);
+  }
+
   return;
 }
 
@@ -2294,6 +2319,10 @@ void JetContainer::clear()
 
   if( m_infoSwitch.m_passSel ) {
     m_passSel->clear();
+  }
+
+  if( m_infoSwitch.m_passOR ) {
+    m_passOR->clear();
   }
 
   return;
@@ -3480,6 +3509,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_passSel->push_back(passSel);
     }else{
       m_passSel->push_back(-99);
+    }
+  }
+
+  if ( m_infoSwitch.m_passOR ) {
+    char passOR;
+    bool status = jet->getAttribute<char>( "passOR", passOR );
+    if(status){
+      m_passOR->push_back(passOR);
+    }else{
+      m_passOR->push_back(-99);
     }
   }
 
