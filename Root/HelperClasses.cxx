@@ -129,6 +129,7 @@ namespace HelperClasses{
     m_truth         = has_exact("truth");
     m_caloClus      = has_exact("caloClusters");
     m_weightsSys    = has_exact("weightsSys");
+    m_beamspotweight= has_exact("beamspotweight");
   }
 
   void TriggerInfoSwitch::initialize(){

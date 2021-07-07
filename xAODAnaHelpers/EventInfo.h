@@ -75,6 +75,9 @@ namespace xAH {
     double   m_rhoEMPFLOW;
     double   m_rhoLC;
 
+    // beam spot weight
+    float    m_beamspotweight;
+
     // truth
     int      m_pdgId1;
     int      m_pdgId2;
