@@ -115,6 +115,10 @@ void EventInfo::setTree(TTree *tree)
     std::vector<float>*  m_caloCluster_e_addr = &m_caloCluster_e;
     HelperFunctions::connectBranch<float>("caloCluster", tree, "e",   &m_caloCluster_e_addr   );
   }
+
+  if ( m_infoSwitch.m_beamspotweight ) {
+    connectBranch<float>(tree, "beamSpotWeight",                    &m_beamspotweight);
+  }
 }
 
 
@@ -208,6 +212,10 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("caloCluster_e",   &m_caloCluster_e);
   }
 
+  if ( m_infoSwitch.m_beamspotweight ) {
+    tree->Branch("beamSpotWeight",   &m_beamspotweight);
+  }
+
   return;
 }
 
@@ -260,6 +268,10 @@ void EventInfo::clear()
     m_caloCluster_eta.clear();
     m_caloCluster_phi.clear();
     m_caloCluster_e.clear();
+  }
+
+  if ( m_infoSwitch.m_beamspotweight ) {
+    m_beamspotweight = 1.;
   }
 
   return;
@@ -433,6 +445,9 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
 
   }
 
+  if ( m_infoSwitch.m_beamspotweight ) {
+    m_beamspotweight = eventInfo->beamSpotWeight();
+  }
 
   return;
 }

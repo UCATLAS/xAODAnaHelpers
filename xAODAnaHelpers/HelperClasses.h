@@ -145,6 +145,7 @@ namespace HelperClasses {
         m_truth          truth          exact
         m_caloClus       caloClusters   exact
         m_weightsSys     weightsSys     exact
+        m_beamspotweight beamspotweight exact
         ================ ============== =======
 
     @endrst
@@ -161,6 +162,7 @@ namespace HelperClasses {
     bool m_truth;
     bool m_caloClus;
     bool m_weightsSys;
+    bool m_beamspotweight;
     EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
   protected:
     void initialize();
