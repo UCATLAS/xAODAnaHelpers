@@ -2683,7 +2683,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
           m_JVFPV->push_back( jvf( *jet )[pvLocation] );
         } else { m_JVFPV->push_back( -999 ); }
 
-        static SG::AuxElement::ConstAccessor< float > jvtJvfcorr ("JvtJvfcorr");
+        static SG::AuxElement::ConstAccessor< float > jvtJvfcorr ("JVFCorr");
         safeFill<float, float, xAOD::Jet>(jet, jvtJvfcorr, m_JvtJvfcorr, -999);
 
         static SG::AuxElement::ConstAccessor< float > jvtRpt ("JvtRpt");
