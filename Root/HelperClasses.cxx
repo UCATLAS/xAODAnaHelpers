@@ -419,6 +419,7 @@ namespace HelperClasses{
     m_children      = has_exact("children");
     m_dressed       = has_exact("dressed");
     m_origin        = has_exact("origin");
+    m_particleType  = has_exact("particleType");
   }
 
   void TrackInfoSwitch::initialize(){
