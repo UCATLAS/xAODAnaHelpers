@@ -51,6 +51,10 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
     m_origin = new std::vector<unsigned int>();
   }
 
+  if(m_infoSwitch.m_particleType){
+    m_particleType = new std::vector<unsigned int>();
+  }
+
 }
 
 TruthContainer::~TruthContainer()
@@ -96,6 +100,10 @@ TruthContainer::~TruthContainer()
 
   if(m_infoSwitch.m_origin){
     delete m_origin;
+  }
+
+  if(m_infoSwitch.m_particleType){
+    delete m_particleType;
   }
 
 }
@@ -146,6 +154,10 @@ void TruthContainer::setTree(TTree *tree)
     connectBranch<unsigned int> (tree,"origin",  &m_origin);
   }
 
+  if(m_infoSwitch.m_particleType){
+    connectBranch<unsigned int> (tree,"type",  &m_particleType);
+  }
+
 }
 
 void TruthContainer::updateParticle(uint idx, TruthPart& truth)
@@ -193,6 +205,10 @@ void TruthContainer::updateParticle(uint idx, TruthPart& truth)
 
   if(m_infoSwitch.m_origin){
     truth.origin = m_origin->at(idx);
+  }
+
+  if(m_infoSwitch.m_particleType){
+    truth.type = m_particleType->at(idx);
   }
 
   if(m_debug) std::cout << "leave TruthContainer::updateParticle " << std::endl;
@@ -246,6 +262,10 @@ void TruthContainer::setBranches(TTree *tree)
     setBranch<unsigned int> (tree,"origin",m_origin);
   }
 
+  if(m_infoSwitch.m_particleType){
+    setBranch<unsigned int> (tree,"type",m_particleType);
+  }
+
   return;
 }
 
@@ -293,6 +313,10 @@ void TruthContainer::clear()
 
   if(m_infoSwitch.m_origin){
     m_origin->clear();
+  }
+
+  if(m_infoSwitch.m_particleType){
+    m_particleType->clear();
   }
 
   return;
@@ -413,6 +437,15 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
       m_origin->push_back(origin);
     } else {
       m_origin->push_back(0); // Non-defined
+    }
+  }
+
+  if(m_infoSwitch.m_particleType){
+    if( truth->isAvailable<unsigned int>("classifierParticleType") ){
+      unsigned int type = truth->auxdata<unsigned int>("classifierParticleType");
+      m_particleType->push_back(type);
+    } else {
+      m_particleType->push_back(0); // Unknown
     }
   }
 

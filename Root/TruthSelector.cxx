@@ -329,7 +329,26 @@ int TruthSelector :: PassCuts( const xAOD::TruthParticle* truthPart ) {
   // selections for particles from MCTruthClassifier
 
   // type
-  if ( m_type != 1000 ) {
+  if ( !m_typeOptions.empty() ) { // check w.r.t. multiple possible type values
+    if ( m_type != 1000 ) { ANA_MSG_WARNING( "single and multiple type conditions were selected, only the former will be used" );
+    } else {
+      std::string token;
+      std::vector<unsigned int> typeVec;
+      std::istringstream ss(m_typeOptions);
+      while ( std::getline(ss, token, '|') ) typeVec.push_back(std::stoi(token));
+      bool found = false;
+      if( truthPart->isAvailable<unsigned int>("classifierParticleType") ){
+        unsigned int type = truthPart->auxdata<unsigned int>("classifierParticleType");
+        for (unsigned int i=0;i<typeVec.size();++i){
+          if (type == typeVec.at(i)) found = true;
+        }
+        if (!found) { return 0; }
+      } else {
+        ANA_MSG_WARNING( "classifierParticleType is not available" );
+      }
+    }
+  }
+  if ( m_type != 1000 ) { // single type value
     if( truthPart->isAvailable<unsigned int>("classifierParticleType") ){
       unsigned int type = truthPart->auxdata<unsigned int>("classifierParticleType");
       if ( type != m_type ) { return 0; }
