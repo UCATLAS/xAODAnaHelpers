@@ -290,18 +290,23 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( " Initialising CP::MuonEfficiencyScaleFactors for TTVA efficiency SF..." );
 
-  ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name));
-  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name) ) {
-    m_muTTVASF_tool = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>( m_TTVAEffSF_tool_name );
-  } else {
-    m_muTTVASF_tool = new CP::MuonEfficiencyScaleFactors( m_TTVAEffSF_tool_name );
-    ANA_CHECK( m_muTTVASF_tool->setProperty("WorkingPoint", m_WorkingPointTTVA ));
-    if ( !m_overrideCalibRelease.empty() ) {
-      ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
-      ANA_CHECK( m_muTTVASF_tool->setProperty("CalibrationRelease", m_overrideCalibRelease ));
-    }
-    ANA_CHECK( m_muTTVASF_tool->initialize());
+  ANA_CHECK( checkToolStore<CP::IMuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name));
+  const bool TTVASFInstanceExists = asg::ToolStore::contains<CP::IMuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name);
+ 
+  // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
+  m_muTTVASF_tool = asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors>("CP::MuonEfficiencyScaleFactors/"+m_TTVAEffSF_tool_name);
+  // setProperty is ignored if tool is already configured (i.e. for TTVASFInstanceExists == true) 
+  ANA_CHECK( m_muTTVASF_tool.setProperty("WorkingPoint", m_WorkingPointTTVA ));
+  if ( !m_overrideCalibRelease.empty() ) {
+    ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
+    ANA_CHECK( m_muTTVASF_tool.setProperty("CalibrationRelease", m_overrideCalibRelease ));
+  }
+  ANA_CHECK(m_muTTVASF_tool.retrieve());
+  assert(m_muTTVASF_tool.isInitialized());
 
+  // only process systematics once per efficiency SF/WP
+  if(not TTVASFInstanceExists)
+  {
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
     m_outputSystNamesTTVA = m_outputSystNamesTTVA + "_" + m_WorkingPointTTVA;
@@ -434,10 +439,6 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
   // submission node after all your histogram outputs have been
   // merged.  This is different from histFinalize() in that it only
   // gets called on worker nodes that processed input events.
-
-  ANA_MSG_INFO( "Deleting tool instances...");
-
-  delete m_muTTVASF_tool;
 
   return EL::StatusCode::SUCCESS;
 }
