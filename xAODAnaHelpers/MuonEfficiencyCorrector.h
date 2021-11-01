@@ -14,6 +14,8 @@
 #include "PATInterfaces/SystematicsUtil.h"
 #include "PATInterfaces/SystematicVariation.h"
 #include "PATInterfaces/ISystematicsTool.h"
+#include "MuonAnalysisInterfaces/IMuonEfficiencyScaleFactors.h"
+#include "MuonAnalysisInterfaces/IMuonTriggerScaleFactors.h"
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
@@ -94,14 +96,14 @@ private:
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool = nullptr;               //!
-  std::string m_recoEffSF_tool_name;                                       //!
-  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
-  std::string m_isoEffSF_tool_name;                                        //!
-  CP::MuonTriggerScaleFactors* m_muTrigSF_tool = nullptr;                  //!
-  std::string m_trigEffSF_tool_name;                                       //!
-  CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               //!
-  std::string m_TTVAEffSF_tool_name;                                       //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool; //!
+  std::string m_recoEffSF_tool_name; //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool; //!
+  std::string m_isoEffSF_tool_name; //!
+  asg::AnaToolHandle<CP::IMuonTriggerScaleFactors> m_muTrigSF_tool; //!
+  std::string m_trigEffSF_tool_name; //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muTTVASF_tool; //!
+  std::string m_TTVAEffSF_tool_name; //!
   std::map<std::string, std::string> m_SingleMuTriggerMap; //!
 
   // variables that don't get filled at submission time should be
