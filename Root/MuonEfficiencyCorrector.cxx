@@ -188,17 +188,22 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( " Initialising CP::MuonEfficiencyScaleFactors for ISO efficiency SF..." );
 
-  ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name));
-  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(m_isoEffSF_tool_name) ) {
-    m_muIsoSF_tool = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>( m_isoEffSF_tool_name );
-  } else {
-    m_muIsoSF_tool = new CP::MuonEfficiencyScaleFactors( m_isoEffSF_tool_name );
-    ANA_CHECK( m_muIsoSF_tool->setProperty("WorkingPoint", iso_WP ));
-    if ( !m_overrideCalibRelease.empty() ) {
-      ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
-      ANA_CHECK( m_muIsoSF_tool->setProperty("CalibrationRelease", m_overrideCalibRelease ));
-    }
-    ANA_CHECK( m_muIsoSF_tool->initialize());
+  ANA_CHECK( checkToolStore<CP::IMuonEfficiencyScaleFactors>(m_isoEffSF_tool_name));
+  const bool isoEffSFInstanceExists = asg::ToolStore::contains<CP::IMuonEfficiencyScaleFactors>(m_isoEffSF_tool_name);
+  
+  // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
+  m_muIsoSF_tool = asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors>("CP::MuonEfficiencyScaleFactors/"+m_isoEffSF_tool_name);
+  // setProperty is ignored if tool is already configured (i.e. for isoEffSFInstanceExists == true)
+  ANA_CHECK( m_muIsoSF_tool.setProperty("WorkingPoint", iso_WP ));
+  if ( !m_overrideCalibRelease.empty() ) {
+    ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
+    ANA_CHECK( m_muIsoSF_tool.setProperty("CalibrationRelease", m_overrideCalibRelease ));
+  }
+  ANA_CHECK(m_muIsoSF_tool.retrieve());
+  assert(m_muIsoSF_tool.isInitialized());
+  
+  // only process systematics once per efficiency SF/WP
+  if(not isoEffSFInstanceExists){
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
@@ -432,7 +437,6 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  delete m_muIsoSF_tool;
   delete m_muTrigSF_tool;
   delete m_muTTVASF_tool;
 

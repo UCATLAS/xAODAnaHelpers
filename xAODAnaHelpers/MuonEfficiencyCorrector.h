@@ -97,8 +97,8 @@ private:
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
   asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool; //!
   std::string m_recoEffSF_tool_name; //!
-  CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
-  std::string m_isoEffSF_tool_name;                                        //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muIsoSF_tool; //!
+  std::string m_isoEffSF_tool_name; //!
   CP::MuonTriggerScaleFactors* m_muTrigSF_tool = nullptr;                  //!
   std::string m_trigEffSF_tool_name;                                       //!
   CP::MuonEfficiencyScaleFactors* m_muTTVASF_tool = nullptr;               //!
