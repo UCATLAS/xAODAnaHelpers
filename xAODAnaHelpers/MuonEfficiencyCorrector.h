@@ -14,6 +14,7 @@
 #include "PATInterfaces/SystematicsUtil.h"
 #include "PATInterfaces/SystematicVariation.h"
 #include "PATInterfaces/ISystematicsTool.h"
+#include "MuonAnalysisInterfaces/IMuonEfficiencyScaleFactors.h"
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
@@ -94,8 +95,8 @@ private:
 
   // tools
   asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle{"CP::PileupReweightingTool/Pileup"}; //!
-  CP::MuonEfficiencyScaleFactors* m_muRecoSF_tool = nullptr;               //!
-  std::string m_recoEffSF_tool_name;                                       //!
+  asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors> m_muRecoSF_tool; //!
+  std::string m_recoEffSF_tool_name; //!
   CP::MuonEfficiencyScaleFactors* m_muIsoSF_tool = nullptr;                //!
   std::string m_isoEffSF_tool_name;                                        //!
   CP::MuonTriggerScaleFactors* m_muTrigSF_tool = nullptr;                  //!

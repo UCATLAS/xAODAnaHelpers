@@ -139,18 +139,23 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( " Initialising CP::MuonEfficiencyScaleFactors for RECO efficiency SF..." );
 
-  ANA_CHECK( checkToolStore<CP::MuonEfficiencyScaleFactors>(m_recoEffSF_tool_name));
-  if ( asg::ToolStore::contains<CP::MuonEfficiencyScaleFactors>(m_recoEffSF_tool_name) ) {
-    m_muRecoSF_tool = asg::ToolStore::get<CP::MuonEfficiencyScaleFactors>( m_recoEffSF_tool_name );
-  } else {
-    m_muRecoSF_tool = new CP::MuonEfficiencyScaleFactors( m_recoEffSF_tool_name );
-    ANA_CHECK( m_muRecoSF_tool->setProperty("WorkingPoint", m_WorkingPointReco ));
-    if ( !m_overrideCalibRelease.empty() ) {
-      ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
-      ANA_CHECK( m_muRecoSF_tool->setProperty("CalibrationRelease", m_overrideCalibRelease ));
-    }
-    ANA_CHECK( m_muRecoSF_tool->initialize());
+  ANA_CHECK(checkToolStore<CP::IMuonEfficiencyScaleFactors>(m_recoEffSF_tool_name));
+  const bool recoEffSFInstanceExists = asg::ToolStore::contains<CP::IMuonEfficiencyScaleFactors>(m_recoEffSF_tool_name);
+  
 
+  // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
+  m_muRecoSF_tool = asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors>("CP::MuonEfficiencyScaleFactors/"+m_recoEffSF_tool_name);
+  // setProperty is ignored if tool is already configured (i.e. for recoEffSFInstanceExists == true)
+  ANA_CHECK( m_muRecoSF_tool.setProperty("WorkingPoint", m_WorkingPointReco ));
+  if ( !m_overrideCalibRelease.empty() ) {
+    ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
+    ANA_CHECK( m_muRecoSF_tool.setProperty("CalibrationRelease", m_overrideCalibRelease ));
+  }
+  ANA_CHECK(m_muRecoSF_tool.retrieve());
+  assert(m_muRecoSF_tool.isInitialized());
+
+  // only process systematics once per efficiency SF/WP
+  if(not recoEffSFInstanceExists) { 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
     m_outputSystNamesReco = m_outputSystNamesReco + "_Reco" + m_WorkingPointReco;
@@ -427,7 +432,6 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  delete m_muRecoSF_tool;
   delete m_muIsoSF_tool;
   delete m_muTrigSF_tool;
   delete m_muTTVASF_tool;
