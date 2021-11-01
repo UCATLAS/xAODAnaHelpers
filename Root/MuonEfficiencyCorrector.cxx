@@ -236,21 +236,20 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_MSG_INFO( " Initialising CP::MuonTriggerScaleFactors for TRIGGER efficiency SF..." );
 
-  ANA_CHECK( checkToolStore<CP::MuonTriggerScaleFactors>(m_trigEffSF_tool_name));
-  if ( asg::ToolStore::contains<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_name ) ) {
-    m_muTrigSF_tool = asg::ToolStore::get<CP::MuonTriggerScaleFactors>( m_trigEffSF_tool_name );
-  } else {
-    m_muTrigSF_tool = new CP::MuonTriggerScaleFactors( m_trigEffSF_tool_name );
+  ANA_CHECK( checkToolStore<CP::IMuonTriggerScaleFactors>(m_trigEffSF_tool_name));
+  const bool trigEffSFInstanceExists = asg::ToolStore::contains<CP::IMuonTriggerScaleFactors>( m_trigEffSF_tool_name );
 
-    if ( m_AllowZeroSF ) {
-      ANA_MSG_WARNING( "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
-      ANA_CHECK( m_muTrigSF_tool->setProperty("AllowZeroSF", m_AllowZeroSF ));
-    }
-
-    ANA_CHECK( m_muTrigSF_tool->setProperty("MuonQuality", m_WorkingPointReco ));
-    ANA_CHECK( m_muTrigSF_tool->initialize());
+  // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
+  m_muTrigSF_tool = asg::AnaToolHandle<CP::IMuonTriggerScaleFactors>("CP::MuonTriggerScaleFactors/"+m_trigEffSF_tool_name );
+  // setProperty is ignored if tool is already configured 
+  if ( m_AllowZeroSF ) {
+    ANA_MSG_WARNING( "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
+    ANA_CHECK( m_muTrigSF_tool.setProperty("AllowZeroSF", m_AllowZeroSF ));
   }
-
+  ANA_CHECK(m_muTrigSF_tool.setProperty("MuonQuality", m_WorkingPointReco ));
+  ANA_CHECK(m_muTrigSF_tool.retrieve());
+  assert(m_muTrigSF_tool.isInitialized());
+ 
   std::string token;
   std::istringstream ss(m_MuTrigLegs);
   while ( std::getline(ss, token, ',') ) {
@@ -258,29 +257,30 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     m_SingleMuTriggerMap[token.substr(0,pos)] = token.substr(pos+1);
   }
 
-  // Remember base output syst. names container
-  m_outputSystNamesTrigBase = m_outputSystNamesTrig;
-  // Add the chosen WP to the string labelling the output syst. names container
-  m_outputSystNamesTrig = m_outputSystNamesTrig + "_Reco" + m_WorkingPointReco;
+  if(not trigEffSFInstanceExists){
+    // Remember base output syst. names container
+    m_outputSystNamesTrigBase = m_outputSystNamesTrig;
+    // Add the chosen WP to the string labelling the output syst. names container
+    m_outputSystNamesTrig = m_outputSystNamesTrig + "_Reco" + m_WorkingPointReco;
 
-  CP::SystematicSet affectSystsTrig = m_muTrigSF_tool->affectingSystematics();
-  for ( const auto& syst_it : affectSystsTrig ) { ANA_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: " << syst_it.name()); }
-  //
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
-  //
-  const CP::SystematicSet recSystsTrig = m_muTrigSF_tool->recommendedSystematics();
-  m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, msg() );
+    CP::SystematicSet affectSystsTrig = m_muTrigSF_tool->affectingSystematics();
+    for ( const auto& syst_it : affectSystsTrig ) { ANA_MSG_DEBUG("MuonEfficiencyScaleFactors tool can be affected by trigger efficiency systematic: " << syst_it.name()); }
+    //
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
+    //
+    const CP::SystematicSet recSystsTrig = m_muTrigSF_tool->recommendedSystematics();
+    m_systListTrig = HelperFunctions::getListofSystematics( recSystsTrig, m_systNameTrig, m_systValTrig, msg() );
 
-  ANA_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
-  for ( const auto& syst_it : m_systListTrig ) {
-    if ( m_systNameTrig.empty() ) {
-  	ANA_MSG_INFO("\t Running w/ nominal configuration only!");
-  	break;
+    ANA_MSG_INFO("Will be using MuonEfficiencyScaleFactors tool trigger efficiency systematic:");
+    for ( const auto& syst_it : m_systListTrig ) {
+      if ( m_systNameTrig.empty() ) {
+      ANA_MSG_INFO("\t Running w/ nominal configuration only!");
+      break;
+      }
+      ANA_MSG_INFO("\t " << syst_it.name());
     }
-    ANA_MSG_INFO("\t " << syst_it.name());
   }
-
 
   // 4.
   // initialize the CP::MuonEfficiencyScaleFactors Tool for track-to-vertex association (TTVA) SF
@@ -437,7 +437,6 @@ EL::StatusCode MuonEfficiencyCorrector :: finalize ()
 
   ANA_MSG_INFO( "Deleting tool instances...");
 
-  delete m_muTrigSF_tool;
   delete m_muTTVASF_tool;
 
   return EL::StatusCode::SUCCESS;
