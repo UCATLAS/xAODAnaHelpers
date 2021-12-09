@@ -1,5 +1,7 @@
 // c++ include(s):
 #include <iostream>
+#include <exception>
+#include <sstream>
 
 // EDM include(s):
 #include "xAODBTagging/BTagging.h"
@@ -115,7 +117,14 @@ HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::
 
 
 void HelpTreeBase::Fill() {
-  m_tree->Fill();
+  // code_or_nbytes is the number of bytes written, or -1 if an error occured
+  const int code_or_nbytes = m_tree->Fill();
+  if(code_or_nbytes < 0) // 0 can be OK if all branches are disabled and thus no data is written
+  {
+    auto msg = std::stringstream();
+    msg << "HelpTreeBase::Fill(): error in TTree::Fill() : returned " << code_or_nbytes;
+    throw std::runtime_error(msg.str());
+  }
 }
 
 /*********************
