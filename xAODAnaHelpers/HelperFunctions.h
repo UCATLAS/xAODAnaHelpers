@@ -520,7 +520,7 @@ namespace HelperFunctions {
   }
 
   /// @brief The different supported shower types
-  enum ShowerType {Unknown, Pythia8, Herwig7, Sherpa21, Sherpa22};
+  enum ShowerType {Unknown, Pythia8, Herwig7, Sherpa21, Sherpa22, Sherpa2210};
 
   /**
     @brief Determines the type of generator used for the shower from the sample name

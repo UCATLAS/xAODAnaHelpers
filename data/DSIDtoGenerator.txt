@@ -819,7 +819,7 @@
 410065 PwPyEG_P2012_Wt_DS_dilepton_antitop
 410642 PhPy8EG_A14_tchan_lept_top
 410643 PhPy8EG_A14_tchan_lept_antitop
-410644 PowhegPythiaEvtGen_P2012_SingleTopSchan_noAllHad_top
+410644 PowhegPythia8EvtGen_A14_singletop_schan_lept_top
 410645 PowhegPythia8EvtGen_A14_singletop_schan_lept_antitop
 410646 PowhegPythia8EvtGen_A14_Wt_DR_inclusive_top
 410647 PowhegPythia8EvtGen_A14_Wt_DR_inclusive_antitop
@@ -2677,4 +2677,10 @@
 700128 Sh_2210
 700129 Sh_2210
 700130 Sh_2210
-
+700100 Sh_2210
+700320 Sh_2211
+700321 Sh_2211
+700322 Sh_2211
+700323 Sh_2211
+700324 Sh_2211
+700325 Sh_2211

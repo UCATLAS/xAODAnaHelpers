@@ -560,6 +560,8 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
   if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
   else if(tmp_name.Contains("HERWIG")) return Herwig7;
   else if(tmp_name.Contains("SHERPA_CT")) return Sherpa21;
+  else if(tmp_name.Contains("SHERPA_2210")) return Sherpa2210;
+  else if(tmp_name.Contains("SHERPA_2211")) return Sherpa2210;
   else if(tmp_name.Contains("SHERPA")) return Sherpa22;
   else return Unknown;
 }
