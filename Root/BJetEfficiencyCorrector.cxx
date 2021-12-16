@@ -235,6 +235,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	      case HelperFunctions::Sherpa22:
 		calibration="410250";
 		break;
+	      case HelperFunctions::Sherpa2210:
+		calibration="700122";
+		break;
 	      case HelperFunctions::Unknown:
 		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
 		return EL::StatusCode::FAILURE;
@@ -624,6 +627,9 @@ unsigned int BJetEfficiencyCorrector :: getMCIndex (int dsid)
 
     // Sherpa 2.2.10
     if ((name.find("Sh_2210") != std::string::npos)){ return m_MCIndexes["Sherpa2210"]; }
+
+    // Sherpa 2.2.11
+    if ((name.find("Sh_2211") != std::string::npos)){ return m_MCIndexes["Sherpa2210"]; } // MC-MC SFs from Sherpa 2.2.10 is the best we can use for Sherpa 2.2.11 (for now)
 
     // Sherpa 2.2
     if ((name.find("Sh_22") != std::string::npos) ||
