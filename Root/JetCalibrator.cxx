@@ -241,6 +241,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_decisionNames.push_back( "LooseBad" );
       m_decisionNames.push_back( "LooseBadUgly" );
       m_decisionNames.push_back( "LooseBadTrigger" );
+      m_decisionNames.push_back( "LooseBadLLP" );
       m_decisionNames.push_back( "TightBad" );
       m_decisionNames.push_back( "TightBadUgly" );
 
@@ -422,7 +423,7 @@ EL::StatusCode JetCalibrator :: execute ()
     //
     // truth labelling for systematics
     if(isMC()){
-      
+
       if(m_runSysts){
 
         // b-jet truth labelling
@@ -454,7 +455,7 @@ EL::StatusCode JetCalibrator :: execute ()
         //   m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
         // }
       }
-    
+
     }
 
   }//for jets
@@ -659,7 +660,7 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
   }
   // add ConstDataVector to TStore
   ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

@@ -51,7 +51,7 @@ namespace xAH {
       std::vector<int>               *m_isTrigMatched;
       std::vector<std::vector<int> > *m_isTrigMatchedToChain;
       std::vector<std::string>       *m_listTrigChains;
-      
+
       // clean
       std::vector<float> *m_Timing;
       std::vector<float> *m_LArQuality;
@@ -70,6 +70,7 @@ namespace xAH {
       std::vector<float> *m_LeadingClusterCenterLambda;
       std::vector<float> *m_LeadingClusterSecondR;
       std::vector<int>   *m_clean_passLooseBad;
+      std::vector<int>   *m_clean_passLooseBadLLP;
       std::vector<int>   *m_clean_passLooseBadUgly;
       std::vector<int>   *m_clean_passLooseBadTrigger;
       std::vector<int>   *m_clean_passLooseBadTriggerUgly;
@@ -148,7 +149,7 @@ namespace xAH {
       std::vector<int> *m_fJvtPass_Tight;
       std::vector< std::vector<float> > *m_fJvtEff_SF_Tight;
 
-      // chargedPFOPV 
+      // chargedPFOPV
       std::vector<float> *m_SumPtChargedPFOPt500PV;
       std::vector<float> *m_fCharged;
 
@@ -220,7 +221,7 @@ namespace xAH {
       std::vector<float> *m_DL1r_pu;
       std::vector<float> *m_DL1r_pc;
       std::vector<float> *m_DL1r_pb;
- 
+
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
       std::vector<float>  *m_JetFitter_nSingleTracks  ;
@@ -343,7 +344,7 @@ namespace xAH {
 	  else if(m_accessorName=="DL1_FixedCutBEff_77")
 	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_77;
 	  else if(m_accessorName=="DL1_FixedCutBEff_85")
-	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_85;	  
+	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_85;
 	  else if(m_accessorName=="DL1r_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_60;
 	  else if(m_accessorName=="DL1r_FixedCutBEff_70")
