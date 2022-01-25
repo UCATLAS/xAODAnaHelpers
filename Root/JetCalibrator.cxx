@@ -660,7 +660,7 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
   }
   // add ConstDataVector to TStore
   ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
-
+  
   return EL::StatusCode::SUCCESS;
 }
 

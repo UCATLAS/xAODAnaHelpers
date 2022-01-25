@@ -212,7 +212,7 @@ namespace xAH {
       std::vector<float> SF_DL1_FixedCutBEff_77;
       int is_DL1_FixedCutBEff_85;
       std::vector<float> SF_DL1_FixedCutBEff_85;
-
+      
       int is_DL1r_FixedCutBEff_60;
       std::vector<float> SF_DL1r_FixedCutBEff_60;
       int is_DL1r_FixedCutBEff_70;

@@ -3028,7 +3028,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1rnn_pc->push_back(pc);
     m_DL1rnn_pb->push_back(pb);
     m_DL1rnn->push_back( score );
-
+    
     pu=0; pb=0; pc=0;
     myBTag->variable<double>("DL1rmu" , "pu", pu);
     myBTag->variable<double>("DL1rmu" , "pc", pc);
