@@ -1391,7 +1391,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1_FixedCutBEff_85:
 	  jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;        
+	  break;          
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_60:
 	  jet.is_DL1r_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1407,7 +1407,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_85:
 	  jet.is_DL1r_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;        
+	  break;           
 	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_60:
 	  jet.is_DL1rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
