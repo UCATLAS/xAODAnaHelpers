@@ -60,6 +60,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     }
     else {
       m_clean_passLooseBad        =new std::vector<int>();
+      m_clean_passLooseBadLLP        =new std::vector<int>();
       m_clean_passTightBad        =new std::vector<int>();
     }
   }
@@ -493,6 +494,7 @@ JetContainer::~JetContainer()
     }
     else {
       delete m_clean_passLooseBad;
+      delete m_clean_passLooseBadLLP;
       delete m_clean_passTightBad;
     }
   }
@@ -917,6 +919,7 @@ void JetContainer::setTree(TTree *tree)
       }
       else {
         connectBranch<int>  (tree, "clean_passLooseBad",         &m_clean_passLooseBad);
+        connectBranch<int>  (tree, "clean_passLooseBadLLP",         &m_clean_passLooseBadLLP);
         connectBranch<int>  (tree, "clean_passTightBad",         &m_clean_passTightBad);
       }
     }
@@ -1178,6 +1181,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       }
       else {
         jet.clean_passLooseBad        =m_clean_passLooseBad        ->at(idx);
+        jet.clean_passLooseBadLLP        =m_clean_passLooseBadLLP        ->at(idx);
         jet.clean_passTightBad        =m_clean_passTightBad        ->at(idx);
       }
     }
@@ -1387,7 +1391,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1_FixedCutBEff_85:
 	  jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;	  
+	  break;          
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_60:
 	  jet.is_DL1r_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1403,7 +1407,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_85:
 	  jet.is_DL1r_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;	  
+	  break;           
 	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_60:
 	  jet.is_DL1rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1539,6 +1543,7 @@ void JetContainer::setBranches(TTree *tree)
     }
     else {
       setBranch<int>  (tree,"clean_passLooseBad",            m_clean_passLooseBad             );
+      setBranch<int>  (tree,"clean_passLooseBadLLP",            m_clean_passLooseBadLLP             );
       setBranch<int>  (tree,"clean_passTightBad",            m_clean_passTightBad             );
     }
   }
@@ -1956,6 +1961,7 @@ void JetContainer::clear()
     }
     else {
       m_clean_passLooseBad        ->clear();
+      m_clean_passLooseBadLLP        ->clear();
       m_clean_passTightBad        ->clear();
     }
   }
@@ -2427,6 +2433,9 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     if(!m_infoSwitch.m_cleanTrig) {
       static SG::AuxElement::ConstAccessor<int> clean_passLooseBad ("clean_passLooseBad");
       safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
+
+      static SG::AuxElement::ConstAccessor<int> clean_passLooseBadLLP ("clean_passLooseBadLLP");
+      safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadLLP, m_clean_passLooseBadLLP, -999);
 
       static SG::AuxElement::ConstAccessor<int> clean_passTightBad ("clean_passTightBad");
       safeFill<int, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
