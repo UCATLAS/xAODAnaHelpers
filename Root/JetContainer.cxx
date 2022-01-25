@@ -1391,7 +1391,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1_FixedCutBEff_85:
 	  jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;          
+	  break;        
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_60:
 	  jet.is_DL1r_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1407,7 +1407,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_85:
 	  jet.is_DL1r_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;          
+	  break;        
 	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_60:
 	  jet.is_DL1rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -3028,7 +3028,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1rnn_pc->push_back(pc);
     m_DL1rnn_pb->push_back(pb);
     m_DL1rnn->push_back( score );
-
+    
     pu=0; pb=0; pc=0;
     myBTag->variable<double>("DL1rmu" , "pu", pu);
     myBTag->variable<double>("DL1rmu" , "pc", pc);
