@@ -423,7 +423,7 @@ EL::StatusCode JetCalibrator :: execute ()
     //
     // truth labelling for systematics
     if(isMC()){
-
+      
       if(m_runSysts){
 
         // b-jet truth labelling
@@ -455,7 +455,7 @@ EL::StatusCode JetCalibrator :: execute ()
         //   m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
         // }
       }
-
+    
     }
 
   }//for jets
