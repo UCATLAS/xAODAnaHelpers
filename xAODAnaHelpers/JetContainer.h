@@ -70,6 +70,7 @@ namespace xAH {
       std::vector<float> *m_LeadingClusterCenterLambda;
       std::vector<float> *m_LeadingClusterSecondR;
       std::vector<int>   *m_clean_passLooseBad;
+      std::vector<int>   *m_clean_passLooseBadLLP;
       std::vector<int>   *m_clean_passLooseBadUgly;
       std::vector<int>   *m_clean_passLooseBadTrigger;
       std::vector<int>   *m_clean_passLooseBadTriggerUgly;
@@ -343,7 +344,7 @@ namespace xAH {
 	  else if(m_accessorName=="DL1_FixedCutBEff_77")
 	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_77;
 	  else if(m_accessorName=="DL1_FixedCutBEff_85")
-	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_85;	  
+	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_85;     
 	  else if(m_accessorName=="DL1r_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_60;
 	  else if(m_accessorName=="DL1r_FixedCutBEff_70")
