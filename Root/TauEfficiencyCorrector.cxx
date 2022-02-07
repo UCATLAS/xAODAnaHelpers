@@ -140,33 +140,35 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   std::vector<int> configVec;
   configVec.push_back({TauAnalysisTools::SFRecoHadTau});
   
-  if ( !m_WorkingPointTauID.empty() ) {
+  if ( !m_WorkingPointTauJetID.empty() ) {
      configVec.push_back({TauAnalysisTools::SFJetIDHadTau});
      
      if ( m_WorkingPointTauJetID == "Loose")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("JetIDLevel", (int)TauAnalysisTools::JETIDRNNLOOSE));     }
      else if ( m_WorkingPointTauJetID == "Medium")    { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("JetIDLevel", (int)TauAnalysisTools::JETIDRNNMEDIUM));    }
      else if ( m_WorkingPointTauJetID == "Tight")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("JetIDLevel", (int)TauAnalysisTools::JETIDRNNTIGHT));     }
      else { 
-       ANA_MSG_ERROR("Failed to configure WorkingPointTauID with unknown " << m_WorkingPointTauID);
+       ANA_MSG_ERROR("Failed to configure WorkingPointTauJetID with unknown " << m_WorkingPointTauJetID);
        return EL::StatusCode::FAILURE;
      }
-  } else if ( m_WorkingPointTauID.empty() )      { 
-    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDNONE));     
+  } else if ( m_WorkingPointTauJetID.empty() )      { 
+    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("JetIDLevel", (int)TauAnalysisTools::JETIDNONE));     
     // still consider this a working point
-    m_WorkingPointTauID = "None";
+    m_WorkingPointTauJetID = "None";
   }
 
+  if (!m_WorkingPointTauEleID.empty()) {
+    configVec.push_back({TauAnalysisTools::SFEleIDElectron});
     
-    else if (m_WorkingPointTauEleID == "Loose")          { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("EleIDLevel", (int)TauAnalysisTools::ELEIDRNNLOOSE));          }
+    if (m_WorkingPointTauEleID == "Loose")          { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("EleIDLevel", (int)TauAnalysisTools::ELEIDRNNLOOSE));          }
     else if (m_WorkingPointTauEleID == "Medium")         { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("EleIDLevel", (int)TauAnalysisTools::ELEIDRNNMEDIUM));         }
     else if (m_WorkingPointTauEleID == "Tight")         { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("EleIDLevel", (int)TauAnalysisTools::ELEIDRNNTIGHT));         }
     else { 
-       ANA_MSG_ERROR("Failed to configure WorkingPointEleOLRElectron with unknown " << m_WorkingPointEleOLRElectron);
+       ANA_MSG_ERROR("Failed to configure WorkingPointTauEleID with unknown " << m_WorkingPointTauEleID);
        return EL::StatusCode::FAILURE;
     }
-  } else if ( m_WorkingPointEleOLRElectron.empty() )      { 
+  } else if ( m_WorkingPointTauEleID.empty() )      { 
     // still consider this a working point
-    m_WorkingPointEleOLRElectron = "None";
+    m_WorkingPointTauEleID = "None";
   }
 
   if (!m_TriggerName.empty()) {
@@ -365,8 +367,8 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
 
     // Create the name of the SF weight to be recorded
     std::string sfName = "TauEff_SF_syst" ;
-    if ( !m_WorkingPointEleOLRElectron.empty() ) { sfName += "_EleOLRElectron" + m_WorkingPointEleOLRElectron; }
-    if ( !m_WorkingPointTauID.empty() )          { sfName += "_TauID" + m_WorkingPointTauID; }
+    if ( !m_WorkingPointTauEleID.empty() ) { sfName += "_EleIDElectron" + m_WorkingPointTauEleID; }
+    if ( !m_WorkingPointTauJetID.empty() )          { sfName += "_TauID" + m_WorkingPointTauJetID; }
     if ( !m_TriggerName.empty() )                { sfName += "_Trig" + m_TriggerName; }
 
     ANA_MSG_DEBUG( "Tau efficiency SF sys name (to be recorded in xAOD::TStore) is: " << syst_it.name() );
