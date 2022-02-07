@@ -67,6 +67,9 @@ public:
   */
   bool    m_addSoftClusterTerms = false;
 
+  //Set Muon Jet EM scale, defaults to true, should be switched off if muons are not included
+  bool m_DoSetMuonJetEMScale = true;
+
   // MET significance
   /// @brief Enable MET significance calculation
   bool m_calculateSignificance = false;
