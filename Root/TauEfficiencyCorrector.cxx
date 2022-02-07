@@ -136,10 +136,9 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   // just the tool default settings
   // https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/TauID/TauAnalysisTools/trunk/doc/README-TauEfficiencyCorrectionsTool.rst 
   
-  // initialise reco and EleOLRHadTau SF no matter what 
+  // initialise reco SF no matter what 
   std::vector<int> configVec;
   configVec.push_back({TauAnalysisTools::SFRecoHadTau});
-  configVec.push_back({TauAnalysisTools::SFEleOLRHadTau});
   
   if ( !m_WorkingPointTauID.empty() ) {
      configVec.push_back({TauAnalysisTools::SFJetIDHadTau});
@@ -158,8 +157,6 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
     m_WorkingPointTauID = "None";
   }
 
-  if (!m_WorkingPointEleOLRElectron.empty()) {
-    configVec.push_back({TauAnalysisTools::SFEleOLRElectron});
     
     if      (m_WorkingPointEleOLRElectron == "TauEleOLR")            { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::TAUELEOLR));            }
     else if (m_WorkingPointEleOLRElectron == "EleBDTLoose")          { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTLOOSE));          }
