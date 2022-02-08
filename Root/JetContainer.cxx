@@ -11,6 +11,14 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_trkSelTool(nullptr)
 
 {
+
+  // displaced
+  if(m_infoSwitch.m_displaced) {
+    m_ipsig = new std::vector<float>();
+    m_chf = new std::vector<float>();
+    m_alpha_max = new std::vector<float>();
+  }
+
   // rapidity
   if(m_infoSwitch.m_rapidity) {
     m_rapidity                  =new std::vector<float>();
@@ -448,6 +456,13 @@ JetContainer::~JetContainer()
     delete m_rapidity;
   }
 
+  if(m_infoSwitch.m_displaced) {
+    delete  m_ipsig;
+    delete  m_chf;
+    delete  m_alpha_max;        
+  }
+
+
   // trigger
   if ( m_infoSwitch.m_trigger ) {
     delete m_isTrigMatched         ;
@@ -861,6 +876,13 @@ void JetContainer::setTree(TTree *tree)
   // Connect branches
   ParticleContainer::setTree(tree);
 
+  if ( m_infoSwitch.m_displaced ){
+    connectBranch<float>  (tree,"ipsig",         &m_ipsig);
+    connectBranch<float>  (tree,"alpha_max",         &m_alpha_max);
+    connectBranch<float>  (tree,"chf",         &m_chf);
+  }
+
+
   if(m_infoSwitch.m_rapidity)
     {
       connectBranch<float>(tree,"rapidity",                      &m_rapidity);
@@ -1114,6 +1136,15 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 {
   if(m_debug) std::cout << "in JetContainer::updateParticle " << std::endl;
   ParticleContainer::updateParticle(idx,jet);
+
+  if(m_infoSwitch.m_displaced)
+    {
+      jet.chf                    =m_chf                 ->at(idx);
+      jet.ipsig                    =m_ipsig                    ->at(idx);
+      jet.alpha_max                    =m_alpha_max                    ->at(idx);
+    }
+
+
 
   if(m_infoSwitch.m_rapidity)
     {
@@ -1470,6 +1501,13 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 void JetContainer::setBranches(TTree *tree)
 {
   ParticleContainer::setBranches(tree);
+
+  if ( m_infoSwitch.m_displaced ) {
+    setBranch<float>(tree,"ipsig",                      m_ipsig              );
+    setBranch<float>(tree,"chf",                      m_chf              );
+    setBranch<float>(tree,"alpha_max",                      m_alpha_max              );    
+  }
+
 
   if ( m_infoSwitch.m_rapidity ) {
     setBranch<float>(tree,"rapidity",                      m_rapidity              );
@@ -1882,6 +1920,14 @@ void JetContainer::clear()
 
   ParticleContainer::clear();
 
+  // displaced
+  if( m_infoSwitch.m_displaced ) {
+    m_alpha_max->clear();
+    m_chf->clear();
+    m_ipsig->clear();
+  }
+  
+
   // rapidity
   if( m_infoSwitch.m_rapidity ) {
     m_rapidity->clear();
@@ -2291,6 +2337,25 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
   ParticleContainer::FillParticle(particle);
 
   const xAOD::Jet* jet=dynamic_cast<const xAOD::Jet*>(particle);
+
+  if( m_infoSwitch.m_displaced ){
+    if( jet->isAvailable< float >( "alpha_max" ) ) {
+      m_alpha_max.push_back( jet->auxdata< float >("alpha_max") );
+    } else {
+      m_alpha_max.push_back( -999 );
+    }
+    if( jet->isAvailable< float >( "ipsig" ) ) {
+      m_ipsig.push_back( jet->auxdata< float >("ipsig") );
+    } else {
+      m_ipsig.push_back( -999 );
+    }
+    if( jet->isAvailable< float >( "chf" ) ) {
+      m_chf.push_back( jet->auxdata< float >("chf") );
+    } else {
+      m_chf.push_back( -999 );
+    }
+  }
+
 
   if( m_infoSwitch.m_rapidity ){
     m_rapidity->push_back( jet->rapidity() );

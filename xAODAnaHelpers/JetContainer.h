@@ -44,6 +44,14 @@ namespace xAH {
       //
       // Vector branches
 
+
+      //displaced
+
+      std::vector<float>   *m_ipsig;
+      std::vector<float>   *m_chf;
+      std::vector<float>   *m_alpha_max;
+
+
       // rapidity
       std::vector<float> *m_rapidity;
 

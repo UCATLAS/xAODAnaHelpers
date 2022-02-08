@@ -21,6 +21,14 @@ namespace xAH {
 
       float rapidity;
 
+
+      // displaced
+      float ipsig;
+      float chf;
+      float alpha_max;	
+
+
+
       // trigger
       int               isTrigMatched;
       std::vector<int>  isTrigMatchedToChain;
