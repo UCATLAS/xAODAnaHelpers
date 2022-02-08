@@ -494,6 +494,7 @@ namespace HelperClasses {
     bool m_bosonCount;
     bool m_VTags;
     bool m_rapidity;
+    bool m_displaced;
     bool m_clean;
     bool m_cleanLight;
     bool m_cleanLLP;
