@@ -25,11 +25,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   }
 
   // clean
-  if(m_infoSwitch.m_cleanTrig && ! (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)) {
-    std::cout << "JetContainer              WARNING You asked for cleanTrig for " << name << "but didn't specify clean or cleanLight. Going to assume you wanted clean." << std::endl;
+  if(m_infoSwitch.m_cleanTrig && ! (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP)) {
+    std::cout << "JetContainer              WARNING You asked for cleanTrig for " << name << "but didn't specify clean, cleanLight or cleanLLP. Going to assume you wanted clean." << std::endl;
     m_infoSwitch.m_clean = true;
   }
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP) {
     if(m_infoSwitch.m_clean){
       m_Timing                    =new std::vector<float>();
       m_LArQuality                =new std::vector<float>();
@@ -465,7 +465,7 @@ JetContainer::~JetContainer()
   }
 
   // clean
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP) {
     if(m_infoSwitch.m_clean){
       delete m_Timing;
       delete m_LArQuality;
@@ -890,7 +890,7 @@ void JetContainer::setTree(TTree *tree)
     connectBranch<std::string>      (tree, "listTrigChains",       &m_listTrigChains );
   }
 
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP)
     {
       if(m_infoSwitch.m_clean){
         connectBranch<float>(tree, "Timing",                     &m_Timing);
@@ -1154,7 +1154,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.listTrigChains        =     m_listTrigChains        ->at(idx);
   }
 
-  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)
+  if(m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP)
     {
       if(m_debug) std::cout << "updating clean " << std::endl;
       if(m_infoSwitch.m_clean){
@@ -1520,7 +1520,7 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<std::string>(tree, "listTrigChains", m_listTrigChains );
   }
 
-  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP) {
     if(m_infoSwitch.m_clean){
       setBranch<float>(tree,"Timing",                        m_Timing               );
       setBranch<float>(tree,"LArQuality",                    m_LArQuality         );
@@ -1940,7 +1940,7 @@ void JetContainer::clear()
   }
 
   // clean
-  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
+  if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP) {
     if(m_infoSwitch.m_clean){
       m_Timing                    ->clear();
       m_LArQuality                ->clear();
@@ -2379,7 +2379,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   }
 
-  if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
+  if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight || m_infoSwitch.m_cleanLLP) {
 
     if(m_infoSwitch.m_clean){
 
