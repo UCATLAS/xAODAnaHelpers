@@ -23,7 +23,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_isTrigMatchedToChain   = new     std::vector<std::vector<int> > ();
     m_listTrigChains         = new     std::vector<std::string>       ();
   }
-  
+
   // clean
   if(m_infoSwitch.m_cleanTrig && ! (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight)) {
     std::cout << "JetContainer              WARNING You asked for cleanTrig for " << name << "but didn't specify clean or cleanLight. Going to assume you wanted clean." << std::endl;
@@ -174,7 +174,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     }
   }
 
-  // chargedPFOPV 
+  // chargedPFOPV
   if ( m_infoSwitch.m_chargedPFOPV ) {
     m_SumPtChargedPFOPt500PV = new std::vector<float> ();
     m_fCharged = new std::vector<float> ();
@@ -612,7 +612,7 @@ JetContainer::~JetContainer()
     }
   }
 
-  // chargedPFOPV 
+  // chargedPFOPV
   if ( m_infoSwitch.m_chargedPFOPV ) {
     delete m_SumPtChargedPFOPt500PV;
     delete m_fCharged;
@@ -964,7 +964,7 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree, "Jvt",        &m_Jvt);
     }
 
-  
+
   if ( m_infoSwitch.m_chargedPFOPV ) {
     connectBranch<float>(tree, "SumPtChargedPFOPt500PV", &m_SumPtChargedPFOPt500PV);
     connectBranch<float>(tree, "fCharged", &m_fCharged);
@@ -1229,7 +1229,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.Jvt       =m_Jvt       ->at(idx);
     }
 
-  
+
   if ( m_infoSwitch.m_chargedPFOPV ) {
     jet.SumPtChargedPFOPt500PV=m_SumPtChargedPFOPt500PV->at(idx);
     jet.fCharged=m_fCharged->at(idx);
@@ -1399,7 +1399,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1_FixedCutBEff_85:
 	  jet.is_DL1_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;          
+	  break;
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_60:
 	  jet.is_DL1r_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1415,7 +1415,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1r_FixedCutBEff_85:
 	  jet.is_DL1r_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
-	  break;           
+	  break;
 	case Jet::BTaggerOP::DL1rmu_FixedCutBEff_60:
 	  jet.is_DL1rmu_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1rmu_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
@@ -1661,7 +1661,7 @@ void JetContainer::setBranches(TTree *tree)
     }
   }
 
-  
+
   if ( m_infoSwitch.m_chargedPFOPV ) {
     setBranch<float>(tree,"SumPtChargedPFOPt500PV", m_SumPtChargedPFOPt500PV);
     setBranch<float>(tree,"fCharged", m_fCharged);
@@ -1931,14 +1931,14 @@ void JetContainer::clear()
   if( m_infoSwitch.m_rapidity ) {
     m_rapidity->clear();
   }
-  
+
   // trigger
   if ( m_infoSwitch.m_trigger ) {
     m_isTrigMatched->clear();
     m_isTrigMatchedToChain->clear();
     m_listTrigChains->clear();
   }
-  
+
   // clean
   if( m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight ) {
     if(m_infoSwitch.m_clean){
@@ -2086,8 +2086,8 @@ void JetContainer::clear()
       m_fJvtEff_SF_Tight ->clear();
     }
   }
-  
-  // chargedPFOPV 
+
+  // chargedPFOPV
   if ( m_infoSwitch.m_chargedPFOPV ) {
     m_SumPtChargedPFOPt500PV->clear();
     m_fCharged->clear();
@@ -2372,11 +2372,11 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
     m_isTrigMatchedToChain->push_back(matches);
-    
+
     // if at least one match among the chains is found, say this jet is trigger matched
     if ( std::find(matches.begin(), matches.end(), 1) != matches.end() ) { m_isTrigMatched->push_back(1); }
     else { m_isTrigMatched->push_back(0); }
-    
+
   }
 
   if (m_infoSwitch.m_clean || m_infoSwitch.m_cleanLight) {
@@ -2431,7 +2431,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       if(!m_infoSwitch.m_cleanTrig) {
         static SG::AuxElement::ConstAccessor<int> clean_passLooseBadUgly ("clean_passLooseBadUgly");
         safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadUgly, m_clean_passLooseBadUgly, -999);
-        
+
         static SG::AuxElement::ConstAccessor<int> clean_passTightBadUgly ("clean_passTightBadUgly");
         safeFill<int, int, xAOD::Jet>(jet, clean_passTightBadUgly, m_clean_passTightBadUgly, -999);
       }
@@ -2439,15 +2439,12 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTriggerUgly ("clean_passLooseBadTriggerUgly");
         safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTriggerUgly, m_clean_passLooseBadTriggerUgly, -999);
       }
-      
+
     }
 
     if(!m_infoSwitch.m_cleanTrig) {
       static SG::AuxElement::ConstAccessor<int> clean_passLooseBad ("clean_passLooseBad");
       safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
-
-      static SG::AuxElement::ConstAccessor<int> clean_passLooseBadLLP ("clean_passLooseBadLLP");
-      safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadLLP, m_clean_passLooseBadLLP, -999);
 
       static SG::AuxElement::ConstAccessor<int> clean_passTightBad ("clean_passTightBad");
       safeFill<int, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
@@ -2456,7 +2453,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTrigger ("clean_passLooseBadTrigger");
       safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTrigger, m_clean_passLooseBadTrigger, -999);
     }
-    if(!m_infoSwitch.m_cleanLLP) {
+    if(m_infoSwitch.m_cleanLLP) {
       static SG::AuxElement::ConstAccessor<int> clean_passLooseBadLLP ("clean_passLooseBadLLP");
       safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadLLP, m_clean_passLooseBadLLP, -999);
     }
@@ -2502,63 +2499,63 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     bool status(false);
     // EM Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetEMScaleMomentum", fourVec );
-    if( status ) { 
+    if( status ) {
       m_emScalePt->push_back( fourVec.Pt() / m_units );
       m_emScaleM->push_back( fourVec.M() / m_units );
     }
-    else { 
-      m_emScalePt->push_back( -999 ); 
-      m_emScaleM->push_back( -999 ); 
+    else {
+      m_emScalePt->push_back( -999 );
+      m_emScaleM->push_back( -999 );
     }
     // Constit Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetConstitScaleMomentum", fourVec );
-    if( status ) { 
-      m_constScalePt->push_back( fourVec.Pt() / m_units ); 
-      m_constScaleM->push_back( fourVec.M() / m_units ); 
+    if( status ) {
+      m_constScalePt->push_back( fourVec.Pt() / m_units );
+      m_constScaleM->push_back( fourVec.M() / m_units );
     }
-    else { 
-      m_constScalePt->push_back( -999 ); 
-      m_constScaleM->push_back( -999 ); 
+    else {
+      m_constScalePt->push_back( -999 );
+      m_constScaleM->push_back( -999 );
     }
     // Pileup Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetPileupScaleMomentum", fourVec );
-    if( status ) { 
-      m_pileupScalePt->push_back( fourVec.Pt() / m_units ); 
-      m_pileupScaleM->push_back( fourVec.M() / m_units ); 
+    if( status ) {
+      m_pileupScalePt->push_back( fourVec.Pt() / m_units );
+      m_pileupScaleM->push_back( fourVec.M() / m_units );
     }
-    else { 
-      m_pileupScalePt->push_back( -999 ); 
-      m_pileupScaleM->push_back( -999 ); 
+    else {
+      m_pileupScalePt->push_back( -999 );
+      m_pileupScaleM->push_back( -999 );
     }
     // OriginConstit Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetOriginConstitScaleMomentum", fourVec );
     if( status ) {
-      m_originConstitScalePt->push_back( fourVec.Pt() / m_units ); 
-      m_originConstitScaleM->push_back( fourVec.M() / m_units ); 
+      m_originConstitScalePt->push_back( fourVec.Pt() / m_units );
+      m_originConstitScaleM->push_back( fourVec.M() / m_units );
     }
-    else { 
-      m_originConstitScalePt->push_back( -999 ); 
-      m_originConstitScaleM->push_back( -999 ); 
+    else {
+      m_originConstitScalePt->push_back( -999 );
+      m_originConstitScaleM->push_back( -999 );
     }
     // EtaJES Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetEtaJESScaleMomentum", fourVec );
-    if( status ) { 
+    if( status ) {
       m_etaJESScalePt->push_back( fourVec.Pt() / m_units );
       m_etaJESScaleM->push_back( fourVec.M() / m_units );
     }
-    else { 
-      m_etaJESScalePt->push_back( -999 ); 
-      m_etaJESScaleM->push_back( -999 ); 
+    else {
+      m_etaJESScalePt->push_back( -999 );
+      m_etaJESScaleM->push_back( -999 );
     }
     // GSC Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetGSCScaleMomentum", fourVec );
-    if( status ) { 
-      m_gscScalePt->push_back( fourVec.Pt() / m_units ); 
-      m_gscScaleM->push_back( fourVec.M() / m_units ); 
+    if( status ) {
+      m_gscScalePt->push_back( fourVec.Pt() / m_units );
+      m_gscScaleM->push_back( fourVec.M() / m_units );
     }
     else {
-      m_gscScalePt->push_back( -999 ); 
-      m_gscScaleM->push_back( -999 ); 
+      m_gscScalePt->push_back( -999 );
+      m_gscScaleM->push_back( -999 );
     }
     // EtaJES Scale
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetJMSScaleMomentum", fourVec );
@@ -2572,13 +2569,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
     // only available in data
     status = jet->getAttribute<xAOD::JetFourMom_t>( "JetInsituScaleMomentum", fourVec );
-    if(status) { 
-      m_insituScalePt->push_back( fourVec.Pt() / m_units ); 
-      m_insituScaleM->push_back( fourVec.M() / m_units ); 
+    if(status) {
+      m_insituScalePt->push_back( fourVec.Pt() / m_units );
+      m_insituScaleM->push_back( fourVec.M() / m_units );
     }
-    else { 
-      m_insituScalePt->push_back( -999 ); 
-      m_insituScaleM->push_back( -999 ); 
+    else {
+      m_insituScalePt->push_back( -999 );
+      m_insituScaleM->push_back( -999 );
     }
   }
 
@@ -2612,7 +2609,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
   }
 
-  
+
   if ( m_infoSwitch.m_trackAll || m_infoSwitch.m_trackPV || m_infoSwitch.m_jvt || m_infoSwitch.m_clean || m_infoSwitch.m_chargedPFOPV ) {
 
     // several moments calculated from all verticies
@@ -2711,7 +2708,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
       } // trackPV
 
-      
+
       if ( m_infoSwitch.m_chargedPFOPV && pvLocation >= 0) {
 
         if ( sumPtChargedPFO500.isAvailable( *jet ) ) {
@@ -2726,7 +2723,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
             m_fCharged->push_back( sumPtChargedPFO500( *jet)[pvLocation] / jetconstitP4.Pt());
           }
 
-        } else { 
+        } else {
           m_SumPtChargedPFOPt500PV->push_back(-999);
           m_fCharged->push_back(-999);
         }
@@ -2999,7 +2996,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     val=-999;
     myBTag->variable<double>("MV2c20"   , "discriminant", val);
     m_MV2c20   ->push_back( val );
-    
+
     val=-999;
     myBTag->variable<double>("MV2rmu" , "discriminant", val);
     m_MV2rmu ->push_back( val );
@@ -3044,7 +3041,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1rnn_pc->push_back(pc);
     m_DL1rnn_pb->push_back(pb);
     m_DL1rnn->push_back( score );
-    
+
     pu=0; pb=0; pc=0;
     myBTag->variable<double>("DL1rmu" , "pu", pu);
     myBTag->variable<double>("DL1rmu" , "pc", pc);
