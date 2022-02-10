@@ -2395,19 +2395,19 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
   if( m_infoSwitch.m_displaced ){
     if( jet->isAvailable< float >( "alpha_max" ) ) {
-      m_alpha_max.push_back( jet->auxdata< float >("alpha_max") );
+      m_alpha_max->push_back( jet->auxdata< float >("alpha_max") );
     } else {
-      m_alpha_max.push_back( -999 );
+      m_alpha_max->push_back( -999 );
     }
     if( jet->isAvailable< float >( "ipsig" ) ) {
-      m_ipsig.push_back( jet->auxdata< float >("ipsig") );
+      m_ipsig->push_back( jet->auxdata< float >("ipsig") );
     } else {
-      m_ipsig.push_back( -999 );
+      m_ipsig->push_back( -999 );
     }
     if( jet->isAvailable< float >( "chf" ) ) {
-      m_chf.push_back( jet->auxdata< float >("chf") );
+      m_chf->push_back( jet->auxdata< float >("chf") );
     } else {
-      m_chf.push_back( -999 );
+      m_chf->push_back( -999 );
     }
   }
 
