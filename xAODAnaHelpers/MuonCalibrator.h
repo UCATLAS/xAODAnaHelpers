@@ -51,7 +51,8 @@ public:
   int m_sagittaCorrPhaseSpace17 = -1;
   /// @brief Set SagittaCorrPhaseSpace18 property if different than -1
   int m_sagittaCorrPhaseSpace18 = -1;
-
+  /// @brief Momentum calibration mode must be chosen: correctData_CB (0), correctData_IDMS (1) or notCorrectData_IDMS (2): https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MCPAnalysisGuidelinesMC16#Details_on_using_the_MuonCalibra 
+  int m_calibrationMode = 0;
   // sort after calibration
   bool m_sort = true;
 

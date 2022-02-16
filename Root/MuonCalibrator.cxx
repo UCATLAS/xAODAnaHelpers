@@ -188,6 +188,7 @@ EL::StatusCode MuonCalibrator :: initialize ()
     ANA_MSG_WARNING("Overriding muon 2018 saggita release to " << m_overrideSagittaRelease18);
     ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaRelease18", m_overrideSagittaRelease18));
   }
+  ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", m_calibrationMode));
   ANA_CHECK(m_muonCalibrationTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonCalibrationTool_handle);
 
