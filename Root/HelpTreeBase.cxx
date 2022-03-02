@@ -357,7 +357,7 @@ void HelpTreeBase::AddMuons(const std::string& detailStr, const std::string& muo
      if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& trig : muonInfoSwitch.m_trigWPs) {
          for (auto& reco : muonInfoSwitch.m_recoWPs) {
-           std::string trigEffSF_sysNames = "muon_TrigEff_SF_" + trig + "_" + reco + "_sysNames";
+           std::string trigEffSF_sysNames = (muonInfoSwitch.m_recoWPs.size()>1) ? "muon_TrigEff_SF_" + trig + "_" + reco + "_sysNames" : "muon_TrigEff_SF_" + trig + "_sysNames";
            m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_MuonTrigEff_SF_sysNames)[ trig ][ reco ] );
          }
        }
