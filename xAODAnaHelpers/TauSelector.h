@@ -59,8 +59,8 @@ public:
   /* a minimal pT threshold b/c some derivations may apply a thinning on tau tracks' features needed by the TauSelectionTool, which would cause a crash at runtime */
   float          m_minPtDAOD = 15e3;
   std::string    m_JetIDWP = "";
-  std::string    m_EleBDTWP = "";
-  bool           m_EleOLR = true;
+  std::string    m_EleRNNWP = "";
+  bool           m_EleID = true;
 
   /* trigger matching */
   

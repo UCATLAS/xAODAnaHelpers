@@ -42,11 +42,11 @@ public:
   // EleOLR efficiency SF if the the reco tau is a true tau
   std::string   m_WorkingPointEleOLRHadTau = "";
 
-  // EleOLR efficiency SF if the the reco tau is a true electron
-  std::string   m_WorkingPointEleOLRElectron = "";
+  // EleIDLevel efficiency SF if the the reco tau is a true electron
+  std::string   m_WorkingPointTauEleID = "";
   
-  // TauID efficiency SF
-  std::string   m_WorkingPointTauID = "";
+  // JetIDLevel efficiency SF
+  std::string   m_WorkingPointTauJetID = "";
 
   // working point for tauID used in 
   // combination with the trigger

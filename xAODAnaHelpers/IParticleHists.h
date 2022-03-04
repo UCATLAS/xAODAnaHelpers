@@ -103,9 +103,9 @@ StatusCode IParticleHists::execute( const xAH::ParticleContainer<T_PARTICLE, T_I
       m_NRapidity.at(iParticle)->  Fill( partP4.Rapidity(), eventWeight);
 
       if(m_infoSwitch->m_kinematic){
-	m_NEt  .at(iParticle)->        Fill( partP4.Et(),   eventWeight);
-	m_NEt_m.at(iParticle)->        Fill( partP4.Et(),   eventWeight);
-	m_NEt_s.at(iParticle)->        Fill( partP4.Et(),   eventWeight);
+         m_NEt  .at(iParticle)->        Fill( partP4.Et(),   eventWeight);
+         m_NEt_m.at(iParticle)->        Fill( partP4.Et(),   eventWeight);
+         m_NEt_s.at(iParticle)->        Fill( partP4.Et(),   eventWeight);
       }
 
     }
