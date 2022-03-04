@@ -15,6 +15,7 @@
 #include <string>
 
 // for StatusCode::isSuccess
+#include "AsgMessaging/MessageCheck.h"
 #include "AsgMessaging/StatusCode.h"
 #include "AsgTools/ToolStore.h"
 #include "AsgTools/AnaToolHandle.h"
