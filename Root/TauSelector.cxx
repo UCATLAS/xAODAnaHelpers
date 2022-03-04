@@ -199,11 +199,10 @@ EL::StatusCode TauSelector :: initialize ()
     jetid_wp_map["JETIDBDTLOOSE"] = int(TauAnalysisTools::JETIDBDTLOOSE);
     jetid_wp_map["JETIDBDTMEDIUM"] = int(TauAnalysisTools::JETIDBDTMEDIUM);
     jetid_wp_map["JETIDBDTTIGHT"] = int(TauAnalysisTools::JETIDBDTTIGHT);
-    jetid_wp_map["JETIDBDTLOOSENOTTIGHT"] = int(TauAnalysisTools::JETIDBDTLOOSENOTTIGHT);
-    jetid_wp_map["JETIDBDTLOOSENOTMEDIUM"] = int(TauAnalysisTools::JETIDBDTLOOSENOTMEDIUM);
-    jetid_wp_map["JETIDBDTMEDIUMNOTTIGHT"] = int(TauAnalysisTools::JETIDBDTMEDIUMNOTTIGHT);
-    jetid_wp_map["JETIDBDTNOTLOOSE"] = int(TauAnalysisTools::JETIDBDTNOTLOOSE);
-    jetid_wp_map["JETIDBDTVERYLOOSE"] = int(TauAnalysisTools::JETIDBDTVERYLOOSE);
+    jetid_wp_map["JETIDRNNLOOSE"] = int(TauAnalysisTools::JETIDRNNLOOSE);
+    jetid_wp_map["JETIDRNNLOOSE"] = int(TauAnalysisTools::JETIDRNNLOOSE);
+    jetid_wp_map["JETIDRNNMEDIUM"] = int(TauAnalysisTools::JETIDRNNMEDIUM);
+    jetid_wp_map["JETIDRNNTIGHT"] = int(TauAnalysisTools::JETIDRNNTIGHT);
     
     if (jetid_wp_map.count(m_JetIDWP) != 0 ) {
       ANA_CHECK( m_tauSelTool_handle.setProperty("JetIDWP", jetid_wp_map[m_JetIDWP]));
@@ -218,9 +217,9 @@ EL::StatusCode TauSelector :: initialize ()
     std::map <std::string, int> elebdt_wp_map;
     
     elebdt_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
-    elebdt_wp_map["ELEIDBDTLOOSE"] = int(TauAnalysisTools::ELEIDBDTLOOSE);
-    elebdt_wp_map["ELEIDBDTMEDIUM"] = int(TauAnalysisTools::ELEIDBDTMEDIUM);
-    elebdt_wp_map["ELEIDBDTTIGHT"] = int(TauAnalysisTools::ELEIDBDTTIGHT);
+    elebdt_wp_map["ELEIDRNNLOOSE"] = int(TauAnalysisTools::ELEIDRNNLOOSE);
+    elebdt_wp_map["ELEIDRNNMEDIUM"] = int(TauAnalysisTools::ELEIDRNNMEDIUM);
+    elebdt_wp_map["ELEIDRNNTIGHT"] = int(TauAnalysisTools::ELEIDRNNTIGHT);
     
     if (elebdt_wp_map.count(m_EleBDTWP) != 0 ) {
       ANA_CHECK( m_tauSelTool_handle.setProperty("EleBDTWP", elebdt_wp_map[m_EleBDTWP]));

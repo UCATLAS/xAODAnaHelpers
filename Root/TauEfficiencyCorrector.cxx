@@ -139,15 +139,15 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   // initialise reco and EleOLRHadTau SF no matter what 
   std::vector<int> configVec;
   configVec.push_back({TauAnalysisTools::SFRecoHadTau});
-  configVec.push_back({TauAnalysisTools::SFEleOLRHadTau});
+  //configVec.push_back({TauAnalysisTools::SFEleOLRHadTau});
   
   if ( !m_WorkingPointTauID.empty() ) {
      configVec.push_back({TauAnalysisTools::SFJetIDHadTau});
      
-     if      ( m_WorkingPointTauID == "VeryLoose") { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTVERYLOOSE)); }
-     else if ( m_WorkingPointTauID == "Loose")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTLOOSE));     }
-     else if ( m_WorkingPointTauID == "Medium")    { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTMEDIUM));    }
-     else if ( m_WorkingPointTauID == "Tight")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDBDTTIGHT));     }
+     if      ( m_WorkingPointTauID == "VeryLoose") { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDRNNVERYLOOSE)); }
+     else if ( m_WorkingPointTauID == "Loose")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDRNNLOOSE));     }
+     else if ( m_WorkingPointTauID == "Medium")    { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDRNNMEDIUM));    }
+     else if ( m_WorkingPointTauID == "Tight")     { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("IDLevel", (int)TauAnalysisTools::JETIDRNNTIGHT));     }
      else { 
        ANA_MSG_ERROR("Failed to configure WorkingPointTauID with unknown " << m_WorkingPointTauID);
        return EL::StatusCode::FAILURE;
@@ -159,17 +159,13 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   }
 
   if (!m_WorkingPointEleOLRElectron.empty()) {
-    configVec.push_back({TauAnalysisTools::SFEleOLRElectron});
+    //configVec.push_back({TauAnalysisTools::SFEleOLRElectron});
     
-    if      (m_WorkingPointEleOLRElectron == "TauEleOLR")            { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::TAUELEOLR));            }
-    else if (m_WorkingPointEleOLRElectron == "EleBDTLoose")          { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTLOOSE));          }
-    else if (m_WorkingPointEleOLRElectron == "EleBDTLoosePlusVeto")  { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTLOOSEPLUSVETO));  }
-    else if (m_WorkingPointEleOLRElectron == "EleBDTMedium")         { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTMEDIUM));         }
-    else if (m_WorkingPointEleOLRElectron == "EleBDTMediumPlusVeto") { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::ELEBDTMEDIUMPLUSVETO)); }
-    else { 
+    //if      (m_WorkingPointEleOLRElectron == "TauEleOLR")            { ANA_CHECK(m_tauEffCorrTool_handle.setProperty("OLRLevel", (int)TauAnalysisTools::TAUELEOLR));            }
+    //else { 
        ANA_MSG_ERROR("Failed to configure WorkingPointEleOLRElectron with unknown " << m_WorkingPointEleOLRElectron);
        return EL::StatusCode::FAILURE;
-    }
+    //}
   } else if ( m_WorkingPointEleOLRElectron.empty() )      { 
     // still consider this a working point
     m_WorkingPointEleOLRElectron = "None";
