@@ -29,7 +29,7 @@ using std::vector;
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store):
+HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store, std::string nominalTreeName):
   m_trigInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
@@ -40,7 +40,8 @@ HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const 
   m_debug = debug;
   m_tree = tree;
   m_tree->SetDirectory( file );
-  m_nominalTree = strcmp(m_tree->GetName(), "nominal") == 0;
+  m_nominalTreeName = nominalTreeName;
+  m_nominalTree = strcmp(m_tree->GetName(), nominalTreeName.c_str()) == 0;
   m_event = event;
   m_store = store;
   Info("HelpTreeBase()", "HelpTreeBase setup");
@@ -109,8 +110,8 @@ HelpTreeBase::~HelpTreeBase() {
 }
 
 
-HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug):
-  HelpTreeBase(event, tree, file, units, debug, store)
+HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, std::string nominalTreeName):
+  HelpTreeBase(event, tree, file, units, debug, store, nominalTreeName)
 {
   // use the other constructor for everything
 }
@@ -337,9 +338,7 @@ void HelpTreeBase::AddMuons(const std::string& detailStr, const std::string& muo
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = thisMuon->m_infoSwitch;
 
-  std::string tname = m_tree->GetName();
-
-  if ( tname == "nominal" ) {
+  if (m_nominalTree) {
 
      if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& reco : muonInfoSwitch.m_recoWPs) {
@@ -357,8 +356,10 @@ void HelpTreeBase::AddMuons(const std::string& detailStr, const std::string& muo
 
      if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
        for (auto& trig : muonInfoSwitch.m_trigWPs) {
-         std::string trigEffSF_sysNames = "muon_TrigEff_SF_" + trig + "_sysNames";
-         m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_MuonTrigEff_SF_sysNames)[ trig ] );
+         for (auto& reco : muonInfoSwitch.m_recoWPs) {
+           std::string trigEffSF_sysNames = (muonInfoSwitch.m_recoWPs.size()>1) ? "muon_TrigEff_SF_" + trig + "_" + reco + "_sysNames" : "muon_TrigEff_SF_" + trig + "_sysNames";
+           m_tree->Branch( trigEffSF_sysNames.c_str() , & (m_MuonTrigEff_SF_sysNames)[ trig ][ reco ] );
+         }
        }
      }
 
@@ -378,14 +379,12 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
   this->ClearMuons(muonName);
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = m_muons[muonName]->m_infoSwitch;
 
-  std::string tname = m_tree->GetName();
-
-  if ( tname == "nominal" ) {
+  if (m_nominalTree) {
 
     if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
         std::vector< std::string >* tmp_reco_sys(nullptr);
-        if ( m_store->retrieve(tmp_reco_sys, "MuonEfficiencyCorrector_RecoSyst_" + reco).isSuccess() ) {
+        if ( m_store->retrieve(tmp_reco_sys, "MuonEfficiencyCorrector_RecoSyst_Reco" + reco).isSuccess() ) {
           (m_MuonRecoEff_SF_sysNames)[ reco ] = *tmp_reco_sys;
         }
       }
@@ -394,7 +393,7 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
     if ( muonInfoSwitch.m_isoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& isol : muonInfoSwitch.m_isolWPs ) {
         std::vector< std::string >* tmp_iso_sys(nullptr);
-        if ( m_store->retrieve(tmp_iso_sys, "MuonEfficiencyCorrector_IsoSyst_" + isol).isSuccess() ) {
+        if ( m_store->retrieve(tmp_iso_sys, "MuonEfficiencyCorrector_IsoSyst_Iso" + isol).isSuccess() ) {
           (m_MuonIsoEff_SF_sysNames)[ isol ] = *tmp_iso_sys;
         }
       }
@@ -402,9 +401,11 @@ void HelpTreeBase::FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vert
 
     if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& trig : muonInfoSwitch.m_trigWPs ) {
-        std::vector< std::string >* tmp_trig_sys(nullptr);
-        if ( m_store->retrieve(tmp_trig_sys, "MuonEfficiencyCorrector_TrigSyst_" + trig).isSuccess() ) {
-          (m_MuonTrigEff_SF_sysNames)[ trig ] = *tmp_trig_sys;
+        for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
+          std::vector< std::string >* tmp_trig_sys(nullptr);
+          if ( m_store->retrieve(tmp_trig_sys, "MuonEfficiencyCorrector_TrigSyst_" + trig + "_Reco" + reco).isSuccess() ) {
+            (m_MuonTrigEff_SF_sysNames)[ trig ][ reco ] = *tmp_trig_sys;
+          }
         }
       }
     }
@@ -437,28 +438,29 @@ void HelpTreeBase::FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primary
 
 void HelpTreeBase::ClearMuons(const std::string& muonName) {
 
-  std::string tname = m_tree->GetName();
   xAH::MuonContainer* thisMuon = m_muons[muonName];
   HelperClasses::MuonInfoSwitch& muonInfoSwitch = thisMuon->m_infoSwitch;
 
-  if ( tname == "nominal" ) {
+  if (m_nominalTree) {
 
     if ( muonInfoSwitch.m_recoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
           (m_MuonRecoEff_SF_sysNames)[ reco ].clear();
-        }
+      }
     }
 
     if ( muonInfoSwitch.m_isoEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& isol : muonInfoSwitch.m_isolWPs ) {
           (m_MuonIsoEff_SF_sysNames)[ isol ].clear();
-        }
+      }
     }
 
     if ( muonInfoSwitch.m_trigEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
       for ( auto& trig : muonInfoSwitch.m_trigWPs ) {
-          (m_MuonTrigEff_SF_sysNames)[ trig ].clear();
+        for ( auto& reco : muonInfoSwitch.m_recoWPs ) {
+            (m_MuonTrigEff_SF_sysNames)[ trig ][ reco ].clear();
         }
+      }
     }
 
     if ( muonInfoSwitch.m_ttvaEff_sysNames && muonInfoSwitch.m_effSF && m_isMC ) {
