@@ -4,6 +4,7 @@
 #include "xAODAnaHelpers/HistogramManager.h"
 #include "xAODAnaHelpers/HelperClasses.h"
 #include "xAODMissingET/MissingETContainer.h"
+#include "xAODAnaHelpers/MetContainer.h"
 
 class MetHists : public HistogramManager
 {
@@ -16,6 +17,7 @@ class MetHists : public HistogramManager
     bool m_debug;
     StatusCode initialize();
     StatusCode execute( const xAOD::MissingETContainer* met, float eventWeight );
+    StatusCode execute( const xAH::MetContainer* met, float eventWeight);
 
     using HistogramManager::book; // make other overloaded version of book() to show up in subclass
     using HistogramManager::execute; // overload
