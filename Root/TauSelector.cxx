@@ -196,14 +196,9 @@ EL::StatusCode TauSelector :: initialize ()
     std::map <std::string, int> jetid_wp_map;
     
     jetid_wp_map["JETIDNONE"] = int(TauAnalysisTools::JETIDNONE);
-    jetid_wp_map["JETIDBDTLOOSE"] = int(TauAnalysisTools::JETIDBDTLOOSE);
-    jetid_wp_map["JETIDBDTMEDIUM"] = int(TauAnalysisTools::JETIDBDTMEDIUM);
-    jetid_wp_map["JETIDBDTTIGHT"] = int(TauAnalysisTools::JETIDBDTTIGHT);
-    jetid_wp_map["JETIDBDTLOOSENOTTIGHT"] = int(TauAnalysisTools::JETIDBDTLOOSENOTTIGHT);
-    jetid_wp_map["JETIDBDTLOOSENOTMEDIUM"] = int(TauAnalysisTools::JETIDBDTLOOSENOTMEDIUM);
-    jetid_wp_map["JETIDBDTMEDIUMNOTTIGHT"] = int(TauAnalysisTools::JETIDBDTMEDIUMNOTTIGHT);
-    jetid_wp_map["JETIDBDTNOTLOOSE"] = int(TauAnalysisTools::JETIDBDTNOTLOOSE);
-    jetid_wp_map["JETIDBDTVERYLOOSE"] = int(TauAnalysisTools::JETIDBDTVERYLOOSE);
+    jetid_wp_map["JETIDRNNLOOSE"] = int(TauAnalysisTools::JETIDRNNLOOSE);
+    jetid_wp_map["JETIDRNNMEDIUM"] = int(TauAnalysisTools::JETIDRNNMEDIUM);
+    jetid_wp_map["JETIDRNNTIGHT"] = int(TauAnalysisTools::JETIDRNNTIGHT);
     
     if (jetid_wp_map.count(m_JetIDWP) != 0 ) {
       ANA_CHECK( m_tauSelTool_handle.setProperty("JetIDWP", jetid_wp_map[m_JetIDWP]));
@@ -213,24 +208,24 @@ EL::StatusCode TauSelector :: initialize ()
     }
   }
 
-  if (!m_EleBDTWP.empty()) {
+  if (!m_EleRNNWP.empty()) {
     
     std::map <std::string, int> elebdt_wp_map;
     
     elebdt_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
-    elebdt_wp_map["ELEIDBDTLOOSE"] = int(TauAnalysisTools::ELEIDBDTLOOSE);
-    elebdt_wp_map["ELEIDBDTMEDIUM"] = int(TauAnalysisTools::ELEIDBDTMEDIUM);
-    elebdt_wp_map["ELEIDBDTTIGHT"] = int(TauAnalysisTools::ELEIDBDTTIGHT);
+    elebdt_wp_map["ELEIDRNNLOOSE"] = int(TauAnalysisTools::ELEIDRNNLOOSE);
+    elebdt_wp_map["ELEIDRNNMEDIUM"] = int(TauAnalysisTools::ELEIDRNNMEDIUM);
+    elebdt_wp_map["ELEIDRNNTIGHT"] = int(TauAnalysisTools::ELEIDRNNTIGHT);
     
-    if (elebdt_wp_map.count(m_EleBDTWP) != 0 ) {
-      ANA_CHECK( m_tauSelTool_handle.setProperty("EleBDTWP", elebdt_wp_map[m_EleBDTWP]));
+    if (elebdt_wp_map.count(m_EleRNNWP) != 0 ) {
+      ANA_CHECK( m_tauSelTool_handle.setProperty("EleRNNWP", elebdt_wp_map[m_EleRNNWP]));
     } else {
-      ANA_MSG_ERROR( "Unknown requested tau EleBDTWP " << m_EleBDTWP);
+      ANA_MSG_ERROR( "Unknown requested tau EleRNNWP " << m_EleRNNWP);
       return EL::StatusCode::FAILURE; 
     }
   }
 
-  ANA_CHECK( m_tauSelTool_handle.setProperty("EleOLR", m_EleOLR));
+  ANA_CHECK( m_tauSelTool_handle.setProperty("EleID", m_EleID));
 
   ANA_CHECK(m_tauSelTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
@@ -725,7 +720,7 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   EleBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTEleScore));
 
 
-  // EleOLR decoration
+  // EleID decoration
   // -----------------
   static SG::AuxElement::Decorator< int > passEleOLR("passEleOLR");
   
