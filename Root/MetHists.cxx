@@ -69,3 +69,27 @@ StatusCode MetHists::execute( const xAOD::MissingETContainer* met, float eventWe
   return StatusCode::SUCCESS;
 }
 
+StatusCode MetHists::execute(const xAH::MetContainer* met, float eventWeight){
+  if(m_debug) std::cout << "MetHists: in execute " <<std::endl;
+
+  //
+  // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
+  //
+  m_metFinalClus      -> Fill( met->m_metFinalClus,      eventWeight);
+  m_metFinalClusPx    -> Fill( met->m_metFinalClusPx,    eventWeight);
+  m_metFinalClusPy    -> Fill( met->m_metFinalClusPy,    eventWeight);
+  m_metFinalClusSumEt -> Fill( met->m_metFinalClusSumEt, eventWeight);
+  m_metFinalClusPhi   -> Fill( met->m_metFinalClusPhi,   eventWeight);
+
+  //
+  // ("FinalClus" uses the calocluster-based soft terms, "FinalTrk" uses the track-based ones)
+  //
+  m_metFinalTrk       -> Fill( met->m_metFinalTrk,       eventWeight);
+  m_metFinalTrkPx     -> Fill( met->m_metFinalTrkPx,     eventWeight);
+  m_metFinalTrkPy     -> Fill( met->m_metFinalTrkPy,     eventWeight);
+  m_metFinalTrkSumEt  -> Fill( met->m_metFinalTrkSumEt,  eventWeight);
+  m_metFinalTrkPhi    -> Fill( met->m_metFinalTrkPhi  ,  eventWeight);
+
+  return StatusCode::SUCCESS;
+}
+
