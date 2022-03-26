@@ -506,7 +506,7 @@ namespace xAH {
       std::vector<int>   *m_GhostTausFinalCount;
       std::vector<float> *m_GhostTausFinalPt;
 
-      std::vector<ilsnt>   *m_truth_pdgId;
+      std::vector<int>   *m_truth_pdgId;
       std::vector<float> *m_truth_partonPt;
       std::vector<float> *m_truth_partonDR;
 
