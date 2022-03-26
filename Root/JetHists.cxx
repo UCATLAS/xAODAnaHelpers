@@ -653,7 +653,6 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   if (m_infoSwitch->m_byAverageMu)
   {
-    float averageMu = eventInfo->averageInteractionsPerCrossing();
     m_avgMu->Fill(averageMu, eventWeight);
   }
 
