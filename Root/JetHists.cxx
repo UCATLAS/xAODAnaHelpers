@@ -55,18 +55,6 @@ StatusCode JetHists::initialize() {
 
   }
 
-
-
-  // details for displace jet information
-  if( m_infoSwitch->m_displaced ) {
-    if(m_debug) Info("JetHists::initialize()", "adding displaced plots");
-    m_ipsig      = book(m_name, "IPSIG",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
-    m_chf       = book(m_name, "CHF",          m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
-    m_alpha_max   = book(m_name, "Alpha_max",      m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
-
-  }
-
-
   // details for jet energy information
   if( m_infoSwitch->m_energy ) {
     if(m_debug) Info("JetHists::initialize()", "adding energy plots");
@@ -653,30 +641,9 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
 
   if (m_infoSwitch->m_byAverageMu)
   {
+    float averageMu = eventInfo->averageInteractionsPerCrossing();
     m_avgMu->Fill(averageMu, eventWeight);
   }
-
-  // displaced jet
-  if( m_infoSwitch->m_displaced ) {
-    if(m_debug) std::cout << "JetHists: m_displaced " <<std::endl;
-
-    static SG::AuxElement::ConstAccessor<float> ipsig ("ipsig");
-    if( ipsig.isAvailable( *jet ) ) {
-      m_ipsig ->  Fill( ipsig( *jet ), eventWeight );
-    }
-
-    static SG::AuxElement::ConstAccessor<float> alpha_max ("alpha_max");
-    if(alpha_max.isAvailable( *jet ) ) {
-      m_alpha_max ->  Fill( alpha_max( *jet ), eventWeight );
-    }
-
-    static SG::AuxElement::ConstAccessor<float> chf ("chf");
-    if(chf.isAvailable( *jet ) ) {
-      m_chf ->  Fill( chf( *jet ), eventWeight );
-    }
-  
-  }
-
 
   // energy
   if( m_infoSwitch->m_energy ) {
@@ -1723,13 +1690,6 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       //m_clean_passTightBadUgly    ->Fill(jet->clean_passTightBadUgly    ,eventWeight);
     }
 
-
-  if(m_infoSwitch->m_displaced)
-    {
-      m_alpha_max              ->Fill(jet->alpha_max,              eventWeight);
-      m_chf              ->Fill(jet->chf,               eventWeight);
-      m_ipsig         ->Fill(jet->ipsig,            eventWeight);
-    }
 
   if(m_infoSwitch->m_energy)
     {

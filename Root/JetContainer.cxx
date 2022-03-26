@@ -2400,7 +2400,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_alpha_max->push_back( -999 );
     }
     if( jet->isAvailable< float >( "ipsig" ) ) {
-      m_ipsig->push_bacd ck( jet->auxdata< float >("ipsig") );
+      m_ipsig->push_back( jet->auxdata< float >("ipsig") );
     } else {
       m_ipsig->push_back( -999 );
     }
