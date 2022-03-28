@@ -97,7 +97,8 @@ class JetHists : public IParticleHists
 
 
     TH1F* m_chf;                    //!
-
+    TH1F* m_alpha_max;                    //!
+    TH1F* m_ipsig;
     //energy
     TH1F* m_HECf;                   //!
     TH1F* m_EMf;                    //!
