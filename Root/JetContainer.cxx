@@ -986,6 +986,30 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree, "Jvt",        &m_Jvt);
     }
 
+  if ( m_infoSwitch.m_allTrack ) {
+    connectBranch<int  >(tree,"GhostTrackCount",  &m_GhostTrackCount );
+    connectBranch<float>(tree,"GhostTrackPt",     &m_GhostTrackPt    );
+    connectBranch<std::vector<float> >(tree,"GhostTrack_pt",    &m_GhostTrack_pt   );
+    connectBranch<std::vector<float> >(tree,"GhostTrack_qOverP",&m_GhostTrack_qOverP);
+    connectBranch<std::vector<float> >(tree,"GhostTrack_eta",   &m_GhostTrack_eta  );
+    connectBranch<std::vector<float> >(tree,"GhostTrack_phi",   &m_GhostTrack_phi  );
+    connectBranch<std::vector<float> >(tree,"GhostTrack_e",     &m_GhostTrack_e    );
+    connectBranch<std::vector<float> >(tree,"GhostTrack_d0",    &m_GhostTrack_d0   );
+    connectBranch<std::vector<float> >(tree,"GhostTrack_z0",    &m_GhostTrack_z0   );
+    if ( m_infoSwitch.m_allTrackDetail ) {
+      connectBranch<std::vector<int> >(tree,"GhostTrack_nPixelHits",                           &m_GhostTrack_nPixelHits);
+      connectBranch<std::vector<int> >(tree,"GhostTrack_nSCTHits",                             &m_GhostTrack_nSCTHits);
+      connectBranch<std::vector<int> >(tree,"GhostTrack_nTRTHits",                             &m_GhostTrack_nTRTHits);
+      connectBranch<std::vector<int> >(tree,"GhostTrack_nPixelSharedHits",                     &m_GhostTrack_nPixelSharedHits);
+      connectBranch<std::vector<int> >(tree,"GhostTrack_nPixelSplitHits",                      &m_GhostTrack_nPixelSplitHits);
+      connectBranch<std::vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerHits",             &m_GhostTrack_nInnermostPixelLayerHits);
+      connectBranch<std::vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerSharedHits",       &m_GhostTrack_nInnermostPixelLayerSharedHits);
+      connectBranch<std::vector<int> >(tree,"m_GhostTrack_nInnermostPixelLayerSplitHits",        &m_GhostTrack_nInnermostPixelLayerSplitHits);
+      connectBranch<std::vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerHits",       &m_GhostTrack_nNextToInnermostPixelLayerHits);
+      connectBranch<std::vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerSharedHits", &m_GhostTrack_nNextToInnermostPixelLayerSharedHits);
+      connectBranch<std::vector<int> >(tree,"m_GhostTrack_nNextToInnermostPixelLayerSplitHits",  &m_GhostTrack_nNextToInnermostPixelLayerSplitHits);
+    }
+  }
 
   if ( m_infoSwitch.m_chargedPFOPV ) {
     connectBranch<float>(tree, "SumPtChargedPFOPt500PV", &m_SumPtChargedPFOPt500PV);
@@ -1259,6 +1283,33 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       }
       jet.Jvt       =m_Jvt       ->at(idx);
     }
+
+  if ( m_infoSwitch.m_allTrack ) {
+    jet.GhostTrackCount = m_GhostTrackCount->at(idx);
+    jet.GhostTrackPt    = m_GhostTrackPt->at(idx);
+
+    jet.GhostTrack_pt     = m_GhostTrack_pt->at(idx);
+    jet.GhostTrack_qOverP = m_GhostTrack_qOverP->at(idx);
+    jet.GhostTrack_eta    = m_GhostTrack_eta->at(idx);
+    jet.GhostTrack_phi    = m_GhostTrack_phi->at(idx);
+    jet.GhostTrack_e      = m_GhostTrack_e->at(idx);
+    jet.GhostTrack_d0     = m_GhostTrack_d0->at(idx);
+    jet.GhostTrack_z0     = m_GhostTrack_z0->at(idx);
+    if ( m_infoSwitch.m_allTrackDetail ) {
+      jet.GhostTrack_nPixelHits                           = m_GhostTrack_nPixelHits->at(idx);
+      jet.GhostTrack_nSCTHits                             = m_GhostTrack_nSCTHits->at(idx);
+      jet.GhostTrack_nTRTHits                             = m_GhostTrack_nTRTHits->at(idx);
+      jet.GhostTrack_nPixelSharedHits                     = m_GhostTrack_nPixelSharedHits->at(idx);
+      jet.GhostTrack_nPixelSplitHits                      = m_GhostTrack_nPixelSplitHits->at(idx);
+      jet.GhostTrack_nInnermostPixelLayerHits             = m_GhostTrack_nInnermostPixelLayerHits->at(idx);
+      jet.GhostTrack_nInnermostPixelLayerSharedHits       = m_GhostTrack_nInnermostPixelLayerSharedHits->at(idx);
+      jet.GhostTrack_nInnermostPixelLayerSplitHits        = m_GhostTrack_nInnermostPixelLayerSplitHits->at(idx);
+      jet.GhostTrack_nNextToInnermostPixelLayerHits       = m_GhostTrack_nNextToInnermostPixelLayerHits->at(idx);
+      jet.GhostTrack_nNextToInnermostPixelLayerSharedHits = m_GhostTrack_nNextToInnermostPixelLayerSharedHits->at(idx);
+      jet.GhostTrack_nNextToInnermostPixelLayerSplitHits  = m_GhostTrack_nNextToInnermostPixelLayerSplitHits->at(idx);
+    }
+  }
+
 
 
   if ( m_infoSwitch.m_chargedPFOPV ) {
@@ -2919,8 +2970,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     std::vector<int> nNIMLPixSharedHits;
     std::vector<int> nNIMLPixSplitHits;
     static SG::AuxElement::ConstAccessor< std::vector<ElementLink<DataVector<xAOD::IParticle> > > >ghostTrack ("GhostTrack");
+    static SG::AuxElement::ConstAccessor< std::vector<ElementLink<DataVector<xAOD::IParticle> > > >ghostTrackLRT ("GhostTrackLRT");
     if ( ghostTrack.isAvailable( *jet ) ) {
       std::vector<ElementLink<DataVector<xAOD::IParticle> > > trackLinks = ghostTrack( *jet );
+      if ( ghostTrackLRT.isAvailable( *jet ) ) {
+        std::vector<ElementLink<DataVector<xAOD::IParticle> > > trackLinksLRT = ghostTrackLRT( *jet );
+        trackLinks.insert( trackLinks.end(), trackLinksLRT.begin(), trackLinksLRT.end() );
+      }
       //std::vector<float> pt(trackLinks.size(),-999);
       for ( auto link_itr : trackLinks ) {
         if( !link_itr.isValid() ) { continue; }
@@ -2943,6 +2999,12 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         e.  push_back( track->e()  / m_units );
         d0. push_back( track->d0() );
         z0. push_back( track->z0() + track->vz() - pv->z() ); // store z0 wrt PV...most useful
+        // TODO: z0sinTheta
+        //       Sd0
+        //       sign
+        //       ptFrac
+        //       dEta
+        //       dPhi
         if( m_infoSwitch.m_allTrackDetail ) {
           uint8_t getInt(0);
           // n pix, sct, trt

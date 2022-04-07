@@ -83,6 +83,30 @@ namespace xAH {
       float JvtJvfcorr;
       float JvtRpt;
 
+      // allTrack
+      int   GhostTrackCount;
+      float GhostTrackPt;
+      std::vector<float> GhostTrack_pt;
+      std::vector<float> GhostTrack_qOverP;
+      std::vector<float> GhostTrack_eta;
+      std::vector<float> GhostTrack_phi;
+      std::vector<float> GhostTrack_e;
+      std::vector<float> GhostTrack_d0;
+      std::vector<float> GhostTrack_z0;
+
+      // allTrackDetail
+      std::vector<int> GhostTrack_nPixelHits;
+      std::vector<int> GhostTrack_nSCTHits;
+      std::vector<int> GhostTrack_nTRTHits;
+      std::vector<int> GhostTrack_nPixelSharedHits;
+      std::vector<int> GhostTrack_nPixelSplitHits;
+      std::vector<int> GhostTrack_nInnermostPixelLayerHits;
+      std::vector<int> GhostTrack_nInnermostPixelLayerSharedHits;
+      std::vector<int> GhostTrack_nInnermostPixelLayerSplitHits;
+      std::vector<int> GhostTrack_nNextToInnermostPixelLayerHits;
+      std::vector<int> GhostTrack_nNextToInnermostPixelLayerSharedHits;
+      std::vector<int> GhostTrack_nNextToInnermostPixelLayerSplitHits;
+
       // chargedPFOPV 
       float SumPtChargedPFOPt500PV;
       float fCharged;
