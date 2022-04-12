@@ -21,6 +21,7 @@ class Config(object):
     self._samples    = {}
     self._outputs    = set([])
     self._log        = []
+    self._cp_sequence = {}
 
   def setalg(self, className, options):
     logger.warning("Config::setalg is being renamed to Config::algorithm.")
@@ -28,6 +29,9 @@ class Config(object):
     frame, path, lineno, source, lines, _ = inspect.stack()[1]
     logger.warning("\tPossible call stack: {0:s}({1:d}): {2:s}".format(path, lineno, lines[0].strip()))
     return self.algorithm(className, options)
+
+  def cp_sequence(self, sequence):
+    self._cp_sequence[len(self._algorithms)-1 if len(self._algorithms) else "initial"] = sequence
 
   def algorithm(self, className, options):
     # check first argument

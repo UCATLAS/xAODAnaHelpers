@@ -497,9 +497,17 @@ if __name__ == "__main__":
         if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
           job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
 
-    # Add the algorithms to the job
-    for alg in configurator._algorithms:
+    # Add sequence of CP algorithms scheduled before any xAH algorithm
+    if "initial" in configurator._cp_sequence:
+      for alg in configurator._cp_sequence["initial"]:
+        job.algsAdd(alg)
+
+    # Add any other requested algorithm to the job
+    for index, alg in enumerate(configurator._algorithms):
       job.algsAdd(alg)
+      if index in configurator._cp_sequence: # add CP algorithms requested b/w this xAH alg and the next one
+        for alg in configurator._cp_sequence[index]:
+          job.algsAdd(alg)
     
     for configLog in configurator._log:
       # this is when we have just the algorithm name
