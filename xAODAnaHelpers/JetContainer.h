@@ -49,6 +49,7 @@ namespace xAH {
 
       std::vector<float>   *m_ipsig;
       std::vector<float>   *m_chf;
+      std::vector<float>   *m_dchf;
       std::vector<float>   *m_alpha_max;
 
 
