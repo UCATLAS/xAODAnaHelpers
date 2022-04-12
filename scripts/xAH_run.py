@@ -497,7 +497,7 @@ if __name__ == "__main__":
         if isinstance(alg, ROOT.EL.NTupleSvc) and not job.outputHas(alg.GetName()):
           job.outputAdd(ROOT.EL.OutputStream(alg.GetName()))
 
-    # Add the algorithms the job
+    # Add the algorithms to the job
     for alg in configurator._algorithms:
       job.algsAdd(alg)
     
