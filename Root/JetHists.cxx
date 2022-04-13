@@ -62,10 +62,10 @@ StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_displaced ) {
     if(m_debug) Info("JetHists::initialize()", "adding displaced plots");
     m_ipsig       = book(m_name, "ipsig",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
-    m_chf         = book(m_name, "chg",          m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
+    m_chf         = book(m_name, "chf",          m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
     m_dchf        = book(m_name, "dchf",          m_titlePrefix+"Displaced Charge Hadron Fraction" ,    100, 0, 1);
     m_alpha_max   = book(m_name, "alpha_max",      m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
-    m_ptrel       = book(m_name,  "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 100);
+    m_ptrel       = book(m_name,  "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
 
   }
 
