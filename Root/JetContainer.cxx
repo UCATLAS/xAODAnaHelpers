@@ -16,6 +16,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   // displaced
   if(m_infoSwitch.m_displaced) {
     m_ipsig = new std::vector<float>();
+    m_ptrel = new std::vector<float>();
     m_chf = new std::vector<float>();
     m_dchf = new std::vector<float>();
     m_alpha_max = new std::vector<float>();
@@ -468,6 +469,7 @@ JetContainer::~JetContainer()
 
   if(m_infoSwitch.m_displaced) {
     delete  m_ipsig;
+    delete  m_ptrel;
     delete  m_chf;
     delete  m_dchf;
     delete  m_alpha_max;        
@@ -898,6 +900,7 @@ void JetContainer::setTree(TTree *tree)
 
   if ( m_infoSwitch.m_displaced ){
     connectBranch<float>  (tree,"ipsig",             &m_ipsig);
+    connectBranch<float>  (tree,"ptrel",             &m_ptrel);
     connectBranch<float>  (tree,"alpha_max",         &m_alpha_max);
     connectBranch<float>  (tree,"chf",               &m_chf);
     connectBranch<float>  (tree,"dchf",              &m_dchf);    
@@ -1172,6 +1175,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.chf                       =m_chf                 ->at(idx);
       jet.dchf                      =m_dchf                ->at(idx);
       jet.ipsig                     =m_ipsig               ->at(idx);
+      jet.ptrel                     =m_ptrel               ->at(idx);
       jet.alpha_max                 =m_alpha_max           ->at(idx);
     }
 
@@ -1544,6 +1548,7 @@ void JetContainer::setBranches(TTree *tree)
 
   if ( m_infoSwitch.m_displaced ) {
     setBranch<float>(tree,"ipsig",                       m_ipsig           );
+    setBranch<float>(tree,"ptrel",                       m_ptrel           );
     setBranch<float>(tree,"chf",                         m_chf             );
     setBranch<float>(tree,"dchf",                        m_dchf            );
     setBranch<float>(tree,"alpha_max",                   m_alpha_max       );    
@@ -1976,6 +1981,7 @@ void JetContainer::clear()
     m_chf->clear();
     m_dchf->clear();
     m_ipsig->clear();
+    m_ptrel->clear();
   }
   
 
@@ -2409,6 +2415,11 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_ipsig->push_back( jet->auxdata< float >("ipsig") );
     } else {
       m_ipsig->push_back( -999 );
+    }
+    if( jet->isAvailable< float >( "ptrel" ) ) {
+      m_ptrel->push_back( jet->auxdata< float >("ptrel") );
+    } else {
+      m_ptrel->push_back( -999 );
     }
     if( jet->isAvailable< float >( "chf" ) ) {
       m_chf->push_back( jet->auxdata< float >("chf") );

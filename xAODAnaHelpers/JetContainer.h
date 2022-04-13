@@ -48,6 +48,7 @@ namespace xAH {
       //displaced
 
       std::vector<float>   *m_ipsig;
+      std::vector<float>   *m_ptrel;
       std::vector<float>   *m_chf;
       std::vector<float>   *m_dchf;
       std::vector<float>   *m_alpha_max;

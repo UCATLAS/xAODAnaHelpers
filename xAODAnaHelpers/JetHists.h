@@ -95,11 +95,13 @@ class JetHists : public IParticleHists
     // area
     TH1F* m_actArea;                //!
 
-
+    // displaced 
     TH1F* m_chf;                    //!
     TH1F* m_dchf;                    //!
     TH1F* m_alpha_max;              //!
     TH1F* m_ipsig;                  //!
+    TH1F* m_ptrel;                  //!
+
     //energy
     TH1F* m_HECf;                   //!
     TH1F* m_EMf;                    //!
