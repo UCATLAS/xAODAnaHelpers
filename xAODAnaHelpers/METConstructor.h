@@ -48,6 +48,9 @@ public:
   bool    m_doJVTCut = false;
   bool    m_dofJVTCut = false;
 
+  /// @brief Name of MET Working Point (defines the JetSelection applied in METMaker)
+  std::string m_METWorkingPoint = "Tight";
+
   /// @brief Name of fJVT decoration
   std::string m_fJVTdecorName = "passFJVT";
 
