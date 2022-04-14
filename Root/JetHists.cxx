@@ -61,9 +61,11 @@ StatusCode JetHists::initialize() {
   // details for displace jet information
   if( m_infoSwitch->m_displaced ) {
     if(m_debug) Info("JetHists::initialize()", "adding displaced plots");
-    m_ipsig      = book(m_name, "IPSIG",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
-    m_chf       = book(m_name, "CHF",          m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
-    m_alpha_max   = book(m_name, "Alpha_max",      m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
+    m_ipsig       = book(m_name, "ipsig",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
+    m_chf         = book(m_name, "chf",          m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
+    m_dchf        = book(m_name, "dchf",          m_titlePrefix+"Displaced Charge Hadron Fraction" ,    100, 0, 1);
+    m_alpha_max   = book(m_name, "alpha_max",      m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
+    m_ptrel       = book(m_name,  "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
 
   }
 
@@ -667,6 +669,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       m_ipsig ->  Fill( ipsig( *jet ), eventWeight );
     }
 
+    static SG::AuxElement::ConstAccessor<float> ptrel ("ptrel");
+    if( ptrel.isAvailable( *jet ) ) {
+      m_ptrel ->  Fill( ptrel( *jet ), eventWeight );
+    }
+
+
     static SG::AuxElement::ConstAccessor<float> alpha_max ("alpha_max");
     if(alpha_max.isAvailable( *jet ) ) {
       m_alpha_max ->  Fill( alpha_max( *jet ), eventWeight );
@@ -676,7 +684,13 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if(chf.isAvailable( *jet ) ) {
       m_chf ->  Fill( chf( *jet ), eventWeight );
     }
-  
+
+    static SG::AuxElement::ConstAccessor<float> dchf ("dchf");
+    if(dchf.isAvailable( *jet ) ) {
+      m_dchf ->  Fill( dchf( *jet ), eventWeight );
+    }
+
+
   }
 
 
@@ -1728,9 +1742,12 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 
   if(m_infoSwitch->m_displaced)
     {
-      m_alpha_max              ->Fill(jet->alpha_max,              eventWeight);
-      m_chf              ->Fill(jet->chf,               eventWeight);
-      m_ipsig         ->Fill(jet->ipsig,            eventWeight);
+      m_alpha_max             ->Fill(jet->alpha_max,         eventWeight);
+      m_chf                   ->Fill(jet->chf,               eventWeight);
+      m_dchf                  ->Fill(jet->dchf,               eventWeight);
+      m_ipsig                 ->Fill(jet->ipsig,             eventWeight);
+      m_ptrel                 ->Fill(jet->ptrel,             eventWeight);
+
     }
 
   if(m_infoSwitch->m_energy)
