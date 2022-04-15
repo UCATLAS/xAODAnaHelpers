@@ -97,10 +97,11 @@ class JetHists : public IParticleHists
 
     // displaced 
     TH1F* m_chf;                    //!
-    TH1F* m_dchf;                    //!
+    TH1F* m_dchf;                   //!
     TH1F* m_alpha_max;              //!
     TH1F* m_ipsig;                  //!
     TH1F* m_ptrel;                  //!
+    TH1F* m_ptrel_highest;          //!
 
     //energy
     TH1F* m_HECf;                   //!

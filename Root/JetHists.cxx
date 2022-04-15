@@ -61,11 +61,12 @@ StatusCode JetHists::initialize() {
   // details for displace jet information
   if( m_infoSwitch->m_displaced ) {
     if(m_debug) Info("JetHists::initialize()", "adding displaced plots");
-    m_ipsig       = book(m_name, "ipsig",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
-    m_chf         = book(m_name, "chf",          m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
-    m_dchf        = book(m_name, "dchf",          m_titlePrefix+"Displaced Charge Hadron Fraction" ,    100, 0, 1);
-    m_alpha_max   = book(m_name, "alpha_max",      m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
-    m_ptrel       = book(m_name,  "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
+    m_ipsig         = book(m_name, "ipsig",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
+    m_chf           = book(m_name, "chf",           m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
+    m_dchf          = book(m_name, "dchf",          m_titlePrefix+"Displaced Charge Hadron Fraction" ,    100, 0, 1);
+    m_alpha_max     = book(m_name, "alpha_max",     m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
+    m_ptrel         = book(m_name, "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
+    m_ptrel_highest = book(m_name, "ptrel_highest", m_titlePrefix+"Relative momentum of highest pT" ,    90, 0, 100);
 
   }
 
@@ -673,6 +674,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if( ptrel.isAvailable( *jet ) ) {
       m_ptrel ->  Fill( ptrel( *jet ), eventWeight );
     }
+
+    static SG::AuxElement::ConstAccessor<float> ptrel_highest ("ptrel_highest");
+    if( ptrel_highest.isAvailable( *jet ) ) {
+      m_ptrel_highest ->  Fill( ptrel_highest( *jet ), eventWeight );
+    }
+
 
 
     static SG::AuxElement::ConstAccessor<float> alpha_max ("alpha_max");
@@ -1744,9 +1751,10 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     {
       m_alpha_max             ->Fill(jet->alpha_max,         eventWeight);
       m_chf                   ->Fill(jet->chf,               eventWeight);
-      m_dchf                  ->Fill(jet->dchf,               eventWeight);
+      m_dchf                  ->Fill(jet->dchf,              eventWeight);
       m_ipsig                 ->Fill(jet->ipsig,             eventWeight);
       m_ptrel                 ->Fill(jet->ptrel,             eventWeight);
+      m_ptrel_highest         ->Fill(jet->ptrel_highest,     eventWeight);
 
     }
 

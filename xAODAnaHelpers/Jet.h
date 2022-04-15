@@ -25,6 +25,7 @@ namespace xAH {
       // displaced
       float ipsig;
       float ptrel;
+      float ptrel_highest;
       float dchf;
       float chf;
       float alpha_max;	

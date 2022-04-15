@@ -15,11 +15,12 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
 
   // displaced
   if(m_infoSwitch.m_displaced) {
-    m_ipsig = new std::vector<float>();
-    m_ptrel = new std::vector<float>();
-    m_chf = new std::vector<float>();
-    m_dchf = new std::vector<float>();
-    m_alpha_max = new std::vector<float>();
+    m_ipsig              =  new std::vector<float>();
+    m_ptrel              =  new std::vector<float>();
+    m_ptrel_highest      =  new std::vector<float>();
+    m_chf                =  new std::vector<float>();
+    m_dchf               =  new std::vector<float>();
+    m_alpha_max          =  new std::vector<float>();
   }
 
   // rapidity
@@ -470,6 +471,7 @@ JetContainer::~JetContainer()
   if(m_infoSwitch.m_displaced) {
     delete  m_ipsig;
     delete  m_ptrel;
+    delete  m_ptrel_highest;
     delete  m_chf;
     delete  m_dchf;
     delete  m_alpha_max;        
@@ -901,6 +903,7 @@ void JetContainer::setTree(TTree *tree)
   if ( m_infoSwitch.m_displaced ){
     connectBranch<float>  (tree,"ipsig",             &m_ipsig);
     connectBranch<float>  (tree,"ptrel",             &m_ptrel);
+    connectBranch<float>  (tree,"ptrel_highest",     &m_ptrel_highest);
     connectBranch<float>  (tree,"alpha_max",         &m_alpha_max);
     connectBranch<float>  (tree,"chf",               &m_chf);
     connectBranch<float>  (tree,"dchf",              &m_dchf);    
@@ -1200,6 +1203,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.dchf                      =m_dchf                ->at(idx);
       jet.ipsig                     =m_ipsig               ->at(idx);
       jet.ptrel                     =m_ptrel               ->at(idx);
+      jet.ptrel_highest             =m_ptrel_highest       ->at(idx);
       jet.alpha_max                 =m_alpha_max           ->at(idx);
     }
 
@@ -1600,6 +1604,7 @@ void JetContainer::setBranches(TTree *tree)
   if ( m_infoSwitch.m_displaced ) {
     setBranch<float>(tree,"ipsig",                       m_ipsig           );
     setBranch<float>(tree,"ptrel",                       m_ptrel           );
+    setBranch<float>(tree,"ptrel_highest",               m_ptrel_highest   );
     setBranch<float>(tree,"chf",                         m_chf             );
     setBranch<float>(tree,"dchf",                        m_dchf            );
     setBranch<float>(tree,"alpha_max",                   m_alpha_max       );    
@@ -2033,6 +2038,7 @@ void JetContainer::clear()
     m_dchf->clear();
     m_ipsig->clear();
     m_ptrel->clear();
+    m_ptrel_highest->clear();
   }
   
 
@@ -2471,6 +2477,11 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_ptrel->push_back( jet->auxdata< float >("ptrel") );
     } else {
       m_ptrel->push_back( -999 );
+    }
+    if( jet->isAvailable< float >( "ptrel_highest" ) ) {
+      m_ptrel_highest->push_back( jet->auxdata< float >("ptrel_highest") );
+    } else {
+      m_ptrel_highest->push_back( -999 );
     }
     if( jet->isAvailable< float >( "chf" ) ) {
       m_chf->push_back( jet->auxdata< float >("chf") );
