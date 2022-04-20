@@ -52,7 +52,9 @@ class Config(object):
 
     # if m_name not set, randomly generate it
     algName = options.get("m_name", None)
+    algName_is_random = False
     if algName is None:
+      algName_is_random = True
       algName = str(NameGenerator())
       logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
       options['m_name'] = algName
@@ -106,11 +108,14 @@ class Config(object):
     elif ROOT.EL.AnaAlgorithm in parents:
       alg_obj = AnaAlgorithmConfig(className)
       alg_obj.setName(algName)
+      if 'm_outputStream' in options:
+        self.output(options['m_outputStream'])
       self._log.append((className, algName))
       # TODO
       #setattr(alg_obj, "OutputLevel", msgLevel)
-      for k,v in options.items():
-        if k in ['m_msgLevel', 'm_name']: continue
+      for k, v in options.items():
+        if k == 'm_msgLevel': continue
+        if k == 'm_name' and algName_is_random: continue
         # if isinstance(v, unicode): v = v.encode('utf-8')
         self._log.append((algName, k, v))
         try:
