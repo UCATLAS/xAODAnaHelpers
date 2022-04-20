@@ -66,7 +66,7 @@ StatusCode JetHists::initialize() {
     m_dchf          = book(m_name, "dchf",          m_titlePrefix+"Displaced Charge Hadron Fraction" ,    100, 0, 1);
     m_alpha_max     = book(m_name, "alpha_max",     m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
     m_ptrel         = book(m_name, "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
-    m_ptrel_highest = book(m_name, "ptrel_highest", m_titlePrefix+"Relative momentum of highest pT" ,    90, 0, 100);
+    m_ptrel_highest = book(m_name, "ptrel_highest", m_titlePrefix+"Relative momentum of highest pT" ,    90, 0, 5);
 
   }
 
