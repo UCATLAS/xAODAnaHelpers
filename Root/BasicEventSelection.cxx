@@ -853,11 +853,13 @@ EL::StatusCode BasicEventSelection :: execute ()
   if ( !isMC() ) {
 
     // Get the streams that the event was put in
+    /*
     const std::vector<  xAOD::EventInfo::StreamTag > streams = eventInfo->streamTags();
 
     for ( auto& stream : streams ) {
       ANA_MSG_DEBUG( "event has fired stream: " << stream.name() );
     }
+    */
 
     // GRL
     if ( m_applyGRLCut ) {
