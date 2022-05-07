@@ -1771,7 +1771,7 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_ptrel                 ->Fill(jet->ptrel,             eventWeight);
       m_ptrel_highest         ->Fill(jet->ptrel_highest,     eventWeight);
       m_maxd0Value         ->Fill(jet->maxd0Value,     eventWeight);
-      m_mind0Value         ->Fill(jet->maxd0Value,     eventWeight);
+      m_mind0Value         ->Fill(jet->mind0Value,     eventWeight);
 
 
 
