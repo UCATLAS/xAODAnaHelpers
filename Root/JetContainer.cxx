@@ -21,6 +21,10 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_chf                =  new std::vector<float>();
     m_dchf               =  new std::vector<float>();
     m_alpha_max          =  new std::vector<float>();
+    m_maxd0Value             =  new std::vector<float>();
+    m_mind0Value              =  new std::vector<float>();
+
+
   }
 
   // rapidity
@@ -475,6 +479,9 @@ JetContainer::~JetContainer()
     delete  m_chf;
     delete  m_dchf;
     delete  m_alpha_max;        
+    delete  m_mind0Value;
+    delete  m_maxd0Value;
+
   }
 
 
@@ -907,6 +914,9 @@ void JetContainer::setTree(TTree *tree)
     connectBranch<float>  (tree,"alpha_max",         &m_alpha_max);
     connectBranch<float>  (tree,"chf",               &m_chf);
     connectBranch<float>  (tree,"dchf",              &m_dchf);    
+    connectBranch<float>  (tree,"maxd0Value",             &m_maxd0Value);
+    connectBranch<float>  (tree,"mind0Value",             &m_mind0Value);
+
   }
 
 
@@ -1205,6 +1215,11 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.ptrel                     =m_ptrel               ->at(idx);
       jet.ptrel_highest             =m_ptrel_highest       ->at(idx);
       jet.alpha_max                 =m_alpha_max           ->at(idx);
+      jet.mind0Value                 =m_mind0Value           ->at(idx);
+      jet.maxd0Value                 =m_maxd0Value          ->at(idx);
+
+
+
     }
 
 
@@ -1608,6 +1623,9 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"chf",                         m_chf             );
     setBranch<float>(tree,"dchf",                        m_dchf            );
     setBranch<float>(tree,"alpha_max",                   m_alpha_max       );    
+    setBranch<float>(tree,"maxd0Value",                   m_maxd0Value      );    
+    setBranch<float>(tree,"mind0Value",                   m_mind0Value      );    
+
   }
 
 
@@ -2039,6 +2057,9 @@ void JetContainer::clear()
     m_ipsig->clear();
     m_ptrel->clear();
     m_ptrel_highest->clear();
+    m_maxd0Value->clear();
+    m_mind0Value->clear();
+
   }
   
 
@@ -2493,6 +2514,19 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     } else {
       m_dchf->push_back( -999 );
     }
+    if( jet->isAvailable< float >( "maxd0Value" ) ) {
+      m_maxd0Value->push_back( jet->auxdata< float >("maxd0Value") );
+    } else {
+      m_maxd0Value->push_back( -999 );
+    }
+
+    if( jet->isAvailable< float >( "mind0Value" ) ) {
+      m_mind0Value->push_back( jet->auxdata< float >("mind0Value") );
+    } else {
+      m_mind0Value->push_back( -999 );
+    }
+
+
 
   }
 

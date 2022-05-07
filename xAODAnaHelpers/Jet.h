@@ -29,6 +29,8 @@ namespace xAH {
       float dchf;
       float chf;
       float alpha_max;	
+      float maxd0Value;	
+      float mind0Value;
 
 
 

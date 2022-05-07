@@ -53,7 +53,8 @@ namespace xAH {
       std::vector<float>   *m_chf;
       std::vector<float>   *m_dchf;
       std::vector<float>   *m_alpha_max;
-
+      std::vector<float>   *m_maxd0Value;
+      std::vector<float>   *m_mind0Value;
 
       // rapidity
       std::vector<float> *m_rapidity;
