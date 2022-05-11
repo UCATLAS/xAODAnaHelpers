@@ -14,7 +14,7 @@
 #include "IsolationCorrections/IIsolationCorrectionTool.h"
 
 class AsgPhotonIsEMSelector;
-class ElectronPhotonShowerShapeFudgeTool;
+class ElectronPhotonVariableCorrectionTool;
 
 namespace CP {
   class EgammaCalibrationAndSmearingTool;
@@ -78,7 +78,7 @@ private:
   CP::EgammaCalibrationAndSmearingTool* m_EgammaCalibrationAndSmearingTool = nullptr; //!
   asg::AnaToolHandle<CP::IIsolationCorrectionTool> m_isolationCorrectionTool_handle  {"CP::IsolationCorrectionTool/IsolationCorrectionTool", this}; //!
 
-  ElectronPhotonShowerShapeFudgeTool*   m_photonFudgeMCTool = nullptr; //!
+  ElectronPhotonVariableCorrectionTool* m_photonVarCorrectionTool = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonTightIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonMediumIsEMSelector = nullptr; //!
   AsgPhotonIsEMSelector*                m_photonLooseIsEMSelector = nullptr; //!
