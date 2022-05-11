@@ -19,38 +19,8 @@ public:
   std::string m_inContainerName = "";
   std::string m_outContainerName = "";
 
-  /// @brief Recommendations release (not recommended to change)
-  std::string m_overrideRelease = "";
-  /// @brief Recommendations saggita release for 2015 & 2016 (not recommended to change)
-  std::string m_overrideSagittaRelease1516 = "";
-  /// @brief Recommendations saggita release for 2017 (not recommended to change)
-  std::string m_overrideSagittaRelease17 = "";
-  /// @brief Recommendations saggita release for 2018 (not recommended to change)
-  std::string m_overrideSagittaRelease18 = "";
-  /// @brief Set StatComb1516 property if different than -1
-  int m_statComb1516 = -1;
-  /// @brief Set StatComb17 property if different than -1
-  int m_statComb17 = -1;
-  /// @brief Set StatComb18 property if different than -1
-  int m_statComb18 = -1;
-  /// @brief Set SagittaCorr1516 property if different than -1
-  int m_sagittaCorr1516 = -1;
-  /// @brief Set SagittaCorr17 property if different than -1
-  int m_sagittaCorr17 = -1;
-  /// @brief Set SagittaCorr18 property if different than -1
-  int m_sagittaCorr18 = -1;
-  /// @brief Set doSagittaMCDistortion1516 property if different than -1
-  int m_doSagittaMCDistortion1516 = -1;
-  /// @brief Set doSagittaMCDistortion17 property if different than -1
-  int m_doSagittaMCDistortion17 = -1;
-  /// @brief Set doSagittaMCDistortion18 property if different than -1
-  int m_doSagittaMCDistortion18 = -1;
-  /// @brief Set SagittaCorrPhaseSpace1516 property if different than -1
-  int m_sagittaCorrPhaseSpace1516 = -1;
-  /// @brief Set SagittaCorrPhaseSpace17 property if different than -1
-  int m_sagittaCorrPhaseSpace17 = -1;
-  /// @brief Set SagittaCorrPhaseSpace18 property if different than -1
-  int m_sagittaCorrPhaseSpace18 = -1;
+  /// @brief Set calibrationMode property if different than noOption
+  std::string m_calibrationMode = "noOption";
 
   // sort after calibration
   bool m_sort = true;
