@@ -61,11 +61,14 @@ StatusCode JetHists::initialize() {
   // details for displace jet information
   if( m_infoSwitch->m_displaced ) {
     if(m_debug) Info("JetHists::initialize()", "adding displaced plots");
-    m_ipsig       = book(m_name, "ipsig",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
-    m_chf         = book(m_name, "chf",          m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
-    m_dchf        = book(m_name, "dchf",          m_titlePrefix+"Displaced Charge Hadron Fraction" ,    100, 0, 1);
-    m_alpha_max   = book(m_name, "alpha_max",      m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
-    m_ptrel       = book(m_name,  "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
+    m_ipsig         = book(m_name, "ipsig",         m_titlePrefix+"Impact Point Significance" ,    90, -1.5, 3);
+    m_chf           = book(m_name, "chf",           m_titlePrefix+"Charge Hadron Fraction" ,    100, 0, 1);
+    m_dchf          = book(m_name, "dchf",          m_titlePrefix+"Displaced Charge Hadron Fraction" ,    100, 0, 1);
+    m_alpha_max     = book(m_name, "alpha_max",     m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
+    m_ptrel         = book(m_name, "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
+    m_ptrel_highest = book(m_name, "ptrel_highest", m_titlePrefix+"Relative momentum of highest pT" ,    90, 0, 5);
+    m_maxd0Value = book(m_name, "maxd0Value", m_titlePrefix+"Maxmium d0" ,    300, 0, 300);
+    m_mind0Value = book(m_name, "mind0Value", m_titlePrefix+"Minimum d0" ,    300, 0, 300);
 
   }
 
@@ -674,6 +677,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       m_ptrel ->  Fill( ptrel( *jet ), eventWeight );
     }
 
+    static SG::AuxElement::ConstAccessor<float> ptrel_highest ("ptrel_highest");
+    if( ptrel_highest.isAvailable( *jet ) ) {
+      m_ptrel_highest ->  Fill( ptrel_highest( *jet ), eventWeight );
+    }
+
+
 
     static SG::AuxElement::ConstAccessor<float> alpha_max ("alpha_max");
     if(alpha_max.isAvailable( *jet ) ) {
@@ -689,6 +698,19 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     if(dchf.isAvailable( *jet ) ) {
       m_dchf ->  Fill( dchf( *jet ), eventWeight );
     }
+
+
+    static SG::AuxElement::ConstAccessor<float> mind0Value ("mind0Value");
+    if(mind0Value.isAvailable( *jet ) ) {
+      m_mind0Value ->  Fill( mind0Value( *jet ), eventWeight );
+    }
+
+
+    static SG::AuxElement::ConstAccessor<float> maxd0Value ("maxd0Value");
+    if(maxd0Value.isAvailable( *jet ) ) {
+      m_maxd0Value ->  Fill( maxd0Value( *jet ), eventWeight );
+    }
+
 
 
   }
@@ -1744,9 +1766,14 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
     {
       m_alpha_max             ->Fill(jet->alpha_max,         eventWeight);
       m_chf                   ->Fill(jet->chf,               eventWeight);
-      m_dchf                  ->Fill(jet->dchf,               eventWeight);
+      m_dchf                  ->Fill(jet->dchf,              eventWeight);
       m_ipsig                 ->Fill(jet->ipsig,             eventWeight);
       m_ptrel                 ->Fill(jet->ptrel,             eventWeight);
+      m_ptrel_highest         ->Fill(jet->ptrel_highest,     eventWeight);
+      m_maxd0Value         ->Fill(jet->maxd0Value,     eventWeight);
+      m_mind0Value         ->Fill(jet->mind0Value,     eventWeight);
+
+
 
     }
 
