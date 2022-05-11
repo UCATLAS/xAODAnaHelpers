@@ -41,6 +41,7 @@ atlas_add_library( xAODAnaHelpersLib xAODAnaHelpers/*.h Root/*.h Root/*.cxx ${xA
                    ElectronEfficiencyCorrectionLib ElectronPhotonSelectorToolsLib
                    IsolationSelectionLib IsolationCorrectionsLib
                    ElectronPhotonShowerShapeFudgeToolLib
+                   EGammaVariableCorrectionLib
                    FTagAnalysisInterfacesLib JetAnalysisInterfacesLib MuonAnalysisInterfacesLib
                    PhotonEfficiencyCorrectionLib METUtilitiesLib METInterface
                    TauAnalysisToolsLib AsgTools xAODMissingET
