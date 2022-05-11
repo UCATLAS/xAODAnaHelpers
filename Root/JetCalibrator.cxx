@@ -358,6 +358,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       ANA_CHECK(m_fJVTTool_handle.setProperty("UseTightOP", true));
     }
     ANA_CHECK(m_fJVTTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK(m_fJVTTool_handle.setProperty("JetContainer", m_inContainerName));
     ANA_CHECK(m_fJVTTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_fJVTTool_handle);
   }
