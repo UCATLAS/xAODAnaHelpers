@@ -152,18 +152,9 @@ class JetHists : public IParticleHists
     TH1F* m_JVC; //!
 
     // Flavor Tag
-    TH1F* m_MV1   ; //!
-    TH1F* m_MV2c00   ; //!
-    TH1F* m_MV2c10   ; //!
-    TH1F* m_MV2c10_l ; //!
-    TH1F* m_MV2c20   ; //!
     TH1F* m_COMB   ; //!
     TH1F* m_SV0             ; //!
     TH1F* m_JetFitter       ; //!
-    //TH1F* m_MV2;
-    //TH2F* m_IP3DvsMV2c20;
-
-
 
     TProfile* m_vtxClass_vs_lBlock; //!
     TProfile* m_vtxEff10_vs_lBlock; //!
@@ -172,20 +163,6 @@ class JetHists : public IParticleHists
     TProfile* m_vtxEff1_raw_vs_lBlock; //!
     TProfile* m_vtxEff10_noDummy_vs_lBlock; //!
     TProfile* m_vtxEff1_noDummy_vs_lBlock; //!
-    TProfile* m_frac_MV240_vs_actMu; //!
-    TProfile* m_frac_MV250_vs_actMu; //!
-    TProfile* m_frac_MV260_vs_actMu; //!
-    TProfile* m_frac_MV270_vs_actMu; //!
-    TProfile* m_frac_MV277_vs_actMu; //!
-    TProfile* m_frac_MV285_vs_actMu; //!
-    TProfile* m_frac_MV240_vs_lBlock; //!
-    TProfile* m_frac_MV250_vs_lBlock; //!
-    TProfile* m_frac_MV260_vs_lBlock; //!
-    TProfile* m_frac_MV270_vs_lBlock; //!
-    TProfile* m_frac_MV277_vs_lBlock; //!
-    TProfile* m_frac_MV285_vs_lBlock; //!
-
-
 
     TH1F* m_trkSum_ntrk     ; //!
     TH1F* m_trkSum_sPt      ; //!
