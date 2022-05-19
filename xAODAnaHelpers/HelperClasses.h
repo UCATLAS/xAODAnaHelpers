@@ -478,6 +478,8 @@ namespace HelperClasses {
                 m_configStr = "... sfJVTMedium ..."
 
             ``jetBTag`` expects the format ``jetBTag_tagger_type_AABB..MM..YY.ZZ``. This will create a vector of working points (AA, BB, CC, ..., ZZ) associated with that tagger. Several entries can be given. For example::
+           
+	        m_configStr = "... jetBTag_DL1r_FixedCutBEff_60707785 ..."
 
 	    ``trackJetName`` expects one or more track jet container names separated by an underscore. For example, the string ``trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet`` will set the attriubte ``m_trackJetNames``
 	    to ``{"GhostAntiKt2TrackJet", "GhostVR30Rmax4Rmin02TrackJet"}``.
