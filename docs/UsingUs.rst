@@ -121,6 +121,7 @@ which will run over two ROOT files locally (``direct``), using the configuration
 How to pass command line options straight to the python config file? Let's say you wish to set a variable called var in your config. Then, you would have to have something like this in your config:
 
 .. code:: python
+
     import shlex
     import argparse
 
@@ -129,7 +130,6 @@ How to pass command line options straight to the python config file? Let's say y
 
     # note "args" is already a variable holding the arguments passed into xAH_run.py
     inner_args = parser.parse_args(shlex.split(args.extra_options))
-    print(inner_args)
 
 Then, you can pass that argument with the --extraOptions flag of xAH_run.py:
 
