@@ -187,40 +187,17 @@ namespace xAH {
 
 
       // flavTag
-      std::vector<float> *m_MV2c00;
-      std::vector<float> *m_MV2c10;
-      std::vector<float> *m_MV2c10mu;
-      std::vector<float> *m_MV2c10rnn;
-      std::vector<float> *m_MV2rmu;
-      std::vector<float> *m_MV2r;
-      std::vector<float> *m_MV2c20;
-      std::vector<float> *m_MV2c100;
-      std::vector<float> *m_DL1;
-      std::vector<float> *m_DL1_pu;
-      std::vector<float> *m_DL1_pc;
-      std::vector<float> *m_DL1_pb;
-
-      std::vector<float> *m_DL1mu;
-      std::vector<float> *m_DL1mu_pu;
-      std::vector<float> *m_DL1mu_pc;
-      std::vector<float> *m_DL1mu_pb;
-
-      std::vector<float> *m_DL1rnn;
-      std::vector<float> *m_DL1rnn_pu;
-      std::vector<float> *m_DL1rnn_pc;
-      std::vector<float> *m_DL1rnn_pb;
       std::vector<int>   *m_HadronConeExclTruthLabelID;
       std::vector<int>   *m_HadronConeExclExtendedTruthLabelID;
-
-      std::vector<float> *m_DL1rmu;
-      std::vector<float> *m_DL1rmu_pu;
-      std::vector<float> *m_DL1rmu_pc;
-      std::vector<float> *m_DL1rmu_pb;
 
       std::vector<float> *m_DL1r;
       std::vector<float> *m_DL1r_pu;
       std::vector<float> *m_DL1r_pc;
       std::vector<float> *m_DL1r_pb;
+      std::vector<float> *m_DL1dv00;
+      std::vector<float> *m_DL1dv00_pu;
+      std::vector<float> *m_DL1dv00_pc;
+      std::vector<float> *m_DL1dv00_pb;
  
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
@@ -337,14 +314,6 @@ namespace xAH {
           if(m_isContinuous)
             m_ineffSf = new std::vector< std::vector<float> >();
 
-	  if(m_accessorName=="DL1_FixedCutBEff_60")
-	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_60;
-	  else if(m_accessorName=="DL1_FixedCutBEff_70")
-	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_70;
-	  else if(m_accessorName=="DL1_FixedCutBEff_77")
-	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_77;
-	  else if(m_accessorName=="DL1_FixedCutBEff_85")
-	    m_op=Jet::BTaggerOP::DL1_FixedCutBEff_85;     
 	  else if(m_accessorName=="DL1r_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_60;
 	  else if(m_accessorName=="DL1r_FixedCutBEff_70")
@@ -353,30 +322,15 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_77;
 	  else if(m_accessorName=="DL1r_FixedCutBEff_85")
 	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_85;
-	  else if(m_accessorName=="DL1rmu_FixedCutBEff_60")
-	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_60;
-	  else if(m_accessorName=="DL1rmu_FixedCutBEff_70")
-	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_70;
-	  else if(m_accessorName=="DL1rmu_FixedCutBEff_77")
-	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_77;
-	  else if(m_accessorName=="DL1rmu_FixedCutBEff_85")
-	    m_op=Jet::BTaggerOP::DL1rmu_FixedCutBEff_85;
-	  else if(m_accessorName=="MV2c10_FixedCutBEff_60")
-	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_60;
-	  else if(m_accessorName=="MV2c10_FixedCutBEff_70")
-	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_70;
-	  else if(m_accessorName=="MV2c10_FixedCutBEff_77")
-	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_77;
-	  else if(m_accessorName=="MV2c10_FixedCutBEff_85")
-	    m_op=Jet::BTaggerOP::MV2c10_FixedCutBEff_85;
-	  else if(m_accessorName=="DL1_Continuous")
-	    m_op=Jet::BTaggerOP::DL1_Continuous;
-          else if(m_accessorName=="DL1r_Continuous")
-	    m_op=Jet::BTaggerOP::DL1r_Continuous;
-          else if(m_accessorName=="DL1rmu_Continuous")
-	    m_op=Jet::BTaggerOP::DL1rmu_Continuous;
-	  else if(m_accessorName=="MV2c10_Continuous")
-	    m_op=Jet::BTaggerOP::MV2c10_Continuous;
+	  
+          else if(m_accessorName=="DL1dv00_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_60;
+	  else if(m_accessorName=="DL1dv00_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_70;
+	  else if(m_accessorName=="DL1dv00_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_77;
+	  else if(m_accessorName=="DL1dv00_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_85;
         }
 
         ~btagOpPoint()

@@ -122,11 +122,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     m_useContinuous = true;
     ANA_MSG_DEBUG(" Using continuous b-tagging"); }
 
-  // Only DL1, DL1r, DLr1mu and MV2c10 are calibrated
-  if (m_taggerName == "MV2c10") { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1")    { taggerOK = true; m_getScaleFactors =  true; }
+  // No official calibrations in rel22 yet
   if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1rmu") { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "DL1dv00")   { taggerOK = true; m_getScaleFactors =  true; }
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
@@ -176,7 +174,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",          m_taggerName));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",           m_jetAuthor));
-  if(m_minPt!=-1) ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt", m_minPt));
+  ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt", m_minPt));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("ErrorOnTagWeightFailure", m_errorOnTagWeightFailure));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel", msg().level() ));
   ANA_CHECK( m_BJetSelectTool_handle.retrieve());
@@ -190,7 +188,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("SystematicsStrategy", m_systematicsStrategy));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OperatingPoint",      m_operatingPtCDI     ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("JetAuthor",           m_jetAuthor          ));
-    if(m_minPt!=-1) ANA_CHECK( m_BJetEffSFTool_handle.setProperty("MinPt", m_minPt            ));
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("MinPt", m_minPt            ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ScaleFactorFileName", m_corrFileName       ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("UseDevelopmentFile",  m_useDevelopmentFile ));
     ANA_CHECK( m_BJetEffSFTool_handle.setProperty("ConeFlavourLabel",    m_coneFlavourLabel   ));
