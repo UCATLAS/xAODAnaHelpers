@@ -22,6 +22,9 @@ public:
   /// @brief Set calibrationMode property if different than noOption
   std::string m_calibrationMode = "noOption";
 
+  //// @brief Set Perform special resolution corrections for two-station muons passing the HighPt selection criteria, switch on only when using the HighPt WP
+  bool m_do2StationsHighPt = false;
+
   // sort after calibration
   bool m_sort = true;
 
