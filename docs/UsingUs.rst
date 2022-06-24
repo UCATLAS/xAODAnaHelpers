@@ -122,7 +122,6 @@ How to pass command line options straight to the python config file? Let's say y
 
 .. code:: python
 
->>>>>>> ac8b39d85520dd81ba3c67f6a34ec042c31f5dea
     import shlex
     import argparse
 
@@ -133,11 +132,7 @@ How to pass command line options straight to the python config file? Let's say y
     inner_args = parser.parse_args(shlex.split(args.extra_options))
     print(inner_args)
 
-Then, you can pass that argument with the --extraOptions flag of xAH_run.py:
-=======
-
 Then, you can pass that argument with the ``--extraOptions`` flag of ``xAH_run.py``:
->>>>>>> ac8b39d85520dd81ba3c67f6a34ec042c31f5dea
 
 .. code:: bash
 
