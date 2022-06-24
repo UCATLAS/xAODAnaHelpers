@@ -130,7 +130,6 @@ How to pass command line options straight to the python config file? Let's say y
 
     # note "args" is already a variable holding the arguments passed into xAH_run.py
     inner_args = parser.parse_args(shlex.split(args.extra_options))
-    print(inner_args)
 
 Then, you can pass that argument with the ``--extraOptions`` flag of ``xAH_run.py``:
 
