@@ -118,9 +118,11 @@ which will run over two ROOT files locally (``direct``), using the configuration
     xAH_run.py --files file1.root file2.root --config xah_run_example.py direct
 
 
-How to pass command line options straight to the python config file? Let's say you wish to set a variable called var in your config. Then, you would have to have something like this in your config:
+How to pass command line options straight to the python config file? Let's say you wish to set a variable called ``var`` in your config. Then, you would have to have something like this in your config:
 
 .. code:: python
+
+>>>>>>> ac8b39d85520dd81ba3c67f6a34ec042c31f5dea
     import shlex
     import argparse
 
@@ -132,6 +134,10 @@ How to pass command line options straight to the python config file? Let's say y
     print(inner_args)
 
 Then, you can pass that argument with the --extraOptions flag of xAH_run.py:
+=======
+
+Then, you can pass that argument with the ``--extraOptions`` flag of ``xAH_run.py``:
+>>>>>>> ac8b39d85520dd81ba3c67f6a34ec042c31f5dea
 
 .. code:: bash
 
