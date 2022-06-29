@@ -126,6 +126,12 @@ EL::StatusCode JetCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  // Check if a source container of the b-tagging links was specified
+  if (m_bendBTaggingLinks && m_btaggingContainerName.empty()){
+    ANA_MSG_ERROR( "Please specify a source container to copy the b-tagging links from such as AntiKt4EMPFlowJets_BTagging201903 via m_btaggingContainerName. Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
+
   if ( m_outputAlgo.empty() ) {
     m_outputAlgo = m_jetAlgo + "_Calib_Algo";
   }

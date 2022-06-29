@@ -134,8 +134,8 @@ public:
   
   /// @brief Copy b-tagging links to "default" jet container a la SUSYTools in order to allow running b-tagging tools on these
   bool m_bendBTaggingLinks = false;
-  /// @brief Name of the source container of the b-tagging links
-  std::string m_btaggingContainerName = "AntiKt4EMPFlowJets_BTagging201903";
+  /// @brief Name of the source container of the b-tagging links, e.g. AntiKt4EMPFlowJets_BTagging201903
+  std::string m_btaggingContainerName = "";
 
 // systematics
   /// @brief jet tile correction
