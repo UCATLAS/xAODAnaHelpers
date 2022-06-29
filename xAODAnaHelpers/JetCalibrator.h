@@ -131,6 +131,11 @@ public:
   std::string m_truthBosonContainerName = "TruthBosonsWithDecayParticles";
   /// @brief Name of the truth top quark container if using TRUTH3 containers
   std::string m_truthTopQuarkContainerName = "TruthTopQuarkWithDecayParticles";
+  
+  /// @brief Copy b-tagging links to "default" jet container a la SUSYTools in order to allow running b-tagging tools on these
+  bool m_bendBTaggingLinks = false;
+  /// @brief Name of the source container of the b-tagging links
+  std::string m_btaggingContainerName = "AntiKt4EMPFlowJets_BTagging201903";
 
 // systematics
   /// @brief jet tile correction
@@ -171,6 +176,7 @@ private:
                                    std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer*>& calibJetsSC,
                                    std::vector<std::string>& vecOutContainerNames, bool isPDCopy);
   EL::StatusCode initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData);
+  EL::StatusCode bendBTaggingLinks(xAOD::JetContainer* to_container);
 
 public:
 
