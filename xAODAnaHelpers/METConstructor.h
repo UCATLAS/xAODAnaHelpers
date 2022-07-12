@@ -57,6 +57,9 @@ public:
   /// @brief Set DoMuonPFlowBugfix property
   bool    m_doMuonPFlowBugfix = false;
 
+  /// @brief Name of MET Working Point (defines the JetSelection applied in METMaker)
+  std::string m_METWorkingPoint = "";
+
   /// Rebuild MET using tracks in calo jets
   bool    m_rebuildUsingTracksInJets = false;
   /**
