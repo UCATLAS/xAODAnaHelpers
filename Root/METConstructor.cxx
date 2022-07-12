@@ -125,6 +125,9 @@ EL::StatusCode METConstructor :: initialize ()
   if ( m_doMuonPFlowBugfix ) {
     ANA_CHECK(m_metmaker_handle.setProperty("DoMuonPFlowBugfix", true));
   }
+  if ( !m_METWorkingPoint.empty() ){
+    ANA_CHECK(m_metmaker_handle.setProperty("JetSelection", m_METWorkingPoint));
+  }
   ANA_CHECK(m_metmaker_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
