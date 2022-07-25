@@ -103,6 +103,9 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief Use Period Configuration or auto
     std::string m_periodConfig = "auto";
 
+    /// @brief Print streamTags (only in debug mode)
+    bool m_checkStreams = false;
+
     /// @brief The minimum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>
     int m_actualMuMin = -1; // Default to off
     /// @brief The maximum threshold for <tt>EventInfo::actualInteractionsPerCrossing()</tt>

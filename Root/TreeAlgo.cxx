@@ -473,13 +473,43 @@ EL::StatusCode TreeAlgo :: execute ()
     if ( !m_l1JetContainerName.empty() ){
       bool reject = false;
       for ( unsigned int ll = 0; ll < m_l1JetContainers.size(); ++ll ) {
-        const xAOD::JetRoIContainer* inL1Jets(nullptr);
-        if ( !HelperFunctions::isAvailable<xAOD::JetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
-          ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
-          reject = true;
-	}
-        ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
-        helpTree->FillL1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets );
+        if(m_l1JetContainers.at(ll).find("Fex")== std::string::npos){ // Legacy L1 jets
+          const xAOD::JetRoIContainer* inL1Jets(nullptr); 
+          if ( !HelperFunctions::isAvailable<xAOD::JetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
+            ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
+            reject = true;
+          }
+          ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
+          helpTree->FillLegacyL1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets );
+        }else{ // Phase 1 L1 jets
+          if(m_l1JetContainers.at(ll).find("jFexSR")!= std::string::npos){ // jFEX small-R
+            const xAOD::jFexSRJetRoIContainer* inL1Jets(nullptr);
+            if ( !HelperFunctions::isAvailable<xAOD::jFexSRJetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
+              ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
+              reject = true;
+            }
+            ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
+            helpTree->FillPhase1L1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets );
+          }else if(m_l1JetContainers.at(ll).find("jFexLR")!= std::string::npos){ // jFEX large-R
+            const xAOD::jFexLRJetRoIContainer* inL1Jets(nullptr);
+            if ( !HelperFunctions::isAvailable<xAOD::jFexLRJetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
+              ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
+              reject = true;
+            }
+            ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
+            helpTree->FillPhase1L1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets );            
+          }else if(m_l1JetContainers.at(ll).find("gFex")!= std::string::npos){ // gFEX small-R/large-R jets
+            const xAOD::gFexJetRoIContainer* inL1Jets(nullptr);
+            if ( !HelperFunctions::isAvailable<xAOD::gFexJetRoIContainer>(m_l1JetContainers.at(ll), m_event, m_store, msg()) ){
+              ANA_MSG_DEBUG( "The L1 jet container " + m_l1JetContainers.at(ll) + " is not available. Skipping all remaining L1 jet collections");
+              reject = true;
+            }
+            ANA_CHECK( HelperFunctions::retrieve(inL1Jets, m_l1JetContainers.at(ll), m_event, m_store, msg()) );
+            helpTree->FillPhase1L1Jets( inL1Jets, m_l1JetBranches.at(ll), m_sortL1Jets ); 
+          }else{
+            ANA_MSG_DEBUG( "Phase 1 L1 jet container " + m_l1JetContainers.at(ll) + " is not known." );
+          }
+        } 
       }
 
       if ( reject ) {

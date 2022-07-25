@@ -263,6 +263,7 @@ namespace HelperClasses{
     m_cleanLight    = has_exact("cleanLight");
     m_cleanLLP      = has_exact("cleanLLP");
     m_cleanTrig     = has_exact("cleanTrig");
+    m_cleanLLP      = has_exact("cleanLLP");
     m_energy        = has_exact("energy");
     m_energyLight   = has_exact("energyLight");
     m_scales        = has_exact("scales");

@@ -222,8 +222,8 @@ public:
   /// @brief Flag to apply btagging cut, if false just decorate decisions
   bool  m_doBTagCut = false;
   std::string m_corrFileName = "xAODBTaggingEfficiency/cutprofiles_22072015.root";
-  std::string m_jetAuthor = "AntiKt4EMTopoJets";
-  std::string m_taggerName = "MV2c20";
+  std::string m_jetAuthor = "AntiKt4EMPFlowJets";
+  std::string m_taggerName = "DL1r";
   std::string m_operatingPt = "FixedCutBEff_70";
   // for BTaggingSelectionTool -- doubles are needed or will crash
   // for the b-tagging tool - these are the b-tagging groups minimums
@@ -234,7 +234,7 @@ public:
 
   // HLT Btag quality
   bool m_doHLTBTagCut = false;
-  std::string m_HLTBTagTaggerName = "MV2c20";
+  std::string m_HLTBTagTaggerName = "DL1r";
   float m_HLTBTagCutValue = -0.4434;
   bool  m_requireHLTVtx = false;
   bool  m_requireNoHLTVtx = false;

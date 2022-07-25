@@ -125,30 +125,6 @@ bool HelperFunctions::applyPrimaryVertexSelection( const xAOD::JetContainer* jet
   return true;
 }
 
-// compatible with starting with: 2015-PreRecomm-13TeV-MC12-CDI_August3-v1.root
-//https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt4EMTopoJets
-float HelperFunctions::GetBTagMV2c20_Cut( int efficiency ) {
-  if     ( efficiency == 85 ) { return -0.7887; }
-  else if( efficiency == 77 ) { return -0.4434; }
-  else if( efficiency == 70 ) { return -0.0436; }
-  else if( efficiency == 60 ) { return  0.4496; }
-  else { std::cout << "WARNING!! UNKNOWN BTAG EFFICIENCY POINT " << efficiency << std::endl; }
-  return -1; // no cut
-}
-
-std::string HelperFunctions::GetBTagMV2c20_CutStr( int efficiency ) {
-  float value = HelperFunctions::GetBTagMV2c20_Cut( efficiency );
-  std::string valueStr = std::to_string(value);
-  valueStr.replace(valueStr.find('.'),1,"_"); // replace period with underscore
-  // 7 characters long if start with a - and 6 otherwise
-  if( valueStr.find('-') != std::string::npos ) {
-    valueStr.resize(7,'0'); // cut to 7 or pad with 0s
-  } else {
-    valueStr.resize(6,'0'); // cut to 6 or pad with 0s
-  }
-  return valueStr;
-}
-
 std::string HelperFunctions::replaceString(std::string subject, const std::string& search, const std::string& replace)
 {
   size_t pos = 0;
