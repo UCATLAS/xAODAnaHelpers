@@ -277,11 +277,20 @@ drivers_prun.update({
     },
     "optGridExpress": {"metavar": "", "type": str, "required": False, "default": None},
     "optGridNoSubmit": {"metavar": "", "type": int, "required": False, "default": None},
-    "optGridMergeOutput": {
-        "metavar": "",
-        "type": float,
+    "optGridNoMergeOutput": {
+        # inverse parsing because the EL::PrunDriver default is True,
+        # and has been for a long time, so switching it to default-false
+        # would be a silent change which might catch users unawares
+        "action" : "store_const", # if flag is passed we store "false"
+        "dest" : "optGridMergeOutput", # and pass it to the field the EL::PrunDriver sets to "true" by default
         "required": False,
-        "default": None,
+        "const" : "false",
+        "default": "true",
+        "help": (
+            "do not merge output files on the grid. "
+            "Passing this flag does the equivalent of using standalone prun without the '--mergeOutput' flag. "
+            "(The EventLoop::PrunDriver adds '--mergeOutput' by default)"
+        ),
     },
     "optTmpDir": {"metavar": "", "type": str, "required": False, "default": None},
     "optRootVer": {"metavar": "", "type": str, "required": False, "default": None},
