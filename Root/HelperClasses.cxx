@@ -420,6 +420,7 @@ namespace HelperClasses{
     m_dressed       = has_exact("dressed");
     m_origin        = has_exact("origin");
     m_particleType  = has_exact("particleType");
+    m_pdgIdOnly     = has_exact("pdgIdOnly");
   }
 
   void TrackInfoSwitch::initialize(){
