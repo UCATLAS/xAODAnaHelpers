@@ -661,8 +661,10 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
           if ( !isTrigMatchedMapElDecor.isAvailable( *electron ) ) {
             isTrigMatchedMapElDecor( *electron ) = std::map<std::string,char>();
           }
-
-          char matched = ( m_trigElectronMatchTool_handle->match( *electron, chain, m_minDeltaR ) );
+          static const SG::AuxElement::ConstAccessor<ElementLink<xAOD::ElectronContainer>> originalElectronLink("originalElectronLink");
+          auto originalElectron = const_cast<xAOD::Electron*>(*originalElectronLink( *electron ));
+          char matched = ( m_trigElectronMatchTool_handle->match(*originalElectron, chain, m_minDeltaR) );
+          // char matched = ( m_trigElectronMatchTool_handle->match( *electron, chain, m_minDeltaR ) );
 
           ANA_MSG_DEBUG( "\t\t is electron trigger matched? " << matched);
 
