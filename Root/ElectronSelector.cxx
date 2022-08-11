@@ -364,6 +364,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     } else { // For DAOD_PHYS samples
       m_trigElectronMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");;
       ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("InputPrefix", "LRTTrigMatch_"));
       ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);
     }
