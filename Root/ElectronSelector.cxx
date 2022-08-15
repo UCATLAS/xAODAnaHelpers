@@ -364,7 +364,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     } else { // For DAOD_PHYS samples
       m_trigElectronMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");;
       ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
-      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty("InputPrefix", "LRTTrigMatch_"));
+      ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
       ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);
     }
@@ -661,10 +661,15 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
           if ( !isTrigMatchedMapElDecor.isAvailable( *electron ) ) {
             isTrigMatchedMapElDecor( *electron ) = std::map<std::string,char>();
           }
-          static const SG::AuxElement::ConstAccessor<ElementLink<xAOD::ElectronContainer>> originalElectronLink("originalElectronLink");
-          auto originalElectron = const_cast<xAOD::Electron*>(*originalElectronLink( *electron ));
-          char matched = ( m_trigElectronMatchTool_handle->match(*originalElectron, chain, m_minDeltaR) );
-          // char matched = ( m_trigElectronMatchTool_handle->match( *electron, chain, m_minDeltaR ) );
+
+          char matched = false;
+          if (!m_merged_electrons){
+            matched = ( m_trigElectronMatchTool_handle->match( *electron, chain, m_minDeltaR ) );
+          } else {
+            static const SG::AuxElement::ConstAccessor<ElementLink<xAOD::ElectronContainer>> originalElectronLink("originalElectronLink");
+            auto originalElectron = const_cast<xAOD::Electron*>(*originalElectronLink( *electron ));
+            matched = ( m_trigElectronMatchTool_handle->match(*originalElectron, chain, m_minDeltaR) );
+          }
 
           ANA_MSG_DEBUG( "\t\t is electron trigger matched? " << matched);
 
