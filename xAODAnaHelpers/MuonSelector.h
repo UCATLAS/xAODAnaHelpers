@@ -107,7 +107,7 @@ public:
   /// @brief Element links need to be updated if merged muons are used (LRT + std) / false by default
   bool           m_merged_muons = false;
   /// @brief Input prefix of trigger decision tool
-  std::string    m_trigInputPrefix = "TrigMatch_";
+  std::string    m_trigInputPrefix = "";
 
 private:
 

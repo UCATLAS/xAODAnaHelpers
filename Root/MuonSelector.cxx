@@ -307,7 +307,9 @@ EL::StatusCode MuonSelector :: initialize ()
     } else { // For DAOD_PHYS samples
       m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
-      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+      if (!m_trigInputPrefix.empty()){
+        ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+      }
       ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
     }
