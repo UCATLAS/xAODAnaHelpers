@@ -151,6 +151,10 @@ namespace xAH {
       std::vector<int> *m_fJvtPass_Tight;
       std::vector< std::vector<float> > *m_fJvtEff_SF_Tight;
 
+      // NNJvt
+      std::vector<float> *m_NNJvt;
+      std::vector<bool> *m_NNJvtPass;
+
       // chargedPFOPV 
       std::vector<float> *m_SumPtChargedPFOPt500PV;
       std::vector<float> *m_fCharged;
