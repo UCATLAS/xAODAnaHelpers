@@ -104,6 +104,10 @@ public:
   std::string    m_diMuTrigChains = "";
   /// @brief Recommended threshold for muon triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.1;
+  /// @brief Element links need to be updated if merged muons are used (LRT + std) / false by default
+  bool           m_merged_muons = false;
+  /// @brief Input prefix of trigger decision tool
+  std::string    m_trigInputPrefix = "";
 
 private:
 

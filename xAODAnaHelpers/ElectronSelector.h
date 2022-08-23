@@ -191,6 +191,11 @@ public:
   /// @brief Apply fix to EGamma Crack-Electron topocluster association bug for MET (PFlow) / false by default
   bool m_applyCrackVetoCleaning = false;
 
+  /// @brief Element links need to be updated if merged electrons are used (LRT + std) / false by default
+  bool           m_merged_electrons = false;
+  /// @brief Input prefix of trigger decision tool
+  std::string    m_trigInputPrefix = "";
+
 private:
 
   /**
