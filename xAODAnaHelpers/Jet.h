@@ -14,7 +14,9 @@ namespace xAH {
 	None,
 	DL1r_FixedCutBEff_60  , DL1r_FixedCutBEff_70  , DL1r_FixedCutBEff_77  , DL1r_FixedCutBEff_85  ,
 	DL1dv00_FixedCutBEff_60  , DL1dv00_FixedCutBEff_70  , DL1dv00_FixedCutBEff_77  , DL1dv00_FixedCutBEff_85  ,
-	DL1dv00_Continuous, DL1r_Continuous, // Continuous
+	DL1dv01_FixedCutBEff_60  , DL1dv01_FixedCutBEff_70  , DL1dv01_FixedCutBEff_77  , DL1dv01_FixedCutBEff_85  ,
+	GN120220509_FixedCutBEff_60  , GN120220509_FixedCutBEff_70  , GN120220509_FixedCutBEff_77  , GN120220509_FixedCutBEff_85  ,
+	DL1dv00_Continuous, DL1r_Continuous, DL1dv01_Continuous, GN120220509_Continuous// Continuous
       };
 
       float rapidity;
@@ -94,6 +96,14 @@ namespace xAH {
       float DL1dv00_pu;
       float DL1dv00_pc;
       float DL1dv00_pb;
+      float DL1dv01;
+      float DL1dv01_pu;
+      float DL1dv01_pc;
+      float DL1dv01_pb;
+      float GN1;
+      float GN1_pu;
+      float GN1_pc;
+      float GN1_pb;
       int  HadronConeExclTruthLabelID;
       int  HadronConeExclExtendedTruthLabelID;
 
@@ -198,6 +208,22 @@ namespace xAH {
       std::vector<float> SF_DL1dv00_FixedCutBEff_77;
       int is_DL1dv00_FixedCutBEff_85;
       std::vector<float> SF_DL1dv00_FixedCutBEff_85;
+      int is_DL1dv01_FixedCutBEff_60;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_60;
+      int is_DL1dv01_FixedCutBEff_70;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_70;
+      int is_DL1dv01_FixedCutBEff_77;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_77;
+      int is_DL1dv01_FixedCutBEff_85;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_85;
+      int is_GN120220509_FixedCutBEff_60;
+      std::vector<float> SF_GN120220509_FixedCutBEff_60;
+      int is_GN120220509_FixedCutBEff_70;
+      std::vector<float> SF_GN120220509_FixedCutBEff_70;
+      int is_GN120220509_FixedCutBEff_77;
+      std::vector<float> SF_GN120220509_FixedCutBEff_77;
+      int is_GN120220509_FixedCutBEff_85;
+      std::vector<float> SF_GN120220509_FixedCutBEff_85;
 
       // Continuous
       int is_DL1r_Continuous;
@@ -206,6 +232,12 @@ namespace xAH {
       int is_DL1dv00_Continuous;
       std::vector<float> SF_DL1dv00_Continuous;
       std::vector<float> inEffSF_DL1dv00_Continuous;
+      int is_DL1dv01_Continuous;
+      std::vector<float> SF_DL1dv01_Continuous;
+      std::vector<float> inEffSF_DL1dv01_Continuous;
+      int is_GN120220509_Continuous;
+      std::vector<float> SF_GN120220509_Continuous;
+      std::vector<float> inEffSF_GN120220509_Continuous;
 
 
       // truth

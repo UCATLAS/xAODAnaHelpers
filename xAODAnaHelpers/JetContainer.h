@@ -198,6 +198,14 @@ namespace xAH {
       std::vector<float> *m_DL1dv00_pu;
       std::vector<float> *m_DL1dv00_pc;
       std::vector<float> *m_DL1dv00_pb;
+      std::vector<float> *m_DL1dv01;
+      std::vector<float> *m_DL1dv01_pu;
+      std::vector<float> *m_DL1dv01_pc;
+      std::vector<float> *m_DL1dv01_pb;
+      std::vector<float> *m_GN1;
+      std::vector<float> *m_GN1_pu;
+      std::vector<float> *m_GN1_pc;
+      std::vector<float> *m_GN1_pb;
  
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
@@ -331,6 +339,24 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_77;
 	  else if(m_accessorName=="DL1dv00_FixedCutBEff_85")
 	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_85;
+          
+          else if(m_accessorName=="DL1dv01_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::DL1dv01_FixedCutBEff_60;
+	  else if(m_accessorName=="DL1dv01_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::DL1dv01_FixedCutBEff_70;
+	  else if(m_accessorName=="DL1dv01_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::DL1dv01_FixedCutBEff_77;
+	  else if(m_accessorName=="DL1dv01_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::DL1dv01_FixedCutBEff_85;
+          
+          else if(m_accessorName=="GN120220509_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::GN120220509_FixedCutBEff_60;
+	  else if(m_accessorName=="GN120220509_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::GN120220509_FixedCutBEff_70;
+	  else if(m_accessorName=="GN120220509_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::GN120220509_FixedCutBEff_77;
+	  else if(m_accessorName=="GN120220509_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::GN120220509_FixedCutBEff_85;
         }
 
         ~btagOpPoint()
