@@ -123,8 +123,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_MSG_DEBUG(" Using continuous b-tagging"); }
 
   // No official calibrations in rel22 yet
-  if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1dv00")   { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1dv00")   { taggerOK = true; m_getScaleFactors = false; }
+  if (m_taggerName == "DL1dv01")   { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "GN120220509")   { taggerOK = true; m_getScaleFactors =  false; }
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
