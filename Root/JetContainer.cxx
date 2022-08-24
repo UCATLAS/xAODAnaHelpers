@@ -2930,9 +2930,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1dv00_pb->push_back(pb);
     m_DL1dv00->push_back( score );
     pu=0; pb=0; pc=0;
-    //pu = myBTag->auxdata<float>("DL1dv01_pu");
-    //pb = myBTag->auxdata<float>("DL1dv01_pb");
-    //pc = myBTag->auxdata<float>("DL1dv01_pc");
     myBTag->variable<float>("DL1dv01" , "pu", pu);
     myBTag->variable<float>("DL1dv01" , "pc", pc);
     myBTag->variable<float>("DL1dv01" , "pb", pb);
@@ -2944,9 +2941,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1dv01->push_back( score );
     
     pu=0; pb=0; pc=0;
-    //pu = myBTag->auxdata<float>("GN120220509_pu");
-    //pb = myBTag->auxdata<float>("GN120220509_pb");
-    //pc = myBTag->auxdata<float>("GN120220509_pc");
     myBTag->variable<float>("GN120220509" , "pu", pu);
     myBTag->variable<float>("GN120220509" , "pc", pc);
     myBTag->variable<float>("GN120220509" , "pb", pb);
