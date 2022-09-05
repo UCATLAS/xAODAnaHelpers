@@ -40,7 +40,7 @@
 
 #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
 #include "ElectronPhotonSelectorTools/AsgPhotonIsEMSelector.h"
-#include "ElectronPhotonShowerShapeFudgeTool/ElectronPhotonShowerShapeFudgeTool.h"
+#include "EGammaVariableCorrection/ElectronPhotonVariableCorrectionTool.h"
 
 #include <PATCore/PATCoreEnums.h>
 
@@ -234,18 +234,17 @@ EL::StatusCode PhotonCalibrator :: initialize ()
 
   // fudge MC tool
   //--------------
-  const std::string FudgeMCToolName = m_name + "PhotonFudgeMCTool";
-  if ( asg::ToolStore::contains<ElectronPhotonShowerShapeFudgeTool>(FudgeMCToolName.c_str()) ) {
-    m_photonFudgeMCTool = asg::ToolStore::get<ElectronPhotonShowerShapeFudgeTool>(FudgeMCToolName.c_str());
+  const std::string VarCorrectionToolName = m_name + "VarCorrectionTool";
+  if ( asg::ToolStore::contains<ElectronPhotonVariableCorrectionTool>(VarCorrectionToolName.c_str()) ) {
+    m_photonVarCorrectionTool = asg::ToolStore::get<ElectronPhotonVariableCorrectionTool>(VarCorrectionToolName.c_str());
   } else {
-    m_photonFudgeMCTool = new ElectronPhotonShowerShapeFudgeTool(FudgeMCToolName.c_str());
+    m_photonVarCorrectionTool = new ElectronPhotonVariableCorrectionTool(VarCorrectionToolName.c_str());
   }
-  m_photonFudgeMCTool->msg().setLevel( msg().level() );
+  m_photonVarCorrectionTool->msg().setLevel( msg().level() );
 
-  int FFset = 21; // for MC15 samples, which are based on a geometry derived from GEO-21 from 2015+2016 data
-  m_photonFudgeMCTool->setProperty("Preselection",FFset);
-  ANA_CHECK( m_photonFudgeMCTool->initialize());
-
+  std::string configFilePath = "EGammaVariableCorrection/TUNE23/ElPhVariableNominalCorrection.conf";
+  m_photonVarCorrectionTool->setProperty("ConfigFile", configFilePath);
+  ANA_CHECK( m_photonVarCorrectionTool->initialize());
 
   ////// Efficiency correction tools //////
   if (isMC()) {
@@ -456,9 +455,9 @@ EL::StatusCode PhotonCalibrator :: finalize ()
     delete m_EgammaCalibrationAndSmearingTool;
     m_EgammaCalibrationAndSmearingTool = nullptr;
   }
-  if ( m_photonFudgeMCTool ) {
-    delete m_photonFudgeMCTool;
-    m_photonFudgeMCTool = nullptr;
+  if ( m_photonVarCorrectionTool ) {
+    delete m_photonVarCorrectionTool;
+    m_photonVarCorrectionTool = nullptr;
   }
 
   if ( m_photonTightIsEMSelector ) {
@@ -519,8 +518,8 @@ EL::StatusCode PhotonCalibrator :: decorate(xAOD::Photon* photon)
       isLoose =  LHDecisionLoose( *photon );
   } else {
     if( isMC() && !isFastSim() ){
-      if(m_photonFudgeMCTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
-        ANA_MSG_ERROR( "photonFudgeMCTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
+      if(m_photonVarCorrectionTool->applyCorrection(*photon) == CP::CorrectionCode::Error){
+        ANA_MSG_ERROR( "photonVarCorrectionTool->applyCorrection(*photon) returned CP::CorrectionCode::Error");
         return EL::StatusCode::FAILURE;
       }
     }

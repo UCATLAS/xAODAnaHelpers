@@ -122,10 +122,10 @@ void MetContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_sigClus ) {
-    setBranch(tree, "FinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt,  "/F");
-    setBranch(tree, "FinalClusOverSqrtHt",     &m_metFinalClusOverSqrtHt,     "/F");
-    setBranch(tree, "FinalClusSignificance",   &m_metFinalClusSignificance,   "/F");
-    setBranch(tree, "FinalClusSigDirectional", &m_metFinalClusSigDirectional, "/F");
+    setBranch(tree, "FinalClusOverSqrtSumEt",  &m_metFinalClusOverSqrtSumEt,  "F");
+    setBranch(tree, "FinalClusOverSqrtHt",     &m_metFinalClusOverSqrtHt,     "F");
+    setBranch(tree, "FinalClusSignificance",   &m_metFinalClusSignificance,   "F");
+    setBranch(tree, "FinalClusSigDirectional", &m_metFinalClusSigDirectional, "F");
   }
 
   if ( m_infoSwitch.m_sigResolutionClus ) {

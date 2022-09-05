@@ -12,11 +12,11 @@ namespace xAH {
     public:
       enum BTaggerOP {
 	None,
-	DL1_FixedCutBEff_60   , DL1_FixedCutBEff_70   , DL1_FixedCutBEff_77   , DL1_FixedCutBEff_85   ,
 	DL1r_FixedCutBEff_60  , DL1r_FixedCutBEff_70  , DL1r_FixedCutBEff_77  , DL1r_FixedCutBEff_85  ,
-        DL1rmu_FixedCutBEff_60, DL1rmu_FixedCutBEff_70, DL1rmu_FixedCutBEff_77, DL1rmu_FixedCutBEff_85,
-	MV2c10_FixedCutBEff_60, MV2c10_FixedCutBEff_70, MV2c10_FixedCutBEff_77, MV2c10_FixedCutBEff_85,
-	MV2c10_Continuous, DL1_Continuous, DL1r_Continuous, DL1rmu_Continuous // Continuous
+	DL1dv00_FixedCutBEff_60  , DL1dv00_FixedCutBEff_70  , DL1dv00_FixedCutBEff_77  , DL1dv00_FixedCutBEff_85  ,
+	DL1dv01_FixedCutBEff_60  , DL1dv01_FixedCutBEff_70  , DL1dv01_FixedCutBEff_77  , DL1dv01_FixedCutBEff_85  ,
+	GN120220509_FixedCutBEff_60  , GN120220509_FixedCutBEff_70  , GN120220509_FixedCutBEff_77  , GN120220509_FixedCutBEff_85  ,
+	DL1dv00_Continuous, DL1r_Continuous, DL1dv01_Continuous, GN120220509_Continuous// Continuous
       };
 
       float rapidity;
@@ -44,6 +44,7 @@ namespace xAH {
       float LeadingClusterCenterLambda;
       float LeadingClusterSecondR;
       int   clean_passLooseBad;
+      int   clean_passLooseBadLLP;
       int   clean_passLooseBadTrigger;
       int   clean_passLooseBadTriggerUgly;
       int   clean_passLooseBadUgly;
@@ -87,35 +88,22 @@ namespace xAH {
       float IP3D;
       float SV1IP3D;
       float COMBx;
-      float MV1;
-      float MV2c00;
-      float MV2c10;
-      float MV2c10mu;
-      float MV2c10rnn;
-      float MV2rmu;
-      float MV2r;
-      float MV2c20;
-      float MV2c100;
-      float DL1;
-      float DL1_pu;
-      float DL1_pc;
-      float DL1_pb;
-      float DL1mu;
-      float DL1mu_pu;
-      float DL1mu_pc;
-      float DL1mu_pb;
-      float DL1rnn;
-      float DL1rnn_pu;
-      float DL1rnn_pc;
-      float DL1rnn_pb;
-      float DL1rmu;
-      float DL1rmu_pu;
-      float DL1rmu_pc;
-      float DL1rmu_pb;
       float DL1r;
       float DL1r_pu;
       float DL1r_pc;
       float DL1r_pb;
+      float DL1dv00;
+      float DL1dv00_pu;
+      float DL1dv00_pc;
+      float DL1dv00_pb;
+      float DL1dv01;
+      float DL1dv01_pu;
+      float DL1dv01_pc;
+      float DL1dv01_pb;
+      float GN1;
+      float GN1_pu;
+      float GN1_pc;
+      float GN1_pb;
       int  HadronConeExclTruthLabelID;
       int  HadronConeExclExtendedTruthLabelID;
 
@@ -203,14 +191,6 @@ namespace xAH {
       std::vector<float> IP3D_weightUofTracks    ;
 
       // jetBTag
-      int is_DL1_FixedCutBEff_60;
-      std::vector<float> SF_DL1_FixedCutBEff_60;
-      int is_DL1_FixedCutBEff_70;
-      std::vector<float> SF_DL1_FixedCutBEff_70;
-      int is_DL1_FixedCutBEff_77;
-      std::vector<float> SF_DL1_FixedCutBEff_77;
-      int is_DL1_FixedCutBEff_85;
-      std::vector<float> SF_DL1_FixedCutBEff_85;
       
       int is_DL1r_FixedCutBEff_60;
       std::vector<float> SF_DL1r_FixedCutBEff_60;
@@ -220,38 +200,44 @@ namespace xAH {
       std::vector<float> SF_DL1r_FixedCutBEff_77;
       int is_DL1r_FixedCutBEff_85;
       std::vector<float> SF_DL1r_FixedCutBEff_85;
-
-      int is_DL1rmu_FixedCutBEff_60;
-      std::vector<float> SF_DL1rmu_FixedCutBEff_60;
-      int is_DL1rmu_FixedCutBEff_70;
-      std::vector<float> SF_DL1rmu_FixedCutBEff_70;
-      int is_DL1rmu_FixedCutBEff_77;
-      std::vector<float> SF_DL1rmu_FixedCutBEff_77;
-      int is_DL1rmu_FixedCutBEff_85;
-      std::vector<float> SF_DL1rmu_FixedCutBEff_85;
-
-      int is_MV2c10_FixedCutBEff_60;
-      std::vector<float> SF_MV2c10_FixedCutBEff_60;
-      int is_MV2c10_FixedCutBEff_70;
-      std::vector<float> SF_MV2c10_FixedCutBEff_70;
-      int is_MV2c10_FixedCutBEff_77;
-      std::vector<float> SF_MV2c10_FixedCutBEff_77;
-      int is_MV2c10_FixedCutBEff_85;
-      std::vector<float> SF_MV2c10_FixedCutBEff_85;
+      int is_DL1dv00_FixedCutBEff_60;
+      std::vector<float> SF_DL1dv00_FixedCutBEff_60;
+      int is_DL1dv00_FixedCutBEff_70;
+      std::vector<float> SF_DL1dv00_FixedCutBEff_70;
+      int is_DL1dv00_FixedCutBEff_77;
+      std::vector<float> SF_DL1dv00_FixedCutBEff_77;
+      int is_DL1dv00_FixedCutBEff_85;
+      std::vector<float> SF_DL1dv00_FixedCutBEff_85;
+      int is_DL1dv01_FixedCutBEff_60;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_60;
+      int is_DL1dv01_FixedCutBEff_70;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_70;
+      int is_DL1dv01_FixedCutBEff_77;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_77;
+      int is_DL1dv01_FixedCutBEff_85;
+      std::vector<float> SF_DL1dv01_FixedCutBEff_85;
+      int is_GN120220509_FixedCutBEff_60;
+      std::vector<float> SF_GN120220509_FixedCutBEff_60;
+      int is_GN120220509_FixedCutBEff_70;
+      std::vector<float> SF_GN120220509_FixedCutBEff_70;
+      int is_GN120220509_FixedCutBEff_77;
+      std::vector<float> SF_GN120220509_FixedCutBEff_77;
+      int is_GN120220509_FixedCutBEff_85;
+      std::vector<float> SF_GN120220509_FixedCutBEff_85;
 
       // Continuous
-      int is_MV2c10_Continuous;
-      std::vector<float> SF_MV2c10_Continuous;
-      std::vector<float> inEffSF_MV2c10_Continuous;
-      int is_DL1_Continuous;
-      std::vector<float> SF_DL1_Continuous;
-      std::vector<float> inEffSF_DL1_Continuous;
       int is_DL1r_Continuous;
       std::vector<float> SF_DL1r_Continuous;
       std::vector<float> inEffSF_DL1r_Continuous;
-      int is_DL1rmu_Continuous;
-      std::vector<float> SF_DL1rmu_Continuous;
-      std::vector<float> inEffSF_DL1rmu_Continuous;
+      int is_DL1dv00_Continuous;
+      std::vector<float> SF_DL1dv00_Continuous;
+      std::vector<float> inEffSF_DL1dv00_Continuous;
+      int is_DL1dv01_Continuous;
+      std::vector<float> SF_DL1dv01_Continuous;
+      std::vector<float> inEffSF_DL1dv01_Continuous;
+      int is_GN120220509_Continuous;
+      std::vector<float> SF_GN120220509_Continuous;
+      std::vector<float> inEffSF_GN120220509_Continuous;
 
 
       // truth

@@ -306,7 +306,10 @@ EL::StatusCode MuonSelector :: initialize ()
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
     } else { // For DAOD_PHYS samples
       m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
-      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
+      if (!m_trigInputPrefix.empty()){
+        ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+      }
       ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
     }
@@ -603,8 +606,14 @@ bool MuonSelector :: executeSelection ( const xAOD::MuonContainer* inMuons, floa
           if ( !isTrigMatchedMapMuDecor.isAvailable( *muon ) ) {
             isTrigMatchedMapMuDecor( *muon ) = std::map<std::string,char>();
           }
-
-          char matched = ( m_trigMuonMatchTool_handle->match( *muon, chain, m_minDeltaR ) );
+          char matched = false;
+          if (!m_merged_muons){
+            matched = ( m_trigMuonMatchTool_handle->match( *muon, chain, m_minDeltaR ) );
+          } else {
+            static const SG::AuxElement::ConstAccessor<ElementLink<xAOD::MuonContainer>> originalMuonLink("originalMuonLink");
+            auto originalMuon = const_cast<xAOD::Muon*>(*originalMuonLink( *muon ));
+            matched = ( m_trigMuonMatchTool_handle->match(*originalMuon, chain, m_minDeltaR) );
+          }
 
           ANA_MSG_DEBUG( "\t\t is muon trigger matched? " << matched);
 

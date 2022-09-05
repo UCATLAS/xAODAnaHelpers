@@ -67,8 +67,6 @@ namespace HelperFunctions {
   int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer, MsgStream& msg);
   inline int getPrimaryVertexLocation(const xAOD::VertexContainer* vertexContainer){ return getPrimaryVertexLocation(vertexContainer, msg()); }
   bool applyPrimaryVertexSelection( const xAOD::JetContainer* jets, const xAOD::VertexContainer* vertices );
-  float GetBTagMV2c20_Cut( int efficiency );
-  std::string GetBTagMV2c20_CutStr( int efficiency );
   std::string replaceString(std::string subjet, const std::string& search, const std::string& replace);
   std::vector<TString> SplitString(TString& orig, const char separator);
   float dPhi(float phi1, float phi2);

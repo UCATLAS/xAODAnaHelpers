@@ -12,6 +12,7 @@ ROOT.gROOT.SetBatch(True)
 
 import inspect
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
+from AnaAlgorithm.AnaAlgSequence import AnaAlgSequence
 
 from .utils import NameGenerator
 
@@ -29,18 +30,31 @@ class Config(object):
     logger.warning("\tPossible call stack: {0:s}({1:d}): {2:s}".format(path, lineno, lines[0].strip()))
     return self.algorithm(className, options)
 
-  def algorithm(self, className, options):
+  def algorithm(self, *args):
     # check first argument
     # if isinstance(className, unicode):
     # if not isinstance(className, str):
     #   raise TypeError("className must be a string")
 
+    assert len(args) == 1 or len(args) == 2
+
+    if isinstance(args[0], AnaAlgSequence): # add non-xAH (CP or not) algorithms from an AnaAlgSequence
+      if len(args) > 1:
+        logger.warning("algorithm() expects one argument when using AnaAlgSequence, {} were provided".format(len(args)))
+      for alg in args[0]:
+        self._algorithms.append(alg)
+      return
+
+    className = args[0]
+    options = args[1]
     if not isinstance(options, dict):
       raise TypeError("Must pass in a dictionary of options")
 
     # if m_name not set, randomly generate it
     algName = options.get("m_name", None)
+    algName_is_random = False
     if algName is None:
+      algName_is_random = True
       algName = str(NameGenerator())
       logger.warning("Setting missing m_name={0:s} for instance of {1:s}".format(algName, className))
       options['m_name'] = algName
@@ -94,11 +108,14 @@ class Config(object):
     elif ROOT.EL.AnaAlgorithm in parents:
       alg_obj = AnaAlgorithmConfig(className)
       alg_obj.setName(algName)
+      if 'm_outputStream' in options:
+        self.output(options['m_outputStream'])
       self._log.append((className, algName))
       # TODO
       #setattr(alg_obj, "OutputLevel", msgLevel)
-      for k,v in options.items():
-        if k in ['m_msgLevel', 'm_name']: continue
+      for k, v in options.items():
+        if k == 'm_msgLevel': continue
+        if k == 'm_name' and algName_is_random: continue
         # if isinstance(v, unicode): v = v.encode('utf-8')
         self._log.append((algName, k, v))
         try:

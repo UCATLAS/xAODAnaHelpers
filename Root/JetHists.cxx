@@ -210,36 +210,14 @@ StatusCode JetHists::initialize() {
   if( m_infoSwitch->m_flavorTag || m_infoSwitch->m_flavorTagHLT ) {
     if(m_debug) Info("JetHists::initialize()", "adding btagging plots");
 
-    m_MV2c00          = book(m_name, "MV2c00",            m_titlePrefix+"MV2c00" ,   100,    -1.1,   1.1);
-    m_MV2c10          = book(m_name, "MV2c10",            m_titlePrefix+"MV2c10" ,   100,    -1.1,   1.1);
-    m_MV2c10_l        = book(m_name, "MV2c10_l",          m_titlePrefix+"MV2c10" ,   500,    -1.1,   1.1);
-    m_MV2c20          = book(m_name, "MV2c20",            m_titlePrefix+"MV2c20" ,   100,    -1.1,   1.1);
     m_COMB            = book(m_name, "COMB",              m_titlePrefix+"COMB" ,     100,    -20,   40);
     m_JetFitter       = book(m_name, "JetFitter",         m_titlePrefix+"JetFitter" ,     100,    -10,   10);
-    //m_MV2           = book(m_name, "MV2",               m_titlePrefix+" jet MV2"          , 100,   -1  ,  1);
-    //m_IP3DvsMV2c20  = book(m_name, "IP3DvsMV2c20",      m_titlePrefix+" jet MV2c20"       , 100,   -1  ,  1,
 
     if(m_infoSwitch->m_vsActualMu){
-      m_frac_MV240_vs_actMu  = book(m_name, "frac_MV2c1040_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1040", 0, 1);
-      m_frac_MV250_vs_actMu  = book(m_name, "frac_MV2c1050_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1050", 0, 1);
-      m_frac_MV260_vs_actMu  = book(m_name, "frac_MV2c1060_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1060", 0, 1);
-      m_frac_MV270_vs_actMu  = book(m_name, "frac_MV2c1070_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1070", 0, 1);
-      m_frac_MV277_vs_actMu  = book(m_name, "frac_MV2c1077_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1077", 0, 1);
-      m_frac_MV285_vs_actMu  = book(m_name, "frac_MV2c1085_vs_actMu",  "actualMu",  50, 0, 100, "frac. pass MV2c1085", 0, 1);
-
       // counts (e.g. numbers of jets) vs. proton-proton Interactions
       m_actualMu = book(m_name, "actualMu", "number vs. actual #mu", 50, 0, 100);
-
     }
 
-    if(m_infoSwitch->m_vsLumiBlock){
-      m_frac_MV240_vs_lBlock  = book(m_name, "frac_MV2c1040_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1040", 0, 1);
-      m_frac_MV250_vs_lBlock  = book(m_name, "frac_MV2c1050_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1050", 0, 1);
-      m_frac_MV260_vs_lBlock  = book(m_name, "frac_MV2c1060_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1060", 0, 1);
-      m_frac_MV270_vs_lBlock  = book(m_name, "frac_MV2c1070_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1070", 0, 1);
-      m_frac_MV277_vs_lBlock  = book(m_name, "frac_MV2c1077_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1077", 0, 1);
-      m_frac_MV285_vs_lBlock  = book(m_name, "frac_MV2c1085_vs_lBlock",  "LumiBlock",  200, 0, 2000, "frac. pass MV2c1085", 0, 1);
-    }
   }
 
   if(m_infoSwitch->m_btag_jettrk) {
@@ -987,64 +965,6 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
       btag_info = jet->auxdata< const xAOD::BTagging* >("HLTBTag");
     }
 
-    double MV2c00 = -99;
-    double MV2c10 = -99;
-    double MV2c20 = -99;
-    btag_info->MVx_discriminant("MV2c00", MV2c00);
-    btag_info->MVx_discriminant("MV2c10", MV2c10);
-    btag_info->MVx_discriminant("MV2c20", MV2c20);
-    m_MV2c00   ->  Fill( MV2c00, eventWeight );
-    m_MV2c10   ->  Fill( MV2c10, eventWeight );
-    m_MV2c10_l ->  Fill( MV2c10, eventWeight );
-    m_MV2c20   ->  Fill( MV2c20, eventWeight );
-
-    if(m_infoSwitch->m_vsLumiBlock || m_infoSwitch->m_vsActualMu){
-
-
-      bool passMV2c1040 = (MV2c10 > 0.975);
-      bool passMV2c1050 = (MV2c10 > 0.95);
-      bool passMV2c1060 = (MV2c10 > 0.939);
-      bool passMV2c1070 = (MV2c10 > 0.831);
-      bool passMV2c1077 = (MV2c10 > 0.645);
-      bool passMV2c1085 = (MV2c10 > 0.11);
-
-
-      if(m_infoSwitch->m_flavorTagHLT){
-	passMV2c1040 = (MV2c10 >  0.978);
-	passMV2c1050 = (MV2c10 >  0.948);
-	passMV2c1060 = (MV2c10 >  0.847);
-	passMV2c1070 = (MV2c10 >  0.580);
-	passMV2c1077 = (MV2c10 >  0.162);
-	passMV2c1085 = (MV2c10 > -0.494);
-
-      }
-
-
-      if(m_infoSwitch->m_vsLumiBlock){
-	uint32_t lumiBlock = eventInfo->lumiBlock();
-
-	m_frac_MV240_vs_lBlock  -> Fill(lumiBlock, passMV2c1040,  eventWeight);
-	m_frac_MV250_vs_lBlock  -> Fill(lumiBlock, passMV2c1050,  eventWeight);
-	m_frac_MV260_vs_lBlock  -> Fill(lumiBlock, passMV2c1060,  eventWeight);
-	m_frac_MV270_vs_lBlock  -> Fill(lumiBlock, passMV2c1070,  eventWeight);
-	m_frac_MV277_vs_lBlock  -> Fill(lumiBlock, passMV2c1077,  eventWeight);
-	m_frac_MV285_vs_lBlock  -> Fill(lumiBlock, passMV2c1085,  eventWeight);
-      }
-
-
-      if(m_infoSwitch->m_vsActualMu){
-	float actualMu = eventInfo->actualInteractionsPerCrossing();
-
-	m_frac_MV240_vs_actMu  -> Fill(actualMu, passMV2c1040,  eventWeight);
-	m_frac_MV250_vs_actMu  -> Fill(actualMu, passMV2c1050,  eventWeight);
-	m_frac_MV260_vs_actMu  -> Fill(actualMu, passMV2c1060,  eventWeight);
-	m_frac_MV270_vs_actMu  -> Fill(actualMu, passMV2c1070,  eventWeight);
-	m_frac_MV277_vs_actMu  -> Fill(actualMu, passMV2c1077,  eventWeight);
-	m_frac_MV285_vs_actMu  -> Fill(actualMu, passMV2c1085,  eventWeight);
-      }
-
-    }
-
     static SG::AuxElement::ConstAccessor<double> SV0_significance3DAcc ("SV0_significance3D");
     if ( SV0_significance3DAcc.isAvailable(*btag_info) ) {
       m_COMB            ->  Fill( btag_info->SV1_loglikelihoodratio() + btag_info->IP3D_loglikelihoodratio() , eventWeight );
@@ -1735,64 +1655,10 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
 //      h_SV1                       ->Fill(jet->SV1                  , eventWeight);
 //      h_IP3D                      ->Fill(jet->IP3D                 , eventWeight);
 
-      float MV2c10 = jet->MV2c10;
-
-      m_MV2c00                    ->Fill(jet->MV2c00               , eventWeight);
-      m_MV2c10                    ->Fill(jet->MV2c10               , eventWeight);
-      m_MV2c10_l                  ->Fill(jet->MV2c10               , eventWeight);
-      m_MV2c20                    ->Fill(jet->MV2c20               , eventWeight);
-
-      //      h_MV2                       ->Fill(jet->MV2                  , eventWeight);
-
-      if((m_infoSwitch->m_vsLumiBlock || m_infoSwitch->m_vsActualMu) && eventInfo){
-
-	bool passMV2c1040 = (MV2c10 > 0.975);
-	bool passMV2c1050 = (MV2c10 > 0.95);
-	bool passMV2c1060 = (MV2c10 > 0.939);
-	bool passMV2c1070 = (MV2c10 > 0.831);
-	bool passMV2c1077 = (MV2c10 > 0.645);
-	bool passMV2c1085 = (MV2c10 > 0.11);
-
-
-	if(m_infoSwitch->m_flavorTagHLT){
-	  passMV2c1040 = (MV2c10 >  0.978);
-	  passMV2c1050 = (MV2c10 >  0.948);
-	  passMV2c1060 = (MV2c10 >  0.847);
-	  passMV2c1070 = (MV2c10 >  0.580);
-	  passMV2c1077 = (MV2c10 >  0.162);
-	  passMV2c1085 = (MV2c10 > -0.494);
-	}
-
-	if(m_infoSwitch->m_vsLumiBlock){
-	  uint32_t lumiBlock = eventInfo->m_lumiBlock;
-
-	  m_frac_MV240_vs_lBlock  -> Fill(lumiBlock, passMV2c1040,  eventWeight);
-	  m_frac_MV250_vs_lBlock  -> Fill(lumiBlock, passMV2c1050,  eventWeight);
-	  m_frac_MV260_vs_lBlock  -> Fill(lumiBlock, passMV2c1060,  eventWeight);
-	  m_frac_MV270_vs_lBlock  -> Fill(lumiBlock, passMV2c1070,  eventWeight);
-	  m_frac_MV277_vs_lBlock  -> Fill(lumiBlock, passMV2c1077,  eventWeight);
-	  m_frac_MV285_vs_lBlock  -> Fill(lumiBlock, passMV2c1085,  eventWeight);
-	}
-
-	if(m_infoSwitch->m_vsActualMu){
-	  float actualMu = eventInfo->m_actualMu;
-
-	  m_frac_MV240_vs_actMu  -> Fill(actualMu, passMV2c1040,  eventWeight);
-	  m_frac_MV250_vs_actMu  -> Fill(actualMu, passMV2c1050,  eventWeight);
-	  m_frac_MV260_vs_actMu  -> Fill(actualMu, passMV2c1060,  eventWeight);
-	  m_frac_MV270_vs_actMu  -> Fill(actualMu, passMV2c1070,  eventWeight);
-	  m_frac_MV277_vs_actMu  -> Fill(actualMu, passMV2c1077,  eventWeight);
-	  m_frac_MV285_vs_actMu  -> Fill(actualMu, passMV2c1085,  eventWeight);
-	}
-
-      }
-
-
       m_COMB                      ->Fill(jet->SV1IP3D              , eventWeight);
       //m_JetFitter               ->Fill(jet->JetFitter            , eventWeight);
 
 //
-//      h_IP3DvsMV2c20->Fill(jet->MV2c20, jet->IP3D);
 
     }
 

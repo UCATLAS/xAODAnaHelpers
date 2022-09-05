@@ -124,72 +124,18 @@ EL::StatusCode MuonCalibrator :: initialize ()
   m_numObject     = 0;
 
   // Initialize the CP::MuonCalibrationPeriodTool
-  if ( m_statComb1516 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration StatComb1516 property to " << m_statComb1516);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb1516", static_cast<bool>(m_statComb1516)));
+  // set calibrationMode (the default is "noOption", forcing analyses to make an explicit choice)
+  if(m_calibrationMode == "correctData_CB"){
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", 0)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::correctData_CB
+  } else if(m_calibrationMode == "correctData_IDMS"){
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", 1)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::correctData_IDMS
+  } else if(m_calibrationMode == "notCorrectData_IDMS"){
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", 2)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::notCorrectData_IDMS
   }
-  if ( m_statComb17 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration StatComb1516 property to " << m_statComb17);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb17", static_cast<bool>(m_statComb17)));
-  }
-  if ( m_statComb18 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration StatComb1516 property to " << m_statComb18);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("StatComb18", static_cast<bool>(m_statComb18)));
-  }
-  if ( m_sagittaCorr1516 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr1516 property to " << m_sagittaCorr1516);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr1516", static_cast<bool>(m_sagittaCorr1516)));
-  }
-  if ( m_sagittaCorr17 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr17 property to " << m_sagittaCorr17);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr17", static_cast<bool>(m_sagittaCorr17)));
-  }
-  if ( m_sagittaCorr18 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorr18 property to " << m_sagittaCorr18);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorr18", static_cast<bool>(m_sagittaCorr18)));
-  }
-  if ( m_doSagittaMCDistortion1516 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion1516 property to " << m_doSagittaMCDistortion1516);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion1516", static_cast<bool>(m_doSagittaMCDistortion1516)));
-  }
-  if ( m_doSagittaMCDistortion17 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion17 property to " << m_doSagittaMCDistortion17);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion17", static_cast<bool>(m_doSagittaMCDistortion17)));
-  }
-  if ( m_doSagittaMCDistortion18 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration doSagittaMCDistortion18 property to " << m_doSagittaMCDistortion18);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("doSagittaMCDistortion18", static_cast<bool>(m_doSagittaMCDistortion18)));
-  }
-  if ( m_sagittaCorrPhaseSpace1516 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace1516 property to " << m_sagittaCorrPhaseSpace1516);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace1516", static_cast<bool>(m_sagittaCorrPhaseSpace1516)));
-  }
-  if ( m_sagittaCorrPhaseSpace17 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace17 property to " << m_sagittaCorrPhaseSpace17);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace17", static_cast<bool>(m_sagittaCorrPhaseSpace17)));
-  }
-  if ( m_sagittaCorrPhaseSpace18 >= 0 ) {
-    ANA_MSG_WARNING("Overriding muon calibration SagittaCorrPhaseSpace18 property to " << m_sagittaCorrPhaseSpace18);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaCorrPhaseSpace18", static_cast<bool>(m_sagittaCorrPhaseSpace18)));
-  }
-  if ( !m_overrideRelease.empty() ) {
-    ANA_MSG_WARNING("Overriding muon calibration release to " << m_overrideRelease);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("Release", m_overrideRelease));
-  }
-  if ( !m_overrideSagittaRelease1516.empty() ) {
-    ANA_MSG_WARNING("Overriding muon 2015/2016 saggita release to " << m_overrideSagittaRelease1516);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaRelease1516", m_overrideSagittaRelease1516));
-  }
-  if ( !m_overrideSagittaRelease17.empty() ) {
-    ANA_MSG_WARNING("Overriding muon 2017 saggita release to " << m_overrideSagittaRelease17);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaRelease17", m_overrideSagittaRelease17));
-  }
-  if ( !m_overrideSagittaRelease18.empty() ) {
-    ANA_MSG_WARNING("Overriding muon 2018 saggita release to " << m_overrideSagittaRelease18);
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("SagittaRelease18", m_overrideSagittaRelease18));
-  }
+
   ANA_CHECK(m_muonCalibrationTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonCalibrationTool_handle);
+
 
   // ***********************************************************
 

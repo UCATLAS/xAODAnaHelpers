@@ -143,7 +143,17 @@ public:
 
   void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string& jetName = "jet" );
   void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string& jetName = "jet" );
-  void FillL1Jets( const xAOD::JetRoIContainer* jets, const std::string& jetName = "L1Jet", bool sortL1Jets = false );
+  void FillLegacyL1Jets( const xAOD::JetRoIContainer* jets, const std::string& jetName = "L1Jet", bool sortL1Jets = false );
+
+  template <typename T>
+  void FillPhase1L1Jets(T*& jets, const std::string& jetName = "L1Jet", bool sortL1Jets = false){
+    
+    this->ClearL1Jets(jetName);
+
+    xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
+  
+    thisL1Jet->FillPhase1L1Jets(jets,sortL1Jets);
+  }
 
   void FillTruth( const xAOD::TruthParticleContainer* truth, const std::string& truthName = "xAH_truth" );
   void FillTruth( const xAOD::TruthParticle* truthPart, const std::string& truthName );

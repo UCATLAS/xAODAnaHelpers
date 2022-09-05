@@ -425,6 +425,7 @@ namespace HelperClasses {
         m_rapidity       rapidity       exact
         m_clean          clean          exact
         m_cleanLight     cleanLight     exact
+        m_cleanLightLLP  cleanLightLLP  exact
         m_cleanTrig      cleanTrig      exact
         m_energy         energy         exact
         m_energyLight    energyLight    exact
@@ -437,7 +438,7 @@ namespace HelperClasses {
         m_layer          layer          exact
         m_trackPV        trackPV        exact
         m_trackAll       trackAll       exact
-        m_chargedPFOPV   chargedPFOPV   exact 
+        m_chargedPFOPV   chargedPFOPV   exact
         m_jvt            JVT            exact
         m_sfJVTName      sfJVT          partial
         m_sffJVTName     sffJVT         partial
@@ -477,10 +478,8 @@ namespace HelperClasses {
                 m_configStr = "... sfJVTMedium ..."
 
             ``jetBTag`` expects the format ``jetBTag_tagger_type_AABB..MM..YY.ZZ``. This will create a vector of working points (AA, BB, CC, ..., ZZ) associated with that tagger. Several entries can be given. For example::
-
-                m_configStr = "... jetBTag_MV2c10_FixedCutBEff_60707785 ..."
-
-            will define ``std::map<std::vector<std::pair<std::string,uint>>> m_jetBTag["MV2c10"] = {std::make_pair("FixedCutBEff",60), std::make_pair("FixedCutBEff",70) ,std::make_pair("FixedCutBEff",77), std::make_pair("FixedCutBEff",85)}``.
+           
+	        m_configStr = "... jetBTag_DL1r_FixedCutBEff_60707785 ..."
 
 	    ``trackJetName`` expects one or more track jet container names separated by an underscore. For example, the string ``trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet`` will set the attriubte ``m_trackJetNames``
 	    to ``{"GhostAntiKt2TrackJet", "GhostVR30Rmax4Rmin02TrackJet"}``.
@@ -495,6 +494,7 @@ namespace HelperClasses {
     bool m_rapidity;
     bool m_clean;
     bool m_cleanLight;
+    bool m_cleanLLP;
     bool m_cleanTrig;
     bool m_energy;
     bool m_energyLight;
@@ -507,7 +507,7 @@ namespace HelperClasses {
     bool m_layer;
     bool m_trackPV;
     bool m_trackAll;
-    bool m_chargedPFOPV; 
+    bool m_chargedPFOPV;
     bool m_jvt;
     bool m_allTrack;
     bool m_allTrackDetail;

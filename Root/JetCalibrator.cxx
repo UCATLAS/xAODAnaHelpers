@@ -241,6 +241,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       m_decisionNames.push_back( "LooseBad" );
       m_decisionNames.push_back( "LooseBadUgly" );
       m_decisionNames.push_back( "LooseBadTrigger" );
+      m_decisionNames.push_back( "LooseBadLLP" );
       m_decisionNames.push_back( "TightBad" );
       m_decisionNames.push_back( "TightBadUgly" );
 
@@ -357,6 +358,7 @@ EL::StatusCode JetCalibrator :: initialize ()
       ANA_CHECK(m_fJVTTool_handle.setProperty("UseTightOP", true));
     }
     ANA_CHECK(m_fJVTTool_handle.setProperty("OutputLevel", msg().level()));
+    ANA_CHECK(m_fJVTTool_handle.setProperty("JetContainer", m_inContainerName));
     ANA_CHECK(m_fJVTTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_fJVTTool_handle);
   }

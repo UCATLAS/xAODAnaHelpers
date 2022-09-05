@@ -627,13 +627,13 @@ void HelpTreeBase::AddL1Jets( const std::string& jetName)
 
 }
 
-void HelpTreeBase::FillL1Jets( const xAOD::JetRoIContainer* jets, const std::string& jetName, bool sortL1Jets ) {
+void HelpTreeBase::FillLegacyL1Jets( const xAOD::JetRoIContainer* jets, const std::string& jetName, bool sortL1Jets ) {
 
   this->ClearL1Jets(jetName);
 
   xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
   
-  thisL1Jet->FillL1Jets(jets,sortL1Jets);
+  thisL1Jet->FillLegacyL1Jets(jets,sortL1Jets);
 
 }
 
