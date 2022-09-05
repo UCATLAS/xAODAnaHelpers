@@ -217,6 +217,9 @@ EL::StatusCode JetCalibrator :: initialize ()
   }
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ConfigFile",m_calibConfig));
   ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibSequence",m_calibSequence));
+  if( !m_showerModel.empty() ) {
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("ShowerModel",m_showerModel));
+  }
   if ( !m_overrideCalibArea.empty() ) {
     ANA_MSG_WARNING("Overriding jet calibration area to " << m_overrideCalibArea);
     ANA_CHECK( m_JetCalibrationTool_handle.setProperty("CalibArea", m_overrideCalibArea));

@@ -68,6 +68,8 @@ public:
   std::string m_calibConfigAFII = "JES_MC16Recommendation_AFII_EMTopo_April2018_rel21.config";
   /// @brief List of calibration steps. Auto-configured to the Jet/Etmiss recommendation if left blank.
   std::string m_calibSequence = "";
+  /// @brief The shower model used in MC, for MC-2-MC corrections
+  std::string m_showerModel = "";
   /// @brief config for Jet Uncertainty Tool
   std::string m_uncertConfig = "";
   /// @brief MC type for Jet Uncertainty Tool
