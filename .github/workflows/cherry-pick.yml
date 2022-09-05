@@ -11,7 +11,9 @@ jobs:
   cherry_pick_release_r22:
     runs-on: ubuntu-latest
     name: Cherry pick into r22/master
-    if: contains(github.event.pull_request.labels.*.name, 'sweep-r22')
+    if: >-
+      github.event.pull_request.merged
+      && contains(github.event.pull_request.labels.*.name, 'sweep-r22')
     steps:
       - name: Checkout
         uses: actions/checkout@v3
