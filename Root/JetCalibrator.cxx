@@ -126,12 +126,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
-  // Check if a source container of the b-tagging links was specified
-  if (m_bendBTaggingLinks && m_btaggingContainerName.empty()){
-    ANA_MSG_ERROR( "Please specify a source container to copy the b-tagging links from such as AntiKt4EMPFlowJets_BTagging201903 via m_btaggingContainerName. Exiting.");
-    return EL::StatusCode::FAILURE;
-  }
-
   if ( m_outputAlgo.empty() ) {
     m_outputAlgo = m_jetAlgo + "_Calib_Algo";
   }
@@ -411,12 +405,6 @@ EL::StatusCode JetCalibrator :: execute ()
   //
   // Perform nominal calibration
   std::pair< xAOD::JetContainer*, xAOD::ShallowAuxContainer* > calibJetsSC = xAOD::shallowCopyContainer( *inJets );
-
-  // bend b-tagging links
-  if (m_bendBTaggingLinks){
-    ANA_MSG_DEBUG("Copying b-tagging links from " << m_btaggingContainerName << " to " << m_outContainerName);
-    ANA_CHECK( bendBTaggingLinks(calibJetsSC.first) );
-  }
 
   if ( m_addGhostMuonsToJets ) {
     ANA_MSG_VERBOSE("Run muon-to-jet ghost association");
@@ -702,24 +690,5 @@ EL::StatusCode JetCalibrator::initializeUncertaintiesTool(asg::AnaToolHandle<ICP
   ANA_CHECK( uncToolHandle.retrieve());
   ANA_MSG_DEBUG("Retrieved JetUncertaintiesTool: " << uncToolHandle);
 
-  return EL::StatusCode::SUCCESS;
-}
-
-EL::StatusCode JetCalibrator::bendBTaggingLinks(xAOD::JetContainer* to_container){
-  // shamelessly copied from SUSYTools: https://gitlab.cern.ch/atlas/athena/-/blob/21.2/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/Jets.cxx#L1077
-  const xAOD::JetContainer* b_tag_jets = nullptr;
-  HelperFunctions::retrieve(b_tag_jets, m_btaggingContainerName, m_event, m_store, msg());
-  if (b_tag_jets->size() != to_container->size()) {
-    ATH_MSG_FATAL("Size of the original jet container and of the btag container do not match");
-    return EL::StatusCode::FAILURE;
-  }
-  xAOD::JetContainer::const_iterator btag_begin = b_tag_jets->begin();
-  xAOD::JetContainer::const_iterator btag_end   = b_tag_jets->end();
-
-  xAOD::JetContainer::iterator to_begin = to_container->begin();
-  xAOD::JetContainer::iterator to_end   = to_container->end();
-  for (  ; to_begin != to_end && btag_begin != btag_end ; ++to_begin, ++btag_begin) {
-    (*to_begin)->setBTaggingLink((*btag_begin)->btaggingLink());
-  }
   return EL::StatusCode::SUCCESS;
 }
