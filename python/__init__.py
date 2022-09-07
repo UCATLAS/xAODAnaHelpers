@@ -10,5 +10,7 @@ try:
 except:
     xAH_logging.logger.warning("xAH::Config could not be imported.")
 
+from .utils import vector
+
 __version__ = "1.0.0"
 __all__ = ["utils", "config"]

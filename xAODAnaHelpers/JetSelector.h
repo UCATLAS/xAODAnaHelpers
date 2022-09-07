@@ -90,6 +90,10 @@ public:
   float m_pT_max = 1e8;
   /// @brief require pT > pt_min
   float m_pT_min = 1e8;
+  /// @brief require ET < ET_max
+  float m_ET_max = 1e8;
+  /// @brief require ET > ET_min
+  float m_ET_min = 1e8;
   /// @brief require eta < eta_max
   float m_eta_max = 1e8;
   /// @brief require eta > eta_min
@@ -282,6 +286,8 @@ private:
   int   m_jet_cutflow_cleaning_cut;  //!
   int   m_jet_cutflow_ptmax_cut;     //!
   int   m_jet_cutflow_ptmin_cut;     //!
+  int   m_jet_cutflow_etmax_cut;     //!
+  int   m_jet_cutflow_etmin_cut;     //!
   int   m_jet_cutflow_eta_cut;       //!
   int   m_jet_cutflow_jvt_cut;       //!
   int   m_jet_cutflow_btag_cut;      //!

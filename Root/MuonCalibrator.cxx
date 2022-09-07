@@ -132,7 +132,10 @@ EL::StatusCode MuonCalibrator :: initialize ()
   } else if(m_calibrationMode == "notCorrectData_IDMS"){
     ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", 2)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::notCorrectData_IDMS
   }
-
+  // special corrections for muons with only 2 stations; to be switched on only for the muon highPt WP
+  if (m_do2StationsHighPt){
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("do2StationsHighPt", m_do2StationsHighPt));
+  }  
   ANA_CHECK(m_muonCalibrationTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonCalibrationTool_handle);
 

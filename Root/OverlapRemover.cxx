@@ -148,7 +148,7 @@ EL::StatusCode OverlapRemover :: initialize ()
   const std::string selected_label = ( m_useSelected ) ? "passSel" : "";  // set with decoration flag you use for selected objects if want to consider only selected objects in OR, otherwise it will perform OR on all objects
 
   //Set Flags for recommended overlap procedures
-  ORUtils::ORFlags orFlags("OverlapRemovalTool", selected_label, "passOR");
+  ORUtils::ORFlags orFlags("OverlapRemovalTool", selected_label, m_decor);
 
   orFlags.outputPassValue     = true;
   orFlags.linkOverlapObjects  = m_linkOverlapObjects;
@@ -515,7 +515,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons)); // This line raises an exception
       ANA_MSG_DEBUG(  "Done Calling removeOverlaps()");
 
-      std::string ORdecor("passOR");
+      std::string ORdecor(m_decor);
       if(m_useCutFlow){
         // fill cutflow histograms
         //
@@ -629,7 +629,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         //
         ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
 
-        const std::string ORdecor("passOR");
+        const std::string ORdecor(m_decor);
         if(m_useCutFlow){
           // fill cutflow histograms
           //
@@ -734,7 +734,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         //
         ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
 
-        const std::string ORdecor("passOR");
+        const std::string ORdecor(m_decor);
         if(m_useCutFlow){
           // fill cutflow histograms
           //
@@ -840,7 +840,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         //
         ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
 
-        const std::string ORdecor("passOR");
+        const std::string ORdecor(m_decor);
         if(m_useCutFlow){
           // fill cutflow histograms
           //
@@ -946,7 +946,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
 
 
-        const std::string ORdecor("passOR");
+        const std::string ORdecor(m_decor);
         if(m_useCutFlow){
           // fill cutflow histograms
           //
@@ -1051,7 +1051,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         //
         ANA_CHECK( m_ORToolbox.masterTool->removeOverlaps(inElectrons, inMuons, inJets, inTaus, inPhotons));
 
-        const std::string ORdecor("passOR");
+        const std::string ORdecor(m_decor);
         if(m_useCutFlow){
           // fill cutflow histograms
           //

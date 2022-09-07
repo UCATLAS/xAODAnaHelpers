@@ -104,6 +104,11 @@ namespace xAH {
     float PromptLeptonIso;
     float PromptLeptonVeto;
 
+    // passSel
+    char passSel;
+    // passOR
+    char passOR;
+
   };
 
 }//xAH

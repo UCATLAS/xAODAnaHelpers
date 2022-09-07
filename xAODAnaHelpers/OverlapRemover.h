@@ -91,8 +91,9 @@ class OverlapRemover : public xAH::Algorithm
   /** @brief Fill the cutflow histogram(s) for object counting */
   bool m_useCutFlow = true;
 
-  /** @brief Decorate selected objects (the default decoration string is `passSel`) */
+  /** @brief Decorate selected objects (the default decoration string is `passOR`) */
   bool     m_decorateSelectedObjects;
+  std::string m_decor = "passOR";
   /**
      @rst
         Make a copy of input container(s) with selected objects (using :cpp:any:`SG::VIEW_ELEMENTS` to be light weight)

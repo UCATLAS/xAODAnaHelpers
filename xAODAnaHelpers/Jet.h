@@ -256,6 +256,9 @@ namespace xAH {
       // passSel
       char passSel;
 
+      // passOR
+      char passOR;
+
       const Muon* matchedMuon =nullptr; //!
       const Jet * matchedJet  =nullptr; //!
 

@@ -144,6 +144,8 @@ namespace xAH {
       std::vector< std::vector<float> > *m_JvtEff_SF_Tight;
       std::vector<float> *m_JvtJvfcorr;
       std::vector<float> *m_JvtRpt;
+      std::vector<int> *m_fJvtPass_Loose;
+      std::vector< std::vector<float> > *m_fJvtEff_SF_Loose;
       std::vector<int> *m_fJvtPass_Medium;
       std::vector< std::vector<float> > *m_fJvtEff_SF_Medium;
       std::vector<int> *m_fJvtPass_Tight;
@@ -487,6 +489,9 @@ namespace xAH {
 
       // passSel
       std::vector<char> *m_passSel;
+
+      // passOR
+      std::vector<char> *m_passOR;
     };
 }
 
