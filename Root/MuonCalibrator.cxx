@@ -126,11 +126,11 @@ EL::StatusCode MuonCalibrator :: initialize ()
   // Initialize the CP::MuonCalibrationPeriodTool
   // set calibrationMode (the default is "noOption", forcing analyses to make an explicit choice)
   if(m_calibrationMode == "correctData_CB"){
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", 0)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::correctData_CB
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibMode", 0)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::correctData_CB
   } else if(m_calibrationMode == "correctData_IDMS"){
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", 1)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::correctData_IDMS
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibMode", 1)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::correctData_IDMS
   } else if(m_calibrationMode == "notCorrectData_IDMS"){
-    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibrationMode", 2)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::notCorrectData_IDMS
+    ANA_CHECK(m_muonCalibrationTool_handle.setProperty("calibMode", 2)); // i.e.: CP::MuonCalibrationPeriodTool::CalibMode::notCorrectData_IDMS
   }
   // special corrections for muons with only 2 stations; to be switched on only for the muon highPt WP
   if (m_do2StationsHighPt){
