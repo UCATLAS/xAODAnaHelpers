@@ -65,6 +65,8 @@ public:
   float          m_pT_min = 1e8;
   /** require quality */
   std::string    m_muonQualityStr = "Medium";
+  /** @brief Switch on Run3 geometry for muon selector tool */
+  bool           m_isRun3Geo = false;
   /** require type */
   //std::string    m_muonType;
   /** require |eta| < eta_max */

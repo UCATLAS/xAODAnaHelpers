@@ -236,6 +236,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
+  ANA_CHECK( m_muonSelectionTool_handle.setProperty( "IsRun3Geo", m_isRun3Geo ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "OutputLevel", msg().level() ));
   ANA_CHECK( m_muonSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonSelectionTool_handle);
