@@ -183,6 +183,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     }
   }
 
+  if (m_infoSwitch.m_NNJvt) {
+    m_NNJvt = new std::vector<float>();
+    m_NNJvtPass = new std::vector<bool>();
+  }
+
   // chargedPFOPV
   if ( m_infoSwitch.m_chargedPFOPV ) {
     m_SumPtChargedPFOPt500PV = new std::vector<float> ();
@@ -583,6 +588,11 @@ JetContainer::~JetContainer()
       delete m_JvtRpt;
     }
     delete m_Jvt;
+  }
+
+  if (m_infoSwitch.m_NNJvt){
+    delete m_NNJvt;
+    delete m_NNJvtPass;
   }
 
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
@@ -1624,6 +1634,11 @@ void JetContainer::setBranches(TTree *tree)
     //setBranch<float>(tree,"GhostTrackAssociationFraction", m_ghostTrackAssFrac);
   }
 
+  if (m_infoSwitch.m_NNJvt) {
+    setBranch<float>(tree, "NNJvt", m_NNJvt);
+    setBranch<bool>(tree, "NNJvtPass", m_NNJvtPass);
+  }
+
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
     setBranch<int>(tree,"JvtPass_Loose",        m_JvtPass_Loose );
     if ( m_mc ) {
@@ -2049,6 +2064,11 @@ void JetContainer::clear()
       m_JvtRpt            ->clear();
     }
     m_Jvt               ->clear();
+  }
+
+  if (m_infoSwitch.m_NNJvt){
+    m_NNJvt->clear();
+    m_NNJvtPass->clear();
   }
 
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
@@ -2739,6 +2759,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       //      } else { m_ghostTrackAssFrac->push_back( -999 ) ; }
 
     } // trackPV || chargedPFOPV || JVT
+
+    if (m_infoSwitch.m_NNJvt) {
+      static SG::AuxElement::ConstAccessor< float > NNJvt ("NNJvt");
+      static SG::AuxElement::ConstAccessor< char > NNJvtPass ("NNJvtPass");
+      safeFill<float, float, xAOD::Jet>(jet, NNJvt, m_NNJvt, -999);
+      safeFill<char, bool, xAOD::Jet>(jet, NNJvtPass, m_NNJvtPass, 0);
+    }
 
     if ( m_infoSwitch.m_clean && pvLocation >= 0 ) {
 

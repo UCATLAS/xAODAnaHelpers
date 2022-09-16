@@ -289,6 +289,7 @@ namespace HelperClasses{
     m_trackAll      = has_exact("trackAll");
     m_chargedPFOPV  = has_exact("chargedPFOPV");
     m_jvt           = has_exact("JVT");
+    m_NNJvt         = has_exact("NNJvt");
     m_allTrack      = has_exact("allTrack");
     m_allTrackPVSel = has_exact("allTrackPVSel");
     m_allTrackDetail= has_exact("allTrackDetail");

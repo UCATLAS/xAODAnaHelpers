@@ -456,6 +456,7 @@ namespace HelperClasses {
         m_trackAll       trackAll       exact
         m_chargedPFOPV   chargedPFOPV   exact
         m_jvt            JVT            exact
+        m_NNJvt          NNJvt          exact
         m_sfJVTName      sfJVT          partial
         m_sffJVTName     sffJVT         partial
         m_allTrack       allTrack       exact
@@ -528,6 +529,7 @@ namespace HelperClasses {
     bool m_trackAll;
     bool m_chargedPFOPV;
     bool m_jvt;
+    bool m_NNJvt;
     bool m_allTrack;
     bool m_allTrackDetail;
     bool m_allTrackPVSel;
