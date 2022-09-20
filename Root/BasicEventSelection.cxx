@@ -1124,14 +1124,13 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   switch(runNum)
     {
     case 284500 :
-      mcCampaignMD="mc16a";
+      mcCampaignMD="mc20a";
       break;
     case 300000 :
-      mcCampaignMD="mc16d";
+      mcCampaignMD="mc20d";
       break;
-    // This should be switched to mc16f once it is available.
     case 310000 :
-      mcCampaignMD="mc16e";
+      mcCampaignMD="mc20e";
       break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
@@ -1160,23 +1159,23 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     }
 
   // Sanity checks
-  bool mc16X_GoodFromProperty = !mcCampaignList.empty();
-  bool mc16X_GoodFromMetadata = false;
-  for(const auto& mcCampaignP : mcCampaignList) mc16X_GoodFromProperty &= ( mcCampaignP == "mc16a" || mcCampaignP == "mc16c" || mcCampaignP == "mc16d" || mcCampaignP == "mc16e" || mcCampaignP == "mc16f");
-  if( mcCampaignMD == "mc16a" || mcCampaignMD == "mc16c" || mcCampaignMD == "mc16d" || mcCampaignMD == "mc16e" || mcCampaignMD == "mc16f") mc16X_GoodFromMetadata = true;
+  bool mc20X_GoodFromProperty = !mcCampaignList.empty();
+  bool mc20X_GoodFromMetadata = false;
+  for(const auto& mcCampaignP : mcCampaignList) mc20X_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e");
+  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e") mc20X_GoodFromMetadata = true;
 
-  if( !mc16X_GoodFromMetadata && !mc16X_GoodFromProperty )
+  if( !mc20X_GoodFromMetadata && !mc20X_GoodFromProperty )
     {
       // ::
       std::string MetadataAndPropertyBAD("");
       MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc16a', 'mc16c', 'mc16d', 'mc16e', or 'mc16f' and restart your job. If you set it to any other string, you will still incur in this error.";
+      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', or 'mc20f' and restart your job. If you set it to any other string, you will still incur in this error.";
       ANA_MSG_ERROR( MetadataAndPropertyBAD );
       return StatusCode::FAILURE;
       // ::
     }
 
-  if ( mc16X_GoodFromProperty && mc16X_GoodFromMetadata)
+  if ( mc20X_GoodFromProperty && mc20X_GoodFromMetadata)
     {
       bool MDinP=false;
       for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
@@ -1204,7 +1203,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 
   // ::
   // Retrieve the input file
-  if(!mc16X_GoodFromProperty)
+  if(!mc20X_GoodFromProperty)
     {
       mcCampaignList.clear();
       mcCampaignList.push_back(mcCampaignMD);
@@ -1235,16 +1234,16 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   // Add actualMu config files
   for(const auto& mcCampaign : mcCampaignList)
     {
-      if( !m_prwActualMu2016File.empty() && mcCampaign == "mc16a" )
+      if( !m_prwActualMu2016File.empty() && mcCampaign == "mc20a" )
 	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2016File));
-      if( !m_prwActualMu2017File.empty() && (mcCampaign == "mc16c" || mcCampaign=="mc16d") )
+      if( !m_prwActualMu2017File.empty() && (mcCampaign == "mc20c" || mcCampaign=="mc20d") )
 	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2017File));
-      if( !m_prwActualMu2018File.empty() && (mcCampaign == "mc16e" || mcCampaign=="mc16f") )
+      if( !m_prwActualMu2018File.empty() && (mcCampaign == "mc20e" || mcCampaign=="mc20f") )
 	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
     }
 
-  // also need to handle lumicalc files: only use 2015+2016 with mc16a
-  // and only use 2017 with mc16c
+  // also need to handle lumicalc files: only use 2015+2016 with mc20a
+  // and only use 2017 with mc20d and 2018 data with mc20e
   // according to instructions on https://twiki.cern.ch/twiki/bin/view/AtlasProtected/ExtendedPileupReweighting#Tool_Properties
 
   // Parse lumicalc file names
@@ -1271,16 +1270,15 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	  size_t pos = filename.find("data");
 	  std::string year = filename.substr(pos+4, 2);
 
-	  // Case mc16a: want 2015 and 2016
-	  if (mcCampaign == "mc16a") {
+	  if (mcCampaign == "mc20a") {
 	    if (year == "15" || year == "16") {
 	      lumiCalcFiles.push_back(filename);
 	    }
-	  } else if (mcCampaign == "mc16c" || mcCampaign == "mc16d") {
+	  } else if (mcCampaign == "mc20d") {
 	    if (year == "17") {
 	      lumiCalcFiles.push_back(filename);
 	    }
-	  } else if (mcCampaign == "mc16e" || mcCampaign == "mc16f") {
+	  } else if (mcCampaign == "mc20e") {
 	    if (year == "18") {
 	      lumiCalcFiles.push_back(filename);
 	    }
