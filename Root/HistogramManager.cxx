@@ -242,3 +242,9 @@ void HistogramManager::fillHist(const std::string& histName, double valueX, doub
   }
   histPointer->Fill(valueX, valueY, weight);
 }
+
+// void HistogramManager::fillProfile(const std::string& histName, double value, double bin) {
+//   TH1* profilePointer(NULL);
+//   histPointer = this->findHist(histName);
+//   histPointer->Fill(value, bin)
+// }
