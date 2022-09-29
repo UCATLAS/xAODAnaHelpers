@@ -14,6 +14,7 @@
 #include "AsgTools/AnaToolHandle.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
+#include "TriggerMatchingTool/IMatchScoringTool.h"
 #include "TauAnalysisTools/ITauSelectionTool.h"
 
 //#include "TauAnalysisTools/TauOverlappingElectronLLHDecorator.h"
@@ -112,6 +113,7 @@ private:
   asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this}; //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //!
   asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle; //!
+  asg::AnaToolHandle<Trig::IMatchScoringTool>             m_scoreTool{"Trig::DRScoringTool/DRScoringTool"}; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!

@@ -20,6 +20,7 @@
 #include "IsolationSelection/IIsolationSelectionTool.h"
 #include "MuonAnalysisInterfaces/IMuonSelectionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
+#include "TriggerMatchingTool/IMatchScoringTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
 // algorithm wrapper
@@ -157,6 +158,7 @@ private:
   asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle     {"CP::MuonSelectionTool/MuonSelectionTool"          , this}; //!
   asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle; //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; //!
+  asg::AnaToolHandle<Trig::IMatchScoringTool>      m_scoreTool                    {"Trig::DRScoringTool/DRScoringTool"                             }; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!

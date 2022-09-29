@@ -29,6 +29,7 @@
 #include "JetInterface/IJetModifier.h"
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
+#include "TriggerMatchingTool/IMatchScoringTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
 class JetSelector : public xAH::Algorithm
@@ -304,6 +305,7 @@ private:
 
   asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle; //!
   asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; //!
+  asg::AnaToolHandle<Trig::IMatchScoringTool>  m_scoreTool{"Trig::DRScoringTool/DRScoringTool"}; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!

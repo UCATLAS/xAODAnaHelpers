@@ -13,6 +13,7 @@
 #include <AsgTools/AnaToolHandle.h>
 #include <TrigDecisionTool/TrigDecisionTool.h>
 #include <TriggerMatchingTool/IMatchingTool.h>
+#include "TriggerMatchingTool/IMatchScoringTool.h"
 
 #include <TH1D.h>
 
@@ -77,6 +78,7 @@ private:
   /* tools */
   asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle  {"Trig::TrigDecisionTool/TrigDecisionTool"             }; //!
   asg::AnaToolHandle<Trig::IMatchingTool>    m_trigMatchTool_handle; //!
+  asg::AnaToolHandle<Trig::IMatchScoringTool>  m_scoreTool {"Trig::DRScoringTool/DRScoringTool"}; //!
 
   std::vector<std::string> m_trigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_trigChains */
 
