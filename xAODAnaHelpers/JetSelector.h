@@ -179,7 +179,7 @@ public:
      See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
      @endrst
   */
-  std::string m_SFFileJVT = "JetJvtEfficiency/Moriond2018/JvtSFFile_EMPFlow.root";
+  std::string m_SFFileJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
   std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
 
   float         m_systValJVT = 0.0;

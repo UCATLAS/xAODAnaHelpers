@@ -272,6 +272,7 @@ EL::StatusCode JetSelector :: initialize ()
   // initialize the CP::JetJvtEfficiency Tool for JVT
   ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
   ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
+  ANA_CHECK( m_JVT_tool_handle.setProperty("TaggingAlg", CP::JvtTagger::Jvt ));
   ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));
   ANA_CHECK( m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()));
   ANA_CHECK( m_JVT_tool_handle.retrieve());
