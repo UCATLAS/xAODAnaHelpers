@@ -67,8 +67,8 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr );
-  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false );
+  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr, std::string nominalTreeName = "nominal" );
+  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, std::string nominalTreeName = "nominal" );
   virtual ~HelpTreeBase();
 
   void AddEvent         (const std::string& detailStr = "");
@@ -173,11 +173,11 @@ public:
    *  @param  fatjetName  The name of the output collection to write to.
    *  @param  suffix      The suffix of the output collection to write to.
    */
-  void FillFatJets( const xAOD::JetContainer* fatJets , int pvLocation, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
-  void FillFatJet ( const xAOD::Jet* fatjet_itr,        int pvLocation, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+  void FillFatJets( const xAOD::JetContainer* fatJets , int pvLocation = 0, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+  void FillFatJet ( const xAOD::Jet* fatjet_itr,        int pvLocation = 0, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
-  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     int pvLocation, const std::string& truthFatJetName="truth_fatjet" );
-  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, int pvLocation, const std::string& truthFatJetName="truth_fatjet" );
+  void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     int pvLocation = 0, const std::string& truthFatJetName="truth_fatjet" );
+  void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, int pvLocation = 0, const std::string& truthFatJetName="truth_fatjet" );
 
   void FillTaus( const xAOD::TauJetContainer* taus, const std::string& tauName = "tau" );
   void FillTau ( const xAOD::TauJet* tau,           const std::string& tauName = "tau" );
@@ -194,7 +194,7 @@ public:
   void ClearJets          (const std::string& jetName = "jet");
   void ClearL1Jets        (const std::string& jetName = "L1Jet");
   void ClearTruth         (const std::string& truthName);
-  void ClearTracks	      (const std::string& trackName);
+  void ClearTracks	  (const std::string& trackName);
   void ClearFatJets       (const std::string& fatjetName, const std::string& suffix="");
   void ClearTruthFatJets  (const std::string& truthFatJetName = "truth_fatjet");
   void ClearTaus          (const std::string& tauName = "tau" );
@@ -337,6 +337,7 @@ protected:
 
   bool m_debug;
   bool m_isMC;
+  std::string m_nominalTreeName;
   bool m_nominalTree;
 
   // event
@@ -396,7 +397,7 @@ protected:
   std::map<std::string, xAH::MuonContainer*> m_muons;
   std::map<std::string, std::vector<std::string> > m_MuonRecoEff_SF_sysNames;
   std::map<std::string, std::vector<std::string> > m_MuonIsoEff_SF_sysNames;
-  std::map<std::string, std::vector<std::string> > m_MuonTrigEff_SF_sysNames;
+  std::map<std::string, std::map<std::string, std::vector<std::string> > > m_MuonTrigEff_SF_sysNames;
   std::vector<std::string>  m_MuonTTVAEff_SF_sysNames;
 
   //

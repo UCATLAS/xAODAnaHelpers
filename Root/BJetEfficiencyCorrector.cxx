@@ -123,8 +123,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_MSG_DEBUG(" Using continuous b-tagging"); }
 
   // No official calibrations in rel22 yet
-  if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  true; }
-  if (m_taggerName == "DL1dv00")   { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "DL1dv00")   { taggerOK = true; m_getScaleFactors = false; }
+  if (m_taggerName == "DL1dv01")   { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "GN120220509")   { taggerOK = true; m_getScaleFactors =  false; }
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
@@ -163,6 +165,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   if ( !isMC() && m_getScaleFactors ) {
     ANA_MSG_WARNING( "Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors." );
+    m_getScaleFactors = false;
+  }
+  if ( m_tagDecisionOnly && m_getScaleFactors ) {
+    ANA_MSG_WARNING( "BTagging scale factors have been manually disabled. This is not recommended!" );
     m_getScaleFactors = false;
   }
 
@@ -232,6 +238,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		break;
 	      case HelperFunctions::Sherpa22:
 		calibration="410250";
+		break;
+	      case HelperFunctions::Sherpa2210:
+		calibration="700122";
 		break;
 	      case HelperFunctions::Unknown:
 		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
@@ -397,44 +406,43 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   // run the btagging decision or get weight and quantile if running continuous
   //
-  for( const xAOD::Jet* jet_itr : *(inJets))
-    {
+  for( const xAOD::Jet* jet_itr : *(inJets)){
 
-      if(!m_useContinuous)
-	{ // get tagging decision
-	  ANA_MSG_DEBUG(" Getting tagging decision ");
+    if(!m_useContinuous){
+      // get tagging decision
+      ANA_MSG_DEBUG(" Getting tagging decision ");
 
-	  // Add decorator for decision
-	  if( m_BJetSelectTool_handle->accept( *jet_itr ) )
-	    dec_isBTag( *jet_itr ) = 1;
-	  else
-	    dec_isBTag( *jet_itr ) = 0;
-
-	  // Add pT-dependent b-tag decision decorator (intended for use in OR)
-	  if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
-	      && m_BJetSelectTool_handle->accept( *jet_itr ) )
-	    dec_isBTagOR( *jet_itr ) = 1;
-	  else
-	    dec_isBTagOR( *jet_itr ) = 0;
-	}
+      // Add decorator for decision
+      if( m_BJetSelectTool_handle->accept( *jet_itr ) )
+        dec_isBTag( *jet_itr ) = 1;
       else
-	{ // continuous b-tagging
+        dec_isBTag( *jet_itr ) = 0;
 
-	  ANA_MSG_DEBUG(" Getting TaggerWeight and Quantile");
-
-	  double tagWeight;
-	  if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok )
-	    {
-	      ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
-	      return EL::StatusCode::FAILURE;
-	    }
-	  int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
-	  ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
-	  ANA_MSG_DEBUG( "quantile: " << quantile );
-	  dec_Weight( *jet_itr)    = tagWeight;
-	  dec_Quantile( *jet_itr ) = quantile;
-	}
+      // Add pT-dependent b-tag decision decorator (intended for use in OR)
+      if ((m_orBJetPtUpperThres < 0 || m_orBJetPtUpperThres > (*jet_itr).pt()/1000.) // passes pT criteria
+          && m_BJetSelectTool_handle->accept( *jet_itr ) )
+        dec_isBTagOR( *jet_itr ) = 1;
+      else
+        dec_isBTagOR( *jet_itr ) = 0;
     }
+    else{
+      ANA_MSG_DEBUG(" Getting Quantile");
+      int quantile = m_BJetSelectTool_handle->getQuantile(*jet_itr);
+      ANA_MSG_DEBUG( "quantile: " << quantile );
+      dec_Quantile( *jet_itr ) = quantile;
+    }
+    if(m_useContinuous || m_alwaysGetTagWeight){
+      ANA_MSG_DEBUG(" Getting TaggerWeight");
+      
+      double tagWeight;
+      if( m_BJetSelectTool_handle->getTaggerWeight( *jet_itr, tagWeight)!=CP::CorrectionCode::Ok ){
+        ANA_MSG_ERROR(" Error retrieving b-tagger weight ");
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_MSG_DEBUG( "tagWeight: " << tagWeight );
+	    dec_Weight( *jet_itr)    = tagWeight;
+    }
+  }
 
   //
   // get the scale factors for all jets
@@ -584,10 +592,12 @@ void BJetEfficiencyCorrector :: makeMCIndexMap (std::string effCalib)
 
   // Find index for Pythia8, Sherpa 2.2, Herwig7 and aMC@NLO+Pythia8
   for (unsigned int i = 0; i < samples.size(); ++i){
-    if (samples.at(i) == "410470") m_MCIndexes["Pythia8"]  = i;
-    if (samples.at(i) == "410250") m_MCIndexes["Sherpa22"] = i;
-    if (samples.at(i) == "410558") m_MCIndexes["Herwig7"]  = i;
-    if (samples.at(i) == "410464") m_MCIndexes["aMC@NLO"]  = i;
+    if (samples.at(i) == "410470") m_MCIndexes["Pythia8"]    = i;
+    if (samples.at(i) == "700122") m_MCIndexes["Sherpa2210"] = i;
+    if (samples.at(i) == "410250") m_MCIndexes["Sherpa22"]   = i;
+    if (samples.at(i) == "600666") m_MCIndexes["Herwig721"]  = i;
+    if (samples.at(i) == "410558") m_MCIndexes["Herwig7"]    = i;
+    if (samples.at(i) == "410464") m_MCIndexes["aMC@NLO"]    = i;
   }
 
 }
@@ -618,15 +628,19 @@ unsigned int BJetEfficiencyCorrector :: getMCIndex (int dsid)
         (name.find("Py8EG_") != std::string::npos) ||
         (name.find("Py8") != std::string::npos)) { return m_MCIndexes["Pythia8"]; }
 
-    // Sherpa 2.2
-    if ((name.find("Sh_22") != std::string::npos) ||
-        (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
-        (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
+    // Sherpa 2.2.10
+    if ((name.find("Sh_2210") != std::string::npos)){ return m_MCIndexes["Sherpa2210"]; }
+
+    // Sherpa 2.2.11
+    if ((name.find("Sh_2211") != std::string::npos)){ return m_MCIndexes["Sherpa2210"]; } // MC-MC SFs from Sherpa 2.2.10 is the best we can use for Sherpa 2.2.11 (for now)
 
     // Sherpa 2.2
     if ((name.find("Sh_22") != std::string::npos) ||
         (name.find("Sherpa_NNPDF30NNLO") != std::string::npos) ||
         (name.find("Sherpa_221_NNPDF30NNLO") != std::string::npos)){ return m_MCIndexes["Sherpa22"]; }
+
+    // Herwig 7.2.1
+    if ( (name.find("Herwig721") != std::string::npos) ){ return m_MCIndexes["Herwig721"]; }
 
     // Herwig 7
     if ( (name.find("Herwig") != std::string::npos) ){ return m_MCIndexes["Herwig"]; }

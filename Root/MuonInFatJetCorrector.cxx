@@ -10,7 +10,6 @@
 #include "xAODTruth/TruthParticleContainer.h"
 
 #include "MuonSelectorTools/MuonSelectionTool.h"
-#include "MuonMomentumCorrections/MuonCalibrationPeriodTool.h"
 
 #include "xAODAnaHelpers/MuonInFatJetCorrector.h"
 #include "xAODAnaHelpers/HelperClasses.h"

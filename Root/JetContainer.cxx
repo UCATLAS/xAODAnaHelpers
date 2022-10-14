@@ -81,6 +81,9 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_clean_passLooseBadLLP        =new std::vector<int>();
     }
   }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    m_Timing = new std::vector<float>();
+  }
 
   // energy
   if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
@@ -176,6 +179,12 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
       m_JvtEff_SF_Tight  = new std::vector< std::vector<float> > ();
     }
   }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Loose" ) {
+    m_fJvtPass_Loose   = new std::vector<int>();
+    if ( m_mc ) {
+      m_fJvtEff_SF_Loose = new std::vector< std::vector<float> > ();
+    }
+  }
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
     m_fJvtPass_Medium   = new std::vector<int>();
     if ( m_mc ) {
@@ -187,6 +196,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     if ( m_mc ) {
       m_fJvtEff_SF_Tight  = new std::vector< std::vector<float> > ();
     }
+  }
+
+  if (m_infoSwitch.m_NNJvt) {
+    m_NNJvt = new std::vector<float>();
+    m_NNJvtPass = new std::vector<bool>();
   }
 
   // chargedPFOPV
@@ -245,10 +259,18 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_DL1r_pu                           =new std::vector<float>();
     m_DL1r_pc                           =new std::vector<float>();
     m_DL1r_pb                           =new std::vector<float>();
-    m_DL1dv00                              =new std::vector<float>();
-    m_DL1dv00_pu                           =new std::vector<float>();
-    m_DL1dv00_pc                           =new std::vector<float>();
-    m_DL1dv00_pb                           =new std::vector<float>();
+    m_DL1dv00                           =new std::vector<float>();
+    m_DL1dv00_pu                        =new std::vector<float>();
+    m_DL1dv00_pc                        =new std::vector<float>();
+    m_DL1dv00_pb                        =new std::vector<float>();
+    m_DL1dv01                           =new std::vector<float>();
+    m_DL1dv01_pu                        =new std::vector<float>();
+    m_DL1dv01_pc                        =new std::vector<float>();
+    m_DL1dv01_pb                        =new std::vector<float>();
+    m_GN1                               =new std::vector<float>();
+    m_GN1_pu                            =new std::vector<float>();
+    m_GN1_pc                            =new std::vector<float>();
+    m_GN1_pb                            =new std::vector<float>();
     m_HadronConeExclTruthLabelID        =new std::vector<int>();
     m_HadronConeExclExtendedTruthLabelID=new std::vector<int>();
 
@@ -442,6 +464,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_passSel  =new std::vector<char>();
   }
 
+  // passOR
+  if ( m_infoSwitch.m_passOR ) {
+    m_passOR  =new std::vector<char>();
+  }
+
 }
 
 JetContainer::~JetContainer()
@@ -508,6 +535,9 @@ JetContainer::~JetContainer()
     if(m_infoSwitch.m_cleanLLP) {
       delete m_clean_passLooseBadLLP;
     }
+  }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    delete m_Timing;
   }
 
   // energy
@@ -588,6 +618,11 @@ JetContainer::~JetContainer()
     delete m_Jvt;
   }
 
+  if (m_infoSwitch.m_NNJvt){
+    delete m_NNJvt;
+    delete m_NNJvtPass;
+  }
+
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
     delete m_JvtPass_Loose;
       if ( m_mc ) {
@@ -604,6 +639,12 @@ JetContainer::~JetContainer()
     delete m_JvtPass_Tight;
     if ( m_mc ) {
       delete m_JvtEff_SF_Tight;
+    }
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Loose" ) {
+    delete m_fJvtPass_Loose;
+    if ( m_mc ) {
+      delete m_fJvtEff_SF_Loose;
     }
   }
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
@@ -681,6 +722,14 @@ JetContainer::~JetContainer()
     delete m_DL1dv00_pu;
     delete m_DL1dv00_pc;
     delete m_DL1dv00_pb;
+    delete m_DL1dv01;
+    delete m_DL1dv01_pu;
+    delete m_DL1dv01_pc;
+    delete m_DL1dv01_pb;
+    delete m_GN1;
+    delete m_GN1_pu;
+    delete m_GN1_pc;
+    delete m_GN1_pb;
 
     delete m_HadronConeExclTruthLabelID;
     delete m_HadronConeExclExtendedTruthLabelID;
@@ -857,6 +906,11 @@ JetContainer::~JetContainer()
     delete m_passSel;
   }
 
+  // passOR
+  if ( m_infoSwitch.m_passOR ) {
+    delete m_passOR;
+  }
+
 }
 
 void JetContainer::setTree(TTree *tree)
@@ -928,6 +982,9 @@ void JetContainer::setTree(TTree *tree)
         connectBranch<int>  (tree, "clean_passLooseBadLLP",         &m_clean_passLooseBadLLP);
       }
     }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    connectBranch<float>(tree, "Timing", &m_Timing);
+  }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight )
     {
@@ -1004,10 +1061,18 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"DL1r_pu"                           ,&m_DL1r_pu  );
       connectBranch<float>(tree,"DL1r_pc"                           ,&m_DL1r_pc  );
       connectBranch<float>(tree,"DL1r_pb"                           ,&m_DL1r_pb  );
-      connectBranch<float>(tree,"DL1dv00"                              ,&m_DL1dv00     );
-      connectBranch<float>(tree,"DL1dv00_pu"                           ,&m_DL1dv00_pu  );
-      connectBranch<float>(tree,"DL1dv00_pc"                           ,&m_DL1dv00_pc  );
-      connectBranch<float>(tree,"DL1dv00_pb"                           ,&m_DL1dv00_pb  );
+      connectBranch<float>(tree,"DL1dv00"                           ,&m_DL1dv00     );
+      connectBranch<float>(tree,"DL1dv00_pu"                        ,&m_DL1dv00_pu  );
+      connectBranch<float>(tree,"DL1dv00_pc"                        ,&m_DL1dv00_pc  );
+      connectBranch<float>(tree,"DL1dv00_pb"                        ,&m_DL1dv00_pb  );
+      connectBranch<float>(tree,"DL1dv01"                           ,&m_DL1dv01     );
+      connectBranch<float>(tree,"DL1dv01_pu"                        ,&m_DL1dv01_pu  );
+      connectBranch<float>(tree,"DL1dv01_pc"                        ,&m_DL1dv01_pc  );
+      connectBranch<float>(tree,"DL1dv01_pb"                        ,&m_DL1dv01_pb  );
+      connectBranch<float>(tree,"GN1"                               ,&m_GN1     );
+      connectBranch<float>(tree,"GN1_pu"                            ,&m_GN1_pu  );
+      connectBranch<float>(tree,"GN1_pc"                            ,&m_GN1_pc  );
+      connectBranch<float>(tree,"GN1_pb"                            ,&m_GN1_pb  );
       connectBranch<int>  (tree,"HadronConeExclTruthLabelID"        ,&m_HadronConeExclTruthLabelID);
       connectBranch<int>  (tree,"HadronConeExclExtendedTruthLabelID",&m_HadronConeExclExtendedTruthLabelID);
     }
@@ -1138,6 +1203,9 @@ void JetContainer::setTree(TTree *tree)
   // passSel
   if(m_infoSwitch.m_passSel) connectBranch<char>(tree,"passSel", &m_passSel);
 
+  // passOR
+  if(m_infoSwitch.m_passOR) connectBranch<char>(tree,"passOR", &m_passOR);
+
 }
 
 void JetContainer::updateParticle(uint idx, Jet& jet)
@@ -1212,6 +1280,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_infoSwitch.m_cleanLLP) {
         jet.clean_passLooseBadLLP        =m_clean_passLooseBadLLP        ->at(idx);
       }
+    }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    jet.Timing = m_Timing->at(idx);
     }
 
   if(m_infoSwitch.m_energy || m_infoSwitch.m_energyLight)
@@ -1291,14 +1362,22 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
   if(m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT)
     {
       if(m_debug) std::cout << "updating flavorTag " << std::endl;
-      if(m_DL1r)      jet.DL1r      =m_DL1r                 ->at(idx);
-      if(m_DL1r_pu)   jet.DL1r_pu   =m_DL1r_pu              ->at(idx);
-      if(m_DL1r_pc)   jet.DL1r_pc   =m_DL1r_pc              ->at(idx);
-      if(m_DL1r_pb)   jet.DL1r_pb   =m_DL1r_pb              ->at(idx);
-      if(m_DL1dv00)      jet.DL1dv00      =m_DL1dv00                 ->at(idx);
-      if(m_DL1dv00_pu)   jet.DL1dv00_pu   =m_DL1dv00_pu              ->at(idx);
-      if(m_DL1dv00_pc)   jet.DL1dv00_pc   =m_DL1dv00_pc              ->at(idx);
-      if(m_DL1dv00_pb)   jet.DL1dv00_pb   =m_DL1dv00_pb              ->at(idx);
+      if(m_DL1r)        jet.DL1r        =m_DL1r        ->at(idx);
+      if(m_DL1r_pu)     jet.DL1r_pu     =m_DL1r_pu     ->at(idx);
+      if(m_DL1r_pc)     jet.DL1r_pc     =m_DL1r_pc     ->at(idx);
+      if(m_DL1r_pb)     jet.DL1r_pb     =m_DL1r_pb     ->at(idx);
+      if(m_DL1dv00)     jet.DL1dv00     =m_DL1dv00     ->at(idx);
+      if(m_DL1dv00_pu)  jet.DL1dv00_pu  =m_DL1dv00_pu  ->at(idx);
+      if(m_DL1dv00_pc)  jet.DL1dv00_pc  =m_DL1dv00_pc  ->at(idx);
+      if(m_DL1dv00_pb)  jet.DL1dv00_pb  =m_DL1dv00_pb  ->at(idx);
+      if(m_DL1dv01)     jet.DL1dv01     =m_DL1dv01     ->at(idx);
+      if(m_DL1dv01_pu)  jet.DL1dv01_pu  =m_DL1dv01_pu  ->at(idx);
+      if(m_DL1dv01_pc)  jet.DL1dv01_pc  =m_DL1dv01_pc  ->at(idx);
+      if(m_DL1dv01_pb)  jet.DL1dv01_pb  =m_DL1dv01_pb  ->at(idx);
+      if(m_GN1)         jet.GN1         =m_GN1         ->at(idx);
+      if(m_GN1_pu)      jet.GN1_pu      =m_GN1_pu      ->at(idx);
+      if(m_GN1_pc)      jet.GN1_pc      =m_GN1_pc      ->at(idx);
+      if(m_GN1_pb)      jet.GN1_pb      =m_GN1_pb      ->at(idx);
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       if(m_HadronConeExclTruthLabelID)         jet.HadronConeExclTruthLabelID        =m_HadronConeExclTruthLabelID        ->at(idx);
       if(m_HadronConeExclExtendedTruthLabelID) jet.HadronConeExclExtendedTruthLabelID=m_HadronConeExclExtendedTruthLabelID->at(idx);
@@ -1431,7 +1510,28 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	  jet.is_DL1r_Continuous=       btag->m_isTag->at(idx);
 	  jet.SF_DL1r_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
-	case Jet::BTaggerOP::DL1dv00_FixedCutBEff_60:
+	//DL1dv01 has preliminary rel22 pre-rec SF uncertainties   
+        case Jet::BTaggerOP::DL1dv01_FixedCutBEff_60:
+	  jet.is_DL1dv01_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_DL1dv01_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1dv01_FixedCutBEff_70:
+	  jet.is_DL1dv01_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_DL1dv01_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1dv01_FixedCutBEff_77:
+	  jet.is_DL1dv01_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_DL1dv01_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1dv01_FixedCutBEff_85:
+	  jet.is_DL1dv01_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_DL1dv01_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::DL1dv01_Continuous:
+	  jet.is_DL1dv01_Continuous=       btag->m_isTag->at(idx);
+	  jet.SF_DL1dv01_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+        case Jet::BTaggerOP::DL1dv00_FixedCutBEff_60:
 	  jet.is_DL1dv00_FixedCutBEff_60=       btag->m_isTag->at(idx);
 	  jet.SF_DL1dv00_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
@@ -1450,6 +1550,26 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	case Jet::BTaggerOP::DL1dv00_Continuous:
 	  jet.is_DL1dv00_Continuous=       btag->m_isTag->at(idx);
 	  jet.SF_DL1dv00_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+        case Jet::BTaggerOP::GN120220509_FixedCutBEff_60:
+	  jet.is_GN120220509_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_GN120220509_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN120220509_FixedCutBEff_70:
+	  jet.is_GN120220509_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_GN120220509_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN120220509_FixedCutBEff_77:
+	  jet.is_GN120220509_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_GN120220509_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN120220509_FixedCutBEff_85:
+	  jet.is_GN120220509_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_GN120220509_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN120220509_Continuous:
+	  jet.is_GN120220509_Continuous=       btag->m_isTag->at(idx);
+	  jet.SF_GN120220509_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
 	default:
 	  throw std::domain_error(
@@ -1483,6 +1603,9 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 
   // passSel
   if(m_infoSwitch.m_passSel) jet.passSel=m_passSel->at(idx);
+
+  // passOR
+  if(m_infoSwitch.m_passOR) jet.passOR=m_passOR->at(idx);
 
   if(m_debug) std::cout << "leave JetContainer::updateParticle " << std::endl;
   return;
@@ -1557,6 +1680,9 @@ void JetContainer::setBranches(TTree *tree)
       setBranch<int>  (tree,"clean_passLooseBadLLP",            m_clean_passLooseBadLLP             );
     }
   }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    setBranch<float>(tree,"Timing",m_Timing);
+  }
 
 
   if ( m_infoSwitch.m_energy || m_infoSwitch.m_energyLight ) {
@@ -1630,6 +1756,11 @@ void JetContainer::setBranches(TTree *tree)
     //setBranch<float>(tree,"GhostTrackAssociationFraction", m_ghostTrackAssFrac);
   }
 
+  if (m_infoSwitch.m_NNJvt) {
+    setBranch<float>(tree, "NNJvt", m_NNJvt);
+    setBranch<bool>(tree, "NNJvtPass", m_NNJvtPass);
+  }
+
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
     setBranch<int>(tree,"JvtPass_Loose",        m_JvtPass_Loose );
     if ( m_mc ) {
@@ -1646,6 +1777,12 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<int>(tree,"JvtPass_Tight",        m_JvtPass_Tight );
     if ( m_mc ) {
       setBranch<std::vector<float> >(tree,"JvtEff_SF_Tight",     m_JvtEff_SF_Tight );
+    }
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Loose" ) {
+    setBranch<int>(tree,"fJvtPass_Loose",       m_fJvtPass_Loose );
+    if ( m_mc ) {
+      setBranch<std::vector<float> >(tree,"fJvtEff_SF_Loose",    m_fJvtEff_SF_Loose );
     }
   }
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
@@ -1724,6 +1861,14 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"DL1dv00_pu", m_DL1dv00_pu);
     setBranch<float>(tree,"DL1dv00_pc", m_DL1dv00_pc);
     setBranch<float>(tree,"DL1dv00_pb", m_DL1dv00_pb);
+    setBranch<float>(tree,"DL1dv01",    m_DL1dv01);
+    setBranch<float>(tree,"DL1dv01_pu", m_DL1dv01_pu);
+    setBranch<float>(tree,"DL1dv01_pc", m_DL1dv01_pc);
+    setBranch<float>(tree,"DL1dv01_pb", m_DL1dv01_pb);
+    setBranch<float>(tree,"GN1",    m_GN1);
+    setBranch<float>(tree,"GN1_pu", m_GN1_pu);
+    setBranch<float>(tree,"GN1_pc", m_GN1_pc);
+    setBranch<float>(tree,"GN1_pb", m_GN1_pb);
 
     setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
     setBranch<int  >(tree,"HadronConeExclExtendedTruthLabelID", m_HadronConeExclExtendedTruthLabelID);
@@ -1898,6 +2043,10 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<char>(tree,"passSel", m_passSel);
   }
 
+  if ( m_infoSwitch.m_passOR ) {
+    setBranch<char>(tree,"passOR", m_passOR);
+  }
+
   return;
 }
 
@@ -1970,6 +2119,9 @@ void JetContainer::clear()
     if(m_infoSwitch.m_cleanLLP) {
       m_clean_passLooseBadLLP        ->clear();
     }
+  }
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    m_Timing->clear();
   }
 
 
@@ -2050,6 +2202,11 @@ void JetContainer::clear()
     m_Jvt               ->clear();
   }
 
+  if (m_infoSwitch.m_NNJvt){
+    m_NNJvt->clear();
+    m_NNJvtPass->clear();
+  }
+
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sfJVTName == "Loose" ) {
     m_JvtPass_Loose   ->clear();
     if ( m_mc ) {
@@ -2066,6 +2223,12 @@ void JetContainer::clear()
     m_JvtPass_Tight     ->clear();
     if ( m_mc ) {
       m_JvtEff_SF_Tight ->clear();
+    }
+  }
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Loose" ) {
+    m_fJvtPass_Loose    ->clear();
+    if ( m_mc ) {
+      m_fJvtEff_SF_Loose->clear();
     }
   }
   if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Medium" ) {
@@ -2133,10 +2296,18 @@ void JetContainer::clear()
     m_DL1r_pu                           ->clear();
     m_DL1r_pc                           ->clear();
     m_DL1r_pb                           ->clear();
-    m_DL1dv00                              ->clear();
-    m_DL1dv00_pu                           ->clear();
-    m_DL1dv00_pc                           ->clear();
-    m_DL1dv00_pb                           ->clear();
+    m_DL1dv00                           ->clear();
+    m_DL1dv00_pu                        ->clear();
+    m_DL1dv00_pc                        ->clear();
+    m_DL1dv00_pb                        ->clear();
+    m_DL1dv01                           ->clear();
+    m_DL1dv01_pu                        ->clear();
+    m_DL1dv01_pc                        ->clear();
+    m_DL1dv01_pb                        ->clear();
+    m_GN1                               ->clear();
+    m_GN1_pu                            ->clear();
+    m_GN1_pc                            ->clear();
+    m_GN1_pb                            ->clear();
     m_HadronConeExclTruthLabelID        ->clear();
     m_HadronConeExclExtendedTruthLabelID->clear();
 
@@ -2305,6 +2476,10 @@ void JetContainer::clear()
 
   if( m_infoSwitch.m_passSel ) {
     m_passSel->clear();
+  }
+
+  if( m_infoSwitch.m_passOR ) {
+    m_passOR->clear();
   }
 
   return;
@@ -2481,6 +2656,10 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     }
 
   } // clean
+  if(m_infoSwitch.m_timing && !m_infoSwitch.m_clean){
+    static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
+    safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
+  }
 
 
   if ( m_infoSwitch.m_energy | m_infoSwitch.m_energyLight ) {
@@ -2762,6 +2941,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
     } // trackPV || chargedPFOPV || JVT
 
+    if (m_infoSwitch.m_NNJvt) {
+      static SG::AuxElement::ConstAccessor< float > NNJvt ("NNJvt");
+      static SG::AuxElement::ConstAccessor< char > NNJvtPass ("NNJvtPass");
+      safeFill<float, float, xAOD::Jet>(jet, NNJvt, m_NNJvt, -999);
+      safeFill<char, bool, xAOD::Jet>(jet, NNJvtPass, m_NNJvtPass, 0);
+    }
+
     if ( m_infoSwitch.m_clean && pvLocation >= 0 ) {
 
       static SG::AuxElement::ConstAccessor< float > ChargedFraction("ChargedFraction");
@@ -2785,11 +2971,13 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
   static SG::AuxElement::ConstAccessor< char > jvtPass_Loose("JetJVT_Passed_Loose");
   static SG::AuxElement::ConstAccessor< char > jvtPass_Medium("JetJVT_Passed_Medium");
   static SG::AuxElement::ConstAccessor< char > jvtPass_Tight("JetJVT_Passed_Tight");
+  static SG::AuxElement::ConstAccessor< char > fjvtPass_Loose("JetfJVT_Passed_Loose");
   static SG::AuxElement::ConstAccessor< char > fjvtPass_Medium("JetfJVT_Passed_Medium");
   static SG::AuxElement::ConstAccessor< char > fjvtPass_Tight("JetfJVT_Passed_Tight");
   static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Loose("JetJvtEfficiency_JVTSyst_JVT_Loose");
   static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Medium("JetJvtEfficiency_JVTSyst_JVT_Medium");
   static SG::AuxElement::ConstAccessor< std::vector< float > > jvtSF_Tight("JetJvtEfficiency_JVTSyst_JVT_Tight");
+  static SG::AuxElement::ConstAccessor< std::vector< float > > fjvtSF_Loose("JetJvtEfficiency_fJVTSyst_fJVT_Loose");
   static SG::AuxElement::ConstAccessor< std::vector< float > > fjvtSF_Medium("JetJvtEfficiency_fJVTSyst_fJVT_Medium");
   static SG::AuxElement::ConstAccessor< std::vector< float > > fjvtSF_Tight("JetJvtEfficiency_fJVTSyst_fJVT_Tight");
 
@@ -2824,6 +3012,17 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
         m_JvtEff_SF_Tight->push_back( jvtSF_Tight( *jet ) );
       } else {
         m_JvtEff_SF_Tight->push_back( junkSF );
+      }
+    }
+  }
+
+  if ( m_infoSwitch.m_trackPV || m_infoSwitch.m_sffJVTName == "Loose" ) {
+    safeFill<char, int, xAOD::Jet>(jet, fjvtPass_Loose, m_fJvtPass_Loose, -1);
+    if ( m_mc ) {
+      if ( fjvtSF_Loose.isAvailable( *jet ) ) {
+        m_fJvtEff_SF_Loose->push_back( fjvtSF_Loose( *jet ) );
+      } else {
+        m_fJvtEff_SF_Loose->push_back( junkSF );
       }
     }
   }
@@ -3033,6 +3232,28 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1dv00_pc->push_back(pc);
     m_DL1dv00_pb->push_back(pb);
     m_DL1dv00->push_back( score );
+    pu=0; pb=0; pc=0;
+    myBTag->variable<float>("DL1dv01" , "pu", pu);
+    myBTag->variable<float>("DL1dv01" , "pc", pc);
+    myBTag->variable<float>("DL1dv01" , "pb", pb);
+    //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
+    score=log( pb / (0.018*pc+0.982*pu) );
+    m_DL1dv01_pu->push_back(pu);
+    m_DL1dv01_pc->push_back(pc);
+    m_DL1dv01_pb->push_back(pb);
+    m_DL1dv01->push_back( score );
+    
+    pu=0; pb=0; pc=0;
+    myBTag->variable<float>("GN120220509" , "pu", pu);
+    myBTag->variable<float>("GN120220509" , "pc", pc);
+    myBTag->variable<float>("GN120220509" , "pb", pb);
+    //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
+    score=log( pb / (0.05*pc+0.95*pu) ); // GN1 uses a different f_c value than DL1d which is 0.05
+    m_GN1_pu->push_back(pu);
+    m_GN1_pc->push_back(pc);
+    m_GN1_pb->push_back(pb);
+    m_GN1->push_back( score );
+    
 
     // flavor groups truth definition
     static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
@@ -3515,6 +3736,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_passSel->push_back(passSel);
     }else{
       m_passSel->push_back(-99);
+    }
+  }
+
+  if ( m_infoSwitch.m_passOR ) {
+    char passOR;
+    bool status = jet->getAttribute<char>( "passOR", passOR );
+    if(status){
+      m_passOR->push_back(passOR);
+    }else{
+      m_passOR->push_back(-99);
     }
   }
 

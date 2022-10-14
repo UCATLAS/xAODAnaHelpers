@@ -45,6 +45,9 @@ namespace xAH {
       // Origin
       unsigned int origin;
 
+      // Type
+      unsigned int type;
+
     };
 
 }//xAH

@@ -12,8 +12,10 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
 
 {
   m_pdgId   = new std::vector<int>();
-  m_status  = new std::vector<int>();
-  m_barcode = new std::vector<int>();
+  if(!m_infoSwitch.m_pdgIdOnly){
+    m_status  = new std::vector<int>();
+    m_barcode = new std::vector<int>();
+  }
 
   if(m_infoSwitch.m_type){
     m_is_higgs  = new std::vector<int>();
@@ -51,6 +53,10 @@ TruthContainer::TruthContainer(const std::string& name, const std::string& detai
     m_origin = new std::vector<unsigned int>();
   }
 
+  if(m_infoSwitch.m_particleType){
+    m_particleType = new std::vector<unsigned int>();
+  }
+
 }
 
 TruthContainer::~TruthContainer()
@@ -58,8 +64,10 @@ TruthContainer::~TruthContainer()
   if(m_debug) std::cout << " Deleting TruthContainer "  << std::endl;
 
   delete m_pdgId;
-  delete m_status;
-  delete m_barcode;
+  if(!m_infoSwitch.m_pdgIdOnly){
+    delete m_status;
+    delete m_barcode;
+  }
 
 
   if(m_infoSwitch.m_type){
@@ -98,6 +106,10 @@ TruthContainer::~TruthContainer()
     delete m_origin;
   }
 
+  if(m_infoSwitch.m_particleType){
+    delete m_particleType;
+  }
+
 }
 
 void TruthContainer::setTree(TTree *tree)
@@ -107,8 +119,10 @@ void TruthContainer::setTree(TTree *tree)
   ParticleContainer::setTree(tree);
 
   connectBranch<int>(tree,"pdgId",                      &m_pdgId);
-  connectBranch<int>(tree,"status",                     &m_status);
-  connectBranch<int>(tree,"barcode",                    &m_barcode);
+  if(!m_infoSwitch.m_pdgIdOnly){
+    connectBranch<int>(tree,"status",                     &m_status);
+    connectBranch<int>(tree,"barcode",                    &m_barcode);
+  }
 
   if(m_infoSwitch.m_type){
     connectBranch<int>(tree,"is_higgs",  &m_is_higgs);
@@ -146,6 +160,10 @@ void TruthContainer::setTree(TTree *tree)
     connectBranch<unsigned int> (tree,"origin",  &m_origin);
   }
 
+  if(m_infoSwitch.m_particleType){
+    connectBranch<unsigned int> (tree,"type",  &m_particleType);
+  }
+
 }
 
 void TruthContainer::updateParticle(uint idx, TruthPart& truth)
@@ -153,9 +171,11 @@ void TruthContainer::updateParticle(uint idx, TruthPart& truth)
   if(m_debug) std::cout << "in TruthContainer::updateParticle " << std::endl;
   ParticleContainer::updateParticle(idx,truth);
 
-  truth.pdgId                    =m_pdgId                    ->at(idx);
-  truth.status                   =m_status                   ->at(idx);
-  truth.barcode                  =m_barcode                  ->at(idx);
+  truth.pdgId = m_pdgId->at(idx);
+  if(!m_infoSwitch.m_pdgIdOnly){
+    truth.status  = m_status->at(idx);
+    truth.barcode = m_barcode->at(idx);
+  }
 
 
   if(m_infoSwitch.m_type){
@@ -195,6 +215,10 @@ void TruthContainer::updateParticle(uint idx, TruthPart& truth)
     truth.origin = m_origin->at(idx);
   }
 
+  if(m_infoSwitch.m_particleType){
+    truth.type = m_particleType->at(idx);
+  }
+
   if(m_debug) std::cout << "leave TruthContainer::updateParticle " << std::endl;
   return;
 }
@@ -206,8 +230,10 @@ void TruthContainer::setBranches(TTree *tree)
   ParticleContainer::setBranches(tree);
 
   setBranch<int>(tree,"pdgId",                      m_pdgId              );
-  setBranch<int>(tree,"status",                     m_status             );
-  setBranch<int>(tree,"barcode",                    m_barcode             );
+  if(!m_infoSwitch.m_pdgIdOnly){
+    setBranch<int>(tree,"status",                     m_status             );
+    setBranch<int>(tree,"barcode",                    m_barcode             );
+  }
 
   if(m_infoSwitch.m_type){
     setBranch<int>(tree,"is_higgs",                      m_is_higgs              );
@@ -246,6 +272,10 @@ void TruthContainer::setBranches(TTree *tree)
     setBranch<unsigned int> (tree,"origin",m_origin);
   }
 
+  if(m_infoSwitch.m_particleType){
+    setBranch<unsigned int> (tree,"type",m_particleType);
+  }
+
   return;
 }
 
@@ -256,8 +286,10 @@ void TruthContainer::clear()
   ParticleContainer::clear();
 
   m_pdgId ->clear();
-  m_status->clear();
-  m_barcode->clear();
+  if(!m_infoSwitch.m_pdgIdOnly){
+    m_status->clear();
+    m_barcode->clear();
+  }
 
   if(m_infoSwitch.m_type){
     m_is_higgs  ->clear();
@@ -295,6 +327,10 @@ void TruthContainer::clear()
     m_origin->clear();
   }
 
+  if(m_infoSwitch.m_particleType){
+    m_particleType->clear();
+  }
+
   return;
 }
 
@@ -310,8 +346,10 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
   if(m_debug) std::cout << "Got TP " << std::endl;
 
   m_pdgId  ->push_back( truth->pdgId() );
-  m_status ->push_back( truth->status() );
-  m_barcode->push_back( truth->barcode() );
+  if(!m_infoSwitch.m_pdgIdOnly){
+    m_status ->push_back( truth->status() );
+    m_barcode->push_back( truth->barcode() );
+  }
   if(m_debug)   std::cout << "Filled status " << std::endl;
 
   if(m_infoSwitch.m_type){
@@ -413,6 +451,15 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
       m_origin->push_back(origin);
     } else {
       m_origin->push_back(0); // Non-defined
+    }
+  }
+
+  if(m_infoSwitch.m_particleType){
+    if( truth->isAvailable<unsigned int>("classifierParticleType") ){
+      unsigned int type = truth->auxdata<unsigned int>("classifierParticleType");
+      m_particleType->push_back(type);
+    } else {
+      m_particleType->push_back(0); // Unknown
     }
   }
 

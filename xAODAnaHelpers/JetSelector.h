@@ -29,6 +29,7 @@
 #include "JetInterface/IJetModifier.h"
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
+#include "TriggerMatchingTool/IMatchScoringTool.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 
 class JetSelector : public xAH::Algorithm
@@ -90,6 +91,10 @@ public:
   float m_pT_max = 1e8;
   /// @brief require pT > pt_min
   float m_pT_min = 1e8;
+  /// @brief require ET < ET_max
+  float m_ET_max = 1e8;
+  /// @brief require ET > ET_min
+  float m_ET_min = 1e8;
   /// @brief require eta < eta_max
   float m_eta_max = 1e8;
   /// @brief require eta > eta_min
@@ -282,6 +287,8 @@ private:
   int   m_jet_cutflow_cleaning_cut;  //!
   int   m_jet_cutflow_ptmax_cut;     //!
   int   m_jet_cutflow_ptmin_cut;     //!
+  int   m_jet_cutflow_etmax_cut;     //!
+  int   m_jet_cutflow_etmin_cut;     //!
   int   m_jet_cutflow_eta_cut;       //!
   int   m_jet_cutflow_jvt_cut;       //!
   int   m_jet_cutflow_btag_cut;      //!
@@ -298,6 +305,7 @@ private:
 
   asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle; //!
   asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; //!
+  asg::AnaToolHandle<Trig::IMatchScoringTool>  m_scoreTool{"Trig::DRScoringTool/DRScoringTool"}; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!

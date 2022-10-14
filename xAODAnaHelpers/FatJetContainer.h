@@ -29,8 +29,8 @@ namespace xAH {
       virtual void setTree    (TTree *tree);
       virtual void setBranches(TTree *tree);
       virtual void clear();
-      virtual void FillFatJet( const xAOD::Jet* jet           , int pvLocation );
-      virtual void FillFatJet( const xAOD::IParticle* particle, int pvLocation );
+      virtual void FillFatJet( const xAOD::Jet* jet           , int pvLocation=0 );
+      virtual void FillFatJet( const xAOD::IParticle* particle, int pvLocation=0 );
       using ParticleContainer::setTree; // make other overloaded version of execute() to show up in subclass
 
       float       m_trackJetPtCut  =10e3; // slimming pT cut on associated track jets
@@ -108,7 +108,7 @@ namespace xAH {
       std::vector<float> *m_truth_pt;
       std::vector<float> *m_truth_phi;
       std::vector<float> *m_truth_eta;
-      
+
       // bosonCount
       std::vector< int > *m_nTQuarks;
       std::vector< int > *m_nHBosons;

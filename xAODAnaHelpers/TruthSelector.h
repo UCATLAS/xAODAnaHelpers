@@ -56,6 +56,8 @@ public:
   float m_rapidity_min = 1e8;
   /// @brief require classifierParticleType == type (defined by TruthClassifier: https://gitlab.cern.ch/atlas/athena/blob/21.2/PhysicsAnalysis/MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h)
   unsigned int m_type = 1000; // this will apply no selection
+  /// @brief require classifierParticleType to match any of the "|" separated type values (e.g. "1|2|3|4")
+  std::string m_typeOptions; // this will apply no selection
   /// @brief require classifierParticleOrigin == origin (defined by TruthClassifier: https://gitlab.cern.ch/atlas/athena/blob/21.2/PhysicsAnalysis/MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h)
   unsigned int m_origin = 1000; // this will apply no selection
   /// @brief require classifierParticleOrigin to match any of the "|" separated origin values (e.g. "10|12|13")
