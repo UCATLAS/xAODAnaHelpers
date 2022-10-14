@@ -118,6 +118,14 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_PromptLeptonVeto                  = new std::vector<float> ();
   }
 
+
+  if ( m_infoSwitch.m_passSel ) {
+    m_passSel = new std::vector<char>();
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    m_passOR = new std::vector<char>();
+  }
+
 }
 
 ElectronContainer::~ElectronContainer()
@@ -225,6 +233,13 @@ ElectronContainer::~ElectronContainer()
     delete m_PromptLeptonInput_sv1_jf_ntrkv    ;
     delete m_PromptLeptonIso                   ;
     delete m_PromptLeptonVeto                  ;
+  }
+
+  if ( m_infoSwitch.m_passSel ) {
+    delete m_passSel;
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    delete m_passOR;
   }
 
 }
@@ -344,6 +359,9 @@ void ElectronContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "PromptLeptonVeto",                 &m_PromptLeptonVeto);
   }
 
+  if(m_infoSwitch.m_passSel) connectBranch<char>(tree,"passSel",&m_passSel);
+  if(m_infoSwitch.m_passOR) connectBranch<char>(tree,"passOR",&m_passOR);
+
 }
 
 void ElectronContainer::updateParticle(uint idx, Electron& elec)
@@ -461,6 +479,9 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
     elec.PromptLeptonVeto                  = m_PromptLeptonVeto                  ->at(idx);
   }
 
+  if ( m_infoSwitch.m_passSel ) elec.passSel = m_passSel->at(idx);
+  if ( m_infoSwitch.m_passOR ) elec.passOR = m_passOR->at(idx);
+
 }
 
 
@@ -566,6 +587,13 @@ void ElectronContainer::setBranches(TTree *tree)
     setBranch<int>  (tree, "PromptLeptonInput_sv1_jf_ntrkv",    m_PromptLeptonInput_sv1_jf_ntrkv);
     setBranch<float>(tree, "PromptLeptonIso",                   m_PromptLeptonIso);
     setBranch<float>(tree, "PromptLeptonVeto",                  m_PromptLeptonVeto);
+  }
+
+  if ( m_infoSwitch.m_passSel ) {
+    setBranch<char>(tree,"passSel",m_passSel);
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    setBranch<char>(tree,"passOR",m_passOR);
   }
 
   return;
@@ -674,6 +702,13 @@ void ElectronContainer::clear()
     m_PromptLeptonInput_sv1_jf_ntrkv     -> clear();
     m_PromptLeptonIso                    -> clear();
     m_PromptLeptonVeto                   -> clear();
+  }
+
+  if ( m_infoSwitch.m_passSel ){
+    m_passSel->clear();
+  }
+  if ( m_infoSwitch.m_passOR ){
+    m_passOR->clear();
   }
 
 }
@@ -915,9 +950,18 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
       }
     }
 
-   static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElRecoEff_SF_syst_Reconstruction");
-   safeSFVecFill<float, xAOD::Electron>( elec, accRecoSF, m_RecoEff_SF, junkSF );
- }
+    static SG::AuxElement::Accessor< std::vector< float > > accRecoSF("ElRecoEff_SF_syst_Reconstruction");
+    safeSFVecFill<float, xAOD::Electron>( elec, accRecoSF, m_RecoEff_SF, junkSF );
+  }
+
+  if ( m_infoSwitch.m_passSel ) {
+    static SG::AuxElement::Accessor<char> accElectron_passSel( "passSel" );
+    safeFill<char, char, xAOD::Electron>(elec, accElectron_passSel, m_passSel, -99);
+  }
+  if ( m_infoSwitch.m_passOR ) {
+    static SG::AuxElement::Accessor<char> accElectron_passOR( "passOR" );
+    safeFill<char, char, xAOD::Electron>(elec, accElectron_passOR, m_passOR, -99);
+  }
 
   return;
 }

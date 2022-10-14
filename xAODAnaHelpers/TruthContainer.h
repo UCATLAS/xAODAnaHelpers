@@ -76,6 +76,9 @@ namespace xAH {
       // origin
       std::vector<unsigned int>* m_origin;
 
+      // particle type
+      std::vector<unsigned int>* m_particleType;
+
     };
 }
 

@@ -91,6 +91,7 @@ private:
   int m_numEvent;         //!
   int m_numObject;        //!
 
+  // To include the nominal in the Recp/Iso/Trig/TTVA efficiency SFs output, use "All", or include "Nominal" in the list
   std::vector<CP::SystematicSet> m_systListPID;  //!
   std::vector<CP::SystematicSet> m_systListIso;  //!
   std::vector<CP::SystematicSet> m_systListReco; //!

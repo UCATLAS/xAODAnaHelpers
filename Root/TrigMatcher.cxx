@@ -95,11 +95,14 @@ EL::StatusCode TrigMatcher :: initialize ()
     }
   }
 
+  ANA_CHECK( m_scoreTool.retrieve());
+
   //  everything went fine, let's initialise the tool!
   //
   if( !isPHYS() ) {
     m_trigMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
     ANA_CHECK( m_trigMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+    ANA_CHECK( m_trigMatchTool_handle.setProperty( "ScoringTool", m_scoreTool ));    
   } else { // For DAOD_PHYS samples
     m_trigMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
   }

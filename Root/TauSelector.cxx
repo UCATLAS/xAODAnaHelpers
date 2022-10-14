@@ -246,9 +246,12 @@ EL::StatusCode TauSelector :: initialize ()
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
+      ANA_CHECK( m_scoreTool.retrieve());
+
       //  everything went fine, let's initialise the tool!
       m_trigTauMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
       ANA_CHECK( m_trigTauMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigTauMatchTool_handle.setProperty( "ScoringTool", m_scoreTool ));
       ANA_CHECK( m_trigTauMatchTool_handle.setProperty("OutputLevel", msg().level() ));
       ANA_CHECK( m_trigTauMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigTauMatchTool_handle);
@@ -451,7 +454,7 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
 {
 
   int nPass(0); int nObj(0);
-  static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
+  const SG::AuxElement::Decorator< char > passSelDecor( m_decorationName.c_str() );
 
   ANA_MSG_DEBUG( "Initial Taus: " << static_cast<uint32_t>(inTaus->size()) );
 

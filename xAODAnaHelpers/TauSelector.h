@@ -14,6 +14,7 @@
 #include "AsgTools/AnaToolHandle.h"
 #include "TrigDecisionTool/TrigDecisionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
+#include "TriggerMatchingTool/IMatchScoringTool.h"
 #include "TauAnalysisTools/ITauSelectionTool.h"
 
 //#include "TauAnalysisTools/TauOverlappingElectronLLHDecorator.h"
@@ -44,6 +45,8 @@ public:
   bool       	 m_decorateWithTracks = false;
   /* decorate selected objects - default "passSel" */
   bool       	 m_decorateSelectedObjects = true;
+  /* Name for selected object decoration*/
+  std::string  m_decorationName = "passSel";
   /* fill using SG::VIEW_ELEMENTS to be light weight */
   bool       	 m_createSelectedContainer = false;
   /* look at n objects */
@@ -110,6 +113,7 @@ private:
   asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool",     this}; //!
   asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; //!
   asg::AnaToolHandle<Trig::IMatchingTool>                 m_trigTauMatchTool_handle; //!
+  asg::AnaToolHandle<Trig::IMatchScoringTool>             m_scoreTool{"Trig::DRScoringTool/DRScoringTool"}; //!
 
   /// @brief This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing
   bool m_doTrigMatch = true; //!

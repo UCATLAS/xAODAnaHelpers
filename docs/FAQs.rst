@@ -21,7 +21,7 @@ How do I...
 
    Then we can submit a job::
 
-        xAH_run.py --files "user.lgagnon.370150.Gtt.DAOD_SUSY10.e4049_s2608_r6765_r6282_p2411_tag_10_v1_output_xAOD.root" \
+        xAH_run.py --inputRucio --files "user.lgagnon.370150.Gtt.DAOD_SUSY10.e4049_s2608_r6765_r6282_p2411_tag_10_v1_output_xAOD.root" \
         --config=test.py prun --optGridMergeOutput=1 \
         --optGridNFilesPerJob=1.0 --optGridOutputSampleName=user.gstark.test
 

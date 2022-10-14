@@ -236,6 +236,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MaxEta", static_cast<double>(m_eta_max) ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
+  ANA_CHECK( m_muonSelectionTool_handle.setProperty( "IsRun3Geo", m_isRun3Geo ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "OutputLevel", msg().level() ));
   ANA_CHECK( m_muonSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonSelectionTool_handle);
@@ -298,9 +299,12 @@ EL::StatusCode MuonSelector :: initialize ()
       ANA_CHECK( m_trigDecTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
+      ANA_CHECK( m_scoreTool.retrieve());
+
       //  everything went fine, let's initialise the tool!
       m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "ScoringTool", m_scoreTool ));
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
       ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);

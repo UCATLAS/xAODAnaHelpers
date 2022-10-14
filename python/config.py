@@ -14,7 +14,7 @@ import inspect
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
 from AnaAlgorithm.AnaAlgSequence import AnaAlgSequence
 
-from .utils import NameGenerator
+from .utils import NameGenerator, vector
 
 class Config(object):
   def __init__(self):
@@ -97,14 +97,7 @@ class Config(object):
         if not hasattr(alg_obj, k) and k not in ['m_msgLevel', 'm_name']:
           raise AttributeError(k)
         elif hasattr(alg_obj, k):
-          #handle unicode from json
-          # if isinstance(v, unicode): v = v.encode('utf-8')
-          self._log.append((algName, k, v))
-          try:
-            setattr(alg_obj, k, v)
-          except:
-            logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
-            raise
+          self._set_algo_attribute(alg_obj, k, v, className, algName)
     elif ROOT.EL.AnaAlgorithm in parents:
       alg_obj = AnaAlgorithmConfig(className)
       alg_obj.setName(algName)
@@ -113,21 +106,29 @@ class Config(object):
       self._log.append((className, algName))
       # TODO
       #setattr(alg_obj, "OutputLevel", msgLevel)
-      for k, v in options.items():
-        if k == 'm_msgLevel': continue
-        if k == 'm_name' and algName_is_random: continue
-        # if isinstance(v, unicode): v = v.encode('utf-8')
-        self._log.append((algName, k, v))
-        try:
-          setattr(alg_obj, k, v)
-        except:
-          logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(k, v, className, algName))
-          raise
+      for k,v in options.items():
+        if k in ['m_msgLevel', 'm_name']: continue
+        self._set_algo_attribute(alg_obj, k, v, className, algName)
     else:
       raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm. I do not know how to configure it. {1}".format(className, parents))
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
+
+  def _set_algo_attribute(self, alg_obj, name, value, className, algName):
+    #handle unicode from json
+    #if isinstance(value, unicode):
+    #  value = value.encode('utf-8')
+    if isinstance(value, (list, tuple)):
+      # manually call vector in user code when this fails on an empty list/tuple
+      value = vector(value) 
+    self._log.append((algName, name, value))
+    try:
+      setattr(alg_obj, name, value)
+    except:
+      logger.error("There was a problem setting {0:s} to {1} for {2:s}::{3:s}".format(name, value, className, algName))
+      raise
+    
 
   # set based on patterns
   def sample(self, pattern, **kwargs):

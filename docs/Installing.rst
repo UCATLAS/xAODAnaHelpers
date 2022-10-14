@@ -98,3 +98,26 @@ The last thing you need to do is get your environment set up correctly, so you w
   source build/*/setup.sh
 
 Environment variables like ``${AnalysisBase_PLATFORM}`` (or ``${AnalysisTop_PLATFORM}``) seem to contain the correct variable which represents the architecture of the system, e.g. ``x86_64-slc6-gcc49-opt``.
+
+Docker
+------
+
+Assuming you have `docker <https://www.docker.com/)>`_, you can always grab the latest image for a given release (e.g. 21.2.4) like so:
+
+.. code-block:: bash
+
+  docker pull ucatlas/xah:21.2.4-latest
+  docker run -it --rm ucatlas/xah:21.2.4-latest bash
+
+which puts you into the docker image and xAH is precompiled and the environment is set up so you can:
+
+* compile your package on top of xAH [using cmake, make]
+* run vanilla ```xAH_run.py``` with a config on some ROOT files
+
+For example, if you want to have the docker image have access to ROOT files locally on your computer, you can "mount" a folder in it like so:
+
+.. code-block:: bash
+
+  docker run -it --rm -v /path/to/data/files:/home/atlas/data ucatlas/xah:21.2.4-latest bash
+
+and /home/atlas/data inside the docker file will map to /path/to/data/files on your computer (host).

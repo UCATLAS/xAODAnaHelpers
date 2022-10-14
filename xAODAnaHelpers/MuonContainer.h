@@ -111,6 +111,11 @@ namespace xAH {
       std::vector<float>* m_PromptLeptonIso;
       std::vector<float>* m_PromptLeptonVeto;
 
+      // passSel
+      std::vector<char>* m_passSel;
+      // passOR
+      std::vector<char>* m_passOR;
+
     };
 }
 #endif // xAODAnaHelpers_MuonContainer_H
