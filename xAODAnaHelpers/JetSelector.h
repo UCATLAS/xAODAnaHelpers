@@ -168,7 +168,7 @@ public:
 
     @endrst
   */
-  std::string m_WorkingPointJVT = "Tight";
+  std::string m_WorkingPointJVT = "FixedEffPt";
 
   /**
      @brief Configuration containting JVT scale factors.
@@ -214,8 +214,7 @@ public:
   */
 
   // Set the correct SF file and format
-  std::string m_SFFilefJVT = "JetJvtEfficiency/May2020/fJvtSFFile.EMPFlow.root";
-  bool m_UseMuSFFormatfJVT = true; // To account for new SF binning
+  std::string m_SFFilefJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
 
   std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
 
@@ -300,7 +299,7 @@ private:
   std::vector<std::string>            m_diJetTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diJetTrigChains */
   
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::IJetJvtEfficiency/JVT"}; //!
-  // asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency/fJVT"}; //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency/fJVT"}; //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
   asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle; //!
