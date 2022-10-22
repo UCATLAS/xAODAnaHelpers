@@ -1011,7 +1011,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       if ( m_doLHPIDcut ) {
 
         bool passSelID(false);
-        static SG::AuxElement::ConstAccessor< char > LHDecision( "DFCommonElectronsLH" + m_LHOperatingPoint );
+        SG::AuxElement::ConstAccessor< char > LHDecision( "DFCommonElectronsLH" + m_LHOperatingPoint );
         if( LHDecision.isAvailable( *electron ) ){
 	  if (m_doModifiedEleId){
 	    if(m_LHOperatingPoint == "Tight"){
