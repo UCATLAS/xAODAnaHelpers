@@ -30,7 +30,7 @@ jobs:
 
   cherry_pick_release_r21:
     runs-on: ubuntu-latest
-    name: Cherry pick into r22/master
+    name: Cherry pick into master
     if: >-
       github.event.pull_request.merged
       && contains(github.event.pull_request.labels.*.name, 'sweep-r21')
