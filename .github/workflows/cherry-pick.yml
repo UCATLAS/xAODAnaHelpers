@@ -28,4 +28,22 @@ jobs:
           reviewers: |
             jbossios
 
-
+  cherry_pick_release_r21:
+    runs-on: ubuntu-latest
+    name: Cherry pick into master
+    if: >-
+      github.event.pull_request.merged
+      && contains(github.event.pull_request.labels.*.name, 'sweep-r21')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Cherry pick into release-v1.0
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
+        with:
+          branch: master
+          labels: |
+            cherry-pick
+          reviewers: |
+            kratsg
