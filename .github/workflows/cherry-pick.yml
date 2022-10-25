@@ -29,6 +29,7 @@ jobs:
             cherry-pick
           reviewers: |
             jbossios
+          author: xAH-bot <xAH-bot@users.noreply.github.com>
 
   cherry_pick_release_r21:
     runs-on: ubuntu-latest
@@ -49,3 +50,4 @@ jobs:
             cherry-pick
           reviewers: |
             kratsg
+          author: xAH-bot <xAH-bot@users.noreply.github.com>
