@@ -1,9 +1,10 @@
+# See https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ for security considerations
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - master
       - r22/master
-    types: ["closed"]
+    types: ["closed", "labeled"]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
