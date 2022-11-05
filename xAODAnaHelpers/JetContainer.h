@@ -46,7 +46,7 @@ namespace xAH {
 
 
       //displaced
-
+      std::vector<float>   *m_bdt_score;
       std::vector<float>   *m_ipsig;
       std::vector<float>   *m_ptrel;
       std::vector<float>   *m_ptrel_highest;
