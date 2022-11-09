@@ -51,7 +51,7 @@ namespace xAH {
       std::vector<int>               *m_isTrigMatched;
       std::vector<std::vector<int> > *m_isTrigMatchedToChain;
       std::vector<std::string>       *m_listTrigChains;
-      
+
       // clean
       std::vector<float> *m_Timing;
       std::vector<float> *m_LArQuality;
@@ -144,6 +144,7 @@ namespace xAH {
       std::vector< std::vector<float> > *m_JvtEff_SF_Tight;
       std::vector<float> *m_JvtJvfcorr;
       std::vector<float> *m_JvtRpt;
+      std::vector<float> *m_fJvt;
       std::vector<int> *m_fJvtPass_Loose;
       std::vector< std::vector<float> > *m_fJvtEff_SF_Loose;
       std::vector<int> *m_fJvtPass_Medium;
@@ -159,7 +160,7 @@ namespace xAH {
       std::vector<int> *m_JvtPass_TightFwd;
       std::vector< std::vector<float> > *m_JvtEff_SF_TightFwd;
 
-      // chargedPFOPV 
+      // chargedPFOPV
       std::vector<float> *m_SumPtChargedPFOPt500PV;
       std::vector<float> *m_fCharged;
 
@@ -216,7 +217,7 @@ namespace xAH {
       std::vector<float> *m_GN1_pu;
       std::vector<float> *m_GN1_pc;
       std::vector<float> *m_GN1_pb;
- 
+
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
       std::vector<float>  *m_JetFitter_nSingleTracks  ;
@@ -340,7 +341,7 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_77;
 	  else if(m_accessorName=="DL1r_FixedCutBEff_85")
 	    m_op=Jet::BTaggerOP::DL1r_FixedCutBEff_85;
-	  
+
           else if(m_accessorName=="DL1dv00_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_60;
 	  else if(m_accessorName=="DL1dv00_FixedCutBEff_70")
@@ -349,7 +350,7 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_77;
 	  else if(m_accessorName=="DL1dv00_FixedCutBEff_85")
 	    m_op=Jet::BTaggerOP::DL1dv00_FixedCutBEff_85;
-          
+
           else if(m_accessorName=="DL1dv01_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::DL1dv01_FixedCutBEff_60;
 	  else if(m_accessorName=="DL1dv01_FixedCutBEff_70")
@@ -358,7 +359,7 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::DL1dv01_FixedCutBEff_77;
 	  else if(m_accessorName=="DL1dv01_FixedCutBEff_85")
 	    m_op=Jet::BTaggerOP::DL1dv01_FixedCutBEff_85;
-          
+
           else if(m_accessorName=="GN120220509_FixedCutBEff_60")
 	    m_op=Jet::BTaggerOP::GN120220509_FixedCutBEff_60;
 	  else if(m_accessorName=="GN120220509_FixedCutBEff_70")
