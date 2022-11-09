@@ -252,10 +252,10 @@ EL::StatusCode JetSelector :: initialize ()
 
     CP::SystematicSet affectSystsfJVT = m_fJVT_eff_tool_handle->affectingSystematics();
     for ( const auto& syst_it : affectSystsfJVT ) { ANA_MSG_DEBUG("JetJvtEfficiency tool can be affected by fJVT efficiency systematic: " << syst_it.name()); }
-    
+
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
-    
+
     const CP::SystematicSet recSystsfJVT = m_fJVT_eff_tool_handle->recommendedSystematics();
     m_systListfJVT = HelperFunctions::getListofSystematics( recSystsfJVT, m_systNamefJVT, m_systValfJVT, msg() );
 
@@ -616,7 +616,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
         // if made it to the end with no duplicates, then we're done
         if(i_etaPair==int(etaPairs.size())-1)
-          allChecked = true; 
+          allChecked = true;
       }
     }
 
@@ -648,7 +648,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       }
       i_jet++;
     }
-      
+
     // if only looking at a subset of jets make sure all are decorated
     if ( m_nToProcess > 0 && nObj >= m_nToProcess ) {
       if ( m_decorateSelectedObjects ) {
