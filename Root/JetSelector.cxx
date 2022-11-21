@@ -270,35 +270,37 @@ EL::StatusCode JetSelector :: initialize ()
   }
 
   // initialize the CP::JetJvtEfficiency Tool for JVT
-  ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
-  ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
-  ANA_CHECK( m_JVT_tool_handle.setProperty("TaggingAlg", CP::JvtTagger::NNJvt ));
-  ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));
-  ANA_CHECK( m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()));
-  ANA_CHECK( m_JVT_tool_handle.retrieve());
-  ANA_MSG_DEBUG("Retrieved tool: " << m_JVT_tool_handle);
+  if (m_doJVT) {
+    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
+    ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
+    ANA_CHECK( m_JVT_tool_handle.setProperty("TaggingAlg", m_JvtTaggingAlg ));
+    ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));
+    ANA_CHECK( m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()));
+    ANA_CHECK( m_JVT_tool_handle.retrieve());
+    ANA_MSG_DEBUG("Retrieved tool: " << m_JVT_tool_handle);
 
-  //  Add the chosen WP to the string labelling the vector<SF> decoration
-  m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
-  //  Create a passed label for JVT cut
-  m_outputJVTPassed = m_outputJVTPassed + "_" + m_WorkingPointJVT;
+    //  Add the chosen WP to the string labelling the vector<SF> decoration
+    m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
+    //  Create a passed label for JVT cut
+    m_outputJVTPassed = m_outputJVTPassed + "_" + m_WorkingPointJVT;
 
-  CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();
-  for ( const auto& syst_it : affectSystsJVT ) { ANA_MSG_DEBUG("JetJvtEfficiency tool can be affected by JVT efficiency systematic: " << syst_it.name()); }
+    CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();
+    for ( const auto& syst_it : affectSystsJVT ) { ANA_MSG_DEBUG("JetJvtEfficiency tool can be affected by JVT efficiency systematic: " << syst_it.name()); }
 
-  // Make a list of systematics to be used, based on configuration input
-  // Use HelperFunctions::getListofSystematics() for this!
+    // Make a list of systematics to be used, based on configuration input
+    // Use HelperFunctions::getListofSystematics() for this!
 
-  const CP::SystematicSet recSystsJVT = m_JVT_tool_handle->recommendedSystematics();
-  m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, msg() );
+    const CP::SystematicSet recSystsJVT = m_JVT_tool_handle->recommendedSystematics();
+    m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, msg() );
 
-  ANA_MSG_INFO("Will be using JetJvtEfficiency tool JVT efficiency systematic:");
-  for ( const auto& syst_it : m_systListJVT ) {
-    if ( m_systNameJVT.empty() ) {
-      ANA_MSG_INFO("\t Running w/ nominal configuration only!");
-      break;
+    ANA_MSG_INFO("Will be using JetJvtEfficiency tool JVT efficiency systematic:");
+    for ( const auto& syst_it : m_systListJVT ) {
+      if ( m_systNameJVT.empty() ) {
+        ANA_MSG_INFO("\t Running w/ nominal configuration only!");
+        break;
+      }
+      ANA_MSG_INFO("\t " << syst_it.name());
     }
-    ANA_MSG_INFO("\t " << syst_it.name());
   }
 
   // Write output sys names
@@ -442,7 +444,7 @@ EL::StatusCode JetSelector :: execute ()
   const xAOD::JetContainer* inJets(nullptr);
 
   const xAOD::JetContainer *truthJets = nullptr;
-  if ( isMC() && (m_doJVT || m_doMCCleaning ) && m_haveTruthJets) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
+  if ( isMC() && (m_doJVT || m_dofJVT || m_doMCCleaning ) && m_haveTruthJets) ANA_CHECK( HelperFunctions::retrieve(truthJets, m_truthJetContainer, m_event, m_store, msg()) );
 
   // if input comes from xAOD, or just running one collection,
   // then get the one collection and be done with it
@@ -503,7 +505,7 @@ EL::StatusCode JetSelector :: execute ()
       }
 
       // decorate inJets with truth info
-      if ( isMC() && m_doJVT && m_haveTruthJets ) {
+      if ( isMC() && (m_doJVT || m_dofJVT) && m_haveTruthJets ) {
         static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
         static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
         for(const auto& jet : *inJets) {
@@ -634,7 +636,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   }
 
   // recalculate the NNJvt scores and decisions
-  ANA_CHECK(m_JVT_tool_handle->recalculateScores(*inJets));
+  if (m_doJVT && m_recalculateJvtScores) {
+    ANA_CHECK(m_JVT_tool_handle->recalculateScores(*inJets));
+  }
 
   i_jet = 0;
   for ( auto jet_itr : *inJets ) { // duplicated of basic loop
