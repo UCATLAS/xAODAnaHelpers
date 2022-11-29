@@ -127,6 +127,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
   //
   if ( !m_WorkingPointPID.empty() ) {
 
+    // Loose working point saved as DFCommonElectronsLHLooseBL in derivations
+    // but SFs provided for LooseBLayer instead (naming mismatch)
+    if (m_WorkingPointPID == "LooseBL") m_WorkingPointPID = "LooseBLayer"; // protection
+
     ANA_MSG_INFO("Electron ID working point: " << m_WorkingPointPID);
 
     m_pidEffSF_tool_name = "ElectronEfficiencyCorrectionTool_effSF_PID_" + m_WorkingPointPID;

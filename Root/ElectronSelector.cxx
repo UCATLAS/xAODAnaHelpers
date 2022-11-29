@@ -268,7 +268,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if( m_doLHPID ){
     // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
-    std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose";
+    std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "LooseBL";
     m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, msgLvl(MSG::DEBUG) );
 
 
@@ -280,12 +280,6 @@ EL::StatusCode ElectronSelector :: initialize ()
     }
 
     if ( m_readIDFlagsFromDerivation ) {
-      // LooseBL is not in Derivations, so choose Loose and do BLayer cut locally
-      if( m_LHOperatingPoint == "LooseBL" ){
-        m_LHOperatingPoint = "Loose";
-        m_doBLTrackQualityCut = true;
-      }
-
       ANA_MSG_INFO( "Reading Electron LH ID from DAODs ..." );
       ANA_CHECK( m_el_LH_PIDManager->setupWPs( false ));
     } else {
@@ -991,7 +985,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
     if ( m_readIDFlagsFromDerivation ) {
 
-      const static SG::AuxElement::ConstAccessor<char> acc_EG_Loose("DFCommonElectronsLHLoose");
+      const static SG::AuxElement::ConstAccessor<char> acc_EG_Loose("DFCommonElectronsLHLooseBL");
       const static SG::AuxElement::ConstAccessor<char> acc_EG_Medium("DFCommonElectronsLHMedium");
       const static SG::AuxElement::ConstAccessor<char> acc_EG_Tight("DFCommonElectronsLHTight");
 
@@ -1005,7 +999,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 	      passSelID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
 	    } else if(m_LHOperatingPoint == "Medium"){
 	      passSelID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
-	    } else if (m_LHOperatingPoint == "Loose") {
+	    } else if (m_LHOperatingPoint == "LooseBL") {
 	      passSelID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
 	    } else { passSelID = LHDecision( *electron ); }
 	  }
@@ -1031,7 +1025,7 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 	      passThisID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
 	    } else if(decorWP == "LHMedium"){
 	      passThisID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
-	    } else if (decorWP == "LHLoose") {
+	    } else if (decorWP == "LHLooseBL" || decorWP == "LHLoose") {
 	      passThisID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
 	    } else { passThisID = LHDecisionAll( *electron ); }
 	  }
