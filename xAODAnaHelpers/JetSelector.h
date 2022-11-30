@@ -225,7 +225,7 @@ public:
   bool m_fjvtUsedBefore=false;
 
   /// @brief Timing cut
-  bool          n_doJetTimingCut = false;
+  bool          m_doJetTimingCut = false;
   float         m_jetTiming_max = -1;
 
   /// @brief Flag to apply btagging cut, if false just decorate decisions
