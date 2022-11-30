@@ -224,6 +224,10 @@ public:
   /// @brief was fJVT already run in an earlier instance of JetSelector?
   bool m_fjvtUsedBefore=false;
 
+  /// @brief Timing cut
+  bool          n_doJetTimingCut = false;
+  float         m_jetTiming_max = -1;
+
   /// @brief Flag to apply btagging cut, if false just decorate decisions
   bool  m_doBTagCut = false;
   std::string m_corrFileName = "xAODBTaggingEfficiency/cutprofiles_22072015.root";
@@ -291,6 +295,7 @@ private:
   int   m_jet_cutflow_etmin_cut;     //!
   int   m_jet_cutflow_eta_cut;       //!
   int   m_jet_cutflow_jvt_cut;       //!
+  int   m_jet_cutflow_timing_cut;    //!
   int   m_jet_cutflow_btag_cut;      //!
 
   std::vector<CP::SystematicSet> m_systListJVT; //!

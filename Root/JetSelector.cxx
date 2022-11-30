@@ -144,6 +144,7 @@ EL::StatusCode JetSelector :: initialize ()
     m_jet_cutflow_etmin_cut       = m_jet_cutflowHist_1->GetXaxis()->FindBin("etmin_cut");
     m_jet_cutflow_eta_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("eta_cut");
     m_jet_cutflow_jvt_cut         = m_jet_cutflowHist_1->GetXaxis()->FindBin("JVT_cut");
+    m_jet_cutflow_timing_cut      = m_jet_cutflowHist_1->GetXaxis()->FindBin("timing_cut");
     m_jet_cutflow_btag_cut        = m_jet_cutflowHist_1->GetXaxis()->FindBin("BTag_cut");
     m_jet_cutflow_cleaning_cut    = m_jet_cutflowHist_1->GetXaxis()->FindBin("cleaning_cut");
 
@@ -1282,6 +1283,21 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
     if ( !m_noJVTVeto && !result ) return 0;
   }
   if ( m_useCutFlow ) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
+
+  //
+  //  Timing (same for offline and HLT for the time being)
+  //
+  if ( m_doJetTimingCut ) {
+    ANA_MSG_DEBUG("Doing Jet Timing cut");
+    float jet_timing;
+    if (jet->getAttribute("Timing", jet_timing)) {
+      if ( std::fabs(jet_timing) > m_jetTiming_max) { return 0; }
+      if ( m_useCutFlow ) m_jet_cutflowHist_1->Fill( m_jet_cutflow_timing_cut, 1 );
+    } else {
+      ANA_MSG_ERROR("Jet timing decoration doesn't exist for this jet collection!");
+      return 0;
+    }
+  }
 
   //
   //  BTagging
