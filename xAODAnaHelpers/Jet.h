@@ -32,6 +32,7 @@ namespace xAH {
       float alpha_max;	
       float maxd0Value;	
       float mind0Value;
+      float mediand0Value;
 
 
 

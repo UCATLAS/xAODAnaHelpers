@@ -24,6 +24,7 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_alpha_max          =  new std::vector<float>();
     m_maxd0Value         =  new std::vector<float>();
     m_mind0Value         =  new std::vector<float>();
+    m_mediand0Value      =  new std::vector<float>();
 
 
   }
@@ -489,6 +490,7 @@ JetContainer::~JetContainer()
     delete  m_alpha_max;        
     delete  m_mind0Value;
     delete  m_maxd0Value;
+    delete  m_mediand0Value;
 
   }
 
@@ -931,6 +933,7 @@ void JetContainer::setTree(TTree *tree)
     connectBranch<float>  (tree,"dchf",              &m_dchf);    
     connectBranch<float>  (tree,"maxd0Value",        &m_maxd0Value);
     connectBranch<float>  (tree,"mind0Value",        &m_mind0Value);
+    connectBranch<float>  (tree,"mediand0Value",     &m_mediand0Value);
 
   }
 
@@ -1227,6 +1230,7 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.alpha_max                 =m_alpha_max           ->at(idx);
       jet.mind0Value                =m_mind0Value          ->at(idx);
       jet.maxd0Value                =m_maxd0Value          ->at(idx);
+      jet.mediand0Value             =m_mediand0Value       ->at(idx);
 
 
 
@@ -1631,6 +1635,7 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"alpha_max",                   m_alpha_max       );    
     setBranch<float>(tree,"maxd0Value",                  m_maxd0Value      );    
     setBranch<float>(tree,"mind0Value",                  m_mind0Value      );    
+    setBranch<float>(tree,"mediand0Value",               m_mediand0Value    );    
 
   }
 
@@ -2072,6 +2077,7 @@ void JetContainer::clear()
     m_ptrel_highest->clear();
     m_maxd0Value->clear();
     m_mind0Value->clear();
+    m_mediand0Value->clear();
 
   }
   
@@ -2550,6 +2556,12 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_mind0Value->push_back( -999 );
     }
 
+
+    if( jet->isAvailable< float >( "mediand0Value" ) ) {
+      m_mediand0Value->push_back( jet->auxdata< float >("mediand0Value") );
+    } else {
+      m_mediand0Value->push_back( -999 );
+    }
 
 
   }

@@ -104,6 +104,7 @@ class JetHists : public IParticleHists
     TH1F* m_ptrel_highest;          //!
     TH1F* m_maxd0Value;          //!
     TH1F* m_mind0Value;          //!
+    TH1F* m_mediand0Value;          //!
 
     //energy
     TH1F* m_HECf;                   //!
