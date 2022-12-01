@@ -67,8 +67,9 @@ StatusCode JetHists::initialize() {
     m_alpha_max     = book(m_name, "alpha_max",     m_titlePrefix+"#alpha_{max}" , 100, 0, 1);
     m_ptrel         = book(m_name, "ptrel",         m_titlePrefix+"Relative momentum" ,    90, 0, 10);
     m_ptrel_highest = book(m_name, "ptrel_highest", m_titlePrefix+"Relative momentum of highest pT" ,    90, 0, 5);
-    m_maxd0Value = book(m_name, "maxd0Value", m_titlePrefix+"Maxmium d0" ,    300, 0, 300);
-    m_mind0Value = book(m_name, "mind0Value", m_titlePrefix+"Minimum d0" ,    300, 0, 300);
+    m_maxd0Value    = book(m_name, "maxd0Value", m_titlePrefix+"Maxmium d0" ,    300, 0, 300);
+    m_mind0Value    = book(m_name, "mind0Value", m_titlePrefix+"Minimum d0" ,    300, 0, 300);
+    m_mediand0Value = book(m_name, "mediand0Value", m_titlePrefix+"log of Median d0" ,    -5, 3, 800);
 
   }
 
@@ -681,6 +682,12 @@ StatusCode JetHists::execute( const xAOD::IParticle* particle, float eventWeight
     static SG::AuxElement::ConstAccessor<float> mind0Value ("mind0Value");
     if(mind0Value.isAvailable( *jet ) ) {
       m_mind0Value ->  Fill( mind0Value( *jet ), eventWeight );
+    }
+
+
+    static SG::AuxElement::ConstAccessor<float> mediand0Value ("mediand0Value");
+    if(mediand0Value.isAvailable( *jet ) ) {
+      m_mediand0Value ->  Fill( mediand0Value( *jet ), eventWeight );
     }
 
 
@@ -1690,8 +1697,9 @@ StatusCode JetHists::execute( const xAH::Particle* particle, float eventWeight, 
       m_ipsig                 ->Fill(jet->ipsig,             eventWeight);
       m_ptrel                 ->Fill(jet->ptrel,             eventWeight);
       m_ptrel_highest         ->Fill(jet->ptrel_highest,     eventWeight);
-      m_maxd0Value         ->Fill(jet->maxd0Value,     eventWeight);
-      m_mind0Value         ->Fill(jet->mind0Value,     eventWeight);
+      m_maxd0Value            ->Fill(jet->maxd0Value,     eventWeight);
+      m_mind0Value            ->Fill(jet->mind0Value,     eventWeight);
+      m_mediand0Value         ->Fill(jet->mediand0Value,     eventWeight);
 
 
 
