@@ -69,7 +69,7 @@ StatusCode JetHists::initialize() {
     m_ptrel_highest = book(m_name, "ptrel_highest", m_titlePrefix+"Relative momentum of highest pT" ,    90, 0, 5);
     m_maxd0Value    = book(m_name, "maxd0Value", m_titlePrefix+"Maxmium d0" ,    300, 0, 300);
     m_mind0Value    = book(m_name, "mind0Value", m_titlePrefix+"Minimum d0" ,    300, 0, 300);
-    m_mediand0Value = book(m_name, "mediand0Value", m_titlePrefix+"log of Median d0" ,    -5, 3, 800);
+    m_mediand0Value = book(m_name, "mediand0Value", m_titlePrefix+"log of Median d0" ,    800, -5, 3);
 
   }
 
