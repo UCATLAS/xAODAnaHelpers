@@ -1304,9 +1304,6 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   }
   if ( m_useCutFlow ) m_jet_cutflowHist_1->Fill( m_jet_cutflow_jvt_cut, 1 );
 
-  //
-  //  Timing (same for offline and HLT for the time being)
-  //
   if ( m_doJetTimingCut ) {
     ANA_MSG_DEBUG("Doing Jet Timing cut");
     float jet_timing;
