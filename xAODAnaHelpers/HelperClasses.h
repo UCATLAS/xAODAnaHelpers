@@ -372,7 +372,6 @@ namespace HelperClasses {
     std::vector< std::string > m_trigWPs;
     bool m_passSel;
     bool m_passOR;
-    bool m_doLRT;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:
@@ -530,6 +529,7 @@ namespace HelperClasses {
     bool m_layer;
     bool m_trackPV;
     bool m_trackAll;
+    bool m_fJvt;
     bool m_chargedPFOPV;
     bool m_jvt;
     bool m_NNJvt;
