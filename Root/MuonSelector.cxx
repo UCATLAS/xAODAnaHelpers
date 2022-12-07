@@ -771,6 +771,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   static SG::AuxElement::Decorator< char > isLooseQDecor("isLooseQ");
   static SG::AuxElement::Decorator< char > isMediumQDecor("isMediumQ");
   static SG::AuxElement::Decorator< char > isTightQDecor("isTightQ");
+  static SG::AuxElement::Decorator< char > passIDcuts("passIDcuts");
+  static SG::AuxElement::Accessor< char > isLRTmuon("isLRT");
 
   ANA_MSG_DEBUG( "Got the decors" );
   int this_quality = static_cast<int>( m_muonSelectionTool_handle->getQuality( *muon ) );
@@ -780,9 +782,16 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   isLooseQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
   isMediumQDecor( *muon )    = ( this_quality <= static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
   isTightQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
+  passIDcuts( *muon ) = m_muonSelectionTool_handle->passedIDCuts( *muon ) ? 1 : 0;
+
   ANA_MSG_DEBUG( "Doing muon quality" );
   // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
-  if ( ! m_muonSelectionTool_handle->accept( *muon ) ) {
+  // if muon is LRT do not check ID cuts
+  bool LRTdecorIsAvailable = isLRTmuon.isAvailable(*muon);
+  bool muonIsLRT = isLRTmuon(*muon) > 0.5;
+  bool AcceptPromptMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
+
+  if ( (!LRTdecorIsAvailable && !AcceptPromptMuon) || (LRTdecorIsAvailable && !(muonIsLRT || AcceptPromptMuon)) ){
     ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
     return 0;
   }
