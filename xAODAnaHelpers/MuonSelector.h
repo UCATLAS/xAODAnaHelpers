@@ -112,6 +112,9 @@ public:
   /// @brief Input prefix of trigger decision tool
   std::string    m_trigInputPrefix = "";
 
+  /** add LRT muon information */
+  bool       	 m_doLRT = false;
+
 private:
 
   int            m_muonQuality; //!

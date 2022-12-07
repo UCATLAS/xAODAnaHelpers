@@ -130,8 +130,10 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
     m_PromptLeptonVeto                  = new std::vector<float> ();
   }
 
-  m_isLRT = new std::vector<char>();
-  m_passIDcuts = new std::vector<char>();
+  if ( m_infoSwitch.m_doLRT ){
+    m_isLRT = new std::vector<char>();
+    m_passIDcuts = new std::vector<char>();
+  }
 
   if ( m_infoSwitch.m_passSel ) {
     m_passSel = new std::vector<char>();
@@ -264,8 +266,10 @@ MuonContainer::~MuonContainer()
     delete m_PromptLeptonVeto                  ;
   }
 
-  delete m_isLRT;
-  delete m_passIDcuts;
+  if ( m_infoSwitch.m_doLRT ){
+    delete m_isLRT;
+    delete m_passIDcuts;
+  }
 
   if ( m_infoSwitch.m_passSel ) {
     delete m_passSel;
@@ -396,8 +400,10 @@ void MuonContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "PromptLeptonVeto",                 &m_PromptLeptonVeto);
   }
 
-  connectBranch<char>(tree,"isLRT",&m_isLRT);
-  connectBranch<char>(tree,"passIDcuts",&m_passIDcuts);
+  if ( m_infoSwitch.m_doLRT ){
+    connectBranch<char>(tree,"isLRT",&m_isLRT);
+    connectBranch<char>(tree,"passIDcuts",&m_passIDcuts);
+  }
   if(m_infoSwitch.m_passSel) connectBranch<char>(tree,"passSel",&m_passSel);
   if(m_infoSwitch.m_passOR) connectBranch<char>(tree,"passOR",&m_passOR);
 
@@ -520,8 +526,10 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.PromptLeptonVeto                  = m_PromptLeptonVeto                  ->at(idx);
   }
 
-  muon.isLRT = m_isLRT->at(idx);
-  muon.passIDcuts = m_passIDcuts->at(idx);
+  if ( m_infoSwitch.m_doLRT ){
+    muon.isLRT = m_isLRT->at(idx);
+    muon.passIDcuts = m_passIDcuts->at(idx);
+  }
 
   // passSel
   if(m_infoSwitch.m_passSel) muon.passSel = m_passSel->at(idx);
@@ -646,8 +654,10 @@ void MuonContainer::setBranches(TTree *tree)
     setBranch<float>(tree, "PromptLeptonVeto",                  m_PromptLeptonVeto);
   }
 
-  setBranch<char>(tree,"isLRT",m_isLRT);
-  setBranch<char>(tree,"passIDcuts",m_passIDcuts);
+  if ( m_infoSwitch.m_doLRT ){
+    setBranch<char>(tree,"isLRT",m_isLRT);
+    setBranch<char>(tree,"passIDcuts",m_passIDcuts);
+  }
 
   if ( m_infoSwitch.m_passSel ) {
     setBranch<char>(tree,"passSel",m_passSel);
@@ -769,8 +779,10 @@ void MuonContainer::clear()
 
   }
 
-  m_isLRT->clear();
-  m_passIDcuts->clear();
+  if ( m_infoSwitch.m_doLRT ){
+    m_isLRT->clear();
+    m_passIDcuts->clear();
+  }
 
   if(m_infoSwitch.m_passSel){
     m_passSel->clear();
@@ -1026,12 +1038,14 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
 
   }
 
-  static SG::AuxElement::Accessor<char> accMuon_isLRT( "isLRT" );
-  safeFill<char, char, xAOD::Muon>(muon, accMuon_isLRT, m_isLRT, -1);
+  if ( m_infoSwitch.m_doLRT ){
+    static SG::AuxElement::Accessor<char> accMuon_isLRT( "isLRT" );
+    safeFill<char, char, xAOD::Muon>(muon, accMuon_isLRT, m_isLRT, -1);
 
-  static SG::AuxElement::Accessor<char> accMuon_passIDcuts( "passIDcuts" );
-  safeFill<char, char, xAOD::Muon>(muon, accMuon_passIDcuts, m_passIDcuts, -1);
-  
+    static SG::AuxElement::Accessor<char> accMuon_passIDcuts( "passIDcuts" );
+    safeFill<char, char, xAOD::Muon>(muon, accMuon_passIDcuts, m_passIDcuts, -1);
+  }
+
   if ( m_infoSwitch.m_passSel ) {
     static SG::AuxElement::Accessor<char> accMuon_passSel( "passSel" );
     safeFill<char, char, xAOD::Muon>(muon, accMuon_passSel, m_passSel, -99);

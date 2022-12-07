@@ -300,6 +300,8 @@ namespace HelperClasses {
     bool m_passSel;
     bool m_passOR;
 
+    bool m_doLRT;
+
     bool m_recoEff_sysNames;
     bool m_isoEff_sysNames;
     bool m_trigEff_sysNames;
@@ -370,6 +372,7 @@ namespace HelperClasses {
     std::vector< std::string > m_trigWPs;
     bool m_passSel;
     bool m_passOR;
+    bool m_doLRT;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:
@@ -496,7 +499,7 @@ namespace HelperClasses {
                 m_configStr = "... sfJVTMedium ..."
 
             ``jetBTag`` expects the format ``jetBTag_tagger_type_AABB..MM..YY.ZZ``. This will create a vector of working points (AA, BB, CC, ..., ZZ) associated with that tagger. Several entries can be given. For example::
-
+           
 	        m_configStr = "... jetBTag_DL1r_FixedCutBEff_60707785 ..."
 
 	    ``trackJetName`` expects one or more track jet container names separated by an underscore. For example, the string ``trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet`` will set the attriubte ``m_trackJetNames``
@@ -529,7 +532,6 @@ namespace HelperClasses {
     bool m_trackAll;
     bool m_chargedPFOPV;
     bool m_jvt;
-    bool m_fJvt;
     bool m_NNJvt;
     bool m_allTrack;
     bool m_allTrackDetail;
