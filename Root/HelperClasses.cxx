@@ -201,6 +201,8 @@ namespace HelperClasses{
     m_trigEff_sysNames = has_exact("trigEff_sysNames");
     m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames");
 
+    m_doLRT = has_exact("doLRTmuons");
+
   }
 
   void ElectronInfoSwitch::initialize(){
@@ -285,11 +287,11 @@ namespace HelperClasses{
     m_truth         = has_exact("truth");
     m_truthDetails  = has_exact("truth_details");
     m_layer         = has_exact("layer");
+    m_fJvt          = has_exact("fJvt");
     m_trackPV       = has_exact("trackPV");
     m_trackAll      = has_exact("trackAll");
     m_chargedPFOPV  = has_exact("chargedPFOPV");
     m_jvt           = has_exact("JVT");
-    m_fJvt          = has_exact("fJvt");
     m_NNJvt         = has_exact("NNJvt");
     m_allTrack      = has_exact("allTrack");
     m_allTrackPVSel = has_exact("allTrackPVSel");
