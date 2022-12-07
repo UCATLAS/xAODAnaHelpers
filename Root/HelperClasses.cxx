@@ -287,7 +287,7 @@ namespace HelperClasses{
     m_truth         = has_exact("truth");
     m_truthDetails  = has_exact("truth_details");
     m_layer         = has_exact("layer");
-    m_fJVT          = has_exact("fJVT");
+    m_fJvt          = has_exact("fJvt");
     m_trackPV       = has_exact("trackPV");
     m_trackAll      = has_exact("trackAll");
     m_chargedPFOPV  = has_exact("chargedPFOPV");
