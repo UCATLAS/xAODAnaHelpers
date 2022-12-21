@@ -408,6 +408,8 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   for( const xAOD::Jet* jet_itr : *(inJets)){
 
+    if(abs(jet_itr->eta()) > 2.5) continue;
+
     if(!m_useContinuous){
       // get tagging decision
       ANA_MSG_DEBUG(" Getting tagging decision ");
@@ -471,6 +473,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
           for( const xAOD::Jet* jet_itr : *(inJets))
 	    {
+              if(abs(jet_itr->eta()) > 2.5) continue;
               if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
                 auto FlavLabel = getFlavorLabel(*jet_itr);
                 auto DSID      = eventInfo->mcChannelNumber();
