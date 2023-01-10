@@ -1,8 +1,8 @@
 on:
   pull_request:
     branches:
-      - master
-      - r22/master
+      - main
+      - r21/main
     types: ["closed"]
 
 env:
@@ -11,7 +11,7 @@ env:
 jobs:
   cherry_pick_release_r22:
     runs-on: ubuntu-latest
-    name: Cherry pick into r22/master
+    name: Cherry pick into main
     if: >-
       github.event.pull_request.merged
       && contains(github.event.pull_request.labels.*.name, 'sweep-r22')
@@ -23,7 +23,7 @@ jobs:
       - name: Cherry pick into release-v1.0
         uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
         with:
-          branch: r22/master
+          branch: main
           labels: |
             cherry-pick
           reviewers: |
@@ -31,7 +31,7 @@ jobs:
 
   cherry_pick_release_r21:
     runs-on: ubuntu-latest
-    name: Cherry pick into master
+    name: Cherry pick into r21/main
     if: >-
       github.event.pull_request.merged
       && contains(github.event.pull_request.labels.*.name, 'sweep-r21')
@@ -43,7 +43,7 @@ jobs:
       - name: Cherry pick into release-v1.0
         uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
         with:
-          branch: master
+          branch: r21/main
           labels: |
             cherry-pick
           reviewers: |
