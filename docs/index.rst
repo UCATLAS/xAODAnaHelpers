@@ -6,7 +6,7 @@ xAODAnaHelpers
 .. image:: https://zenodo.org/badge/35496971.svg
    :target: https://zenodo.org/badge/latestdoi/35496971
 
-.. image:: https://travis-ci.org/UCATLAS/xAODAnaHelpers.svg?branch=master
+.. image:: https://travis-ci.org/UCATLAS/xAODAnaHelpers.svg?branch=main
     :target: https://travis-ci.org/UCATLAS/xAODAnaHelpers
 
 .. raw:: html
@@ -30,15 +30,15 @@ Latest Version
 .. Cannot bold just yet: http://stackoverflow.com/questions/33537747/substitution-inside-inline-markup-while-escaping-whitespace
 
 .. note::
-    If you need to add a new release to be supported, please make sure you update the GitHub Actions `ci.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/master/.github/workflows/ci.yml>`_ workflow file first.
+    If you need to add a new release to be supported, please make sure you update the GitHub Actions `ci.yml <https://github.com/UCATLAS/xAODAnaHelpers/blob/main/.github/workflows/ci.yml>`_ workflow file first.
 
 We support the following releases: |all_releases|
 
 Python Code Quality
 -------------------
 
-.. image:: https://landscape.io/github/UCATLAS/xAODAnaHelpers/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/UCATLAS/xAODAnaHelpers/master
+.. image:: https://landscape.io/github/UCATLAS/xAODAnaHelpers/main/landscape.svg?style=flat
+   :target: https://landscape.io/github/UCATLAS/xAODAnaHelpers/main
    :alt: Code Health
 
 Contents
