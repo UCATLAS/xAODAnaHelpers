@@ -220,7 +220,7 @@ if __name__ == "__main__":
           isSLC7 = False
 
       if not isSLC7:
-        raise EnvironmentError('We think you\'re not running on SLC7. Grid jobs cannot be submitted from this machine. See https://xaodanahelpers.readthedocs.io/en/master/FAQs.html#slc6-vs-slc7 for more information.')
+        raise EnvironmentError('We think you\'re not running on SLC7. Grid jobs cannot be submitted from this machine. See https://xaodanahelpers.readthedocs.io/en/latest/FAQs.html#slc6-vs-slc7 for more information.')
 
     # check submission directory
     if args.force_overwrite:

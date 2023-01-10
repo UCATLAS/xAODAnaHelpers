@@ -45,7 +45,7 @@ or you can use:
   git checkout -b XX-YY-ZZ tags/XX-YY-ZZ
   cd ../
 
-which switches you from master to a branch of the given version.
+which switches you from main to a branch of the given version.
 
 
 Compiling
