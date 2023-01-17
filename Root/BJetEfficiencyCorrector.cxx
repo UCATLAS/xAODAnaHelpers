@@ -485,7 +485,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
               if(abs(jet_itr->eta()) > 2.5){
                 if(!dec_sfBTag.isAvailable( *jet_itr ))
 	                dec_sfBTag     ( *jet_itr ) = std::vector<float>({1.});
-	              if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
+                if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
 	                dec_ineffsfBTag( *jet_itr ) = std::vector<float>({1.});
                 continue;
               }
