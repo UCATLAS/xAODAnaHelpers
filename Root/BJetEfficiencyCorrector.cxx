@@ -408,7 +408,16 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   for( const xAOD::Jet* jet_itr : *(inJets)){
 
-    if(abs(jet_itr->eta()) > 2.5) continue;
+    if(abs(jet_itr->eta()) > 2.5){
+      if(!m_useContinuous){
+        dec_isBTag( *jet_itr ) = 0;
+        dec_isBTagOR( *jet_itr ) = 0;
+      }else{
+        dec_Quantile( *jet_itr ) = -1;
+      }
+      if(m_useContinuous || m_alwaysGetTagWeight) dec_Weight( *jet_itr) = 1;
+      continue;
+    }
 
     if(!m_useContinuous){
       // get tagging decision
@@ -473,7 +482,13 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 
           for( const xAOD::Jet* jet_itr : *(inJets))
 	    {
-              if(abs(jet_itr->eta()) > 2.5) continue;
+              if(abs(jet_itr->eta()) > 2.5){
+                if(!dec_sfBTag.isAvailable( *jet_itr ))
+	                dec_sfBTag     ( *jet_itr ) = std::vector<float>({1.});
+                if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
+	                dec_ineffsfBTag( *jet_itr ) = std::vector<float>({1.});
+                continue;
+              }
               if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
                 auto FlavLabel = getFlavorLabel(*jet_itr);
                 auto DSID      = eventInfo->mcChannelNumber();
