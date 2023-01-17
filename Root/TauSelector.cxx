@@ -210,22 +210,22 @@ EL::StatusCode TauSelector :: initialize ()
 
   if (!m_EleRNNWP.empty()) {
     
-    std::map <std::string, int> elebdt_wp_map;
+    std::map <std::string, int> elernn_wp_map;
     
-    elebdt_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
-    elebdt_wp_map["ELEIDRNNLOOSE"] = int(TauAnalysisTools::ELEIDRNNLOOSE);
-    elebdt_wp_map["ELEIDRNNMEDIUM"] = int(TauAnalysisTools::ELEIDRNNMEDIUM);
-    elebdt_wp_map["ELEIDRNNTIGHT"] = int(TauAnalysisTools::ELEIDRNNTIGHT);
+    elernn_wp_map["ELEIDNONE"] = int(TauAnalysisTools::ELEIDNONE);
+    elernn_wp_map["ELEIDRNNLOOSE"] = int(TauAnalysisTools::ELEIDRNNLOOSE);
+    elernn_wp_map["ELEIDRNNMEDIUM"] = int(TauAnalysisTools::ELEIDRNNMEDIUM);
+    elernn_wp_map["ELEIDRNNTIGHT"] = int(TauAnalysisTools::ELEIDRNNTIGHT);
     
-    if (elebdt_wp_map.count(m_EleRNNWP) != 0 ) {
-      ANA_CHECK( m_tauSelTool_handle.setProperty("EleRNNWP", elebdt_wp_map[m_EleRNNWP]));
+    if (elernn_wp_map.count(m_EleRNNWP) != 0 ) {
+      ANA_CHECK( m_tauSelTool_handle.setProperty("EleRNNWP", elernn_wp_map[m_EleRNNWP]));
     } else {
       ANA_MSG_ERROR( "Unknown requested tau EleRNNWP " << m_EleRNNWP);
       return EL::StatusCode::FAILURE; 
     }
   }
 
-  ANA_CHECK( m_tauSelTool_handle.setProperty("EleID", m_EleID));
+  ANA_CHECK( m_tauSelTool_handle.setProperty("EleIDWP", m_EleID));
 
   ANA_CHECK(m_tauSelTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSelTool_handle);
@@ -688,39 +688,39 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   // TauSelectorTool cut
   //
 
-  // JetBDTSigID decoration
+  // JetRNNSigID decoration
   // ----------------------
-  static SG::AuxElement::Decorator< int > isJetBDTSigVeryLoose("isJetBDTSigVeryLoose");
-  static SG::AuxElement::Decorator< int > isJetBDTSigLoose("isJetBDTSigLoose");
-  static SG::AuxElement::Decorator< int > isJetBDTSigMedium("isJetBDTSigMedium");
-  static SG::AuxElement::Decorator< int > isJetBDTSigTight("isJetBDTSigTight");
+  static SG::AuxElement::Decorator< int > isJetRNNSigVeryLoose("isJetRNNSigVeryLoose");
+  static SG::AuxElement::Decorator< int > isJetRNNSigLoose("isJetRNNSigLoose");
+  static SG::AuxElement::Decorator< int > isJetRNNSigMedium("isJetRNNSigMedium");
+  static SG::AuxElement::Decorator< int > isJetRNNSigTight("isJetRNNSigTight");
 
-  static SG::AuxElement::Decorator< float > JetBDTScore("JetBDTScore");
-  static SG::AuxElement::Decorator< float > JetBDTScoreSigTrans("JetBDTScoreSigTrans");
+  static SG::AuxElement::Decorator< float > JetRNNScore("JetRNNScore");
+  static SG::AuxElement::Decorator< float > JetRNNScoreSigTrans("JetRNNScoreSigTrans");
   
+// pelican
+  isJetRNNSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetRNNSigVeryLoose));
+  isJetRNNSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetRNNSigLoose));
+  isJetRNNSigMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetRNNSigMedium));
+  isJetRNNSigTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetRNNSigTight));
 
-  isJetBDTSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigVeryLoose));
-  isJetBDTSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigLoose));
-  isJetBDTSigMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigMedium));
-  isJetBDTSigTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetBDTSigTight));
+  JetRNNScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::RNNJetScore));
+  JetRNNScoreSigTrans( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::RNNJetScoreSigTrans));
 
-  JetBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScore));
-  JetBDTScoreSigTrans( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTJetScoreSigTrans));
-
-  // EleBDT decoration
+  // EleRNN decoration
   // -----------------
-  static SG::AuxElement::Decorator< int > isEleBDTLoose("isEleBDTLoose");
-  static SG::AuxElement::Decorator< int > isEleBDTMedium("isEleBDTMedium");
-  static SG::AuxElement::Decorator< int > isEleBDTTight("isEleBDTTight");
+  static SG::AuxElement::Decorator< int > isEleRNNLoose("isEleRNNLoose");
+  static SG::AuxElement::Decorator< int > isEleRNNMedium("isEleRNNMedium");
+  static SG::AuxElement::Decorator< int > isEleRNNTight("isEleRNNTight");
 
-  static SG::AuxElement::Decorator< float > EleBDTScore("EleBDTScore");
+  static SG::AuxElement::Decorator< float > EleRNNScore("EleRNNScore");
   
 
-  isEleBDTLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTLoose));
-  isEleBDTMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTMedium));
-  isEleBDTTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleBDTTight));
+  isEleRNNLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleRNNLoose));
+  isEleRNNMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleRNNMedium));
+  isEleRNNTight( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::EleRNNTight));
 
-  EleBDTScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::BDTEleScore));
+  EleRNNScore( *tau ) = static_cast<float>(tau->discriminant(xAOD::TauJetParameters::RNNEleScore));
 
 
   // EleID decoration
