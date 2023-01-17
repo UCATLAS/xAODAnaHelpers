@@ -408,7 +408,12 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   //
   for( const xAOD::Jet* jet_itr : *(inJets)){
 
-    if(abs(jet_itr->eta()) > 2.5) continue;
+    if(abs(jet_itr->eta()) > 2.5){
+      dec_isBTag( *jet_itr ) = 0;
+      dec_isBTagOR( *jet_itr ) = 0;
+      dec_Weight( *jet_itr) = 1;
+      continue;
+    }
 
     if(!m_useContinuous){
       // get tagging decision
