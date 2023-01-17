@@ -698,7 +698,6 @@ int TauSelector :: passCuts( const xAOD::TauJet* tau ) {
   static SG::AuxElement::Decorator< float > JetRNNScore("JetRNNScore");
   static SG::AuxElement::Decorator< float > JetRNNScoreSigTrans("JetRNNScoreSigTrans");
   
-// pelican
   isJetRNNSigVeryLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetRNNSigVeryLoose));
   isJetRNNSigLoose( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetRNNSigLoose));
   isJetRNNSigMedium( *tau ) = static_cast<int>(tau->isTau(xAOD::TauJetParameters::JetRNNSigMedium));
