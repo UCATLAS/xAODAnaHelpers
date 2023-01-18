@@ -127,10 +127,12 @@ EL::StatusCode TauCalibrator :: initialize ()
   //
   // ************************************************
 
+  // Options summarised here: https://twiki.cern.ch/twiki/bin/view/AtlasProtected/TauRecommendationsR22
   if (!m_RecommendationTag.empty()) ANA_CHECK(m_tauSmearingTool_handle.setProperty("RecommendationTag",m_RecommendationTag));
-  ANA_CHECK(m_tauSmearingTool_handle.setProperty("ApplyMVATES",m_applyMVATES));
-  ANA_CHECK(m_tauSmearingTool_handle.setProperty("ApplyCombinedTES",m_applyCombinedTES));
-
+  if (!m_generator.empty()) ANA_CHECK(m_tauSmearingTool_handle.setProperty("Generator",m_generator));
+  if (!m_campaign.empty()) ANA_CHECK(m_tauSmearingTool_handle.setProperty("Campaign",m_campaign));
+  ANA_CHECK(m_tauSmearingTool_handle.setProperty("ApplyMVATESQualityCheck",m_applyMVATESQualityCheck));
+  ANA_CHECK(m_tauSmearingTool_handle.setProperty("SkipTruthMatchCheck",m_skipTruthMatchCheck));
   ANA_CHECK(m_tauSmearingTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_tauSmearingTool_handle);
 
