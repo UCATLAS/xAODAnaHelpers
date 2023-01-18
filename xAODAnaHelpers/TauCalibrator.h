@@ -23,8 +23,8 @@ public:
   //  apply a compatibility check between calo TES and MVA TES. For taus that do not pass the test calo based TES is used. Not recommended for 2022-prerec tag.
   bool m_applyMVATESQualityCheck = false;
   // For 2022-prerec, toggle between smearing/uncertainties calculated from PowhegPythia or Sherpa
-  std::string m_generator = "PoPy";
-  std::string m_campaign = "mc20";
+  std::string m_generator = "";
+  std::string m_campaign = "";
   bool m_setAFII = false;
 
   bool m_skipTruthMatchCheck = false;
