@@ -90,7 +90,8 @@ namespace xAH {
     char passSel;
     // passOR
     char passOR;
-
+    // isLRT
+    char isLRT;
   };
 
 }//xAH

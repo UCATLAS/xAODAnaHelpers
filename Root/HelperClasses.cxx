@@ -201,7 +201,7 @@ namespace HelperClasses{
     m_trigEff_sysNames = has_exact("trigEff_sysNames");
     m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames");
 
-    m_doLRT = has_exact("doLRTmuons");
+    m_doLRT = has_exact("doLRT");
 
   }
 
@@ -250,6 +250,8 @@ namespace HelperClasses{
     m_passSel = has_exact("passSel");
     // passOR
     m_passOR = has_exact("passOR");
+    //Add LRT flag
+    m_doLRT = has_exact("doLRT");
   }
 
   void PhotonInfoSwitch::initialize(){
