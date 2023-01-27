@@ -48,19 +48,19 @@ namespace xAH {
       std::map< std::string, std::vector< std::vector< float > > >* m_TauTrigEff_SF;
       
       // might need to delete these
-      std::vector<int>   *m_isJetBDTSigVeryLoose;
-      std::vector<int>   *m_isJetBDTSigLoose;
-      std::vector<int>   *m_isJetBDTSigMedium;
-      std::vector<int>   *m_isJetBDTSigTight;
+      std::vector<int>   *m_isJetRNNSigVeryLoose;
+      std::vector<int>   *m_isJetRNNSigLoose;
+      std::vector<int>   *m_isJetRNNSigMedium;
+      std::vector<int>   *m_isJetRNNSigTight;
     
-      std::vector<float>   *m_JetBDTScore;
-      std::vector<float>   *m_JetBDTScoreSigTrans;
+      std::vector<float>   *m_JetRNNScore;
+      std::vector<float>   *m_JetRNNScoreSigTrans;
 
-      std::vector<int>   *m_isEleBDTLoose;
-      std::vector<int>   *m_isEleBDTMedium;
-      std::vector<int>   *m_isEleBDTTight;
+      std::vector<int>   *m_isEleRNNLoose;
+      std::vector<int>   *m_isEleRNNMedium;
+      std::vector<int>   *m_isEleRNNTight;
 
-      std::vector<float>   *m_EleBDTScore;
+      std::vector<float>   *m_EleRNNScore;
 
       std::vector<int>   *m_passEleOLR;
 

@@ -58,16 +58,16 @@ namespace HelperClasses{
 //  }
 
 
-  /* parser for Tau BDT ID enum */
+  /* parser for Tau RNN ID enum */
   /* Apparently this won't be useful for non-Athena users...  */
 
   template <>
   EnumParser<xAOD::TauJetParameters::IsTauFlag>::EnumParser()
   {
-    std::string TauIDVeryLoose("TauIDVeryLoose"); enumMap.insert(std::make_pair(TauIDVeryLoose , xAOD::TauJetParameters::JetBDTSigVeryLoose));
-    std::string TauIDLoose("TauIDLoose");         enumMap.insert(std::make_pair(TauIDLoose     , xAOD::TauJetParameters::JetBDTSigLoose));
-    std::string TauIDMedium("TauIDMedium");       enumMap.insert(std::make_pair(TauIDMedium    , xAOD::TauJetParameters::JetBDTSigMedium));
-    std::string TauIDTight("TauIDTight");         enumMap.insert(std::make_pair(TauIDTight     , xAOD::TauJetParameters::JetBDTSigTight));
+    std::string TauIDVeryLoose("TauIDVeryLoose"); enumMap.insert(std::make_pair(TauIDVeryLoose , xAOD::TauJetParameters::JetRNNSigVeryLoose));
+    std::string TauIDLoose("TauIDLoose");         enumMap.insert(std::make_pair(TauIDLoose     , xAOD::TauJetParameters::JetRNNSigLoose));
+    std::string TauIDMedium("TauIDMedium");       enumMap.insert(std::make_pair(TauIDMedium    , xAOD::TauJetParameters::JetRNNSigMedium));
+    std::string TauIDTight("TauIDTight");         enumMap.insert(std::make_pair(TauIDTight     , xAOD::TauJetParameters::JetRNNSigTight));
   }
 
   /* parser for muon quality enum */
