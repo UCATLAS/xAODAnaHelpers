@@ -86,17 +86,18 @@ gap region) 3. SaveAllCleanDecisions - Save all four decisions
 (LooseBad, LooseBadUgly, TightBad, TightBadUgly) 4. CleanParent - Apply
 cleaning decision to the jet's parent
 
-JVT Recalculation
-^^^^^^^^^^^^^^^^^
-
-If RedoJVT is set, the JVT is recalculated.
-
 JetSelector
 ~~~~~~~~~~~
 
 Applies cuts on the input jet collection(s). The jets can be decorated
 with the decision of the cuts. A new xAOD::JetCollection can be made
 from the ones passing the cuts.
+
+The JVT selection is OFF by default, it can be turned ON with ```m_doJVT```.
+The default JVT working point is ```FixedEffPt```, it can be changed with ```m_WorkingPointJVT```.
+JVT is no longer recalculated in JetCalibrator, it is now done in JetSelector.
+It can be disabled by setting ```m_recalculateJvtScores``` to ```false```.
+Furthermore, the JVT algorithm is now NNJvt (default for R22).
 
 JetHists and JetHistsAlgo
 ~~~~~~~~~~~~~~~~~~~~~~~~~
