@@ -69,7 +69,7 @@ public:
   std::string m_calibSequence = "";
   /// @brief config for Jet Uncertainty Tool
   std::string m_uncertConfig = "";
-  /// @brief MC type for Jet Uncertainty Tool
+  /// @brief MC type for Jet Uncertainty Tool (need to be set for FullSim)
   std::string m_uncertMCType = "";
   /// @brief Override CalibArea tag (default recommended)
   std::string m_overrideCalibArea = "";
