@@ -68,7 +68,7 @@ Outputs new containers for each systematic variation.
 For JES: Uses JetUncertaintiesTool. JES is different for AFII, so
 m\_setAFII may be required if metadata isn't working. 1. JESUncertConfig
 - Configuration file for JES 2. JESUncertMCType - Type of JES
-Uncertainty to use, MC15 or MC12
+Uncertainty to use, MC20 or MC21
 
 For JER: Uses JERSmearingTool 1. JERUncertConfig - Configuration file
 for JER 2. JERFullSys - Run full list of systematics for data and MC.
