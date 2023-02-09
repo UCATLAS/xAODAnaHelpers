@@ -162,6 +162,14 @@ namespace xAH {
          */
         int m_isFastSim = -1;
 
+        /** Flag to use Run 3 trigger navigation (true), or Run 2 navigation (false)*/
+        bool m_useRun3navigation = false;
+
+        /** String storing the type of HLT navigation info available for Run 3 samples.
+         *  For AODs or unslimmed DAODs: HLTNav_Summary_AODSlimmed
+         */
+        std::string m_HLTSummary = "HLTNav_Summary_DAODSlimmed"; 
+
         /** Flags to force a specific data-type, even if it disagrees with your input */
         bool m_forceFastSim = false;
         bool m_forceFullSim = false;
