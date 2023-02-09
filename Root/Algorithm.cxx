@@ -134,19 +134,6 @@ bool xAH::Algorithm::isPHYS(){
     }
 }
 
-bool xAH::Algorithm::isRun3(){
-  /**
-   * Maybe there is a way to do this on-the-fly
-  */
-
-  if (m_isRun3 == -1) {
-    ANA_MSG_ERROR("isRun3 is can't be determined on-the-fly.  Please configure it.");
-    return 0;
-  } else {
-    return m_isRun3 == 1;
-  }
-}
-
 void xAH::Algorithm::registerInstance(){
     if(m_registered) return;
     m_instanceRegistry[m_className]++;

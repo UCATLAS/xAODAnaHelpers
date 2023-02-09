@@ -522,10 +522,12 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
 
-    if ( isRun3() )
+    if ( m_useRun3navigation )
     {
       ANA_CHECK( m_trigDecTool_handle.setProperty( "NavigationFormat", "TrigComposite") );
-      ANA_CHECK( m_trigDecTool_handle.setProperty( "HLTSummary", "HLTNav_Summary_DAODSlimmed") );
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "HLTSummary", m_HLTSummary) );
+    } else {
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "NavigationFormat", "TriggerElement") );
     }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);

@@ -162,21 +162,13 @@ namespace xAH {
          */
         int m_isFastSim = -1;
 
-        /**
-            @rst
-                This stores the isRun3 decision, and can also be used to override at the algorithm level to force analyzing Run3 or not.
+        /** Flag to use Run 3 trigger navigation (true), or Run 2 navigation (false)*/
+        bool m_useRun3navigation = false;
 
-                ===== ========================================================
-                Value Meaning
-                ===== ========================================================
-                -1    Default, use Metadata object to determine if Run2 or Run 3
-                0     Treat the input as Run2
-                1     Treat the input as Run3
-                ===== ========================================================
-
-            @endrst
+        /** String storing the type of HLT navigation info available for Run 3 samples.
+         *  For AODs or unslimmed DAODs: HLTNav_Summary_AODSlimmed
          */
-        int m_isRun3 = -1;
+        std::string m_HLTSummary = "HLTNav_Summary_DAODSlimmed"; 
 
         /** Flags to force a specific data-type, even if it disagrees with your input */
         bool m_forceFastSim = false;
@@ -239,9 +231,6 @@ namespace xAH {
 
 	/** Determines if using DAOD_PHYS or not. */
 	bool isPHYS();
-
-        /** Determines if using Run 2 or Run 3 samples */
-        bool isRun3();
 
         /**
             @rst
