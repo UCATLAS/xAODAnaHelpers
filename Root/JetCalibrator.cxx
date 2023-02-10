@@ -158,7 +158,7 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
-  if(!isFastSim() && m_uncertMCType.empty()){
+  if(!isFastSim() && m_uncertMCType.empty() && !m_uncertConfig.empty()){
     ANA_MSG_ERROR("MCType not provided, please set m_uncertMCType (MC20 or MC21) when running on FullSim samples.  Exiting.");
     return EL::StatusCode::FAILURE;
   }

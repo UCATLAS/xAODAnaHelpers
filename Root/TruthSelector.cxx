@@ -89,7 +89,7 @@ EL::StatusCode TruthSelector :: initialize ()
 
    // retrieve the file in which the cutflow hists are stored
     //
-    TFile *file     = wk()->getOutputFile ("cutflow");
+    TFile *file     = wk()->getOutputFile (m_cutFlowStreamName);
 
     // retrieve the event cutflows
     //
