@@ -313,6 +313,7 @@ EL::StatusCode MuonSelector :: initialize ()
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
       if (!m_trigInputPrefix.empty()){
         ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+	ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "RemapBrokenLinks", true) );
       }
       ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
