@@ -2459,6 +2459,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
 
     if(m_infoSwitch.m_clean){
 
+
       static SG::AuxElement::ConstAccessor<float> jetTime ("Timing");
       safeFill<float, float, xAOD::Jet>(jet, jetTime, m_Timing, -999);
 
@@ -2522,9 +2523,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::ConstAccessor<int> clean_passLooseBad ("clean_passLooseBad");
       safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBad, m_clean_passLooseBad, -999);
 
-      static SG::AuxElement::ConstAccessor<int> clean_passLooseBadLLP ("clean_passLooseBadLLP");
-      safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadLLP, m_clean_passLooseBadLLP, -999);
-
       static SG::AuxElement::ConstAccessor<int> clean_passTightBad ("clean_passTightBad");
       safeFill<int, int, xAOD::Jet>(jet, clean_passTightBad, m_clean_passTightBad, -999);
     }
@@ -2532,7 +2530,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       static SG::AuxElement::ConstAccessor<int> clean_passLooseBadTrigger ("clean_passLooseBadTrigger");
       safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadTrigger, m_clean_passLooseBadTrigger, -999);
     }
-    if(!m_infoSwitch.m_cleanLLP) {
+    if(m_infoSwitch.m_cleanLLP) {
       static SG::AuxElement::ConstAccessor<int> clean_passLooseBadLLP ("clean_passLooseBadLLP");
       safeFill<int, int, xAOD::Jet>(jet, clean_passLooseBadLLP, m_clean_passLooseBadLLP, -999);
     }
