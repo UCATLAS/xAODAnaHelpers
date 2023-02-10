@@ -369,6 +369,7 @@ EL::StatusCode ElectronSelector :: initialize ()
       ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
       if (!m_trigInputPrefix.empty()){
         ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+	ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "RemapBrokenLinks", true) );
       }
       ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);
