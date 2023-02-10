@@ -102,6 +102,9 @@ namespace xAH {
         /** debug level */
         MSG::Level m_msgLevel = MSG::INFO;
 
+        // output stream name for cutflow
+        std::string m_cutFlowStreamName = "cutflow";
+
         /** If running systematics, the name of the systematic */
         std::string m_systName = "";
         /** If running systematics, the value to set the systematic to

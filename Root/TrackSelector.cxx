@@ -98,7 +98,7 @@ EL::StatusCode TrackSelector :: initialize ()
   // input events.
 
   if(m_useCutFlow) {
-    TFile *file = wk()->getOutputFile ("cutflow");
+    TFile *file = wk()->getOutputFile (m_cutFlowStreamName);
     m_cutflowHist  = (TH1D*)file->Get("cutflow");
     m_cutflowHistW = (TH1D*)file->Get("cutflow_weighted");
     m_cutflow_bin  = m_cutflowHist->GetXaxis()->FindBin(m_name.c_str());
