@@ -127,7 +127,7 @@ bool xAH::Algorithm::isPHYS(){
     TTree* metaData = dynamic_cast<TTree*>( wk()->inputFile()->Get("MetaData") );
     if(metaData){
       metaData->LoadTree(0);
-      return (metaData->GetBranch("StreamDAOD_PHYS") || metaData->GetBranch("StreamDAOD_LLP1"));
+      return (metaData->GetBranch("StreamDAOD_PHYS") || metaData->GetBranch("StreamDAOD_LLP1") || metaData->GetBranch("StreamDAOD_PHYSLITE"));
     } else {
       ANA_MSG_ERROR("MetaData tree missing from input file!");
       return 0;
