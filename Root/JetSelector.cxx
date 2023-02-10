@@ -1279,14 +1279,14 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
 
   // JVT pileup cut
   if ( m_doJVT ) {
-    // NB: origin-correction is applied at constituent level. Eta for Jvt needs to be the DetectorEta explicitly.
-    float jet_eta = jet->getAttribute<float>("DetectorEta");
-    float jet_jvt = jet->getAttribute<float>("Jvt");
-    ANA_MSG_DEBUG("Checking Jvt cut for jet pT=" << jetPt << " MeV, DetectorEta=" << jet_eta <<", and Jvt="<< jet_jvt );
     bool result = false;
 
     // if non-negative, the user wants to apply a custom jvt cut
     if( m_JVTCut > 0 ){
+      // NB: origin-correction is applied at constituent level. Eta for Jvt needs to be the DetectorEta explicitly.
+      float jet_eta = jet->getAttribute<float>("DetectorEta");
+      float jet_jvt = jet->getAttribute<float>("NNJvt");
+      ANA_MSG_DEBUG("Checking Jvt cut for jet pT=" << jetPt << " MeV, DetectorEta=" << jet_eta <<", and Jvt="<< jet_jvt );
       ANA_MSG_DEBUG("Custom JVT working point with pT<" << m_pt_max_JVT << ", |eta|<" << m_eta_max_JVT << ", Jvt<" << m_JVTCut);
       // JVT should only be applied at low pt and central eta. If outside this, result = true.
       if (jetPt < m_pt_max_JVT && std::fabs(jet_eta) < m_eta_max_JVT) {
