@@ -125,6 +125,15 @@ EL::StatusCode JetCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  if ( m_jetAlgo.empty() ) {
+    m_jetAlgo = m_inContainerName;
+    std::string jets = "Jets";
+    std::string::size_type i = m_jetAlgo.find(jets);
+    if (i != std::string::npos) {
+       m_jetAlgo.erase(i, jets.length());
+    }
+  }
+
   if ( m_outputAlgo.empty() ) {
     m_outputAlgo = m_jetAlgo + "_Calib_Algo";
   }
