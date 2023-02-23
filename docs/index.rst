@@ -22,7 +22,8 @@ The xAOD analysis framework, born out of ProofAna...or not.
 
 Welcome to the xAODAnaHelpers wiki! This is an xAOD Analysis Framework built for Run II of ATLAS.
 
-.. _Supported_releases:
+Supported releases
+------------------
 
 xAODAnaHelpers supports 21 and 22 releases. This documentation is for R22, please follow this `link <https://xaodanahelpers.readthedocs.io/en/r21-main/>`_ to see the documentation for R21.
 
