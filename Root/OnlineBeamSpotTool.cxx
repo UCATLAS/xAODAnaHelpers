@@ -14,8 +14,20 @@ OnlineBeamSpotTool::OnlineBeamSpotTool() :
   m_cachedLB(-1),
   m_cachedRunInfo(nullptr),
   m_cachedLBData(nullptr),
-  m_mcLBData(nullptr)
+  m_mcLBData(nullptr),
+  m_files_loaded(false)
 {
+  m_mcLBData = new LBData(0,999999,0,0,0);
+}
+
+OnlineBeamSpotTool::~OnlineBeamSpotTool()
+{
+  //std::cout << "In ~OnlineBeamSpotTool" << std::endl;
+}
+
+void OnlineBeamSpotTool::readFiles(){
+  if(m_files_loaded){return;}
+
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.A.root");
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.B.root");
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.C.root");
@@ -38,16 +50,17 @@ OnlineBeamSpotTool::OnlineBeamSpotTool() :
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.I.root");
   readFile("xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.K.root");
 
-  m_mcLBData = new LBData(0,999999,0,0,0);
-}
-
-OnlineBeamSpotTool::~OnlineBeamSpotTool()
-{
-  //std::cout << "In ~OnlineBeamSpotTool" << std::endl;
+  m_files_loaded = true;
 }
 
 
 void OnlineBeamSpotTool::setRunInfo(int runNumber){
+  //The Online Beamspot Info is actually being used
+  if(!m_files_loaded){
+    //Load the files at this point
+    readFiles();
+  }
+  
   RunToLBDataMapItr it = m_runList.find(runNumber);
 
   if(it != m_runList.end()){

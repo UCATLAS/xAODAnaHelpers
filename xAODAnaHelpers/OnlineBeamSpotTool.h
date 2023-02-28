@@ -55,6 +55,8 @@ namespace xAH {
     const LBData*  getLBData(int lumiBlock);
 
     void setRunInfo(int runNumber);
+
+    void readFiles();
     void readFile(std::string rootFileName);
 
     RunToLBDataMap m_runList;
@@ -65,7 +67,7 @@ namespace xAH {
     LBData*  m_cachedLBData;
     LBData*  m_mcLBData;
 
-
+    bool m_files_loaded;
   };
 
 }//xAH
