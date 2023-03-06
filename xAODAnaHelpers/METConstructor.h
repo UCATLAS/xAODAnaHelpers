@@ -51,10 +51,7 @@ public:
   std::string m_fJVTdecorName = "passFJVT";
 
   /// @brief To turn on p-flow MET calculation set m_doPFlow to true
-  bool    m_doPFlow = false;
-
-  /// @brief Set DoMuonPFlowBugfix property
-  bool    m_doMuonPFlowBugfix = false;
+  bool    m_doPFlow = true;
 
   /// @brief Name of MET Working Point (defines the JetSelection applied in METMaker)
   std::string m_METWorkingPoint = "";
