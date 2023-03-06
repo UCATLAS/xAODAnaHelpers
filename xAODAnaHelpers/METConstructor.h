@@ -28,7 +28,6 @@ class METConstructor : public xAH::Algorithm
 public:
 
   // configuration variables
-  std::string m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
   std::string m_mapName = "METAssoc_AntiKt4LCTopo";
   std::string m_coreName = "MET_Core_AntiKt4LCTopo";
   std::string m_outputContainer = "NewRefFinal";
