@@ -28,7 +28,6 @@ class METConstructor : public xAH::Algorithm
 public:
 
   // configuration variables
-  std::string m_referenceMETContainer = "MET_Reference_AntiKt4LCTopo";
   std::string m_mapName = "METAssoc_AntiKt4LCTopo";
   std::string m_coreName = "MET_Core_AntiKt4LCTopo";
   std::string m_outputContainer = "NewRefFinal";
@@ -52,10 +51,7 @@ public:
   std::string m_fJVTdecorName = "passFJVT";
 
   /// @brief To turn on p-flow MET calculation set m_doPFlow to true
-  bool    m_doPFlow = false;
-
-  /// @brief Set DoMuonPFlowBugfix property
-  bool    m_doMuonPFlowBugfix = false;
+  bool    m_doPFlow = true;
 
   /// @brief Name of MET Working Point (defines the JetSelection applied in METMaker)
   std::string m_METWorkingPoint = "";
