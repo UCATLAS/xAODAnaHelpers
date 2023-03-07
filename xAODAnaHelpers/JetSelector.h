@@ -181,7 +181,7 @@ public:
   */
   std::string m_SFFileJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
   std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
-  /// @brief Tagging algorithm to be used to veto PU jets in central region - default in R22 is NNJvt
+  /// @brief Tagging algorithm to be used to veto PU jets in central region - default in R22 is NNJvt. If another algorithm is needed, use corresponding index for the enum here: https://acode-browser1.usatlas.bnl.gov/lxr/source/athena/PhysicsAnalysis/Interfaces/JetAnalysisInterfaces/JetAnalysisInterfaces/IJetJvtEfficiency.h#0022 (note: this link points to the latest r22 version, i.e. master, if a release is used, please check the corresponding enum for the given release: https://gitlab.cern.ch/atlas/athena/-/tags?search=release%2F22.2&sort=updated_desc)
   int m_JvtTaggingAlg = CP::JvtTagger::NNJvt;
   /// @brief Do re-calculation of NNJvt - scores need to be re-evaluated in case jet pt changed w.r.t. derivation
   bool m_recalculateJvtScores = true;
