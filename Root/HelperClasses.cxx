@@ -27,6 +27,7 @@ namespace HelperClasses{
   {
     std::string VeryLoose("VeryLoose");         enumMap.insert(std::make_pair(VeryLoose  , LikeEnum::VeryLoose));
     std::string Loose("Loose");                 enumMap.insert(std::make_pair(Loose      , LikeEnum::Loose));
+    std::string LooseBL("LooseBL");             enumMap.insert(std::make_pair(LooseBL    , LikeEnum::LooseBL));
     std::string Medium("Medium");               enumMap.insert(std::make_pair(Medium     , LikeEnum::Medium));
     std::string Tight("Tight");                 enumMap.insert(std::make_pair(Tight      , LikeEnum::Tight));
   }
