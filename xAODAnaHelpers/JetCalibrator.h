@@ -57,6 +57,14 @@ public:
   /// @brief Write systematics names to metadata
   bool        m_writeSystToMetadata = false;
 
+
+  /// @brief whether to run HLT jet re-calibration
+  bool        m_recalibrateHLTJets = false;
+  /// @brief vertex container name to use for HLT jet re-calibration
+  std::string m_HLTVertexContainerName = "HLT_IDVertex_FS";
+  /// @brief HLT average mu location on EventInfo after formatting
+  std::string m_HLTAvgMuLocation = "EventInfo.AvgMu";
+
   /// @brief config for JetCalibrationTool ConfigDir, set it to override tool defaults
   std::string m_calibConfigDir = "";
   /// @brief config for JetCalibrationTool for Data
