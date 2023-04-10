@@ -165,6 +165,22 @@ namespace xAH {
          */
         int m_isFastSim = -1;
 
+        /**
+            @rst
+                This stores the isAF3 decision, and can also be used to override at the algorithm level to force analyzing FastSim with AF3 or not.
+
+                ===== ========================================================
+                Value Meaning
+                ===== ========================================================
+                -1    Default, use Metadata object to determine if AF3 FastSim or not
+                0     Treat the input as FullSim or AFII
+                1     Treat the input as FastSim with AF3
+                ===== ========================================================
+
+            @endrst
+         */
+        int m_isAF3 = -1;
+
         /** Flag to use Run 3 trigger navigation (true), or Run 2 navigation (false)*/
         bool m_useRun3navigation = false;
 
@@ -180,6 +196,7 @@ namespace xAH {
 
         /** Backwards compatibility, same as m_forceFastSim */
         bool m_setAFII = false;
+        bool m_setAF3 = false;
 
 
       protected:
@@ -231,6 +248,9 @@ namespace xAH {
             @endrst
          */
         bool isFastSim();
+
+        /** If the name includes ATLFASTII or ATLFAST3 then set to AFII or AF3, if deemed fullSim then FS else leave as empty string and complain */
+        bool isAF3();
 
 	/** Determines if using DAOD_PHYS or not. */
 	bool isPHYS();
