@@ -7,6 +7,8 @@
 #include <xAODAnaHelpers/HelperFunctions.h>
 #include "xAODEventInfo/EventInfo.h"
 
+#include <boost/algorithm/string.hpp>
+
 std::map<std::string, int> xAH::Algorithm::m_instanceRegistry = {};
 
 // this is needed to distribute the algorithm to the workers
@@ -35,14 +37,13 @@ StatusCode xAH::Algorithm::algInitialize(){
 
 
     //Backwards compatibility
-    m_forceFastSim = m_forceFastSim || m_setAFII;
+    m_forceFastSim = m_forceFastSim || m_setAFII || m_setAF3;
 
     //Return a failure if there's contradictory flags (2 or more are true)
     if( m_forceData ? (m_forceFastSim || m_forceFullSim) : (m_forceFastSim && m_forceFullSim) ){
       ANA_MSG_ERROR("Multiple input-type flags are set, be sure only one of m_forceData(" << m_forceData << "), m_forceFastSim(" << m_forceFastSim << "), and m_forceFullSim(" << m_forceFullSim << ") are true.");
       return StatusCode::FAILURE;
     }
-
     return StatusCode::SUCCESS;
 }
 
@@ -114,13 +115,40 @@ bool xAH::Algorithm::isFastSim(){
     ANA_CHECK( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") );
     fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
 
-    if( SimulationFlavour == "AtlfastII" ){
-      m_isFastSim = 1;
-    }else{
-      m_isFastSim = 0;
-    }
+    boost::to_upper(SimulationFlavour);
+    m_isFastSim = SimulationFlavour.find("ATLFAST") != std::string::npos;
 
     return m_isFastSim;
+}
+
+bool xAH::Algorithm::isAF3(){
+
+    // If full sim, return empty string (call function first to make sure Force options are considered)
+    bool isFaS = isFastSim();
+    if (!isFaS){
+      m_isAF3 = false;
+      return m_isAF3;
+    }
+
+    std::string SimulationFlavour;
+    const xAOD::FileMetaData* fmd = nullptr;
+    if( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") != StatusCode::SUCCESS){
+      ANA_MSG_ERROR("Cannot retreve File Metadata to find simulation flavour");
+      return false;
+    }
+    fmd->value(xAOD::FileMetaData::simFlavour, SimulationFlavour);
+
+    boost::to_upper(SimulationFlavour);
+    if(SimulationFlavour.find("ATLFASTII") != std::string::npos){
+      m_isAF3 = false;
+    } else if (SimulationFlavour.find("ATLFAST3") != std::string::npos){
+      m_isAF3 = true;
+    } else {
+      ANA_MSG_ERROR("Unexpected Simulation type: "<< SimulationFlavour);
+      return false; 
+    }
+
+    return m_isAF3;
 }
 
 bool xAH::Algorithm::isPHYS(){

@@ -26,6 +26,7 @@ public:
   std::string m_generator = "";
   std::string m_campaign = "";
   bool m_setAFII = false;
+  bool m_setAF3 = false;
 
   bool m_skipTruthMatchCheck = false;
 

@@ -62,6 +62,12 @@ standard = {
         "default": False,
         "help": "Running on AFII",
     },
+    "isAF3": {
+        "action": "store_true",
+        "dest": "is_AF3",
+        "default": False,
+        "help": "Running on AF3",
+    },
     "extraOptions": {
         "dest": "extra_options",
         "metavar": "[param=val]",
