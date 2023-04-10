@@ -130,6 +130,11 @@ bool xAH::Algorithm::isAF3(){
       return m_isAF3;
     }
 
+    if (m_setAF3){
+      m_setAF3 = true;
+      return m_isAF3;
+    }
+
     std::string SimulationFlavour;
     const xAOD::FileMetaData* fmd = nullptr;
     if( wk()->xaodEvent()->retrieveMetaInput(fmd, "FileMetaData") != StatusCode::SUCCESS){
