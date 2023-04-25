@@ -68,7 +68,7 @@ Outputs new containers for each systematic variation.
 For JES: Uses JetUncertaintiesTool. JES is different for AFII, so
 m\_setAFII may be required if metadata isn't working. 1. JESUncertConfig
 - Configuration file for JES 2. JESUncertMCType - Type of JES
-Uncertainty to use, MC15 or MC12
+Uncertainty to use, MC20 or MC21
 
 For JER: Uses JERSmearingTool 1. JERUncertConfig - Configuration file
 for JER 2. JERFullSys - Run full list of systematics for data and MC.
@@ -86,17 +86,20 @@ gap region) 3. SaveAllCleanDecisions - Save all four decisions
 (LooseBad, LooseBadUgly, TightBad, TightBadUgly) 4. CleanParent - Apply
 cleaning decision to the jet's parent
 
-JVT Recalculation
-^^^^^^^^^^^^^^^^^
-
-If RedoJVT is set, the JVT is recalculated.
-
 JetSelector
 ~~~~~~~~~~~
 
 Applies cuts on the input jet collection(s). The jets can be decorated
 with the decision of the cuts. A new xAOD::JetCollection can be made
 from the ones passing the cuts.
+
+The JVT selection is OFF by default, it can be turned ON with ```m_doJVT```.
+The default algorithm is NNJvt. If another algorithm is needed, use corresponding index for the enum here: https://acode-browser1.usatlas.bnl.gov/lxr/source/athena/PhysicsAnalysis/Interfaces/JetAnalysisInterfaces/JetAnalysisInterfaces/IJetJvtEfficiency.h#0022 (note: this link points to the latest r22 version, i.e. master, if a release is used, please check the corresponding enum for the given release: https://gitlab.cern.ch/atlas/athena/-/tags?search=release%2F22.2&sort=updated_desc)
+The default JVT working point is ```FixedEffPt```, it can be changed with ```m_WorkingPointJVT```.
+JVT is no longer recalculated in JetCalibrator, it is now done in JetSelector.
+It can be disabled by setting ```m_recalculateJvtScores``` to ```false```.
+Furthermore, the JVT algorithm is now NNJvt (default for R22).
+
 
 JetHists and JetHistsAlgo
 ~~~~~~~~~~~~~~~~~~~~~~~~~

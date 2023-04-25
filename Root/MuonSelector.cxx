@@ -133,7 +133,7 @@ EL::StatusCode MuonSelector :: initialize ()
 
     // retrieve the file in which the cutflow hists are stored
     //
-    TFile *file     = wk()->getOutputFile ("cutflow");
+    TFile *file     = wk()->getOutputFile (m_cutFlowStreamName);
 
     // retrieve the event cutflows
     //
@@ -313,6 +313,7 @@ EL::StatusCode MuonSelector :: initialize ()
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
       if (!m_trigInputPrefix.empty()){
         ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+	ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "RemapBrokenLinks", true) );
       }
       ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
@@ -780,11 +781,31 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   isLooseQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Loose) )     ? 1 : 0;
   isMediumQDecor( *muon )    = ( this_quality <= static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
   isTightQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
+
+  bool LRTdecorIsAvailable = false;
+  bool muonIsLRT = false;
+  bool AcceptPromptMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
+
+  if ( m_doLRT ){
+    static SG::AuxElement::Decorator< char > passIDcuts("passIDcuts");
+    static SG::AuxElement::Accessor< char > isLRTmuon("isLRT");
+    passIDcuts( *muon ) = m_muonSelectionTool_handle->passedIDCuts( *muon ) ? 1 : 0;
+    LRTdecorIsAvailable = isLRTmuon.isAvailable(*muon);
+    muonIsLRT = isLRTmuon(*muon) > 0.5;
+  }
+
   ANA_MSG_DEBUG( "Doing muon quality" );
-  // this will accept the muon based on the settings at initialization : eta, ID track info, muon quality
-  if ( ! m_muonSelectionTool_handle->accept( *muon ) ) {
-    ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
-    return 0;
+  if ( !m_doLRT ){
+    if( !AcceptPromptMuon ){
+      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
+      return 0;
+    }
+  }
+  else {
+    if ( (!LRTdecorIsAvailable && !AcceptPromptMuon) || (LRTdecorIsAvailable && !muonIsLRT && !AcceptPromptMuon) ) {
+      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
+      return 0;
+    }
   }
 
   if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 );

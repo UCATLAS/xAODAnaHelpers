@@ -3,14 +3,14 @@ Babel==2.9.1
 beautifulsoup4==4.8.1
 breathe==4.13.1
 bs4==0.0.1
-certifi==2019.9.11
+certifi==2022.12.7
 chardet==3.0.4
 docutils==0.15.2
 exhale==0.2.3
 idna==2.8
 imagesize==1.1.0
 Jinja2==2.11.3
-lxml==4.6.5
+lxml==4.9.1
 MarkupSafe==1.1.1
 packaging==19.2
 Pygments==2.7.4

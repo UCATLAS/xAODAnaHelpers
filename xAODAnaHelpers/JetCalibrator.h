@@ -20,7 +20,6 @@
 #include "JetCalibTools/IJetCalibrationTool.h"
 #include "JetCPInterfaces/ICPJetUncertaintiesTool.h"
 #include "JetInterface/IJetSelector.h"
-#include "JetInterface/IJetUpdateJvt.h"
 #include "JetCPInterfaces/IJetTileCorrectionTool.h"
 // #include "ParticleJetTools/JetTruthLabelingTool.h"
 #include "xAODCore/ShallowCopy.h"
@@ -70,7 +69,7 @@ public:
   std::string m_calibSequence = "";
   /// @brief config for Jet Uncertainty Tool
   std::string m_uncertConfig = "";
-  /// @brief MC type for Jet Uncertainty Tool
+  /// @brief MC type for Jet Uncertainty Tool (need to be set for FullSim)
   std::string m_uncertMCType = "";
   /// @brief Override CalibArea tag (default recommended)
   std::string m_overrideCalibArea = "";
@@ -99,18 +98,7 @@ public:
   bool m_saveAllCleanDecisions = false;
   /// @brief Do Ugly cleaning ( i.e. TileGap 3 )
   bool m_jetCleanUgly = false;
-  /// @brief Recalculate JVT using the calibrated jet pT
-  bool m_redoJVT = false;
 
-  /// @brief Calculate fJVT using the calibrated jet pT
-  bool m_calculatefJVT = false;
-  /// @brief Maximum pT of central jets used to compute fJVT decision
-  double m_fJVTCentralMaxPt = -1;
-  /// @brief fJVT working point
-  std::string m_fJVTWorkingPoint = "Medium";
-
-  /// @brief Name of Jvt aux decoration.  Was "JvtJvfcorr" in Rel 20.7, is now "JVFCorr" in Rel 21. Leave empty to use JetMomentTools default.
-  std::string m_JvtAuxName = "";
   /// @brief Sort the processed container elements by transverse momentum
   bool    m_sort = true;
   /// @brief Apply jet cleaning to parent jet
@@ -157,8 +145,6 @@ private:
   asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_pseudodataJERTool_handle    {"PseudodataJERTool"    , this}; //!
-  asg::AnaToolHandle<IJetUpdateJvt>              m_JVTUpdateTool_handle        {"JetVertexTaggerTool"  , this}; //!
-  asg::AnaToolHandle<IJetModifier>               m_fJVTTool_handle             {"JetForwardJvtTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
   // asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
   // asg::AnaToolHandle<JetTruthLabelingTool>       m_JetTruthLabelingTool_handle {"JetTruthLabelingTool" , this}; //!

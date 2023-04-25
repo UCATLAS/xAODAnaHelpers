@@ -22,19 +22,19 @@ namespace xAH {
     std::map< std::string, std::vector< float > > TauTrigEff_SF;
     
     // might need to delete these
-    int                 isJetBDTSigVeryLoose;
-    int                 isJetBDTSigLoose;
-    int                 isJetBDTSigMedium;
-    int                 isJetBDTSigTight;
+    int                 isJetRNNSigVeryLoose;
+    int                 isJetRNNSigLoose;
+    int                 isJetRNNSigMedium;
+    int                 isJetRNNSigTight;
 
-    float               JetBDTScore;
-    float               JetBDTScoreSigTrans;
+    float               JetRNNScore;
+    float               JetRNNScoreSigTrans;
 
-    int                 isEleBDTLoose;
-    int                 isEleBDTMedium;
-    int                 isEleBDTTight;
+    int                 isEleRNNLoose;
+    int                 isEleRNNMedium;
+    int                 isEleRNNTight;
  
-    float               EleBDTScore;
+    float               EleRNNScore;
 
     int                 passEleOLR;
 

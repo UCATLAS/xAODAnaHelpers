@@ -135,7 +135,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
     // retrieve the file in which the cutflow hists are stored
     //
-    TFile *file     = wk()->getOutputFile ("cutflow");
+    TFile *file     = wk()->getOutputFile (m_cutFlowStreamName);
 
     // retrieve the event cutflows
     //
@@ -280,12 +280,6 @@ EL::StatusCode ElectronSelector :: initialize ()
     }
 
     if ( m_readIDFlagsFromDerivation ) {
-      // LooseBL is not in Derivations, so choose Loose and do BLayer cut locally
-      if( m_LHOperatingPoint == "LooseBL" ){
-        m_LHOperatingPoint = "Loose";
-        m_doBLTrackQualityCut = true;
-      }
-
       ANA_MSG_INFO( "Reading Electron LH ID from DAODs ..." );
       ANA_CHECK( m_el_LH_PIDManager->setupWPs( false ));
     } else {
@@ -369,6 +363,7 @@ EL::StatusCode ElectronSelector :: initialize ()
       ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
       if (!m_trigInputPrefix.empty()){
         ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+	ANA_CHECK( m_trigElectronMatchTool_handle.setProperty( "RemapBrokenLinks", true) );
       }
       ANA_CHECK( m_trigElectronMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigElectronMatchTool_handle);

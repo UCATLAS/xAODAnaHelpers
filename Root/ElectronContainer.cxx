@@ -126,6 +126,10 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
     m_passOR = new std::vector<char>();
   }
 
+  if ( m_infoSwitch.m_doLRT ) {
+    m_isLRT = new std::vector<char>();
+  }
+
 }
 
 ElectronContainer::~ElectronContainer()
@@ -240,6 +244,10 @@ ElectronContainer::~ElectronContainer()
   }
   if ( m_infoSwitch.m_passOR ) {
     delete m_passOR;
+  }
+
+  if ( m_infoSwitch.m_doLRT ) {
+    delete m_isLRT;
   }
 
 }
@@ -362,6 +370,8 @@ void ElectronContainer::setTree(TTree *tree)
   if(m_infoSwitch.m_passSel) connectBranch<char>(tree,"passSel",&m_passSel);
   if(m_infoSwitch.m_passOR) connectBranch<char>(tree,"passOR",&m_passOR);
 
+  if(m_infoSwitch.m_doLRT) connectBranch<char>(tree,"isLRT",&m_isLRT);
+
 }
 
 void ElectronContainer::updateParticle(uint idx, Electron& elec)
@@ -482,6 +492,8 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
   if ( m_infoSwitch.m_passSel ) elec.passSel = m_passSel->at(idx);
   if ( m_infoSwitch.m_passOR ) elec.passOR = m_passOR->at(idx);
 
+  if ( m_infoSwitch.m_doLRT ) elec.isLRT = m_isLRT->at(idx);
+
 }
 
 
@@ -594,6 +606,10 @@ void ElectronContainer::setBranches(TTree *tree)
   }
   if ( m_infoSwitch.m_passOR ) {
     setBranch<char>(tree,"passOR",m_passOR);
+  }
+
+  if ( m_infoSwitch.m_doLRT ) {
+    setBranch<char>(tree,"isLRT",m_isLRT);
   }
 
   return;
@@ -711,6 +727,10 @@ void ElectronContainer::clear()
     m_passOR->clear();
   }
 
+  if ( m_infoSwitch.m_doLRT ) {
+    m_isLRT->clear();
+  }
+
 }
 
 
@@ -795,17 +815,8 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
       if (!PID.empty()) {
-        if (PID == "LHLooseBL") {
-          accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( "LHLoose" ) ) );
-          if ( accPID.at( PID ).isAvailable( *elec ) && accBLayer.isAvailable( *elec ) ) {
-            m_PID->at( PID )->push_back( accBLayer( *elec ) == 1 && (accPID.at( PID ))( *elec ) == 1 );
-          } else {
-            m_PID->at( PID )->push_back( -1 );
-          }
-        } else {
-          accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( PID ) ) );
-          safeFill<char, int, xAOD::Electron>( elec, accPID.at( PID ), m_PID->at( PID ), -1 );
-        }
+        accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( PID ) ) );
+        safeFill<char, int, xAOD::Electron>( elec, accPID.at( PID ), m_PID->at( PID ), -1 );
       }
     }
   }
@@ -961,6 +972,11 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
   if ( m_infoSwitch.m_passOR ) {
     static SG::AuxElement::Accessor<char> accElectron_passOR( "passOR" );
     safeFill<char, char, xAOD::Electron>(elec, accElectron_passOR, m_passOR, -99);
+  }
+
+  if ( m_infoSwitch.m_doLRT ){
+    static SG::AuxElement::Accessor<char> accElectron_isLRT( "isLRT" );
+    safeFill<char, char, xAOD::Electron>(elec, accElectron_isLRT, m_isLRT, -1);
   }
 
   return;

@@ -190,6 +190,19 @@ class HistogramManager {
 		   std::string option = "");
 
     /**
+     *  @overload
+     */
+    TProfile* book(std::string name, std::string title,
+		   int xbins, const Double_t* xbinsArr, double ylow, double yhigh);
+
+    /**
+     *  @overload
+     */
+    TProfile* book(std::string name, std::string title,
+		   int xbins, double xlow, double xhigh, 
+       double ylow, double yhigh);
+
+    /**
      * @brief record all histograms from HistogramManager#m_allHists to the worker
      */
     void record(EL::IWorker* wk);

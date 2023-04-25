@@ -112,7 +112,8 @@ namespace xAH {
       std::vector<char>* m_passSel;
       // passOR
       std::vector<char>* m_passOR;
-
+      // isLRT
+      std::vector<char>* m_isLRT;
     };
 }
 #endif // xAODAnaHelpers_ElectronContainer_H

@@ -136,6 +136,26 @@ TH3F* HistogramManager::book(std::string name, std::string title,
   return tmp;
 }
 
+TProfile* HistogramManager::book(std::string name, std::string title,
+                            int xbins, const Double_t* xbinArr,
+                            double ylow, double yhigh)
+{
+  TProfile* tmp = new TProfile( (name+title).c_str(), title.c_str(), xbins, xbinArr, ylow, yhigh);
+  this->Sumw2(tmp);
+  this->record(tmp);
+  return tmp;
+}
+
+TProfile* HistogramManager::book(std::string name, std::string title,
+		   int xbins, double xlow, double xhigh, 
+       double ylow, double yhigh)
+{
+  TProfile* tmp = new TProfile( (name+title).c_str(), title.c_str(), xbins, xlow, xhigh, ylow, yhigh);
+  this->Sumw2(tmp);
+  this->record(tmp);
+  return tmp;
+}
+
 MsgStream& HistogramManager :: msg () const { return m_msg; }
 MsgStream& HistogramManager :: msg (int level) const {
     MsgStream& result = msg();

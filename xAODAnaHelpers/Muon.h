@@ -104,6 +104,9 @@ namespace xAH {
     float PromptLeptonIso;
     float PromptLeptonVeto;
 
+    char isLRT;
+    char passIDcuts;
+
     // passSel
     char passSel;
     // passOR

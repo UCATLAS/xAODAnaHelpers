@@ -102,6 +102,9 @@ namespace xAH {
         /** debug level */
         MSG::Level m_msgLevel = MSG::INFO;
 
+        // output stream name for cutflow
+        std::string m_cutFlowStreamName = "cutflow";
+
         /** If running systematics, the name of the systematic */
         std::string m_systName = "";
         /** If running systematics, the value to set the systematic to
@@ -162,6 +165,30 @@ namespace xAH {
          */
         int m_isFastSim = -1;
 
+        /**
+            @rst
+                This stores the isAF3 decision, and can also be used to override at the algorithm level to force analyzing FastSim with AF3 or not.
+
+                ===== ========================================================
+                Value Meaning
+                ===== ========================================================
+                -1    Default, use Metadata object to determine if AF3 FastSim or not
+                0     Treat the input as FullSim or AFII
+                1     Treat the input as FastSim with AF3
+                ===== ========================================================
+
+            @endrst
+         */
+        int m_isAF3 = -1;
+
+        /** Flag to use Run 3 trigger navigation (true), or Run 2 navigation (false)*/
+        bool m_useRun3navigation = false;
+
+        /** String storing the type of HLT navigation info available for Run 3 samples.
+         *  For AODs or unslimmed DAODs: HLTNav_Summary_AODSlimmed
+         */
+        std::string m_HLTSummary = "HLTNav_Summary_DAODSlimmed"; 
+
         /** Flags to force a specific data-type, even if it disagrees with your input */
         bool m_forceFastSim = false;
         bool m_forceFullSim = false;
@@ -169,6 +196,7 @@ namespace xAH {
 
         /** Backwards compatibility, same as m_forceFastSim */
         bool m_setAFII = false;
+        bool m_setAF3 = false;
 
 
       protected:
@@ -220,6 +248,9 @@ namespace xAH {
             @endrst
          */
         bool isFastSim();
+
+        /** If the name includes ATLFASTII or ATLFAST3 then set to AFII or AF3, if deemed fullSim then FS else leave as empty string and complain */
+        bool isAF3();
 
 	/** Determines if using DAOD_PHYS or not. */
 	bool isPHYS();
