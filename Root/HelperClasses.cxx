@@ -27,6 +27,7 @@ namespace HelperClasses{
   {
     std::string VeryLoose("VeryLoose");         enumMap.insert(std::make_pair(VeryLoose  , LikeEnum::VeryLoose));
     std::string Loose("Loose");                 enumMap.insert(std::make_pair(Loose      , LikeEnum::Loose));
+    std::string LooseBL("LooseBL");             enumMap.insert(std::make_pair(LooseBL    , LikeEnum::LooseBL));
     std::string Medium("Medium");               enumMap.insert(std::make_pair(Medium     , LikeEnum::Medium));
     std::string Tight("Tight");                 enumMap.insert(std::make_pair(Tight      , LikeEnum::Tight));
   }
@@ -58,16 +59,16 @@ namespace HelperClasses{
 //  }
 
 
-  /* parser for Tau BDT ID enum */
+  /* parser for Tau RNN ID enum */
   /* Apparently this won't be useful for non-Athena users...  */
 
   template <>
   EnumParser<xAOD::TauJetParameters::IsTauFlag>::EnumParser()
   {
-    std::string TauIDVeryLoose("TauIDVeryLoose"); enumMap.insert(std::make_pair(TauIDVeryLoose , xAOD::TauJetParameters::JetBDTSigVeryLoose));
-    std::string TauIDLoose("TauIDLoose");         enumMap.insert(std::make_pair(TauIDLoose     , xAOD::TauJetParameters::JetBDTSigLoose));
-    std::string TauIDMedium("TauIDMedium");       enumMap.insert(std::make_pair(TauIDMedium    , xAOD::TauJetParameters::JetBDTSigMedium));
-    std::string TauIDTight("TauIDTight");         enumMap.insert(std::make_pair(TauIDTight     , xAOD::TauJetParameters::JetBDTSigTight));
+    std::string TauIDVeryLoose("TauIDVeryLoose"); enumMap.insert(std::make_pair(TauIDVeryLoose , xAOD::TauJetParameters::JetRNNSigVeryLoose));
+    std::string TauIDLoose("TauIDLoose");         enumMap.insert(std::make_pair(TauIDLoose     , xAOD::TauJetParameters::JetRNNSigLoose));
+    std::string TauIDMedium("TauIDMedium");       enumMap.insert(std::make_pair(TauIDMedium    , xAOD::TauJetParameters::JetRNNSigMedium));
+    std::string TauIDTight("TauIDTight");         enumMap.insert(std::make_pair(TauIDTight     , xAOD::TauJetParameters::JetRNNSigTight));
   }
 
   /* parser for muon quality enum */
@@ -201,6 +202,8 @@ namespace HelperClasses{
     m_trigEff_sysNames = has_exact("trigEff_sysNames");
     m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames");
 
+    m_doLRT = has_exact("doLRT");
+
   }
 
   void ElectronInfoSwitch::initialize(){
@@ -248,6 +251,8 @@ namespace HelperClasses{
     m_passSel = has_exact("passSel");
     // passOR
     m_passOR = has_exact("passOR");
+    //Add LRT flag
+    m_doLRT = has_exact("doLRT");
   }
 
   void PhotonInfoSwitch::initialize(){
@@ -287,6 +292,7 @@ namespace HelperClasses{
     m_truth         = has_exact("truth");
     m_truthDetails  = has_exact("truth_details");
     m_layer         = has_exact("layer");
+    m_fJvt          = has_exact("fJvt");
     m_trackPV       = has_exact("trackPV");
     m_trackAll      = has_exact("trackAll");
     m_chargedPFOPV  = has_exact("chargedPFOPV");

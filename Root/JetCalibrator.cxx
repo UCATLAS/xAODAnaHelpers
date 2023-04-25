@@ -37,7 +37,6 @@
 #include "JetCalibTools/JetCalibrationTool.h"
 #include "JetUncertainties/JetUncertaintiesTool.h"
 #include "JetSelectorTools/JetCleaningTool.h"
-#include "JetMomentTools/JetVertexTaggerTool.h"
 // #include "JetTileCorrection/JetTileCorrectionTool.h"
 #include "METUtilities/METHelpers.h"
 
@@ -126,6 +125,15 @@ EL::StatusCode JetCalibrator :: initialize ()
     return EL::StatusCode::FAILURE;
   }
 
+  if ( m_jetAlgo.empty() ) {
+    m_jetAlgo = m_inContainerName;
+    std::string jets = "Jets";
+    std::string::size_type i = m_jetAlgo.find(jets);
+    if (i != std::string::npos) {
+       m_jetAlgo.erase(i, jets.length());
+    }
+  }
+
   if ( m_outputAlgo.empty() ) {
     m_outputAlgo = m_jetAlgo + "_Calib_Algo";
   }
@@ -159,7 +167,10 @@ EL::StatusCode JetCalibrator :: initialize ()
     }
   }
 
-  if(m_uncertMCType.empty()) m_uncertMCType = isFastSim() ? "AFII" : "MC16";
+  if(!isFastSim() && m_uncertMCType.empty() && !m_uncertConfig.empty()){
+    ANA_MSG_ERROR("MCType not provided, please set m_uncertMCType (MC20 or MC21) when running on FullSim samples.  Exiting.");
+    return EL::StatusCode::FAILURE;
+  }
 
   // Autoconfigure calibration sequence if the user didn't do it.
   // Recommended strings taken from ApplyJetCalibrationR21 Twiki.
@@ -338,31 +349,6 @@ EL::StatusCode JetCalibrator :: initialize ()
     ANA_MSG_INFO( "No Jet Uncertainities considered");
   }
 
-  // initialize and configure the JVT correction tool
-
-  if( m_redoJVT ){
-    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JetContainer", m_inContainerName));
-    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVTFileName", PathResolverFindCalibFile("JetMomentTools/JVTlikelihood_20140805.root")));
-
-    if( ! m_JvtAuxName.empty() ){
-      ANA_CHECK( m_JVTUpdateTool_handle.setProperty("JVFCorrName", m_JvtAuxName) )
-    }
-    ANA_CHECK( m_JVTUpdateTool_handle.setProperty("OutputLevel", msg().level()));
-    ANA_CHECK( m_JVTUpdateTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_JVTUpdateTool_handle);
-  }
-
-  if ( m_calculatefJVT ) {
-    ANA_CHECK(m_fJVTTool_handle.setProperty("CentralMaxPt", m_fJVTCentralMaxPt));
-    if ( m_fJVTWorkingPoint == "Tight" ) {
-      ANA_CHECK(m_fJVTTool_handle.setProperty("UseTightOP", true));
-    }
-    ANA_CHECK(m_fJVTTool_handle.setProperty("OutputLevel", msg().level()));
-    ANA_CHECK(m_fJVTTool_handle.setProperty("JetContainer", m_inContainerName));
-    ANA_CHECK(m_fJVTTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_fJVTTool_handle);
-  }
-
   auto SystJetsNames = std::make_unique< std::vector< std::string > >();
   for ( const auto& syst_it : m_systList ) {
     if ( m_systName.empty() && m_systName.empty() ) {
@@ -424,7 +410,7 @@ EL::StatusCode JetCalibrator :: execute ()
     //
     // truth labelling for systematics
     if(isMC()){
-      
+
       if(m_runSysts){
 
         // b-jet truth labelling
@@ -456,7 +442,7 @@ EL::StatusCode JetCalibrator :: execute ()
         //   m_JetTruthLabelingTool_handle->modifyJet(*jet_itr);
         // }
       }
-    
+
     }
 
   }//for jets
@@ -632,18 +618,6 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
     ANA_MSG_ERROR( "Failed to set original object links -- MET rebuilding cannot proceed.");
   }
 
-  // Recalculate JVT using calibrated Jets
-  if(m_redoJVT){
-    for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
-      jet_itr->auxdata< float >("Jvt") = m_JVTUpdateTool_handle->updateJvt(*jet_itr);
-    }
-  }
-
-  // Calculate fJVT using calibrated Jets
-  if ( m_calculatefJVT ) {
-    m_fJVTTool_handle->modify(*(uncertCalibJetsSC.first));
-  }
-
   // save pointers in ConstDataVector with same order
   for ( auto jet_itr : *(uncertCalibJetsSC.first) ) {
     uncertCalibJetsCDV->push_back( jet_itr );
@@ -661,7 +635,7 @@ EL::StatusCode JetCalibrator::executeSystematic(const CP::SystematicSet& thisSys
   }
   // add ConstDataVector to TStore
   ANA_CHECK( m_store->record( uncertCalibJetsCDV, outContainerName));
-  
+
   return EL::StatusCode::SUCCESS;
 }
 

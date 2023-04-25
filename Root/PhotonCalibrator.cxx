@@ -154,7 +154,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   if(m_randomRunNumber>0) ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("randomRunNumber", m_randomRunNumber));
 
   //Backwards compatibility
-  if (m_useAFII)
+  if (m_useAFII || m_useAF3)
     m_forceFastSim = true;
   if ( isFastSim() )
     ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
@@ -255,7 +255,7 @@ EL::StatusCode PhotonCalibrator :: initialize ()
     } else {
       dataType = PATCore::ParticleDataType::Full;
     }
-    ANA_MSG_DEBUG("isSimulation=" << ( isMC() ? "Y" : "N") << " isAFII=" << ( isFastSim() ? "Y" : "N" ) << " selected dataType=" << dataType );
+    ANA_MSG_DEBUG("isSimulation=" << ( isMC() ? "Y" : "N") << " Simulation type: " << ( isFastSim() ? ( isAF3() ? "AF3" : "AFII") : "FullSim" ) << " selected dataType=" << dataType );
 
 
     // photon efficiency correction tool

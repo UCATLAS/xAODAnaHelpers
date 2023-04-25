@@ -962,7 +962,7 @@ void HelpTreeBase::AddTaus(const std::string& detailStr, const std::string& tauN
 
 void HelpTreeBase::FillTaus( const xAOD::TauJetContainer* taus, const std::string& tauName ) {
 
-  this->ClearTaus();
+  this->ClearTaus(tauName);
 
   for( auto tau_itr : *taus ) {
     this->FillTau(tau_itr, tauName);

@@ -521,6 +521,14 @@ EL::StatusCode BasicEventSelection :: initialize ()
     ANA_CHECK( m_trigDecTool_handle.setProperty( "ConfigTool", m_trigConfTool_handle ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "TrigDecisionKey", "xTrigDecision" ));
     ANA_CHECK( m_trigDecTool_handle.setProperty( "OutputLevel", msg().level() ));
+
+    if ( m_useRun3navigation )
+    {
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "NavigationFormat", "TrigComposite") );
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "HLTSummary", m_HLTSummary) );
+    } else {
+      ANA_CHECK( m_trigDecTool_handle.setProperty( "NavigationFormat", "TriggerElement") );
+    }
     ANA_CHECK( m_trigDecTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
@@ -1114,7 +1122,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
 
   // Determine simulation flavour
-  std::string SimulationFlavour = isFastSim() ? "AFII" : "FS";
+  std::string SimulationFlavour = isFastSim() ? ( isAF3() ? "AF3" : "AFII" ) : "FS";
 
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";

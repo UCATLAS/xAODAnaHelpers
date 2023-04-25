@@ -2,7 +2,7 @@ Development
 ===========
 
 .. warning::
-    Never push to master. Always create a new branch for changes, rebase your branch with master ``git pull --rebase origin master`` and use the branch for creating a pull-request to merge with master. This keeps master mergeable for everyone for all development.
+    Never push to main. Always create a new branch for changes, rebase your branch with main ``git pull --rebase origin main`` and use the branch for creating a pull-request to merge with main. This keeps main mergeable for everyone for all development.
 
 .. toctree::
    :maxdepth: 2
@@ -49,7 +49,7 @@ Then go ahead and commit your changes::
 When you are ready to submit a pull-request, do the following first::
 
     git fetch upstream
-    git rebase upstream/master
+    git rebase upstream/main
 
 to make sure your code is up to date with the `upstream repository <https://github.com/UCATLAS/xAODAnaHelpers>`__.
 
@@ -57,12 +57,12 @@ You may want to rebase all of your changes into a single commit if you wish, and
 
     git rebase -i HEAD~N
 
-where ``N`` is the number of commits to rebase. Then you just follow the instructions. Take care not to rebase through commits that are already on master of the upstream repo. Then submit a pull-request! See https://help.github.com/articles/creating-a-pull-request/ for information on this.
+where ``N`` is the number of commits to rebase. Then you just follow the instructions. Take care not to rebase through commits that are already on main of the upstream repo. Then submit a pull-request! See https://help.github.com/articles/creating-a-pull-request/ for information on this.
 
 After the pull-request has been merged, you can bring yourself up to date with::
 
     git fetch upstream
-    git rebase upstream/master
+    git rebase upstream/main
 
 Trusted Dev User
 ~~~~~~~~~~~~~~~~
@@ -75,9 +75,9 @@ and then make your commits... then maybe rebase all commits into a few good ones
 
     git rebase -i HEAD~N
 
-where ``N`` is the number of commits to rebase. And then rebase with master to make sure your branch is as up-to-date as possible when making the pull-request::
+where ``N`` is the number of commits to rebase. And then rebase with main to make sure your branch is as up-to-date as possible when making the pull-request::
 
-    git pull --rebase origin master
+    git pull --rebase origin main
 
 and push your commits to the remote (setting upstream)::
 
@@ -85,8 +85,8 @@ and push your commits to the remote (setting upstream)::
 
 and then submit a pull request by going to `xAODAnaHelpers <https://github.com/UCATLAS/xAODAnaHelpers>`__, finding your branch, and making a pull request (usually shiny green buttons).  When it's been merged, you can run::
 
-    git checkout master
-    git pull --rebase origin master
+    git checkout main
+    git pull --rebase origin main
     git remote prune origin
 
 to delete your local copy of the branch after bringing your local copy up to date.
@@ -106,16 +106,16 @@ update so you're current::
 will do it all. If you want more control, use::
 
     git fetch
-    git rebase origin/master
+    git rebase origin/main
 
 or::
 
     git fetch origin
-    git rebase origin/master myBranch
+    git rebase origin/main myBranch
 
 .. note::
     - ``git fetch`` will fetch from ``origin`` (see ``git remote -v`` for what that's defined as) by default, but you can explicitly provide a different remote repository.
-    - ``git rebase origin/master`` will rebase the current branch you are on.  You can specify another branch if you want.
+    - ``git rebase origin/main`` will rebase the current branch you are on.  You can specify another branch if you want.
 
 
 Changing Author Info

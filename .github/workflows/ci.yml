@@ -11,7 +11,7 @@ jobs:
     env:
       RELEASE_TYPE: ${{ matrix.release_type }}
       RELEASE_VERSION: ${{ matrix.release_version }}
-      DOCKER_BASE_REPO: atlas
+      DOCKER_BASE_REPO: gitlab-registry.cern.ch/atlas/athena
       DOCKER_TARGET_REPO: ucatlas
       RELEASE: ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
     strategy:
@@ -19,7 +19,17 @@ jobs:
         release_type:
           - analysisbase
         release_version:
-          - 22.2.88
+          - 22.2.97
+          - 22.2.98
+          - 22.2.99
+          - 22.2.100
+          - 22.2.101
+          - 22.2.102
+          - 22.2.103
+          - 22.2.104
+          - 22.2.105
+          - 22.2.108
+          - 22.2.109
 
     steps:
     - uses: actions/checkout@master
@@ -40,7 +50,7 @@ jobs:
       run: |
         docker tag ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-latest ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-${GITHUB_SHA::6}-$(date +%Y%m%d)
     - name: deploy latest and timestamped for ${{ env['RELEASE'] }}
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         docker push ${DOCKER_TARGET_REPO}/${RELEASE_TYPE}:${RELEASE_VERSION}-${GITHUB_SHA::6}-$(date +%Y%m%d)
@@ -76,7 +86,7 @@ jobs:
         cd docs && make html && cd ../
         touch docs/_build/html/.nojekyll
     - name: Deploy docs to GitHub Pages
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: crazy-max/ghaction-github-pages@v1.0.1
       with:
         target_branch: gh-pages

@@ -55,6 +55,7 @@ public:
   std::string m_outputAlgoSystNames = "PhotonCalibrator_Syst";
 
   bool        m_useAFII = false; //For backwards compatibility
+  bool        m_useAF3 = false; //For backwards compatibility
   float       m_systVal = 0.0;
   std::string m_systName = "";
 

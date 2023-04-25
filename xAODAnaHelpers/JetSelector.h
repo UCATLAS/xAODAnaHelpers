@@ -168,7 +168,7 @@ public:
 
     @endrst
   */
-  std::string m_WorkingPointJVT = "Tight";
+  std::string m_WorkingPointJVT = "FixedEffPt";
 
   /**
      @brief Configuration containting JVT scale factors.
@@ -179,8 +179,12 @@ public:
      See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
      @endrst
   */
-  std::string m_SFFileJVT = "JetJvtEfficiency/Moriond2018/JvtSFFile_EMPFlow.root";
+  std::string m_SFFileJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
   std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
+  /// @brief Tagging algorithm to be used to veto PU jets in central region - default in R22 is NNJvt. If another algorithm is needed, use corresponding index for the enum here: https://acode-browser1.usatlas.bnl.gov/lxr/source/athena/PhysicsAnalysis/Interfaces/JetAnalysisInterfaces/JetAnalysisInterfaces/IJetJvtEfficiency.h#0022 (note: this link points to the latest r22 version, i.e. master, if a release is used, please check the corresponding enum for the given release: https://gitlab.cern.ch/atlas/athena/-/tags?search=release%2F22.2&sort=updated_desc)
+  int m_JvtTaggingAlg = CP::JvtTagger::NNJvt;
+  /// @brief Do re-calculation of NNJvt - scores need to be re-evaluated in case jet pt changed w.r.t. derivation
+  bool m_recalculateJvtScores = true;
 
   float         m_systValJVT = 0.0;
   std::string   m_systNameJVT = "";
@@ -214,8 +218,7 @@ public:
   */
 
   // Set the correct SF file and format
-  std::string m_SFFilefJVT = "JetJvtEfficiency/May2020/fJvtSFFile.EMPFlow.root";
-  bool m_UseMuSFFormatfJVT = true; // To account for new SF binning
+  std::string m_SFFilefJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
 
   std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
 
@@ -223,6 +226,10 @@ public:
   std::string   m_systNamefJVT = "";
   /// @brief was fJVT already run in an earlier instance of JetSelector?
   bool m_fjvtUsedBefore=false;
+
+  /// @brief Timing cut
+  bool          m_doJetTimingCut = false;
+  float         m_jetTiming_max = -1;
 
   /// @brief Flag to apply btagging cut, if false just decorate decisions
   bool  m_doBTagCut = false;
@@ -291,6 +298,7 @@ private:
   int   m_jet_cutflow_etmin_cut;     //!
   int   m_jet_cutflow_eta_cut;       //!
   int   m_jet_cutflow_jvt_cut;       //!
+  int   m_jet_cutflow_timing_cut;    //!
   int   m_jet_cutflow_btag_cut;      //!
 
   std::vector<CP::SystematicSet> m_systListJVT; //!
@@ -298,9 +306,9 @@ private:
 
   std::vector<std::string>            m_singleJetTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleJetTrigChains */
   std::vector<std::string>            m_diJetTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diJetTrigChains */
-  
+
   asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::IJetJvtEfficiency/JVT"}; //!
-  // asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency/fJVT"}; //!
+  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency/fJVT"}; //!
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
   asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle; //!

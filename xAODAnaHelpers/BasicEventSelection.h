@@ -56,6 +56,7 @@ class BasicEventSelection : public xAH::Algorithm
       SimulationFlavour will be determined from the sample MetaData, unless AFII or FS is explicitely requested with the following flags.
       @endrst */
     bool m_setAFII = false;
+    bool m_setAF3 = false;
     bool m_setFS = false;
 
   // GRL
@@ -187,7 +188,6 @@ class BasicEventSelection : public xAH::Algorithm
 
     // output stream names
     std::string m_metaDataStreamName = "metadata";
-    std::string m_cutFlowStreamName = "cutflow";
     std::string m_duplicatesStreamName = "duplicates_tree";
 
     /** Check for duplicated events in data */

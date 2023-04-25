@@ -17,7 +17,7 @@ This is a self-contained ATLAS ASG release image with xAODAnaHelpers. Your
 .bashrc should already execute the necessary scripts to set up the analysis
 base release as well as xAODAnaHelpers. View our online documentation here:
 
-      https://xaodanahelpers.readthedocs.io/en/master/
+      https://xaodanahelpers.readthedocs.io/en/latest/
 
 To set up xAODAnaHelpers + the analysis release of the image, please execute:
 
