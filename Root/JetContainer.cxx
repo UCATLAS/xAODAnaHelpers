@@ -25,6 +25,8 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_maxd0Value         =  new std::vector<float>();
     m_mind0Value         =  new std::vector<float>();
     m_mediand0Value      =  new std::vector<float>();
+    m_ntrk               =  new std::vector<int>();
+    m_ntrk_prompt        =  new std::vector<int>();
 
 
   }
@@ -507,6 +509,8 @@ JetContainer::~JetContainer()
     delete  m_mind0Value;
     delete  m_maxd0Value;
     delete  m_mediand0Value;
+    delete  m_ntrk;
+    delete  m_ntrk_prompt;
 
   }
 
@@ -966,6 +970,8 @@ void JetContainer::setTree(TTree *tree)
     connectBranch<float>  (tree,"maxd0Value",        &m_maxd0Value);
     connectBranch<float>  (tree,"mind0Value",        &m_mind0Value);
     connectBranch<float>  (tree,"mediand0Value",     &m_mediand0Value);
+    connectBranch<int>    (tree,"ntrk",              &m_ntrk);
+    connectBranch<int>    (tree,"ntrk_prompt",       &m_ntrk_prompt);
 
   }
 
@@ -1263,6 +1269,8 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.mind0Value                =m_mind0Value          ->at(idx);
       jet.maxd0Value                =m_maxd0Value          ->at(idx);
       jet.mediand0Value             =m_mediand0Value       ->at(idx);
+      jet.ntrk                      =m_ntrk                ->at(idx);
+      jet.ntrk_prompt               =m_ntrk_prompt         ->at(idx);
 
 
 
@@ -1665,7 +1673,9 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"alpha_max",                   m_alpha_max       );    
     setBranch<float>(tree,"maxd0Value",                  m_maxd0Value      );    
     setBranch<float>(tree,"mind0Value",                  m_mind0Value      );    
-    setBranch<float>(tree,"mediand0Value",               m_mediand0Value    );    
+    setBranch<float>(tree,"mediand0Value",               m_mediand0Value   );    
+    setBranch<int>(tree,"ntrk",                          m_ntrk            );    
+    setBranch<int>(tree,"ntrk_prompt",                   m_ntrk_prompt     );    
 
   }
 
@@ -2124,6 +2134,8 @@ void JetContainer::clear()
     m_maxd0Value->clear();
     m_mind0Value->clear();
     m_mediand0Value->clear();
+    m_ntrk->clear();
+    m_ntrk_prompt->clear();
 
   }
   
@@ -2623,6 +2635,18 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       m_mediand0Value->push_back( jet->auxdata< float >("mediand0Value") );
     } else {
       m_mediand0Value->push_back( -999 );
+    }
+
+    if( jet->isAvailable< int >( "ntrk" ) ) {
+      m_ntrk->push_back( jet->auxdata< int >("ntrk") );
+    } else {
+      m_ntrk->push_back( -999 );
+    }
+
+    if( jet->isAvailable< int >( "ntrk_prompt" ) ) {
+      m_ntrk_prompt->push_back( jet->auxdata< int >("ntrk_prompt") );
+    } else {
+      m_ntrk_prompt->push_back( -999 );
     }
 
 

@@ -33,6 +33,8 @@ namespace xAH {
       float maxd0Value;	
       float mind0Value;
       float mediand0Value;
+      int   ntrk;
+      int   ntrk_prompt;
 
 
 

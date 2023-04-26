@@ -56,6 +56,8 @@ namespace xAH {
       std::vector<float>   *m_maxd0Value;
       std::vector<float>   *m_mind0Value;
       std::vector<float>   *m_mediand0Value;
+      std::vector<int>   *m_ntrk;
+      std::vector<int>   *m_ntrk_prompt;
 
       // rapidity
       std::vector<float> *m_rapidity;
