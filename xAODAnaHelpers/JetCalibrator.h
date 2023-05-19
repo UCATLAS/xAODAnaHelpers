@@ -62,8 +62,12 @@ public:
   bool        m_recalibrateHLTJets = false;
   /// @brief vertex container name to use for HLT jet re-calibration
   std::string m_HLTVertexContainerName = "HLT_IDVertex_FS";
-  /// @brief HLT average mu location on EventInfo after formatting
-  std::string m_HLTAvgMuLocation = "EventInfo.AvgMu";
+  /// @brief HLT average mu decoration on EventInfo after formatting
+  std::string m_HLTAvgMuDecor = "EventInfo.AvgMu";
+  /// @brief location of the HLT NPV on EventInfo object (e.g. EventInfo.NPV)
+  /// this defaults to an empty string and is only configured in JetCalibrationTool
+  /// when a non-empty string is provided
+  std::string m_EvtInfoHLTNPVDecor = "";
 
   /// @brief config for JetCalibrationTool ConfigDir, set it to override tool defaults
   std::string m_calibConfigDir = "";
