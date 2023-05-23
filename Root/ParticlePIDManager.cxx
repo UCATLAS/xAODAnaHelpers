@@ -90,10 +90,8 @@ StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selec
       it.second->msg().setLevel( MSG::INFO); /* ERROR, VERBOSE, DEBUG, INFO */
 
       std::string WPParseString = WP + "LHElectron";
-      if (WP.find("LLP") != std::string::npos) {
-        Info("Using an LLP WP");
-        WPParseString = WP.substr(0, WP.size()-3) + "LHElectron_LLP";
-      }
+      if (WP.find("LLP") != std::string::npos) WPParseString = WP.substr(0, WP.size()-3) + "LHElectron_LLP";
+
       ANA_CHECK( it.second->setProperty("WorkingPoint", WPParseString ) );
       ANA_CHECK( it.second->initialize());
 
