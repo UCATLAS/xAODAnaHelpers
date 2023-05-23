@@ -814,7 +814,6 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
     static SG::AuxElement::Accessor<bool> accBLayer( "bLayerPass" );
 
     for (auto& PID : m_infoSwitch.m_PIDWPs) {
-      ANA_MSG_INFO("GUGLIELMO :: PID = " << PID);
       if (!PID.empty()) {
         accPID.insert( std::pair<std::string, SG::AuxElement::Accessor<char> > ( PID , SG::AuxElement::Accessor<char>( PID ) ) );
         safeFill<char, int, xAOD::Electron>( elec, accPID.at( PID ), m_PID->at( PID ), -1 );
