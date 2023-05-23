@@ -191,11 +191,15 @@ EL::StatusCode ElectronSelector :: initialize ()
   if( m_LHOperatingPoint == "LooseAndBLayer" )
     m_LHOperatingPoint = "LooseBL";
 
-  if ( m_LHOperatingPoint != "VeryLoose"       &&
-       m_LHOperatingPoint != "Loose"           &&
-       m_LHOperatingPoint != "LooseBL"         &&
-       m_LHOperatingPoint != "Medium"          &&
-       m_LHOperatingPoint != "Tight"     ) {
+  if ( m_LHOperatingPoint != "VeryLoose"     &&
+       m_LHOperatingPoint != "Loose"         &&
+       m_LHOperatingPoint != "LooseBL"       &&
+       m_LHOperatingPoint != "Medium"        &&
+       m_LHOperatingPoint != "Tight"         &&
+       m_LHOperatingPoint != "VeryLooseLLP"  &&
+       m_LHOperatingPoint != "LooseLLP"      &&
+       m_LHOperatingPoint != "MediumLLP"     &&
+       m_LHOperatingPoint != "TightLLP"     ) {
     ANA_MSG_ERROR( "Unknown electron likelihood PID requested " << m_LHOperatingPoint);
     return EL::StatusCode::FAILURE;
   }
@@ -268,7 +272,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if( m_doLHPID ){
     // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
-    std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose";
+    std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "VeryLoose";
     m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, msgLvl(MSG::DEBUG) );
 
 
