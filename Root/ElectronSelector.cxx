@@ -1019,6 +1019,11 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       const static SG::AuxElement::ConstAccessor<char> acc_EG_Medium("DFCommonElectronsLHMedium");
       const static SG::AuxElement::ConstAccessor<char> acc_EG_Tight("DFCommonElectronsLHTight");
 
+      const static SG::AuxElement::ConstAccessor<char> acc_EG_VeryLooseNoPix("DFCommonElectronsLHVeryLooseNoPix");
+      const static SG::AuxElement::ConstAccessor<char> acc_EG_LooseNoPix("DFCommonElectronsLHLooseNoPix");
+      const static SG::AuxElement::ConstAccessor<char> acc_EG_MediumNoPix("DFCommonElectronsLHMediumNoPix");
+      const static SG::AuxElement::ConstAccessor<char> acc_EG_TightNoPix("DFCommonElectronsLHTightNoPix");
+
       if ( m_doLHPIDcut ) {
 
         bool passSelID(false);

@@ -35,10 +35,10 @@ ElectronLHPIDManager :: ElectronLHPIDManager ( std::string WP, bool debug ) :
       m_allWPTools.insert(medium);      m_allWPAuxDecors.insert("Medium");
       m_allWPTools.insert(tight);       m_allWPAuxDecors.insert("Tight");
 
-      m_allWPTools.insert(verylooseLLP);   m_allWPAuxDecors.insert("VeryLooseLLP");
-      m_allWPTools.insert(looseLLP);       m_allWPAuxDecors.insert("LooseLLP");
-      m_allWPTools.insert(mediumLLP);      m_allWPAuxDecors.insert("MediumLLP");
-      m_allWPTools.insert(tightLLP);       m_allWPAuxDecors.insert("TightLLP");
+      m_allWPTools.insert(verylooseLLP);   m_allWPAuxDecors.insert("VeryLooseNoPix");
+      m_allWPTools.insert(looseLLP);       m_allWPAuxDecors.insert("LooseNoPix");
+      m_allWPTools.insert(mediumLLP);      m_allWPAuxDecors.insert("MediumNoPix");
+      m_allWPTools.insert(tightLLP);       m_allWPAuxDecors.insert("TightNoPix");
 }
 
 ElectronLHPIDManager ::  ~ElectronLHPIDManager()
