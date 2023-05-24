@@ -517,7 +517,7 @@ EL::StatusCode METConstructor :: execute ()
 
      if(!m_rebuildUsingTracksInJets && m_addSoftClusterTerms){
        //get the soft cluster term, and applyCorrection
-       xAOD::MissingET * softClusMet = (*newMet)["SoftClusCore"];
+       xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
        //assert( softClusMet != 0); //check we retrieved the clust term
        if( isMC() && m_metSyst_handle->applyCorrection(*softClusMet, metHelper) != CP::CorrectionCode::Ok) {
          ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
