@@ -1,3 +1,15 @@
+/******************************************
+ *
+ * Interface to Isolation Close-by-Correction tool to correct variables used in the evaluation of
+ * isolation working points for the presence of leptons close-by to the object of interest.
+ * More information on the twiki:
+ * https://twiki.cern.ch/twiki/bin/view/AtlasProtected/IsolationOverlapRemoval
+ *
+ * G.Frattari (guglielmo.frattari@cern.ch), S. Addepalli (sagara17@cern.ch)
+ *
+ ******************************************/
+//
+//
 // c++ include(s):
 #include <iostream>
 #include <sstream>
