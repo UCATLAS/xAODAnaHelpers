@@ -100,6 +100,18 @@ EL::StatusCode IsoCloseByCorr :: initialize ()
   m_event = wk()->xaodEvent();
   m_store = wk()->xaodStore();
 
+  //Add a track selection tool to superseed the default in the isolation close-by-correction tool
+  ANA_MSG_INFO( " Initialising InDet::InDetTrackSelectionTool..." );
+  m_trackSelectionTool_name = "TrackParticleSelectionTool";
+  ANA_CHECK(checkToolStore<InDet::InDetTrackSelectionTool>(m_trackSelectionTool_name));
+  const bool TrackSelToolInstanceExists = asg::ToolStore::contains<InDet::InDetTrackSelectionTool>(m_trackSelectionTool_name);
+  m_trackSelection_tool = asg::AnaToolHandle<InDet::InDetTrackSelectionTool>("InDet::InDetTrackSelectionTool/"+m_trackSelectionTool_name);
+  ANA_CHECK(m_trackSelection_tool.setProperty("minPt", 500.));
+  ANA_CHECK(m_trackSelection_tool.setProperty("CutLevel", "Loose"));
+  ANA_CHECK(m_trackSelection_tool.retrieve());
+  assert(m_trackSelection_tool.isInitialized());
+
+
   //Initialize isolation tool to be input to close-by-correction tool
   m_IsoSelToolCloseBy_name = "IsoSelToolCloseBy";
   ANA_MSG_INFO( " Initialising CP::IsolationSelectionTool..." );
@@ -118,6 +130,7 @@ EL::StatusCode IsoCloseByCorr :: initialize ()
   const bool IsoCloseByCorrToolInstanceExists = asg::ToolStore::contains<CP::IsolationCloseByCorrectionTool>(m_IsoCloseByCorr_tool_name);
   m_IsoCloseByCorr_tool = asg::AnaToolHandle<CP::IsolationCloseByCorrectionTool>("CP::IsolationCloseByCorrectionTool/"+m_IsoCloseByCorr_tool_name);
   ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("IsolationSelectionTool", m_IsoSelToolCloseBy_name) );
+  ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("TrackSelectionTool", m_trackSelectionTool_name) );
   ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("BackupPrefix" , "Vanilla") );
   ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("IsolationSelectionDecorator", "CleanedUpIsolation") );
   ANA_CHECK( m_IsoCloseByCorr_tool.retrieve());

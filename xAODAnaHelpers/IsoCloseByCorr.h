@@ -23,6 +23,7 @@
 
 #include "IsolationSelection/IsolationSelectionTool.h"
 #include "IsolationSelection/IsolationCloseByCorrectionTool.h"
+#include "InDetTrackSelectionTool/InDetTrackSelectionTool.h"
 
 class IsoCloseByCorr : public xAH::Algorithm
 {
@@ -61,6 +62,9 @@ private:
 
   asg::AnaToolHandle<CP::IsolationCloseByCorrectionTool> m_IsoCloseByCorr_tool; //!
   std::string m_IsoCloseByCorr_tool_name; //!
+
+  asg::AnaToolHandle<InDet::InDetTrackSelectionTool> m_trackSelection_tool; //!
+  std::string m_trackSelectionTool_name; //!
 
 public:
 
