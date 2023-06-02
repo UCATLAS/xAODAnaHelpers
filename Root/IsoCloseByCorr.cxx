@@ -5,7 +5,7 @@
  * More information on the twiki:
  * https://twiki.cern.ch/twiki/bin/view/AtlasProtected/IsolationOverlapRemoval
  *
- * G. Frattari (guglielmo.frattari@SPAMNOT_CERN.CH), S. Addepalli (sagar.addepalli@SPAMNOT_CERN.CH)
+ * G. Frattari (guglielmo.frattari@SPAMNOT_CERN.CH), S. Addepalli (sagara17@SPAMNOT_CERN.CH)
  *
  ******************************************/
 //
