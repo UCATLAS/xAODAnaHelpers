@@ -145,6 +145,7 @@ EL::StatusCode IsoCloseByCorr :: initialize ()
   ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("TrackSelectionTool", m_trackSelectionTool_name) );
   ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("BackupPrefix" , "Vanilla") );
   ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("IsolationSelectionDecorator", "CleanedUpIsolation") );
+  ANA_CHECK( m_IsoCloseByCorr_tool.setProperty("CaloCorrectionModel", CP::IsolationCloseByCorrectionTool::UseAveragedDecorators) );
   ANA_CHECK( m_IsoCloseByCorr_tool.retrieve());
   assert(m_IsoCloseByCorr_tool.isInitialized());
 
