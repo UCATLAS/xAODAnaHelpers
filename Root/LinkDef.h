@@ -108,6 +108,7 @@
 #pragma link C++ class MinixAOD+;
 
 #pragma link C++ class OverlapRemover+;
+#pragma link C++ class IsoCloseByCorr+;
 #pragma link C++ class TrigMatcher+;
 #pragma link C++ class TauJetMatching+;
 #pragma link C++ class Writer+;
