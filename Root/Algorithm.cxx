@@ -123,15 +123,19 @@ bool xAH::Algorithm::isFastSim(){
 
 bool xAH::Algorithm::isAF3(){
 
+    // If already set return
+    if (m_isAF3==0 || m_isAF3==1){
+      return m_isAF3;
+    }
     // If full sim, return empty string (call function first to make sure Force options are considered)
     bool isFaS = isFastSim();
     if (!isFaS){
-      m_isAF3 = false;
+      m_isAF3 = 0;
       return m_isAF3;
     }
 
     if (m_setAF3){
-      m_setAF3 = true;
+      m_isAF3 = 1;
       return m_isAF3;
     }
 
@@ -145,9 +149,9 @@ bool xAH::Algorithm::isAF3(){
 
     boost::to_upper(SimulationFlavour);
     if(SimulationFlavour.find("ATLFASTII") != std::string::npos){
-      m_isAF3 = false;
+      m_isAF3 = 0;
     } else if (SimulationFlavour.find("ATLFAST3") != std::string::npos){
-      m_isAF3 = true;
+      m_isAF3 = 1;
     } else {
       ANA_MSG_ERROR("Unexpected Simulation type: "<< SimulationFlavour);
       return false; 
