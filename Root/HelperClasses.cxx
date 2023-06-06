@@ -25,11 +25,18 @@ namespace HelperClasses{
   template <>
   EnumParser<LikeEnum::Menu>::EnumParser()
   {
-    std::string VeryLoose("VeryLoose");         enumMap.insert(std::make_pair(VeryLoose  , LikeEnum::VeryLoose));
-    std::string Loose("Loose");                 enumMap.insert(std::make_pair(Loose      , LikeEnum::Loose));
-    std::string LooseBL("LooseBL");             enumMap.insert(std::make_pair(LooseBL    , LikeEnum::LooseBL));
-    std::string Medium("Medium");               enumMap.insert(std::make_pair(Medium     , LikeEnum::Medium));
-    std::string Tight("Tight");                 enumMap.insert(std::make_pair(Tight      , LikeEnum::Tight));
+    std::string VeryLoose("VeryLoose");                       enumMap.insert(std::make_pair(VeryLoose            , LikeEnum::VeryLoose));
+    std::string Loose("Loose");                               enumMap.insert(std::make_pair(Loose                , LikeEnum::Loose));
+    std::string LooseBL("LooseBL");                           enumMap.insert(std::make_pair(LooseBL              , LikeEnum::LooseBL));
+    std::string Medium("Medium");                             enumMap.insert(std::make_pair(Medium               , LikeEnum::Medium));
+    std::string Tight("Tight");                               enumMap.insert(std::make_pair(Tight                , LikeEnum::Tight));
+    std::string VeryTight("VeryTight");                       enumMap.insert(std::make_pair(VeryTight            , LikeEnum::VeryTight));
+    std::string LooseRelaxed("LooseRelaxed");                 enumMap.insert(std::make_pair(LooseRelaxed         , LikeEnum::Tight));
+    std::string CustomOperatingPoint("CustomOperatingPoint"); enumMap.insert(std::make_pair(CustomOperatingPoint , LikeEnum::Tight));
+    std::string VeryLooseLLP("VeryLooseLLP");                 enumMap.insert(std::make_pair(VeryLooseLLP         , LikeEnum::VeryLooseLLP));
+    std::string LooseLLP("LooseLLP");                         enumMap.insert(std::make_pair(LooseLLP             , LikeEnum::LooseLLP));
+    std::string MediumLLP("MediumLLP");                       enumMap.insert(std::make_pair(MediumLLP            , LikeEnum::MediumLLP));
+    std::string TightLLP("TightLLP");                         enumMap.insert(std::make_pair(TightLLP             , LikeEnum::TightLLP));
   }
 
   /* parser for electron cut-based PID enum */

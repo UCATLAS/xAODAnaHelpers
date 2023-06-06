@@ -7,7 +7,12 @@ ElectronLHPIDManager :: ElectronLHPIDManager ( std::string WP, bool debug ) :
   m_asgElectronLikelihoodTool_Loose(nullptr),
   m_asgElectronLikelihoodTool_LooseBL(nullptr),
   m_asgElectronLikelihoodTool_Medium(nullptr),
-  m_asgElectronLikelihoodTool_Tight(nullptr)
+  m_asgElectronLikelihoodTool_Tight(nullptr),
+  m_asgElectronLikelihoodTool_VeryLooseLLP(nullptr),
+  m_asgElectronLikelihoodTool_LooseLLP(nullptr),
+  m_asgElectronLikelihoodTool_MediumLLP(nullptr),
+  m_asgElectronLikelihoodTool_TightLLP(nullptr)
+
 {
       m_selectedWP = WP;
       m_debug      = debug;
@@ -18,11 +23,22 @@ ElectronLHPIDManager :: ElectronLHPIDManager ( std::string WP, bool debug ) :
       std::pair < std::string, AsgElectronLikelihoodTool* > loosebl     = std::make_pair( std::string("LooseBL"),     m_asgElectronLikelihoodTool_LooseBL     );
       std::pair < std::string, AsgElectronLikelihoodTool* > medium      = std::make_pair( std::string("Medium"),    m_asgElectronLikelihoodTool_Medium    );
       std::pair < std::string, AsgElectronLikelihoodTool* > tight       = std::make_pair( std::string("Tight"),     m_asgElectronLikelihoodTool_Tight     );
+
+      std::pair < std::string, AsgElectronLikelihoodTool* > verylooseLLP   = std::make_pair( std::string("VeryLooseLLP"), m_asgElectronLikelihoodTool_VeryLooseLLP );
+      std::pair < std::string, AsgElectronLikelihoodTool* > looseLLP       = std::make_pair( std::string("LooseLLP"),     m_asgElectronLikelihoodTool_LooseLLP     );
+      std::pair < std::string, AsgElectronLikelihoodTool* > mediumLLP      = std::make_pair( std::string("MediumLLP"),    m_asgElectronLikelihoodTool_MediumLLP    );
+      std::pair < std::string, AsgElectronLikelihoodTool* > tightLLP       = std::make_pair( std::string("TightLLP"),     m_asgElectronLikelihoodTool_TightLLP     );
+      
       m_allWPTools.insert(veryloose);   m_allWPAuxDecors.insert("VeryLoose");
       m_allWPTools.insert(loose);       m_allWPAuxDecors.insert("Loose");
       m_allWPTools.insert(loosebl);     m_allWPAuxDecors.insert("LooseBL");
       m_allWPTools.insert(medium);      m_allWPAuxDecors.insert("Medium");
       m_allWPTools.insert(tight);       m_allWPAuxDecors.insert("Tight");
+
+      m_allWPTools.insert(verylooseLLP);   m_allWPAuxDecors.insert("VeryLooseNoPix");
+      m_allWPTools.insert(looseLLP);       m_allWPAuxDecors.insert("LooseNoPix");
+      m_allWPTools.insert(mediumLLP);      m_allWPAuxDecors.insert("MediumNoPix");
+      m_allWPTools.insert(tightLLP);       m_allWPAuxDecors.insert("TightNoPix");
 }
 
 ElectronLHPIDManager ::  ~ElectronLHPIDManager()
@@ -32,6 +48,12 @@ ElectronLHPIDManager ::  ~ElectronLHPIDManager()
   if ( m_asgElectronLikelihoodTool_LooseBL )     { delete m_asgElectronLikelihoodTool_LooseBL;   m_asgElectronLikelihoodTool_LooseBL   = nullptr; }
   if ( m_asgElectronLikelihoodTool_Medium )      { delete m_asgElectronLikelihoodTool_Medium;    m_asgElectronLikelihoodTool_Medium    = nullptr; }
   if ( m_asgElectronLikelihoodTool_Tight )       { delete m_asgElectronLikelihoodTool_Tight;     m_asgElectronLikelihoodTool_Tight     = nullptr; }
+
+  if ( m_asgElectronLikelihoodTool_VeryLooseLLP )   { delete m_asgElectronLikelihoodTool_VeryLooseLLP; m_asgElectronLikelihoodTool_VeryLooseLLP = nullptr; }
+  if ( m_asgElectronLikelihoodTool_LooseLLP )       { delete m_asgElectronLikelihoodTool_LooseLLP;     m_asgElectronLikelihoodTool_LooseLLP     = nullptr; }
+  if ( m_asgElectronLikelihoodTool_MediumLLP )      { delete m_asgElectronLikelihoodTool_MediumLLP;    m_asgElectronLikelihoodTool_MediumLLP    = nullptr; }
+  if ( m_asgElectronLikelihoodTool_TightLLP )       { delete m_asgElectronLikelihoodTool_TightLLP;     m_asgElectronLikelihoodTool_TightLLP     = nullptr; }
+
 }
 
 
@@ -67,7 +89,10 @@ StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selec
       /* configure and initialise only tools with (WP >= selectedWP) */
       it.second->msg().setLevel( MSG::INFO); /* ERROR, VERBOSE, DEBUG, INFO */
 
-      ANA_CHECK( it.second->setProperty("WorkingPoint", WP+"LHElectron" ) );
+      std::string WPParseString = WP + "LHElectron";
+      if (WP.find("LLP") != std::string::npos) WPParseString = WP.substr(0, WP.size()-3) + "LHElectron_LLP";
+
+      ANA_CHECK( it.second->setProperty("WorkingPoint", WPParseString ) );
       ANA_CHECK( it.second->initialize());
 
       /* copy map element into container of valid WPs for later usage */
