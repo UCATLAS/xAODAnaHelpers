@@ -962,7 +962,19 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_applyTriggerCut ) {
 
-      if ( !triggerChainGroup->isPassed() ) {
+      // additional DEBUG logging to validate conditional logicss
+      ANA_MSG_DEBUG("Applying trigger cut corresponding to chain group " << m_triggerSelection);
+      ANA_MSG_DEBUG("Trigger chain group is NOT passed && is TLA data = " << int(!triggerChainGroup->isPassed(TrigDefs::requireDecision) && m_isTLAData));
+      ANA_MSG_DEBUG("Trigger chain group is NOT passed (no requireDecision) && is NOT TLA data = " << int(!triggerChainGroup->isPassed() && !m_isTLAData));
+
+      // different behaviour for isPassed depending on whether you are running on TLA data or not
+      // if running on TLA data, we only store the HLT part of the trigger decision i.e. the L1 part
+      // will always be "false", so we need to use TrigDefs::requireDecision to limit the decision 
+      // to being satisfied by the HLT leg(s) of the trigger chain
+      // TODO: check performance of this method when using trigger chains with the SAME HLT leg but different L1 seed
+      // e.g. HLT_j20_pf_ftf_L1J100 vs. HLT_j20_pf_ftf_L1HT190-J15s5pETA21
+      if ( (m_isTLAData && !triggerChainGroup->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && !triggerChainGroup->isPassed()) ) {
+      // if (!triggerChainGroup->isPassed(TrigDefs::requireDecision)) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS;
       }
@@ -986,7 +998,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       //
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-        if ( trigChain->isPassed() ) {
+        if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
           passedTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
 
@@ -1008,7 +1020,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
 	for ( const std::string &trigName : m_extraTriggerSelectionList ) {
 	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-	  if ( trigChain->isPassed() ) {
+	  if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
 	    passedTriggers.push_back( trigName );
 	    triggerPrescales.push_back( trigChain->getPrescale() );
 
@@ -1054,7 +1066,11 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
     if ( m_storePassHLT ) {
       static SG::AuxElement::Decorator< int > passHLT("passHLT");
-      passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
+      if (!m_isTLAData) {
+        passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
+      } else {
+        passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str(), TrigDefs::requireDecision) : -1;
+      }
     }
 
   } // if giving a specific list of triggers to look at

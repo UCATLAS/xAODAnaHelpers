@@ -48,6 +48,11 @@
 class BasicEventSelection : public xAH::Algorithm
 {
   public:
+
+  // Dijet+ISR TLA specific options
+    /// @brief Flag to determine when running on TLA data for different handling of TDT
+    bool m_isTLAData = false;
+
   // Sample type settings
     /// @brief Protection when running on truth xAOD
     bool m_truthLevelOnly = false;
