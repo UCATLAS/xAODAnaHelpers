@@ -103,7 +103,9 @@ StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selec
     for ( auto it : (m_allWPAuxDecors) ) {
 
       HelperClasses::EnumParser<LikeEnum::Menu>  WP_parser;
-      unsigned int WP_enum = static_cast<unsigned int>( WP_parser.parseEnum(it) );
+      std::string WPParseString = it;
+      if (it.find("NoPix") != std::string::npos) WPParseString = it.substr(0, it.size()-5) + "LLP";
+      unsigned int WP_enum = static_cast<unsigned int>( WP_parser.parseEnum(WPParseString) );
 
       /* if this WP is looser than user's WP, skip to next */
       if ( WP_enum < selectedWP_enum ) { continue; }
