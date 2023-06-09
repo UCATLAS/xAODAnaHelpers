@@ -53,6 +53,9 @@ namespace xAH {
       std::vector<float> *m_topoetcone20;
       std::vector<float> *m_topoetcone30;
       std::vector<float> *m_topoetcone40;
+      std::vector<float> *m_neflowisol20;
+      std::vector<float> *m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500;
+
 
       // quality
       std::map< std::string, std::vector< int >* >* m_quality;
