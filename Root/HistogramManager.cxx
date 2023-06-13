@@ -243,8 +243,28 @@ void HistogramManager::fillHist(const std::string& histName, double valueX, doub
   histPointer->Fill(valueX, valueY, weight);
 }
 
-// void HistogramManager::fillProfile(const std::string& histName, double value, double bin) {
-//   TH1* profilePointer(NULL);
-//   histPointer = this->findHist(histName);
-//   histPointer->Fill(value, bin)
-// }
+void HistogramManager::fillHist(const std::string& histName, double valueX, double valueY, double valueZ, double weight) {
+  TH3* histPointer(NULL);
+  HistMap_t::const_iterator it = m_histMap.find( histName );
+  if ( it == m_histMap.end() ) {
+    ANA_MSG_ERROR("Histogram name " << histName << " not found");
+    return;
+  }
+  else {
+    histPointer = (TH3*)it->second;
+  }
+  histPointer->Fill(valueX, valueY, valueZ, weight);
+}
+
+void HistogramManager::fillProfile(const std::string& histName, double valueX, double valueY, double weight) {
+  TProfile* histPointer(NULL);
+  HistMap_t::const_iterator it = m_histMap.find( histName );
+  if ( it == m_histMap.end() ) {
+    ANA_MSG_ERROR("Histogram name " << histName << " not found");
+    return;
+  }
+  else {
+    histPointer = (TProfile*)it->second;
+  }
+  histPointer->Fill(valueX, valueY, weight);
+}
