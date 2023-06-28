@@ -32,17 +32,18 @@ MuonContainer::MuonContainer(const std::string& name, const std::string& detailS
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    m_ptcone20                                   = new  vector<float> ();
-    m_ptcone30                                   = new  vector<float> ();
-    m_ptcone40                                   = new  vector<float> ();
-    m_ptvarcone20                                = new  vector<float> ();
-    m_ptvarcone30                                = new  vector<float> ();
-    m_ptvarcone40                                = new  vector<float> ();
-    m_topoetcone20                               = new  vector<float> ();
-    m_topoetcone30                               = new  vector<float> ();
-    m_topoetcone40                               = new  vector<float> ();
-    m_neflowisol20                               = new  vector<float> ();
-    m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 = new vector<float> ();
+    m_ptcone20                                       = new  vector<float> ();
+    m_ptcone30                                       = new  vector<float> ();
+    m_ptcone40                                       = new  vector<float> ();
+    m_ptvarcone20                                    = new  vector<float> ();
+    m_ptvarcone30                                    = new  vector<float> ();
+    m_ptvarcone40                                    = new  vector<float> ();
+    m_topoetcone20                                   = new  vector<float> ();
+    m_topoetcone30                                   = new  vector<float> ();
+    m_topoetcone40                                   = new  vector<float> ();
+    m_neflowisol20                                   = new  vector<float> ();
+    m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500  = new vector<float> ();
+    m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000 = new vector<float> ();
   }
 
   // quality
@@ -180,7 +181,8 @@ MuonContainer::~MuonContainer()
     delete m_topoetcone30                               ;
     delete m_topoetcone40                               ;
     delete m_neflowisol20                               ;                               
-    delete m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500;
+    delete m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 ;
+    delete m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000;
   }
   
   // quality
@@ -320,7 +322,8 @@ void MuonContainer::setTree(TTree *tree)
     connectBranch<float>(tree,"topoetcone30",   &m_topoetcone30);
     connectBranch<float>(tree,"topoetcone40",   &m_topoetcone40);
     connectBranch<float>(tree,"neflowisol20",   &m_neflowisol20);
-    connectBranch<float>(tree,"ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500", &m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500);
+    connectBranch<float>(tree,"ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500",  &m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500);
+    connectBranch<float>(tree,"ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000", &m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000);
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -449,8 +452,9 @@ void MuonContainer::updateParticle(uint idx, Muon& muon)
     muon.topoetcone20                             =     m_topoetcone20                               ->at(idx);
     muon.topoetcone30                             =     m_topoetcone30                               ->at(idx);
     muon.topoetcone40                             =     m_topoetcone40                               ->at(idx);
-    muon.neflowisol20 = m_neflowisol20->at(idx);
-    muon.ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 = m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 -> at(idx);
+    muon.neflowisol20                             =     m_neflowisol20                               ->at(idx);
+    muon.ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 = m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500   -> at(idx);
+    muon.ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000 = m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000 -> at(idx);
   }
   
   // quality
@@ -584,7 +588,8 @@ void MuonContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"topoetcone30",   m_topoetcone30);
     setBranch<float>(tree,"topoetcone40",   m_topoetcone40);
     setBranch<float>(tree,"neflowisol20",   m_neflowisol20);
-    setBranch<float>(tree,"ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500", m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500);
+    setBranch<float>(tree,"ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500",  m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500);
+    setBranch<float>(tree,"ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000", m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000);
   }
 
   if ( m_infoSwitch.m_effSF && m_mc ) {
@@ -714,6 +719,7 @@ void MuonContainer::clear()
     m_topoetcone40->clear();
     m_neflowisol20->clear();
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500->clear();
+    m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000->clear();
   }
 
   if ( m_infoSwitch.m_quality ) {
@@ -875,7 +881,8 @@ void MuonContainer::FillMuon( const xAOD::IParticle* particle, const xAOD::Verte
     m_topoetcone30->push_back( muon->isolation( xAOD::Iso::topoetcone30 )/m_units );
     m_topoetcone40->push_back( muon->isolation( xAOD::Iso::topoetcone40 )/m_units );
     m_neflowisol20->push_back( muon->isolation( xAOD::Iso::neflowisol20 )/m_units );
-    m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500->push_back( muon->isolation( xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 )/m_units );
+    m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 ->push_back( muon->isolation( xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 ) /m_units );
+    m_ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000->push_back( muon->isolation( xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000 )/m_units );
   }
 
   if ( m_infoSwitch.m_quality ) {
