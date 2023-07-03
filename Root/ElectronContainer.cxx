@@ -785,10 +785,16 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    m_ptvarcone20 ->push_back( elec->isolation( xAOD::Iso::ptvarcone20 ) /m_units );
+    if ( m_infoSwitch.m_doLRT ) {
+      m_ptvarcone20 ->push_back(-1.);
+      m_neflowisol20->push_back(-1.);
+    }
+    else {
+      m_ptvarcone20 ->push_back( elec->isolation( xAOD::Iso::ptvarcone20 ) /m_units );
+      m_neflowisol20->push_back( elec->isolation( xAOD::Iso::neflowisol20 )/m_units );
+    }
     m_topoetcone20->push_back( elec->isolation( xAOD::Iso::topoetcone20 )/m_units );
     m_topoetcone40->push_back( elec->isolation( xAOD::Iso::topoetcone40 )/m_units );
-    m_neflowisol20->push_back( elec->isolation( xAOD::Iso::neflowisol20 )/m_units );
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500    ->push_back( elec->isolation( xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500 )    /m_units );
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000   ->push_back( elec->isolation( xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000 )   /m_units );
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500 ->push_back( elec->isolation( xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500 ) /m_units );
