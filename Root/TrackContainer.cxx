@@ -310,64 +310,81 @@ void TrackContainer::FillTrack( const xAOD::IParticle* particle ){
     //m_definingParametersCovMatrix ->push_back(track->definingParametersCovMatrix() ); // fix this too
 
     static SG::AuxElement::ConstAccessor<unsigned char> expectInnermostPixelLayerHit("expectInnermostPixelLayerHit");
-    //safeFill<char, int, xAOD::TrackParticle>(track, expectInnermostPixelLayerHit, m_expectInnermostPixelLayerHit, -999);
-    m_expectInnermostPixelLayerHit->push_back(expectInnermostPixelLayerHit(*track));
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, expectInnermostPixelLayerHit, m_expectInnermostPixelLayerHit, -999);
+    //m_expectInnermostPixelLayerHit->push_back(expectInnermostPixelLayerHit(*track));
 
     //m_expectNextToInnermostPixelLayerHit->push_back(track->expectNextToInnermostPixelLayerHit() );
     static SG::AuxElement::ConstAccessor<unsigned char> expectNextToInnermostPixelLayerHit("expectNextToInnermostPixelLayerHit");
-    m_expectNextToInnermostPixelLayerHit->push_back(expectNextToInnermostPixelLayerHit(*track));
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, expectNextToInnermostPixelLayerHit, m_expectNextToInnermostPixelLayerHit, -999);
+    //m_expectNextToInnermostPixelLayerHit->push_back(expectNextToInnermostPixelLayerHit(*track));
   }
 
   if(m_infoSwitch.m_numbers){
     if(m_debug) std::cout << "Filling numbers" << std::endl;
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfInnermostPixelLayerHits("numberOfInnermostPixelLayerHits");
-    m_numberOfInnermostPixelLayerHits->push_back(numberOfInnermostPixelLayerHits(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfInnermostPixelLayerHits, m_numberOfInnermostPixelLayerHits, -999);
+    //m_numberOfInnermostPixelLayerHits->push_back(numberOfInnermostPixelLayerHits(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfNextToInnermostPixelLayerHits("numberOfNextToInnermostPixelLayerHits");
-    m_numberOfNextToInnermostPixelLayerHits->push_back(numberOfNextToInnermostPixelLayerHits(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfNextToInnermostPixelLayerHits, m_numberOfNextToInnermostPixelLayerHits, -999);
+    //m_numberOfNextToInnermostPixelLayerHits->push_back(numberOfNextToInnermostPixelLayerHits(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPhiHoleLayers("numberOfPhiHoleLayers");
-    m_numberOfPhiHoleLayers->push_back(numberOfPhiHoleLayers(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPhiHoleLayers, m_numberOfPhiHoleLayers, -999);
+    //m_numberOfPhiHoleLayers->push_back(numberOfPhiHoleLayers(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPhiLayers("numberOfPhiLayers");
-    m_numberOfPhiLayers->push_back(numberOfPhiLayers(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPhiLayers, m_numberOfPhiLayers, -999);
+    //m_numberOfPhiLayers->push_back(numberOfPhiLayers(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelDeadSensors("numberOfPixelDeadSensors");
-    m_numberOfPixelDeadSensors->push_back(numberOfPixelDeadSensors(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPixelDeadSensors, m_numberOfPixelDeadSensors, -999);
+    //m_numberOfPixelDeadSensors->push_back(numberOfPixelDeadSensors(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelHits("numberOfPixelHits");
-    m_numberOfPixelHits->push_back(numberOfPixelHits(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPixelHits, m_numberOfPixelHits, -999);
+    //m_numberOfPixelHits->push_back(numberOfPixelHits(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelHoles("numberOfPixelHoles");
-    m_numberOfPixelHoles->push_back(numberOfPixelHoles(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPixelHoles, m_numberOfPixelHoles, -999);
+    //m_numberOfPixelHoles->push_back(numberOfPixelHoles(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPixelSharedHits("numberOfPixelSharedHits");
-    m_numberOfPixelSharedHits->push_back(numberOfPixelSharedHits(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPixelSharedHits, m_numberOfPixelSharedHits, -999);
+    //m_numberOfPixelSharedHits->push_back(numberOfPixelSharedHits(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPrecisionHoleLayers("numberOfPrecisionHoleLayers");
-    m_numberOfPrecisionHoleLayers->push_back(numberOfPrecisionHoleLayers(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPrecisionHoleLayers, m_numberOfPrecisionHoleLayers, -999);
+    //m_numberOfPrecisionHoleLayers->push_back(numberOfPrecisionHoleLayers(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfPrecisionLayers("numberOfPrecisionLayers");
-    m_numberOfPrecisionLayers->push_back(numberOfPrecisionLayers(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfPrecisionLayers, m_numberOfPrecisionLayers, -999);
+    //m_numberOfPrecisionLayers->push_back(numberOfPrecisionLayers(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTDeadSensors("numberOfSCTDeadSensors");
-    m_numberOfSCTDeadSensors->push_back(numberOfSCTDeadSensors(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfSCTDeadSensors, m_numberOfSCTDeadSensors, -999);
+    //m_numberOfSCTDeadSensors->push_back(numberOfSCTDeadSensors(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTHits("numberOfSCTHits");
-    m_numberOfSCTHits->push_back(numberOfSCTHits(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfSCTHits, m_numberOfSCTHits, -999);
+    //m_numberOfSCTHits->push_back(numberOfSCTHits(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTHoles("numberOfSCTHoles");
-    m_numberOfSCTHoles->push_back(numberOfSCTHoles(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfSCTHoles, m_numberOfSCTHoles, -999);
+    //m_numberOfSCTHoles->push_back(numberOfSCTHoles(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfSCTSharedHits("numberOfSCTSharedHits");
-    m_numberOfSCTSharedHits->push_back(numberOfSCTSharedHits(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfSCTSharedHits, m_numberOfSCTSharedHits, -999);
+    //m_numberOfSCTSharedHits->push_back(numberOfSCTSharedHits(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfTRTHits("numberOfTRTHits");
-    m_numberOfTRTHits->push_back(numberOfTRTHits(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfTRTHits, m_numberOfTRTHits, -999);
+    //m_numberOfTRTHits->push_back(numberOfTRTHits(*track) );
 
     static SG::AuxElement::ConstAccessor<unsigned char> numberOfTRTOutliers("numberOfTRTOutliers");
-    m_numberOfTRTOutliers->push_back(numberOfTRTOutliers(*track) );
+    safeFill<unsigned char, unsigned char, xAOD::TrackParticle>(track, numberOfTRTOutliers, m_numberOfTRTOutliers, -999);
+    //m_numberOfTRTOutliers->push_back(numberOfTRTOutliers(*track) );
   }
 
   m_phi->push_back(track->phi() );
