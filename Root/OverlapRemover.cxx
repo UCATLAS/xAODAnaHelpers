@@ -154,7 +154,7 @@ EL::StatusCode OverlapRemover :: initialize ()
   orFlags.linkOverlapObjects  = m_linkOverlapObjects;
   orFlags.bJetLabel           = m_bTagWP;
   orFlags.boostedLeptons      = m_useBoostedLeptons;
-  orFlags.doEleEleOR          = m_doEleEleOR;
+  orFlags.doEleEleOR          = m_doEleEleOR || m_lepFavWP;
 
   orFlags.doJets      = true;
   orFlags.doMuons     = m_useMuons;
