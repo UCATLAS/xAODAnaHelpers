@@ -539,6 +539,7 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
   else if(tmp_name.Contains("SH_2210")) return Sherpa2210;
   else if(tmp_name.Contains("SH_2211")) return Sherpa2210;
   else if(tmp_name.Contains("SH_2212")) return Sherpa2210;
+  else if(tmp_name.Contains("SH_2214")) return Sherpa2210;
   else if(tmp_name.Contains("SHERPA")) return Sherpa22;
   else return Unknown;
 }
