@@ -141,7 +141,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_CHECK(checkToolStore<CP::IMuonEfficiencyScaleFactors>(m_recoEffSF_tool_name));
   const bool recoEffSFInstanceExists = asg::ToolStore::contains<CP::IMuonEfficiencyScaleFactors>(m_recoEffSF_tool_name);
-  
+
 
   // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
   m_muRecoSF_tool = asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors>("CP::MuonEfficiencyScaleFactors/"+m_recoEffSF_tool_name);
@@ -155,7 +155,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   assert(m_muRecoSF_tool.isInitialized());
 
   // only process systematics once per efficiency SF/WP
-  if(not recoEffSFInstanceExists) { 
+  if(not recoEffSFInstanceExists) {
     //  Add the chosen WP to the string labelling the vector<SF> decoration
     //
     m_outputSystNamesReco = m_outputSystNamesReco + "_Reco" + m_WorkingPointReco;
@@ -190,7 +190,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_CHECK( checkToolStore<CP::IMuonEfficiencyScaleFactors>(m_isoEffSF_tool_name));
   const bool isoEffSFInstanceExists = asg::ToolStore::contains<CP::IMuonEfficiencyScaleFactors>(m_isoEffSF_tool_name);
-  
+
   // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
   m_muIsoSF_tool = asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors>("CP::MuonEfficiencyScaleFactors/"+m_isoEffSF_tool_name);
   // setProperty is ignored if tool is already configured (i.e. for isoEffSFInstanceExists == true)
@@ -201,7 +201,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   }
   ANA_CHECK(m_muIsoSF_tool.retrieve());
   assert(m_muIsoSF_tool.isInitialized());
-  
+
   // only process systematics once per efficiency SF/WP
   if(not isoEffSFInstanceExists){
 
@@ -241,7 +241,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
   m_muTrigSF_tool = asg::AnaToolHandle<CP::IMuonTriggerScaleFactors>("CP::MuonTriggerScaleFactors/"+m_trigEffSF_tool_name );
-  // setProperty is ignored if tool is already configured 
+  // setProperty is ignored if tool is already configured
   if ( m_AllowZeroSF ) {
     ANA_MSG_WARNING( "m_AllowZeroSF is set to True. No errors will arise for runs missing required triggers!!!");
     ANA_CHECK( m_muTrigSF_tool.setProperty("AllowZeroSF", m_AllowZeroSF ));
@@ -249,7 +249,7 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
   ANA_CHECK(m_muTrigSF_tool.setProperty("MuonQuality", m_WorkingPointReco ));
   ANA_CHECK(m_muTrigSF_tool.retrieve());
   assert(m_muTrigSF_tool.isInitialized());
- 
+
   std::string token;
   std::istringstream ss(m_MuTrigLegs);
   while ( std::getline(ss, token, ',') ) {
@@ -292,10 +292,10 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
 
   ANA_CHECK( checkToolStore<CP::IMuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name));
   const bool TTVASFInstanceExists = asg::ToolStore::contains<CP::IMuonEfficiencyScaleFactors>(m_TTVAEffSF_tool_name);
- 
+
   // calling with only the first arg causes AnaToolHandle to use std::shared_ptr and return any already existing instance (aka making the tool "public")
   m_muTTVASF_tool = asg::AnaToolHandle<CP::IMuonEfficiencyScaleFactors>("CP::MuonEfficiencyScaleFactors/"+m_TTVAEffSF_tool_name);
-  // setProperty is ignored if tool is already configured (i.e. for TTVASFInstanceExists == true) 
+  // setProperty is ignored if tool is already configured (i.e. for TTVASFInstanceExists == true)
   ANA_CHECK( m_muTTVASF_tool.setProperty("WorkingPoint", m_WorkingPointTTVA ));
   if ( !m_overrideCalibRelease.empty() ) {
     ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
@@ -703,7 +703,8 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
 
       auto trig_it = trig.second;
       if (trig.first.find("2015")!=std::string::npos && run>284484) continue;
-      else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos || trig.first.find("2018")!=std::string::npos) && run<=284484) continue;
+      else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos || trig.first.find("2018")!=std::string::npos) && (run<=284484 || run >400000) ) continue;
+      else if (trig.first.find("2022")!=std::string::npos && run< 400000) continue;
 
       std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig = nullptr;
       if ( writeSystNames ) sysVariationNamesTrig = std::make_unique< std::vector< std::string > >();
@@ -839,7 +840,7 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
            ++idx;
 
         } // close muon loop
-	
+
 	// Get global trigger efficiency SF (using all muons)
 	if(!m_usePerMuonTriggerSFs){
            // Get SF
