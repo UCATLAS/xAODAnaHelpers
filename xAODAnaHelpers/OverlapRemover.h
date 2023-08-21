@@ -113,6 +113,8 @@ class OverlapRemover : public xAH::Algorithm
   bool m_doEleEleOR = false;
   /** @brief Turn ON ApplyRelPt in MuJetOverlapTool (default is false) */
   bool m_applyRelPt = false;
+  /** @brief Turn ON Lepton favored working point (HSG2 prescription)  */
+  bool m_lepFavWP = false;
 
   /** @brief Output systematics list container name */
   std::string  m_outputAlgoSystNames = "ORAlgo_Syst";

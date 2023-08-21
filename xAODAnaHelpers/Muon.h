@@ -32,6 +32,9 @@ namespace xAH {
     float topoetcone20;
     float topoetcone30;
     float topoetcone40;
+    float neflowisol20;
+    float ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500;
+    float ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000;
     
     // quality
     std::map< std::string, int > quality;
