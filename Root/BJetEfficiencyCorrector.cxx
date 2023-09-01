@@ -126,6 +126,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_taggerName == "DL1r")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "DL1dv00")   { taggerOK = true; m_getScaleFactors = false; }
   if (m_taggerName == "DL1dv01")   { taggerOK = true; m_getScaleFactors =  true; }
+  if (m_taggerName == "GN120220509")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "GN2v00LegacyWP")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "GN2v00NewAliasWP")   { taggerOK = true; m_getScaleFactors =  false; }
 
