@@ -36,7 +36,8 @@ public:
   std::string m_outputSystName = "BJetEfficiency_Algo";
   bool        m_writeSystToMetadata = false;
 
-  std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2021-22-13TeV-MC16-CDI-2021-12-02_v2.root";
+  std::string m_corrFileName = "xAODBTaggingEfficiency/13p6TeV/2023-22-13p6TeV-MC21-CDI_Test_2023-08-1_v1.root";
+
   std::string m_jetAuthor = "AntiKt4EMPFlowJets";
   /// @brief Minimum pT in MeV for taggable jets
   float       m_minPt = 20e3;

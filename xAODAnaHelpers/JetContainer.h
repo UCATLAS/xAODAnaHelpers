@@ -217,6 +217,14 @@ namespace xAH {
       std::vector<float> *m_GN1_pu;
       std::vector<float> *m_GN1_pc;
       std::vector<float> *m_GN1_pb;
+      std::vector<float> *m_GN2v00LegacyWP;
+      std::vector<float> *m_GN2v00LegacyWP_pu;
+      std::vector<float> *m_GN2v00LegacyWP_pc;
+      std::vector<float> *m_GN2v00LegacyWP_pb;
+      std::vector<float> *m_GN2v00NewAliasWP;
+      std::vector<float> *m_GN2v00NewAliasWP_pu;
+      std::vector<float> *m_GN2v00NewAliasWP_pc;
+      std::vector<float> *m_GN2v00NewAliasWP_pb;
 
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
@@ -368,7 +376,25 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::GN120220509_FixedCutBEff_77;
 	  else if(m_accessorName=="GN120220509_FixedCutBEff_85")
 	    m_op=Jet::BTaggerOP::GN120220509_FixedCutBEff_85;
-        }
+
+          else if(m_accessorName=="GN2v00LegacyWP_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_60;
+	  else if(m_accessorName=="GN2v00LegacyWP_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_70;
+	  else if(m_accessorName=="GN2v00LegacyWP_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_77;
+	  else if(m_accessorName=="GN2v00LegacyWP_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_85;
+
+          else if(m_accessorName=="GN2v00NewAliasWP_FixedCutBEff_60")
+	    m_op=Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_60;
+	  else if(m_accessorName=="GN2v00NewAliasWP_FixedCutBEff_70")
+	    m_op=Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_70;
+	  else if(m_accessorName=="GN2v00NewAliasWP_FixedCutBEff_77")
+	    m_op=Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_77;
+	  else if(m_accessorName=="GN2v00NewAliasWP_FixedCutBEff_85")
+	    m_op=Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_85;
+  }
 
         ~btagOpPoint()
 	{
