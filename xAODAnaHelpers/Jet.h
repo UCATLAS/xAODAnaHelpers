@@ -16,7 +16,7 @@ namespace xAH {
 	DL1dv00_FixedCutBEff_60  , DL1dv00_FixedCutBEff_70  , DL1dv00_FixedCutBEff_77  , DL1dv00_FixedCutBEff_85  ,
 	DL1dv01_FixedCutBEff_60  , DL1dv01_FixedCutBEff_70  , DL1dv01_FixedCutBEff_77  , DL1dv01_FixedCutBEff_85  ,
 	GN120220509_FixedCutBEff_60  , GN120220509_FixedCutBEff_70  , GN120220509_FixedCutBEff_77  , GN120220509_FixedCutBEff_85  ,
-	DL1dv00_Continuous, DL1r_Continuous, DL1dv01_Continuous, GN120220509_Continuous// Continuous
+	DL1dv00_Continuous, DL1r_Continuous, DL1dv01_Continuous, GN120220509_Continuous , // Continuous
   GN2v00LegacyWP_FixedCutBEff_60  , GN2v00LegacyWP_FixedCutBEff_70  , GN2v00LegacyWP_FixedCutBEff_77  , GN2v00LegacyWP_FixedCutBEff_85  ,
   GN2v00NewAliasWP_FixedCutBEff_60  , GN2v00NewAliasWP_FixedCutBEff_70  , GN2v00NewAliasWP_FixedCutBEff_77  , GN2v00NewAliasWP_FixedCutBEff_85  ,
       };
@@ -234,6 +234,7 @@ namespace xAH {
       std::vector<float> SF_GN120220509_FixedCutBEff_77;
       int is_GN120220509_FixedCutBEff_85;
       std::vector<float> SF_GN120220509_FixedCutBEff_85;
+      int is_GN2v00LegacyWP_FixedCutBEff_60;
       std::vector<float> SF_GN2v00LegacyWP_FixedCutBEff_60;
       int is_GN2v00LegacyWP_FixedCutBEff_70;
       std::vector<float> SF_GN2v00LegacyWP_FixedCutBEff_70;
