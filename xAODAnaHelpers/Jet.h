@@ -16,7 +16,9 @@ namespace xAH {
 	DL1dv00_FixedCutBEff_60  , DL1dv00_FixedCutBEff_70  , DL1dv00_FixedCutBEff_77  , DL1dv00_FixedCutBEff_85  ,
 	DL1dv01_FixedCutBEff_60  , DL1dv01_FixedCutBEff_70  , DL1dv01_FixedCutBEff_77  , DL1dv01_FixedCutBEff_85  ,
 	GN120220509_FixedCutBEff_60  , GN120220509_FixedCutBEff_70  , GN120220509_FixedCutBEff_77  , GN120220509_FixedCutBEff_85  ,
-	DL1dv00_Continuous, DL1r_Continuous, DL1dv01_Continuous, GN120220509_Continuous// Continuous
+	DL1dv00_Continuous, DL1r_Continuous, DL1dv01_Continuous, GN120220509_Continuous , // Continuous
+  GN2v00LegacyWP_FixedCutBEff_60  , GN2v00LegacyWP_FixedCutBEff_70  , GN2v00LegacyWP_FixedCutBEff_77  , GN2v00LegacyWP_FixedCutBEff_85  ,
+  GN2v00NewAliasWP_FixedCutBEff_60  , GN2v00NewAliasWP_FixedCutBEff_70  , GN2v00NewAliasWP_FixedCutBEff_77  , GN2v00NewAliasWP_FixedCutBEff_85  ,
       };
 
       float rapidity;
@@ -104,6 +106,14 @@ namespace xAH {
       float GN1_pu;
       float GN1_pc;
       float GN1_pb;
+      float GN2v00LegacyWP;
+      float GN2v00LegacyWP_pu;
+      float GN2v00LegacyWP_pc;
+      float GN2v00LegacyWP_pb;
+      float GN2v00NewAliasWP;
+      float GN2v00NewAliasWP_pu;
+      float GN2v00NewAliasWP_pc;
+      float GN2v00NewAliasWP_pb;
       int  HadronConeExclTruthLabelID;
       int  HadronConeExclExtendedTruthLabelID;
 
@@ -224,6 +234,22 @@ namespace xAH {
       std::vector<float> SF_GN120220509_FixedCutBEff_77;
       int is_GN120220509_FixedCutBEff_85;
       std::vector<float> SF_GN120220509_FixedCutBEff_85;
+      int is_GN2v00LegacyWP_FixedCutBEff_60;
+      std::vector<float> SF_GN2v00LegacyWP_FixedCutBEff_60;
+      int is_GN2v00LegacyWP_FixedCutBEff_70;
+      std::vector<float> SF_GN2v00LegacyWP_FixedCutBEff_70;
+      int is_GN2v00LegacyWP_FixedCutBEff_77;
+      std::vector<float> SF_GN2v00LegacyWP_FixedCutBEff_77;
+      int is_GN2v00LegacyWP_FixedCutBEff_85;
+      std::vector<float> SF_GN2v00LegacyWP_FixedCutBEff_85;
+      int is_GN2v00NewAliasWP_FixedCutBEff_60;
+      std::vector<float> SF_GN2v00NewAliasWP_FixedCutBEff_60;
+      int is_GN2v00NewAliasWP_FixedCutBEff_70;
+      std::vector<float> SF_GN2v00NewAliasWP_FixedCutBEff_70;
+      int is_GN2v00NewAliasWP_FixedCutBEff_77;
+      std::vector<float> SF_GN2v00NewAliasWP_FixedCutBEff_77;
+      int is_GN2v00NewAliasWP_FixedCutBEff_85;
+      std::vector<float> SF_GN2v00NewAliasWP_FixedCutBEff_85;
 
       // Continuous
       int is_DL1r_Continuous;
@@ -238,7 +264,12 @@ namespace xAH {
       int is_GN120220509_Continuous;
       std::vector<float> SF_GN120220509_Continuous;
       std::vector<float> inEffSF_GN120220509_Continuous;
-
+      int is_GN2v00LegacyWP_Continuous;
+      std::vector<float> SF_GN2v00LegacyWP_Continuous;
+      std::vector<float> inEffSF_GN2v00LegacyWP_Continuous;
+      int is_GN2v00NewAliasWP_Continuous;
+      std::vector<float> SF_GN2v00NewAliasWP_Continuous;
+      std::vector<float> inEffSF_GN2v00NewAliasWP_Continuous;
 
       // truth
       int   ConeTruthLabelID;
