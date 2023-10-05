@@ -19,11 +19,6 @@ jobs:
         release_type:
           - analysisbase
         release_version:
-          - 24.2.19
-          - 24.2.20
-          - 24.2.21
-          - 24.2.22
-          - 24.2.23
           - 24.2.24
 
     steps:
