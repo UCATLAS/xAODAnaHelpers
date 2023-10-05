@@ -115,6 +115,8 @@ public:
   /** add LRT muon information */
   bool       	 m_doLRT = false;
 
+  std::string m_isoDecSuffix = "";
+
 private:
 
   int            m_muonQuality; //!

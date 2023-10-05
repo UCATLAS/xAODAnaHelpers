@@ -301,6 +301,7 @@ namespace HelperClasses {
     bool m_passOR;
 
     bool m_doLRT;
+    bool m_closeByCorr;
 
     bool m_recoEff_sysNames;
     bool m_isoEff_sysNames;
@@ -373,6 +374,7 @@ namespace HelperClasses {
     bool m_passSel;
     bool m_passOR;
     bool m_doLRT;
+    bool m_closeByCorr;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:

@@ -302,6 +302,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
   ANA_CHECK( m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()));
   ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level()));
+  if (m_isoDecSuffix!="") ANA_CHECK ( m_isolationSelectionTool_handle.setProperty("IsoDecSuffix", m_isoDecSuffix) );
   ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_isolationSelectionTool_handle);
   m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
