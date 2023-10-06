@@ -106,28 +106,28 @@ void TrackContainer::setTree(TTree *tree)
     connectBranch<float>(tree, "chiSquared", &m_chiSquared);
     connectBranch<float>(tree, "d0", &m_d0);
     connectBranch<std::vector<float> >(tree, "definingParametersCovMatrix", &m_definingParametersCovMatrix);
-    connectBranch<unsigned char>(tree, "expectInnermostPixelLayerHit", &m_expectInnermostPixelLayerHit);
-    connectBranch<unsigned char>(tree, "expectNextToInnermostPixelLayerHit", &m_expectNextToInnermostPixelLayerHit);
+    connectBranch<char>(tree, "expectInnermostPixelLayerHit", &m_expectInnermostPixelLayerHit);
+    connectBranch<char>(tree, "expectNextToInnermostPixelLayerHit", &m_expectNextToInnermostPixelLayerHit);
     connectBranch<float>(tree, "numberDoF", &m_numberDoF);
   }
 
   if(m_infoSwitch.m_numbers){
-    connectBranch<unsigned char>(tree, "numberOfInnermostPixelLayerHits", &m_numberOfInnermostPixelLayerHits);
-    connectBranch<unsigned char>(tree, "numberOfNextToInnermostPixelLayerHits", &m_numberOfNextToInnermostPixelLayerHits);
-    connectBranch<unsigned char>(tree, "numberOfPhiHoleLayers", &m_numberOfPhiHoleLayers);
-    connectBranch<unsigned char>(tree, "numberOfPhiLayers", &m_numberOfPhiLayers);
-    connectBranch<unsigned char>(tree, "numberOfPixelDeadSensors", &m_numberOfPixelDeadSensors);
-    connectBranch<unsigned char>(tree, "numberOfPixelHits", &m_numberOfPixelHits);
-    connectBranch<unsigned char>(tree, "numberOfPixelHoles", &m_numberOfPixelHoles);
-    connectBranch<unsigned char>(tree, "numberOfPixelSharedHits", &m_numberOfPixelSharedHits);
-    connectBranch<unsigned char>(tree, "numberOfPrecisionHoleLayers", &m_numberOfPrecisionHoleLayers);
-    connectBranch<unsigned char>(tree, "numberOfPrecisionLayers", &m_numberOfPrecisionLayers);
-    connectBranch<unsigned char>(tree, "numberOfSCTDeadSensors", &m_numberOfSCTDeadSensors);
-    connectBranch<unsigned char>(tree, "numberOfSCTHits", &m_numberOfSCTHits);
-    connectBranch<unsigned char>(tree, "numberOfSCTHoles", &m_numberOfSCTHoles);
-    connectBranch<unsigned char>(tree, "numberOfSCTSharedHits", &m_numberOfSCTSharedHits);
-    connectBranch<unsigned char>(tree, "numberOfTRTHits", &m_numberOfTRTHits);
-    connectBranch<unsigned char>(tree, "numberOfTRTOutliers", &m_numberOfTRTOutliers);
+    connectBranch<char>(tree, "numberOfInnermostPixelLayerHits", &m_numberOfInnermostPixelLayerHits);
+    connectBranch<char>(tree, "numberOfNextToInnermostPixelLayerHits", &m_numberOfNextToInnermostPixelLayerHits);
+    connectBranch<char>(tree, "numberOfPhiHoleLayers", &m_numberOfPhiHoleLayers);
+    connectBranch<char>(tree, "numberOfPhiLayers", &m_numberOfPhiLayers);
+    connectBranch<char>(tree, "numberOfPixelDeadSensors", &m_numberOfPixelDeadSensors);
+    connectBranch<char>(tree, "numberOfPixelHits", &m_numberOfPixelHits);
+    connectBranch<char>(tree, "numberOfPixelHoles", &m_numberOfPixelHoles);
+    connectBranch<char>(tree, "numberOfPixelSharedHits", &m_numberOfPixelSharedHits);
+    connectBranch<char>(tree, "numberOfPrecisionHoleLayers", &m_numberOfPrecisionHoleLayers);
+    connectBranch<char>(tree, "numberOfPrecisionLayers", &m_numberOfPrecisionLayers);
+    connectBranch<char>(tree, "numberOfSCTDeadSensors", &m_numberOfSCTDeadSensors);
+    connectBranch<char>(tree, "numberOfSCTHits", &m_numberOfSCTHits);
+    connectBranch<char>(tree, "numberOfSCTHoles", &m_numberOfSCTHoles);
+    connectBranch<char>(tree, "numberOfSCTSharedHits", &m_numberOfSCTSharedHits);
+    connectBranch<char>(tree, "numberOfTRTHits", &m_numberOfTRTHits);
+    connectBranch<char>(tree, "numberOfTRTOutliers", &m_numberOfTRTOutliers);
   }
 
   connectBranch<float>(tree, "phi", &m_phi);
@@ -204,28 +204,28 @@ void TrackContainer::setBranches(TTree *tree)
   setBranch<float>(tree, "chiSquared", m_chiSquared);
   setBranch<float>(tree, "d0", m_d0);
   setBranch<std::vector<float>>(tree, "definingParametersCovMatrix", m_definingParametersCovMatrix);
-  setBranch<unsigned char>(tree, "expectInnermostPixelLayerHit", m_expectInnermostPixelLayerHit);
-  setBranch<unsigned char>(tree, "expectNextToInnermostPixelLayerHit", m_expectNextToInnermostPixelLayerHit);
+  setBranch<char>(tree, "expectInnermostPixelLayerHit", m_expectInnermostPixelLayerHit);
+  setBranch<char>(tree, "expectNextToInnermostPixelLayerHit", m_expectNextToInnermostPixelLayerHit);
   setBranch<float>(tree, "numberDoF", m_numberDoF);
   }
 
   if(m_infoSwitch.m_numbers){
-    setBranch<unsigned char>(tree, "numberOfInnermostPixelLayerHits", m_numberOfInnermostPixelLayerHits);
-    setBranch<unsigned char>(tree, "numberOfNextToInnermostPixelLayerHits", m_numberOfNextToInnermostPixelLayerHits);
-    setBranch<unsigned char>(tree, "numberOfPhiHoleLayers", m_numberOfPhiHoleLayers);
-    setBranch<unsigned char>(tree, "numberOfPhiLayers", m_numberOfPhiLayers);
-    setBranch<unsigned char>(tree, "numberOfPixelDeadSensors", m_numberOfPixelDeadSensors);
-    setBranch<unsigned char>(tree, "numberOfPixelHits", m_numberOfPixelHits);
-    setBranch<unsigned char>(tree, "numberOfPixelHoles", m_numberOfPixelHoles);
-    setBranch<unsigned char>(tree, "numberOfPixelSharedHits", m_numberOfPixelSharedHits);
-    setBranch<unsigned char>(tree, "numberOfPrecisionHoleLayers", m_numberOfPrecisionHoleLayers);
-    setBranch<unsigned char>(tree, "numberOfPrecisionLayers", m_numberOfPrecisionLayers);
-    setBranch<unsigned char>(tree, "numberOfSCTDeadSensors", m_numberOfSCTDeadSensors);
-    setBranch<unsigned char>(tree, "numberOfSCTHits", m_numberOfSCTHits);
-    setBranch<unsigned char>(tree, "numberOfSCTHoles", m_numberOfSCTHoles);
-    setBranch<unsigned char>(tree, "numberOfSCTSharedHits", m_numberOfSCTSharedHits);
-    setBranch<unsigned char>(tree, "numberOfTRTHits", m_numberOfTRTHits);
-    setBranch<unsigned char>(tree, "numberOfTRTOutliers", m_numberOfTRTOutliers);
+    setBranch<char>(tree, "numberOfInnermostPixelLayerHits", m_numberOfInnermostPixelLayerHits);
+    setBranch<char>(tree, "numberOfNextToInnermostPixelLayerHits", m_numberOfNextToInnermostPixelLayerHits);
+    setBranch<char>(tree, "numberOfPhiHoleLayers", m_numberOfPhiHoleLayers);
+    setBranch<char>(tree, "numberOfPhiLayers", m_numberOfPhiLayers);
+    setBranch<char>(tree, "numberOfPixelDeadSensors", m_numberOfPixelDeadSensors);
+    setBranch<char>(tree, "numberOfPixelHits", m_numberOfPixelHits);
+    setBranch<char>(tree, "numberOfPixelHoles", m_numberOfPixelHoles);
+    setBranch<char>(tree, "numberOfPixelSharedHits", m_numberOfPixelSharedHits);
+    setBranch<char>(tree, "numberOfPrecisionHoleLayers", m_numberOfPrecisionHoleLayers);
+    setBranch<char>(tree, "numberOfPrecisionLayers", m_numberOfPrecisionLayers);
+    setBranch<char>(tree, "numberOfSCTDeadSensors", m_numberOfSCTDeadSensors);
+    setBranch<char>(tree, "numberOfSCTHits", m_numberOfSCTHits);
+    setBranch<char>(tree, "numberOfSCTHoles", m_numberOfSCTHoles);
+    setBranch<char>(tree, "numberOfSCTSharedHits", m_numberOfSCTSharedHits);
+    setBranch<char>(tree, "numberOfTRTHits", m_numberOfTRTHits);
+    setBranch<char>(tree, "numberOfTRTOutliers", m_numberOfTRTOutliers);
   }
 
   setBranch<float>(tree, "phi", m_phi);
