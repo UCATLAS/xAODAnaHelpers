@@ -196,10 +196,10 @@ EL::StatusCode ElectronSelector :: initialize ()
        m_LHOperatingPoint != "LooseBL"       &&
        m_LHOperatingPoint != "Medium"        &&
        m_LHOperatingPoint != "Tight"         &&
-       m_LHOperatingPoint != "VeryLooseLLP"  &&
-       m_LHOperatingPoint != "LooseLLP"      &&
-       m_LHOperatingPoint != "MediumLLP"     &&
-       m_LHOperatingPoint != "TightLLP"     ) {
+       m_LHOperatingPoint != "VeryLooseLLP"  && m_LHOperatingPoint != "VeryLooseNoPix"  &&
+       m_LHOperatingPoint != "LooseLLP"      && m_LHOperatingPoint != "LooseNoPix"      &&
+       m_LHOperatingPoint != "MediumLLP"     && m_LHOperatingPoint != "MediumNoPix"     &&
+       m_LHOperatingPoint != "TightLLP"      && m_LHOperatingPoint != "TightNoPix"   ) {
     ANA_MSG_ERROR( "Unknown electron likelihood PID requested " << m_LHOperatingPoint);
     return EL::StatusCode::FAILURE;
   }
@@ -1020,54 +1020,51 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
       const static SG::AuxElement::ConstAccessor<char> acc_EG_Medium("DFCommonElectronsLHMedium");
       const static SG::AuxElement::ConstAccessor<char> acc_EG_Tight("DFCommonElectronsLHTight");
 
-      const static SG::AuxElement::ConstAccessor<char> acc_EG_VeryLooseNoPix("DFCommonElectronsLHVeryLooseNoPix");
-      const static SG::AuxElement::ConstAccessor<char> acc_EG_LooseNoPix("DFCommonElectronsLHLooseNoPix");
-      const static SG::AuxElement::ConstAccessor<char> acc_EG_MediumNoPix("DFCommonElectronsLHMediumNoPix");
-      const static SG::AuxElement::ConstAccessor<char> acc_EG_TightNoPix("DFCommonElectronsLHTightNoPix");
-
       if ( m_doLHPIDcut ) {
 
         bool passSelID(false);
         SG::AuxElement::ConstAccessor< char > LHDecision( "DFCommonElectronsLH" + m_LHOperatingPoint );
         if( LHDecision.isAvailable( *electron ) ){
-	  if (m_doModifiedEleId){
-	    if(m_LHOperatingPoint == "Tight"){
-	      passSelID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
-	    } else if(m_LHOperatingPoint == "Medium"){
-	      passSelID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
-	    } else if (m_LHOperatingPoint == "Loose") {
-	      passSelID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
-	    } else { passSelID = LHDecision( *electron ); }
-	  }
-	  else
+          if (m_doModifiedEleId){
+            if(m_LHOperatingPoint == "Tight"){
+              passSelID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
+            } else if(m_LHOperatingPoint == "Medium"){
+              passSelID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
+            } else if (m_LHOperatingPoint == "Loose") {
+              passSelID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
+            } else { passSelID = LHDecision( *electron ); }
+          }
+          else {
             passSelID = LHDecision( *electron );
-	}
-	if ( !passSelID ) {
-	  ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
+          }
+        }
+	      if ( !passSelID ) {
+	        ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
           return 0;
         }
       }
 
       const std::set<std::string> myLHWPs = m_el_LH_PIDManager->getValidWPs();
       for ( auto it : (myLHWPs) ) {
-
         const std::string decorWP =  "LH"+it;
-
         bool passThisID(false);
         SG::AuxElement::ConstAccessor< char > LHDecisionAll( "DFCommonElectrons" + decorWP );
+
         if( LHDecisionAll.isAvailable( *electron ) ){
-	  if (m_doModifiedEleId){
-	    if(decorWP == "LHTight"){
-	      passThisID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
-	    } else if(decorWP == "LHMedium"){
-	      passThisID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
-	    } else if (decorWP == "LHLoose") {
-	      passThisID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
-	    } else { passThisID = LHDecisionAll( *electron ); }
-	  }
-	  else
+
+          if (m_doModifiedEleId){
+            if(decorWP == "LHTight"){
+              passThisID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
+            } else if(decorWP == "LHMedium"){
+              passThisID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
+            } else if (decorWP == "LHLoose") {
+              passThisID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
+            } else { passThisID = LHDecisionAll( *electron ); }
+          }
+          else {
             passThisID = LHDecisionAll( *electron );
-	}
+          }
+	      }
 
         ANA_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
         ANA_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << passThisID );
@@ -1075,7 +1072,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
       }
 
-    } else {
+    } 
+    else {
 
       // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
       //
