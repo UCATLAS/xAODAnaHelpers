@@ -179,7 +179,7 @@ public:
      See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
      @endrst
   */
-  std::string m_SFFileJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
+  std::string m_SFFileJVT = "DummySFs.root"; // Due to a recent change in the JetJvtEfficiency tool, we need to explicitly turn on the dummy SF mode by given this string 
   std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
   /// @brief Tagging algorithm to be used to veto PU jets in central region - default in R22 is NNJvt. If another algorithm is needed, use corresponding index for the enum here: https://acode-browser1.usatlas.bnl.gov/lxr/source/athena/PhysicsAnalysis/Interfaces/JetAnalysisInterfaces/JetAnalysisInterfaces/IJetJvtEfficiency.h#0022 (note: this link points to the latest r22 version, i.e. master, if a release is used, please check the corresponding enum for the given release: https://gitlab.cern.ch/atlas/athena/-/tags?search=release%2F22.2&sort=updated_desc)
   int m_JvtTaggingAlg = CP::JvtTagger::NNJvt;
