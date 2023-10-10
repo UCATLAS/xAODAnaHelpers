@@ -541,8 +541,8 @@ EL::StatusCode METConstructor :: execute ()
 
      // build met:
 
-     ANA_CHECK( met::buildMETSum("FinalClus", newMet.get(), MissingETBase::Source::LCTopo));
-     ANA_CHECK( met::buildMETSum("FinalTrk",  newMet.get(), MissingETBase::Source::Track));
+     ANA_CHECK( met::buildMETSum("FinalClus", newMet.get(), static_cast<MissingETBase::Types::bitmask_t>(MissingETBase::Source::Signal::LCTopo) ));
+     ANA_CHECK( met::buildMETSum("FinalTrk",  newMet.get(), static_cast<MissingETBase::Types::bitmask_t>(MissingETBase::Source::Signal::Track) ));
 
      // Calculate MET significance if enabled
      if ( m_calculateSignificance ) {

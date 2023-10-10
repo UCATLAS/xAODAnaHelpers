@@ -197,6 +197,8 @@ public:
   /// @brief Input prefix of trigger decision tool
   std::string    m_trigInputPrefix = "";
 
+  std::string    m_isoDecSuffix = "";
+
 private:
 
   /**

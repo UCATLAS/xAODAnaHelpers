@@ -59,7 +59,8 @@ ElectronLHPIDManager ::  ~ElectronLHPIDManager()
 
 StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selector_name) {
   using namespace msgPIDManager;
-  const std::string selectedWP = m_selectedWP;
+  std::string selectedWP = m_selectedWP;
+  if (m_selectedWP.find("NoPix") != std::string::npos) selectedWP = m_selectedWP.substr(0, m_selectedWP.size()-5) + "LLP";
   HelperClasses::EnumParser<LikeEnum::Menu> selectedWP_parser;
   unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(selectedWP) );
 
@@ -67,6 +68,7 @@ StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selec
   / ( see ElectronPhotonID/ElectronPhotonSelectorTools/trunk/ElectronPhotonSelectorTools/TElectronLikelihoodTool.h for definition)
   / to initialise ONLY the tools with WP tighter (or equal) the selected one.
   / The selected WP will be used to cut loose electrons in the selector, the tighter WPs to decorate!
+  Beware, this doesn't work if you are using LLP WPs since they are not ordered in the enum.
   */
   if ( configTools ) {
     for ( auto it : (m_allWPTools) ) {
@@ -83,8 +85,8 @@ StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selec
       HelperClasses::EnumParser<LikeEnum::Menu>  WP_parser;
       unsigned int WP_enum = static_cast<unsigned int>( WP_parser.parseEnum(WP) );
 
-      /* if this WP is looser than user's WP, skip to next */
-      if ( WP_enum < selectedWP_enum ) { continue; }
+      /* if this WP is looser than user's WP, skip to next. Don't do this if using LLP WPs. */
+      if ( WP_enum < selectedWP_enum && (selectedWP.find("LLP") == std::string::npos) ) { continue; }
 
       /* configure and initialise only tools with (WP >= selectedWP) */
       it.second->msg().setLevel( MSG::INFO); /* ERROR, VERBOSE, DEBUG, INFO */
@@ -107,8 +109,8 @@ StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selec
       if (it.find("NoPix") != std::string::npos) WPParseString = it.substr(0, it.size()-5) + "LLP";
       unsigned int WP_enum = static_cast<unsigned int>( WP_parser.parseEnum(WPParseString) );
 
-      /* if this WP is looser than user's WP, skip to next */
-      if ( WP_enum < selectedWP_enum ) { continue; }
+      /* if this WP is looser than user's WP, skip to next. Don't do this if using LLP WPs. */
+      if ( WP_enum < selectedWP_enum && (selectedWP.find("LLP") == std::string::npos) ) { continue; }
 
       /* copy map element into container of valid WPs for later usage */
       m_validWPs.insert( it );

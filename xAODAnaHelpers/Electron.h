@@ -36,6 +36,9 @@ namespace xAH {
     float topoetcone30;
     float topoetcone40;
     float neflowisol20;
+    float topoetcone20_CloseByCorr;
+    float ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr;
+    float ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr;
 
     // PID
     std::map< std::string, int > PID;

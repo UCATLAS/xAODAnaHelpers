@@ -31,14 +31,17 @@ ElectronContainer::ElectronContainer(const std::string& name, const std::string&
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    m_ptvarcone20                            = new std::vector<float> ();
     m_topoetcone20                           = new std::vector<float> ();
-    m_topoetcone40                           = new std::vector<float> ();
     m_neflowisol20                           = new std::vector<float> ();
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500            = new std::vector<float> ();
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000           = new std::vector<float> ();
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500         = new std::vector<float> ();
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000        = new std::vector<float> ();
+  }
+  if ( m_infoSwitch.m_closeByCorr ) {
+    m_topoetcone20_CloseByCorr            = new std::vector<float> ();
+    m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr              = new std::vector<float> ();
+    m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr           = new std::vector<float> ();
   }
 
   if ( m_infoSwitch.m_PID ) {
@@ -153,14 +156,17 @@ ElectronContainer::~ElectronContainer()
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    delete m_ptvarcone20                            ;
     delete m_topoetcone20                           ;
-    delete m_topoetcone40                           ;
     delete m_neflowisol20                           ;
     delete m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500                 ;
     delete m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000                ;
     delete m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500              ;
     delete m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000             ;
+  }
+  if ( m_infoSwitch.m_closeByCorr ) {
+    delete m_topoetcone20_CloseByCorr            ;
+    delete m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr              ;
+    delete m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr           ;
   }
 
   if ( m_infoSwitch.m_PID ) {
@@ -275,14 +281,17 @@ void ElectronContainer::setTree(TTree *tree)
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    connectBranch<float>(tree, "ptvarcone20",      &m_ptvarcone20);
     connectBranch<float>(tree, "topoetcone20",     &m_topoetcone20);
-    connectBranch<float>(tree, "topoetcone40",     &m_topoetcone40);
     connectBranch<float>(tree, "neflowisol20",     &m_neflowisol20);    
     connectBranch<float>(tree, "ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500",     &m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500);
     connectBranch<float>(tree, "ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000",    &m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000);
     connectBranch<float>(tree, "ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500",  &m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500);
-    connectBranch<float>(tree, "ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000", &m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000);
+    connectBranch<float>(tree, "ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000", &m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000);  
+  }
+  if ( m_infoSwitch.m_closeByCorr ) {
+    connectBranch<float>(tree, "topoetcone20_CloseByCorr",    &m_topoetcone20_CloseByCorr)            ;
+    connectBranch<float>(tree, "ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr",    &m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr)              ;
+    connectBranch<float>(tree, "ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr",    &m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr)           ;
   }
 
   if ( m_infoSwitch.m_PID ) {
@@ -394,14 +403,17 @@ void ElectronContainer::updateParticle(uint idx, Electron& elec)
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    elec.ptvarcone20                              =     m_ptvarcone20                                ->at(idx);
     elec.topoetcone20                             =     m_topoetcone20                               ->at(idx);
-    elec.topoetcone40                             =     m_topoetcone40                               ->at(idx);
     elec.neflowisol20                             =     m_neflowisol20                               ->at(idx);
     elec.ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500             =     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500         ->at(idx);
     elec.ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000            =     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000        ->at(idx);
     elec.ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500          =     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500      ->at(idx);
     elec.ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000         =     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000     ->at(idx);
+  }
+  if ( m_infoSwitch.m_closeByCorr ) {
+    elec.topoetcone20_CloseByCorr                            = m_topoetcone20_CloseByCorr            ->at(idx);
+    elec.ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr          = m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr              ->at(idx);
+    elec.ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr       = m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr           ->at(idx);
   }
 
   // quality
@@ -513,14 +525,17 @@ void ElectronContainer::setBranches(TTree *tree)
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    setBranch<float>(tree, "ptvarcone20",      m_ptvarcone20);
     setBranch<float>(tree, "topoetcone20",     m_topoetcone20);
-    setBranch<float>(tree, "topoetcone40",     m_topoetcone40);
     setBranch<float>(tree, "neflowisol20",     m_neflowisol20);
     setBranch<float>(tree, "ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500",     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500);
     setBranch<float>(tree, "ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000",    m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000);
     setBranch<float>(tree, "ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500",  m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500);
     setBranch<float>(tree, "ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000", m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000);
+  }
+  if ( m_infoSwitch.m_closeByCorr ) {
+    setBranch<float>(tree, "topoetcone20_CloseByCorr",                            m_topoetcone20_CloseByCorr            );
+    setBranch<float>(tree, "ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr",          m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr              );
+    setBranch<float>(tree, "ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr",       m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr           );
   }
 
   if ( m_infoSwitch.m_PID ) {
@@ -630,14 +645,17 @@ void ElectronContainer::clear()
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    m_ptvarcone20                            ->clear();
     m_topoetcone20                           ->clear();
-    m_topoetcone40                           ->clear();
     m_neflowisol20                           ->clear();
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500        ->clear();
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000       ->clear();
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500     ->clear();
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000    ->clear();
+  }
+  if ( m_infoSwitch.m_closeByCorr ) {
+    m_topoetcone20_CloseByCorr                            ->clear();
+    m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr          ->clear();
+    m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr       ->clear();
   }
 
   if ( m_infoSwitch.m_PID ) {
@@ -785,20 +803,20 @@ void ElectronContainer::FillElectron( const xAOD::IParticle* particle, const xAO
   }
 
   if ( m_infoSwitch.m_isolationKinematics ) {
-    if ( m_infoSwitch.m_doLRT ) {
-      m_ptvarcone20 ->push_back(-1.);
-      m_neflowisol20->push_back(-1.);
-    }
-    else {
-      m_ptvarcone20 ->push_back( elec->isolation( xAOD::Iso::ptvarcone20 ) /m_units );
-      m_neflowisol20->push_back( elec->isolation( xAOD::Iso::neflowisol20 )/m_units );
-    }
     m_topoetcone20->push_back( elec->isolation( xAOD::Iso::topoetcone20 )/m_units );
-    m_topoetcone40->push_back( elec->isolation( xAOD::Iso::topoetcone40 )/m_units );
+    m_neflowisol20->push_back(m_infoSwitch.m_doLRT ? -1. : elec->isolation( xAOD::Iso::neflowisol20 )/m_units );
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500    ->push_back( elec->isolation( xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500 )    /m_units );
     m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000   ->push_back( elec->isolation( xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000 )   /m_units );
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500 ->push_back( elec->isolation( xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500 ) /m_units );
     m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000->push_back( elec->isolation( xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000 )/m_units );
+  }
+  if ( m_infoSwitch.m_closeByCorr ) {
+    SG::AuxElement::Accessor<float> acc_topoetcone20_CloseByCorr ("topoetcone20_CloseByCorr");
+    SG::AuxElement::Accessor<float> acc_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr ("ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr");
+    SG::AuxElement::Accessor<float> acc_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr ("ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr");
+    safeFill<float, float, xAOD::Electron>(elec, acc_topoetcone20_CloseByCorr, m_topoetcone20_CloseByCorr, -1, m_units);
+    safeFill<float, float, xAOD::Electron>(elec, acc_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr, m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr, -1, m_units);
+    safeFill<float, float, xAOD::Electron>(elec, acc_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr, m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr, -1, m_units);
   }
 
   if ( m_infoSwitch.m_PID ) {

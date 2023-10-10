@@ -26,6 +26,8 @@ namespace HelperClasses{
     std::string ptvarcone30("ptvarcone30");   enumMap.insert(std::make_pair(ptvarcone30,   xAOD::Iso::ptvarcone30));
     std::string ptvarcone40("ptvarcone40");   enumMap.insert(std::make_pair(ptvarcone40,   xAOD::Iso::ptvarcone40));
     std::string neflowisol20("neflowisol20"); enumMap.insert(std::make_pair(neflowisol20,  xAOD::Iso::neflowisol20));
+    std::string ptcone20_Nonprompt_All_MaxWeightTTVA_pt500 ("ptcone20_Nonprompt_All_MaxWeightTTVA_pt500");                      enumMap.insert(std::make_pair(ptcone20_Nonprompt_All_MaxWeightTTVA_pt500,             xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVA_pt500));
+    std::string ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000("ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000");                     enumMap.insert(std::make_pair(ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000,            xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000));
     std::string ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 ("ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500");                      enumMap.insert(std::make_pair(ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500,             xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500));
     std::string ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000("ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000");                     enumMap.insert(std::make_pair(ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000,            xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000));
     std::string ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500 ("ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500");          enumMap.insert(std::make_pair(ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500,       xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500));
@@ -223,6 +225,7 @@ namespace HelperClasses{
     m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames");
 
     m_doLRT = has_exact("doLRT");
+    m_closeByCorr = has_exact("IsolCloseByCorr");
 
   }
 
@@ -273,6 +276,8 @@ namespace HelperClasses{
     m_passOR = has_exact("passOR");
     //Add LRT flag
     m_doLRT = has_exact("doLRT");
+
+    m_closeByCorr = has_exact("IsolCloseByCorr");
   }
 
   void PhotonInfoSwitch::initialize(){
