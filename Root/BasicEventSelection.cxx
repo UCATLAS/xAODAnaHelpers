@@ -1228,7 +1228,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   std::vector<std::string> prwConfigFiles;
   for(const auto& mcCampaign : mcCampaignList)
     {
-      std::string prwConfigFile = PathResolverFindCalibFile("/dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
+      std::string prwConfigFile = PathResolverFindCalibFile("dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
       TFile testF(prwConfigFile.data(),"read");
       if(testF.IsZombie())
 	{
