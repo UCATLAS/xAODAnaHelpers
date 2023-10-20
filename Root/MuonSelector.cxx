@@ -809,9 +809,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   ANA_MSG_DEBUG( "Doing muon quality" );
   if ( !acceptMuon ) {
-      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
-      return 0;
-    }
+    ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
+    return 0;
   }
 
   if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 );
