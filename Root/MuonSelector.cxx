@@ -817,13 +817,10 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
     }
   }
   else {
-    if ( (!LRTdecorIsAvailable && !AcceptStdMuon) || (LRTdecorIsAvailable && !muonIsLRT && !AcceptStdMuon) ) {
-      // Checking if a muon is from the standard container, and if it fails the WP using the MST->accept() method.
-      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
-      return 0;
-    }
-    else if (LRTdecorIsAvailable && muonIsLRT && !AcceptLRTMuon) {
-      // Checking if a muon is from the LRT container, and if it fails the WP using the MST->getQuality() method.
+    if ( (!LRTdecorIsAvailable && !AcceptStdMuon) || //If decor is not available, the muon is standard
+         (LRTdecorIsAvailable && !muonIsLRT && !AcceptStdMuon) || //If decor is available and is 0, the muon is standard. Use accept() method for standard muons.
+         (LRTdecorIsAvailable && muonIsLRT && !AcceptLRTMuon) //If decor is available and is 1, the muon is LRT. Use getQuality() method for LRT muons.
+       ) {
       ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
       return 0;
     }
