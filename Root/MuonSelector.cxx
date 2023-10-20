@@ -798,7 +798,8 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   bool LRTdecorIsAvailable = false;
   bool muonIsLRT = false;
-  bool AcceptPromptMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
+  bool AcceptStdMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
+  bool AcceptLRTMuon = this_quality <= m_muonQuality; //LRT WP do not have the ID cuts applied so use getQuality()
 
   if ( m_doLRT ){
     static SG::AuxElement::Decorator< char > passIDcuts("passIDcuts");
@@ -810,13 +811,19 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   ANA_MSG_DEBUG( "Doing muon quality" );
   if ( !m_doLRT ){
-    if( !AcceptPromptMuon ){
+    if( !AcceptStdMuon ){
       ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
       return 0;
     }
   }
   else {
-    if ( (!LRTdecorIsAvailable && !AcceptPromptMuon) || (LRTdecorIsAvailable && !muonIsLRT && !AcceptPromptMuon) ) {
+    if ( (!LRTdecorIsAvailable && !AcceptStdMuon) || (LRTdecorIsAvailable && !muonIsLRT && !AcceptStdMuon) ) {
+      // Checking if a muon is from the standard container, and if it fails the WP using the MST->accept() method.
+      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
+      return 0;
+    }
+    else if (LRTdecorIsAvailable && muonIsLRT && !AcceptLRTMuon) {
+      // Checking if a muon is from the LRT container, and if it fails the WP using the MST->getQuality() method.
       ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
       return 0;
     }
