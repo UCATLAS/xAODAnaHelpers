@@ -796,31 +796,19 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   isMediumQDecor( *muon )    = ( this_quality <= static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
   isTightQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
 
-  bool LRTdecorIsAvailable = false;
-  bool muonIsLRT = false;
-  bool AcceptStdMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
-  bool AcceptLRTMuon = this_quality <= m_muonQuality; //LRT WP do not have the ID cuts applied so use getQuality()
+  bool acceptMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
 
-  if ( m_doLRT ){
+  if ( m_doLRT ) {
     static SG::AuxElement::Decorator< char > passIDcuts("passIDcuts");
     static SG::AuxElement::Accessor< char > isLRTmuon("isLRT");
     passIDcuts( *muon ) = m_muonSelectionTool_handle->passedIDCuts( *muon ) ? 1 : 0;
-    LRTdecorIsAvailable = isLRTmuon.isAvailable(*muon);
-    muonIsLRT = isLRTmuon(*muon) > 0.5;
+    if ( isLRTmuon.isAvailable(*muon) && isLRTmuon(*muon) ) { //checks if a muon is LRT
+      acceptMuon = this_quality <= m_muonQuality; //LRT WP do not have the ID cuts applied so use getQuality()
+    }
   }
 
   ANA_MSG_DEBUG( "Doing muon quality" );
-  if ( !m_doLRT ){
-    if( !AcceptStdMuon ){
-      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
-      return 0;
-    }
-  }
-  else {
-    if ( (!LRTdecorIsAvailable && !AcceptStdMuon) || //If decor is not available, the muon is standard
-         (LRTdecorIsAvailable && !muonIsLRT && !AcceptStdMuon) || //If decor is available and is 0, the muon is standard. Use accept() method for standard muons.
-         (LRTdecorIsAvailable && muonIsLRT && !AcceptLRTMuon) //If decor is available and is 1, the muon is LRT. Use getQuality() method for LRT muons.
-       ) {
+  if ( !acceptMuon ) {
       ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
       return 0;
     }
