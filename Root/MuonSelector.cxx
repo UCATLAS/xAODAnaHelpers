@@ -150,6 +150,7 @@ EL::StatusCode MuonSelector :: initialize ()
     m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_1->GetXaxis()->FindBin("eta_and_quality_cut");
     m_mu_cutflow_ptmax_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_mu_cutflow_ptmin_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
+    m_mu_cutflow_ptnan_check          = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptNaN_check");
     m_mu_cutflow_type_cut             = m_mu_cutflowHist_1->GetXaxis()->FindBin("type_cut");
     m_mu_cutflow_z0sintheta_cut       = m_mu_cutflowHist_1->GetXaxis()->FindBin("z0sintheta_cut");
     m_mu_cutflow_d0_cut               = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
@@ -166,6 +167,7 @@ EL::StatusCode MuonSelector :: initialize ()
       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");
       m_mu_cutflow_ptmax_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
       m_mu_cutflow_ptmin_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
+      m_mu_cutflow_ptnan_check   = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptNaN_check");
       m_mu_cutflow_type_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("type_cut");
       m_mu_cutflow_z0sintheta_cut	 = m_mu_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
       m_mu_cutflow_d0_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
@@ -842,6 +844,19 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
   if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmin_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmin_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  //
+  // pT NaN check
+  //
+  if ( m_pT_NaNcheck ) {
+    if ( muon->pt() != muon->pt() ) {
+      ANA_MSG_DEBUG( "Muon failed pT NaN check.");
+      return 0;
+    }
+  }
+  if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptnan_check, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptnan_check, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
