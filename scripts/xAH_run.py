@@ -22,6 +22,8 @@ import subprocess
 import sys
 import datetime
 import time
+from AthenaConfiguration.AllConfigFlags import initConfigFlags
+from AthenaConfiguration.AutoConfigFlags import GetFileMD
 
 try:
     import configparser
@@ -403,7 +405,23 @@ if __name__ == "__main__":
     xAH_logger.info("reading all metadata in {0}".format(path_metadata))
     ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
-    # this is the basic description of our job
+    flags = None
+    if (args.auto_flags):
+      try: import xAODAnaHelpers.metaConfig as metaConfig
+      except ImportError: import python.metaConfig as metaConfig
+
+      file_list = []
+      for sample in sh_all:
+        for i in range(sample.numFiles()):
+          file_list.append(sample.fileName(i))
+
+      flags = initConfigFlags()
+      flags.Input.Files = file_list
+      metadata = GetFileMD(file_list)
+      metaConfig.populate_config_flags(flags, metadata)
+      flags.lock()
+      metaConfig.pretty_print(flags)
+
     xAH_logger.info("creating new job")
     job = ROOT.EL.Job()
     job.sampleHandler(sh_all)
@@ -454,7 +472,7 @@ if __name__ == "__main__":
     else:
       #  Executing the python
       #   (configGlobals and configLocals are used to pass vars
-      configGlobals, configLocals = {}, {'args': args}
+      configGlobals, configLocals = {'flags': flags}, {'args': args}
       exec(open(args.config).read(), configGlobals, configLocals)
 
       # execfile(args.config, configGlobals, configLocals)
