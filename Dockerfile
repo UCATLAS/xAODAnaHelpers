@@ -42,8 +42,7 @@ RUN export RELEASE_TYPE=$([ "$DOCKER_IMG" == "analysisbase" ] && echo "AnalysisB
     && mkdir -p /workarea/build \
     && cd /workarea/build \
     #-DATLAS_USE_CUSTOM_CPACK_INSTALL_SCRIPT=TRUE is needed for some AB releases.
-    #&& time cmake ../src -DATLAS_USE_CUSTOM_CPACK_INSTALL_SCRIPT=TRUE \
-    && time cmake ../src \
+    && time cmake ../src -DATLAS_USE_CUSTOM_CPACK_INSTALL_SCRIPT=TRUE \
     && time make -j2 \
     && cpack \
     && rpm -i /workarea/build/*_*.rpm \
