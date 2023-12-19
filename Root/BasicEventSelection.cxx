@@ -1247,7 +1247,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
             return StatusCode::FAILURE;
         }  
       } else {
-        prwConfigFile = PathResolverFindCalibFile("/dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
+        prwConfigFile = PathResolverFindCalibFile("dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
       }
       TFile testF(prwConfigFile.data(),"read");
       if(testF.IsZombie())
