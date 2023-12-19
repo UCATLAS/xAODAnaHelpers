@@ -22,8 +22,18 @@ import subprocess
 import sys
 import datetime
 import time
+
+# the following athena imports overwrite the root logger with Athenalogger
+# we therefore save the original root logger here and afterwards set it to be root logger again
+import logging, ROOT
+xAH_root_logger = logging.root
+ROOT.gROOT.SetBatch(True)
+
 from AthenaConfiguration.AllConfigFlags import initConfigFlags
 from AthenaConfiguration.AutoConfigFlags import GetFileMD
+
+logging.Logger.root = xAH_root_logger
+logging.Logger.manager = logging.Manager(xAH_root_logger)
 
 try:
     import configparser
@@ -168,7 +178,6 @@ if __name__ == "__main__":
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
 
-  import logging
   xAH_logger = logging.getLogger("xAH.run")
 
   # set verbosity for python printing
@@ -242,8 +251,7 @@ if __name__ == "__main__":
       xAH_logger.warning("--singleTask requires both --inputList and --inputRucio to have an effect")
 
 
-    # at this point, we should import ROOT and do stuff
-    import ROOT
+    # at this point, we should use ROOT and do stuff
     # Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore()
 
