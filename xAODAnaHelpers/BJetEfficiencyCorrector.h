@@ -78,6 +78,11 @@ public:
   /// @brief Example: "410470;410250;410558;410464" (Pythia8,Sherpa22,Herwig7,MG)
   std::string m_EfficiencyCalibration = "";
 
+  /// @brief To change NP scheme for b-tagging systematics - Loose is the default value in athena
+  std::string m_EigenvectorReductionB = "Loose";
+  std::string m_EigenvectorReductionC = "Loose";
+  std::string m_EigenvectorReductionLight = "Loose";
+
 private:
 
   /// @brief The decoration key written to passing objects
