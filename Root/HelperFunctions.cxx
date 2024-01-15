@@ -401,6 +401,8 @@ std::vector< CP::SystematicSet > HelperFunctions::getListofSystematics(const CP:
         }
 
         outSystList.back().insert(CP::SystematicVariation (syst.basename(), systVal));
+        outSystList.push_back(CP::SystematicSet());
+        outSystList.back().insert(CP::SystematicVariation (syst.basename(), -1.0*fabs(systVal)));
 
       } else {
       // not a continuous system
