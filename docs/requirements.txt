@@ -21,7 +21,7 @@ requests==2.31.0
 six==1.13.0
 snowballstemmer==2.0.0
 soupsieve==1.9.5
-Sphinx==2.2.1
+Sphinx==4.5.0
 sphinx-argparse==0.2.5
 sphinx-rtd-theme==0.4.3
 sphinxcontrib-applehelp==1.0.1
