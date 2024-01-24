@@ -256,6 +256,10 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyLightCalibrations",  calibration));
       }
 
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EigenvectorReductionB"        ,  m_EigenvectorReductionB) );
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EigenvectorReductionC"        ,  m_EigenvectorReductionC) );
+    ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EigenvectorReductionLight"    ,  m_EigenvectorReductionLight) );
+
     ANA_CHECK( m_BJetEffSFTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_BJetEffSFTool_handle);
 
