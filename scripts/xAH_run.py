@@ -23,6 +23,18 @@ import sys
 import datetime
 import time
 
+# the following athena imports overwrite the root logger with Athenalogger
+# we therefore save the original root logger here and afterwards set it to be root logger again
+import logging, ROOT
+xAH_root_logger = logging.root
+ROOT.gROOT.SetBatch(True)
+
+from AthenaConfiguration.AllConfigFlags import initConfigFlags
+from AthenaConfiguration.AutoConfigFlags import GetFileMD
+
+logging.Logger.root = xAH_root_logger
+logging.Logger.manager = logging.Manager(xAH_root_logger)
+
 try:
     import configparser
 except ImportError: # Python 2.x fallback
@@ -166,7 +178,6 @@ if __name__ == "__main__":
   # parse the arguments, throw errors if missing any
   args = parser.parse_args()
 
-  import logging
   xAH_logger = logging.getLogger("xAH.run")
 
   # set verbosity for python printing
@@ -240,8 +251,7 @@ if __name__ == "__main__":
       xAH_logger.warning("--singleTask requires both --inputList and --inputRucio to have an effect")
 
 
-    # at this point, we should import ROOT and do stuff
-    import ROOT
+    # at this point, we should use ROOT and do stuff
     # Set up the job for xAOD access:
     ROOT.xAOD.Init("xAH_run").ignore()
 
@@ -403,7 +413,25 @@ if __name__ == "__main__":
     xAH_logger.info("reading all metadata in {0}".format(path_metadata))
     ROOT.SH.readSusyMetaDir(sh_all,path_metadata)
 
-    # this is the basic description of our job
+    flags = None
+    if (args.auto_flags):
+      try: import xAODAnaHelpers.metaConfig as metaConfig
+      except ImportError: import python.metaConfig as metaConfig
+
+      xAH_logger.warning("Auto configuration of flags has been enabled using --autoFlags. However, the flags will not be automatically applied unless explicitly passed to user code.")
+
+      file_list = []
+      for sample in sh_all:
+        for i in range(sample.numFiles()):
+          file_list.append(sample.fileName(i))
+
+      flags = initConfigFlags()
+      flags.Input.Files = file_list
+      metadata = GetFileMD(file_list)
+      metaConfig.populate_config_flags(flags, metadata)
+      flags.lock()
+      metaConfig.pretty_print(flags)
+
     xAH_logger.info("creating new job")
     job = ROOT.EL.Job()
     job.sampleHandler(sh_all)
@@ -454,7 +482,7 @@ if __name__ == "__main__":
     else:
       #  Executing the python
       #   (configGlobals and configLocals are used to pass vars
-      configGlobals, configLocals = {}, {'args': args}
+      configGlobals, configLocals = {'flags': flags}, {'args': args}
       exec(open(args.config).read(), configGlobals, configLocals)
 
       # execfile(args.config, configGlobals, configLocals)
