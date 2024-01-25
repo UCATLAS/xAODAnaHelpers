@@ -418,6 +418,8 @@ if __name__ == "__main__":
       try: import xAODAnaHelpers.metaConfig as metaConfig
       except ImportError: import python.metaConfig as metaConfig
 
+      xAH_logger.warning("Auto configuration of flags has been enabled using --autoFlags. However, the flags will not be automatically applied unless explicitly passed to user code.")
+
       file_list = []
       for sample in sh_all:
         for i in range(sample.numFiles()):
