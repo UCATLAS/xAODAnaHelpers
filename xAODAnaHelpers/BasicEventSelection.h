@@ -110,7 +110,7 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_commonPRWFileMC23a = "PileupReweighting/mc23_common/mc23a.410000.physlite.prw.v2.root";
     /// @brief Common PRW file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
     std::string m_commonPRWFileMC23c = "PileupReweighting/mc23_common/mc23c.450000.physlite.prw.v1.root";
-    /// @brief Common PRW file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    /// @brief Common PRW file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
     std::string m_commonPRWFileMC23d = "PileupReweighting/mc23_common/mc23d.450000.physlite.prw.v1.root";
     /**
       @rst
