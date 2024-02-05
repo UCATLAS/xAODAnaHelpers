@@ -98,7 +98,7 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_prwActualMu2018File = "";
     /// @brief actualMu configuration file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2022File = "";
-    /// @brief actualMu configuration file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration.
+    /// @brief actualMu configuration file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2023File = "";
     /// @brief Common PRW file for the MC20a campaign (2015/16). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
     std::string m_commonPRWFileMC20a = "PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root";
@@ -110,6 +110,8 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_commonPRWFileMC23a = "PileupReweighting/mc23_common/mc23a.410000.physlite.prw.v2.root";
     /// @brief Common PRW file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
     std::string m_commonPRWFileMC23c = "PileupReweighting/mc23_common/mc23c.450000.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23d = "PileupReweighting/mc23_common/mc23d.450000.physlite.prw.v1.root";
     /**
       @rst
       mc16(acd) to bypass the automatic campaign determination from AMI, several campaigns can be separated by a comma. Only used

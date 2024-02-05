@@ -1140,11 +1140,11 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     case 310000 :
       mcCampaignMD="mc20e";
       break;
-    case 450000 :
+    case 410000 :
       mcCampaignMD="mc23a";
       break; 
-    case 410000 :
-      mcCampaignMD="mc23c";
+    case 450000 :
+      mcCampaignMD="mc23d";
       break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
@@ -1175,15 +1175,15 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   // Sanity checks
   bool mc2XX_GoodFromProperty = !mcCampaignList.empty();
   bool mc2XX_GoodFromMetadata = false;
-  for(const auto& mcCampaignP : mcCampaignList) mc2XX_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e" || mcCampaignP == "mc23a" || mcCampaignP == "mc23c");
-  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e" || mcCampaignMD == "mc23a" || mcCampaignMD == "mc23c") mc2XX_GoodFromMetadata = true;
+  for(const auto& mcCampaignP : mcCampaignList) mc2XX_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e" || mcCampaignP == "mc23a" || mcCampaignP == "mc23c" || mcCampaignP == "mc23d");
+  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e" || mcCampaignMD == "mc23a" || mcCampaignMD == "mc23c" || mcCampaignMD == "mc23d") mc2XX_GoodFromMetadata = true;
 
   if( !mc2XX_GoodFromMetadata && !mc2XX_GoodFromProperty )
     {
       // ::
       std::string MetadataAndPropertyBAD("");
       MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', or 'mc23c' and restart your job. If you set it to any other string, you will still incur in this error.";
+      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', 'mc23c', or 'mc23d' and restart your job. If you set it to any other string, you will still incur in this error.";
       ANA_MSG_ERROR( MetadataAndPropertyBAD );
       return StatusCode::FAILURE;
       // ::
@@ -1242,6 +1242,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
         else if (mcCampaignMD == "mc20e") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20e);}
         else if (mcCampaignMD == "mc23a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23a);}
         else if (mcCampaignMD == "mc23c") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23c);}
+        else if (mcCampaignMD == "mc23d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23d);}
         else {
             ANA_MSG_ERROR("autoconfigurePileupRWTool(): no common PRW file known for MC campaign: " << mcCampaignMD);
             return StatusCode::FAILURE;
@@ -1270,7 +1271,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
       if( !m_prwActualMu2022File.empty() && mcCampaign == "mc23a" )
         prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2022File));
-      if( !m_prwActualMu2023File.empty() && mcCampaign == "mc23c" )
+      if( !m_prwActualMu2023File.empty() && mcCampaign == "mc23c" || mcCampaign == "mc23d" )
         prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2023File));      
     }
 
@@ -1318,7 +1319,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
         if (year == "22") {
           lumiCalcFiles.push_back(filename);
         }
-      } else if (mcCampaign == "mc23c") {
+      } else if (mcCampaign == "mc23c" || mcCampaign == "mc23d") {
         if (year == "23") {
           lumiCalcFiles.push_back(filename);
         }
