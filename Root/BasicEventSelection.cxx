@@ -1271,7 +1271,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
       if( !m_prwActualMu2022File.empty() && mcCampaign == "mc23a" )
         prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2022File));
-      if( !m_prwActualMu2023File.empty() && mcCampaign == "mc23c" || mcCampaign == "mc23d" )
+      if( !m_prwActualMu2023File.empty() && (mcCampaign == "mc23c" || mcCampaign=="mc23d") )
         prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2023File));      
     }
 
