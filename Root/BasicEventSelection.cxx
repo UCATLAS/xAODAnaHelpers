@@ -22,6 +22,10 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 //#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
 
+// For reading metadata
+#include "AsgTools/AsgMetadataTool.h"
+#include "xAODMetaData/FileMetaData.h"
+
 // ROOT include(s):
 #include "TFile.h"
 #include "TTree.h"
@@ -1151,8 +1155,25 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       return StatusCode::FAILURE;
       break;
     }
-  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
 
+  std::string mcCampaignMD_v2 = "";
+  const xAOD::FileMetaData* fmd(nullptr);
+  if ( !m_event->retrieveMetaInput(fmd, "FileMetaData").isSuccess() ) {
+      ANA_MSG_ERROR("Failed to retrieve FileMetaData from MetaData! Exiting.");
+      return EL::StatusCode::FAILURE;
+  }
+  fmd->value(xAOD::FileMetaData::mcCampaign, mcCampaignMD_v2);
+
+  if(mcCampaignMD!=mcCampaignMD_v2){
+      std::string MetadataAndRunConflict("");
+      MetadataAndRunConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD_v2;
+      MetadataAndRunConflict += " sample, but the run number indiciates " +m_mcCampaign;
+      MetadataAndRunConflict += "'. Prioritizing the value from FileMetaData. This could occur if you areusing an MC campaign with outdated pile-up reweighting. PLEASE DOUBLE-CHECK your samples!";
+      ANA_MSG_WARNING( MetadataAndRunConflict );
+      mcCampaignMD=mcCampaignMD_v2;
+  }
+  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
+    
   // Extract campaign from user configuration
   std::string tmp_mcCampaign = m_mcCampaign;
   std::vector<std::string> mcCampaignList;
