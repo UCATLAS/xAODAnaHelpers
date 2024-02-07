@@ -6,7 +6,7 @@ bs4==0.0.1
 certifi==2023.7.22
 chardet==3.0.4
 docutils==0.15.2
-exhale==0.2.3
+exhale==0.2.4
 idna==2.8
 imagesize==1.1.0
 Jinja2==3.1.3
