@@ -156,9 +156,13 @@ EL::StatusCode PhotonCalibrator :: initialize ()
   //Backwards compatibility
   if (m_useAFII || m_useAF3)
     m_forceFastSim = true;
-  if ( isFastSim() )
-    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
-
+  if ( isFastSim() ){
+    ANA_MSG_INFO( "Setting simulation flavour to Fast Sim");
+    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useFastSim", 1));
+  }
+  else {
+    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useFastSim", 0));
+  }
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->initialize());
   m_EgammaCalibrationAndSmearingTool->msg().setLevel( msg().level() );
 
