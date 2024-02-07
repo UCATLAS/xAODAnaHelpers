@@ -145,8 +145,11 @@ EL::StatusCode ElectronCalibrator :: initialize ()
   // For AFII samples
   //
   if ( isFastSim() ){
-    ANA_MSG_INFO( "Setting simulation flavour to AFII");
-    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useAFII", 1));
+    ANA_MSG_INFO( "Setting simulation flavour to Fast Sim");
+    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useFastSim", 1));
+  }
+  else {
+    ANA_CHECK( m_EgammaCalibrationAndSmearingTool->setProperty("useFastSim", 0));
   }
   ANA_CHECK( m_EgammaCalibrationAndSmearingTool->initialize());
 
