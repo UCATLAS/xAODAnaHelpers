@@ -227,6 +227,17 @@ EL::StatusCode JetCalibrator :: initialize ()
   if ( m_jetCalibToolsDEV ) {
     ANA_CHECK( m_JetCalibrationTool_handle.setProperty("DEVmode", m_jetCalibToolsDEV));
   }
+  // HLT jet re-calibration configuration
+  if (m_recalibrateHLTJets) {
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("UseHLTEventShape", true) );
+    // Note: PrimaryVerticesContainerName is actually a private ReadHandleKey, but we can set its value via the setProperty method
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("PrimaryVerticesContainerName", m_HLTVertexContainerName) );
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("averageInteractionsPerCrossingKey", m_HLTAvgMuDecor) );
+    if (m_EvtInfoHLTNPVDecor != "") {
+      ANA_CHECK( m_JetCalibrationTool_handle.setProperty("UseNPVFromEventInfo", true) );
+      ANA_CHECK( m_JetCalibrationTool_handle.setProperty("NPVKey", m_EvtInfoHLTNPVDecor) );
+    }
+  }
   ANA_CHECK( m_JetCalibrationTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_JetCalibrationTool_handle);
 
