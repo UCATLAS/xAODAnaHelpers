@@ -962,10 +962,10 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_applyTriggerCut ) {
 
-      // additional DEBUG logging to validate conditional logicss
+      // additional DEBUG logging to validate conditional logic
       ANA_MSG_DEBUG("Applying trigger cut corresponding to chain group " << m_triggerSelection);
-      ANA_MSG_DEBUG("Trigger chain group is NOT passed && is TLA data = " << int(!triggerChainGroup->isPassed(TrigDefs::requireDecision) && m_isTLAData));
-      ANA_MSG_DEBUG("Trigger chain group is NOT passed (no requireDecision) && is NOT TLA data = " << int(!triggerChainGroup->isPassed() && !m_isTLAData));
+      ANA_MSG_DEBUG("Is Trigger-Level Analysis (TLA) data = " << int(m_isTLAData));
+      ANA_MSG_DEBUG("Trigger chain group is passed = " << int(m_isTLAData ? triggerChainGroup->isPassed(TrigDefs::requireDecision) : triggerChainGroup->isPassed()));
 
       // different behaviour for isPassed depending on whether you are running on TLA data or not
       // if running on TLA data, we only store the HLT part of the trigger decision i.e. the L1 part
@@ -1011,33 +1011,34 @@ EL::StatusCode BasicEventSelection :: execute ()
         }
         isPassedBitsNames.push_back( trigName );
         isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
-	if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
+	      if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
       }
 
       // Save info for extra triggers
       //
       if ( !m_extraTriggerSelection.empty() ) {
-
-	for ( const std::string &trigName : m_extraTriggerSelectionList ) {
-	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-	  if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
-	    passedTriggers.push_back( trigName );
-	    triggerPrescales.push_back( trigChain->getPrescale() );
-
-      bool doLumiPrescale = true;
-      for ( const std::string &trigPart : trigChain->getListOfTriggers() ) {
-        if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigPart) == m_triggerUnprescaleList.end()) doLumiPrescale = false;
-      }
-      if ( doLumiPrescale ) {
-        triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
-      } else {
-        triggerPrescalesLumi.push_back( -1 );
-      }
-	  }
-	  isPassedBitsNames.push_back( trigName );
-	  isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
-	  if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
-	}
+        
+        for ( const std::string &trigName : m_extraTriggerSelectionList ) {
+          auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
+          if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
+            passedTriggers.push_back( trigName );
+            triggerPrescales.push_back( trigChain->getPrescale() );
+            
+            bool doLumiPrescale = true;
+            for ( const std::string &trigPart : trigChain->getListOfTriggers() ) {
+              if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigPart) == m_triggerUnprescaleList.end()) doLumiPrescale = false;
+            }
+            if ( doLumiPrescale ) {
+              triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+            } else {
+              triggerPrescalesLumi.push_back( -1 );
+            }
+          }
+          
+          isPassedBitsNames.push_back( trigName );
+          isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
+          if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
+        }
       }
 
       static SG::AuxElement::Decorator< std::vector< std::string > >  dec_passedTriggers("passedTriggers");
