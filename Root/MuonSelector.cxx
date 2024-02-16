@@ -293,48 +293,35 @@ EL::StatusCode MuonSelector :: initialize ()
   //
   // **************************************
   if( !( m_singleMuTrigChains.empty() && m_diMuTrigChains.empty() ) ) {
+    if( !isPHYS() ) {
+      // Grab the TrigDecTool from the ToolStore
+      if(!m_trigDecTool_handle.isUserConfigured()){
+        ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
+        return EL::StatusCode::FAILURE;
+      }
+      ANA_CHECK( m_trigDecTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
 
-    // grab the TrigDecTool from the ToolStore
-    if(!m_trigDecTool_handle.isUserConfigured()){
-      ANA_MSG_FATAL("A configured " << m_trigDecTool_handle.typeAndName() << " must have been previously created! Are you creating one in xAH::BasicEventSelection?" );
-      return EL::StatusCode::FAILURE;
-    }
-    ANA_CHECK( m_trigDecTool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_trigDecTool_handle);
+      ANA_CHECK( m_scoreTool.retrieve());
 
-    // in AB we need to explicitly retrieve this tool, see https://twiki.cern.ch/twiki/bin/viewauth/Atlas/R22TriggerAnalysis
-    ANA_CHECK( m_scoreTool.retrieve());
-
-    // Run3 got a new trigger navigation
-    if (m_useRun3navigation) {
-      m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::R3MatchingTool/TrigR3MatchingTool");
+      //  everything went fine, let's initialise the tool!
+      m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "ScoringTool", m_scoreTool ));
       ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
       ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
-    }
-    // otherwise we have to configure the Run2-style navigation
-    else {
-      if( !isPHYS() ) {
-        m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchingTool/MatchingTool");
-        ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "TrigDecisionTool", m_trigDecTool_handle ));
-        ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "ScoringTool", m_scoreTool ));
-        ANA_CHECK( m_trigMuonMatchTool_handle.setProperty("OutputLevel", msg().level() ));
-        ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
-        ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
+    } else { // For DAOD_PHYS samples
+      m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
+      ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
+      if (!m_trigInputPrefix.empty()){
+        ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
+	ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "RemapBrokenLinks", true) );
       }
-      else { // For DAOD_PHYS samples
-        m_trigMuonMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
-        ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "OutputLevel", msg().level() ));
-        if (!m_trigInputPrefix.empty()){
-          ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "InputPrefix", m_trigInputPrefix ));
-          ANA_CHECK( m_trigMuonMatchTool_handle.setProperty( "RemapBrokenLinks", true) );
-        }
-        ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
-        ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
-      }
+      ANA_CHECK( m_trigMuonMatchTool_handle.retrieve());
+      ANA_MSG_DEBUG("Retrieved tool: " << m_trigMuonMatchTool_handle);
     }
+
   } else {
 
     m_doTrigMatch = false;

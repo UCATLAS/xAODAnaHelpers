@@ -480,7 +480,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
         }
       }
 
-      if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets) ) {
+      if ( m_store->contains<ConstDataVector<xAOD::JetContainer> >(m_inContainerName_Jets) || m_store->contains<xAOD::JetContainer>(m_inContainerName_Jets) ) {
         ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName_Jets, m_event, m_store, msg()) );
       } else {
         nomContainerNotFound = true;
@@ -488,7 +488,7 @@ EL::StatusCode OverlapRemover :: executeOR(  const xAOD::ElectronContainer* inEl
       }
 
       if ( m_usePhotons ) {
-        if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) ) {
+        if ( m_store->contains<ConstDataVector<xAOD::PhotonContainer> >(m_inContainerName_Photons) || m_store->contains<xAOD::PhotonContainer>(m_inContainerName_Photons) ) {
           ANA_CHECK( HelperFunctions::retrieve(inPhotons, m_inContainerName_Photons, m_event, m_store, msg()) );
         } else {
           nomContainerNotFound = true;

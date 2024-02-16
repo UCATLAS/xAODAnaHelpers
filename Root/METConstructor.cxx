@@ -122,6 +122,9 @@ EL::StatusCode METConstructor :: initialize ()
   if ( m_doPFlow ) {
     ANA_CHECK(m_metmaker_handle.setProperty("DoPFlow", true));
   }
+  if ( m_doMuonPFlowBugfix ) {
+    ANA_CHECK(m_metmaker_handle.setProperty("DoMuonPFlowBugfix", true));
+  }
   if ( !m_METWorkingPoint.empty() ){
     ANA_CHECK(m_metmaker_handle.setProperty("JetSelection", m_METWorkingPoint));
   }
@@ -129,11 +132,9 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
   ///////////// IMETSystematicsTool ///////////////////
-  if (!m_systConfigPrefix.empty()) {
-    ANA_CHECK(m_metSyst_handle.setProperty("ConfigPrefix", m_systConfigPrefix));
-  }
-  if (!m_systConfigSoftTrkFile.empty()) {
-    ANA_CHECK(m_metSyst_handle.setProperty("ConfigSoftTrkFile", m_systConfigSoftTrkFile));
+  if ( m_doPFlow ) { // do TST
+    ANA_CHECK(m_metSyst_handle.setProperty("ConfigPrefix", "METUtilities/run2_13TeV/"));
+    ANA_CHECK(m_metSyst_handle.setProperty("ConfigSoftTrkFile", "TrackSoftTerms-pflow.config"));
   }
   ANA_CHECK(m_metSyst_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_metSyst_handle);
@@ -147,7 +148,7 @@ EL::StatusCode METConstructor :: initialize ()
     ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
 
     // For AFII samples
-    if ( isFastSim() ){
+    if ( isFastSim() ){ 
       ANA_MSG_INFO( "Setting simulation flavour to AFII");
       ANA_CHECK( m_metSignificance_handle.setProperty("IsAFII", true));
     }
@@ -206,6 +207,8 @@ EL::StatusCode METConstructor :: execute ()
    const xAOD::MissingETAssociationMap* metMap = 0;
    ANA_CHECK( HelperFunctions::retrieve(metMap, m_mapName, m_event, m_store, msg()));
    xAOD::MissingETAssociationHelper metHelper(metMap);
+   // Reset all the met map associations
+   metHelper.resetObjSelectionFlags();
 
    std::vector<CP::SystematicSet>::const_iterator sysListItr;
    auto vecOutContainerNames = std::make_unique< std::vector< std::string > >();
@@ -224,10 +227,8 @@ EL::StatusCode METConstructor :: execute ()
      ANA_CHECK( HelperFunctions::retrieve(sysJetsNames, m_jetSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysJetsNames ) {
-       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) {
-         m_sysList.push_back(CP::SystematicSet(systName));
-         ANA_MSG_DEBUG("jet syst added is = "<< systName);
-       }
+       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) m_sysList.push_back(CP::SystematicSet(systName));
+       ANA_MSG_DEBUG("jet syst added is = "<< systName);
      }
    }
 
@@ -237,10 +238,8 @@ EL::StatusCode METConstructor :: execute ()
      ANA_CHECK( HelperFunctions::retrieve(sysElectronsNames, m_eleSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysElectronsNames ) {
-       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) {
-         m_sysList.push_back(CP::SystematicSet(systName));
-         ANA_MSG_DEBUG("ele syst added is = "<< systName);
-       }
+       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())  ) m_sysList.push_back(CP::SystematicSet(systName));
+       ANA_MSG_DEBUG("ele syst added is = "<< systName);
      }
    }
 
@@ -250,10 +249,8 @@ EL::StatusCode METConstructor :: execute ()
      ANA_CHECK( HelperFunctions::retrieve(sysMuonsNames, m_muonSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysMuonsNames ) {
-       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) {
-         m_sysList.push_back(CP::SystematicSet(systName));
-         ANA_MSG_DEBUG("muon syst added is = "<< systName);
-       }
+       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) m_sysList.push_back(CP::SystematicSet(systName));
+       ANA_MSG_DEBUG("muon syst added is = "<< systName);
      }
    }
 
@@ -263,10 +260,8 @@ EL::StatusCode METConstructor :: execute ()
      ANA_CHECK( HelperFunctions::retrieve(sysTausNames, m_tauSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysTausNames ) {
-       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) {
-         m_sysList.push_back(CP::SystematicSet(systName));
-         ANA_MSG_DEBUG("tau syst added is = "<< systName);
-       }
+       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) m_sysList.push_back(CP::SystematicSet(systName));
+       ANA_MSG_DEBUG("tau syst added is = "<< systName);
      }
    }
 
@@ -276,10 +271,8 @@ EL::StatusCode METConstructor :: execute ()
      ANA_CHECK( HelperFunctions::retrieve(sysPhotonsNames, m_phoSystematics, 0, m_store, msg()));
 
      for ( auto systName : *sysPhotonsNames ) {
-       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) {
-         m_sysList.push_back(CP::SystematicSet(systName));
-         ANA_MSG_DEBUG("photon syst added is = "<< systName);
-       }
+       if (systName != "" && !(std::find(m_sysList.begin(), m_sysList.end(), CP::SystematicSet(systName)) != m_sysList.end())) m_sysList.push_back(CP::SystematicSet(systName));
+       ANA_MSG_DEBUG("photon syst added is = "<< systName);
      }
    }
 
@@ -302,9 +295,6 @@ EL::StatusCode METConstructor :: execute ()
 
       vecOutContainerNames->push_back( systName );
 
-      // Reset all the met map associations
-      metHelper.resetObjSelectionFlags();
-
       //create a met container, one for each syst
       auto newMet = std::make_unique<xAOD::MissingETContainer>();
       auto metAuxCont = std::make_unique<xAOD::MissingETAuxContainer>();
@@ -321,7 +311,7 @@ EL::StatusCode METConstructor :: execute ()
          const xAOD::ElectronContainer* eleCont(0);
          std::string suffix = "";
          if (sysElectronsNames && std::find(std::begin(*sysElectronsNames), std::end(*sysElectronsNames), systName) != std::end(*sysElectronsNames)) {
-           if (systName != "") ANA_MSG_DEBUG("doing electron systematics");
+           ANA_MSG_DEBUG("doing electron systematics");
            suffix = systName;
          }
 
@@ -352,7 +342,7 @@ EL::StatusCode METConstructor :: execute ()
          const xAOD::PhotonContainer* phoCont(0);
          std::string suffix = "";
          if (sysPhotonsNames && std::find(std::begin(*sysPhotonsNames), std::end(*sysPhotonsNames), systName) != std::end(*sysPhotonsNames)) {
-           if (systName != "") ANA_MSG_DEBUG("doing photon systematics");
+           ANA_MSG_DEBUG("doing photon systematics");
            suffix = systName;
          }
 
@@ -399,7 +389,7 @@ EL::StatusCode METConstructor :: execute ()
         const xAOD::TauJetContainer* tauCont(0);
         std::string suffix = "";
         if (sysTausNames && std::find(std::begin(*sysTausNames), std::end(*sysTausNames), systName) != std::end(*sysTausNames)) {
-          if (systName != "") ANA_MSG_DEBUG("doing tau systematics");
+          ANA_MSG_DEBUG("doing tau systematics");
           suffix = systName;
         }
 
@@ -436,7 +426,7 @@ EL::StatusCode METConstructor :: execute ()
         const xAOD::MuonContainer* muonCont(0);
         std::string suffix = "";
         if (sysMuonsNames && std::find(std::begin(*sysMuonsNames), std::end(*sysMuonsNames), systName) != std::end(*sysMuonsNames)) {
-          if (systName != "") ANA_MSG_DEBUG("doing muon systematics");
+          ANA_MSG_DEBUG("doing muon systematics");
           suffix = systName;
         }
 
@@ -470,7 +460,7 @@ EL::StatusCode METConstructor :: execute ()
      const xAOD::JetContainer* jetCont(0);
      std::string suffix = "";
      if (sysJetsNames && std::find(std::begin(*sysJetsNames), std::end(*sysJetsNames), systName) != std::end(*sysJetsNames)) {
-       if (systName != "") ANA_MSG_DEBUG("doing jet systematics");
+       ANA_MSG_DEBUG("doing muon systematics");
        suffix = systName;
      }
 
@@ -517,7 +507,7 @@ EL::StatusCode METConstructor :: execute ()
 
      if(!m_rebuildUsingTracksInJets && m_addSoftClusterTerms){
        //get the soft cluster term, and applyCorrection
-       xAOD::MissingET * softClusMet = (*newMet)["SoftClus"];
+       xAOD::MissingET * softClusMet = (*newMet)["SoftClusCore"];
        //assert( softClusMet != 0); //check we retrieved the clust term
        if( isMC() && m_metSyst_handle->applyCorrection(*softClusMet, metHelper) != CP::CorrectionCode::Ok) {
          ANA_MSG_ERROR( "Could not apply correction to soft clus met !!!! ");
@@ -576,6 +566,28 @@ EL::StatusCode METConstructor :: execute ()
      ANA_MSG_DEBUG(" FinalTrk met, for syst " << systName << " is = " << (*newMet->find("FinalTrk"))->met());
      ANA_MSG_DEBUG("storing met container :  " << (m_outputContainer + systName));
      ANA_MSG_DEBUG("storing  Aux met container :  "<< (m_outputContainer + systName + "Aux."));
+
+     // Debug compare reference and recomputed MET
+     if ( m_msgLevel <= MSG::DEBUG ) {
+       const xAOD::MissingETContainer* oldMet(0);
+       ANA_CHECK( HelperFunctions::retrieve(oldMet, m_referenceMETContainer, m_event, m_store, msg()) );
+
+       ANA_MSG_DEBUG( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+       if ( !m_inputElectrons.empty() ) ANA_MSG_DEBUG( "RefEle:       old=" << (*oldMet->find("RefEle"))->met() << " \tnew" << (*newMet->find("RefEle"))->met());
+       if ( !m_inputPhotons.empty() )   ANA_MSG_DEBUG( "RefPhoton:    old=" << (*oldMet->find("RefGamma"))->met() << " \tnew" << (*newMet->find("RefGamma"))->met());
+       if ( !m_inputTaus.empty() )      ANA_MSG_DEBUG( "RefTau:       old=" << (*oldMet->find("RefTau"))->met() << " \tnew" << (*newMet->find("RefTau"))->met());
+       if ( !m_inputMuons.empty() )     ANA_MSG_DEBUG( "RefMuon:      old=" << (*oldMet->find("Muons"))->met() << " \tnew" << (*newMet->find("Muons"))->met());
+       ANA_MSG_DEBUG( "RefJet:       old=" << (*oldMet->find("RefJet"))->met() << " \tnew" << (*newMet->find("RefJet"))->met());
+       if ( m_addSoftClusterTerms ) {
+         ANA_MSG_DEBUG( "SoftClus:     old=" << (*oldMet->find("SoftClus"))->met() << " \tnew" << (*newMet->find("SoftClus"))->met());
+       }
+       ANA_MSG_DEBUG( "PVSoftTrk:    old=" << (*oldMet->find("PVSoftTrk"))->met() << " \tnew" << (*newMet->find("PVSoftTrk"))->met());
+       ANA_MSG_DEBUG( "  ");
+       ANA_MSG_DEBUG( "FinalClus:    old=" << (*oldMet->find("FinalClus"))->met() << " \tnew" << (*newMet->find("FinalClus"))->met());
+       ANA_MSG_DEBUG( "       >>>>> R=" << (*oldMet->find("FinalClus"))->met()/ (*newMet->find("FinalClus"))->met());
+       ANA_MSG_INFO( "FinalTrk:     old=" << (*oldMet->find("FinalTrk"))->met() << " \tnew" << (*newMet->find("FinalTrk"))->met());
+       ANA_MSG_INFO( "       >>>>> R=" << (*oldMet->find("FinalTrk"))->met()/ (*newMet->find("FinalTrk"))->met());
+     }
 
      // Store MET
      ANA_CHECK( m_store->record( std::move(newMet), (m_outputContainer + systName) ));

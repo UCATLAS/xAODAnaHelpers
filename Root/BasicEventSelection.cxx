@@ -962,7 +962,19 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_applyTriggerCut ) {
 
-      if ( !triggerChainGroup->isPassed() ) {
+      // additional DEBUG logging to validate conditional logicss
+      ANA_MSG_DEBUG("Applying trigger cut corresponding to chain group " << m_triggerSelection);
+      ANA_MSG_DEBUG("Trigger chain group is NOT passed && is TLA data = " << int(!triggerChainGroup->isPassed(TrigDefs::requireDecision) && m_isTLAData));
+      ANA_MSG_DEBUG("Trigger chain group is NOT passed (no requireDecision) && is NOT TLA data = " << int(!triggerChainGroup->isPassed() && !m_isTLAData));
+
+      // different behaviour for isPassed depending on whether you are running on TLA data or not
+      // if running on TLA data, we only store the HLT part of the trigger decision i.e. the L1 part
+      // will always be "false", so we need to use TrigDefs::requireDecision to limit the decision 
+      // to being satisfied by the HLT leg(s) of the trigger chain
+      // TODO: check performance of this method when using trigger chains with the SAME HLT leg but different L1 seed
+      // e.g. HLT_j20_pf_ftf_L1J100 vs. HLT_j20_pf_ftf_L1HT190-J15s5pETA21
+      if ( (m_isTLAData && !triggerChainGroup->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && !triggerChainGroup->isPassed()) ) {
+      // if (!triggerChainGroup->isPassed(TrigDefs::requireDecision)) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS;
       }
@@ -986,7 +998,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       //
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-        if ( trigChain->isPassed() ) {
+        if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
           passedTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
 
@@ -1008,7 +1020,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
 	for ( const std::string &trigName : m_extraTriggerSelectionList ) {
 	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-	  if ( trigChain->isPassed() ) {
+	  if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
 	    passedTriggers.push_back( trigName );
 	    triggerPrescales.push_back( trigChain->getPrescale() );
 
@@ -1054,7 +1066,11 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
     if ( m_storePassHLT ) {
       static SG::AuxElement::Decorator< int > passHLT("passHLT");
-      passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
+      if (!m_isTLAData) {
+        passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
+      } else {
+        passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str(), TrigDefs::requireDecision) : -1;
+      }
     }
 
   } // if giving a specific list of triggers to look at
@@ -1122,7 +1138,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   ANA_CHECK( m_event->retrieve( eventInfo, "EventInfo" ) );
 
   // Determine simulation flavour
-  std::string SimulationFlavour = isFastSim() ? ( isAF3() ? "AF3" : "AFII" ) : "FS";
+  std::string SimulationFlavour = isFastSim() ? "AFII" : "FS";
 
   // Extract campaign automatically from Run Number
   std::string mcCampaignMD = "";
@@ -1139,6 +1155,9 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       break;
     case 310000 :
       mcCampaignMD="mc20e";
+      break;
+    case 410000 :
+      mcCampaignMD="mc23";
       break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
@@ -1170,14 +1189,14 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   bool mc20X_GoodFromProperty = !mcCampaignList.empty();
   bool mc20X_GoodFromMetadata = false;
   for(const auto& mcCampaignP : mcCampaignList) mc20X_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e");
-  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e") mc20X_GoodFromMetadata = true;
+  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e"|| mcCampaignMD == "mc23") mc20X_GoodFromMetadata = true;
 
   if( !mc20X_GoodFromMetadata && !mc20X_GoodFromProperty )
     {
       // ::
       std::string MetadataAndPropertyBAD("");
       MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', or 'mc20f' and restart your job. If you set it to any other string, you will still incur in this error.";
+      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', or 'mc23' and restart your job. If you set it to any other string, you will still incur in this error.";
       ANA_MSG_ERROR( MetadataAndPropertyBAD );
       return StatusCode::FAILURE;
       // ::
@@ -1248,6 +1267,8 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2017File));
       if( !m_prwActualMu2018File.empty() && (mcCampaign == "mc20e" || mcCampaign=="mc20f") )
 	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
+      if( !m_prwActualMu2022File.empty() && (mcCampaign == "mc23") )
+	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2022File));
     }
 
   // also need to handle lumicalc files: only use 2015+2016 with mc20a
@@ -1275,8 +1296,12 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       for(const auto& filename : allLumiCalcFiles)
 	{
 	  // looking for things of format "stuff/data15_13TeV/stuff" etc
-	  size_t pos = filename.find("data");
-	  std::string year = filename.substr(pos+4, 2);
+    // If keyword 'data' appears multiple times in the path we need to modify the substring we search for
+    // /cvmfs/atlas.cern.ch/repo/sw/database/GroupData/GoodRunsLists/data22_13p6TeV/*/ilumi*
+	  // size_t pos = filename.find("data");
+    // std::string year = filename.substr(pos+4, 2);
+    size_t pos = filename.find("GoodRunsLists/data");
+	  std::string year = filename.substr(pos+18, 2);
 
 	  if (mcCampaign == "mc20a") {
 	    if (year == "15" || year == "16") {
@@ -1290,7 +1315,12 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    if (year == "18") {
 	      lumiCalcFiles.push_back(filename);
 	    }
-	  } else {
+	  } else if (mcCampaign == "mc23") {
+	    if (year == "22") {
+	      lumiCalcFiles.push_back(filename);
+	    }
+	  }
+     else {
 	    ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
 	  }
 	}

@@ -21,7 +21,7 @@
 #include "JetCPInterfaces/ICPJetUncertaintiesTool.h"
 #include "JetInterface/IJetSelector.h"
 #include "JetCPInterfaces/IJetTileCorrectionTool.h"
-// #include "ParticleJetTools/JetTruthLabelingTool.h"
+#include "ParticleJetTools/JetTruthLabelingTool.h"
 #include "xAODCore/ShallowCopy.h"
 
 // algorithm wrapper
@@ -56,6 +56,18 @@ public:
   std::string m_outputAlgo = "";
   /// @brief Write systematics names to metadata
   bool        m_writeSystToMetadata = false;
+
+
+  /// @brief whether to run HLT jet re-calibration
+  bool        m_recalibrateHLTJets = false;
+  /// @brief vertex container name to use for HLT jet re-calibration
+  std::string m_HLTVertexContainerName = "HLT_IDVertex_FS";
+  /// @brief HLT average mu decoration on EventInfo after formatting
+  std::string m_HLTAvgMuDecor = "EventInfo.AvgMu";
+  /// @brief location of the HLT NPV on EventInfo object (e.g. EventInfo.NPV)
+  /// this defaults to an empty string and is only configured in JetCalibrationTool
+  /// when a non-empty string is provided
+  std::string m_EvtInfoHLTNPVDecor = "";
 
   /// @brief config for JetCalibrationTool ConfigDir, set it to override tool defaults
   std::string m_calibConfigDir = "";
@@ -146,8 +158,8 @@ private:
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; //!
   asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_pseudodataJERTool_handle    {"PseudodataJERTool"    , this}; //!
   asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; //!
-  // asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
-  // asg::AnaToolHandle<JetTruthLabelingTool>       m_JetTruthLabelingTool_handle {"JetTruthLabelingTool" , this}; //!
+  asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
+  asg::AnaToolHandle<JetTruthLabelingTool>       m_JetTruthLabelingTool_handle {"JetTruthLabelingTool" , this}; //!
 
   std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; //!
   std::vector<std::string>  m_decisionNames;    //!

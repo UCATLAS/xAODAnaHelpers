@@ -11,7 +11,7 @@ jobs:
     env:
       RELEASE_TYPE: ${{ matrix.release_type }}
       RELEASE_VERSION: ${{ matrix.release_version }}
-      DOCKER_BASE_REPO: gitlab-registry.cern.ch/atlas/athena
+      DOCKER_BASE_REPO: atlas
       DOCKER_TARGET_REPO: ucatlas
       RELEASE: ${{ format('{0}@{1}', matrix.release_type, matrix.release_version) }}
     strategy:

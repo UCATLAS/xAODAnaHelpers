@@ -3,6 +3,7 @@
 ANA_MSG_SOURCE(msgPIDManager, "PIDManager")
 
 ElectronLHPIDManager :: ElectronLHPIDManager ( std::string WP, bool debug ) :
+  m_asgElectronLikelihoodTool_VeryLooseNP(nullptr),
   m_asgElectronLikelihoodTool_VeryLoose(nullptr),
   m_asgElectronLikelihoodTool_Loose(nullptr),
   m_asgElectronLikelihoodTool_LooseBL(nullptr),
@@ -18,6 +19,7 @@ ElectronLHPIDManager :: ElectronLHPIDManager ( std::string WP, bool debug ) :
       m_debug      = debug;
 
       /*  fill the multimap with WPs and corresponding tools */
+      std::pair < std::string, AsgElectronLikelihoodTool* > veryloosenp = std::make_pair( std::string("VeryLooseNoPix"), m_asgElectronLikelihoodTool_VeryLooseNP );
       std::pair < std::string, AsgElectronLikelihoodTool* > veryloose   = std::make_pair( std::string("VeryLoose"), m_asgElectronLikelihoodTool_VeryLoose );
       std::pair < std::string, AsgElectronLikelihoodTool* > loose       = std::make_pair( std::string("Loose"),     m_asgElectronLikelihoodTool_Loose     );
       std::pair < std::string, AsgElectronLikelihoodTool* > loosebl     = std::make_pair( std::string("LooseBL"),     m_asgElectronLikelihoodTool_LooseBL     );
@@ -31,7 +33,7 @@ ElectronLHPIDManager :: ElectronLHPIDManager ( std::string WP, bool debug ) :
       
       m_allWPTools.insert(veryloose);   m_allWPAuxDecors.insert("VeryLoose");
       m_allWPTools.insert(loose);       m_allWPAuxDecors.insert("Loose");
-      m_allWPTools.insert(loosebl);     m_allWPAuxDecors.insert("LooseBL");
+      m_allWPTools.insert(loosebl);     m_allWPAuxDecors.insert("Loose"); //Not saved in DAODs, so use Loose decision
       m_allWPTools.insert(medium);      m_allWPAuxDecors.insert("Medium");
       m_allWPTools.insert(tight);       m_allWPAuxDecors.insert("Tight");
 
@@ -43,6 +45,7 @@ ElectronLHPIDManager :: ElectronLHPIDManager ( std::string WP, bool debug ) :
 
 ElectronLHPIDManager ::  ~ElectronLHPIDManager()
 {
+  if ( m_asgElectronLikelihoodTool_VeryLooseNP ) { delete m_asgElectronLikelihoodTool_VeryLooseNP; m_asgElectronLikelihoodTool_VeryLooseNP = nullptr; }
   if ( m_asgElectronLikelihoodTool_VeryLoose )   { delete m_asgElectronLikelihoodTool_VeryLoose; m_asgElectronLikelihoodTool_VeryLoose = nullptr; }
   if ( m_asgElectronLikelihoodTool_Loose )       { delete m_asgElectronLikelihoodTool_Loose;     m_asgElectronLikelihoodTool_Loose     = nullptr; }
   if ( m_asgElectronLikelihoodTool_LooseBL )     { delete m_asgElectronLikelihoodTool_LooseBL;   m_asgElectronLikelihoodTool_LooseBL   = nullptr; }
@@ -59,8 +62,12 @@ ElectronLHPIDManager ::  ~ElectronLHPIDManager()
 
 StatusCode ElectronLHPIDManager :: setupWPs( bool configTools, std::string selector_name) {
   using namespace msgPIDManager;
+<<<<<<< HEAD
   std::string selectedWP = m_selectedWP;
   if (m_selectedWP.find("NoPix") != std::string::npos) selectedWP = m_selectedWP.substr(0, m_selectedWP.size()-5) + "LLP";
+=======
+  const std::string selectedWP = ( m_selectedWP == "LooseBL" ) ? "Loose" : m_selectedWP;
+>>>>>>> 5a838f69 (Merge TLA-specific xAODAnaHelpers modifications from personal branches into central Dijet+ISR TLA branch)
   HelperClasses::EnumParser<LikeEnum::Menu> selectedWP_parser;
   unsigned int selectedWP_enum = static_cast<unsigned int>( selectedWP_parser.parseEnum(selectedWP) );
 
@@ -135,7 +142,7 @@ StatusCode ElectronLHPIDManager :: setDecorations( const xAOD::Electron* electro
 
 const std::string ElectronLHPIDManager :: getSelectedWP () {
 
-  const std::string WP = m_selectedWP;
+  const std::string WP = ( m_selectedWP == "LooseAndBLayer" ) ? "Loose" : m_selectedWP;
   return WP;
 
 }

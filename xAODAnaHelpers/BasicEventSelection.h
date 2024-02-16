@@ -48,6 +48,11 @@
 class BasicEventSelection : public xAH::Algorithm
 {
   public:
+
+  // Dijet+ISR TLA specific options
+    /// @brief Flag to determine when running on TLA data for different handling of TDT
+    bool m_isTLAData = false;
+
   // Sample type settings
     /// @brief Protection when running on truth xAOD
     bool m_truthLevelOnly = false;
@@ -56,7 +61,6 @@ class BasicEventSelection : public xAH::Algorithm
       SimulationFlavour will be determined from the sample MetaData, unless AFII or FS is explicitely requested with the following flags.
       @endrst */
     bool m_setAFII = false;
-    bool m_setAF3 = false;
     bool m_setFS = false;
 
   // GRL
@@ -94,6 +98,9 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_prwActualMu2017File = "";
     /// @brief actualMu configuration file for the MC16e campaign (2018). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2018File = "";
+    /// @brief actualMu configuration file for the MC23 campaign (2022). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2022File = "";
+
     /**
       @rst
       mc16(acd) to bypass the automatic campaign determination from AMI, several campaigns can be separated by a comma. Only used

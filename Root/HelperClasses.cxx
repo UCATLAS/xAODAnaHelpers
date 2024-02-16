@@ -304,6 +304,7 @@ namespace HelperClasses{
     m_clean         = has_exact("clean");
     m_cleanLight    = has_exact("cleanLight");
     m_cleanTrig     = has_exact("cleanTrig");
+    m_timing        = has_exact("timing");
     m_cleanLLP      = has_exact("cleanLLP");
     m_timing        = has_exact("timing");
     m_energy        = has_exact("energy");
