@@ -94,15 +94,15 @@ private:
   int m_numObjectPass;      //!
 
   // cutflow
-  TH1D* m_cutflowHist;      //!
-  TH1D* m_cutflowHistW;     //!
+  TH1D* m_cutflowHist = nullptr;      //!
+  TH1D* m_cutflowHistW = nullptr;     //!
   int   m_cutflow_bin;      //!
 
-  bool  m_isUsedBefore;     //!
+  bool  m_isUsedBefore = false;     //!
 
   // object cutflow
-  TH1D* m_tau_cutflowHist_1;                //!
-  TH1D* m_tau_cutflowHist_2;                //!
+  TH1D* m_tau_cutflowHist_1 = nullptr;                //!
+  TH1D* m_tau_cutflowHist_2 = nullptr;                //!
 
   int   m_tau_cutflow_all;		    //!
   int   m_tau_cutflow_selected;             //!
