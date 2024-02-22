@@ -314,15 +314,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     } else {
       m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool(m_TrigEffSF_tool_name);
       m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-      if ( !m_overrideMapFilePath.empty() ) {
-        ANA_MSG_WARNING( "Overriding MapFilePath to " << m_overrideMapFilePath );
-        ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("MapFilePath", m_overrideMapFilePath));
-      }
+      ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("MapFilePath", "ElectronEfficiencyCorrection/2015_2018/rel21.2/Precision_Summer2020_v1/map4.txt"));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("ForceDataType",sim_flav));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("IdKey", m_WorkingPointPID));
-      if (!m_WorkingPointIso.empty()) {
-        ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("IsoKey", m_WorkingPointIso));
-      }
+      ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("IsoKey", "FCLoose"));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("TriggerKey", m_WorkingPointTrig));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("CorrelationModel",m_correlationModel));
       ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("OutputLevel",msg().level()));
@@ -334,15 +329,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     } else {
       m_asgElEffCorrTool_elSF_TrigMCEff = new AsgElectronEfficiencyCorrectionTool(m_TrigMCEff_tool_name);
       m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-      if ( !m_overrideMapFilePath.empty() ) {
-        ANA_MSG_WARNING( "Overriding MapFilePath to " << m_overrideMapFilePath );
-        ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("MapFilePath", m_overrideMapFilePath));
-      }
+      ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("MapFilePath", "ElectronEfficiencyCorrection/2015_2018/rel21.2/Precision_Summer2020_v1/map4.txt"));
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("ForceDataType",sim_flav));
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("IdKey", m_WorkingPointPID));
-      if (!m_WorkingPointIso.empty()) {
-        ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("IsoKey", m_WorkingPointIso));
-      }
+      ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("IsoKey", "FCLoose"));
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("TriggerKey", "Eff_" + m_WorkingPointTrig));
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("CorrelationModel",m_correlationModel));
       ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("OutputLevel",msg().level()));
