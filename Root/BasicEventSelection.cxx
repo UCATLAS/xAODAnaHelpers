@@ -1166,7 +1166,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       if(mcCampaignMD!=mcCampaignMD_v2){
         std::string MetadataAndRunConflict("");
         MetadataAndRunConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD_v2;
-        MetadataAndRunConflict += " sample, but the run number indiciates " +m_mcCampaign;
+        MetadataAndRunConflict += " sample, but the run number indiciates " +mcCampaignMD;
         MetadataAndRunConflict += ". Prioritizing the value from FileMetaData. This could occur if you are using an MC campaign with outdated pile-up reweighting. PLEASE DOUBLE-CHECK your samples!";
         ANA_MSG_WARNING( MetadataAndRunConflict );
         mcCampaignMD=mcCampaignMD_v2;
