@@ -93,12 +93,30 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_PRWFileNames = "";
     /// @brief Automatically configure PRW using config files from SUSYTools instead of using m_PRWFileNames.
     bool m_autoconfigPRW = false;
+    /// @brief Configure PRW using common files instead of DSID-specific files.
+    bool m_useCommonPRWFiles = false;
     /// @brief actualMu configuration file for the MC16a campaign (2015/2016). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2016File = "";
     /// @brief actualMu configuration file for the MC16d campaign (2017). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2017File = "";
     /// @brief actualMu configuration file for the MC16e campaign (2018). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2018File = "";
+    /// @brief actualMu configuration file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2022File = "";
+    /// @brief actualMu configuration file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2023File = "";
+    /// @brief Common PRW file for the MC20a campaign (2015/16). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC20a = "PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC20d campaign (2017). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC20d = "PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC20e campaign (2018). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC20e = "PileupReweighting/mc20_common/mc20e.310000.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23a = "PileupReweighting/mc23_common/mc23a.410000.physlite.prw.v2.root";
+    /// @brief Common PRW file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23c = "PileupReweighting/mc23_common/mc23c.450000.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23d = "PileupReweighting/mc23_common/mc23d.450000.physlite.prw.v1.root";
     /**
       @rst
       mc16(acd) to bypass the automatic campaign determination from AMI, several campaigns can be separated by a comma. Only used

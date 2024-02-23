@@ -22,6 +22,10 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 //#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
 
+// For reading metadata
+#include "AsgTools/AsgMetadataTool.h"
+#include "xAODMetaData/FileMetaData.h"
+
 // ROOT include(s):
 #include "TFile.h"
 #include "TTree.h"
@@ -1157,13 +1161,36 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     case 310000 :
       mcCampaignMD="mc20e";
       break;
+    case 410000 :
+      mcCampaignMD="mc23a";
+      break; 
+    case 450000 :
+      mcCampaignMD="mc23d";
+      break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
       return StatusCode::FAILURE;
       break;
     }
-  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
 
+  std::string mcCampaignMD_v2 = "";
+  const xAOD::FileMetaData* fmd(nullptr);
+  if ( !m_event->retrieveMetaInput(fmd, "FileMetaData").isSuccess() ) {
+      ANA_MSG_WARNING("Failed to retrieve FileMetaData from MetaData! Using MC campaign from run number. PLEASE DOUBLE-CHECK this is the correct campaign for your samples!");
+  } else {
+      fmd->value(xAOD::FileMetaData::mcCampaign, mcCampaignMD_v2);
+
+      if(mcCampaignMD!=mcCampaignMD_v2){
+        std::string MetadataAndRunConflict("");
+        MetadataAndRunConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD_v2;
+        MetadataAndRunConflict += " sample, but the run number indiciates " +mcCampaignMD;
+        MetadataAndRunConflict += ". Prioritizing the value from FileMetaData. This could occur if you are using an MC campaign with outdated pile-up reweighting. PLEASE DOUBLE-CHECK your samples!";
+        ANA_MSG_WARNING( MetadataAndRunConflict );
+        mcCampaignMD=mcCampaignMD_v2;
+      }
+  }
+  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
+    
   // Extract campaign from user configuration
   std::string tmp_mcCampaign = m_mcCampaign;
   std::vector<std::string> mcCampaignList;
@@ -1184,23 +1211,23 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     }
 
   // Sanity checks
-  bool mc20X_GoodFromProperty = !mcCampaignList.empty();
-  bool mc20X_GoodFromMetadata = false;
-  for(const auto& mcCampaignP : mcCampaignList) mc20X_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e");
-  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e") mc20X_GoodFromMetadata = true;
+  bool mc2XX_GoodFromProperty = !mcCampaignList.empty();
+  bool mc2XX_GoodFromMetadata = false;
+  for(const auto& mcCampaignP : mcCampaignList) mc2XX_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e" || mcCampaignP == "mc23a" || mcCampaignP == "mc23c" || mcCampaignP == "mc23d");
+  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e" || mcCampaignMD == "mc23a" || mcCampaignMD == "mc23c" || mcCampaignMD == "mc23d") mc2XX_GoodFromMetadata = true;
 
-  if( !mc20X_GoodFromMetadata && !mc20X_GoodFromProperty )
+  if( !mc2XX_GoodFromMetadata && !mc2XX_GoodFromProperty )
     {
       // ::
       std::string MetadataAndPropertyBAD("");
       MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', or 'mc20f' and restart your job. If you set it to any other string, you will still incur in this error.";
+      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', 'mc23c', or 'mc23d' and restart your job. If you set it to any other string, you will still incur in this error.";
       ANA_MSG_ERROR( MetadataAndPropertyBAD );
       return StatusCode::FAILURE;
       // ::
     }
 
-  if ( mc20X_GoodFromProperty && mc20X_GoodFromMetadata)
+  if ( mc2XX_GoodFromProperty && mc2XX_GoodFromMetadata)
     {
       bool MDinP=false;
       for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
@@ -1228,7 +1255,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 
   // ::
   // Retrieve the input file
-  if(!mc20X_GoodFromProperty)
+  if(!mc2XX_GoodFromProperty)
     {
       mcCampaignList.clear();
       mcCampaignList.push_back(mcCampaignMD);
@@ -1245,26 +1272,45 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   std::vector<std::string> prwConfigFiles;
   for(const auto& mcCampaign : mcCampaignList)
     {
-      std::string prwConfigFile = PathResolverFindCalibFile("dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
+      std::string prwConfigFile;
+      // If requested set the PRW file to common PRW file of the processed MC campaign
+      if (m_useCommonPRWFiles) {
+        if      (mcCampaignMD == "mc20a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20a);}
+        else if (mcCampaignMD == "mc20d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20d);}
+        else if (mcCampaignMD == "mc20e") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20e);}
+        else if (mcCampaignMD == "mc23a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23a);}
+        else if (mcCampaignMD == "mc23c") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23c);}
+        else if (mcCampaignMD == "mc23d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23d);}
+        else {
+            ANA_MSG_ERROR("autoconfigurePileupRWTool(): no common PRW file known for MC campaign: " << mcCampaignMD);
+            return StatusCode::FAILURE;
+        }  
+      } else {
+        prwConfigFile = PathResolverFindCalibFile("dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
+      }
       TFile testF(prwConfigFile.data(),"read");
       if(testF.IsZombie())
-	{
-	  ANA_MSG_ERROR("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
-	  return StatusCode::FAILURE;
-	}
+	    {
+	      ANA_MSG_ERROR("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
+	      return StatusCode::FAILURE;
+	    }
       else
-	prwConfigFiles.push_back( prwConfigFile );
+	    prwConfigFiles.push_back( prwConfigFile );
     }
 
   // Add actualMu config files
   for(const auto& mcCampaign : mcCampaignList)
     {
       if( !m_prwActualMu2016File.empty() && mcCampaign == "mc20a" )
-	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2016File));
+	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2016File));
       if( !m_prwActualMu2017File.empty() && (mcCampaign == "mc20c" || mcCampaign=="mc20d") )
-	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2017File));
+	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2017File));
       if( !m_prwActualMu2018File.empty() && (mcCampaign == "mc20e" || mcCampaign=="mc20f") )
-	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
+	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
+      if( !m_prwActualMu2022File.empty() && mcCampaign == "mc23a" )
+        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2022File));
+      if( !m_prwActualMu2023File.empty() && (mcCampaign == "mc23c" || mcCampaign=="mc23d") )
+        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2023File));      
     }
 
   // also need to handle lumicalc files: only use 2015+2016 with mc20a
@@ -1307,6 +1353,14 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    if (year == "18") {
 	      lumiCalcFiles.push_back(filename);
 	    }
+      } else if (mcCampaign == "mc23a") {
+        if (year == "22") {
+          lumiCalcFiles.push_back(filename);
+        }
+      } else if (mcCampaign == "mc23c" || mcCampaign == "mc23d") {
+        if (year == "23") {
+          lumiCalcFiles.push_back(filename);
+        }
 	  } else {
 	    ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
 	  }
