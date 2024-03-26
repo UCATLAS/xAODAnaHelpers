@@ -69,6 +69,10 @@ public:
   /// when a non-empty string is provided
   std::string m_EvtInfoHLTNPVDecor = "";
 
+  /// @brief GSCDepth property to override GSCDepth in config file when set to 
+  /// a non-empty string and GSC is in the calibration sequence
+  std::string m_calibGSCDepth = "";
+
   /// @brief config for JetCalibrationTool ConfigDir, set it to override tool defaults
   std::string m_calibConfigDir = "";
   /// @brief config for JetCalibrationTool for Data
