@@ -108,7 +108,7 @@ class BasicEventSelection : public xAH::Algorithm
     /// @brief Common PRW file for the MC20a campaign (2015/16). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
     std::string m_commonPRWFileMC20a = "PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root";
     /// @brief Common PRW file for the MC20d campaign (2017). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
-    std::string m_commonPRWFileMC20d = "PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root";
+    std::string m_commonPRWFileMC20d = "PileupReweighting/mc20_common/mc20d.300000.physlite.prw.v1.root";
     /// @brief Common PRW file for the MC20e campaign (2018). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
     std::string m_commonPRWFileMC20e = "PileupReweighting/mc20_common/mc20e.310000.physlite.prw.v1.root";
     /// @brief Common PRW file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
