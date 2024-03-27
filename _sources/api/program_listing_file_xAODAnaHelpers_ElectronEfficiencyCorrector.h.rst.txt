@@ -1,0 +1,123 @@
+
+.. _program_listing_file_xAODAnaHelpers_ElectronEfficiencyCorrector.h:
+
+Program Listing for File ElectronEfficiencyCorrector.h
+======================================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_ElectronEfficiencyCorrector.h>` (``xAODAnaHelpers/ElectronEfficiencyCorrector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef xAODAnaHelpers_ElectronEfficiencyCorrector_H
+   #define xAODAnaHelpers_ElectronEfficiencyCorrector_H
+   
+   // EDM include(s):
+   #include "xAODEgamma/ElectronContainer.h"
+   
+   // CP interface includes
+   #include "PATInterfaces/SystematicRegistry.h"
+   #include "PATInterfaces/SystematicSet.h"
+   #include "PATInterfaces/SystematicsUtil.h"
+   #include "PATInterfaces/SystematicVariation.h"
+   
+   // external tools include(s):
+   #include "ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   class ElectronEfficiencyCorrector : public xAH::Algorithm
+   {
+   public:
+     std::string  m_inContainerName = "";
+   
+   // systematics
+     std::string m_inputSystNamesElectrons;
+   
+     bool m_writeSystToMetadata = false;
+   
+     float m_systValPID = 0.0;
+     float m_systValIso = 0.0;
+     float m_systValReco = 0.0;
+     float m_systValTrig = 0.0;
+     std::string m_systNamePID = "";
+     std::string m_systNameIso = "";
+     std::string m_systNameReco = "";
+     std::string m_systNameTrig = "";
+     std::string m_outputSystNamesPID = "EleEffCorr_PIDSyst";
+     std::string m_outputSystNamesIso = "EleEffCorr_IsoSyst";
+     std::string m_outputSystNamesReco = "EleEffCorr_RecoSyst";
+     std::string m_outputSystNamesTrig = "EleEffCorr_TrigSyst";
+   
+     std::string m_correlationModel = "FULL";
+   
+     std::string m_WorkingPointPID = "";
+   
+     std::string m_WorkingPointIso = "";
+   
+     std::string m_WorkingPointReco = "";
+   
+     std::string m_WorkingPointTrig = "";
+     // @brief Get per-electron trigger SF (default: true) [if false it will take into account combinatorics using all electrons from the input electron container]
+     bool        m_usePerElectronTriggerSFs = true;
+   
+     std::string m_overrideMapFilePath = "";
+   
+   private:
+     int m_numEvent;         
+     int m_numObject;        
+   
+     // To include the nominal in the Recp/Iso/Trig/TTVA efficiency SFs output, use "All", or include "Nominal" in the list
+     std::vector<CP::SystematicSet> m_systListPID;  
+     std::vector<CP::SystematicSet> m_systListIso;  
+     std::vector<CP::SystematicSet> m_systListReco; 
+     std::vector<CP::SystematicSet> m_systListTrig; 
+   
+     // tools
+     AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_PID = nullptr;  
+     std::string m_pidEffSF_tool_name;                                   
+     AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Iso = nullptr;  
+     std::string m_IsoEffSF_tool_name;                                   
+     AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Reco = nullptr; 
+     std::string m_RecoEffSF_tool_name;                                  
+     AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_Trig = nullptr; 
+     std::string m_TrigEffSF_tool_name;                                  
+     AsgElectronEfficiencyCorrectionTool  *m_asgElEffCorrTool_elSF_TrigMCEff = nullptr; 
+     std::string m_TrigMCEff_tool_name;                                  
+   
+     // variables that don't get filled at submission time should be
+     // protected from being send from the submission node to the worker
+     // node (done by the //!)
+   
+   public:
+   
+     // Tree *myTree; //!
+     // TH1 *myHist;  //!
+   
+   
+     // this is a standard constructor
+     ElectronEfficiencyCorrector ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // these are the functions not inherited from Algorithm
+     virtual EL::StatusCode executeSF ( const xAOD::ElectronContainer* inputElectrons, bool nominal, bool writeSystNames );
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(ElectronEfficiencyCorrector, 1);
+   
+   };
+   
+   #endif

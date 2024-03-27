@@ -1,0 +1,83 @@
+
+.. _file_xAODAnaHelpers_TauEfficiencyCorrector.h:
+
+File TauEfficiencyCorrector.h
+=============================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+Interface to the tools of the TauEfficiencyCorrections package. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TauEfficiencyCorrector.h``)
+--------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TauEfficiencyCorrector.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Federico Scutti federico.scutti@cern.ch 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``PATInterfaces/ISystematicsTool.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicSet.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``PATInterfaces/SystematicsUtil.h``
+
+- ``PileupReweighting/PileupReweightingTool.h``
+
+- ``TauAnalysisTools/ITauEfficiencyCorrectionsTool.h``
+
+- ``TauAnalysisTools/TauEfficiencyCorrectionsTool.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_TauEfficiencyCorrector.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTauEfficiencyCorrector`
+

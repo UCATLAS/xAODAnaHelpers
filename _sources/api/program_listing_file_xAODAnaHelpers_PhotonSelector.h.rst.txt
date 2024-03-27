@@ -1,0 +1,123 @@
+
+.. _program_listing_file_xAODAnaHelpers_PhotonSelector.h:
+
+Program Listing for File PhotonSelector.h
+=========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_PhotonSelector.h>` (``xAODAnaHelpers/PhotonSelector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_PhotonSelector_H
+   #define xAODAnaHelpers_PhotonSelector_H
+   
+   // algorithm wrapper
+   #include <xAODAnaHelpers/Algorithm.h>
+   #include <xAODTracking/VertexContainer.h>
+   #include <xAODEgamma/PhotonContainer.h>
+   
+   namespace CP {
+     class IsolationSelectionTool;
+   }
+   
+   #include <TH1D.h>
+   
+   class PhotonSelector : public xAH::Algorithm
+   {
+   public:
+   
+     bool m_useCutFlow = true;
+   
+     std::string    m_inContainerName = "";
+     std::string    m_outContainerName = "";
+     std::string    m_inputAlgoSystNames = "";
+     std::string    m_outputAlgoSystNames = "PhotonSelector_Syst";
+     bool           m_decorateSelectedObjects = true;
+     bool           m_createSelectedContainer = true;
+     int            m_nToProcess = -1;
+     int            m_pass_min = -1;
+     int            m_pass_max = -1;
+     float          m_pT_max = 1e8;
+     float          m_pT_min = 1e8;
+     float          m_eta_max = 1e8;
+     bool           m_vetoCrack = true;
+     bool           m_doAuthorCut = true;
+     bool           m_doOQCut = true;
+     bool           m_readOQFromDerivation = false;
+   
+     /* photon PID */
+     std::string    m_photonIdCut = "None";
+   
+     /* isolation */
+     std::string    m_MinIsoWPCut = "";
+     std::string    m_IsoWPList = "FixedCutTightCaloOnly,FixedCutTight,FixedCutLoose";
+   
+   private:
+     std::string    m_outAuxContainerName; 
+   
+     int m_numEvent;           
+     int m_numObject;          
+     int m_numEventPass;       
+     int m_weightNumEventPass; 
+     int m_numObjectPass;      
+   
+     /* event-level cutflow */
+   
+     TH1D* m_cutflowHist = nullptr;      
+     TH1D* m_cutflowHistW = nullptr;     
+     int   m_cutflow_bin;      
+   
+     /* object-level cutflow */
+   
+     TH1D* m_ph_cutflowHist_1 = nullptr;            
+   
+     int   m_ph_cutflow_all;              
+     int   m_ph_cutflow_author_cut;       
+     int   m_ph_cutflow_OQ_cut;           
+     int   m_ph_cutflow_PID_cut;          
+     int   m_ph_cutflow_ptmax_cut;        
+     int   m_ph_cutflow_ptmin_cut;        
+     int   m_ph_cutflow_eta_cut;          
+     int   m_ph_cutflow_iso_cut;          
+   
+   
+     std::vector<std::string> m_IsoKeys;  
+   
+     /* tools */
+     CP::IsolationSelectionTool* m_IsolationSelectionTool = nullptr; 
+   
+   public:
+   
+     /* this is a standard constructor */
+   
+     PhotonSelector ();
+   
+     ~PhotonSelector();
+   
+     /* these are the functions inherited from Algorithm */
+   
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     /* these are the functions not inherited from Algorithm */
+   
+     bool executeSelection( const xAOD::PhotonContainer* inPhotons, float mcEvtWeight, bool countPass,
+                 ConstDataVector<xAOD::PhotonContainer>* selectedPhotons );
+     virtual bool passCuts( const xAOD::Photon* photon );
+   
+   
+     ClassDef(PhotonSelector, 1);
+   
+   };
+   
+   
+   #endif //#ifndef xAODAnaHelpers_PhotonSelector_H

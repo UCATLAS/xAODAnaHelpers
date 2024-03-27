@@ -1,0 +1,81 @@
+
+.. _file_xAODAnaHelpers_ParticlePIDManager.h:
+
+File ParticlePIDManager.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/ParticlePIDManager.h``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_ParticlePIDManager.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgMessaging/MessageCheck.h``
+
+- ``AsgMessaging/StatusCode.h``
+
+- ``ElectronPhotonSelectorTools/AsgElectronIsEMSelector.h``
+
+- ``ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h``
+
+- ``ElectronPhotonSelectorTools/LikelihoodEnums.h``
+
+- ``ElectronPhotonSelectorTools/egammaPIDdefs.h``
+
+- ``TObject.h``
+
+- ``string``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODEgamma/Electron.h``
+
+- ``xAODEgamma/ElectronContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ElectronSelector.h`
+
+- :ref:`file_Root_ParticlePIDManager.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classElectronCutBasedPIDManager`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_ParticlePIDManager_8h_1a3d1abef16b552c1fb0bca4670d533164`
+

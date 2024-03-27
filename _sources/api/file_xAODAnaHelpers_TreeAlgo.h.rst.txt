@@ -1,0 +1,56 @@
+
+.. _file_xAODAnaHelpers_TreeAlgo.h:
+
+File TreeAlgo.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TreeAlgo.h``)
+------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TreeAlgo.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TTree.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODAnaHelpers/HelpTreeBase.h`` (:ref:`file_xAODAnaHelpers_HelpTreeBase.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_TreeAlgo.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTreeAlgo`
+
