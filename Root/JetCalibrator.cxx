@@ -227,6 +227,10 @@ EL::StatusCode JetCalibrator :: initialize ()
   if ( m_jetCalibToolsDEV ) {
     ANA_CHECK( m_JetCalibrationTool_handle.setProperty("DEVmode", m_jetCalibToolsDEV));
   }
+  if (!m_calibGSCDepth.empty() && m_calibSequence.find("GSC") != std::string::npos) {
+    ANA_MSG_WARNING("Using modified GSCDepth property for jet calibration '" << m_calibGSCDepth << "' which will override config file value");
+    ANA_CHECK( m_JetCalibrationTool_handle.setProperty("GSCDepth", m_calibGSCDepth));
+  }
   // HLT jet re-calibration configuration
   if (m_recalibrateHLTJets) {
     ANA_CHECK( m_JetCalibrationTool_handle.setProperty("UseHLTEventShape", true) );
