@@ -54,6 +54,7 @@ void EventInfo::setTree(TTree *tree)
     connectBranch<uint32_t>(tree, "SCTFlags",                   &m_SCTFlags);
     connectBranch<uint32_t>(tree, "LArFlags",                   &m_LArFlags);
     connectBranch<bool    >(tree, "eventClean_LooseBad",        &m_eventClean_LooseBad);
+    connectBranch<bool    >(tree, "eventClean_TightBad",        &m_eventClean_TightBad);
   }
 
   if ( m_infoSwitch.m_pileup ) {
@@ -160,6 +161,7 @@ void EventInfo::setBranches(TTree *tree)
     tree->Branch("SCTFlags",           &m_SCTFlags,           "SCTFlags/i");
     tree->Branch("LArFlags",           &m_LArFlags,           "LArFlags/i");
     tree->Branch("eventClean_LooseBad",&m_eventClean_LooseBad,"eventClean_LooseBad/O");
+    tree->Branch("eventClean_TightBad",&m_eventClean_TightBad,"eventClean_TightBad/O");
   }
 
   if ( m_infoSwitch.m_pileup ) {
@@ -235,6 +237,7 @@ void EventInfo::clear()
   m_TileFlags = 0;
   m_SCTFlags = 0;
   m_eventClean_LooseBad = false;
+  m_eventClean_TightBad = false;
   m_mcEventWeight = 1.;
   m_DistEmptyBCID = -999;
   m_DistLastUnpairedBCID = -999;
@@ -332,6 +335,9 @@ void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event
     static SG::AuxElement::ConstAccessor< char > acc_DFCommonJets_eventClean_LooseBad("DFCommonJets_eventClean_LooseBad");
     if ( acc_DFCommonJets_eventClean_LooseBad.isAvailable( *eventInfo ))
       m_eventClean_LooseBad = acc_DFCommonJets_eventClean_LooseBad( *eventInfo );
+    static SG::AuxElement::ConstAccessor< char > acc_DFCommonJets_eventClean_TightBad("DFCommonJets_eventClean_TightBad");
+    if ( acc_DFCommonJets_eventClean_TightBad.isAvailable( *eventInfo ))
+      m_eventClean_TightBad = acc_DFCommonJets_eventClean_TightBad( *eventInfo );
 
   }
 
