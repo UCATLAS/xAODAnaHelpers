@@ -1175,7 +1175,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 
   std::string mcCampaignMD_v2 = "";
   const xAOD::FileMetaData* fmd(nullptr);
-  if ( !m_event->retrieveMetaInput(fmd, "FileMetaData").isSuccess() ) {
+  if ( !m_event->retrieveMetaInput(fmd, "FileMetaData").isSuccess() || !fmd->value(xAOD::FileMetaData::mcCampaign, mcCampaignMD_v2) ) {
       ANA_MSG_WARNING("Failed to retrieve FileMetaData from MetaData! Using MC campaign from run number. PLEASE DOUBLE-CHECK this is the correct campaign for your samples!");
   } else {
       fmd->value(xAOD::FileMetaData::mcCampaign, mcCampaignMD_v2);
@@ -1194,21 +1194,18 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   // Extract campaign from user configuration
   std::string tmp_mcCampaign = m_mcCampaign;
   std::vector<std::string> mcCampaignList;
-  while ( tmp_mcCampaign.size() > 0)
-    {
-      size_t pos = tmp_mcCampaign.find_first_of(',');
-      if ( pos == std::string::npos )
-	{
-	  pos = tmp_mcCampaign.size();
-	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	  tmp_mcCampaign.erase(0, pos);
-	}
-      else
-	{
-	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	  tmp_mcCampaign.erase(0, pos+1);
-	}
-    }
+  while ( tmp_mcCampaign.size() > 0) {
+    size_t pos = tmp_mcCampaign.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_mcCampaign.size();
+      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+      tmp_mcCampaign.erase(0, pos);
+	  }
+    else {
+      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+      tmp_mcCampaign.erase(0, pos+1);
+	  }
+  }
 
   // Sanity checks
   bool mc2XX_GoodFromProperty = !mcCampaignList.empty();
@@ -1216,50 +1213,45 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   for(const auto& mcCampaignP : mcCampaignList) mc2XX_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e" || mcCampaignP == "mc23a" || mcCampaignP == "mc23c" || mcCampaignP == "mc23d");
   if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e" || mcCampaignMD == "mc23a" || mcCampaignMD == "mc23c" || mcCampaignMD == "mc23d") mc2XX_GoodFromMetadata = true;
 
-  if( !mc2XX_GoodFromMetadata && !mc2XX_GoodFromProperty )
-    {
-      // ::
-      std::string MetadataAndPropertyBAD("");
-      MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', 'mc23c', or 'mc23d' and restart your job. If you set it to any other string, you will still incur in this error.";
-      ANA_MSG_ERROR( MetadataAndPropertyBAD );
-      return StatusCode::FAILURE;
-      // ::
-    }
+  if( !mc2XX_GoodFromMetadata && !mc2XX_GoodFromProperty ) {
+    // ::
+    std::string MetadataAndPropertyBAD("");
+    MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
+    MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', 'mc23c', or 'mc23d' and restart your job. If you set it to any other string, you will still incur in this error.";
+    ANA_MSG_ERROR( MetadataAndPropertyBAD );
+    return StatusCode::FAILURE;
+    // ::
+  }
 
-  if ( mc2XX_GoodFromProperty && mc2XX_GoodFromMetadata)
-    {
-      bool MDinP=false;
-      for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
-      if( !MDinP )
-	{
-	  // ::
-	  std::string MetadataAndPropertyConflict("");
-	  MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD;
-	  MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
-	  MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
-	  ANA_MSG_WARNING( MetadataAndPropertyConflict );
-	  // ::
-	}
-      else
-	{
-	  // ::
-	  std::string NoMetadataButPropertyOK("");
-	  NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
-	  NoMetadataButPropertyOK += m_mcCampaign;
-	  NoMetadataButPropertyOK += "'. Autoconfiguring PRW accordingly.";
-	  ANA_MSG_WARNING( NoMetadataButPropertyOK );
-	  // ::
-	}
+  if ( mc2XX_GoodFromProperty && mc2XX_GoodFromMetadata) {
+    bool MDinP=false;
+    for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
+    if( !MDinP ) {
+      // ::
+      std::string MetadataAndPropertyConflict("");
+      MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD;
+      MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
+      MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
+      ANA_MSG_WARNING( MetadataAndPropertyConflict );
+      // ::
     }
+    else {
+      // ::
+      std::string NoMetadataButPropertyOK("");
+      NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
+      NoMetadataButPropertyOK += m_mcCampaign;
+      NoMetadataButPropertyOK += "'. Autoconfiguring PRW accordingly.";
+      ANA_MSG_WARNING( NoMetadataButPropertyOK );
+      // ::
+    }
+  }
 
   // ::
   // Retrieve the input file
-  if(!mc2XX_GoodFromProperty)
-    {
-      mcCampaignList.clear();
-      mcCampaignList.push_back(mcCampaignMD);
-    }
+  if(!mc2XX_GoodFromProperty) {
+    mcCampaignList.clear();
+    mcCampaignList.push_back(mcCampaignMD);
+  }
   ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
   for(const auto& mcCampaign : mcCampaignList)
     ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
@@ -1275,16 +1267,16 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       std::string prwConfigFile;
       // If requested set the PRW file to common PRW file of the processed MC campaign
       if (m_useCommonPRWFiles) {
-        if      (mcCampaignMD == "mc20a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20a);}
-        else if (mcCampaignMD == "mc20d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20d);}
-        else if (mcCampaignMD == "mc20e") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20e);}
-        else if (mcCampaignMD == "mc23a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23a);}
-        else if (mcCampaignMD == "mc23c") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23c);}
-        else if (mcCampaignMD == "mc23d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23d);}
+        if      (mcCampaign == "mc20a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20a);}
+        else if (mcCampaign == "mc20d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20d);}
+        else if (mcCampaign == "mc20e") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20e);}
+        else if (mcCampaign == "mc23a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23a);}
+        else if (mcCampaign == "mc23c") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23c);}
+        else if (mcCampaign == "mc23d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23d);}
         else {
-            ANA_MSG_ERROR("autoconfigurePileupRWTool(): no common PRW file known for MC campaign: " << mcCampaignMD);
-            return StatusCode::FAILURE;
-        }  
+          ANA_MSG_ERROR("autoconfigurePileupRWTool(): no common PRW file known for MC campaign: " << mcCampaign);
+          return StatusCode::FAILURE;
+        }
       } else {
         prwConfigFile = PathResolverFindCalibFile("dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
       }
