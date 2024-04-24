@@ -256,6 +256,9 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
           case HelperFunctions::AmcPy8:
         calibration="410464";
         break;
+          case HelperFunctions::AmcH7:
+        calibration="412116";
+        break;
 	      case HelperFunctions::Unknown:
 		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
 		return EL::StatusCode::FAILURE;
