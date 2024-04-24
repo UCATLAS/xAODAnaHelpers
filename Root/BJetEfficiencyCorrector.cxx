@@ -231,19 +231,31 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	      {
 	      case HelperFunctions::Pythia8:
 		calibration="410470";
+        if(m_isRun3){
+            calibration="601129";
+        }
 		break;
-	      case HelperFunctions::Herwig7:
-		calibration="410558";
+	      case HelperFunctions::Herwig7p1:
+		calibration="411233";
+        break; 
+          case HelperFunctions::Herwig7p2:
+        calibration="600666";
+        if(m_isRun3){
+            calibration="601414";
+        }
 		break;
-	      case HelperFunctions::Sherpa21:
-		calibration="426131";
-		break;
-	      case HelperFunctions::Sherpa22:
+	      case HelperFunctions::Sherpa221:
 		calibration="410250";
 		break;
 	      case HelperFunctions::Sherpa2210:
 		calibration="700122";
 		break;
+          case HelperFunctions::Sherpa2212:
+        calibration="700660";
+        break;
+          case HelperFunctions::AmcPy8:
+        calibration="410464";
+        break;
 	      case HelperFunctions::Unknown:
 		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
 		return EL::StatusCode::FAILURE;
