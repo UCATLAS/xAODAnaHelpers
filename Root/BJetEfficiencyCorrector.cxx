@@ -226,44 +226,58 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
 		sampleShowerType=HelperFunctions::getMCShowerType(gridName);
 	      }
+        
+        if(m_isRun3){
+            switch(sampleShowerType)
+            {
+                case HelperFunctions::Pythia8:
+                    calibration="601229";
+                    break;
+                case HelperFunctions::Herwig7p2:
+                    calibration="601414";
+                    break;
+                case HelperFunctions::Sherpa2212:
+                    calibration="700660";
+                    break;
+                default:
+                    ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                    return EL::StatusCode::FAILURE;
+                    break;
+            }
+        } else {
 
-	    switch(sampleShowerType)
-	      {
-	      case HelperFunctions::Pythia8:
-		calibration="410470";
-        if(m_isRun3){
-            calibration="601129";
+	        switch(sampleShowerType)
+	        {
+	            case HelperFunctions::Pythia8:
+		            calibration="410470";
+		            break;
+	            case HelperFunctions::Herwig7p1:
+		            calibration="411233";
+                    break; 
+                case HelperFunctions::Herwig7p2:
+                    calibration="600666";
+		            break;
+	            case HelperFunctions::Sherpa221:
+		            calibration="410250";
+		            break;
+	            case HelperFunctions::Sherpa2210:
+		            calibration="700122";
+		            break;
+                case HelperFunctions::Sherpa2212:
+                    calibration="700660";
+                    break;
+                case HelperFunctions::AmcPy8:
+                    calibration="410464";
+                    break;
+                case HelperFunctions::AmcH7:
+                    calibration="412116";
+                    break;
+	            case HelperFunctions::Unknown:
+		            ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+		            return EL::StatusCode::FAILURE;
+		            break;
+	        }
         }
-		break;
-	      case HelperFunctions::Herwig7p1:
-		calibration="411233";
-        break; 
-          case HelperFunctions::Herwig7p2:
-        calibration="600666";
-        if(m_isRun3){
-            calibration="601414";
-        }
-		break;
-	      case HelperFunctions::Sherpa221:
-		calibration="410250";
-		break;
-	      case HelperFunctions::Sherpa2210:
-		calibration="700122";
-		break;
-          case HelperFunctions::Sherpa2212:
-        calibration="700660";
-        break;
-          case HelperFunctions::AmcPy8:
-        calibration="410464";
-        break;
-          case HelperFunctions::AmcH7:
-        calibration="412116";
-        break;
-	      case HelperFunctions::Unknown:
-		ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-		return EL::StatusCode::FAILURE;
-		break;
-	      }
 	  } else { makeMCIndexMap(m_EfficiencyCalibration); }
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyCCalibrations"    ,  calibration));
