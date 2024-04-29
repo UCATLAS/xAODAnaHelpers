@@ -213,6 +213,10 @@ namespace xAH {
       std::vector<float> *m_DL1dv01_pu;
       std::vector<float> *m_DL1dv01_pc;
       std::vector<float> *m_DL1dv01_pb;
+      std::vector<float> *m_fastDIPS;
+      std::vector<float> *m_fastDIPS_pu;
+      std::vector<float> *m_fastDIPS_pb;
+      std::vector<float> *m_fastDIPS_pc;
       std::vector<float> *m_GN1;
       std::vector<float> *m_GN1_pu;
       std::vector<float> *m_GN1_pc;

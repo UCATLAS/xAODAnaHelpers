@@ -102,6 +102,10 @@ namespace xAH {
       float DL1dv01_pu;
       float DL1dv01_pc;
       float DL1dv01_pb;
+      float fastDIPS;
+      float fastDIPS_pu;
+      float fastDIPS_pc;
+      float fastDIPS_pb;
       float GN1;
       float GN1_pu;
       float GN1_pc;
