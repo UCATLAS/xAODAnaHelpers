@@ -285,6 +285,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_GN2v00NewAliasWP_pu               =new std::vector<float>();
     m_GN2v00NewAliasWP_pc               =new std::vector<float>();
     m_GN2v00NewAliasWP_pb               =new std::vector<float>();
+    m_GN2v01                            =new std::vector<float>();
+    m_GN2v01_pu                         =new std::vector<float>();
+    m_GN2v01_pc                         =new std::vector<float>();
+    m_GN2v01_pb                         =new std::vector<float>();
+    m_GN2v01_ptau                       =new std::vector<float>();
 
     // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
@@ -765,6 +770,11 @@ JetContainer::~JetContainer()
     delete m_GN2v00NewAliasWP_pu;
     delete m_GN2v00NewAliasWP_pc;
     delete m_GN2v00NewAliasWP_pb;
+    delete m_GN2v01;
+    delete m_GN2v01_pu;
+    delete m_GN2v01_pc;
+    delete m_GN2v01_pb;
+    delete m_GN2v01_ptau;
 
     // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
@@ -1089,6 +1099,11 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"GN2v00NewAliasWP_pu"               ,&m_GN2v00NewAliasWP_pu  );
       connectBranch<float>(tree,"GN2v00NewAliasWP_pc"               ,&m_GN2v00NewAliasWP_pc  );
       connectBranch<float>(tree,"GN2v00NewAliasWP_pb"               ,&m_GN2v00NewAliasWP_pb  );
+      connectBranch<float>(tree,"GN2v01"                            ,&m_GN2v01     );
+      connectBranch<float>(tree,"GN2v01_pu"                         ,&m_GN2v01_pu  );
+      connectBranch<float>(tree,"GN2v01_pc"                         ,&m_GN2v01_pc  );
+      connectBranch<float>(tree,"GN2v01_pb"                         ,&m_GN2v01_pb  );
+      connectBranch<float>(tree,"GN2v01_ptau"                       ,&m_GN2v01_ptau);
     }
 
   if(m_infoSwitch.m_flavorTagHLT)
@@ -1368,6 +1383,11 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_GN2v00NewAliasWP_pu) jet.GN2v00NewAliasWP_pu =m_GN2v00NewAliasWP_pu ->at(idx);
       if(m_GN2v00NewAliasWP_pc) jet.GN2v00NewAliasWP_pc =m_GN2v00NewAliasWP_pc ->at(idx);
       if(m_GN2v00NewAliasWP_pb) jet.GN2v00NewAliasWP_pb =m_GN2v00NewAliasWP_pb ->at(idx);
+      if(m_GN2v01)       jet.GN2v01       =m_GN2v01       ->at(idx);
+      if(m_GN2v01_pu)    jet.GN2v01_pu    =m_GN2v01_pu    ->at(idx);
+      if(m_GN2v01_pc)    jet.GN2v01_pc    =m_GN2v01_pc    ->at(idx);
+      if(m_GN2v01_pb)    jet.GN2v01_pb    =m_GN2v01_pb    ->at(idx);
+      if(m_GN2v01_ptau)  jet.GN2v01_ptau  =m_GN2v01_ptau  ->at(idx);
 
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
       if(m_debug) std::cout << "leave flavorTag " << std::endl;
@@ -1602,6 +1622,30 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	  jet.is_GN2v00NewAliasWP_FixedCutBEff_85=       btag->m_isTag->at(idx);
 	  jet.SF_GN2v00NewAliasWP_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
+        case Jet::BTaggerOP::GN2v01_FixedCutBEff_65:
+      jet.is_GN2v01_FixedCutBEff_65=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_65=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_70:
+      jet.is_GN2v01_FixedCutBEff_70=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_77:
+      jet.is_GN2v01_FixedCutBEff_77=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_85:
+      jet.is_GN2v01_FixedCutBEff_85=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_90:
+      jet.is_GN2v01_FixedCutBEff_90=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_90=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_Continuous:
+      jet.is_GN2v01_Continuous=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
 
 	default:
 	  throw std::domain_error(
@@ -1917,6 +1961,11 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"GN2v00NewAliasWP_pu", m_GN2v00NewAliasWP_pu);
     setBranch<float>(tree,"GN2v00NewAliasWP_pc", m_GN2v00NewAliasWP_pc);
     setBranch<float>(tree,"GN2v00NewAliasWP_pb", m_GN2v00NewAliasWP_pb);
+    setBranch<float>(tree,"GN2v01",    m_GN2v01);
+    setBranch<float>(tree,"GN2v01_pu", m_GN2v01_pu);
+    setBranch<float>(tree,"GN2v01_pc", m_GN2v01_pc);
+    setBranch<float>(tree,"GN2v01_pb", m_GN2v01_pb);
+    setBranch<float>(tree,"GN2v01_ptau", m_GN2v01_ptau);
 
     if( m_infoSwitch.m_jetFitterDetails){
 
@@ -2375,6 +2424,11 @@ void JetContainer::clear()
     m_GN2v00NewAliasWP_pu               ->clear();
     m_GN2v00NewAliasWP_pc               ->clear();
     m_GN2v00NewAliasWP_pb               ->clear();
+    m_GN2v01                            ->clear();
+    m_GN2v01_pu                         ->clear();
+    m_GN2v01_pc                         ->clear();
+    m_GN2v01_pb                         ->clear();
+    m_GN2v01_ptau                       ->clear();
 
     if( m_infoSwitch.m_jetFitterDetails){
       m_JetFitter_nVTX             ->clear();
@@ -3261,7 +3315,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       safeFill<double, double, xAOD::BTagging>(myBTag, JetVertexCharge_discriminant, m_JetVertexCharge_discriminant, -999);
     }
 
-    float pu, pb, pc, score;
+    float pu, pb, pc, ptau, score;
 
     pu=0; pb=0; pc=0;
     myBTag->variable<float>("DL1r" , "pu", pu);
@@ -3327,6 +3381,19 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_GN2v00NewAliasWP_pc->push_back(pc);
     m_GN2v00NewAliasWP_pb->push_back(pb);
     m_GN2v00NewAliasWP->push_back( score );
+
+    pu=0; pb=0; pc=0; ptau=0;
+    myBTag->variable<float>("GN2v01" , "pu", pu);
+    myBTag->variable<float>("GN2v01" , "pc", pc);
+    myBTag->variable<float>("GN2v01" , "pb", pb);
+    myBTag->variable<float>("GN2v01" , "ptau", ptau);
+    //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
+    score=log( pb / (0.20*pc+0.01*ptau+0.79*pu) ); // GN2v01 uses a different f_c value than DL1dv01 which is 0.018
+    m_GN2v01_pu->push_back(pu);
+    m_GN2v01_pc->push_back(pc);
+    m_GN2v01_pb->push_back(pb);
+    m_GN2v01_ptau->push_back(ptau);
+    m_GN2v01->push_back( score );
 
     if(m_infoSwitch.m_jetFitterDetails ) {
 
