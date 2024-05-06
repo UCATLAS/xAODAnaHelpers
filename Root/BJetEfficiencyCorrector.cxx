@@ -115,6 +115,11 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
   // All working points are calibrated (but not all taggers, see next check)
   if (m_operatingPt == "FixedCutBEff_60") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_65") {
+    if(m_taggerName == "GN2v01"){
+        opOK = true; m_getScaleFactors =  true;
+    }
+  }
   if (m_operatingPt == "FixedCutBEff_70") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_77") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_85") { opOK = true; m_getScaleFactors =  true; }
