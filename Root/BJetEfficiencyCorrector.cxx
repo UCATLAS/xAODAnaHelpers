@@ -134,7 +134,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_taggerName == "GN120220509")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "GN2v00LegacyWP")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "GN2v00NewAliasWP")   { taggerOK = true; m_getScaleFactors =  false; }
-  if (m_taggerName == "GN2v01")   { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "GN2v01")   { taggerOK = true; m_getScaleFactors =  true; }
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);
