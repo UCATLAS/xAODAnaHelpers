@@ -114,10 +114,16 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/BTaggingBenchmarksRelease21
 
   // All working points are calibrated (but not all taggers, see next check)
-  if (m_operatingPt == "FixedCutBEff_60") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_60" and (m_taggerName != "GN2v01")) { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_65") {
+    if(m_taggerName == "GN2v01"){
+        opOK = true; m_getScaleFactors =  true;
+    }
+  }
   if (m_operatingPt == "FixedCutBEff_70") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_77") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_85") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_90" and (m_taggerName == "GN2v01")) { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "Continuous"     ) { opOK = true; m_getScaleFactors =  true;
     m_useContinuous = true;
     ANA_MSG_DEBUG(" Using continuous b-tagging"); }
@@ -129,6 +135,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_taggerName == "GN120220509")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "GN2v00LegacyWP")   { taggerOK = true; m_getScaleFactors =  false; }
   if (m_taggerName == "GN2v00NewAliasWP")   { taggerOK = true; m_getScaleFactors =  false; }
+  if (m_taggerName == "GN2v01")   { taggerOK = true; m_getScaleFactors =  true; }
 
   if( !opOK || !taggerOK ) {
     ANA_MSG_ERROR( "Requested tagger/operating point is not known to xAH. Arrow v Indian? " << m_taggerName << "/" << m_operatingPt);

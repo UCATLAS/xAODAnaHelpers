@@ -90,6 +90,24 @@ int Jet::is_btag(BTaggerOP op) const
     case Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_85:
       return is_GN2v00NewAliasWP_FixedCutBEff_85;
       break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_65:
+      return is_GN2v01_FixedCutBEff_65;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_70:
+      return is_GN2v01_FixedCutBEff_70;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_77:
+      return is_GN2v01_FixedCutBEff_77;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_85:
+      return is_GN2v01_FixedCutBEff_85;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_90:
+      return is_GN2v01_FixedCutBEff_90;
+      break;
+    case Jet::BTaggerOP::GN2v01_Continuous:
+      return is_GN2v01_Continuous;
+      break;
     default:
       return 0;
       break;
@@ -183,6 +201,24 @@ const std::vector<float>& Jet::SF_btag(BTaggerOP op) const
       break;
     case Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_85:
       return SF_GN2v00NewAliasWP_FixedCutBEff_85;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_65:
+      return SF_GN2v01_FixedCutBEff_65;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_70:
+      return SF_GN2v01_FixedCutBEff_70;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_77:
+      return SF_GN2v01_FixedCutBEff_77;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_85:
+      return SF_GN2v01_FixedCutBEff_85;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_90:
+      return SF_GN2v01_FixedCutBEff_90;
+      break;
+    case Jet::BTaggerOP::GN2v01_Continuous:
+      return SF_GN2v01_Continuous;
       break;
     default:
       static const std::vector<float> dummySF = {1.};

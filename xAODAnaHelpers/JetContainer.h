@@ -229,6 +229,11 @@ namespace xAH {
       std::vector<float> *m_GN2v00NewAliasWP_pu;
       std::vector<float> *m_GN2v00NewAliasWP_pc;
       std::vector<float> *m_GN2v00NewAliasWP_pb;
+      std::vector<float> *m_GN2v01;
+      std::vector<float> *m_GN2v01_pu;
+      std::vector<float> *m_GN2v01_pc;
+      std::vector<float> *m_GN2v01_pb;
+      std::vector<float> *m_GN2v01_ptau;
 
       // Jet Fitter
       std::vector<float>  *m_JetFitter_nVTX           ;
@@ -398,6 +403,18 @@ namespace xAH {
 	    m_op=Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_77;
 	  else if(m_accessorName=="GN2v00NewAliasWP_FixedCutBEff_85")
 	    m_op=Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_85;
+
+          else if(m_accessorName=="GN2v01_FixedCutBEff_65")
+        m_op=Jet::BTaggerOP::GN2v01_FixedCutBEff_65;
+      else if(m_accessorName=="GN2v01_FixedCutBEff_70")
+        m_op=Jet::BTaggerOP::GN2v01_FixedCutBEff_70;
+      else if(m_accessorName=="GN2v01_FixedCutBEff_77")
+        m_op=Jet::BTaggerOP::GN2v01_FixedCutBEff_77;
+      else if(m_accessorName=="GN2v01_FixedCutBEff_85")
+        m_op=Jet::BTaggerOP::GN2v01_FixedCutBEff_85;
+      else if(m_accessorName=="GN2v01_FixedCutBEff_90")
+        m_op=Jet::BTaggerOP::GN2v01_FixedCutBEff_90;
+
   }
 
         ~btagOpPoint()
