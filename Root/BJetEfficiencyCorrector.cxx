@@ -114,7 +114,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/BTaggingBenchmarksRelease21
 
   // All working points are calibrated (but not all taggers, see next check)
-  if (m_operatingPt == "FixedCutBEff_60") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_60" and (m_taggerName != "GN2v01")) { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_65") {
     if(m_taggerName == "GN2v01"){
         opOK = true; m_getScaleFactors =  true;
