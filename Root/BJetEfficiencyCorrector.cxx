@@ -123,6 +123,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   if (m_operatingPt == "FixedCutBEff_70") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_77") { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "FixedCutBEff_85") { opOK = true; m_getScaleFactors =  true; }
+  if (m_operatingPt == "FixedCutBEff_90" and (m_taggerName == "GN2v01")) { opOK = true; m_getScaleFactors =  true; }
   if (m_operatingPt == "Continuous"     ) { opOK = true; m_getScaleFactors =  true;
     m_useContinuous = true;
     ANA_MSG_DEBUG(" Using continuous b-tagging"); }
