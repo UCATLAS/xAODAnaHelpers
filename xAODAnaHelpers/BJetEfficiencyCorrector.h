@@ -50,6 +50,9 @@ public:
   /// @brief Decorate tag weights even if we're not doing pseudocontinuous b-tagging
   bool        m_alwaysGetTagWeight = false;
 
+  /// @brief Flag to get Run3 MC-MC SFs
+  bool        m_isRun3 = false;
+
   // allowed operating points:
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
   //For the fixed cut, valid options are: [ "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_85" ]
