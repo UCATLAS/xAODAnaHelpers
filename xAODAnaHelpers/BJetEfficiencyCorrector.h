@@ -80,6 +80,8 @@ public:
   /// @brief Calibration to use for MC (EfficiencyB/C/T/LightCalibrations), "auto" to determine from sample name (multiple samples can be provided as long as they are separated by ';')
   /// @brief Example: "410470;410250;410558;410464" (Pythia8,Sherpa22,Herwig7,MG)
   std::string m_EfficiencyCalibration = "";
+  /// @brief Allow to fallback to "default" configuration when the shower type can't be determined automatically
+  bool m_allowCalibrationFallback = false;
 
   /// @brief To change NP scheme for b-tagging systematics - Loose is the default value in athena
   std::string m_EigenvectorReductionB = "Loose";

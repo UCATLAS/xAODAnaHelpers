@@ -247,9 +247,16 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
                     calibration="700660";
                     break;
                 default:
-                    ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-                    return EL::StatusCode::FAILURE;
-                    break;
+                    if (m_allowCalibrationFallback) {
+                      ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                      calibration="default";
+                      break;
+                    }
+                    else {
+                      ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                      return EL::StatusCode::FAILURE;
+                       break;
+                    }
             }
         } else {
 
@@ -280,9 +287,16 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
                     calibration="412116";
                     break;
 	            case HelperFunctions::Unknown:
-		            ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-		            return EL::StatusCode::FAILURE;
-		            break;
+                if (m_allowCalibrationFallback) {
+                  ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                  calibration="default";
+                  break;
+                }
+                else {
+		              ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+		              return EL::StatusCode::FAILURE;
+		              break;
+                }
 	        }
         }
 	  } else { makeMCIndexMap(m_EfficiencyCalibration); }
