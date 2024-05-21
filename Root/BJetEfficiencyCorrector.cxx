@@ -249,6 +249,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
                 default:
                     if (m_allowCalibrationFallback) {
                       ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                      ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
                       calibration="default";
                       break;
                     }
@@ -289,6 +290,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	            case HelperFunctions::Unknown:
                 if (m_allowCalibrationFallback) {
                   ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                  ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
                   calibration="default";
                   break;
                 }
