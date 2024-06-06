@@ -527,7 +527,6 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
   tmp_name.ReplaceAll("Py8EG","PYTHIA8EVTGEN");
   tmp_name.ReplaceAll("Py8EvtGen","PYTHIA8EVTGEN");
   tmp_name.ReplaceAll("Py8","Pythia8");
-  tmp_name.ReplaceAll("H7","HERWIG");
   if(tmp_name.Contains("Pythia") && !tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia","PYTHIA8EVTGEN");
   if(tmp_name.Contains("Pythia8") && !tmp_name.Contains("EvtGen")) tmp_name.ReplaceAll("Pythia8","PYTHIA8EVTGEN");
   //capitalize the entire sample name
@@ -535,13 +534,15 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
 
   //
   // Determine shower type by looking for keywords in name
-  if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
-  else if(tmp_name.Contains("HERWIG")) return Herwig7;
-  else if(tmp_name.Contains("SHERPA_CT")) return Sherpa21;
+  if(tmp_name.Contains("AMCATNLOPY")) return AmcPy8;
+  else if(tmp_name.Contains("AMCATNLOH")) return AmcH7;
+  else if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
+  else if(tmp_name.Contains("HERWIG")) return Herwig7p1;
+  else if(tmp_name.Contains("PHH7EG")) return Herwig7p2;
+  else if(tmp_name.Contains("SHERPA_221_")) return Sherpa221;
+  else if(tmp_name.Contains("SH_221_")) return Sherpa221;
   else if(tmp_name.Contains("SH_2210")) return Sherpa2210;
   else if(tmp_name.Contains("SH_2211")) return Sherpa2210;
-  else if(tmp_name.Contains("SH_2212")) return Sherpa2210;
-  else if(tmp_name.Contains("SH_2214")) return Sherpa2210;
-  else if(tmp_name.Contains("SHERPA")) return Sherpa22;
+  else if(tmp_name.Contains("SH_2212")) return Sherpa2212;
   else return Unknown;
 }

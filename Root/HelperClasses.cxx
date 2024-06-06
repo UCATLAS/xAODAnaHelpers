@@ -333,6 +333,7 @@ namespace HelperClasses{
     m_constituentAll    = has_exact("constituentAll");
     m_flavorTag         = has_exact("flavorTag");
     m_flavorTagHLT      = has_exact("flavorTagHLT");
+    m_flavorTagTLA      = has_exact("flavorTagTLA");
     m_btag_jettrk       = has_exact("btag_jettrk");
     m_jetFitterDetails  = has_exact("jetFitterDetails");
     m_svDetails         = has_exact("svDetails");

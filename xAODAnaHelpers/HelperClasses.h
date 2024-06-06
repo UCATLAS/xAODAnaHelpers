@@ -471,6 +471,7 @@ namespace HelperClasses {
         m_constituentAll constituentAll exact
         m_flavorTag      flavorTag      exact
         m_flavorTagHLT   flavorTagHLT   exact
+        m_flavorTagTLA   flavorTagTLA   exact
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
         m_sfFTagHyb      sfFTagHyb      partial
@@ -543,6 +544,7 @@ namespace HelperClasses {
     bool m_constituentAll;
     bool m_flavorTag;
     bool m_flavorTagHLT;
+    bool m_flavorTagTLA;
     bool m_btag_jettrk;
     bool m_jetFitterDetails;
     bool m_svDetails;
