@@ -30,8 +30,13 @@ jobs:
           - 25.2.3
           - 25.2.4
           - 25.2.5
-          - 25.2.6    
-    
+          - 25.2.6
+          - 25.2.7
+          - 25.2.8
+          - 25.2.9
+          - 25.2.10
+          - 25.2.11
+
     steps:
     - uses: actions/checkout@master
     - name: build ${{ env['RELEASE'] }}
