@@ -1,0 +1,91 @@
+
+.. _file_xAODAnaHelpers_JetSelector.h:
+
+File JetSelector.h
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+Select jets and apply JVT corrections. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/JetSelector.h``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_JetSelector.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Gabriel Facini gabriel.facini@cern.ch 
+
+Jeff Dandoy jeff.dandoy@cern.ch 
+
+Marco Milesi marco.milesi@cern.ch 
+
+John Alison john.alison@cern.ch 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``FTagAnalysisInterfaces/IBTaggingSelectionTool.h``
+
+- ``JetAnalysisInterfaces/IJetJvtEfficiency.h``
+
+- ``JetInterface/IJetModifier.h``
+
+- ``TH1D.h``
+
+- ``TrigDecisionTool/TrigDecisionTool.h``
+
+- ``TriggerMatchingTool/IMatchScoringTool.h``
+
+- ``TriggerMatchingTool/IMatchingTool.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODJet/Jet.h``
+
+- ``xAODJet/JetContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_JetSelector.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classJetSelector`
+

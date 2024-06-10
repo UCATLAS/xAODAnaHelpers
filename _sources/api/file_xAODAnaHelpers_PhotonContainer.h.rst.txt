@@ -1,0 +1,80 @@
+
+.. _file_xAODAnaHelpers_PhotonContainer.h:
+
+File PhotonContainer.h
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/PhotonContainer.h``)
+-------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_PhotonContainer.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TLorentzVector.h``
+
+- ``TTree.h``
+
+- ``string``
+
+- ``vector``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/ParticleContainer.h`` (:ref:`file_xAODAnaHelpers_ParticleContainer.h`)
+
+- ``xAODAnaHelpers/Photon.h`` (:ref:`file_xAODAnaHelpers_Photon.h`)
+
+- ``xAODEgamma/PhotonContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_HelpTreeBase.h`
+
+- :ref:`file_Root_PhotonContainer.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1PhotonContainer`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_PhotonContainer_8h_1a6ca87343c5de420749a8af060b5b0bbb`
+

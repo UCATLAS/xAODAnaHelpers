@@ -1,0 +1,67 @@
+
+.. _file_xAODAnaHelpers_OnlineBeamSpotTool.h:
+
+File OnlineBeamSpotTool.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/OnlineBeamSpotTool.h``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_OnlineBeamSpotTool.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``map``
+
+- ``vector``
+
+- ``xAODAnaHelpers/EventInfo.h`` (:ref:`file_xAODAnaHelpers_EventInfo.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_JetHists.h`
+
+- :ref:`file_Root_OnlineBeamSpotTool.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structxAH_1_1OnlineBeamSpotTool_1_1LBData`
+
+- :ref:`exhale_class_classxAH_1_1OnlineBeamSpotTool`
+

@@ -1,0 +1,70 @@
+
+.. _file_xAODAnaHelpers_JetCalibrator.h:
+
+File JetCalibrator.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/JetCalibrator.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_JetCalibrator.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``JetCPInterfaces/ICPJetUncertaintiesTool.h``
+
+- ``JetCPInterfaces/IJetTileCorrectionTool.h``
+
+- ``JetCalibTools/IJetCalibrationTool.h``
+
+- ``JetInterface/IJetSelector.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicSet.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODCore/ShallowCopy.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_JetCalibrator.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classJetCalibrator`
+

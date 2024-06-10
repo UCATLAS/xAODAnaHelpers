@@ -1,0 +1,65 @@
+
+.. _file_xAODAnaHelpers_IParticleHists.h:
+
+File IParticleHists.h
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/IParticleHists.h``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_IParticleHists.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgMessaging/MessageCheck.h``
+
+- ``xAODAnaHelpers/EventInfo.h`` (:ref:`file_xAODAnaHelpers_EventInfo.h`)
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HistogramManager.h`` (:ref:`file_xAODAnaHelpers_HistogramManager.h`)
+
+- ``xAODAnaHelpers/Jet.h`` (:ref:`file_xAODAnaHelpers_Jet.h`)
+
+- ``xAODAnaHelpers/ParticleContainer.h`` (:ref:`file_xAODAnaHelpers_ParticleContainer.h`)
+
+- ``xAODBase/IParticleContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ElectronHists.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_JetHists.h`
+
+- :ref:`file_xAODAnaHelpers_MuonHists.h`
+
+- :ref:`file_xAODAnaHelpers_PhotonHists.h`
+
+- :ref:`file_Root_IParticleHists.cxx`
+
+
+

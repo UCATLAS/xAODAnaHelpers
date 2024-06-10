@@ -1,0 +1,13 @@
+.. _exhale_function_METConstructor_8cxx_1a6175effc155f8c4908f01a583bb51f4a:
+
+Function ClassImp(METConstructor)
+=================================
+
+- Defined in :ref:`file_Root_METConstructor.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(METConstructor)
