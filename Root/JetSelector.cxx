@@ -642,6 +642,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   }
 
   i_jet = 0;
+
   for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
     // removing of duplicates
@@ -757,34 +758,41 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
           // create passed JVT decorator
           static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
-
           if ( syst_it.name().empty() ) {
             passedJVT( *jet ) = 1; // passes by default
           }
-
           // obtain JVT SF as a float (to be stored away separately)
           float jvtSF(1.0);
-          if ( m_JVT_tool_handle->isInRange(*jet) ) {
-            // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
-            if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
-              if ( syst_it.name().empty() ) {
-                passedJVT( *jet ) = 0; // mark as not passed
+          CP::CorrectionCode result_code;
+          // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
+          if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
+            if ( syst_it.name().empty() ) {
+              passedJVT( *jet ) = 0; // mark as not passed
+            }
+            if ( m_getJVTSF ){
+              result_code = m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF );
+              if (result_code == CP::CorrectionCode::OutOfValidityRange) {
+                  jvtSF = 1;
+              } else if (result_code != CP::CorrectionCode::Ok and result_code != CP::CorrectionCode::OutOfValidityRange) {
+                  ANA_MSG_ERROR( "Error in JVT Tool getInefficiencyScaleFactor");
+                  return EL::StatusCode::FAILURE;
               }
-              if ( m_getJVTSF && m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in JVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
-              }
-            } else { // otherwise classic efficiency scale factor
-              if ( syst_it.name().empty() ) {
-                passedJVT( *jet ) = 1;
-              }
-              if ( m_getJVTSF && m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in JVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+            }
+          } else { // otherwise classic efficiency scale factor
+            if ( syst_it.name().empty() ) {
+              passedJVT( *jet ) = 1;
+            }
+            if ( m_getJVTSF ){
+              result_code = m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF );
+              if (result_code == CP::CorrectionCode::OutOfValidityRange) {
+                  jvtSF = 1;
+              } else if (result_code != CP::CorrectionCode::Ok and result_code != CP::CorrectionCode::OutOfValidityRange) {
+                  ANA_MSG_ERROR( "Error in JVT Tool getEfficiencyScaleFactor");
+                  return EL::StatusCode::FAILURE;
               }
             }
           }
-	  sfVecJVT.push_back(jvtSF);
+	      sfVecJVT.push_back(jvtSF);
 
           ANA_MSG_DEBUG( "===>>>");
           ANA_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
@@ -816,12 +824,10 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
       passedJVT( *jet ) = 1; // passes by default
 
-      if ( m_JVT_tool_handle->isInRange(*jet) ) {
-        if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
-          passedJVT( *jet ) = 0; // mark as not passed
-        } else {
-          passedJVT( *jet ) = 1;
-        }
+      if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
+        passedJVT( *jet ) = 0; // mark as not passed
+      } else {
+        passedJVT( *jet ) = 1;
       }
     }
   }
@@ -889,18 +895,23 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           }
 
           float fjvtSF(1.0);
-          if ( m_fJVT_eff_tool_handle->isInRange(*jet) ) {
-            // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
-            if ( !m_dofJVTVeto && !m_fJVT_eff_tool_handle->passesJvtCut(*jet)) {
-              if ( m_fJVT_eff_tool_handle->getInefficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in fJVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
-              }
-            } else { // otherwise classic efficiency scale factor
-              if ( m_fJVT_eff_tool_handle->getEfficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in fJVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
-              }
+          CP::CorrectionCode result_code;
+          // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
+          if ( !m_dofJVTVeto && !m_fJVT_eff_tool_handle->passesJvtCut(*jet)) {
+            result_code = m_fJVT_eff_tool_handle->getInefficiencyScaleFactor( *jet, fjvtSF );
+            if ( result_code == CP::CorrectionCode::OutOfValidityRange) {
+                fjvtSF = 1;
+            } else if ( result_code != CP::CorrectionCode::Ok ) {
+              ANA_MSG_ERROR( "Error in fJVT Tool getInefficiencyScaleFactor");
+              return EL::StatusCode::FAILURE;
+            }
+          } else { // otherwise classic efficiency scale factor
+            result_code = m_fJVT_eff_tool_handle->getEfficiencyScaleFactor( *jet, fjvtSF );
+            if ( result_code == CP::CorrectionCode::OutOfValidityRange) {
+                fjvtSF = 1;
+            } else if ( m_fJVT_eff_tool_handle->getEfficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
+              ANA_MSG_ERROR( "Error in fJVT Tool getEfficiencyScaleFactor");
+              return EL::StatusCode::FAILURE;
             }
           }
           sfVecfJVT.push_back(fjvtSF);

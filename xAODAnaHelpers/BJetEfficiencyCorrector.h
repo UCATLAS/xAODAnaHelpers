@@ -50,6 +50,9 @@ public:
   /// @brief Decorate tag weights even if we're not doing pseudocontinuous b-tagging
   bool        m_alwaysGetTagWeight = false;
 
+  /// @brief Flag to get Run3 MC-MC SFs
+  bool        m_isRun3 = false;
+
   // allowed operating points:
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
   //For the fixed cut, valid options are: [ "FixedCutBEff_60", "FixedCutBEff_70", "FixedCutBEff_77", "FixedCutBEff_85" ]
@@ -77,6 +80,8 @@ public:
   /// @brief Calibration to use for MC (EfficiencyB/C/T/LightCalibrations), "auto" to determine from sample name (multiple samples can be provided as long as they are separated by ';')
   /// @brief Example: "410470;410250;410558;410464" (Pythia8,Sherpa22,Herwig7,MG)
   std::string m_EfficiencyCalibration = "";
+  /// @brief Allow to fallback to "default" configuration when the shower type can't be determined automatically
+  bool m_allowCalibrationFallback = false;
 
   /// @brief To change NP scheme for b-tagging systematics - Loose is the default value in athena
   std::string m_EigenvectorReductionB = "Loose";

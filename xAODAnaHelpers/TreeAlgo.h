@@ -15,6 +15,7 @@ class TreeAlgo : public xAH::Algorithm
 public:
   // choose whether the tree gets saved in the same directory as output histograms
   bool m_outHistDir = false;
+  std::string m_treeStreamName = "tree";
 
   // holds bools that control which branches are filled
   std::string m_evtDetailStr = "";

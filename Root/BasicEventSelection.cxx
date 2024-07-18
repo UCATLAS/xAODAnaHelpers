@@ -159,6 +159,18 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
   m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
   m_cutflowHistW->GetXaxis()->FindBin("init");
 
+  // extra cutflows 
+  // create histograms when m_doRunByRunCutflows is set to true
+  // later check if !isMC() for filling so that these only get 
+  // filled when running on data 
+  if (m_doRunByRunCutflows) {
+    m_runByrun_beforeCuts  = new TH1D("runByrun_cutflow_beforeCuts", "Run-by-Run cutflow before cuts", 1, 1, 2);
+    m_runByrun_beforeCuts->SetCanExtend(TH1::kAllAxes);
+
+    m_runByrun_afterCuts  = new TH1D("runByrun_cutflow_afterCuts", "Run-by-Run cutflow after cuts", 1, 1, 2);
+    m_runByrun_afterCuts->SetCanExtend(TH1::kAllAxes);
+  }
+
   ANA_MSG_INFO( "Finished creating histograms");
 
   return EL::StatusCode::SUCCESS;
@@ -744,6 +756,14 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   //------------------------------------------------------------------------------------------
+  // Fill cutflows for run-by-run checks on data before cuts
+  //------------------------------------------------------------------------------------------
+  uint32_t runNumberForCutflow = (uint32_t) eventInfo->runNumber();
+  if (m_doRunByRunCutflows && !isMC()) {
+    m_runByrun_beforeCuts->Fill(TString(std::to_string(runNumberForCutflow)), 1.);
+  }
+
+  //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the Sherpa 2.2 reweight to multijet truth
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
   //------------------------------------------------------------------------------------------
@@ -1126,6 +1146,13 @@ EL::StatusCode BasicEventSelection :: execute ()
     }//  for each bcid
 
   }//if data
+
+  //------------------------------------------------------------------------------------------
+  // Fill cutflows for run-by-run checks on data after cuts
+  //------------------------------------------------------------------------------------------
+  if (m_doRunByRunCutflows && !isMC()) {
+    m_runByrun_afterCuts->Fill(TString(std::to_string(runNumberForCutflow)), 1.);
+  }
 
   return EL::StatusCode::SUCCESS;
 }

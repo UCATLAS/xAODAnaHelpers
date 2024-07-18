@@ -218,6 +218,9 @@ class BasicEventSelection : public xAH::Algorithm
     /** Check for duplicated events in MC */
     bool m_checkDuplicatesMC = false;
 
+    // determines whether to add additional debugging histograms on data
+    bool m_doRunByRunCutflows = false;
+
   private:
 
     std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
@@ -263,6 +266,10 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_isbadbatman; //!
     int m_cutflow_npv;        //!
     int m_cutflow_trigger;    //!
+
+    // extra run-by-run event count cutflow
+    TH1D* m_runByrun_beforeCuts = nullptr; //!
+    TH1D* m_runByrun_afterCuts  = nullptr; //!
 
     // object cutflow
     TH1D* m_el_cutflowHist_1 = nullptr;    //!

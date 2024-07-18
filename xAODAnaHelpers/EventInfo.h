@@ -47,6 +47,7 @@ namespace xAH {
     uint32_t m_LArFlags;
     uint32_t m_SCTFlags;
     bool     m_eventClean_LooseBad;
+    bool     m_eventClean_TightBad;
     int      m_mcEventNumber;
     int      m_mcChannelNumber;
     float    m_mcEventWeight;
