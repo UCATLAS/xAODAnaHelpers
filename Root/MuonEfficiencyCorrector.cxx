@@ -151,6 +151,9 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
     ANA_CHECK( m_muRecoSF_tool.setProperty("CalibrationRelease", m_overrideCalibRelease ));
   }
+  if (m_doLRT) {
+    ANA_CHECK( m_muRecoSF_tool.setProperty("UseLRT", true ));
+  }
   ANA_CHECK(m_muRecoSF_tool.retrieve());
   assert(m_muRecoSF_tool.isInitialized());
 
