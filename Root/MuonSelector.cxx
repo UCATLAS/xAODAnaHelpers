@@ -240,6 +240,9 @@ EL::StatusCode MuonSelector :: initialize ()
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "IsRun3Geo", m_isRun3Geo ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "OutputLevel", msg().level() ));
+  if (m_doLRT) {
+    ANA_CHECK( m_muonSelectionTool_handle.setProperty( "UseLRT", true ));
+  }
   ANA_CHECK( m_muonSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonSelectionTool_handle);
 
@@ -802,11 +805,6 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
 
   if ( m_doLRT ) {
     static SG::AuxElement::Decorator< char > passIDcuts("passIDcuts");
-    static SG::AuxElement::Accessor< char > isLRTmuon("isLRT");
-    passIDcuts( *muon ) = m_muonSelectionTool_handle->passedIDCuts( *muon ) ? 1 : 0;
-    if ( isLRTmuon.isAvailable(*muon) && isLRTmuon(*muon) ) { //checks if a muon is LRT
-      acceptMuon = this_quality <= m_muonQuality; //LRT WP do not have the ID cuts applied so use getQuality()
-    }
   }
 
   ANA_MSG_DEBUG( "Doing muon quality" );
