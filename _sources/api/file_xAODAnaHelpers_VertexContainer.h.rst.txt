@@ -1,0 +1,73 @@
+
+.. _file_xAODAnaHelpers_VertexContainer.h:
+
+File VertexContainer.h
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/VertexContainer.h``)
+-------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_VertexContainer.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TLorentzVector.h``
+
+- ``TTree.h``
+
+- ``string``
+
+- ``vector``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODTracking/VertexContainer.h``
+
+- ``xAODTruth/TruthVertexContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_HelpTreeBase.h`
+
+- :ref:`file_Root_VertexContainer.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1VertexContainer`
+

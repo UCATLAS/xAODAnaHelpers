@@ -1,0 +1,80 @@
+
+.. _file_xAODAnaHelpers_ClusterContainer.h:
+
+File ClusterContainer.h
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/ClusterContainer.h``)
+--------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_ClusterContainer.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TLorentzVector.h``
+
+- ``TTree.h``
+
+- ``string``
+
+- ``vector``
+
+- ``xAODAnaHelpers/Cluster.h`` (:ref:`file_xAODAnaHelpers_Cluster.h`)
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/ParticleContainer.h`` (:ref:`file_xAODAnaHelpers_ParticleContainer.h`)
+
+- ``xAODCaloEvent/CaloClusterContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_HelpTreeBase.h`
+
+- :ref:`file_Root_ClusterContainer.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1ClusterContainer`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_ClusterContainer_8h_1a6ca87343c5de420749a8af060b5b0bbb`
+

@@ -1,0 +1,47 @@
+
+.. _file_xAODAnaHelpers_ClusterHists.h:
+
+File ClusterHists.h
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/ClusterHists.h``)
+----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_ClusterHists.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/HistogramManager.h`` (:ref:`file_xAODAnaHelpers_HistogramManager.h`)
+
+- ``xAODCaloEvent/CaloClusterContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ClusterHistsAlgo.h`
+
+- :ref:`file_Root_ClusterHists.cxx`
+
+
+

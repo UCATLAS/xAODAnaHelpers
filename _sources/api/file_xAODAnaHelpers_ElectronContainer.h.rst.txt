@@ -1,0 +1,73 @@
+
+.. _file_xAODAnaHelpers_ElectronContainer.h:
+
+File ElectronContainer.h
+========================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/ElectronContainer.h``)
+---------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_ElectronContainer.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TLorentzVector.h``
+
+- ``TTree.h``
+
+- ``string``
+
+- ``vector``
+
+- ``xAODAnaHelpers/Electron.h`` (:ref:`file_xAODAnaHelpers_Electron.h`)
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/ParticleContainer.h`` (:ref:`file_xAODAnaHelpers_ParticleContainer.h`)
+
+- ``xAODEgamma/ElectronContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_HelpTreeBase.h`
+
+- :ref:`file_Root_ElectronContainer.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1ElectronContainer`
+

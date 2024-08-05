@@ -1,0 +1,320 @@
+
+.. _file_xAODAnaHelpers_HelperFunctions.h:
+
+File HelperFunctions.h
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/HelperFunctions.h``)
+-------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_HelperFunctions.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgMessaging/MessageCheck.h``
+
+- ``AsgMessaging/MsgStream.h``
+
+- ``AsgMessaging/StatusCode.h``
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``AthContainers/normalizedTypeinfoName.h``
+
+- ``PATInterfaces/ISystematicsTool.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicSet.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``PATInterfaces/SystematicsUtil.h``
+
+- ``SampleHandler/SampleHandler.h``
+
+- ``TBranch.h``
+
+- ``TFile.h``
+
+- ``TH1D.h``
+
+- ``TObjArray.h``
+
+- ``TTree.h``
+
+- ``cxxabi.h``
+
+- ``fastjet/JetDefinition.hh``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_FatJetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_JetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_L1JetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_ParticleContainer.h`
+
+- :ref:`file_xAODAnaHelpers_ParticlePIDManager.h`
+
+- :ref:`file_xAODAnaHelpers_TrackContainer.h`
+
+- :ref:`file_xAODAnaHelpers_TruthContainer.h`
+
+- :ref:`file_xAODAnaHelpers_VertexContainer.h`
+
+- :ref:`file_Root_Algorithm.cxx`
+
+- :ref:`file_Root_BasicEventSelection.cxx`
+
+- :ref:`file_Root_BJetEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_ClusterHistsAlgo.cxx`
+
+- :ref:`file_Root_DebugTool.cxx`
+
+- :ref:`file_Root_ElectronCalibrator.cxx`
+
+- :ref:`file_Root_ElectronEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_ElectronHists.cxx`
+
+- :ref:`file_Root_ElectronHistsAlgo.cxx`
+
+- :ref:`file_Root_ElectronSelector.cxx`
+
+- :ref:`file_Root_EventInfo.cxx`
+
+- :ref:`file_Root_FatJetContainer.cxx`
+
+- :ref:`file_Root_HelperFunctions.cxx`
+
+- :ref:`file_Root_HelpTreeBase.cxx`
+
+- :ref:`file_Root_HLTJetGetter.cxx`
+
+- :ref:`file_Root_IParticleHistsAlgo.cxx`
+
+- :ref:`file_Root_IsoCloseByCorr.cxx`
+
+- :ref:`file_Root_JetCalibrator.cxx`
+
+- :ref:`file_Root_JetContainer.cxx`
+
+- :ref:`file_Root_JetHistsAlgo.cxx`
+
+- :ref:`file_Root_JetSelector.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_METConstructor.cxx`
+
+- :ref:`file_Root_MetHistsAlgo.cxx`
+
+- :ref:`file_Root_MinixAOD.cxx`
+
+- :ref:`file_Root_MuonCalibrator.cxx`
+
+- :ref:`file_Root_MuonEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_MuonHistsAlgo.cxx`
+
+- :ref:`file_Root_MuonInFatJetCorrector.cxx`
+
+- :ref:`file_Root_MuonSelector.cxx`
+
+- :ref:`file_Root_OverlapRemover.cxx`
+
+- :ref:`file_Root_PhotonCalibrator.cxx`
+
+- :ref:`file_Root_PhotonHists.cxx`
+
+- :ref:`file_Root_PhotonHistsAlgo.cxx`
+
+- :ref:`file_Root_PhotonSelector.cxx`
+
+- :ref:`file_Root_TauCalibrator.cxx`
+
+- :ref:`file_Root_TauEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_TauJetMatching.cxx`
+
+- :ref:`file_Root_TauSelector.cxx`
+
+- :ref:`file_Root_TrackContainer.cxx`
+
+- :ref:`file_Root_TrackHists.cxx`
+
+- :ref:`file_Root_TrackHistsAlgo.cxx`
+
+- :ref:`file_Root_TrackSelector.cxx`
+
+- :ref:`file_Root_TracksInJetHists.cxx`
+
+- :ref:`file_Root_TreeAlgo.cxx`
+
+- :ref:`file_Root_TrigMatcher.cxx`
+
+- :ref:`file_Root_TruthContainer.cxx`
+
+- :ref:`file_Root_TruthSelector.cxx`
+
+- :ref:`file_Root_Writer.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_HelperFunctions`
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structHelperFunctions_1_1pt__sort`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_HelperFunctions_8h_1af041c34a7c85f38ebabb876342bb216e`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_HelperFunctions_8h_1a325eebda668a8961986946daa7608444`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a94ac546915235e4db2abbf535a422e0b`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a5df23cc3d031c8bd0fb11c52222c2971`
+
+- :ref:`exhale_function_HelperFunctions_8h_1ac23ed9b29fdee0b17cc0eb310d2267be`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a319afb86dee2164b9b32c88eafa3cc60`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a69a6c97e0580d6424ff8a831d5108742`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a72cf60ff96a7bb04b0d461f148d98906`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a788799896902f44f9a0af9f7484c3260`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a816dfafb8179a6eec17c903bad4a3635`
+
+- :ref:`exhale_function_HelperFunctions_8h_1aeecd02ebac678e1a0ef05bf039ef8d23`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a19e8f32d8b8ff888d3abd1b1467b37b2`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a29eb23766a065088be97d39e08313ed2`
+
+- :ref:`exhale_function_HelperFunctions_8h_1afa033a806a096a28e641ab6e87cfaa49`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a19a48086de5cb95e8fd8b59437bb3e51`
+
+- :ref:`exhale_function_HelperFunctions_8h_1af3dea72893935c231be452587f10a168`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a4b78db55935cb09090b65c1fa49960a8`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a2e3b3541d075e2955f2a1c48d992305f`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a9d2d6ca9634e3b6929f2beeb50cfb191`
+
+- :ref:`exhale_function_HelperFunctions_8h_1aeb895bb0c3b770f1a02795070f6da9b2`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a5437b30c676b54e252ae390cbbec3bb3`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a8fd4a07174e89be5ab74ba978d025dd4`
+
+- :ref:`exhale_function_HelperFunctions_8h_1af0a25209eb124af0d0473582cf684452`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a161ca4f506284ce22a257bf6b702e832`
+
+- :ref:`exhale_function_HelperFunctions_8h_1aa430a3cb38614638c5e005824d71f691`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a783583d94ca3d2158e871a29fc18b710`
+
+- :ref:`exhale_function_HelperFunctions_8h_1ab00349947498d616e0b3d04e6e65a48b`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a38808edafa2a87dd71a95ce044b26c8a`
+
+- :ref:`exhale_function_HelperFunctions_8h_1af11e7a82f6bef2be5d7403daca2df17c`
+
+- :ref:`exhale_function_HelperFunctions_8h_1acd29a66702c5e2aeb4ed9db6a3011aab`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a992cda5144a7e52104bb5318516b34db`
+
+- :ref:`exhale_function_HelperFunctions_8h_1aed76887c1f4b8f894729c8e6ba0c0f8d`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a6225f38edb7c6e24883f02a9af321fc0`
+
+- :ref:`exhale_function_HelperFunctions_8h_1aba416f74ba2087ef467491061a3c306f`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a420ad300c0fd46eeb86b9ff2ebbf316d`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a52b31b859c3b03af3013fe097942032b`
+
+- :ref:`exhale_function_HelperFunctions_8h_1ae904f33e494d27475518d8b493882401`
+
+- :ref:`exhale_function_HelperFunctions_8h_1aeab0c88a505cba6ae562e17e0cc61e76`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a6020536eb90eeeedd98ce363c9c06be2`
+
+- :ref:`exhale_function_HelperFunctions_8h_1ab32fb263453e63a5184a50eaf04e4e03`
+
+- :ref:`exhale_function_HelperFunctions_8h_1a20baf2e79be9f0bf700869d9a96d3a61`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_HelperFunctions_8h_1adb6e2b141fa0263967cf4b3a874bbeac`
+
+- :ref:`exhale_variable_HelperFunctions_8h_1a75f893874a63f2a37a14690bf2150c7f`
+
+- :ref:`exhale_variable_HelperFunctions_8h_1ac0e18a5859fc56bb2e7ca76a337f3397`
+
+- :ref:`exhale_variable_HelperFunctions_8h_1a90e6aca89891c117c31683c211617e1d`
+

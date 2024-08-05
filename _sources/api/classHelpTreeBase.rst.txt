@@ -1,0 +1,16 @@
+.. _exhale_class_classHelpTreeBase:
+
+Class HelpTreeBase
+==================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelpTreeBase.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: HelpTreeBase
+   :members:
+   :protected-members:
+   :undoc-members:

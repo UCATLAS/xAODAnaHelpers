@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1TauContainer:
+
+Class TauContainer
+==================
+
+- Defined in :ref:`file_xAODAnaHelpers_TauContainer.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::ParticleContainer< Tau, HelperClasses::TauInfoSwitch >`` (:ref:`exhale_class_classxAH_1_1ParticleContainer`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::TauContainer
+   :members:
+   :protected-members:
+   :undoc-members:

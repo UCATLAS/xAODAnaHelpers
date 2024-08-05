@@ -1,0 +1,155 @@
+
+.. _file_xAODAnaHelpers_Algorithm.h:
+
+File Algorithm.h
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/Algorithm.h``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_Algorithm.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgMessaging/MessageCheck.h``
+
+- ``AsgMessaging/MsgStream.h``
+
+- ``AsgMessaging/MsgStreamMacros.h``
+
+- ``AsgMessaging/StatusCode.h``
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``AsgTools/ToolStore.h``
+
+- ``EventLoop/Algorithm.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``PathResolver/PathResolver.h``
+
+- ``string``
+
+- ``xAODMetaData/FileMetaData.h``
+
+- ``xAODRootAccess/Init.h``
+
+- ``xAODRootAccess/TEvent.h``
+
+- ``xAODRootAccess/TStore.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_BasicEventSelection.h`
+
+- :ref:`file_xAODAnaHelpers_BJetEfficiencyCorrector.h`
+
+- :ref:`file_xAODAnaHelpers_ClusterHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_DebugTool.h`
+
+- :ref:`file_xAODAnaHelpers_ElectronCalibrator.h`
+
+- :ref:`file_xAODAnaHelpers_ElectronEfficiencyCorrector.h`
+
+- :ref:`file_xAODAnaHelpers_ElectronSelector.h`
+
+- :ref:`file_xAODAnaHelpers_HLTJetGetter.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_IsoCloseByCorr.h`
+
+- :ref:`file_xAODAnaHelpers_JetCalibrator.h`
+
+- :ref:`file_xAODAnaHelpers_JetHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_JetSelector.h`
+
+- :ref:`file_xAODAnaHelpers_MessagePrinterAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_METConstructor.h`
+
+- :ref:`file_xAODAnaHelpers_MetHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_MinixAOD.h`
+
+- :ref:`file_xAODAnaHelpers_MuonCalibrator.h`
+
+- :ref:`file_xAODAnaHelpers_MuonEfficiencyCorrector.h`
+
+- :ref:`file_xAODAnaHelpers_MuonInFatJetCorrector.h`
+
+- :ref:`file_xAODAnaHelpers_MuonSelector.h`
+
+- :ref:`file_xAODAnaHelpers_OverlapRemover.h`
+
+- :ref:`file_xAODAnaHelpers_PhotonCalibrator.h`
+
+- :ref:`file_xAODAnaHelpers_PhotonSelector.h`
+
+- :ref:`file_xAODAnaHelpers_TauCalibrator.h`
+
+- :ref:`file_xAODAnaHelpers_TauEfficiencyCorrector.h`
+
+- :ref:`file_xAODAnaHelpers_TauJetMatching.h`
+
+- :ref:`file_xAODAnaHelpers_TauSelector.h`
+
+- :ref:`file_xAODAnaHelpers_TrackHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_TrackSelector.h`
+
+- :ref:`file_xAODAnaHelpers_TreeAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_TrigMatcher.h`
+
+- :ref:`file_xAODAnaHelpers_TruthSelector.h`
+
+- :ref:`file_xAODAnaHelpers_Writer.h`
+
+- :ref:`file_Root_Algorithm.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1Algorithm`
+

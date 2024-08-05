@@ -1,0 +1,92 @@
+
+.. _file_Root_JetSelector.cxx:
+
+File JetSelector.cxx
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/JetSelector.cxx``)
+-------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_JetSelector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``JetJvtEfficiency/JetJvtEfficiency.h``
+
+- ``JetMomentTools/JetForwardJvtTool.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``TFile.h``
+
+- ``TObjArray.h``
+
+- ``TObjString.h``
+
+- ``TriggerMatchingTool/MatchFromCompositeTool.h``
+
+- ``TriggerMatchingTool/MatchingTool.h``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/JetSelector.h`` (:ref:`file_xAODAnaHelpers_JetSelector.h`)
+
+- ``xAODBTaggingEfficiency/BTaggingSelectionTool.h``
+
+- ``xAODCore/AuxContainerBase.h``
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODJet/JetAuxContainer.h``
+
+- ``xAODJet/JetContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_JetSelector_8cxx_1a9f7bfedd198aa52f698d7f54df48826a`
+

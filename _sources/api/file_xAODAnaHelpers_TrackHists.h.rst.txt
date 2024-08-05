@@ -1,0 +1,53 @@
+
+.. _file_xAODAnaHelpers_TrackHists.h:
+
+File TrackHists.h
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TrackHists.h``)
+--------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TrackHists.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/HistogramManager.h`` (:ref:`file_xAODAnaHelpers_HistogramManager.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODTracking/TrackParticleContainer.h``
+
+- ``xAODTracking/Vertex.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_TrackHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_TracksInJetHists.h`
+
+- :ref:`file_Root_TrackHists.cxx`
+
+
+
