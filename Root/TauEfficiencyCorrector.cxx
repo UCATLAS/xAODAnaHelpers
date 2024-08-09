@@ -181,6 +181,12 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   }           
   
   ANA_CHECK(m_tauEffCorrTool_handle.setProperty("EfficiencyCorrectionTypes",configVec));
+  if ( isFastSim() ){
+    ANA_MSG_INFO( "Setting simulation flavour to Fast Sim");
+    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("useFastSim", 1));
+  } else {
+    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("useFastSim", 0));
+  }
   ANA_CHECK(m_tauEffCorrTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool for Tau Efficiency corrections: " << m_tauEffCorrTool_handle);
 
