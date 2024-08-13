@@ -127,8 +127,8 @@ public:
   float m_eta_max_JVF = 2.4;
   /// @brief cut value
   float m_JVFCut = 0.5;
-  /// @brief (re-)evaluate jet pile-up labels required for Jvt efficiency tools
-  bool m_doPileupLabel = false;
+  /// @brief (re-)evaluate the hard-scatter jet label (isJvtHS) required for Jvt efficiency tools
+  bool m_doTruthJetTagging = false;
   /// @brief check JVT
   bool m_doJVT = false;
   /// @brief keep JVT-rejected jets and decorate passing status

@@ -235,7 +235,7 @@ EL::StatusCode JetSelector :: initialize ()
   }
 
   // initialize the JetPileupLabelingTool to (re-)evaluate decorators using in Jvt efficiency tools
-  if ( m_doPileupLabel ) {
+  if ( m_doTruthJetTagging ) {
     m_jetPileupLabelingTool.setTypeAndName("JetPileupLabelingTool/PileupLabelingTool");
     ATH_CHECK( m_jetPileupLabelingTool.setProperty("RecoJetContainer", m_outContainerName) );
     ATH_CHECK( m_jetPileupLabelingTool.setProperty("TruthJetContainer", m_truthJetContainer) );
@@ -681,7 +681,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
   }
 
   // add isHS labels to jets (required for Jvt efficiency tools)
-  if (m_doPileupLabel && isMC()) {
+  if (m_doTruthJetTagging && isMC()) {
     ATH_CHECK(m_jetPileupLabelingTool->decorate(*inJets));
   }
 
