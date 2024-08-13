@@ -285,7 +285,7 @@ EL::StatusCode JetSelector :: initialize ()
     m_outputJVTPassed = m_outputJVTPassed + "_" + m_WorkingPointJVT;
 
     CP::SystematicSet affectSystsJVT = m_jetNNJvtEfficiencyTool->affectingSystematics();
-    for ( const auto& syst_it : affectSystsJVT ) { ANA_MSG_DEBUG("NNJvtEfficiencyTool tool can be affected by NNJvt efficiency systematic: " << syst_it.name()); }
+    for ( const auto& syst_it : affectSystsJVT ) { ANA_MSG_DEBUG("NNJvtEfficiencyTool can be affected by NNJvt efficiency systematic: " << syst_it.name()); }
 
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
@@ -293,7 +293,7 @@ EL::StatusCode JetSelector :: initialize ()
     const CP::SystematicSet recSystsJVT = m_jetNNJvtEfficiencyTool->recommendedSystematics();
     m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, msg() );
 
-    ANA_MSG_INFO("Will be using JetJvtEfficiency tool JVT efficiency systematic:");
+    ANA_MSG_INFO("Will be using NNJvtEfficiencyTool tool JVT efficiency systematic:");
     for ( const auto& syst_it : m_systListJVT ) {
       if ( m_systNameJVT.empty() ) {
         ANA_MSG_INFO("\t Running w/ nominal configuration only!");
@@ -303,7 +303,7 @@ EL::StatusCode JetSelector :: initialize ()
     }
   }
 
-  // initialize CP tools related to NNJvt
+  // initialize CP tools related to fJvt
   if (m_dofJVT) {
 
     // initialize jet fJvt selection tool
@@ -330,7 +330,7 @@ EL::StatusCode JetSelector :: initialize ()
     m_outputfJVTPassed = m_outputfJVTPassed + "_" + m_WorkingPointfJVT;
 
     CP::SystematicSet affectSystsfJVT = m_jetfJvtEfficiencyTool->affectingSystematics();
-    for ( const auto& syst_it : affectSystsfJVT ) { ANA_MSG_DEBUG("JetJvtEfficiency tool can be affected by fJVT efficiency systematic: " << syst_it.name()); }
+    for ( const auto& syst_it : affectSystsfJVT ) { ANA_MSG_DEBUG("FJvtSelectionTool can be affected by fJVT efficiency systematic: " << syst_it.name()); }
 
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
