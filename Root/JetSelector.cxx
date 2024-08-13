@@ -24,7 +24,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 // external tools include(s):
-#include "JetJvtEfficiency/JetJvtEfficiency.h"
 #include "JetMomentTools/JetForwardJvtTool.h"
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
