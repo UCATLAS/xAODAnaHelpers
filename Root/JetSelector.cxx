@@ -498,22 +498,6 @@ EL::StatusCode JetSelector :: execute ()
     // this will be the collection processed - no matter what!!
     ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
-    // decorate inJets with truth info
-    if ( isMC() && m_doJVT && m_haveTruthJets ) {
-      static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
-      static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
-      for(const auto& jet : *inJets) {
-        bool ishs = false;
-        bool ispu = true;
-        for(const auto& tjet : *truthJets) {
-          if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
-          if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
-        }
-        isHS(*jet)=ishs;
-        isPU(*jet)=ispu;
-      }
-    }
-
     // Check against pile-up only jets:
     if ( isMC() && m_doMCCleaning && m_haveTruthJets ){
       float pTAvg = (inJets->size() > 0) ? inJets->at(0)->pt() : 0;
@@ -546,22 +530,6 @@ EL::StatusCode JetSelector :: execute ()
         if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
         if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > m_mcCleaningCut ) {
           passMCcleaning = false;
-        }
-      }
-
-      // decorate inJets with truth info
-      if ( isMC() && (m_doJVT || m_dofJVT) && m_haveTruthJets ) {
-        static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
-        static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
-        for(const auto& jet : *inJets) {
-          bool ishs = false;
-          bool ispu = true;
-          for(const auto& tjet : *truthJets) {
-            if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
-            if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
-          }
-          isHS(*jet)=ishs;
-          isPU(*jet)=ispu;
         }
       }
 
@@ -931,7 +899,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           //
           if (m_jetfJvtEfficiencyTool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS)
           {
-            ANA_MSG_ERROR("Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
+            ANA_MSG_ERROR("Failed to configure CP::FJvtEfficiencyTool for systematic " << syst_it.name());
             return EL::StatusCode::FAILURE;
           }
           ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
