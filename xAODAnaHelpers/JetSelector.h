@@ -128,7 +128,7 @@ public:
   /// @brief cut value
   float m_JVFCut = 0.5;
   /// @brief (re-)evaluate the hard-scatter jet label (isJvtHS) required for Jvt efficiency tools
-  bool m_doTruthJetTagging = false;
+  bool m_doTruthJetTagging = true;
   /// @brief check JVT
   bool m_doJVT = false;
   /// @brief keep JVT-rejected jets and decorate passing status
