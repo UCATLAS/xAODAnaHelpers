@@ -562,7 +562,7 @@ if __name__ == "__main__":
         else:
           setter = 'setString'
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
-        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, repr(getattr(ROOT.EL.Job, opt)), getattr(args, opt)))
 
     elif (args.driver == "prun"):
       driver = ROOT.EL.PrunDriver()
@@ -580,7 +580,7 @@ if __name__ == "__main__":
         else:
           setter = 'setString'
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
-        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, repr(getattr(ROOT.EL.Job, opt)), getattr(args, opt)))
       nc_outputSampleNameStr = args.optGridOutputSampleName
       driver.options().setString("nc_outputSampleName", nc_outputSampleNameStr)
       xAH_logger.info("\t - driver.options().setString(nc_outputSampleName, {0:s})".format(nc_outputSampleNameStr))
@@ -600,7 +600,7 @@ if __name__ == "__main__":
         else:
           setter = 'setString'
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
-        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, repr(getattr(ROOT.EL.Job, opt)), getattr(args, opt)))
 
     elif (args.driver == "lsf"):
       driver = ROOT.EL.LSFDriver()
@@ -617,7 +617,7 @@ if __name__ == "__main__":
         else:
           setter = 'setString'
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
-        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, repr(getattr(ROOT.EL.Job, opt)), getattr(args, opt)))
 
     elif (args.driver == "slurm"):
       driver = ROOT.EL.SlurmDriver()
@@ -657,7 +657,7 @@ if __name__ == "__main__":
         else:
           setter = 'setString'
         getattr(driver.options(), setter)(getattr(ROOT.EL.Job, opt), getattr(args, opt))
-        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, getattr(ROOT.EL.Job, opt), getattr(args, opt)))
+        xAH_logger.info("\t - driver.options().{0:s}({1:s}, {2})".format(setter, repr(getattr(ROOT.EL.Job, opt)), getattr(args, opt)))
 
     xAH_logger.info("\tsubmit job")
     if args.driver in ["prun","condor","lsf","slurm","local"] and not args.optBatchWait:
