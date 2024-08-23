@@ -131,7 +131,7 @@ EL::StatusCode TauCalibrator :: initialize ()
   if (!m_RecommendationTag.empty()) ANA_CHECK(m_tauSmearingTool_handle.setProperty("RecommendationTag",m_RecommendationTag));
   if (!m_generator.empty()) ANA_CHECK(m_tauSmearingTool_handle.setProperty("Generator",m_generator));
   if (!m_campaign.empty()) ANA_CHECK(m_tauSmearingTool_handle.setProperty("Campaign",m_campaign));
-  ANA_CHECK(m_tauSmearingTool_handle.setProperty("ApplyMVATESQualityCheck",m_applyMVATESQualityCheck));
+  ANA_CHECK(m_tauSmearingTool_handle.setProperty("MVATESQualityCheck",m_applyMVATESQualityCheck));
   ANA_CHECK(m_tauSmearingTool_handle.setProperty("SkipTruthMatchCheck",m_skipTruthMatchCheck));
   if ( isFastSim() ){
     ANA_MSG_INFO( "Setting simulation flavour to Fast Sim");
