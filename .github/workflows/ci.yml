@@ -19,11 +19,7 @@ jobs:
         release_type:
           - analysisbase
         release_version:
-          - 25.2.17
-          - 25.2.18
-          - 25.2.19
-          - 25.2.20
-          - 25.2.21
+          - 25.2.24
 
     steps:
     - uses: actions/checkout@master
