@@ -1,0 +1,194 @@
+
+.. _file_xAODAnaHelpers_HelperClasses.h:
+
+File HelperClasses.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/HelperClasses.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_HelperClasses.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``RootCoreUtils/ThrowMsg.h``
+
+- ``TString.h``
+
+- ``iostream``
+
+- ``map``
+
+- ``sstream``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODRootAccess/TEvent.h``
+
+- ``xAODRootAccess/TStore.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ClusterContainer.h`
+
+- :ref:`file_xAODAnaHelpers_ElectronContainer.h`
+
+- :ref:`file_xAODAnaHelpers_EventInfo.h`
+
+- :ref:`file_xAODAnaHelpers_FatJetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+- :ref:`file_xAODAnaHelpers_HelpTreeBase.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHists.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_JetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_JetHists.h`
+
+- :ref:`file_xAODAnaHelpers_L1JetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_MetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_MetHists.h`
+
+- :ref:`file_xAODAnaHelpers_MuonContainer.h`
+
+- :ref:`file_xAODAnaHelpers_ParticleContainer.h`
+
+- :ref:`file_xAODAnaHelpers_ParticlePIDManager.h`
+
+- :ref:`file_xAODAnaHelpers_PhotonContainer.h`
+
+- :ref:`file_xAODAnaHelpers_TauContainer.h`
+
+- :ref:`file_xAODAnaHelpers_TrackContainer.h`
+
+- :ref:`file_xAODAnaHelpers_TruthContainer.h`
+
+- :ref:`file_xAODAnaHelpers_VertexContainer.h`
+
+- :ref:`file_Root_BJetEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_DebugTool.cxx`
+
+- :ref:`file_Root_ElectronCalibrator.cxx`
+
+- :ref:`file_Root_ElectronEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_ElectronSelector.cxx`
+
+- :ref:`file_Root_HelperClasses.cxx`
+
+- :ref:`file_Root_IParticleHistsAlgo.cxx`
+
+- :ref:`file_Root_IsoCloseByCorr.cxx`
+
+- :ref:`file_Root_JetSelector.cxx`
+
+- :ref:`file_Root_METConstructor.cxx`
+
+- :ref:`file_Root_MinixAOD.cxx`
+
+- :ref:`file_Root_MuonCalibrator.cxx`
+
+- :ref:`file_Root_MuonEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_MuonInFatJetCorrector.cxx`
+
+- :ref:`file_Root_MuonSelector.cxx`
+
+- :ref:`file_Root_OverlapRemover.cxx`
+
+- :ref:`file_Root_PhotonCalibrator.cxx`
+
+- :ref:`file_Root_TauCalibrator.cxx`
+
+- :ref:`file_Root_TauEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_TauJetMatching.cxx`
+
+- :ref:`file_Root_TauSelector.cxx`
+
+- :ref:`file_Root_TreeAlgo.cxx`
+
+- :ref:`file_Root_TruthSelector.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_HelperClasses`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classHelperClasses_1_1ClusterInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1ElectronInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1EnumParser`
+
+- :ref:`exhale_class_classHelperClasses_1_1EventInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1InfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1IParticleInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1JetInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1METInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1MuonInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1PhotonInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TauInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TrackInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TriggerInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TruthInfoSwitch`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_HelperClasses_8h_1ae759666962f41b8b383e887f415d41bf`
+
+- :ref:`exhale_enum_HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97baf`
+

@@ -1,0 +1,70 @@
+
+.. _file_xAODAnaHelpers_IParticleHistsAlgo.h:
+
+File IParticleHistsAlgo.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/IParticleHistsAlgo.h``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_IParticleHistsAlgo.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``SampleHandler/MetaFields.h``
+
+- ``SampleHandler/MetaObject.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/IParticleHists.h`` (:ref:`file_xAODAnaHelpers_IParticleHists.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ElectronHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_JetHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_MuonHistsAlgo.h`
+
+- :ref:`file_xAODAnaHelpers_PhotonHistsAlgo.h`
+
+- :ref:`file_Root_IParticleHistsAlgo.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classIParticleHistsAlgo`
+

@@ -1,0 +1,65 @@
+
+.. _file_xAODAnaHelpers_PhotonSelector.h:
+
+File PhotonSelector.h
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/PhotonSelector.h``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_PhotonSelector.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TH1D.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_PhotonSelector.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_CP`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classPhotonSelector`
+

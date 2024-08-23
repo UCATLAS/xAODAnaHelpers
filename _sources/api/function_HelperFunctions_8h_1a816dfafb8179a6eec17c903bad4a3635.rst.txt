@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a816dfafb8179a6eec17c903bad4a3635:
+
+Function HelperFunctions::getMCShowerType
+=========================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::getMCShowerType(const std::string&)

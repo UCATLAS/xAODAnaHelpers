@@ -1,0 +1,13 @@
+.. _exhale_function_PhotonHists_8cxx_1afcc600091b36c56507c0b7a5a61b95b0:
+
+Function ANA_MSG_SOURCE(msgPhotonHists, "PhotonHists")
+======================================================
+
+- Defined in :ref:`file_Root_PhotonHists.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ANA_MSG_SOURCE(msgPhotonHists, "PhotonHists")

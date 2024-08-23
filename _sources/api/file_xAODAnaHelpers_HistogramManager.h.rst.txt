@@ -1,0 +1,94 @@
+
+.. _file_xAODAnaHelpers_HistogramManager.h:
+
+File HistogramManager.h
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+Manage your histograms. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/HistogramManager.h``)
+--------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_HistogramManager.h.rst
+
+
+
+Detailed Description
+--------------------
+
+See AUTHORS.md 
+
+BugNo known bugs 
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgMessaging/MessageCheck.h``
+
+- ``AsgMessaging/StatusCode.h``
+
+- ``EventLoop/IWorker.h``
+
+- ``TH1.h``
+
+- ``TH1F.h``
+
+- ``TH2F.h``
+
+- ``TH3F.h``
+
+- ``TProfile.h``
+
+- ``ctype.h``
+
+- ``xAODRootAccess/TEvent.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ClusterHists.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHists.h`
+
+- :ref:`file_xAODAnaHelpers_MetHists.h`
+
+- :ref:`file_xAODAnaHelpers_TrackHists.h`
+
+- :ref:`file_xAODAnaHelpers_TracksInJetHists.h`
+
+- :ref:`file_xAODAnaHelpers_VtxHists.h`
+
+- :ref:`file_Root_HistogramManager.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classHistogramManager`
+

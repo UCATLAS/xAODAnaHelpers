@@ -1,0 +1,25 @@
+.. _exhale_class_classPhotonCalibrator:
+
+Class PhotonCalibrator
+======================
+
+- Defined in :ref:`file_xAODAnaHelpers_PhotonCalibrator.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: PhotonCalibrator
+   :members:
+   :protected-members:
+   :undoc-members:

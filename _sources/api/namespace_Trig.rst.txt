@@ -1,0 +1,13 @@
+
+.. _namespace_Trig:
+
+Namespace Trig
+==============
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+
+

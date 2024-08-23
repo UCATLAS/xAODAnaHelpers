@@ -1,0 +1,69 @@
+
+.. _file_xAODAnaHelpers_Jet.h:
+
+File Jet.h
+==========
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/Jet.h``)
+-------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_Jet.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/MuonContainer.h`` (:ref:`file_xAODAnaHelpers_MuonContainer.h`)
+
+- ``xAODAnaHelpers/Particle.h`` (:ref:`file_xAODAnaHelpers_Particle.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_FatJet.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHists.h`
+
+- :ref:`file_xAODAnaHelpers_JetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_JetHists.h`
+
+- :ref:`file_xAODAnaHelpers_L1JetContainer.h`
+
+- :ref:`file_Root_Jet.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1Jet`
+
