@@ -314,7 +314,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     } else {
       m_asgElEffCorrTool_elSF_Trig = new AsgElectronEfficiencyCorrectionTool(m_TrigEffSF_tool_name);
       m_asgElEffCorrTool_elSF_Trig->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-      if ( !m_overrideMapFilePath.empty() ) {
+      if ( !m_overrideMapFilePathTrig.empty() ) {
+        ANA_MSG_WARNING( "Overriding MapFilePath for trigger SF only to " << m_overrideMapFilePathTrig );
+        ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("MapFilePath", m_overrideMapFilePathTrig));
+      } else if ( !m_overrideMapFilePath.empty() ) {
         ANA_MSG_WARNING( "Overriding MapFilePath to " << m_overrideMapFilePath );
         ANA_CHECK( m_asgElEffCorrTool_elSF_Trig->setProperty("MapFilePath", m_overrideMapFilePath));
       }
@@ -334,7 +337,10 @@ EL::StatusCode ElectronEfficiencyCorrector :: initialize ()
     } else {
       m_asgElEffCorrTool_elSF_TrigMCEff = new AsgElectronEfficiencyCorrectionTool(m_TrigMCEff_tool_name);
       m_asgElEffCorrTool_elSF_TrigMCEff->msg().setLevel( MSG::ERROR ); // DEBUG, VERBOSE, INFO
-      if ( !m_overrideMapFilePath.empty() ) {
+      if ( !m_overrideMapFilePathTrig.empty() ) {
+        ANA_MSG_WARNING( "Overriding MapFilePath for trigger SF only to " << m_overrideMapFilePathTrig );
+        ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("MapFilePath", m_overrideMapFilePathTrig));
+      } else if ( !m_overrideMapFilePath.empty() ) {
         ANA_MSG_WARNING( "Overriding MapFilePath to " << m_overrideMapFilePath );
         ANA_CHECK( m_asgElEffCorrTool_elSF_TrigMCEff->setProperty("MapFilePath", m_overrideMapFilePath));
       }

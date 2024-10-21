@@ -87,6 +87,9 @@ public:
   /// @brief Override corrections map file (not recommended)
   std::string m_overrideMapFilePath = "";
 
+  /// @brief Override corrections map file for trigger (needed as Run2 R22 Trigger SF use R21 values)
+  std::string m_overrideMapFilePathTrig = "";
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!
