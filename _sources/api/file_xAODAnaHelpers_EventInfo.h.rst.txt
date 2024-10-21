@@ -1,0 +1,77 @@
+
+.. _file_xAODAnaHelpers_EventInfo.h:
+
+File EventInfo.h
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/EventInfo.h``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_EventInfo.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TTree.h``
+
+- ``string``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ElectronHists.h`
+
+- :ref:`file_xAODAnaHelpers_HelpTreeBase.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHists.h`
+
+- :ref:`file_xAODAnaHelpers_JetHists.h`
+
+- :ref:`file_xAODAnaHelpers_MuonHists.h`
+
+- :ref:`file_xAODAnaHelpers_OnlineBeamSpotTool.h`
+
+- :ref:`file_Root_EventInfo.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1EventInfo`
+
