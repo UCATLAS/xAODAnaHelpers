@@ -151,6 +151,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_el_cutflow_all             = m_el_cutflowHist_1->GetXaxis()->FindBin("all");
     m_el_cutflow_author_cut      = m_el_cutflowHist_1->GetXaxis()->FindBin("author_cut");
     m_el_cutflow_OQ_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");
+    m_el_cutflow_deadHVCell_cut  = m_el_cutflowHist_1->GetXaxis()->FindBin("deadHVCell_cut");
     m_el_cutflow_ptmax_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_el_cutflow_ptmin_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
     m_el_cutflow_eta_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
@@ -167,6 +168,7 @@ EL::StatusCode ElectronSelector :: initialize ()
       m_el_cutflow_all       = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
       m_el_cutflow_author_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
       m_el_cutflow_OQ_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
+      m_el_cutflow_deadHVCell_cut  = m_el_cutflowHist_2->GetXaxis()->FindBin("deadHVCell_cut");
       m_el_cutflow_ptmax_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
       m_el_cutflow_ptmin_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
       m_el_cutflow_eta_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
@@ -400,6 +402,15 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
 
   // **********************************************************************************************
+
+
+  // Set up the dead HV Removal Tool
+  m_deadHVTool.setTypeAndName("AsgDeadHVCellRemovalTool/deadHVTool");
+  if (m_deadHVTool.retrieve().isFailure()){
+      ANA_MSG_ERROR("Failed to retrieve DeadHVTool, aborting");
+      return StatusCode::FAILURE;
+  }
+
 
   ANA_MSG_INFO( "ElectronSelector Interface succesfully initialized!" );
 
@@ -859,6 +870,19 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
   }
   if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_OQ_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_OQ_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  //
+  // Dead HV Cell veto (affects only 2016 data)
+  //
+  if ( m_applyDeadHVCellVeto ) {
+    if( !m_deadHVTool->accept(electron) ){
+      ANA_MSG_DEBUG( "Electron failed dead HV cell veto." );
+      return 0;
+    }
+  }
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_deadHVCell_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_deadHVCell_cut, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //
