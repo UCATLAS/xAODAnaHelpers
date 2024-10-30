@@ -405,10 +405,14 @@ EL::StatusCode ElectronSelector :: initialize ()
 
 
   // Set up the dead HV Removal Tool
-  m_deadHVTool.setTypeAndName("AsgDeadHVCellRemovalTool/deadHVTool");
-  if (m_deadHVTool.retrieve().isFailure()){
+  if (m_applyDeadHVCellVeto)
+    m_deadHVTool.setTypeAndName("AsgDeadHVCellRemovalTool/deadHVTool");
+    if (m_deadHVTool.retrieve().isFailure()){
       ANA_MSG_ERROR("Failed to retrieve DeadHVTool, aborting");
       return StatusCode::FAILURE;
+  }
+  else {
+      ANA_MSG_WARNING("Not applying veto of dead HV cells although it's recommended - please double check!");
   }
 
 
