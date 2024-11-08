@@ -230,7 +230,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
 		sampleShowerType=HelperFunctions::getMCShowerType(gridName,m_taggerName);
 	      }
-        
+       
         if(m_taggerName=="DL1dv01"){
             if(m_isRun3){
                 switch(sampleShowerType)
@@ -285,18 +285,18 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
                     case HelperFunctions::AmcH7:
                         calibration="412116";
                         break;
-	                case HelperFunctions::Unknown:
-                    if (m_allowCalibrationFallback) {
-                      ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
-                      ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
-                      calibration="default";
-                      break;
-                    }
-                    else {
+	                default:
+                        if (m_allowCalibrationFallback) {
+                          ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                          ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                          calibration="default";
+                          break;
+                        }
+                        else {
 		                  ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
 		                  return EL::StatusCode::FAILURE;
 		                  break;
-                    }
+                        }
 	            }
             }
         } else if(m_taggerName=="GN2v01"){
@@ -357,18 +357,18 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
                         ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
                         calibration="700660";
                         break;
-                    case HelperFunctions::Unknown:
-                    if (m_allowCalibrationFallback) {
-                      ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
-                      ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
-                      calibration="default";
-                      break;
-                    }
-                    else {
-                          ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-                          return EL::StatusCode::FAILURE;
-                          break;
-                    }
+                    default:
+                      if (m_allowCalibrationFallback) {
+                        ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                        ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                        calibration="default";
+                        break;
+                      }
+                      else {
+                        ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                        return EL::StatusCode::FAILURE;
+                        break;
+                     }
                 }
             }
         } else {
