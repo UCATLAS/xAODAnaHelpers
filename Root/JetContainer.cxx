@@ -1889,7 +1889,8 @@ void JetContainer::setBranches(TTree *tree)
     // this applies the JVF/JVT selection cuts
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
     if( m_infoSwitch.m_allTrackPVSel ) {
-      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection", "Loose" );
+      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection");
+      m_trkSelTool->setProperty( "CutLevel", "Loose");
       m_trkSelTool->initialize();
       // to do this need to have AddJets return a status code
       //ANA_CHECK( m_trkSelTool->initialize());
