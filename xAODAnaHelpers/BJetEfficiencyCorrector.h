@@ -63,7 +63,7 @@ public:
   std::string m_operatingPtCDI = "";
   /// @brief will only get scale factors for calibrated working points
   bool m_getScaleFactors = false;
-  /// @brief will get tagWeight, quantile, SF and InefficiencySF
+  /// @brief will get tagWeight, quantile, and SF
   bool m_useContinuous = false;
   /// @brief The decoration key written to passing objects
   std::string m_decor = "BTag";
@@ -94,7 +94,6 @@ private:
   std::string m_decorSF = "";
   std::string m_decorWeight = ""; // only for continuous b-tagging
   std::string m_decorQuantile = ""; // only for continuous b-tagging
-  std::string m_decorInefficiencySF = ""; // only for continuous b-tagging
 
   std::map<int,std::string> m_DSIDtoGenerator; //!
   std::map<std::string,unsigned int> m_MCIndexes; //!

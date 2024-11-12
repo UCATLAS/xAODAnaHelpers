@@ -104,7 +104,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_decorSF = m_decor + "_SF";
   m_decorWeight   = m_decor + "_Weight";
   m_decorQuantile = m_decor + "_Quantile";
-  m_decorInefficiencySF  = m_decor + "_InefficiencySF";
 
   bool opOK(false),taggerOK(false);
   m_getScaleFactors = false;
@@ -148,7 +147,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
   m_outputSystName      += "_" + m_taggerName + "_" + m_operatingPt;
   m_decorWeight         += "_" + m_taggerName + "_" + m_operatingPt;
   m_decorQuantile       += "_" + m_taggerName + "_" + m_operatingPt;
-  m_decorInefficiencySF += "_" + m_taggerName + "_" + m_operatingPt;
 
   if(!m_useContinuous){
     ANA_MSG_INFO( "Decision Decoration Name     : " << m_decor);
@@ -157,7 +155,6 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
     ANA_MSG_INFO( "Weight Decoration Name: "        << m_decorWeight);
     ANA_MSG_INFO( "Quantile Decoration Name: "      << m_decorQuantile);
     ANA_MSG_INFO( "Scale Factor Decoration Name : " << m_decorSF);
-    ANA_MSG_INFO( "Inefficiency Scale Factor Decoration Name : " << m_decorInefficiencySF);
   }
 
   // now take this name and convert it to the cut value for the CDI file
@@ -222,7 +219,7 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 		std::string sampleName;
 		while(std::getline(ss,sampleName,','))
 		  {
-		    HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName);
+		    HelperFunctions::ShowerType mySampleShowerType=HelperFunctions::getMCShowerType(sampleName,m_taggerName);
 		    if(mySampleShowerType!=sampleShowerType && sampleShowerType!=HelperFunctions::Unknown)
 		      ANA_MSG_ERROR("Cannot have different shower types per grid task.");
 		    sampleShowerType=mySampleShowerType;
@@ -231,75 +228,158 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 	    else // Use sample name when running locally
 	      {
 		gridName=wk()->metaData()->castString(SH::MetaFields::sampleName);
-		sampleShowerType=HelperFunctions::getMCShowerType(gridName);
+		sampleShowerType=HelperFunctions::getMCShowerType(gridName,m_taggerName);
 	      }
-        
-        if(m_isRun3){
-            switch(sampleShowerType)
-            {
-                case HelperFunctions::Pythia8:
-                    calibration="601229";
-                    break;
-                case HelperFunctions::Herwig7p2:
-                    calibration="601414";
-                    break;
-                case HelperFunctions::Sherpa2212:
-                    calibration="700660";
-                    break;
-                default:
-                    if (m_allowCalibrationFallback) {
-                      ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
-                      ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
-                      calibration="default";
-                      break;
-                    }
-                    else {
-                      ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-                      return EL::StatusCode::FAILURE;
-                       break;
-                    }
+       
+        if(m_taggerName=="DL1dv01"){
+            if(m_isRun3){
+                switch(sampleShowerType)
+                {
+                    case HelperFunctions::Pythia8:
+                        calibration="601229";
+                        break;
+                    case HelperFunctions::Herwig7p2:
+                        calibration="601414";
+                        break;
+                    case HelperFunctions::Sherpa2212:
+                        calibration="700660";
+                        break;
+                    default:
+                        if (m_allowCalibrationFallback) {
+                          ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                          ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                          calibration="default";
+                          break;
+                        }
+                        else {
+                          ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                          return EL::StatusCode::FAILURE;
+                           break;
+                        }
+                }
+            } else {
+
+    	        switch(sampleShowerType)
+	            {
+	                case HelperFunctions::Pythia8:
+		                calibration="410470";
+		                break;
+    	            case HelperFunctions::Herwig7p1:
+	    	            calibration="411233";
+                        break; 
+                    case HelperFunctions::Herwig7p2:
+                        calibration="600666";
+		                break;
+    	            case HelperFunctions::Sherpa221:
+	    	            calibration="410250";
+		                break;
+	                case HelperFunctions::Sherpa2210:
+		                calibration="700122";
+		                break;
+                    case HelperFunctions::Sherpa2212:
+                        calibration="700660";
+                        break;
+                    case HelperFunctions::AmcPy8:
+                        calibration="410464";
+                        break;
+                    case HelperFunctions::AmcH7:
+                        calibration="412116";
+                        break;
+	                default:
+                        if (m_allowCalibrationFallback) {
+                          ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                          ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                          calibration="default";
+                          break;
+                        }
+                        else {
+		                  ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+		                  return EL::StatusCode::FAILURE;
+		                  break;
+                        }
+	            }
+            }
+        } else if(m_taggerName=="GN2v01"){
+            if(m_isRun3){
+                switch(sampleShowerType)
+                {
+                    case HelperFunctions::Pythia8_517:
+                        calibration="601398";
+                        break;
+                    case HelperFunctions::Pythia8:
+                        calibration="601229";
+                        break;
+                    case HelperFunctions::Herwig7p2:
+                        calibration="601414";
+                        break;
+                    case HelperFunctions::Sherpa2214:
+                        calibration="700808";
+                        break;
+                    case HelperFunctions::Sherpa_Unknown:
+                        ANA_MSG_WARNING("Unknown Sherpa version MC shower type for sample " << gridName << ", falling back to MC-MC SFs for Sherpa 2.2.11-2.2.16.");
+                        ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                        calibration="700808";
+                        break;
+                    default:
+                        if (m_allowCalibrationFallback) {
+                          ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                          ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                          calibration="default";
+                          break;
+                        }
+                        else {
+                          ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                          return EL::StatusCode::FAILURE;
+                           break;
+                        }
+                }
+            } else {
+
+                switch(sampleShowerType)
+                {
+                    case HelperFunctions::Pythia8_517:
+                        calibration="410480";
+                        break;
+                    case HelperFunctions::Pythia8:
+                        calibration="410470";
+                        break;
+                    case HelperFunctions::Herwig7p1:
+                        calibration="411233";
+                        break;
+                    case HelperFunctions::Herwig7p2:
+                        calibration="600666";
+                        break;
+                    case HelperFunctions::Sherpa2214:
+                        calibration="700660";
+                        break;
+                    case HelperFunctions::Sherpa_Unknown:
+                        ANA_MSG_WARNING("Unknown Sherpa version MC shower type for sample " << gridName << ", falling back to MC-MC SFs for Sherpa 2.2.11-2.2.16.");
+                        ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                        calibration="700660";
+                        break;
+                    default:
+                      if (m_allowCalibrationFallback) {
+                        ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
+                        ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
+                        calibration="default";
+                        break;
+                      }
+                      else {
+                        ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
+                        return EL::StatusCode::FAILURE;
+                        break;
+                     }
+                }
             }
         } else {
-
-	        switch(sampleShowerType)
-	        {
-	            case HelperFunctions::Pythia8:
-		            calibration="410470";
-		            break;
-	            case HelperFunctions::Herwig7p1:
-		            calibration="411233";
-                    break; 
-                case HelperFunctions::Herwig7p2:
-                    calibration="600666";
-		            break;
-	            case HelperFunctions::Sherpa221:
-		            calibration="410250";
-		            break;
-	            case HelperFunctions::Sherpa2210:
-		            calibration="700122";
-		            break;
-                case HelperFunctions::Sherpa2212:
-                    calibration="700660";
-                    break;
-                case HelperFunctions::AmcPy8:
-                    calibration="410464";
-                    break;
-                case HelperFunctions::AmcH7:
-                    calibration="412116";
-                    break;
-	            case HelperFunctions::Unknown:
-                if (m_allowCalibrationFallback) {
-                  ANA_MSG_WARNING("Cannot determine MC shower type for sample " << gridName << ", falling back to 'default'.");
-                  ANA_MSG_WARNING("Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!");
-                  calibration="default";
-                  break;
-                }
-                else {
-		              ANA_MSG_ERROR("Cannot determine MC shower type for sample " << gridName << ".");
-		              return EL::StatusCode::FAILURE;
-		              break;
-                }
-	        }
+            if (m_allowCalibrationFallback) {
+                ANA_MSG_WARNING("Cannot determine MC shower type for tagger " << m_taggerName << ", only GN2v01 and DL1dv01 are supported. Falling back to 'default'.");
+                ANA_MSG_WARNING("Please double-check if this is appropriate for your sample and tagger, otherwise you have specify the MC-to-MC calibration manually!");
+                calibration="default";
+            } else {
+                ANA_MSG_ERROR("Cannot determine MC shower type for tagger " << m_taggerName << ".");
+                return EL::StatusCode::FAILURE;
+            }
         }
 	  } else { makeMCIndexMap(m_EfficiencyCalibration); }
 	ANA_CHECK( m_BJetEffSFTool_handle.setProperty("EfficiencyBCalibrations"    ,  calibration));
@@ -459,7 +539,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
   // for continuous b-tagging only
   SG::AuxElement::Decorator< float > dec_Weight( m_decorWeight );
   SG::AuxElement::Decorator< int > dec_Quantile( m_decorQuantile );
-  SG::AuxElement::Decorator< std::vector<float> > dec_ineffsfBTag( m_decorInefficiencySF );
 
   //
   // run the btagging decision or get weight and quantile if running continuous
@@ -543,8 +622,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
               if(abs(jet_itr->eta()) > 2.5){
                 if(!dec_sfBTag.isAvailable( *jet_itr ))
 	                dec_sfBTag     ( *jet_itr ) = std::vector<float>({1.});
-                if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
-	                dec_ineffsfBTag( *jet_itr ) = std::vector<float>({1.});
                 continue;
               }
               if(m_setMapIndex){ // select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps
@@ -555,16 +632,13 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
               }
 	      // get the scale factor
 	      float SF(-1.0);
-	      float inefficiencySF(-1.0); // only for continuous b-tagging
 	      CP::CorrectionCode BJetEffCode;
-	      CP::CorrectionCode BJetIneEffCode = CP::CorrectionCode::Ok;
 	      // if passes cut take the efficiency scale factor
 	      // if failed cut take the inefficiency scale factor
-	      // for continuous b-tagging save both
+	      // for continuous take efficiency, as inefficiency should not be used
 	      if(m_useContinuous)
 		{
 		  BJetEffCode = m_BJetEffSFTool_handle->getScaleFactor( *jet_itr, SF );
-		  BJetIneEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, inefficiencySF );
 		}
 	      else
 		{
@@ -574,7 +648,7 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 		    BJetEffCode = m_BJetEffSFTool_handle->getInefficiencyScaleFactor( *jet_itr, SF );
 		}
 
-	      if (BJetEffCode == CP::CorrectionCode::Error || BJetIneEffCode == CP::CorrectionCode::Error)
+	      if (BJetEffCode == CP::CorrectionCode::Error)
 		{
 		  ANA_MSG_ERROR( "Error in getEfficiencyScaleFactor");
 		  return EL::StatusCode::FAILURE;
@@ -587,12 +661,9 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	      // Save it to the vector
 	      if(                   !dec_sfBTag     .isAvailable( *jet_itr ))
 		dec_sfBTag     ( *jet_itr ) = std::vector<float>();
-	      if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
-		dec_ineffsfBTag( *jet_itr ) = std::vector<float>();
 
 
 	      dec_sfBTag( *jet_itr ).push_back(SF);
-	      if(m_useContinuous) dec_ineffsfBTag( *jet_itr ).push_back(inefficiencySF);
       }
     }
   }
@@ -602,8 +673,6 @@ EL::StatusCode BJetEfficiencyCorrector :: executeEfficiencyCorrection(const xAOD
 	{
 	  if(                   !dec_sfBTag     .isAvailable( *jet_itr ))
 	    dec_sfBTag     ( *jet_itr ) = std::vector<float>({1.});
-	  if(m_useContinuous && !dec_ineffsfBTag.isAvailable( *jet_itr ))
-	    dec_ineffsfBTag( *jet_itr ) = std::vector<float>({1.});
 	}
     }
 

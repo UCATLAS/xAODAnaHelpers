@@ -519,7 +519,7 @@ bool HelperFunctions::has_exact(const std::string input, const std::string flag)
   return inputSet.find(flag) != inputSet.end();
 }
 
-HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& sample_name)
+HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& sample_name, const std::string& m_taggerName)
 {
   //
   //pre-process sample name
@@ -534,15 +534,33 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
 
   //
   // Determine shower type by looking for keywords in name
-  if(tmp_name.Contains("AMCATNLOPY")) return AmcPy8;
-  else if(tmp_name.Contains("AMCATNLOH")) return AmcH7;
-  else if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
-  else if(tmp_name.Contains("HERWIG")) return Herwig7p1;
-  else if(tmp_name.Contains("PHH7EG")) return Herwig7p2;
-  else if(tmp_name.Contains("SHERPA_221_")) return Sherpa221;
-  else if(tmp_name.Contains("SH_221_")) return Sherpa221;
-  else if(tmp_name.Contains("SH_2210")) return Sherpa2210;
-  else if(tmp_name.Contains("SH_2211")) return Sherpa2210;
-  else if(tmp_name.Contains("SH_2212")) return Sherpa2212;
-  else return Unknown;
+  if(m_taggerName=="DL1dv01"){
+    if(tmp_name.Contains("AMCATNLOPY")) return AmcPy8;
+    else if(tmp_name.Contains("AMCATNLOH")) return AmcH7;
+    else if(tmp_name.Contains("PYTHIA8EVTGEN")) return Pythia8;
+    else if(tmp_name.Contains("HERWIG")) return Herwig7p1;
+    else if(tmp_name.Contains("PHH7EG")) return Herwig7p2;
+    else if(tmp_name.Contains("SHERPA_221_")) return Sherpa221;
+    else if(tmp_name.Contains("SH_221_")) return Sherpa221;
+    else if(tmp_name.Contains("SH_2210")) return Sherpa2210;
+    else if(tmp_name.Contains("SH_2211")) return Sherpa2210;
+    else if(tmp_name.Contains("SH_2212")) return Sherpa2212;
+    else return Unknown;
+  } else if(m_taggerName=="GN2v01"){
+    if(tmp_name.Contains("PYTHIA8EVTGEN517")) return Pythia8_517;
+    else if(tmp_name.Contains("PYTHIA8EVTGEN") and !tmp_name.Contains("AMCATNLO")) return Pythia8; //aMcAtNlo not supported for GN2, so don't let it count as Pythia8
+    else if(tmp_name.Contains("HERWIG") and !tmp_name.Contains("AMCATNLO")) return Herwig7p1; 
+    else if(tmp_name.Contains("PHH7EG")) return Herwig7p2;
+    else if(tmp_name.Contains("SH_2210")) return Sherpa2214;//FTAG uses 2.2.14 SFs for 2.2.10
+    else if(tmp_name.Contains("SH_2211")) return Sherpa2214;//MC-to-MC maps for versions of Sherpa between 2.2.11 and 2.2.16 are equivalent.
+    else if(tmp_name.Contains("SH_2212")) return Sherpa2214;
+    else if(tmp_name.Contains("SH_2213")) return Sherpa2214;
+    else if(tmp_name.Contains("SH_2214")) return Sherpa2214;
+    else if(tmp_name.Contains("SH_2215")) return Sherpa2214;
+    else if(tmp_name.Contains("SH_2216")) return Sherpa2214;
+    else if(tmp_name.Contains("SH_") and !tmp_name.Contains("SH_2")) return Sherpa_Unknown;//Unknown Sherpa Version. This is to handle Sh_blank (e.g. DSID 701050). The examples I've found are all 2.2.16, but that's not guaranteed.
+    else return Unknown;
+  } else {
+    return  Unknown;
+  }
 }
