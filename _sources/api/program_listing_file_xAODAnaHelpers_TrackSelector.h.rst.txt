@@ -1,0 +1,139 @@
+
+.. _program_listing_file_xAODAnaHelpers_TrackSelector.h:
+
+Program Listing for File TrackSelector.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_TrackSelector.h>` (``xAODAnaHelpers/TrackSelector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_TrackSelector_H
+   #define xAODAnaHelpers_TrackSelector_H
+   
+   // ROOT include(s):
+   #include "TH1D.h"
+   
+   // EDM include(s):
+   #include "xAODTracking/VertexContainer.h"
+   #include "xAODTracking/TrackParticleContainer.h"
+   
+   // external tools include(s):
+   #include "InDetTrackSelectionTool/IInDetTrackSelectionTool.h"
+   #include "AsgTools/AnaToolHandle.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   
+   class TrackSelector : public xAH::Algorithm
+   {
+     // put your configuration variables here as public variables.
+     // that way they can be set directly from CINT and python.
+   public:
+   
+     bool m_useCutFlow = true;
+   
+     // configuration variables
+     std::string m_inContainerName = "";
+     std::string m_outContainerName = "";
+     std::string m_inJetContainerName = "";
+     bool  m_decorateSelectedObjects = true;
+     bool  m_createSelectedContainer = false;
+     int   m_nToProcess = -1;
+     int   m_pass_min = -1;
+     int   m_pass_max = -1;
+     std::string m_cutLevelString = "";
+     float m_pT_max = 1e8;
+     float m_pT_min = 1e8;
+     float m_p_min = 1e8;
+     float m_eta_max = 1e8;
+     float m_eta_min = 1e8;
+     float m_etaSigned_min = 1e8;
+     float m_etaSigned_max = 1e8;
+     float m_d0_max = 1e8;
+     float m_z0_max = 1e8;
+     float m_sigmad0_max = 1e8;
+     float m_d0oversigmad0_max = 1e8;
+     float m_z0sinT_max = 1e8;
+     float m_sigmaz0_max = 1e8;
+     float m_sigmaz0sintheta_max = 1e8;
+     float m_z0oversigmaz0_max = 1e8;
+     float m_z0sinthetaoversigmaz0sintheta_max=1e8;
+     int   m_nPixelHits_min =1e8; 
+     int   m_nPixelHitsPhysical_min =1e8; 
+     int   m_nSctHits_min =1e8; 
+     int   m_nSctHitsPhysical_min =1e8; 
+     int   m_nSi_min = 1e8;
+     int   m_nSiPhysical_min = 1e8;
+     int   m_nPixHoles_max = 1e8;
+     int   m_nSctHoles_max = 1e8;
+     int   m_nSiHoles_max =1e8; 
+     int   m_nInnermostPixel_min =1e8; 
+     int   m_nNextToInnermostPixel_min =1e8; 
+     int   m_nBothInnermostLayersHits_min =1e8; 
+     int   m_nPixelSharedHits_max =1e8; 
+     int   m_nSctSharedHits_max =1e8; 
+     int   m_nSiSharedHits_max =1e8; 
+     int   m_nSiSharedModules_max =1e8; 
+     float m_chi2NdofCut_max = 1e8;
+     float m_chi2Prob_max = 1e8;
+     float m_chi2Prob_min = 1e8;
+     int m_nBL_min = 1e8;
+   
+   
+     std::string              m_passAuxDecorKeys = "";
+     std::string              m_failAuxDecorKeys = "";
+   
+     bool m_doTracksInJets = false;
+   
+   private:
+   
+     std::vector<std::string> m_passKeys;
+     std::vector<std::string> m_failKeys;
+   
+     asg::AnaToolHandle <InDet::IInDetTrackSelectionTool> m_trkSelTool_handle{"InDet::InDetTrackSelectionTool/TrackSelectionTool", this}; 
+   
+     int m_numEvent;         
+     int m_numObject;        
+     int m_numEventPass;     
+     int m_numObjectPass;    
+   
+     // cutflow
+     TH1D* m_cutflowHist = nullptr;          
+     TH1D* m_cutflowHistW = nullptr;         
+     int   m_cutflow_bin;          
+   
+     // variables that don't get filled at submission time should be
+     // protected from being send from the submission node to the worker
+     // node (done by the //!)
+   public:
+   
+   
+     // this is a standard constructor
+     TrackSelector ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     EL::StatusCode executeTrackCollection (float mcEvtWeight);
+     EL::StatusCode executeTracksInJets ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // added functions not from Algorithm
+     // why does this need to be virtual?
+     virtual int PassCuts( const xAOD::TrackParticle* jet, const xAOD::Vertex *pvx );
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(TrackSelector, 1);
+   };
+   
+   #endif

@@ -1,0 +1,126 @@
+
+.. _file_xAODAnaHelpers_HelpTreeBase.h:
+
+File HelpTreeBase.h
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/HelpTreeBase.h``)
+----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_HelpTreeBase.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TFile.h``
+
+- ``TTree.h``
+
+- ``map``
+
+- ``xAODAnaHelpers/ClusterContainer.h`` (:ref:`file_xAODAnaHelpers_ClusterContainer.h`)
+
+- ``xAODAnaHelpers/ElectronContainer.h`` (:ref:`file_xAODAnaHelpers_ElectronContainer.h`)
+
+- ``xAODAnaHelpers/EventInfo.h`` (:ref:`file_xAODAnaHelpers_EventInfo.h`)
+
+- ``xAODAnaHelpers/FatJetContainer.h`` (:ref:`file_xAODAnaHelpers_FatJetContainer.h`)
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/JetContainer.h`` (:ref:`file_xAODAnaHelpers_JetContainer.h`)
+
+- ``xAODAnaHelpers/L1JetContainer.h`` (:ref:`file_xAODAnaHelpers_L1JetContainer.h`)
+
+- ``xAODAnaHelpers/MetContainer.h`` (:ref:`file_xAODAnaHelpers_MetContainer.h`)
+
+- ``xAODAnaHelpers/MuonContainer.h`` (:ref:`file_xAODAnaHelpers_MuonContainer.h`)
+
+- ``xAODAnaHelpers/PhotonContainer.h`` (:ref:`file_xAODAnaHelpers_PhotonContainer.h`)
+
+- ``xAODAnaHelpers/TauContainer.h`` (:ref:`file_xAODAnaHelpers_TauContainer.h`)
+
+- ``xAODAnaHelpers/TrackContainer.h`` (:ref:`file_xAODAnaHelpers_TrackContainer.h`)
+
+- ``xAODAnaHelpers/TruthContainer.h`` (:ref:`file_xAODAnaHelpers_TruthContainer.h`)
+
+- ``xAODAnaHelpers/VertexContainer.h`` (:ref:`file_xAODAnaHelpers_VertexContainer.h`)
+
+- ``xAODCaloEvent/CaloClusterContainer.h``
+
+- ``xAODEgamma/ElectronContainer.h``
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODMissingET/MissingETContainer.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+- ``xAODRootAccess/TEvent.h``
+
+- ``xAODRootAccess/TStore.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+- ``xAODTracking/TrackParticleContainer.h``
+
+- ``xAODTrigger/JetRoIContainer.h``
+
+- ``xAODTruth/TruthParticleContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_TreeAlgo.h`
+
+- :ref:`file_Root_HelpTreeBase.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_Trig`
+
+- :ref:`namespace_TrigConf`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classHelpTreeBase`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_HelpTreeBase_8h_1a6ca87343c5de420749a8af060b5b0bbb`
+

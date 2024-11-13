@@ -1,0 +1,93 @@
+
+.. _program_listing_file_xAODAnaHelpers_ElectronCalibrator.h:
+
+Program Listing for File ElectronCalibrator.h
+=============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_ElectronCalibrator.h>` (``xAODAnaHelpers/ElectronCalibrator.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_ElectronCalibrator_H
+   #define xAODAnaHelpers_ElectronCalibrator_H
+   
+   // CP interface includes
+   #include "PATInterfaces/SystematicRegistry.h"
+   #include "PATInterfaces/SystematicSet.h"
+   #include "PATInterfaces/SystematicsUtil.h"
+   #include "PATInterfaces/SystematicVariation.h"
+   
+   // external tools include(s):
+   #include "ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h"
+   #include "IsolationCorrections/IsolationCorrectionTool.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   class ElectronCalibrator : public xAH::Algorithm
+   {
+     // put your configuration variables here as public variables.
+     // that way they can be set directly from CINT and python.
+   public:
+   // configuration variables
+     std::string m_inContainerName = "";
+     std::string m_outContainerName = "";
+   
+     bool    m_sort = true;
+   
+   // systematics
+     std::string m_inputAlgoSystNames = "";
+   
+     std::string m_outputAlgoSystNames = "ElectronCalibrator_Syst";
+   
+     bool        m_writeSystToMetadata = false;
+   
+     std::string m_esModel = "";
+     std::string m_decorrelationModel = "";
+   
+     bool m_applyIsolationCorrection = false;
+   
+   private:
+     int m_numEvent;         
+     int m_numObject;        
+   
+     std::string m_outAuxContainerName;
+     std::string m_outSCContainerName;
+     std::string m_outSCAuxContainerName;
+   
+     std::vector<CP::SystematicSet> m_systList; 
+   
+     // tools
+     CP::EgammaCalibrationAndSmearingTool *m_EgammaCalibrationAndSmearingTool = nullptr; 
+     CP::IsolationCorrectionTool          *m_IsolationCorrectionTool = nullptr;          
+   
+     // variables that don't get filled at submission time should be
+     // protected from being send from the submission node to the worker
+     // node (done by the //!)
+   public:
+     // Tree *myTree; //!
+     // TH1 *myHist; //!
+   
+   
+     // this is a standard constructor
+     ElectronCalibrator ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(ElectronCalibrator, 1);
+   
+   };
+   
+   #endif

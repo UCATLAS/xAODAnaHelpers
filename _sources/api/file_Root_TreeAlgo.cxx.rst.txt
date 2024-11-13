@@ -1,0 +1,68 @@
+
+.. _file_Root_TreeAlgo.cxx:
+
+File TreeAlgo.cxx
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TreeAlgo.cxx``)
+----------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TreeAlgo.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/OutputStream.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TreeAlgo.h`` (:ref:`file_xAODAnaHelpers_TreeAlgo.h`)
+
+- ``xAODCaloEvent/CaloClusterContainer.h``
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TreeAlgo_8cxx_1a1610d78677ef16eda4e58262f44c33bb`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_MuonHistsAlgo_8cxx_1a15edba4751e97eba23c64a5e88c1d686:
+
+Function ClassImp(MuonHistsAlgo)
+================================
+
+- Defined in :ref:`file_Root_MuonHistsAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(MuonHistsAlgo)

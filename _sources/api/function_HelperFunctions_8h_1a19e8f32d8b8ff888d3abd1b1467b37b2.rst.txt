@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a19e8f32d8b8ff888d3abd1b1467b37b2:
+
+Function HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer \*)
+==========================================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::getPrimaryVertex(const xAOD::VertexContainer *)
