@@ -286,7 +286,7 @@ private:
   ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager = nullptr;  //!
 
   /// @brief tool that selects on dead HV from the 2016 run, according to https://twiki.cern.ch/twiki/bin/view/AtlasProtected/EGammaIdentificationRun2#Removal_of_Electron_Photon_clust
-  asg::AnaToolHandle<IAsgDeadHVCellRemovalTool> m_deadHVTool;
+  asg::AnaToolHandle<IAsgDeadHVCellRemovalTool> m_deadHVTool; //!
 
   /* other private members */
 
