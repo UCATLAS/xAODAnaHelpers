@@ -20,6 +20,11 @@ jobs:
           - analysisbase
         release_version:
           - 25.2.31
+          - 25.2.32
+          - 25.2.33
+          - 25.2.34
+          - 25.2.35
+          - 25.2.36
 
     steps:
     - uses: actions/checkout@master
