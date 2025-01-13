@@ -12,7 +12,6 @@ ROOT.gROOT.SetBatch(True)
 
 import inspect
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
-from AnaAlgorithm.AnaAlgSequence import AnaAlgSequence
 
 from .utils import NameGenerator, vector
 
@@ -37,13 +36,6 @@ class Config(object):
     #   raise TypeError("className must be a string")
 
     assert len(args) == 1 or len(args) == 2
-
-    if isinstance(args[0], AnaAlgSequence): # add non-xAH (CP or not) algorithms from an AnaAlgSequence
-      if len(args) > 1:
-        logger.warning("algorithm() expects one argument when using AnaAlgSequence, {} were provided".format(len(args)))
-      for alg in args[0]:
-        self._algorithms.append(alg)
-      return
 
     className = args[0]
     options = args[1]
