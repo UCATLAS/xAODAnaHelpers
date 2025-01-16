@@ -1,0 +1,48 @@
+
+.. _file_Root_PhotonHists.cxx:
+
+File PhotonHists.cxx
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/PhotonHists.cxx``)
+-------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_PhotonHists.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``sstream``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/PhotonHists.h`` (:ref:`file_xAODAnaHelpers_PhotonHists.h`)
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_PhotonHists_8cxx_1afcc600091b36c56507c0b7a5a61b95b0`
+

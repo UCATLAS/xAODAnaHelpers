@@ -1,0 +1,63 @@
+
+.. _program_listing_file_xAODAnaHelpers_MuonInFatJetCorrector.h:
+
+Program Listing for File MuonInFatJetCorrector.h
+================================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_MuonInFatJetCorrector.h>` (``xAODAnaHelpers/MuonInFatJetCorrector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_MuonInFatJetCorrector_H
+   #define xAODAnaHelpers_MuonInFatJetCorrector_H
+   
+   #include <xAODAnaHelpers/Algorithm.h>
+   
+   class MuonInFatJetCorrector : public xAH::Algorithm
+   {
+   public:
+     enum Scheme {Calorimeter, TrackAssisted, Combined, SimpleMuon};
+     
+     MuonInFatJetCorrector();
+   
+     std::string m_fatJetContainerName = "";
+     std::string m_trackJetContainerName = "AntiKtVR30Rmax4Rmin02TrackJets";
+     std::string m_muonContainerName = "";
+     std::string m_trackJetLinkName = "GhostVR30Rmax4Rmin02TrackJet";
+     std::string m_calibratedMassDecoratorData = "JetInsituScaleMomentum";
+     std::string m_calibratedMassDecoratorFullSim = "JetJMSScaleMomentum";
+     std::string m_inputAlgo;
+   
+     float m_trackJetPtMin = 10000.0;
+     float m_trackJetEtaMax = 2.5;
+     float m_trackJetNConst = 2.0;
+   
+     float m_muonPtMin = 10000.0;
+     float m_muonEtaMax = 2.7;
+   
+     float m_muonDrMax = 0.4;
+   
+     virtual EL::StatusCode setupJob(EL::Job& job);
+     virtual EL::StatusCode histInitialize();
+     virtual EL::StatusCode fileExecute();
+     virtual EL::StatusCode changeInput(bool firstFile);
+     virtual EL::StatusCode initialize();
+     virtual EL::StatusCode execute();
+     virtual EL::StatusCode postExecute();
+     virtual EL::StatusCode finalize();
+     virtual EL::StatusCode histFinalize();
+   
+     EL::StatusCode matchTrackJetsToMuons() const;
+     TLorentzVector getHbbCorrectedVector(const xAOD::Jet &jet);
+     const xAOD::JetFourMom_t getMuonCorrectedJetFourMom(const xAOD::Jet &jet, std::vector<const xAOD::Muon*> muons,
+                                 Scheme scheme, bool useJMSScale = false) const;
+   
+   private:
+     std::string m_calibratedMassDecorator;
+    
+     ClassDef(MuonInFatJetCorrector, 1);
+   };
+   
+   #endif

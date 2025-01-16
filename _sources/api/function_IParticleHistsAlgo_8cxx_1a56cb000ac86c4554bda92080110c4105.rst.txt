@@ -1,0 +1,13 @@
+.. _exhale_function_IParticleHistsAlgo_8cxx_1a56cb000ac86c4554bda92080110c4105:
+
+Function ClassImp(IParticleHistsAlgo)
+=====================================
+
+- Defined in :ref:`file_Root_IParticleHistsAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(IParticleHistsAlgo)
