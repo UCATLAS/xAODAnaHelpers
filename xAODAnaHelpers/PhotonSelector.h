@@ -5,6 +5,7 @@
 #include <xAODAnaHelpers/Algorithm.h>
 #include <xAODTracking/VertexContainer.h>
 #include <xAODEgamma/PhotonContainer.h>
+#include <EgammaAnalysisInterfaces/IAsgDeadHVCellRemovalTool.h>
 
 namespace CP {
   class IsolationSelectionTool;
@@ -46,6 +47,8 @@ public:
   bool	     	 m_vetoCrack = true;
   bool           m_doAuthorCut = true;
   bool           m_doOQCut = true;
+  /// @brief Apply veto dead HV cells, affects only 2016 data
+  bool m_applyDeadHVCellVeto = false;
   /** read object quality from derivation, rather than calculating it on the fly */
   bool           m_readOQFromDerivation = false;
 
@@ -82,6 +85,7 @@ private:
   int   m_ph_cutflow_author_cut;       //!
   int   m_ph_cutflow_OQ_cut;           //!
   int   m_ph_cutflow_PID_cut;          //!
+  int   m_ph_cutflow_deadHVCell_cut;   //!
   int   m_ph_cutflow_ptmax_cut;        //!
   int   m_ph_cutflow_ptmin_cut;        //!
   int   m_ph_cutflow_eta_cut;          //!
@@ -92,6 +96,9 @@ private:
 
   /* tools */
   CP::IsolationSelectionTool* m_IsolationSelectionTool = nullptr; //!
+
+  /// @brief tool that selects on dead HV from the 2016 run, according to https://twiki.cern.ch/twiki/bin/view/AtlasProtected/EGammaIdentificationRun2#Removal_of_Electron_Photon_clust
+  asg::AnaToolHandle<IAsgDeadHVCellRemovalTool> m_deadHVTool; //!
 
 public:
 

@@ -413,7 +413,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     }
   }
   else {
-      ANA_MSG_WARNING("Not applying veto of dead HV cells although it's recommended - please double check!");
+      ANA_MSG_WARNING("Not applying veto of dead HV cells on electrons although it's recommended - please double check!");
   }
 
 
