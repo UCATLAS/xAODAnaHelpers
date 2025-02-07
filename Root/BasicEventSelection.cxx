@@ -1159,6 +1159,7 @@ EL::StatusCode BasicEventSelection :: execute ()
 
 // "Borrowed" from SUSYTools
 // https://gitlab.cern.ch/atlas/athena/blob/3be30397de7c6cfdc15de38f532fdb4b9f338297/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/SUSYObjDef_xAOD.cxx#L700
+// Should track official https://gitlab.cern.ch/atlas/athena/-/blob/d09ebd5c011b654159e25ec3e205c09ac1bc64de/PhysicsAnalysis/AnalysisCommon/PileupReweighting/python/AutoconfigurePRW.py
 StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 {
 
@@ -1193,6 +1194,9 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       break; 
     case 450000 :
       mcCampaignMD="mc23d";
+      break;
+    case 470000 :
+      mcCampaignMD="mc23e";
       break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
@@ -1237,14 +1241,14 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   // Sanity checks
   bool mc2XX_GoodFromProperty = !mcCampaignList.empty();
   bool mc2XX_GoodFromMetadata = false;
-  for(const auto& mcCampaignP : mcCampaignList) mc2XX_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e" || mcCampaignP == "mc23a" || mcCampaignP == "mc23c" || mcCampaignP == "mc23d");
-  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e" || mcCampaignMD == "mc23a" || mcCampaignMD == "mc23c" || mcCampaignMD == "mc23d") mc2XX_GoodFromMetadata = true;
+  for(const auto& mcCampaignP : mcCampaignList) mc2XX_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e" || mcCampaignP == "mc23a" || mcCampaignP == "mc23c" || mcCampaignP == "mc23d" || mcCampaignP == "mc23e");
+  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e" || mcCampaignMD == "mc23a" || mcCampaignMD == "mc23c" || mcCampaignMD == "mc23d" || mcCampaignMD == "mc23e") mc2XX_GoodFromMetadata = true;
 
   if( !mc2XX_GoodFromMetadata && !mc2XX_GoodFromProperty ) {
     // ::
     std::string MetadataAndPropertyBAD("");
     MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-    MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', 'mc23c', or 'mc23d' and restart your job. If you set it to any other string, you will still incur in this error.";
+    MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', 'mc23c', 'mc23d', or 'mc23e' and restart your job. If you set it to any other string, you will still incur in this error.";
     ANA_MSG_ERROR( MetadataAndPropertyBAD );
     return StatusCode::FAILURE;
     // ::
@@ -1300,6 +1304,7 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
         else if (mcCampaign == "mc23a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23a);}
         else if (mcCampaign == "mc23c") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23c);}
         else if (mcCampaign == "mc23d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23d);}
+        else if (mcCampaign == "mc23e") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23e);}
         else {
           ANA_MSG_ERROR("autoconfigurePileupRWTool(): no common PRW file known for MC campaign: " << mcCampaign);
           return StatusCode::FAILURE;
@@ -1329,7 +1334,9 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
       if( !m_prwActualMu2022File.empty() && mcCampaign == "mc23a" )
         prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2022File));
       if( !m_prwActualMu2023File.empty() && (mcCampaign == "mc23c" || mcCampaign=="mc23d") )
-        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2023File));      
+        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2023File)); 
+      if( !m_prwActualMu2024File.empty() && (mcCampaign == "mc23e") )
+        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2024File)); 
     }
 
   // also need to handle lumicalc files: only use 2015+2016 with mc20a
@@ -1378,6 +1385,10 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
         }
       } else if (mcCampaign == "mc23c" || mcCampaign == "mc23d") {
         if (year == "23") {
+          lumiCalcFiles.push_back(filename);
+        }
+      } else if (mcCampaign == "mc23e") {
+        if (year == "24") {
           lumiCalcFiles.push_back(filename);
         }
 	  } else {
