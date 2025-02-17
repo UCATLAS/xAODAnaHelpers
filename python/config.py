@@ -12,6 +12,7 @@ ROOT.gROOT.SetBatch(True)
 
 import inspect
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
+from AnaAlgorithm.PythonConfig import PythonConfig
 
 from .utils import NameGenerator, vector
 
@@ -101,8 +102,19 @@ class Config(object):
       for k,v in options.items():
         if k in ['m_msgLevel', 'm_name']: continue
         self._set_algo_attribute(alg_obj, k, v, className, algName)
+    elif ROOT.EL.AnaReentrantAlgorithm in parents:
+      alg_obj = PythonConfig(className+"/"+algName)
+      alg_obj.setComponentType( "AnaReentrantAlgorithm" )
+      if 'm_outputStream' in options:
+        self.output(options['m_outputStream'])
+      self._log.append((className, algName))
+      # TODO
+      #setattr(alg_obj, "OutputLevel", msgLevel)
+      for k,v in options.items():
+        if k in ['m_msgLevel', 'm_name']: continue
+        self._set_algo_attribute(alg_obj, k, v, className, algName)
     else:
-      raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm. I do not know how to configure it. {1}".format(className, parents))
+      raise TypeError("Algorithm {0:s} is not an EL::Algorithm or EL::AnaAlgorithm or EL::AnaReentrantAlgorithm. I do not know how to configure it. {1}".format(className, parents))
 
     # Add the constructed algo to the list of algorithms to run
     self._algorithms.append(alg_obj)
