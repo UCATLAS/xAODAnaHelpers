@@ -32,7 +32,7 @@ public:
   std::string m_coreName = "MET_Core_AntiKt4LCTopo";
   std::string m_outputContainer = "NewRefFinal";
   std::string m_systConfigPrefix = "METUtilities/R22_PreRecs";
-  std::string m_systConfigSoftTrkFile = "TrackSoftTerms-pflow.config";
+  std::string m_systConfigSoftTrkFile = "TrackSoftTerms-pflow_Dec24.config";
   std::string m_inputJets = "";
   std::string m_inputElectrons = "";
   std::string m_inputPhotons = "";
