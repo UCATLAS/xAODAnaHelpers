@@ -1,0 +1,25 @@
+.. _exhale_class_classIsoCloseByCorr:
+
+Class IsoCloseByCorr
+====================
+
+- Defined in :ref:`file_xAODAnaHelpers_IsoCloseByCorr.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: IsoCloseByCorr
+   :members:
+   :protected-members:
+   :undoc-members:

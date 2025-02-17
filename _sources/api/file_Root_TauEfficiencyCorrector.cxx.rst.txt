@@ -1,0 +1,80 @@
+
+.. _file_Root_TauEfficiencyCorrector.cxx:
+
+File TauEfficiencyCorrector.cxx
+===============================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TauEfficiencyCorrector.cxx``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TauEfficiencyCorrector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``AthContainers/DataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``algorithm``
+
+- ``iostream``
+
+- ``map``
+
+- ``random``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TauEfficiencyCorrector.h`` (:ref:`file_xAODAnaHelpers_TauEfficiencyCorrector.h`)
+
+- ``xAODBase/IParticle.h``
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODBase/IParticleHelpers.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODTau/TauJet.h``
+
+- ``xAODTau/TauJetAuxContainer.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TauEfficiencyCorrector_8cxx_1a73ebda4dd26c55b37ba7eafb174ae90c`
+
