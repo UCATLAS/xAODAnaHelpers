@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1afa033a806a096a28e641ab6e87cfaa49:
+
+Function HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer \*)
+==================================================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::getPrimaryVertexLocation(const xAOD::VertexContainer *)

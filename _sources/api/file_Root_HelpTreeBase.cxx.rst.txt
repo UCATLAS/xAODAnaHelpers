@@ -1,0 +1,63 @@
+
+.. _file_Root_HelpTreeBase.cxx:
+
+File HelpTreeBase.cxx
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/HelpTreeBase.cxx``)
+--------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_HelpTreeBase.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgMessaging/MessageCheck.h``
+
+- ``AsgMessaging/StatusCode.h``
+
+- ``TrigConfxAOD/xAODConfigTool.h``
+
+- ``TrigDecisionTool/TrigDecisionTool.h``
+
+- ``exception``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``xAODAnaHelpers/HelpTreeBase.h`` (:ref:`file_xAODAnaHelpers_HelpTreeBase.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODBTagging/BTagging.h``
+
+- ``xAODJet/JetConstituentVector.h``
+
+- ``xAODPrimitives/IsolationType.h``
+
+- ``xAODTracking/TrackParticle.h``
+
+- ``xAODTracking/TrackSummaryAccessors_v1.h``
+
+
+
+
+

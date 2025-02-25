@@ -1,0 +1,88 @@
+
+.. _file_Root_PhotonCalibrator.cxx:
+
+File PhotonCalibrator.cxx
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/PhotonCalibrator.cxx``)
+------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_PhotonCalibrator.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``AthContainers/DataVector.h``
+
+- ``EGammaVariableCorrection/ElectronPhotonVariableCorrectionTool.h``
+
+- ``ElectronPhotonFourMomentumCorrection/EgammaCalibrationAndSmearingTool.h``
+
+- ``ElectronPhotonSelectorTools/AsgPhotonIsEMSelector.h``
+
+- ``ElectronPhotonSelectorTools/egammaPIDdefs.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``PATCore/PATCoreEnums.h``
+
+- ``iostream``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/PhotonCalibrator.h`` (:ref:`file_xAODAnaHelpers_PhotonCalibrator.h`)
+
+- ``xAODBase/IParticle.h``
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODBase/IParticleHelpers.h``
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEgamma/EgammaDefs.h``
+
+- ``xAODEgamma/EgammaxAODHelpers.h``
+
+- ``xAODEgamma/Photon.h``
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_PhotonCalibrator_8cxx_1ade738d7e400a0ba378f2a2a1e67fcd52`
+

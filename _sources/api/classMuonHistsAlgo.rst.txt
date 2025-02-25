@@ -1,0 +1,25 @@
+.. _exhale_class_classMuonHistsAlgo:
+
+Class MuonHistsAlgo
+===================
+
+- Defined in :ref:`file_xAODAnaHelpers_MuonHistsAlgo.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public IParticleHistsAlgo`` (:ref:`exhale_class_classIParticleHistsAlgo`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: MuonHistsAlgo
+   :members:
+   :protected-members:
+   :undoc-members:
