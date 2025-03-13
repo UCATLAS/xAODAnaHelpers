@@ -1,0 +1,435 @@
+
+.. _program_listing_file_xAODAnaHelpers_HelpTreeBase.h:
+
+Program Listing for File HelpTreeBase.h
+=======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_HelpTreeBase.h>` (``xAODAnaHelpers/HelpTreeBase.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   /********************************************************
+    * HelpTreeBase:
+    *
+    * This class is meant to help the user write out a tree.
+    * Some branches are included by default while others
+    * need to be added by the user
+    *
+    * John Alison (john.alison@cern.ch)
+    * Gabriel Facini (gabriel.facini@cern.ch)
+    * Marco Milesi (marco.milesi@cern.ch)
+    * Jeff Dandoy (jeff.dandoy@cern.ch)
+    *
+    ********************************************************/
+   
+   // Dear emacs, this is -*-c++-*-
+   #ifndef xAODAnaHelpers_HelpTreeBase_H
+   #define xAODAnaHelpers_HelpTreeBase_H
+   
+   
+   #include "xAODEventInfo/EventInfo.h"
+   #include "xAODEgamma/ElectronContainer.h"
+   #include "xAODEgamma/PhotonContainer.h"
+   #include "xAODCaloEvent/CaloClusterContainer.h"
+   #include "xAODMuon/MuonContainer.h"
+   #include "xAODJet/JetContainer.h"
+   #include "xAODTrigger/JetRoIContainer.h"
+   #include "xAODTruth/TruthParticleContainer.h"
+   #include "xAODTau/TauJetContainer.h"
+   #include "xAODMissingET/MissingETContainer.h"
+   #include "xAODTracking/TrackParticleContainer.h"
+   
+   #include "xAODAnaHelpers/HelperClasses.h"
+   #include "xAODAnaHelpers/EventInfo.h"
+   #include "xAODAnaHelpers/MetContainer.h"
+   #include "xAODAnaHelpers/JetContainer.h"
+   #include "xAODAnaHelpers/L1JetContainer.h"
+   #include "xAODAnaHelpers/VertexContainer.h"
+   #include "xAODAnaHelpers/ElectronContainer.h"
+   #include "xAODAnaHelpers/PhotonContainer.h"
+   #include "xAODAnaHelpers/ClusterContainer.h"
+   #include "xAODAnaHelpers/FatJetContainer.h"
+   #include "xAODAnaHelpers/TruthContainer.h"
+   #include "xAODAnaHelpers/TrackContainer.h"
+   #include "xAODAnaHelpers/MuonContainer.h"
+   #include "xAODAnaHelpers/TauContainer.h"
+   #include "xAODRootAccess/TEvent.h"
+   #include "xAODRootAccess/TStore.h"
+   
+   
+   #include <map>
+   
+   // root includes
+   #include "TTree.h"
+   #include "TFile.h"
+   
+   namespace TrigConf {
+     class xAODConfigTool;
+   }
+   
+   namespace Trig {
+     class TrigDecisionTool;
+   }
+   
+   typedef SG::AuxElement::Accessor< std::vector< float > > floatAccessor ;
+   
+   class HelpTreeBase {
+   
+   public:
+   
+     HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr, std::string nominalTreeName = "nominal" );
+     HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, std::string nominalTreeName = "nominal" );
+     virtual ~HelpTreeBase();
+   
+     void AddEvent         (const std::string& detailStr = "");
+     void AddTrigger       (const std::string& detailStr = "");
+     void AddJetTrigger    (const std::string& detailStr = "");
+     void AddMuons         (const std::string& detailStr = "", const std::string& muonName = "muon");
+     void AddElectrons     (const std::string& detailStr = "", const std::string& elecName = "el");
+     void AddPhotons       (const std::string& detailStr = "", const std::string& photonName = "ph");
+     void AddClusters      (const std::string& detailStr = "", const std::string& clusterName = "cl");
+     void AddJets          (const std::string& detailStr = "", const std::string& jetName = "jet");
+     void AddL1Jets        (const std::string& jetName   = "");
+     void AddTruthParts    (const std::string& detailStr = "", const std::string& truthName = "xAH_truth");
+     void AddTrackParts    (const std::string& detailStr = "", const std::string& trackName = "trk");
+     void AddVertices      (const std::string& detailStr = "", const std::string& vertexName = "vertex"); // options for detailStr: "all" or "primary"
+     void AddTruthVertices (const std::string& detailStr = "", const std::string& vertexName = "truth_vertex"); // options for detailStr: "all" or "primary"
+   
+     void AddFatJets     (const std::string& detailStr = "", const std::string& fatjetName = "fatjet", const std::string& subjetDetailStr="", const std::string& suffix="");
+     void AddTruthFatJets(const std::string& detailStr = "", const std::string& truthFatJetName = "truth_fatjet");
+   
+     void AddTaus        (const std::string& detailStr = "", const std::string& tauName = "tau");
+     void AddMET         (const std::string& detailStr = "", const std::string& metName = "met");
+   
+     static std::string FatJetCollectionName(const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+   
+     xAOD::TEvent* m_event;
+     xAOD::TStore* m_store;
+   
+     std::string m_vertexContainerName = "PrimaryVertices";
+     std::string m_truthVertexContainerName = "TruthVertices";
+   
+     // control which branches are filled
+     HelperClasses::TriggerInfoSwitch*    m_trigInfoSwitch;
+   
+     std::string                  m_triggerSelection;
+     TrigConf::xAODConfigTool*    m_trigConfTool;
+     Trig::TrigDecisionTool*      m_trigDecTool;
+   
+     void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr, const xAOD::VertexContainer* vertices = nullptr );
+   
+     void FillTrigger( const xAOD::EventInfo* eventInfo );
+     void FillJetTrigger();
+   
+     void FillMuons( const xAOD::MuonContainer* muons, const xAOD::Vertex* primaryVertex, const std::string& muonName = "muon" );
+     void FillMuon( const xAOD::Muon* muon, const xAOD::Vertex* primaryVertex, const std::string& muonName = "muon" );
+   
+     void FillElectrons( const xAOD::ElectronContainer* electrons, const xAOD::Vertex* primaryVertex, const std::string& elecName = "el" );
+     void FillElectron ( const xAOD::Electron* elec, const xAOD::Vertex* primaryVertex, const std::string& elecName = "el" );
+   
+     void FillPhotons( const xAOD::PhotonContainer* photons, const std::string& photonName = "ph" );
+     void FillPhoton ( const xAOD::Photon*          photon,  const std::string& photonName = "ph" );
+   
+     void FillClusters( const xAOD::CaloClusterContainer* clusters, const std::string& clusterName = "cl" );
+     void FillCluster ( const xAOD::CaloCluster*          cluster,  const std::string& clusterName = "cl" );
+   
+     void FillJets( const xAOD::JetContainer* jets, int pvLocation = -1, const std::string& jetName = "jet" );
+     void FillJet( const xAOD::Jet* jet_itr, const xAOD::Vertex* pv, int pvLocation, const std::string& jetName = "jet" );
+     void FillLegacyL1Jets( const xAOD::JetRoIContainer* jets, const std::string& jetName = "L1Jet", bool sortL1Jets = false );
+   
+     template <typename T>
+     void FillPhase1L1Jets(T*& jets, const std::string& jetName = "L1Jet", bool sortL1Jets = false){
+       
+       this->ClearL1Jets(jetName);
+   
+       xAH::L1JetContainer* thisL1Jet = m_l1Jets[jetName];
+     
+       thisL1Jet->FillPhase1L1Jets(jets,sortL1Jets);
+     }
+   
+     void FillTruth( const xAOD::TruthParticleContainer* truth, const std::string& truthName = "xAH_truth" );
+     void FillTruth( const xAOD::TruthParticle* truthPart, const std::string& truthName );
+   
+     void FillTracks( const xAOD::TrackParticleContainer* tracks, const std::string& trackName = "trk" );
+     void FillTrack( const xAOD::TrackParticle* trackPart, const std::string& trackName );
+   
+     void FillVertices( const xAOD::VertexContainer* vertices, const std::string& vertexName = "vertex" );
+     void FillTruthVertices( const xAOD::TruthVertexContainer* truthVertices, const std::string& truthVertexName = "truth_vertex" );
+   
+     void FillFatJets( const xAOD::JetContainer* fatJets , int pvLocation = 0, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+     void FillFatJet ( const xAOD::Jet* fatjet_itr,        int pvLocation = 0, const std::string& fatjetName = "fatjet", const std::string& suffix = "");
+   
+     void FillTruthFatJets( const xAOD::JetContainer* truthFatJets,     int pvLocation = 0, const std::string& truthFatJetName="truth_fatjet" );
+     void FillTruthFatJet ( const xAOD::Jet*          truth_fatjet_itr, int pvLocation = 0, const std::string& truthFatJetName="truth_fatjet" );
+   
+     void FillTaus( const xAOD::TauJetContainer* taus, const std::string& tauName = "tau" );
+     void FillTau ( const xAOD::TauJet* tau,           const std::string& tauName = "tau" );
+     void FillMET( const xAOD::MissingETContainer* met, const std::string& metName = "met" );
+   
+     void Fill();
+     void ClearEvent();
+     void ClearTrigger();
+     void ClearJetTrigger();
+     void ClearMuons         (const std::string& jetName = "muon");
+     void ClearElectrons     (const std::string& elecName = "el");
+     void ClearPhotons       (const std::string& photonName = "ph");
+     void ClearClusters      (const std::string& clusterName = "cl");
+     void ClearJets          (const std::string& jetName = "jet");
+     void ClearL1Jets        (const std::string& jetName = "L1Jet");
+     void ClearTruth         (const std::string& truthName);
+     void ClearTracks    (const std::string& trackName);
+     void ClearFatJets       (const std::string& fatjetName, const std::string& suffix="");
+     void ClearTruthFatJets  (const std::string& truthFatJetName = "truth_fatjet");
+     void ClearTaus          (const std::string& tauName = "tau" );
+     void ClearMET           (const std::string& metName = "met");
+     void ClearVertices      (const std::string& vertexName = "vertex");
+     void ClearTruthVertices (const std::string& vertexName = "truth_vertex");
+   
+     bool writeTo( TFile *file );
+   
+     virtual void AddEventUser(const std::string& detailStr = "")      {
+       if(m_debug) Info("AddEventUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+       return;
+     };
+   
+     virtual void AddTriggerUser(const std::string& detailStr = "")      {
+       if(m_debug) Info("AddTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+       return;
+     };
+   
+     virtual void AddJetTriggerUser(const std::string& detailStr = "")      {
+       if(m_debug) Info("AddJetTriggerUser","Empty function called from HelpTreeBase %s",detailStr.c_str());
+       return;
+     };
+   
+     virtual void AddMuonsUser(const std::string& detailStr = "", const std::string& muonName="muon"){
+       if(m_debug) Info("AddMuonsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),muonName.c_str());
+       return;
+       };
+   
+     virtual void AddElectronsUser(const std::string& detailStr = "", const std::string& elecName="el"){
+       if(m_debug) Info("AddElectronsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),elecName.c_str());
+       return;
+     };
+   
+     virtual void AddPhotonsUser(const std::string& detailStr = "", const std::string& photonName="ph"){
+       if(m_debug) Info("AddPhotonsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),photonName.c_str());
+       return;
+     };
+   
+     virtual void AddClustersUser(const std::string& detailStr = "", const std::string& clusterName="cl"){
+       if(m_debug) Info("AddClustersUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),clusterName.c_str());
+       return;
+     };
+   
+     virtual void AddJetsUser(const std::string& detailStr = "", const std::string& jetName = "jet")       {
+       if(m_debug) Info("AddJetsUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(), jetName.c_str());
+       return;
+     };
+   
+     virtual void AddTruthUser(const std::string& truthName = "", const std::string& detailStr = "xAH_truth")       {
+       if(m_debug) Info("AddTruthUser","Empty function called from HelpTreeBase %s %s",truthName.c_str(), detailStr.c_str());
+       return;
+     };
+   
+     virtual void AddTracksUser(const std::string& trackName = "", const std::string& detailStr = "trk")       {
+       if(m_debug) Info("AddTracksUser","Empty function called from HelpTreeBase %s %s",trackName.c_str(), detailStr.c_str());
+       return;
+     };
+   
+     virtual void AddFatJetsUser(const std::string& detailStr = "", const std::string& fatjetName = "", const std::string& suffix = "")       {
+       if(m_debug) Info("AddFatJetsUser","Empty function called from HelpTreeBase %s for %s with suffix %s", detailStr.c_str(), fatjetName.c_str(), suffix.c_str());
+       return;
+     };
+   
+     virtual void AddTruthFatJetsUser(const std::string& detailStr = "", const std::string& truthFatJetName = "truth_fatjet")       {
+       if(m_debug) Info("AddTruthFatJetsUser","Empty function called from HelpTreeBase %s for %s", detailStr.c_str(), truthFatJetName.c_str());
+       return;
+     };
+   
+     virtual void AddTausUser(const std::string& detailStr = "", const std::string& tauName="tau")   {
+       if(m_debug) Info("AddTausUser","Empty function called from HelpTreeBase %s %s",detailStr.c_str(),tauName.c_str());
+       return;
+     };
+   
+     virtual void AddMETUser(const std::string& detailStr = "", const std::string& metName = "met")       {
+       if(m_debug) Info("AddMETUser","Empty function called from HelpTreeBase %s for %s",detailStr.c_str(), metName.c_str());
+       return;
+     };
+   
+     virtual void ClearEventUser       ()     { return; };
+     virtual void ClearTriggerUser     ()   { return; };
+     virtual void ClearMuonsUser       (const std::string& /*muonName = muon"*/)     { return; };
+     virtual void ClearElectronsUser   (const std::string& /*elecName = "el"*/) { return; };
+     virtual void ClearPhotonsUser     (const std::string& /*photonName = "ph"*/) { return; };
+     virtual void ClearClustersUser    (const std::string& /*clusterName = "cl"*/) { return; };
+     virtual void ClearTruthUser       (const std::string& /*truthName*/)      { return; };
+     virtual void ClearTracksUser      (const std::string& /*trackName*/)       { return; };
+     virtual void ClearJetsUser        (const std::string& /*jetName = "jet"*/ )       { return; };
+     virtual void ClearFatJetsUser     (const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/)   { return; };
+     virtual void ClearTruthFatJetsUser(const std::string& /*truthFatJetName = "truth_fatjet"*/)   { return; };
+     virtual void ClearTausUser        (const std::string& /*tauName = "tau"*/)        { return; };
+     virtual void ClearMETUser         (const std::string& /*metName = "met"*/)       { return; };
+   
+     virtual void FillEventUser    ( const xAOD::EventInfo*  )        { return; };
+     virtual void FillMuonsUser    ( const xAOD::Muon*,        const std::string& /*muonName = "muon"*/, const xAOD::Vertex* ) { return; };
+     virtual void FillElectronsUser( const xAOD::Electron*,    const std::string& /*elecName = "el"*/, const xAOD::Vertex* )   { return; };
+     virtual void FillPhotonsUser  ( const xAOD::Photon*,      const std::string& /*photonName = "ph"*/ )     { return; };
+     virtual void FillClustersUser ( const xAOD::CaloCluster*, const std::string& /*clusterName = "cl"*/ )     { return; };
+     virtual void FillJetsUser     ( const xAOD::Jet*,         const std::string& /*jetName = "jet"*/  )               { return; };
+     virtual void FillTruthUser    ( const xAOD::TruthParticle*, const std::string& /*truthName*/ )               { return; };
+     virtual void FillTracksUser   ( const xAOD::TrackParticle*, const std::string& /*trackName*/ )               { return; };
+     virtual void FillFatJetsUser( const xAOD::Jet* /*jet*/, int /*pvLocation = 0*/, const std::string& /*fatjetName = "fatjet"*/, const std::string& /*suffix = ""*/) { return; };
+     virtual void FillTruthFatJetsUser( const xAOD::Jet* /*jet*/, int /*pvLocation = 0*/, const std::string& /*fatjetName = "truth_fatjet"*/   )            { return; };
+     virtual void FillTausUser( const xAOD::TauJet*,           const std::string& /*tauName = "tau"*/  )            { return; };
+     virtual void FillMETUser( const xAOD::MissingETContainer*, const std::string& /*metName = "met"*/ ) { return; };
+     virtual void FillTriggerUser( const xAOD::EventInfo*  )      { return; };
+     virtual void FillJetTriggerUser()                            { return; };
+   
+    protected:
+   
+     template<typename T, typename U, typename V>
+       void safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units = 1);
+   
+     template<typename T, typename U, typename V>
+       void safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >& destination, int m_units = 1);
+   
+     template<typename T>
+       void setBranch(std::string prefix, std::string varName, std::vector<T>* localVectorPtr);
+   
+   protected:
+   
+     TTree* m_tree;
+   
+     int m_units; //For MeV to GeV conversion in output
+   
+     bool m_debug;
+     bool m_isMC;
+     std::string m_nominalTreeName;
+     bool m_nominalTree;
+   
+     // event
+     xAH::EventInfo*      m_eventInfo;
+   
+     // trigger
+     int m_passL1;
+     int m_passHLT;
+     unsigned int m_masterKey;
+     unsigned int m_L1PSKey;
+     unsigned int m_HLTPSKey;
+     std::vector<std::string>  m_elTrigForMatching;   /* each event can have a list of electron trigger chains to which each electron could be matched.
+                              / This list is created when configuring ElectronSelector.cxx, where the electron trigger matching is actually performed
+                              */
+   
+     // jet trigger
+     std::vector<std::string> m_passedTriggers;
+     std::vector<std::string> m_disabledTriggers;
+     std::vector<float> m_triggerPrescales;
+     std::vector<float> m_triggerPrescalesLumi;
+     std::vector<std::string>  m_isPassBitsNames;
+     std::vector<unsigned int> m_isPassBits;
+   
+     //
+     //  Jets
+     //
+     std::map<std::string, xAH::JetContainer*> m_jets;
+   
+     //
+     // L1 Jets
+     //
+     std::map<std::string, xAH::L1JetContainer*> m_l1Jets;
+   
+     //
+     // Truth
+     //
+     std::map<std::string, xAH::TruthContainer*> m_truth;
+   
+     //
+     // Tracks
+     //
+     std::map<std::string, xAH::TrackContainer*> m_tracks;
+   
+     //
+     // fat jets
+     //
+     std::map<std::string, xAH::FatJetContainer*> m_fatjets;
+   
+     //
+     // truth fat jets
+     //
+     std::map<std::string, xAH::FatJetContainer*> m_truth_fatjets;
+   
+     //
+     // muons
+     //
+     std::map<std::string, xAH::MuonContainer*> m_muons;
+     std::map<std::string, std::vector<std::string> > m_MuonRecoEff_SF_sysNames;
+     std::map<std::string, std::vector<std::string> > m_MuonIsoEff_SF_sysNames;
+     std::map<std::string, std::map<std::string, std::vector<std::string> > > m_MuonTrigEff_SF_sysNames;
+     std::vector<std::string>  m_MuonTTVAEff_SF_sysNames;
+   
+     //
+     // electrons
+     //
+     std::map<std::string, xAH::ElectronContainer*> m_elecs;
+   
+     //
+     // photons
+     //
+     std::map<std::string, xAH::PhotonContainer*> m_photons;
+   
+     //
+     // clusters
+     //
+     std::map<std::string, xAH::ClusterContainer*> m_clusters;
+   
+   
+     //
+     // taus
+     //
+     std::map<std::string, xAH::TauContainer*> m_taus;
+   
+     //
+     // met
+     //
+     std::map<std::string, xAH::MetContainer* > m_met;
+   
+     //
+     // vertices
+     //
+     std::map<std::string, xAH::VertexContainer*> m_vertices;
+     std::map<std::string, xAH::VertexContainer*> m_truth_vertices;
+   
+   };
+   
+   
+   template<typename T, typename U, typename V>
+   void HelpTreeBase::safeFill(const V* xAODObj, SG::AuxElement::ConstAccessor<T>& accessor, std::vector<U>& destination, U defaultValue, int m_units){
+     if ( accessor.isAvailable( *xAODObj ) ) {
+       destination.push_back( accessor( *xAODObj ) / m_units );
+     } else {
+       destination.push_back( defaultValue );
+     }
+     return;
+   }
+   
+   template<typename T, typename U, typename V>
+   void HelpTreeBase::safeVecFill(const V* xAODObj, SG::AuxElement::ConstAccessor<std::vector<T> >& accessor, std::vector<std::vector<U> >& destination, int m_units){
+     destination.push_back( std::vector<U>() );
+   
+     if ( accessor.isAvailable( *xAODObj ) ) {
+       for(U itemInVec : accessor(*xAODObj))        destination.back().push_back(itemInVec / m_units);
+     }
+     return;
+   }
+   
+   
+   template<typename T>
+   void HelpTreeBase::setBranch(std::string prefix, std::string varName, std::vector<T>* localVectorPtr){
+     m_tree->Branch((prefix+"_"+varName).c_str(),        localVectorPtr);
+   }
+   
+   
+   #endif

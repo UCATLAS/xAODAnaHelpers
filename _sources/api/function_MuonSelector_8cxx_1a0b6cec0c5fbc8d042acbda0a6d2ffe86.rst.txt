@@ -1,0 +1,13 @@
+.. _exhale_function_MuonSelector_8cxx_1a0b6cec0c5fbc8d042acbda0a6d2ffe86:
+
+Function ClassImp(MuonSelector)
+===============================
+
+- Defined in :ref:`file_Root_MuonSelector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(MuonSelector)
