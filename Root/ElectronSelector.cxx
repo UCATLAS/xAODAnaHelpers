@@ -597,9 +597,6 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
 
-  bool passCrackVetoCleaning = true;
-  const static SG::AuxElement::ConstAccessor<char> acc_CrackVetoCleaning("DFCommonCrackVetoCleaning");
-
   for ( auto el_itr : *inElectrons ) { // duplicated of basic loop
 
     // if only looking at a subset of electrons make sure all are decorated
@@ -621,22 +618,11 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
     if ( passSel ) {
 
-      // check DFCommonCrackVetoCleaning flag for topocluster association bugfix
-      if (m_applyCrackVetoCleaning){
-        if ( !acc_CrackVetoCleaning( *el_itr ) ) passCrackVetoCleaning = false;
-      }
-
       nPass++;
       if ( m_createSelectedContainer ) {
         selectedElectrons->push_back( el_itr );
       }
     }
-  }
-
-  // Fix to EGamma Crack-Electron topocluster association bug for MET (PFlow)
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/HowToCleanJetsR21#Muons_Reconstructed_as_Jets_in_P
-  if (m_applyCrackVetoCleaning) {
-    if (!passCrackVetoCleaning) return false; // skip event
   }
 
   // for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)
