@@ -227,7 +227,7 @@ class BasicEventSelection : public xAH::Algorithm
 
   private:
 
-    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
+    std::set<std::pair<int, Long64_t> > m_RunNr_VS_EvtNr; //!
     // trigger unprescale chains
     std::vector<std::string> m_triggerUnprescaleList; //!
     // decisions of triggers which are saved but not cut on, converted into a list
