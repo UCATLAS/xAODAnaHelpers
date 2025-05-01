@@ -809,11 +809,11 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
 
-    std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
+    std::pair<int, Long64_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
 
     if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
 
-      ANA_MSG_WARNING("Found duplicated event! runNumber = " << static_cast<uint32_t>(eventInfo->runNumber()) << ", eventNumber = " << static_cast<uint32_t>(eventInfo->eventNumber()) << ". Skipping this event");
+      ANA_MSG_WARNING("Found duplicated event! runNumber = " << eventInfo->runNumber() << ", eventNumber = " << eventInfo->eventNumber() << ". Skipping this event");
 
       // Bookkeep info in duplicates TTree
       //
