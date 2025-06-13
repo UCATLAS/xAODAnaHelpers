@@ -1,0 +1,120 @@
+
+.. _program_listing_file_xAODAnaHelpers_HistogramManager.h:
+
+Program Listing for File HistogramManager.h
+===========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_HistogramManager.h>` (``xAODAnaHelpers/HistogramManager.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_HistogramManager_H
+   #define xAODAnaHelpers_HistogramManager_H
+   
+   #include <ctype.h>
+   #include <TH1.h>
+   #include <TH1F.h>
+   #include <TH2F.h>
+   #include <TH3F.h>
+   #include <TProfile.h>
+   #include <EventLoop/IWorker.h>
+   #include <xAODRootAccess/TEvent.h>
+   
+   // for StatusCode::isSuccess
+   #include <AsgMessaging/StatusCode.h>
+   #include <AsgMessaging/MessageCheck.h>
+   
+   class MsgStream;
+   
+   class HistogramManager {
+   
+     protected:
+       std::string m_name;
+       std::string m_detailStr;
+       std::vector< TH1* > m_allHists; 
+       mutable MsgStream m_msg; 
+   
+     public:
+       HistogramManager(std::string name, std::string detailStr);
+       virtual ~HistogramManager();
+   
+       virtual StatusCode initialize(){      return StatusCode::SUCCESS; };
+       virtual StatusCode execute(){         return StatusCode::SUCCESS; };
+       virtual StatusCode finalize(){        return StatusCode::SUCCESS; };
+   
+       TH1F* book(std::string name, std::string title,
+                  std::string xlabel, int xbins, double xlow, double xhigh);
+   
+       TH2F* book(std::string name, std::string title,
+                  std::string xlabel, int xbins, double xlow, double xhigh,
+                  std::string xyabel, int ybins, double ylow, double yhigh);
+   
+       TH3F* book(std::string name, std::string title,
+                  std::string xlabel, int xbins, double xlow, double xhigh,
+                  std::string ylabel, int ybins, double ylow, double yhigh,
+                  std::string zlabel, int zbins, double zlow, double zhigh);
+   
+       TH1F* book(std::string name, std::string title,
+                  std::string xlabel, int xbins, const Double_t* xbinsArr);
+   
+       TH2F* book(std::string name, std::string title,
+                  std::string xlabel, int xbins, const Double_t* xbinsArr,
+                  std::string ylabel, int ybins, double ylow, double yhigh);
+   
+       TH2F* book(std::string name, std::string title,
+                  std::string xyabel, int xbins, double xlow, double xhigh,
+                  std::string ylabel, int ybins, const Double_t* ybinsArr);
+   
+       TH2F* book(std::string name, std::string title,
+                  std::string xyabel, int xbins, const Double_t* xbinsArr,
+                  std::string ylabel, int ybins, const Double_t* ybinsArr);
+   
+       TH3F* book(std::string name, std::string title,
+                  std::string xlabel, int xbins, const Double_t* xbinsArr,
+                  std::string ylabel, int ybins, const Double_t* ybinsArr,
+                  std::string zlabel, int zbins, const Double_t* zbinsArr);
+   
+       TProfile* book(std::string name, std::string title,
+              std::string xlabel, int xbins, double xlow, double xhigh,
+              std::string ylabel, double ylow, double yhigh,
+              std::string option = "");
+   
+       TProfile* book(std::string name, std::string title,
+              int xbins, const Double_t* xbinsArr, double ylow, double yhigh);
+   
+       TProfile* book(std::string name, std::string title,
+              int xbins, double xlow, double xhigh, 
+          double ylow, double yhigh);
+   
+       void record(EL::IWorker* wk);
+   
+       MsgStream& msg () const;
+       MsgStream& msg (int level) const;
+   
+       typedef std::unordered_map< std::string, TH1* > HistMap_t;
+   
+       HistMap_t m_histMap;
+   
+       TH1* findHist(const std::string& histName);
+   
+       void fillHist(const std::string& histName, double value);
+       void fillHist(const std::string& histName, double value, double weight);
+       void fillHist(const std::string& histName, double valueX, double valueY, double weight);
+       void fillHist(const std::string& histName, double valueX, double valueY, double valueZ, double weight);
+       void fillProfile(const std::string& histName, double valueX, double valueY, double weight);
+   
+     private:
+       void Sumw2(TH1* hist, bool flag=true);
+   
+       void record(TH1* hist);
+   
+       void SetLabel(TH1* hist, std::string xlabel);
+       void SetLabel(TH1* hist, std::string xlabel, std::string ylabel);
+       void SetLabel(TH1* hist, std::string xlabel, std::string ylabel, std::string zlabel);
+   
+   
+   };
+   
+   #endif

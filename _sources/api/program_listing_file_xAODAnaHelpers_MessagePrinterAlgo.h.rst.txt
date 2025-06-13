@@ -1,0 +1,55 @@
+
+.. _program_listing_file_xAODAnaHelpers_MessagePrinterAlgo.h:
+
+Program Listing for File MessagePrinterAlgo.h
+=============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_MessagePrinterAlgo.h>` (``xAODAnaHelpers/MessagePrinterAlgo.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_MessagePrinterAlgo_H
+   #define xAODAnaHelpers_MessagePrinterAlgo_H
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   // external tools include(s):
+   #include <AsgMessaging/MessagePrinter.h>
+   #include <AsgMessaging/MessagePrinterOverlay.h>
+   
+   // std include
+   #include <memory>
+   
+   class MessagePrinterAlgo : public xAH::Algorithm
+   {
+     public:
+       unsigned int m_sourceWidth = 25;
+   
+     private:
+   
+       std::unique_ptr<asg::MessagePrinter>        m_messagePrinter{nullptr}; 
+       std::unique_ptr<asg::MessagePrinterOverlay> m_messagePrinterOverlay{nullptr}; 
+   
+     public:
+       // this is a standard constructor
+       MessagePrinterAlgo ();
+   
+       // these are the functions inherited from Algorithm
+       virtual EL::StatusCode setupJob (EL::Job& job);
+       virtual EL::StatusCode fileExecute ();
+       virtual EL::StatusCode histInitialize ();
+       virtual EL::StatusCode changeInput (bool firstFile);
+       virtual EL::StatusCode initialize ();
+       virtual EL::StatusCode execute ();
+       virtual EL::StatusCode postExecute ();
+       virtual EL::StatusCode finalize ();
+       virtual EL::StatusCode histFinalize ();
+   
+       // this is needed to distribute the algorithm to the workers
+       ClassDef(MessagePrinterAlgo, 1);
+   };
+   
+   #endif

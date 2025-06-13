@@ -1,0 +1,13 @@
+.. _exhale_function_VtxHists_8cxx_1ad3f59d8e74980a7f894a85d18a0a7427:
+
+Function ANA_MSG_SOURCE(msgVtxHists, "VtxHists")
+================================================
+
+- Defined in :ref:`file_Root_VtxHists.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ANA_MSG_SOURCE(msgVtxHists, "VtxHists")

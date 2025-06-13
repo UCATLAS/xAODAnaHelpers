@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a788799896902f44f9a0af9f7484c3260:
+
+Function HelperFunctions::getListofSystematics
+==============================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::getListofSystematics(const CP::SystematicSet, std::string, float, MsgStream&)

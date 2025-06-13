@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1ElectronContainer:
+
+Class ElectronContainer
+=======================
+
+- Defined in :ref:`file_xAODAnaHelpers_ElectronContainer.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::ParticleContainer< Electron, HelperClasses::ElectronInfoSwitch >`` (:ref:`exhale_class_classxAH_1_1ParticleContainer`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::ElectronContainer
+   :members:
+   :protected-members:
+   :undoc-members:
