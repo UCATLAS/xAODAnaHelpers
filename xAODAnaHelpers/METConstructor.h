@@ -12,6 +12,7 @@
 #include "METInterface/IMETMaker.h"
 #include "METInterface/IMETSystematicsTool.h"
 #include "METInterface/IMETSignificance.h"
+#include "METUtilities/METNetSig.h"
 
 #include "TauAnalysisTools/ITauSelectionTool.h"
 
@@ -32,7 +33,7 @@ public:
   std::string m_coreName = "MET_Core_AntiKt4LCTopo";
   std::string m_outputContainer = "NewRefFinal";
   std::string m_systConfigPrefix = "METUtilities/R22_PreRecs";
-  std::string m_systConfigSoftTrkFile = "TrackSoftTerms-pflow_Dec24.config";
+  std::string m_systConfigSoftTrkFile = "TrackSoftTerms-pflow.config";
   std::string m_inputJets = "";
   std::string m_inputElectrons = "";
   std::string m_inputPhotons = "";
@@ -114,12 +115,13 @@ public:
 
   std::string m_outputAlgoSystNames = "";
 
-
 private:
   // tools
   asg::AnaToolHandle<IMETMaker> m_metmaker_handle{"met::METMaker/METMaker", this}; //!
   asg::AnaToolHandle<IMETSystematicsTool> m_metSyst_handle{"met::METSystematicsTool/METSystematicsTool", this}; //!
   asg::AnaToolHandle<IMETSignificance> m_metSignificance_handle{"met::METSignificance/METSignificance", this}; //!
+
+  met::METNetSig m_metNetSig{"met::METNetSig/METNetSig"}; //!
 
   asg::AnaToolHandle<TauAnalysisTools::ITauSelectionTool> m_tauSelTool_handle{"TauAnalysisTools::TauSelectionTool/TauSelectionTool", this}; //!
 

@@ -8,6 +8,7 @@
 
 #include "METUtilities/CutsMETMaker.h"
 #include "METUtilities/METHelpers.h"
+#include "METUtilities/METNetSig.h"
 #include "PATInterfaces/SystematicVariation.h"
 
 #include "xAODEventInfo/EventInfo.h"
@@ -114,6 +115,8 @@ EL::StatusCode METConstructor :: initialize ()
   m_store = wk()->xaodStore();
 
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
+
+  ANA_CHECK(m_metNetSig.initialize());
 
   //////////// IMETMaker ////////////////
   if ( m_dofJVTCut ) {
@@ -482,6 +485,24 @@ EL::StatusCode METConstructor :: execute ()
        continue;
      }
 
+
+     if (systName == "") {
+      ANA_MSG_DEBUG("Evaluating NNMET using METNetSig for nominal");
+      ANA_CHECK(m_metNetSig.rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk",
+                                          newMet.get(), jetCont, coreMet, metHelper, m_doJVTCut));
+      ANA_CHECK(m_metNetSig.evaluateNNMET("NNMET", newMet.get()));
+      const xAOD::MissingET* nnmet = (*newMet)["NNMET"];
+      if (nnmet && nnmet->isAvailable<float>("NN_SigmaX")) {
+        ANA_MSG_INFO("NNMET sigma_x: " << nnmet->auxdata<float>("NN_SigmaX"));
+        ANA_MSG_INFO("NNMET sigma_y: " << nnmet->auxdata<float>("NN_SigmaY"));
+      } else {
+        ANA_MSG_WARNING("NNMET or its auxdata not available!");
+      }
+    }
+
+    
+
+
      // the jet term and soft term(s) are built simultaneously using METMaker::rebuildJetMET(...) or METMaker::rebuildTrackMET(...)
      // to build MET using a calorimeter or track based jet term, respectively.
      // pass to rebuildJetMET calibrated jets (full container)
@@ -600,6 +621,8 @@ EL::StatusCode METConstructor :: execute ()
    if ( !m_store->contains< std::vector<std::string> >( m_outputAlgoSystNames ) ) {
       ANA_CHECK( m_store->record( std::move(vecOutContainerNames), m_outputAlgoSystNames));
    }
+
+   
 
    if(msgLvl(MSG::VERBOSE)) m_store->print();
 
