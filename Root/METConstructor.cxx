@@ -487,19 +487,24 @@ EL::StatusCode METConstructor :: execute ()
 
 
      if (systName == "") {
-      ANA_MSG_DEBUG("Evaluating NNMET using METNetSig for nominal");
+      ANA_MSG_INFO("Evaluating NNMET using METNetSig for nominal");
       ANA_CHECK(m_metNetSig.rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk",
                                           newMet.get(), jetCont, coreMet, metHelper, m_doJVTCut));
       ANA_CHECK(m_metNetSig.evaluateNNMET("NNMET", newMet.get()));
       const xAOD::MissingET* nnmet = (*newMet)["NNMET"];
-      if (nnmet && nnmet->isAvailable<float>("NN_SigmaX")) {
-        ANA_MSG_INFO("NNMET sigma_x: " << nnmet->auxdata<float>("NN_SigmaX"));
-        ANA_MSG_INFO("NNMET sigma_y: " << nnmet->auxdata<float>("NN_SigmaY"));
-      } else {
-        ANA_MSG_WARNING("NNMET or its auxdata not available!");
-      }
-    }
+        
+      // if (nnmet && nnmet->isAvailable<float>("NN_SigmaX")) {
+      //   ANA_MSG_INFO("NNMET sigma_x: " << nnmet->auxdata<float>("NN_SigmaX"));
+      //   ANA_MSG_INFO("NNMET sigma_y: " << nnmet->auxdata<float>("NN_SigmaY"));
+      // } else {
+      //   ANA_MSG_WARNING("NNMET or its auxdata not available!");
+      // }
 
+     }
+
+    // if (nnmet) {
+        // Replace newMet's FinalTrk term with NNMET values (overwrite)
+    // }
     
 
 
