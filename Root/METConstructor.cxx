@@ -500,15 +500,6 @@ EL::StatusCode METConstructor :: execute ()
         ANA_CHECK(m_metNetSig.evaluateMETNetSig(newMet.get(), met_x, met_y, sigma_x, sigma_y));   
         }
 
-      // const xAOD::MissingET* nnmet = (*newMet)["NNMET"];
-        
-      // if (nnmet && nnmet->isAvailable<float>("NN_SigmaX")) {
-      //   ANA_MSG_INFO("NNMET sigma_x: " << nnmet->auxdata<float>("NN_SigmaX"));
-      //   ANA_MSG_INFO("NNMET sigma_y: " << nnmet->auxdata<float>("NN_SigmaY"));
-      // } else {
-      //   ANA_MSG_WARNING("NNMET or its auxdata not available!");
-      // }
-
      }
 
      // the jet term and soft term(s) are built simultaneously using METMaker::rebuildJetMET(...) or METMaker::rebuildTrackMET(...)
@@ -616,7 +607,7 @@ EL::StatusCode METConstructor :: execute ()
             met->auxdecor<double>("METNetSig_Met_y") = met_y;
             met->auxdecor<double>("METNetSig_Sigma_x") = sigma_x;
             met->auxdecor<double>("METNetSig_Sigma_y") = sigma_y;
-            ANA_MSG_INFO("METNetSig results: met = (" << met_x << ", " << met_y << "), sigma = (" << sigma_x << ", " << sigma_y << ")");
+            ANA_MSG_DEBUG("METNetSig results: met = (" << met_x << ", " << met_y << "), sigma = (" << sigma_x << ", " << sigma_y << ")");
           }
          }
        }
