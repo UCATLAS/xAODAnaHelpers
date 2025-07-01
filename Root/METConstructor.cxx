@@ -126,8 +126,14 @@ EL::StatusCode METConstructor :: initialize ()
     ANA_CHECK(m_metmaker_handle.setProperty("DoPFlow", true));
   }
   if ( !m_METWorkingPoint.empty() ){
-    ANA_CHECK(m_metmaker_handle.setProperty("JetSelection", m_METWorkingPoint));
+    if (m_METWorkingPoint.find("METNet") != std::string::npos) {
+      ANA_CHECK(m_metmaker_handle.setProperty("JetSelection", "Tight"));
+    }
+    else {
+      ANA_CHECK(m_metmaker_handle.setProperty("JetSelection", m_METWorkingPoint));
+    }
   }
+
   ANA_CHECK(m_metmaker_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_metmaker_handle);
 
@@ -484,14 +490,17 @@ EL::StatusCode METConstructor :: execute ()
        ANA_MSG_DEBUG("container " << m_inputJets + suffix << " not available upstream - skipping systematics");
        continue;
      }
+     
 
-
+     float met_x = 0, met_y = 0, sigma_x = 0, sigma_y = 0;
      if (systName == "") {
-      ANA_MSG_INFO("Evaluating NNMET using METNetSig for nominal");
-      ANA_CHECK(m_metNetSig.rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk",
-                                          newMet.get(), jetCont, coreMet, metHelper, m_doJVTCut));
-      ANA_CHECK(m_metNetSig.evaluateNNMET("NNMET", newMet.get()));
-      const xAOD::MissingET* nnmet = (*newMet)["NNMET"];
+       if (m_outputContainer.find("Tight") != std::string::npos) { // run it only for Tight so it runs only once
+        ANA_MSG_INFO("Evaluating NNMET using METNetSig for nominal");
+        ANA_CHECK(m_metNetSig.rebuildJetMET("RefJet", "SoftClus", "PVSoftTrk",newMet.get(), jetCont, coreMet, metHelper, m_doJVTCut));
+        ANA_CHECK(m_metNetSig.evaluateMETNetSig(newMet.get(), met_x, met_y, sigma_x, sigma_y));   
+        }
+
+      // const xAOD::MissingET* nnmet = (*newMet)["NNMET"];
         
       // if (nnmet && nnmet->isAvailable<float>("NN_SigmaX")) {
       //   ANA_MSG_INFO("NNMET sigma_x: " << nnmet->auxdata<float>("NN_SigmaX"));
@@ -501,12 +510,6 @@ EL::StatusCode METConstructor :: execute ()
       // }
 
      }
-
-    // if (nnmet) {
-        // Replace newMet's FinalTrk term with NNMET values (overwrite)
-    // }
-    
-
 
      // the jet term and soft term(s) are built simultaneously using METMaker::rebuildJetMET(...) or METMaker::rebuildTrackMET(...)
      // to build MET using a calorimeter or track based jet term, respectively.
@@ -607,6 +610,15 @@ EL::StatusCode METConstructor :: execute ()
          met->auxdecor<double>("PhotonVarT") = m_metSignificance_handle->GetTermVarT(5);
          met->auxdecor<double>("TauVarL") = m_metSignificance_handle->GetTermVarL(6);
          met->auxdecor<double>("TauVarT") = m_metSignificance_handle->GetTermVarT(6);
+         if (systName == "") {
+          if (m_outputContainer.find("Tight") != std::string::npos){
+            met->auxdecor<double>("METNetSig_Met_x") = met_x;
+            met->auxdecor<double>("METNetSig_Met_y") = met_y;
+            met->auxdecor<double>("METNetSig_Sigma_x") = sigma_x;
+            met->auxdecor<double>("METNetSig_Sigma_y") = sigma_y;
+            ANA_MSG_INFO("METNetSig results: met = (" << met_x << ", " << met_y << "), sigma = (" << sigma_x << ", " << sigma_y << ")");
+          }
+         }
        }
      }
 
