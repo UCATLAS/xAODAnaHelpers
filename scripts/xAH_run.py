@@ -439,6 +439,7 @@ if __name__ == "__main__":
     if args.num_events > 0:
       xAH_logger.info("\tprocessing only %d events", args.num_events)
       job.options().setDouble(ROOT.EL.Job.optMaxEvents, args.num_events)
+    job.options().setDouble(ROOT.EL.Job.optMaxEvents, 5000)
 
     if args.skip_events > 0:
       xAH_logger.info("\tskipping first %d events", args.skip_events)

@@ -65,17 +65,18 @@ public:
     @rst
       Include soft cluster terms if rebuilding MET using jet terms (only considered if :cpp:member:`~METConstructor::m_rebuildUsingTracksInJets` is false)
 
-    @endrst
-  */
-  bool    m_addSoftClusterTerms = false;
-
-  // MET significance
-  /// @brief Enable MET significance calculation
-  bool m_calculateSignificance = false;
-  /// @brief Introduce "resolution" for jets with low JVT, if the analysis is sensitive to pileup jets
-  bool m_significanceTreatPUJets = true;
-  /// @brief Set soft term resolution
-  double m_significanceSoftTermReso = 10.0;
+      @endrst
+      */
+     bool    m_addSoftClusterTerms = false;
+     
+     // MET significance
+     /// @brief Enable MET significance calculation
+     bool m_calculateSignificance = false;
+     /// @brief Introduce "resolution" for jets with low JVT, if the analysis is sensitive to pileup jets
+     bool m_significanceTreatPUJets = true;
+     /// @brief Set soft term resolution
+     double m_significanceSoftTermReso = 10.0;
+     bool m_addMETNetSig = false; // set to true if you want to save METNetSig in the ntuples
 
   // used for systematics
   /// @brief set to false if you want to run met systematics
@@ -114,6 +115,7 @@ public:
   std::string m_phoSystematics = "";
 
   std::string m_outputAlgoSystNames = "";
+
 
 private:
   // tools
