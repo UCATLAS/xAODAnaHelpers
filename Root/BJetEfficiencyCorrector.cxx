@@ -303,11 +303,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
             if(m_isRun3){
                 switch(sampleShowerType)
                 {
-                    case HelperFunctions::Pythia8_517:
-                        calibration="601398";
-                        break;
                     case HelperFunctions::Pythia8:
-                        calibration="601229";
+                        calibration="default";
                         break;
                     case HelperFunctions::Herwig7p2:
                         calibration="601414";
@@ -337,11 +334,8 @@ EL::StatusCode BJetEfficiencyCorrector :: initialize ()
 
                 switch(sampleShowerType)
                 {
-                    case HelperFunctions::Pythia8_517:
-                        calibration="410480";
-                        break;
                     case HelperFunctions::Pythia8:
-                        calibration="410470";
+                        calibration="default";
                         break;
                     case HelperFunctions::Herwig7p1:
                         calibration="411233";

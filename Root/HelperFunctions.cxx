@@ -547,8 +547,7 @@ HelperFunctions::ShowerType HelperFunctions::getMCShowerType(const std::string& 
     else if(tmp_name.Contains("SH_2212")) return Sherpa2212;
     else return Unknown;
   } else if(m_taggerName=="GN2v01"){
-    if(tmp_name.Contains("PYTHIA8EVTGEN517")) return Pythia8_517;
-    else if(tmp_name.Contains("PYTHIA8EVTGEN") and !tmp_name.Contains("AMCATNLO")) return Pythia8; //aMcAtNlo not supported for GN2, so don't let it count as Pythia8
+    if(tmp_name.Contains("PYTHIA8EVTGEN") and !tmp_name.Contains("AMCATNLO")) return Pythia8; //aMcAtNlo not supported for GN2, so don't let it count as Pythia8
     else if(tmp_name.Contains("HERWIG") and !tmp_name.Contains("AMCATNLO")) return Herwig7p1; 
     else if(tmp_name.Contains("PHH7EG")) return Herwig7p2;
     else if(tmp_name.Contains("SH_2210")) return Sherpa2214;//FTAG uses 2.2.14 SFs for 2.2.10
