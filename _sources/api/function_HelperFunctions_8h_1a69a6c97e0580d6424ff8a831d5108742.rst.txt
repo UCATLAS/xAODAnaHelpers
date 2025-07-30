@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a69a6c97e0580d6424ff8a831d5108742:
+
+Function HelperFunctions::found_non_dummy_sys
+=============================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::found_non_dummy_sys(std::vector<std::string> *)

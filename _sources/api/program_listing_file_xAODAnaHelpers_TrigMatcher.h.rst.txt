@@ -1,0 +1,68 @@
+
+.. _program_listing_file_xAODAnaHelpers_TrigMatcher.h:
+
+Program Listing for File TrigMatcher.h
+======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_TrigMatcher.h>` (``xAODAnaHelpers/TrigMatcher.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef xAODAnaHelpers_TrigMatcher_H
+   #define xAODAnaHelpers_TrigMatcher_H
+   
+   // algorithm wrapper
+   #include <xAODAnaHelpers/Algorithm.h>
+   
+   #include <AsgTools/AnaToolHandle.h>
+   #include <TrigDecisionTool/TrigDecisionTool.h>
+   #include <TriggerMatchingTool/IMatchingTool.h>
+   #include "TriggerMatchingTool/IMatchScoringTool.h"
+   
+   #include <TH1D.h>
+   
+   class TrigMatcher : public xAH::Algorithm
+   {
+   public:
+     /* configuration variables */
+   
+     std::string    m_inContainerName = "";
+     std::string    m_systNames = "";
+   
+     std::string    m_trigChains = "";
+   
+   private:
+   
+     /* tools */
+     asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle  {"Trig::TrigDecisionTool/TrigDecisionTool"             }; 
+     asg::AnaToolHandle<Trig::IMatchingTool>    m_trigMatchTool_handle; 
+     asg::AnaToolHandle<Trig::IMatchScoringTool>  m_scoreTool {"Trig::DRScoringTool/DRScoringTool"}; 
+   
+     std::vector<std::string> m_trigChainsList; 
+   
+   public:
+   
+     /* this is a standard constructor */
+   
+     TrigMatcher ();
+   
+     ~TrigMatcher();
+   
+     /* these are the functions inherited from Algorithm */
+   
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+   
+     /* these are the functions not inherited from Algorithm */
+     EL::StatusCode executeMatching( const xAOD::IParticleContainer* inParticles );
+   
+     ClassDef(TrigMatcher, 1);
+   
+   };
+   
+   
+   #endif //#ifndef xAODAnaHelpers_TrigMatcher_H

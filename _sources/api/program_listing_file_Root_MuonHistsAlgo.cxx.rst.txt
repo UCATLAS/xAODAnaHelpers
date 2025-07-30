@@ -1,0 +1,44 @@
+
+.. _program_listing_file_Root_MuonHistsAlgo.cxx:
+
+Program Listing for File MuonHistsAlgo.cxx
+==========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_Root_MuonHistsAlgo.cxx>` (``Root/MuonHistsAlgo.cxx``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include <EventLoop/Job.h>
+   #include <EventLoop/StatusCode.h>
+   #include <EventLoop/Worker.h>
+   
+   #include <xAODMuon/MuonContainer.h>
+   
+   #include <xAODAnaHelpers/MuonHistsAlgo.h>
+   #include <xAODAnaHelpers/MuonHists.h>
+   #include <xAODAnaHelpers/HelperFunctions.h>
+   
+   // this is needed to distribute the algorithm to the workers
+   ClassImp(MuonHistsAlgo)
+   
+   MuonHistsAlgo :: MuonHistsAlgo () :
+   IParticleHistsAlgo("MuonHistsAlgo")
+   { }
+   
+   EL::StatusCode MuonHistsAlgo :: setupJob (EL::Job& job)
+   {
+     job.useXAOD();
+     xAOD::Init("MuonHistsAlgo").ignore();
+   
+     return EL::StatusCode::SUCCESS;
+   }
+   
+   EL::StatusCode MuonHistsAlgo::AddHists( std::string name ) {
+     return IParticleHistsAlgo::AddHists<MuonHists>(name);
+   }
+   
+   EL::StatusCode MuonHistsAlgo :: execute () {
+     return IParticleHistsAlgo::execute<MuonHists, xAOD::MuonContainer>();
+   }

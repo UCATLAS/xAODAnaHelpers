@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a783583d94ca3d2158e871a29fc18b710:
+
+Template Function HelperFunctions::makeSubsetCont(T1 \*&, T2 \*&, const std::string&, HelperClasses::ToolName)
+==============================================================================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::makeSubsetCont(T1 *&, T2 *&, const std::string&, HelperClasses::ToolName)

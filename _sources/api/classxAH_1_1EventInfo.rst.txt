@@ -1,0 +1,16 @@
+.. _exhale_class_classxAH_1_1EventInfo:
+
+Class EventInfo
+===============
+
+- Defined in :ref:`file_xAODAnaHelpers_EventInfo.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::EventInfo
+   :members:
+   :protected-members:
+   :undoc-members:

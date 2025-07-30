@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1ab00349947498d616e0b3d04e6e65a48b:
+
+Function HelperFunctions::msg
+=============================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::msg(MSG::Level)

@@ -1,0 +1,43 @@
+
+.. _file_Root_JetHists.cxx:
+
+File JetHists.cxx
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/JetHists.cxx``)
+----------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_JetHists.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``math.h``
+
+- ``sstream``
+
+- ``xAODAnaHelpers/JetHists.h`` (:ref:`file_xAODAnaHelpers_JetHists.h`)
+
+- ``xAODBTagging/BTaggingUtilities.h``
+
+
+
+
+

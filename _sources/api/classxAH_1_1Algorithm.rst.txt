@@ -1,0 +1,63 @@
+.. _exhale_class_classxAH_1_1Algorithm:
+
+Class Algorithm
+===============
+
+- Defined in :ref:`file_xAODAnaHelpers_Algorithm.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public EL::Algorithm``
+
+
+Derived Types
+*************
+
+- ``public BJetEfficiencyCorrector`` (:ref:`exhale_class_classBJetEfficiencyCorrector`)
+- ``public BasicEventSelection`` (:ref:`exhale_class_classBasicEventSelection`)
+- ``public ClusterHistsAlgo`` (:ref:`exhale_class_classClusterHistsAlgo`)
+- ``public DebugTool`` (:ref:`exhale_class_classDebugTool`)
+- ``public ElectronCalibrator`` (:ref:`exhale_class_classElectronCalibrator`)
+- ``public ElectronEfficiencyCorrector`` (:ref:`exhale_class_classElectronEfficiencyCorrector`)
+- ``public ElectronSelector`` (:ref:`exhale_class_classElectronSelector`)
+- ``public HLTJetGetter`` (:ref:`exhale_class_classHLTJetGetter`)
+- ``public IParticleHistsAlgo`` (:ref:`exhale_class_classIParticleHistsAlgo`)
+- ``public IsoCloseByCorr`` (:ref:`exhale_class_classIsoCloseByCorr`)
+- ``public JetCalibrator`` (:ref:`exhale_class_classJetCalibrator`)
+- ``public JetSelector`` (:ref:`exhale_class_classJetSelector`)
+- ``public METConstructor`` (:ref:`exhale_class_classMETConstructor`)
+- ``public MessagePrinterAlgo`` (:ref:`exhale_class_classMessagePrinterAlgo`)
+- ``public MetHistsAlgo`` (:ref:`exhale_class_classMetHistsAlgo`)
+- ``public MinixAOD`` (:ref:`exhale_class_classMinixAOD`)
+- ``public MuonCalibrator`` (:ref:`exhale_class_classMuonCalibrator`)
+- ``public MuonEfficiencyCorrector`` (:ref:`exhale_class_classMuonEfficiencyCorrector`)
+- ``public MuonInFatJetCorrector`` (:ref:`exhale_class_classMuonInFatJetCorrector`)
+- ``public MuonSelector`` (:ref:`exhale_class_classMuonSelector`)
+- ``public OverlapRemover`` (:ref:`exhale_class_classOverlapRemover`)
+- ``public PhotonCalibrator`` (:ref:`exhale_class_classPhotonCalibrator`)
+- ``public PhotonSelector`` (:ref:`exhale_class_classPhotonSelector`)
+- ``public TauCalibrator`` (:ref:`exhale_class_classTauCalibrator`)
+- ``public TauEfficiencyCorrector`` (:ref:`exhale_class_classTauEfficiencyCorrector`)
+- ``public TauJetMatching`` (:ref:`exhale_class_classTauJetMatching`)
+- ``public TauSelector`` (:ref:`exhale_class_classTauSelector`)
+- ``public TrackHistsAlgo`` (:ref:`exhale_class_classTrackHistsAlgo`)
+- ``public TrackSelector`` (:ref:`exhale_class_classTrackSelector`)
+- ``public TreeAlgo`` (:ref:`exhale_class_classTreeAlgo`)
+- ``public TrigMatcher`` (:ref:`exhale_class_classTrigMatcher`)
+- ``public TruthSelector`` (:ref:`exhale_class_classTruthSelector`)
+- ``public Writer`` (:ref:`exhale_class_classWriter`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::Algorithm
+   :members:
+   :protected-members:
+   :undoc-members:
