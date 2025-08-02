@@ -541,8 +541,8 @@ EL::StatusCode METConstructor :: execute ()
 
      // build met:
 
-     ANA_CHECK( met::buildMETSum("FinalClus", newMet.get(), MissingETBase::Source::LCTopo));
-     ANA_CHECK( met::buildMETSum("FinalTrk",  newMet.get(), MissingETBase::Source::Track));
+     ANA_CHECK( met::buildMETSum("FinalClus", newMet.get(), static_cast<MissingETBase::Types::bitmask_t>(MissingETBase::Source::Signal::LCTopo) ));
+     ANA_CHECK( met::buildMETSum("FinalTrk",  newMet.get(), static_cast<MissingETBase::Types::bitmask_t>(MissingETBase::Source::Signal::Track) ));
 
      // Calculate MET significance if enabled
      if ( m_calculateSignificance ) {
@@ -569,6 +569,18 @@ EL::StatusCode METConstructor :: execute ()
          met->auxdecor<double>("Rho") = m_metSignificance_handle->GetRho();
          met->auxdecor<double>("VarL") = m_metSignificance_handle->GetVarL();
          met->auxdecor<double>("VarT") = m_metSignificance_handle->GetVarT();
+         met->auxdecor<double>("JetVarL") = m_metSignificance_handle->GetTermVarL(1);
+         met->auxdecor<double>("JetVarT") = m_metSignificance_handle->GetTermVarT(1);
+         met->auxdecor<double>("SoftVarL") = m_metSignificance_handle->GetTermVarL(2);
+         met->auxdecor<double>("SoftVarT") = m_metSignificance_handle->GetTermVarT(2);
+         met->auxdecor<double>("EleVarL") = m_metSignificance_handle->GetTermVarL(3);
+         met->auxdecor<double>("EleVarT") = m_metSignificance_handle->GetTermVarT(3);
+         met->auxdecor<double>("MuonVarL") = m_metSignificance_handle->GetTermVarL(4);
+         met->auxdecor<double>("MuonVarT") = m_metSignificance_handle->GetTermVarT(4);
+         met->auxdecor<double>("PhotonVarL") = m_metSignificance_handle->GetTermVarL(5);
+         met->auxdecor<double>("PhotonVarT") = m_metSignificance_handle->GetTermVarT(5);
+         met->auxdecor<double>("TauVarL") = m_metSignificance_handle->GetTermVarL(6);
+         met->auxdecor<double>("TauVarT") = m_metSignificance_handle->GetTermVarT(6);
        }
      }
 

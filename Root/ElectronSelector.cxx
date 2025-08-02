@@ -151,6 +151,7 @@ EL::StatusCode ElectronSelector :: initialize ()
     m_el_cutflow_all             = m_el_cutflowHist_1->GetXaxis()->FindBin("all");
     m_el_cutflow_author_cut      = m_el_cutflowHist_1->GetXaxis()->FindBin("author_cut");
     m_el_cutflow_OQ_cut          = m_el_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");
+    m_el_cutflow_deadHVCell_cut  = m_el_cutflowHist_1->GetXaxis()->FindBin("deadHVCell_cut");
     m_el_cutflow_ptmax_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_el_cutflow_ptmin_cut       = m_el_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
     m_el_cutflow_eta_cut         = m_el_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
@@ -167,6 +168,7 @@ EL::StatusCode ElectronSelector :: initialize ()
       m_el_cutflow_all       = m_el_cutflowHist_2->GetXaxis()->FindBin("all");
       m_el_cutflow_author_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("author_cut");
       m_el_cutflow_OQ_cut    = m_el_cutflowHist_2->GetXaxis()->FindBin("OQ_cut");
+      m_el_cutflow_deadHVCell_cut  = m_el_cutflowHist_2->GetXaxis()->FindBin("deadHVCell_cut");
       m_el_cutflow_ptmax_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
       m_el_cutflow_ptmin_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
       m_el_cutflow_eta_cut     = m_el_cutflowHist_2->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
@@ -191,11 +193,15 @@ EL::StatusCode ElectronSelector :: initialize ()
   if( m_LHOperatingPoint == "LooseAndBLayer" )
     m_LHOperatingPoint = "LooseBL";
 
-  if ( m_LHOperatingPoint != "VeryLoose"       &&
-       m_LHOperatingPoint != "Loose"           &&
-       m_LHOperatingPoint != "LooseBL"         &&
-       m_LHOperatingPoint != "Medium"          &&
-       m_LHOperatingPoint != "Tight"     ) {
+  if ( m_LHOperatingPoint != "VeryLoose"     &&
+       m_LHOperatingPoint != "Loose"         &&
+       m_LHOperatingPoint != "LooseBL"       &&
+       m_LHOperatingPoint != "Medium"        &&
+       m_LHOperatingPoint != "Tight"         &&
+       m_LHOperatingPoint != "VeryLooseLLP"  && m_LHOperatingPoint != "VeryLooseNoPix"  &&
+       m_LHOperatingPoint != "LooseLLP"      && m_LHOperatingPoint != "LooseNoPix"      &&
+       m_LHOperatingPoint != "MediumLLP"     && m_LHOperatingPoint != "MediumNoPix"     &&
+       m_LHOperatingPoint != "TightLLP"      && m_LHOperatingPoint != "TightNoPix"   ) {
     ANA_MSG_ERROR( "Unknown electron likelihood PID requested " << m_LHOperatingPoint);
     return EL::StatusCode::FAILURE;
   }
@@ -268,7 +274,7 @@ EL::StatusCode ElectronSelector :: initialize ()
 
   if( m_doLHPID ){
     // if not using LH PID, make sure all the decorations will be set ... by choosing the loosest WP!
-    std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "Loose";
+    std::string likelihoodWP = ( m_doLHPIDcut ) ? m_LHOperatingPoint : "VeryLoose";
     m_el_LH_PIDManager = new ElectronLHPIDManager( likelihoodWP, msgLvl(MSG::DEBUG) );
 
 
@@ -298,6 +304,7 @@ EL::StatusCode ElectronSelector :: initialize ()
   ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
   ANA_CHECK( m_isolationSelectionTool_handle.setProperty("ElectronWP", (m_IsoKeys.at(0)).c_str()));
   ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level()));
+  if (m_isoDecSuffix!="") ANA_CHECK ( m_isolationSelectionTool_handle.setProperty("IsoDecSuffix", m_isoDecSuffix) );
   ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_isolationSelectionTool_handle);
   m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
@@ -395,6 +402,20 @@ EL::StatusCode ElectronSelector :: initialize ()
   }
 
   // **********************************************************************************************
+
+
+  // Set up the dead HV Removal Tool
+  if (m_applyDeadHVCellVeto) {
+    m_deadHVTool.setTypeAndName("AsgDeadHVCellRemovalTool/deadHVTool");
+    if (m_deadHVTool.retrieve().isFailure()){
+      ANA_MSG_ERROR("Failed to retrieve DeadHVTool, aborting");
+      return StatusCode::FAILURE;
+    }
+  }
+  else {
+      ANA_MSG_WARNING("Not applying veto of dead HV cells on electrons although it's recommended - please double check!");
+  }
+
 
   ANA_MSG_INFO( "ElectronSelector Interface succesfully initialized!" );
 
@@ -576,9 +597,6 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
   int nPass(0); int nObj(0);
   static SG::AuxElement::Decorator< char > passSelDecor( "passSel" );
 
-  bool passCrackVetoCleaning = true;
-  const static SG::AuxElement::ConstAccessor<char> acc_CrackVetoCleaning("DFCommonCrackVetoCleaning");
-
   for ( auto el_itr : *inElectrons ) { // duplicated of basic loop
 
     // if only looking at a subset of electrons make sure all are decorated
@@ -600,22 +618,11 @@ bool ElectronSelector :: executeSelection ( const xAOD::ElectronContainer* inEle
 
     if ( passSel ) {
 
-      // check DFCommonCrackVetoCleaning flag for topocluster association bugfix
-      if (m_applyCrackVetoCleaning){
-        if ( !acc_CrackVetoCleaning( *el_itr ) ) passCrackVetoCleaning = false;
-      }
-
       nPass++;
       if ( m_createSelectedContainer ) {
         selectedElectrons->push_back( el_itr );
       }
     }
-  }
-
-  // Fix to EGamma Crack-Electron topocluster association bug for MET (PFlow)
-  // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/HowToCleanJetsR21#Muons_Reconstructed_as_Jets_in_P
-  if (m_applyCrackVetoCleaning) {
-    if (!passCrackVetoCleaning) return false; // skip event
   }
 
   // for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)
@@ -857,6 +864,19 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
   // *********************************************************************************************************************************************************************
   //
+  // Dead HV Cell veto (affects only 2016 data)
+  //
+  if ( m_applyDeadHVCellVeto ) {
+    if( !m_deadHVTool->accept(electron) ){
+      ANA_MSG_DEBUG( "Electron failed dead HV cell veto." );
+      return 0;
+    }
+  }
+  if (!m_isUsedBefore && m_useCutFlow) m_el_cutflowHist_1->Fill( m_el_cutflow_deadHVCell_cut, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_el_cutflowHist_2->Fill( m_el_cutflow_deadHVCell_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  //
   // pT max cut
   //
   if ( m_pT_max != 1e8 ) {
@@ -1020,44 +1040,46 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
         bool passSelID(false);
         SG::AuxElement::ConstAccessor< char > LHDecision( "DFCommonElectronsLH" + m_LHOperatingPoint );
         if( LHDecision.isAvailable( *electron ) ){
-	  if (m_doModifiedEleId){
-	    if(m_LHOperatingPoint == "Tight"){
-	      passSelID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
-	    } else if(m_LHOperatingPoint == "Medium"){
-	      passSelID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
-	    } else if (m_LHOperatingPoint == "Loose") {
-	      passSelID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
-	    } else { passSelID = LHDecision( *electron ); }
-	  }
-	  else
+          if (m_doModifiedEleId){
+            if(m_LHOperatingPoint == "Tight"){
+              passSelID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
+            } else if(m_LHOperatingPoint == "Medium"){
+              passSelID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
+            } else if (m_LHOperatingPoint == "Loose") {
+              passSelID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
+            } else { passSelID = LHDecision( *electron ); }
+          }
+          else {
             passSelID = LHDecision( *electron );
-	}
-	if ( !passSelID ) {
-	  ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
+          }
+        }
+	      if ( !passSelID ) {
+	        ANA_MSG_DEBUG( "Electron failed likelihood PID cut w/ operating point " << m_LHOperatingPoint );
           return 0;
         }
       }
 
       const std::set<std::string> myLHWPs = m_el_LH_PIDManager->getValidWPs();
       for ( auto it : (myLHWPs) ) {
-
         const std::string decorWP =  "LH"+it;
-
         bool passThisID(false);
         SG::AuxElement::ConstAccessor< char > LHDecisionAll( "DFCommonElectrons" + decorWP );
+
         if( LHDecisionAll.isAvailable( *electron ) ){
-	  if (m_doModifiedEleId){
-	    if(decorWP == "LHTight"){
-	      passThisID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
-	    } else if(decorWP == "LHMedium"){
-	      passThisID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
-	    } else if (decorWP == "LHLoose") {
-	      passThisID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
-	    } else { passThisID = LHDecisionAll( *electron ); }
-	  }
-	  else
+
+          if (m_doModifiedEleId){
+            if(decorWP == "LHTight"){
+              passThisID = acc_EG_Medium( *electron ) && acc_EG_Tight( *electron );
+            } else if(decorWP == "LHMedium"){
+              passThisID = ( acc_EG_Loose( *electron ) && acc_EG_Medium( *electron ) ) || acc_EG_Tight( *electron );
+            } else if (decorWP == "LHLoose") {
+              passThisID = acc_EG_Medium( *electron ) || acc_EG_Loose( *electron );
+            } else { passThisID = LHDecisionAll( *electron ); }
+          }
+          else {
             passThisID = LHDecisionAll( *electron );
-	}
+          }
+	      }
 
         ANA_MSG_DEBUG( "Decorating electron with decision for LH WP : " << decorWP );
         ANA_MSG_DEBUG( "\t does electron pass " << decorWP << "? " << passThisID );
@@ -1065,7 +1087,8 @@ int ElectronSelector :: passCuts( const xAOD::Electron* electron, const xAOD::Ve
 
       }
 
-    } else {
+    } 
+    else {
 
       // retrieve only tools with WP >= selected WP, cut electrons if not satisfying selected WP, and decorate w/ tool decision all the others
       //

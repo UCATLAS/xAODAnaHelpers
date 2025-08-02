@@ -127,6 +127,12 @@ standard = {
         "nargs": "+",
         "default": [],
     },
+    "autoFlags": {
+        "action": "store_true",
+        "help": "If enabled, meta flags will be auto read from input files (available 24.2.29 onwards).",
+        "dest": "auto_flags",
+        "default": False,
+    },
 }
 
 # These are handled by xAH_run.py at the top level instead of down by drivers

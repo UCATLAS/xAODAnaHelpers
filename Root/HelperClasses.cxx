@@ -13,23 +13,45 @@ namespace HelperClasses{
   EnumParser<xAOD::Iso::IsolationType>::EnumParser()
   {
     std::string etcone20("etcone20");         enumMap.insert(std::make_pair(etcone20,      xAOD::Iso::etcone20));
+    std::string etcone30("etcone30");         enumMap.insert(std::make_pair(etcone30,      xAOD::Iso::etcone30));
+    std::string etcone40("etcone40");         enumMap.insert(std::make_pair(etcone40,      xAOD::Iso::etcone40));
     std::string topoetcone20("topoetcone20"); enumMap.insert(std::make_pair(topoetcone20,  xAOD::Iso::topoetcone20));
     std::string topoetcone30("topoetcone30"); enumMap.insert(std::make_pair(topoetcone30,  xAOD::Iso::topoetcone30));
+    std::string topoetcone40("topoetcone40"); enumMap.insert(std::make_pair(topoetcone40,  xAOD::Iso::topoetcone40));
     std::string ptcone20("ptcone20");         enumMap.insert(std::make_pair(ptcone20,      xAOD::Iso::ptcone20));
     std::string ptcone30("ptcone30");         enumMap.insert(std::make_pair(ptcone30,      xAOD::Iso::ptcone30));
+    std::string ptcone40("ptcone40");         enumMap.insert(std::make_pair(ptcone40,      xAOD::Iso::ptcone40));
+    std::string ptcone50("ptcone50");         enumMap.insert(std::make_pair(ptcone50,      xAOD::Iso::ptcone50));
     std::string ptvarcone20("ptvarcone20");   enumMap.insert(std::make_pair(ptvarcone20,   xAOD::Iso::ptvarcone20));
     std::string ptvarcone30("ptvarcone30");   enumMap.insert(std::make_pair(ptvarcone30,   xAOD::Iso::ptvarcone30));
+    std::string ptvarcone40("ptvarcone40");   enumMap.insert(std::make_pair(ptvarcone40,   xAOD::Iso::ptvarcone40));
+    std::string neflowisol20("neflowisol20"); enumMap.insert(std::make_pair(neflowisol20,  xAOD::Iso::neflowisol20));
+    std::string ptcone20_Nonprompt_All_MaxWeightTTVA_pt500 ("ptcone20_Nonprompt_All_MaxWeightTTVA_pt500");                      enumMap.insert(std::make_pair(ptcone20_Nonprompt_All_MaxWeightTTVA_pt500,             xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVA_pt500));
+    std::string ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000("ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000");                     enumMap.insert(std::make_pair(ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000,            xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000));
+    std::string ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500 ("ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500");                      enumMap.insert(std::make_pair(ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500,             xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500));
+    std::string ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000("ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000");                     enumMap.insert(std::make_pair(ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000,            xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000));
+    std::string ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500 ("ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500");          enumMap.insert(std::make_pair(ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500,       xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500));
+    std::string ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000("ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000");         enumMap.insert(std::make_pair(ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000,      xAOD::Iso::ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000));
+    std::string ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500 ("ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500");    enumMap.insert(std::make_pair(ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500,    xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500));
+    std::string ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000("ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000");   enumMap.insert(std::make_pair(ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000,   xAOD::Iso::ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000));
   }
 
   /* parser for electron likelihood PID enum */
   template <>
   EnumParser<LikeEnum::Menu>::EnumParser()
   {
-    std::string VeryLoose("VeryLoose");         enumMap.insert(std::make_pair(VeryLoose  , LikeEnum::VeryLoose));
-    std::string Loose("Loose");                 enumMap.insert(std::make_pair(Loose      , LikeEnum::Loose));
-    std::string LooseBL("LooseBL");             enumMap.insert(std::make_pair(LooseBL    , LikeEnum::LooseBL));
-    std::string Medium("Medium");               enumMap.insert(std::make_pair(Medium     , LikeEnum::Medium));
-    std::string Tight("Tight");                 enumMap.insert(std::make_pair(Tight      , LikeEnum::Tight));
+    std::string VeryLoose("VeryLoose");                       enumMap.insert(std::make_pair(VeryLoose            , LikeEnum::VeryLoose));
+    std::string Loose("Loose");                               enumMap.insert(std::make_pair(Loose                , LikeEnum::Loose));
+    std::string LooseBL("LooseBL");                           enumMap.insert(std::make_pair(LooseBL              , LikeEnum::LooseBL));
+    std::string Medium("Medium");                             enumMap.insert(std::make_pair(Medium               , LikeEnum::Medium));
+    std::string Tight("Tight");                               enumMap.insert(std::make_pair(Tight                , LikeEnum::Tight));
+    std::string VeryTight("VeryTight");                       enumMap.insert(std::make_pair(VeryTight            , LikeEnum::VeryTight));
+    std::string LooseRelaxed("LooseRelaxed");                 enumMap.insert(std::make_pair(LooseRelaxed         , LikeEnum::Tight));
+    std::string CustomOperatingPoint("CustomOperatingPoint"); enumMap.insert(std::make_pair(CustomOperatingPoint , LikeEnum::Tight));
+    std::string VeryLooseLLP("VeryLooseLLP");                 enumMap.insert(std::make_pair(VeryLooseLLP         , LikeEnum::VeryLooseLLP));
+    std::string LooseLLP("LooseLLP");                         enumMap.insert(std::make_pair(LooseLLP             , LikeEnum::LooseLLP));
+    std::string MediumLLP("MediumLLP");                       enumMap.insert(std::make_pair(MediumLLP            , LikeEnum::MediumLLP));
+    std::string TightLLP("TightLLP");                         enumMap.insert(std::make_pair(TightLLP             , LikeEnum::TightLLP));
   }
 
   /* parser for electron cut-based PID enum */
@@ -203,6 +225,7 @@ namespace HelperClasses{
     m_ttvaEff_sysNames = has_exact("ttvaEff_sysNames");
 
     m_doLRT = has_exact("doLRT");
+    m_closeByCorr = has_exact("IsolCloseByCorr");
 
   }
 
@@ -253,6 +276,8 @@ namespace HelperClasses{
     m_passOR = has_exact("passOR");
     //Add LRT flag
     m_doLRT = has_exact("doLRT");
+
+    m_closeByCorr = has_exact("IsolCloseByCorr");
   }
 
   void PhotonInfoSwitch::initialize(){
@@ -308,6 +333,7 @@ namespace HelperClasses{
     m_constituentAll    = has_exact("constituentAll");
     m_flavorTag         = has_exact("flavorTag");
     m_flavorTagHLT      = has_exact("flavorTagHLT");
+    m_flavorTagTLA      = has_exact("flavorTagTLA");
     m_btag_jettrk       = has_exact("btag_jettrk");
     m_jetFitterDetails  = has_exact("jetFitterDetails");
     m_svDetails         = has_exact("svDetails");

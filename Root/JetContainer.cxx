@@ -254,6 +254,11 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
   }
 
   // flavorTag
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT || m_infoSwitch.m_flavorTagTLA ) {
+    m_HadronConeExclTruthLabelID        =new std::vector<int>();
+    m_HadronConeExclExtendedTruthLabelID=new std::vector<int>();
+  }
+  
   if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
     m_DL1r                              =new std::vector<float>();
@@ -272,8 +277,19 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_GN1_pu                            =new std::vector<float>();
     m_GN1_pc                            =new std::vector<float>();
     m_GN1_pb                            =new std::vector<float>();
-    m_HadronConeExclTruthLabelID        =new std::vector<int>();
-    m_HadronConeExclExtendedTruthLabelID=new std::vector<int>();
+    m_GN2v00LegacyWP                    =new std::vector<float>();
+    m_GN2v00LegacyWP_pu                 =new std::vector<float>();
+    m_GN2v00LegacyWP_pc                 =new std::vector<float>();
+    m_GN2v00LegacyWP_pb                 =new std::vector<float>();
+    m_GN2v00NewAliasWP                  =new std::vector<float>();
+    m_GN2v00NewAliasWP_pu               =new std::vector<float>();
+    m_GN2v00NewAliasWP_pc               =new std::vector<float>();
+    m_GN2v00NewAliasWP_pb               =new std::vector<float>();
+    m_GN2v01                            =new std::vector<float>();
+    m_GN2v01_pu                         =new std::vector<float>();
+    m_GN2v01_pc                         =new std::vector<float>();
+    m_GN2v01_pb                         =new std::vector<float>();
+    m_GN2v01_ptau                       =new std::vector<float>();
 
     // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
@@ -382,6 +398,13 @@ JetContainer::JetContainer(const std::string& name, const std::string& detailStr
     m_vtx_online_bkg_x0  = new  std::vector<float>();
     m_vtx_online_bkg_y0  = new  std::vector<float>();
     m_vtx_online_bkg_z0  = new  std::vector<float>();
+  }
+
+  if( m_infoSwitch.m_flavorTagTLA  ) {
+    m_fastDIPS     =new std::vector<float>();
+    m_fastDIPS_pu  =new std::vector<float>();
+    m_fastDIPS_pc  =new std::vector<float>();
+    m_fastDIPS_pb  =new std::vector<float>();
   }
 
   if( !m_infoSwitch.m_jetBTag.empty() ) {
@@ -715,7 +738,12 @@ JetContainer::~JetContainer()
 
 
   // flavorTag
-  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT || m_infoSwitch.m_flavorTagTLA ) {
+    delete m_HadronConeExclTruthLabelID;
+    delete m_HadronConeExclExtendedTruthLabelID;
+  }
+
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT ) {
     // flavorTag
 
     delete m_DL1r;
@@ -734,9 +762,19 @@ JetContainer::~JetContainer()
     delete m_GN1_pu;
     delete m_GN1_pc;
     delete m_GN1_pb;
-
-    delete m_HadronConeExclTruthLabelID;
-    delete m_HadronConeExclExtendedTruthLabelID;
+    delete m_GN2v00LegacyWP;
+    delete m_GN2v00LegacyWP_pu;
+    delete m_GN2v00LegacyWP_pc;
+    delete m_GN2v00LegacyWP_pb;
+    delete m_GN2v00NewAliasWP;
+    delete m_GN2v00NewAliasWP_pu;
+    delete m_GN2v00NewAliasWP_pc;
+    delete m_GN2v00NewAliasWP_pb;
+    delete m_GN2v01;
+    delete m_GN2v01_pu;
+    delete m_GN2v01_pc;
+    delete m_GN2v01_pb;
+    delete m_GN2v01_ptau;
 
     // Jet Fitter
     if( m_infoSwitch.m_jetFitterDetails){
@@ -843,6 +881,13 @@ JetContainer::~JetContainer()
     delete m_vtx_online_bkg_x0  ;
     delete m_vtx_online_bkg_y0  ;
     delete m_vtx_online_bkg_z0  ;
+  }
+
+  if( m_infoSwitch.m_flavorTagTLA ) {
+    delete m_fastDIPS;
+    delete m_fastDIPS_pu;
+    delete m_fastDIPS_pc;
+    delete m_fastDIPS_pb;
   }
 
   for(auto btag : m_btags)
@@ -1022,6 +1067,12 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<double>(tree,"JetVertexCharge_discriminant", &m_JetVertexCharge_discriminant);
     }
 
+  if(m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT || m_infoSwitch.m_flavorTagTLA)
+    {
+      connectBranch<int>  (tree,"HadronConeExclTruthLabelID"        ,&m_HadronConeExclTruthLabelID);
+      connectBranch<int>  (tree,"HadronConeExclExtendedTruthLabelID",&m_HadronConeExclExtendedTruthLabelID);
+    }
+
   if(m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT)
     {
       connectBranch<float>(tree,"DL1r"                              ,&m_DL1r     );
@@ -1040,8 +1091,19 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"GN1_pu"                            ,&m_GN1_pu  );
       connectBranch<float>(tree,"GN1_pc"                            ,&m_GN1_pc  );
       connectBranch<float>(tree,"GN1_pb"                            ,&m_GN1_pb  );
-      connectBranch<int>  (tree,"HadronConeExclTruthLabelID"        ,&m_HadronConeExclTruthLabelID);
-      connectBranch<int>  (tree,"HadronConeExclExtendedTruthLabelID",&m_HadronConeExclExtendedTruthLabelID);
+      connectBranch<float>(tree,"GN2v00LegacyWP"                    ,&m_GN2v00LegacyWP     );
+      connectBranch<float>(tree,"GN2v00LegacyWP_pu"                 ,&m_GN2v00LegacyWP_pu  );
+      connectBranch<float>(tree,"GN2v00LegacyWP_pc"                 ,&m_GN2v00LegacyWP_pc  );
+      connectBranch<float>(tree,"GN2v00LegacyWP_pb"                 ,&m_GN2v00LegacyWP_pb  );
+      connectBranch<float>(tree,"GN2v00NewAliasWP"                  ,&m_GN2v00NewAliasWP     );
+      connectBranch<float>(tree,"GN2v00NewAliasWP_pu"               ,&m_GN2v00NewAliasWP_pu  );
+      connectBranch<float>(tree,"GN2v00NewAliasWP_pc"               ,&m_GN2v00NewAliasWP_pc  );
+      connectBranch<float>(tree,"GN2v00NewAliasWP_pb"               ,&m_GN2v00NewAliasWP_pb  );
+      connectBranch<float>(tree,"GN2v01"                            ,&m_GN2v01     );
+      connectBranch<float>(tree,"GN2v01_pu"                         ,&m_GN2v01_pu  );
+      connectBranch<float>(tree,"GN2v01_pc"                         ,&m_GN2v01_pc  );
+      connectBranch<float>(tree,"GN2v01_pb"                         ,&m_GN2v01_pb  );
+      connectBranch<float>(tree,"GN2v01_ptau"                       ,&m_GN2v01_ptau);
     }
 
   if(m_infoSwitch.m_flavorTagHLT)
@@ -1062,6 +1124,13 @@ void JetContainer::setTree(TTree *tree)
       connectBranch<float>(tree,"vtx_online_bkg_x0",  &m_vtx_online_bkg_x0);
       connectBranch<float>(tree,"vtx_online_bkg_y0",  &m_vtx_online_bkg_y0);
       connectBranch<float>(tree,"vtx_online_bkg_z0",  &m_vtx_online_bkg_z0);
+    }
+  if(m_infoSwitch.m_flavorTagTLA)
+    {
+      connectBranch<float>(tree,"fastDIPS",    &m_fastDIPS);
+      connectBranch<float>(tree,"fastDIPS_pu", &m_fastDIPS_pu);
+      connectBranch<float>(tree,"fastDIPS_pc", &m_fastDIPS_pc);
+      connectBranch<float>(tree,"fastDIPS_pb", &m_fastDIPS_pb);
     }
 
   if(m_infoSwitch.m_jetFitterDetails)
@@ -1281,6 +1350,12 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
     jet.JVC = m_JetVertexCharge_discriminant->at(idx);
   }
 
+  if(m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT || m_infoSwitch.m_flavorTagTLA)
+    {
+      if(m_HadronConeExclTruthLabelID)         jet.HadronConeExclTruthLabelID        =m_HadronConeExclTruthLabelID        ->at(idx);
+      if(m_HadronConeExclExtendedTruthLabelID) jet.HadronConeExclExtendedTruthLabelID=m_HadronConeExclExtendedTruthLabelID->at(idx);
+    }
+
   if(m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT)
     {
       if(m_debug) std::cout << "updating flavorTag " << std::endl;
@@ -1300,9 +1375,21 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       if(m_GN1_pu)      jet.GN1_pu      =m_GN1_pu      ->at(idx);
       if(m_GN1_pc)      jet.GN1_pc      =m_GN1_pc      ->at(idx);
       if(m_GN1_pb)      jet.GN1_pb      =m_GN1_pb      ->at(idx);
+      if(m_GN2v00LegacyWP)    jet.GN2v00LegacyWP    =m_GN2v00LegacyWP    ->at(idx);
+      if(m_GN2v00LegacyWP_pu) jet.GN2v00LegacyWP_pu =m_GN2v00LegacyWP_pu ->at(idx);
+      if(m_GN2v00LegacyWP_pc) jet.GN2v00LegacyWP_pc =m_GN2v00LegacyWP_pc ->at(idx);
+      if(m_GN2v00LegacyWP_pb) jet.GN2v00LegacyWP_pb =m_GN2v00LegacyWP_pb ->at(idx);
+      if(m_GN2v00NewAliasWP)    jet.GN2v00NewAliasWP    =m_GN2v00NewAliasWP    ->at(idx);
+      if(m_GN2v00NewAliasWP_pu) jet.GN2v00NewAliasWP_pu =m_GN2v00NewAliasWP_pu ->at(idx);
+      if(m_GN2v00NewAliasWP_pc) jet.GN2v00NewAliasWP_pc =m_GN2v00NewAliasWP_pc ->at(idx);
+      if(m_GN2v00NewAliasWP_pb) jet.GN2v00NewAliasWP_pb =m_GN2v00NewAliasWP_pb ->at(idx);
+      if(m_GN2v01)       jet.GN2v01       =m_GN2v01       ->at(idx);
+      if(m_GN2v01_pu)    jet.GN2v01_pu    =m_GN2v01_pu    ->at(idx);
+      if(m_GN2v01_pc)    jet.GN2v01_pc    =m_GN2v01_pc    ->at(idx);
+      if(m_GN2v01_pb)    jet.GN2v01_pb    =m_GN2v01_pb    ->at(idx);
+      if(m_GN2v01_ptau)  jet.GN2v01_ptau  =m_GN2v01_ptau  ->at(idx);
+
       //std::cout << m_HadronConeExclTruthLabelID->size() << std::endl;
-      if(m_HadronConeExclTruthLabelID)         jet.HadronConeExclTruthLabelID        =m_HadronConeExclTruthLabelID        ->at(idx);
-      if(m_HadronConeExclExtendedTruthLabelID) jet.HadronConeExclExtendedTruthLabelID=m_HadronConeExclExtendedTruthLabelID->at(idx);
       if(m_debug) std::cout << "leave flavorTag " << std::endl;
     }
 
@@ -1340,6 +1427,16 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
       jet.JetFitter_deltaphi              =m_JetFitter_deltaphi       ->at(idx);
       jet.JetFitter_N2Tpar                =m_JetFitter_N2Tpar         ->at(idx);
 
+    }
+  
+  if(m_infoSwitch.m_flavorTagTLA)
+    {
+      if(m_debug) std::cout << "updating flavorTagTLA " << std::endl;
+      if(m_fastDIPS)    jet.fastDIPS      =m_fastDIPS     ->at(idx);
+      if(m_fastDIPS_pu) jet.fastDIPS_pu   =m_fastDIPS_pu  ->at(idx);
+      if(m_fastDIPS_pc) jet.fastDIPS_pc   =m_fastDIPS_pc  ->at(idx);
+      if(m_fastDIPS_pb) jet.fastDIPS_pb   =m_fastDIPS_pb  ->at(idx);
+      if(m_debug) std::cout << "leave flavorTagTLA " << std::endl;
     }
 
   if(m_infoSwitch.m_svDetails){
@@ -1493,6 +1590,63 @@ void JetContainer::updateParticle(uint idx, Jet& jet)
 	  jet.is_GN120220509_Continuous=       btag->m_isTag->at(idx);
 	  jet.SF_GN120220509_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
 	  break;
+  case Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_60:
+	  jet.is_GN2v00LegacyWP_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00LegacyWP_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_70:
+	  jet.is_GN2v00LegacyWP_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00LegacyWP_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_77:
+	  jet.is_GN2v00LegacyWP_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00LegacyWP_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN2v00LegacyWP_FixedCutBEff_85:
+	  jet.is_GN2v00LegacyWP_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00LegacyWP_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+  case Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_60:
+	  jet.is_GN2v00NewAliasWP_FixedCutBEff_60=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00NewAliasWP_FixedCutBEff_60=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_70:
+	  jet.is_GN2v00NewAliasWP_FixedCutBEff_70=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00NewAliasWP_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_77:
+	  jet.is_GN2v00NewAliasWP_FixedCutBEff_77=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00NewAliasWP_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+	case Jet::BTaggerOP::GN2v00NewAliasWP_FixedCutBEff_85:
+	  jet.is_GN2v00NewAliasWP_FixedCutBEff_85=       btag->m_isTag->at(idx);
+	  jet.SF_GN2v00NewAliasWP_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+	  break;
+        case Jet::BTaggerOP::GN2v01_FixedCutBEff_65:
+      jet.is_GN2v01_FixedCutBEff_65=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_65=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_70:
+      jet.is_GN2v01_FixedCutBEff_70=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_70=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_77:
+      jet.is_GN2v01_FixedCutBEff_77=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_77=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_85:
+      jet.is_GN2v01_FixedCutBEff_85=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_85=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_FixedCutBEff_90:
+      jet.is_GN2v01_FixedCutBEff_90=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_FixedCutBEff_90=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+    case Jet::BTaggerOP::GN2v01_Continuous:
+      jet.is_GN2v01_Continuous=       btag->m_isTag->at(idx);
+      jet.SF_GN2v01_Continuous=(m_mc)?btag->m_sf   ->at(idx):dummy1;
+      break;
+
 	default:
 	  throw std::domain_error(
 				  __FILE__ + std::string(", in ") + __func__ + ": "
@@ -1735,7 +1889,8 @@ void JetContainer::setBranches(TTree *tree)
     // this applies the JVF/JVT selection cuts
     // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JvtManualRecalculation
     if( m_infoSwitch.m_allTrackPVSel ) {
-      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection", "Loose" );
+      m_trkSelTool = new InDet::InDetTrackSelectionTool( "JetTrackSelection");
+      m_trkSelTool->setProperty( "CutLevel", "Loose");
       m_trkSelTool->initialize();
       // to do this need to have AddJets return a status code
       //ANA_CHECK( m_trkSelTool->initialize());
@@ -1776,6 +1931,11 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<std::vector<float> >(tree,"constituent_e",      m_constituent_e     );
   }
 
+  if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT || m_infoSwitch.m_flavorTagTLA ) {
+    setBranch<int>(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
+    setBranch<int>(tree,"HadronConeExclExtendedTruthLabelID", m_HadronConeExclExtendedTruthLabelID);
+  }
+
   if( m_infoSwitch.m_flavorTag  || m_infoSwitch.m_flavorTagHLT  ) {
 
     setBranch<float>(tree,"DL1r",    m_DL1r);
@@ -1794,9 +1954,19 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"GN1_pu", m_GN1_pu);
     setBranch<float>(tree,"GN1_pc", m_GN1_pc);
     setBranch<float>(tree,"GN1_pb", m_GN1_pb);
-
-    setBranch<int  >(tree,"HadronConeExclTruthLabelID", m_HadronConeExclTruthLabelID);
-    setBranch<int  >(tree,"HadronConeExclExtendedTruthLabelID", m_HadronConeExclExtendedTruthLabelID);
+    setBranch<float>(tree,"GN2v00LegacyWP",    m_GN2v00LegacyWP);
+    setBranch<float>(tree,"GN2v00LegacyWP_pu", m_GN2v00LegacyWP_pu);
+    setBranch<float>(tree,"GN2v00LegacyWP_pc", m_GN2v00LegacyWP_pc);
+    setBranch<float>(tree,"GN2v00LegacyWP_pb", m_GN2v00LegacyWP_pb);
+    setBranch<float>(tree,"GN2v00NewAliasWP",    m_GN2v00NewAliasWP);
+    setBranch<float>(tree,"GN2v00NewAliasWP_pu", m_GN2v00NewAliasWP_pu);
+    setBranch<float>(tree,"GN2v00NewAliasWP_pc", m_GN2v00NewAliasWP_pc);
+    setBranch<float>(tree,"GN2v00NewAliasWP_pb", m_GN2v00NewAliasWP_pb);
+    setBranch<float>(tree,"GN2v01",    m_GN2v01);
+    setBranch<float>(tree,"GN2v01_pu", m_GN2v01_pu);
+    setBranch<float>(tree,"GN2v01_pc", m_GN2v01_pc);
+    setBranch<float>(tree,"GN2v01_pb", m_GN2v01_pb);
+    setBranch<float>(tree,"GN2v01_ptau", m_GN2v01_ptau);
 
     if( m_infoSwitch.m_jetFitterDetails){
 
@@ -1905,6 +2075,13 @@ void JetContainer::setBranches(TTree *tree)
     setBranch<float>(tree,"vtx_online_bkg_y0"  ,m_vtx_online_bkg_y0     );
     setBranch<float>(tree,"vtx_online_bkg_z0"  ,m_vtx_online_bkg_z0     );
 
+  }
+
+  if( m_infoSwitch.m_flavorTagTLA ) {
+    setBranch<float>(tree,"fastDIPS",    m_fastDIPS);
+    setBranch<float>(tree,"fastDIPS_pu", m_fastDIPS_pu);
+    setBranch<float>(tree,"fastDIPS_pc", m_fastDIPS_pc);
+    setBranch<float>(tree,"fastDIPS_pb", m_fastDIPS_pb);
   }
 
   if( !m_infoSwitch.m_jetBTag.empty() || !m_infoSwitch.m_jetBTagCts.empty() ) {
@@ -2216,6 +2393,11 @@ void JetContainer::clear()
     m_constituent_e      ->clear();
   }
 
+  if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT || m_infoSwitch.m_flavorTagTLA ) {
+    m_HadronConeExclTruthLabelID        ->clear();
+    m_HadronConeExclExtendedTruthLabelID->clear();
+  }
+
   // flavor tag
   if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT  ) {
 
@@ -2235,9 +2417,19 @@ void JetContainer::clear()
     m_GN1_pu                            ->clear();
     m_GN1_pc                            ->clear();
     m_GN1_pb                            ->clear();
-    m_HadronConeExclTruthLabelID        ->clear();
-    m_HadronConeExclExtendedTruthLabelID->clear();
-
+    m_GN2v00LegacyWP                    ->clear();
+    m_GN2v00LegacyWP_pu                 ->clear();
+    m_GN2v00LegacyWP_pc                 ->clear();
+    m_GN2v00LegacyWP_pb                 ->clear();
+    m_GN2v00NewAliasWP                  ->clear();
+    m_GN2v00NewAliasWP_pu               ->clear();
+    m_GN2v00NewAliasWP_pc               ->clear();
+    m_GN2v00NewAliasWP_pb               ->clear();
+    m_GN2v01                            ->clear();
+    m_GN2v01_pu                         ->clear();
+    m_GN2v01_pc                         ->clear();
+    m_GN2v01_pb                         ->clear();
+    m_GN2v01_ptau                       ->clear();
 
     if( m_infoSwitch.m_jetFitterDetails){
       m_JetFitter_nVTX             ->clear();
@@ -2341,6 +2533,12 @@ void JetContainer::clear()
 
   }
 
+  if ( m_infoSwitch.m_flavorTagTLA  ) {
+    m_fastDIPS    ->clear();
+    m_fastDIPS_pu ->clear();
+    m_fastDIPS_pc ->clear();
+    m_fastDIPS_pb ->clear();
+  }
 
   if( !m_infoSwitch.m_jetBTag.empty() || !m_infoSwitch.m_jetBTagCts.empty()) { // just clear them all....
     for(auto btag : m_btags)
@@ -3094,6 +3292,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_constituent_e->  push_back( e   );
   }
 
+
+  if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT || m_infoSwitch.m_flavorTagTLA ) {
+    // flavor groups truth definition
+    static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
+    safeFill<int, int, xAOD::Jet>(jet, hadConeExclTruthLabel, m_HadronConeExclTruthLabelID, -999);
+
+    static SG::AuxElement::ConstAccessor<int> hadConeExclExtendedTruthLabel("HadronConeExclExtendedTruthLabelID");
+    safeFill<int, int, xAOD::Jet>(jet, hadConeExclExtendedTruthLabel, m_HadronConeExclExtendedTruthLabelID, -999);
+  }
+
   if ( m_infoSwitch.m_flavorTag || m_infoSwitch.m_flavorTagHLT ) {
     const xAOD::BTagging * myBTag(0);
 
@@ -3108,7 +3316,7 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
       safeFill<double, double, xAOD::BTagging>(myBTag, JetVertexCharge_discriminant, m_JetVertexCharge_discriminant, -999);
     }
 
-    float pu, pb, pc, score;
+    float pu, pb, pc, ptau, score;
 
     pu=0; pb=0; pc=0;
     myBTag->variable<float>("DL1r" , "pu", pu);
@@ -3153,13 +3361,40 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_GN1_pb->push_back(pb);
     m_GN1->push_back( score );
 
+    pu=0; pb=0; pc=0;
+    myBTag->variable<float>("GN2v00LegacyWP" , "pu", pu);
+    myBTag->variable<float>("GN2v00LegacyWP" , "pc", pc);
+    myBTag->variable<float>("GN2v00LegacyWP" , "pb", pb);
+    //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
+    score=log( pb / (0.10*pc+0.90*pu) ); // GN2 uses a different f_c value than DL1d which is 0.01
+    m_GN2v00LegacyWP_pu->push_back(pu);
+    m_GN2v00LegacyWP_pc->push_back(pc);
+    m_GN2v00LegacyWP_pb->push_back(pb);
+    m_GN2v00LegacyWP->push_back( score );
+    
+    pu=0; pb=0; pc=0;
+    myBTag->variable<float>("GN2v00NewAliasWP" , "pu", pu);
+    myBTag->variable<float>("GN2v00NewAliasWP" , "pc", pc);
+    myBTag->variable<float>("GN2v00NewAliasWP" , "pb", pb);
+    //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
+    score=log( pb / (0.10*pc+0.90*pu) ); // GN2 uses a different f_c value than DL1d which is 0.01
+    m_GN2v00NewAliasWP_pu->push_back(pu);
+    m_GN2v00NewAliasWP_pc->push_back(pc);
+    m_GN2v00NewAliasWP_pb->push_back(pb);
+    m_GN2v00NewAliasWP->push_back( score );
 
-    // flavor groups truth definition
-    static SG::AuxElement::ConstAccessor<int> hadConeExclTruthLabel("HadronConeExclTruthLabelID");
-    safeFill<int, int, xAOD::Jet>(jet, hadConeExclTruthLabel, m_HadronConeExclTruthLabelID, -999);
-
-    static SG::AuxElement::ConstAccessor<int> hadConeExclExtendedTruthLabel("HadronConeExclExtendedTruthLabelID");
-    safeFill<int, int, xAOD::Jet>(jet, hadConeExclExtendedTruthLabel, m_HadronConeExclExtendedTruthLabelID, -999);
+    pu=0; pb=0; pc=0; ptau=0;
+    myBTag->variable<float>("GN2v01" , "pu", pu);
+    myBTag->variable<float>("GN2v01" , "pc", pc);
+    myBTag->variable<float>("GN2v01" , "pb", pb);
+    myBTag->variable<float>("GN2v01" , "ptau", ptau);
+    //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
+    score=log( pb / (0.20*pc+0.01*ptau+0.79*pu) ); // GN2v01 uses a different f_c value than DL1dv01 which is 0.018
+    m_GN2v01_pu->push_back(pu);
+    m_GN2v01_pc->push_back(pc);
+    m_GN2v01_pb->push_back(pb);
+    m_GN2v01_ptau->push_back(ptau);
+    m_GN2v01->push_back( score );
 
     if(m_infoSwitch.m_jetFitterDetails ) {
 
@@ -3460,6 +3695,23 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     if(m_debug) std::cout << "Done m_flavorTagHLT " << std::endl;
   }
 
+  if (m_infoSwitch.m_flavorTagTLA){
+    if(m_debug) std::cout << "Filling m_flavorTagHLT " << std::endl;
+  
+    float  pu=0, pb=0, pc=0, score=0;
+    pu = jet->auxdata<float>( "fastDIPS20211215_pu" );
+    pc = jet->auxdata<float>( "fastDIPS20211215_pc" );
+    pb = jet->auxdata<float>( "fastDIPS20211215_pb" );
+    //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
+    score=log( pb / (0.018*pc+0.982*pu) );
+  
+    m_fastDIPS_pu->push_back( pu );
+    m_fastDIPS_pc->push_back( pc );
+    m_fastDIPS_pb->push_back( pb );
+    m_fastDIPS->push_back( score );
+
+    if(m_debug) std::cout << "Done m_flavorTagTLA " << std::endl;
+  }
 
   if( !m_infoSwitch.m_jetBTag.empty() || !m_infoSwitch.m_jetBTagCts.empty() ) {
     for(auto btag : m_btags)

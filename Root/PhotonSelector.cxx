@@ -135,6 +135,7 @@ EL::StatusCode PhotonSelector :: initialize ()
     m_ph_cutflow_author_cut      = m_ph_cutflowHist_1->GetXaxis()->FindBin("author_cut");
     m_ph_cutflow_OQ_cut          = m_ph_cutflowHist_1->GetXaxis()->FindBin("OQ_cut");
     m_ph_cutflow_PID_cut         = m_ph_cutflowHist_1->GetXaxis()->FindBin("PID_cut");
+    m_ph_cutflow_deadHVCell_cut  = m_ph_cutflowHist_1->GetXaxis()->FindBin("deadHVCell_cut");
     m_ph_cutflow_ptmax_cut       = m_ph_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_ph_cutflow_ptmin_cut       = m_ph_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
     m_ph_cutflow_eta_cut         = m_ph_cutflowHist_1->GetXaxis()->FindBin("eta_cut"); // including crack veto, if applied
@@ -192,6 +193,18 @@ EL::StatusCode PhotonSelector :: initialize ()
   }
 
   // **********************************************************************************************
+
+  // Set up the dead HV Removal Tool
+  if (m_applyDeadHVCellVeto) {
+    m_deadHVTool.setTypeAndName("AsgDeadHVCellRemovalTool/deadHVTool");
+    if (m_deadHVTool.retrieve().isFailure()){
+      ANA_MSG_ERROR("Failed to retrieve DeadHVTool, aborting");
+      return StatusCode::FAILURE;
+    }
+  }
+  else {
+      ANA_MSG_WARNING("Not applying veto of dead HV cells on photons although it's recommended - please double check!");
+  }
 
   ANA_MSG_INFO( "PhotonSelector Interface succesfully initialized!" );
 
@@ -455,6 +468,18 @@ bool PhotonSelector :: passCuts( const xAOD::Photon* photon )
     }
   }
   if(m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_PID_cut, 1 );
+
+  // *********************************************************************************************************************************************************************
+  //
+  // Dead HV Cell veto (affects only 2016 data)
+  //
+  if ( m_applyDeadHVCellVeto ) {
+    if( !m_deadHVTool->accept(photon) ){
+      ANA_MSG_DEBUG( "Photon failed dead HV cell veto." );
+      return 0;
+    }
+  }
+  if (m_useCutFlow) m_ph_cutflowHist_1->Fill( m_ph_cutflow_deadHVCell_cut, 1 );
 
   // *********************************************************************************************************************************************************************
   //

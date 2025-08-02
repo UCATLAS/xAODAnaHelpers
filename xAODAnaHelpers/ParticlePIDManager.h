@@ -63,6 +63,11 @@ class ElectronLHPIDManager
     AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Medium;
     AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_Tight;
 
+    AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_VeryLooseLLP;
+    AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_LooseLLP;
+    AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_MediumLLP;
+    AsgElectronLikelihoodTool*  m_asgElectronLikelihoodTool_TightLLP;
+
 };
 
 class ElectronCutBasedPIDManager

@@ -48,6 +48,11 @@
 class BasicEventSelection : public xAH::Algorithm
 {
   public:
+
+  // Dijet+ISR TLA specific options
+    /// @brief Flag to determine when running on TLA data for different handling of TDT
+    bool m_isTLAData = false;
+
   // Sample type settings
     /// @brief Protection when running on truth xAOD
     bool m_truthLevelOnly = false;
@@ -88,12 +93,34 @@ class BasicEventSelection : public xAH::Algorithm
     std::string m_PRWFileNames = "";
     /// @brief Automatically configure PRW using config files from SUSYTools instead of using m_PRWFileNames.
     bool m_autoconfigPRW = false;
+    /// @brief Configure PRW using common files instead of DSID-specific files.
+    bool m_useCommonPRWFiles = false;
     /// @brief actualMu configuration file for the MC16a campaign (2015/2016). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2016File = "";
     /// @brief actualMu configuration file for the MC16d campaign (2017). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2017File = "";
     /// @brief actualMu configuration file for the MC16e campaign (2018). Added to the PRW tool when using PRW autoconfiguration.
     std::string m_prwActualMu2018File = "";
+    /// @brief actualMu configuration file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2022File = "";
+    /// @brief actualMu configuration file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2023File = "";
+    /// @brief actualMu configuration file for the MC23e campaign (2024). Added to the PRW tool when using PRW autoconfiguration.
+    std::string m_prwActualMu2024File = "";
+    /// @brief Common PRW file for the MC20a campaign (2015/16). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC20a = "PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC20d campaign (2017). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC20d = "PileupReweighting/mc20_common/mc20d.300000.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC20e campaign (2018). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC20e = "PileupReweighting/mc20_common/mc20e.310000.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23a = "PileupReweighting/mc23_common/mc23a.410000.physlite.prw.v2.root";
+    /// @brief Common PRW file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23c = "PileupReweighting/mc23_common/mc23c.450000.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23d = "PileupReweighting/mc23_common/mc23d.450000.physlite.prw.v1.root";
+    /// @brief Common PRW file for the MC23e campaign (2024). Added to the PRW tool when using PRW autoconfiguration with common PRW files option.
+    std::string m_commonPRWFileMC23e = "PileupReweighting/mc23_common/mc23e.470000.physlite.prw.v1.root";
     /**
       @rst
       mc16(acd) to bypass the automatic campaign determination from AMI, several campaigns can be separated by a comma. Only used
@@ -195,9 +222,12 @@ class BasicEventSelection : public xAH::Algorithm
     /** Check for duplicated events in MC */
     bool m_checkDuplicatesMC = false;
 
+    // determines whether to add additional debugging histograms on data
+    bool m_doRunByRunCutflows = false;
+
   private:
 
-    std::set<std::pair<uint32_t,uint32_t> > m_RunNr_VS_EvtNr; //!
+    std::set<std::pair<int, Long64_t> > m_RunNr_VS_EvtNr; //!
     // trigger unprescale chains
     std::vector<std::string> m_triggerUnprescaleList; //!
     // decisions of triggers which are saved but not cut on, converted into a list
@@ -240,6 +270,10 @@ class BasicEventSelection : public xAH::Algorithm
     int m_cutflow_isbadbatman; //!
     int m_cutflow_npv;        //!
     int m_cutflow_trigger;    //!
+
+    // extra run-by-run event count cutflow
+    TH1D* m_runByrun_beforeCuts = nullptr; //!
+    TH1D* m_runByrun_afterCuts  = nullptr; //!
 
     // object cutflow
     TH1D* m_el_cutflowHist_1 = nullptr;    //!

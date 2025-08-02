@@ -23,6 +23,7 @@
 #include "PileupReweighting/PileupReweightingTool.h"
 #include "TauAnalysisTools/TauEfficiencyCorrectionsTool.h"
 #include "TauAnalysisTools/ITauEfficiencyCorrectionsTool.h"
+#include "TauAnalysisTools/ITauSelectionTool.h"
 
 class TauEfficiencyCorrector : public xAH::Algorithm
 {

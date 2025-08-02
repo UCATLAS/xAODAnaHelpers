@@ -24,7 +24,6 @@
 #include "xAODAnaHelpers/HelperFunctions.h"
 
 // external tools include(s):
-#include "JetJvtEfficiency/JetJvtEfficiency.h"
 #include "JetMomentTools/JetForwardJvtTool.h"
 #include "xAODBTaggingEfficiency/BTaggingSelectionTool.h"
 #include "TriggerMatchingTool/MatchingTool.h"
@@ -234,35 +233,68 @@ EL::StatusCode JetSelector :: initialize ()
 
   }
 
-  //init fJVT
-  if (m_dofJVT) {
-    // initialize the CP::JetJvtEfficiency Tool for fJVT
-    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_fJVT_eff_tool_handle, CP::JetJvtEfficiency));
-    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("WorkingPoint", m_WorkingPointfJVT ));
-    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("TaggingAlg", CP::JvtTagger::fJvt ));
-    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("SFFile",       m_SFFilefJVT ));
-    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("ScaleFactorDecorationName", "fJVTSF"));
-    ANA_CHECK( m_fJVT_eff_tool_handle.setProperty("OutputLevel",  msg().level()));
-    ANA_CHECK( m_fJVT_eff_tool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_fJVT_eff_tool_handle);
+  // initialize the JetPileupLabelingTool to (re-)evaluate decorators using in Jvt efficiency tools
+  if ( m_doTruthJetTagging ) {
+    m_jetPileupLabelingTool.setTypeAndName("JetPileupLabelingTool/PileupLabelingTool");
+    ATH_CHECK( m_jetPileupLabelingTool.setProperty("RecoJetContainer", m_outContainerName) );
+    ATH_CHECK( m_jetPileupLabelingTool.setProperty("TruthJetContainer", m_truthJetContainer) );
+  #ifndef XAOD_STANDALONE
+    ATH_CHECK( m_jetPileupLabelingTool.setProperty("SuppressInputDependence", true) );
+    ATH_CHECK( m_jetPileupLabelingTool.setProperty("SuppressOutputDependence", true) );
+  #endif
+    ATH_CHECK( m_jetPileupLabelingTool.setProperty("OutputLevel", msg().level()) );
+    ATH_CHECK( m_jetPileupLabelingTool.retrieve() );
+    ANA_MSG_DEBUG("Retrieved tool: " << m_jetPileupLabelingTool);
+  }
+
+  // initialize CP tools related to NNJvt
+  if (m_doJVT) {
+
+    // initialize jet NNJvt moment tool
+    m_jetNNJvtMomentTool.setTypeAndName("JetPileupTag::JetVertexNNTagger/NNJvtMomentTool");
+    ATH_CHECK( m_jetNNJvtMomentTool.setProperty("JetContainer", m_outContainerName) );
+  #ifndef XAOD_STANDALONE
+    ATH_CHECK( m_jetNNJvtMomentTool.setProperty("SuppressInputDependence", true) );
+    ATH_CHECK( m_jetNNJvtMomentTool.setProperty("SuppressOutputDependence", true) );
+  #endif
+    ATH_CHECK( m_jetNNJvtMomentTool.setProperty("OutputLevel", msg().level()) );
+    ATH_CHECK( m_jetNNJvtMomentTool.retrieve() );
+    ANA_MSG_DEBUG("Retrieved tool: " << m_jetNNJvtMomentTool);
+
+    // initialize jet NNJvt selection tool
+    m_jetNNJvtSelectionTool.setTypeAndName("CP::NNJvtSelectionTool/NNJvtSelectionTool");
+    ATH_CHECK( m_jetNNJvtSelectionTool.setProperty("JetContainer", m_outContainerName) );
+    ATH_CHECK( m_jetNNJvtSelectionTool.setProperty("WorkingPoint", m_WorkingPointJVT) );
+    ATH_CHECK( m_jetNNJvtSelectionTool.setProperty("OutputLevel", msg().level()) );
+    ATH_CHECK( m_jetNNJvtSelectionTool.retrieve() );
+    ANA_MSG_DEBUG("Retrieved tool: " << m_jetNNJvtSelectionTool);
+
+    // initialize jet NNJvt efficiency tool (scale factors)
+    m_jetNNJvtEfficiencyTool.setTypeAndName("CP::NNJvtEfficiencyTool/NNJvtEfficiencyTool");
+    ATH_CHECK( m_jetNNJvtEfficiencyTool.setProperty("JetContainer", m_outContainerName) );
+    ATH_CHECK( m_jetNNJvtEfficiencyTool.setProperty("WorkingPoint", m_WorkingPointJVT) );
+    ATH_CHECK( m_jetNNJvtEfficiencyTool.setProperty("SFFile", m_SFFileJVT) );
+    ATH_CHECK( m_jetNNJvtEfficiencyTool.setProperty("OutputLevel", msg().level()) );
+    ATH_CHECK( m_jetNNJvtEfficiencyTool.retrieve() );
+    ANA_MSG_DEBUG("Retrieved tool: " << m_jetNNJvtEfficiencyTool);
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
-    m_outputSystNamesfJVT = m_outputSystNamesfJVT + "_fJVT_" + m_WorkingPointfJVT;
+    m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
     //  Create a passed label for JVT cut
-    m_outputfJVTPassed = m_outputfJVTPassed + "_" + m_WorkingPointfJVT;
+    m_outputJVTPassed = m_outputJVTPassed + "_" + m_WorkingPointJVT;
 
-    CP::SystematicSet affectSystsfJVT = m_fJVT_eff_tool_handle->affectingSystematics();
-    for ( const auto& syst_it : affectSystsfJVT ) { ANA_MSG_DEBUG("JetJvtEfficiency tool can be affected by fJVT efficiency systematic: " << syst_it.name()); }
+    CP::SystematicSet affectSystsJVT = m_jetNNJvtEfficiencyTool->affectingSystematics();
+    for ( const auto& syst_it : affectSystsJVT ) { ANA_MSG_DEBUG("NNJvtEfficiencyTool can be affected by NNJvt efficiency systematic: " << syst_it.name()); }
 
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
 
-    const CP::SystematicSet recSystsfJVT = m_fJVT_eff_tool_handle->recommendedSystematics();
-    m_systListfJVT = HelperFunctions::getListofSystematics( recSystsfJVT, m_systNamefJVT, m_systValfJVT, msg() );
+    const CP::SystematicSet recSystsJVT = m_jetNNJvtEfficiencyTool->recommendedSystematics();
+    m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, msg() );
 
-    ANA_MSG_INFO("Will be using JetJvtEfficiency tool fJVT efficiency systematic:");
-    for ( const auto& syst_it : m_systListfJVT ) {
-      if ( m_systNamefJVT.empty() ) {
+    ANA_MSG_INFO("Will be using NNJvtEfficiencyTool tool JVT efficiency systematic:");
+    for ( const auto& syst_it : m_systListJVT ) {
+      if ( m_systNameJVT.empty() ) {
         ANA_MSG_INFO("\t Running w/ nominal configuration only!");
         break;
       }
@@ -270,33 +302,44 @@ EL::StatusCode JetSelector :: initialize ()
     }
   }
 
-  // initialize the CP::JetJvtEfficiency Tool for JVT
-  if (m_doJVT) {
-    ANA_CHECK( ASG_MAKE_ANA_TOOL(m_JVT_tool_handle, CP::JetJvtEfficiency));
-    ANA_CHECK( m_JVT_tool_handle.setProperty("WorkingPoint", m_WorkingPointJVT ));
-    ANA_CHECK( m_JVT_tool_handle.setProperty("TaggingAlg", m_JvtTaggingAlg ));
-    ANA_CHECK( m_JVT_tool_handle.setProperty("SFFile",       m_SFFileJVT ));
-    ANA_CHECK( m_JVT_tool_handle.setProperty("OutputLevel",  msg().level()));
-    ANA_CHECK( m_JVT_tool_handle.retrieve());
-    ANA_MSG_DEBUG("Retrieved tool: " << m_JVT_tool_handle);
+  // initialize CP tools related to fJvt
+  if (m_dofJVT) {
+
+    // initialize jet fJvt selection tool
+    m_jetfJvtSelectionTool.setTypeAndName("CP::FJvtSelectionTool/fJvtSelectionTool");
+    ATH_CHECK( m_jetfJvtSelectionTool.setProperty("JetContainer", m_outContainerName) );
+    ATH_CHECK( m_jetfJvtSelectionTool.setProperty("WorkingPoint", m_WorkingPointfJVT) );
+    ATH_CHECK( m_jetfJvtSelectionTool.setProperty("JvtMomentName", "DFCommonJets_fJvt") );
+    ATH_CHECK( m_jetfJvtSelectionTool.setProperty("OutputLevel", msg().level()) );
+    ATH_CHECK( m_jetfJvtSelectionTool.retrieve() );
+    ANA_MSG_DEBUG("Retrieved tool: " << m_jetfJvtSelectionTool);
+
+    // initialize jet fJvt efficiency tool (scale factors)
+    m_jetfJvtEfficiencyTool.setTypeAndName("CP::FJvtEfficiencyTool/fJvtEfficiencyTool");
+    ATH_CHECK( m_jetfJvtEfficiencyTool.setProperty("JetContainer", m_outContainerName) );
+    ATH_CHECK( m_jetfJvtEfficiencyTool.setProperty("WorkingPoint", m_WorkingPointfJVT) );
+    ATH_CHECK( m_jetfJvtEfficiencyTool.setProperty("SFFile", m_SFFilefJVT) );
+    ATH_CHECK( m_jetfJvtEfficiencyTool.setProperty("OutputLevel", msg().level()) );
+    ATH_CHECK( m_jetfJvtEfficiencyTool.retrieve() );
+    ANA_MSG_DEBUG("Retrieved tool: " << m_jetfJvtEfficiencyTool);
 
     //  Add the chosen WP to the string labelling the vector<SF> decoration
-    m_outputSystNamesJVT = m_outputSystNamesJVT + "_JVT_" + m_WorkingPointJVT;
+    m_outputSystNamesfJVT = m_outputSystNamesfJVT + "_fJVT_" + m_WorkingPointfJVT;
     //  Create a passed label for JVT cut
-    m_outputJVTPassed = m_outputJVTPassed + "_" + m_WorkingPointJVT;
+    m_outputfJVTPassed = m_outputfJVTPassed + "_" + m_WorkingPointfJVT;
 
-    CP::SystematicSet affectSystsJVT = m_JVT_tool_handle->affectingSystematics();
-    for ( const auto& syst_it : affectSystsJVT ) { ANA_MSG_DEBUG("JetJvtEfficiency tool can be affected by JVT efficiency systematic: " << syst_it.name()); }
+    CP::SystematicSet affectSystsfJVT = m_jetfJvtEfficiencyTool->affectingSystematics();
+    for ( const auto& syst_it : affectSystsfJVT ) { ANA_MSG_DEBUG("FJvtSelectionTool can be affected by fJVT efficiency systematic: " << syst_it.name()); }
 
     // Make a list of systematics to be used, based on configuration input
     // Use HelperFunctions::getListofSystematics() for this!
 
-    const CP::SystematicSet recSystsJVT = m_JVT_tool_handle->recommendedSystematics();
-    m_systListJVT = HelperFunctions::getListofSystematics( recSystsJVT, m_systNameJVT, m_systValJVT, msg() );
+    const CP::SystematicSet recSystsfJVT = m_jetfJvtEfficiencyTool->recommendedSystematics();
+    m_systListfJVT = HelperFunctions::getListofSystematics( recSystsfJVT, m_systNamefJVT, m_systValfJVT, msg() );
 
-    ANA_MSG_INFO("Will be using JetJvtEfficiency tool JVT efficiency systematic:");
-    for ( const auto& syst_it : m_systListJVT ) {
-      if ( m_systNameJVT.empty() ) {
+    ANA_MSG_INFO("Will be using FJvtEfficiencyTool tool fJvt efficiency systematic:");
+    for ( const auto& syst_it : m_systListfJVT ) {
+      if ( m_systNamefJVT.empty() ) {
         ANA_MSG_INFO("\t Running w/ nominal configuration only!");
         break;
       }
@@ -454,22 +497,6 @@ EL::StatusCode JetSelector :: execute ()
     // this will be the collection processed - no matter what!!
     ANA_CHECK( HelperFunctions::retrieve(inJets, m_inContainerName, m_event, m_store, msg()) );
 
-    // decorate inJets with truth info
-    if ( isMC() && m_doJVT && m_haveTruthJets ) {
-      static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
-      static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
-      for(const auto& jet : *inJets) {
-        bool ishs = false;
-        bool ispu = true;
-        for(const auto& tjet : *truthJets) {
-          if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
-          if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
-        }
-        isHS(*jet)=ishs;
-        isPU(*jet)=ispu;
-      }
-    }
-
     // Check against pile-up only jets:
     if ( isMC() && m_doMCCleaning && m_haveTruthJets ){
       float pTAvg = (inJets->size() > 0) ? inJets->at(0)->pt() : 0;
@@ -502,22 +529,6 @@ EL::StatusCode JetSelector :: execute ()
         if ( inJets->size() > 1 ) pTAvg = ( inJets->at(0)->pt() + inJets->at(1)->pt() ) / 2.0;
         if( truthJets->size() == 0 || ( pTAvg / truthJets->at(0)->pt() ) > m_mcCleaningCut ) {
           passMCcleaning = false;
-        }
-      }
-
-      // decorate inJets with truth info
-      if ( isMC() && (m_doJVT || m_dofJVT) && m_haveTruthJets ) {
-        static SG::AuxElement::Decorator<char>  isHS("isJvtHS");
-        static SG::AuxElement::Decorator<char>  isPU("isJvtPU");
-        for(const auto& jet : *inJets) {
-          bool ishs = false;
-          bool ispu = true;
-          for(const auto& tjet : *truthJets) {
-            if (tjet->p4().DeltaR(jet->p4())<0.3 && tjet->pt()>10e3) ishs = true;
-            if (tjet->p4().DeltaR(jet->p4())<0.6) ispu = false;
-          }
-          isHS(*jet)=ishs;
-          isPU(*jet)=ispu;
         }
       }
 
@@ -636,12 +647,18 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       m_count_events_with_duplicates++;
   }
 
+  // add isHS labels to jets (required for Jvt efficiency tools)
+  if (m_doTruthJetTagging && isMC()) {
+    ATH_CHECK(m_jetPileupLabelingTool->decorate(*inJets));
+  }
+
   // recalculate the NNJvt scores and decisions
   if (m_doJVT && m_recalculateJvtScores) {
-    ANA_CHECK(m_JVT_tool_handle->recalculateScores(*inJets));
+    ATH_CHECK(m_jetNNJvtMomentTool->decorate(*inJets));
   }
 
   i_jet = 0;
+
   for ( auto jet_itr : *inJets ) { // duplicated of basic loop
 
     // removing of duplicates
@@ -701,6 +718,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
     }
   }
 
+  // decorator with flag if it is a hard-scatter jet
+  static const SG::AuxElement::Decorator<char> isJvtHS("isJvtHS");
+
   // Loop over selected jets and decorate with JVT efficiency SF
   // Do it only for MC
   //
@@ -714,7 +734,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Do it only if a tool with *this* name hasn't already been used
     //
-    if ( m_JVT_tool_handle.isInitialized() && !m_jvtUsedBefore) {
+    if ( m_jetNNJvtSelectionTool.isInitialized() && !m_jvtUsedBefore) {
       //
       //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
       //
@@ -745,8 +765,8 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
 	  // apply syst
 
-	  if ( m_JVT_tool_handle->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
-	    ANA_MSG_ERROR( "Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
+	  if ( m_jetNNJvtEfficiencyTool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS ) {
+	    ANA_MSG_ERROR( "Failed to configure CP::NNJvtEfficiencyTool for systematic " << syst_it.name());
 	    return EL::StatusCode::FAILURE;
 	  }
 	  ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
@@ -757,37 +777,44 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
           // create passed JVT decorator
           static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
-
           if ( syst_it.name().empty() ) {
             passedJVT( *jet ) = 1; // passes by default
           }
-
           // obtain JVT SF as a float (to be stored away separately)
           float jvtSF(1.0);
-          if ( m_JVT_tool_handle->isInRange(*jet) ) {
-            // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
-            if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
-              if ( syst_it.name().empty() ) {
-                passedJVT( *jet ) = 0; // mark as not passed
+          CP::CorrectionCode result_code;
+          // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
+          if ( m_noJVTVeto && !bool(m_jetNNJvtSelectionTool->accept(jet)) ) {
+            if ( syst_it.name().empty() ) {
+              passedJVT( *jet ) = 0; // mark as not passed
+            }
+            if ( m_getJVTSF ){
+              result_code = m_jetNNJvtEfficiencyTool->getInefficiencyScaleFactor( *jet, jvtSF );
+              if (result_code == CP::CorrectionCode::OutOfValidityRange) {
+                  jvtSF = 1;
+              } else if (result_code != CP::CorrectionCode::Ok and result_code != CP::CorrectionCode::OutOfValidityRange) {
+                  ANA_MSG_ERROR( "Error in JNNJvtEfficiencyTool getInefficiencyScaleFactor");
+                  return EL::StatusCode::FAILURE;
               }
-              if ( m_getJVTSF && m_JVT_tool_handle->getInefficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in JVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
-              }
-            } else { // otherwise classic efficiency scale factor
-              if ( syst_it.name().empty() ) {
-                passedJVT( *jet ) = 1;
-              }
-              if ( m_getJVTSF && m_JVT_tool_handle->getEfficiencyScaleFactor( *jet, jvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in JVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
+            }
+          } else { // otherwise classic efficiency scale factor
+            if ( syst_it.name().empty() ) {
+              passedJVT( *jet ) = 1;
+            }
+            if ( m_getJVTSF ){
+              result_code = m_jetNNJvtEfficiencyTool->getEfficiencyScaleFactor( *jet, jvtSF );
+              if (result_code == CP::CorrectionCode::OutOfValidityRange) {
+                  jvtSF = 1;
+              } else if (result_code != CP::CorrectionCode::Ok and result_code != CP::CorrectionCode::OutOfValidityRange) {
+                  ANA_MSG_ERROR( "Error in NNJvtEfficiencyTool getEfficiencyScaleFactor");
+                  return EL::StatusCode::FAILURE;
               }
             }
           }
-	  sfVecJVT.push_back(jvtSF);
+	      sfVecJVT.push_back(jvtSF);
 
           ANA_MSG_DEBUG( "===>>>");
-          ANA_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) );
+          ANA_MSG_DEBUG( "Jet " << idx << ", pt = " << jet->pt()*1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) << " isJvtHS " << bool(isJvtHS(*jet)) );
           ANA_MSG_DEBUG( "JVT SF decoration: " << m_outputSystNamesJVT );
           ANA_MSG_DEBUG( "Systematic: " << syst_it.name() );
           ANA_MSG_DEBUG( "JVT SF:");
@@ -816,12 +843,10 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       static const SG::AuxElement::Decorator<char> passedJVT( m_outputJVTPassed );
       passedJVT( *jet ) = 1; // passes by default
 
-      if ( m_JVT_tool_handle->isInRange(*jet) ) {
-        if ( m_noJVTVeto && !m_JVT_tool_handle->passesJvtCut(*jet) ) {
-          passedJVT( *jet ) = 0; // mark as not passed
-        } else {
-          passedJVT( *jet ) = 1;
-        }
+      if ( m_noJVTVeto && !bool(m_jetNNJvtSelectionTool->accept(jet)) ) {
+        passedJVT( *jet ) = 0; // mark as not passed
+      } else {
+        passedJVT( *jet ) = 1;
       }
     }
   }
@@ -835,7 +860,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
     // Do it only if a tool with *this* name hasn't already been used
     //
-    if (m_fJVT_eff_tool_handle.isInitialized() && !m_fjvtUsedBefore)
+    if (m_jetfJvtEfficiencyTool.isInitialized() && !m_fjvtUsedBefore)
     {
       //
       //  If SF decoration vector doesn't exist, create it (will be done only for the 1st systematic for *this* jet)
@@ -871,9 +896,9 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
 
           // apply syst
           //
-          if (m_fJVT_eff_tool_handle->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS)
+          if (m_jetfJvtEfficiencyTool->applySystematicVariation(syst_it) != EL::StatusCode::SUCCESS)
           {
-            ANA_MSG_ERROR("Failed to configure CP::JetJvtEfficiency for systematic " << syst_it.name());
+            ANA_MSG_ERROR("Failed to configure CP::FJvtEfficiencyTool for systematic " << syst_it.name());
             return EL::StatusCode::FAILURE;
           }
           ANA_MSG_DEBUG("Successfully applied systematic: " << syst_it.name());
@@ -885,28 +910,33 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
           static const SG::AuxElement::Decorator<char> passedfJVT(m_outputfJVTPassed);
           if (syst_it.name().empty())
           {
-            passedfJVT(*jet) = m_fJVT_eff_tool_handle->passesJvtCut(*jet);
+            passedfJVT(*jet) = bool(m_jetfJvtSelectionTool->accept(jet));
           }
 
           float fjvtSF(1.0);
-          if ( m_fJVT_eff_tool_handle->isInRange(*jet) ) {
-            // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
-            if ( !m_dofJVTVeto && !m_fJVT_eff_tool_handle->passesJvtCut(*jet)) {
-              if ( m_fJVT_eff_tool_handle->getInefficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in fJVT Tool getInefficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
-              }
-            } else { // otherwise classic efficiency scale factor
-              if ( m_fJVT_eff_tool_handle->getEfficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
-                ANA_MSG_ERROR( "Error in fJVT Tool getEfficiencyScaleFactor");
-                return EL::StatusCode::FAILURE;
-              }
+          CP::CorrectionCode result_code;
+          // If we do not enforce JVT veto and the jet hasn't passed the JVT cut, we need to calculate the inefficiency scale factor for it
+          if ( !m_dofJVTVeto && !bool(m_jetfJvtSelectionTool->accept(jet)) ) {
+            result_code = m_jetfJvtEfficiencyTool->getInefficiencyScaleFactor( *jet, fjvtSF );
+            if ( result_code == CP::CorrectionCode::OutOfValidityRange) {
+                fjvtSF = 1;
+            } else if ( result_code != CP::CorrectionCode::Ok ) {
+              ANA_MSG_ERROR( "Error in fJVT Tool getInefficiencyScaleFactor");
+              return EL::StatusCode::FAILURE;
+            }
+          } else { // otherwise classic efficiency scale factor
+            result_code = m_jetfJvtEfficiencyTool->getEfficiencyScaleFactor( *jet, fjvtSF );
+            if ( result_code == CP::CorrectionCode::OutOfValidityRange) {
+                fjvtSF = 1;
+            } else if ( m_jetfJvtEfficiencyTool->getEfficiencyScaleFactor( *jet, fjvtSF ) != CP::CorrectionCode::Ok ) {
+              ANA_MSG_ERROR( "Error in fJVT Tool getEfficiencyScaleFactor");
+              return EL::StatusCode::FAILURE;
             }
           }
           sfVecfJVT.push_back(fjvtSF);
 
           ANA_MSG_DEBUG("===>>>");
-          ANA_MSG_DEBUG("Jet " << idx << ", pt = " << jet->pt() * 1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()));
+          ANA_MSG_DEBUG("Jet " << idx << ", pt = " << jet->pt() * 1e-3 << " GeV, |eta| = " << std::fabs(jet->eta()) << " isJvtHS " << bool(isJvtHS(*jet)) );
           ANA_MSG_DEBUG("fJVT SF decoration: " << m_outputSystNamesfJVT);
           ANA_MSG_DEBUG("Systematic: " << syst_it.name());
           ANA_MSG_DEBUG("fJVT SF:");
@@ -938,7 +968,7 @@ bool JetSelector :: executeSelection ( const xAOD::JetContainer* inJets,
       {
         // create passed fJVT decorator
         static const SG::AuxElement::Decorator<char> passedfJVT(m_outputfJVTPassed);
-        passedfJVT(*jet) = m_fJVT_eff_tool_handle->passesJvtCut(*jet);
+        passedfJVT(*jet) = bool(m_jetfJvtSelectionTool->accept(jet));
       }
     }
   }
@@ -1265,7 +1295,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
   } // m_doJVF
 
   if(m_dofJVT){
-    if (!m_fJVT_eff_tool_handle->passesJvtCut(*jet)){
+    if (!bool(m_jetfJvtSelectionTool->accept(jet))){
       ANA_MSG_DEBUG("jet pt = "<<jetPt<<",eta = "<<jetEta<<",phi = "<<jetPhi);
       ANA_MSG_DEBUG("Failed forward JVT");
       if(m_dofJVTVeto)return 0;
@@ -1295,7 +1325,7 @@ int JetSelector :: PassCuts( const xAOD::Jet* jet ) {
         result = true;
       }
     } else {
-      result = m_JVT_tool_handle->passesJvtCut(*jet);
+      result = bool(m_jetNNJvtSelectionTool->accept(jet));
     }
 
     if(result) ANA_MSG_DEBUG(" ... jet passes Jvt cut");

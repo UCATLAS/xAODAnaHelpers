@@ -150,6 +150,7 @@ EL::StatusCode MuonSelector :: initialize ()
     m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_1->GetXaxis()->FindBin("eta_and_quality_cut");
     m_mu_cutflow_ptmax_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmax_cut");
     m_mu_cutflow_ptmin_cut            = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptmin_cut");
+    m_mu_cutflow_ptnan_check          = m_mu_cutflowHist_1->GetXaxis()->FindBin("ptNaN_check");
     m_mu_cutflow_type_cut             = m_mu_cutflowHist_1->GetXaxis()->FindBin("type_cut");
     m_mu_cutflow_z0sintheta_cut       = m_mu_cutflowHist_1->GetXaxis()->FindBin("z0sintheta_cut");
     m_mu_cutflow_d0_cut               = m_mu_cutflowHist_1->GetXaxis()->FindBin("d0_cut");
@@ -166,6 +167,7 @@ EL::StatusCode MuonSelector :: initialize ()
       m_mu_cutflow_eta_and_quaility_cut = m_mu_cutflowHist_2->GetXaxis()->FindBin("eta_and_quality_cut");
       m_mu_cutflow_ptmax_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmax_cut");
       m_mu_cutflow_ptmin_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptmin_cut");
+      m_mu_cutflow_ptnan_check   = m_mu_cutflowHist_2->GetXaxis()->FindBin("ptNaN_check");
       m_mu_cutflow_type_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("type_cut");
       m_mu_cutflow_z0sintheta_cut	 = m_mu_cutflowHist_2->GetXaxis()->FindBin("z0sintheta_cut");
       m_mu_cutflow_d0_cut		 = m_mu_cutflowHist_2->GetXaxis()->FindBin("d0_cut");
@@ -238,6 +240,9 @@ EL::StatusCode MuonSelector :: initialize ()
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "MuQuality", m_muonQuality ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "IsRun3Geo", m_isRun3Geo ));
   ANA_CHECK( m_muonSelectionTool_handle.setProperty( "OutputLevel", msg().level() ));
+  if (m_doLRT) {
+    ANA_CHECK( m_muonSelectionTool_handle.setProperty( "UseLRT", true ));
+  }
   ANA_CHECK( m_muonSelectionTool_handle.retrieve());
   ANA_MSG_DEBUG("Retrieved tool: " << m_muonSelectionTool_handle);
 
@@ -252,6 +257,7 @@ EL::StatusCode MuonSelector :: initialize ()
     ANA_MSG_DEBUG( "Adding isolation WP " << m_IsoKeys.at(0) << " to IsolationSelectionTool" );
     ANA_CHECK( m_isolationSelectionTool_handle.setProperty("MuonWP", (m_IsoKeys.at(0)).c_str()));
     ANA_CHECK( m_isolationSelectionTool_handle.setProperty("OutputLevel", msg().level() ));
+    if (m_isoDecSuffix!="") ANA_CHECK( m_isolationSelectionTool_handle.setProperty("IsoDecSuffix", m_isoDecSuffix) );
     ANA_CHECK( m_isolationSelectionTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_isolationSelectionTool_handle);
     m_isolationSelectionTool = dynamic_cast<CP::IsolationSelectionTool*>(m_isolationSelectionTool_handle.get() ); // see header file for why
@@ -795,30 +801,16 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   isMediumQDecor( *muon )    = ( this_quality <= static_cast<int>(xAOD::Muon::Medium) )    ? 1 : 0;
   isTightQDecor( *muon )     = ( this_quality <= static_cast<int>(xAOD::Muon::Tight) )     ? 1 : 0;
 
-  bool LRTdecorIsAvailable = false;
-  bool muonIsLRT = false;
-  bool AcceptPromptMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
+  bool acceptMuon = (bool)m_muonSelectionTool_handle->accept( *muon );
 
-  if ( m_doLRT ){
+  if ( m_doLRT ) {
     static SG::AuxElement::Decorator< char > passIDcuts("passIDcuts");
-    static SG::AuxElement::Accessor< char > isLRTmuon("isLRT");
-    passIDcuts( *muon ) = m_muonSelectionTool_handle->passedIDCuts( *muon ) ? 1 : 0;
-    LRTdecorIsAvailable = isLRTmuon.isAvailable(*muon);
-    muonIsLRT = isLRTmuon(*muon) > 0.5;
   }
 
   ANA_MSG_DEBUG( "Doing muon quality" );
-  if ( !m_doLRT ){
-    if( !AcceptPromptMuon ){
-      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
-      return 0;
-    }
-  }
-  else {
-    if ( (!LRTdecorIsAvailable && !AcceptPromptMuon) || (LRTdecorIsAvailable && !muonIsLRT && !AcceptPromptMuon) ) {
-      ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
-      return 0;
-    }
+  if ( !acceptMuon ) {
+    ANA_MSG_DEBUG( "Muon failed requirements of MuonSelectionTool.");
+    return 0;
   }
 
   if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_eta_and_quaility_cut, 1 );
@@ -850,6 +842,19 @@ int MuonSelector :: passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primar
   }
   if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptmin_cut, 1 );
   if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptmin_cut, 1 ); }
+
+  // *********************************************************************************************************************************************************************
+  //
+  // pT NaN check
+  //
+  if ( m_pT_NaNcheck ) {
+    if ( muon->pt() != muon->pt() ) {
+      ANA_MSG_DEBUG( "Muon failed pT NaN check.");
+      return 0;
+    }
+  }
+  if (!m_isUsedBefore && m_useCutFlow) m_mu_cutflowHist_1->Fill( m_mu_cutflow_ptnan_check, 1 );
+  if ( m_isUsedBefore && m_useCutFlow ) { m_mu_cutflowHist_2->Fill( m_mu_cutflow_ptnan_check, 1 ); }
 
   // *********************************************************************************************************************************************************************
   //

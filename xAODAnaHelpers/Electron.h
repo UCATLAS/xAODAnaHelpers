@@ -29,8 +29,16 @@ namespace xAH {
     float ptvarcone30;
     float ptvarcone40;
     float topoetcone20;
+    float ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500;
+    float ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000;
+    float ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500;
+    float ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000;
     float topoetcone30;
     float topoetcone40;
+    float neflowisol20;
+    float topoetcone20_CloseByCorr;
+    float ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr;
+    float ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr;
 
     // PID
     std::map< std::string, int > PID;

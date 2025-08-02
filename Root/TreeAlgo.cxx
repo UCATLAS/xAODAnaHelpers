@@ -28,8 +28,8 @@ EL::StatusCode TreeAlgo :: setupJob (EL::Job& job)
   job.useXAOD();
   xAOD::Init("TreeAlgo").ignore();
 
-  EL::OutputStream outForTree("tree");
-  job.outputAdd (outForTree);
+  EL::OutputStream outForTree(m_treeStreamName);
+  if(!job.outputHas(m_treeStreamName)) job.outputAdd (outForTree);
 
   return EL::StatusCode::SUCCESS;
 }
@@ -41,7 +41,7 @@ EL::StatusCode TreeAlgo :: initialize ()
   m_store = wk()->xaodStore();
 
   // get the file we created already
-  TFile* treeFile = wk()->getOutputFile ("tree");
+  TFile* treeFile = wk()->getOutputFile (m_treeStreamName);
   treeFile->mkdir(m_name.c_str());
   treeFile->cd(m_name.c_str());
 
@@ -293,7 +293,7 @@ EL::StatusCode TreeAlgo :: execute ()
     }
   }
 
-  TFile* treeFile = wk()->getOutputFile ("tree");
+  TFile* treeFile = wk()->getOutputFile (m_treeStreamName);
 
   // let's make the tdirectory and ttrees
   for(const auto& systName: event_systNames){

@@ -301,6 +301,7 @@ namespace HelperClasses {
     bool m_passOR;
 
     bool m_doLRT;
+    bool m_closeByCorr;
 
     bool m_recoEff_sysNames;
     bool m_isoEff_sysNames;
@@ -373,6 +374,7 @@ namespace HelperClasses {
     bool m_passSel;
     bool m_passOR;
     bool m_doLRT;
+    bool m_closeByCorr;
     ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
     virtual ~ElectronInfoSwitch() {}
   protected:
@@ -469,6 +471,7 @@ namespace HelperClasses {
         m_constituentAll constituentAll exact
         m_flavorTag      flavorTag      exact
         m_flavorTagHLT   flavorTagHLT   exact
+        m_flavorTagTLA   flavorTagTLA   exact
         m_sfFTagFix      sfFTagFix      partial
         m_sfFTagFlt      sfFTagFlt      partial
         m_sfFTagHyb      sfFTagHyb      partial
@@ -541,6 +544,7 @@ namespace HelperClasses {
     bool m_constituentAll;
     bool m_flavorTag;
     bool m_flavorTagHLT;
+    bool m_flavorTagTLA;
     bool m_btag_jettrk;
     bool m_jetFitterDetails;
     bool m_svDetails;

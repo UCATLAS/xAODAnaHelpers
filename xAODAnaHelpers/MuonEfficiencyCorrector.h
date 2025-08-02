@@ -83,6 +83,9 @@ public:
   std::string   m_outputSystNamesTrig = "MuonEfficiencyCorrector_TrigSyst";
   std::string   m_outputSystNamesTTVA = "MuonEfficiencyCorrector_TTVASyst";
 
+  /// @brief Turn on if using LRT muons
+  bool          m_doLRT = false;
+
 private:
   int m_numEvent;         //!
   int m_numObject;        //!

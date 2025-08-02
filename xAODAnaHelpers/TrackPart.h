@@ -14,27 +14,27 @@ namespace xAH {
     float d0;
     
     std::vector<float> definingParametersCovMatrix;
-    unsigned char expectInnermostPixelLayerHit;
-    unsigned char expectNextToInnermostPixelLayerHit;
+    char expectInnermostPixelLayerHit;
+    char expectNextToInnermostPixelLayerHit;
 
     float numberDoF;
 
-    unsigned char numberOfInnermostPixelLayerHits;
-    unsigned char numberOfNextToInnermostPixelLayerHits;
-    unsigned char numberOfPhiHoleLayers;
-    unsigned char numberOfPhiLayers;
-    unsigned char numberOfPixelDeadSensors;
-    unsigned char numberOfPixelHits;
-    unsigned char numberOfPixelHoles;
-    unsigned char numberOfPixelSharedHits;
-    unsigned char numberOfPrecisionHoleLayers;
-    unsigned char numberOfPrecisionLayers;
-    unsigned char numberOfSCTDeadSensors;
-    unsigned char numberOfSCTHits;
-    unsigned char numberOfSCTHoles;
-    unsigned char numberOfSCTSharedHits;
-    unsigned char numberOfTRTHits;
-    unsigned char numberOfTRTOutliers;
+    char numberOfInnermostPixelLayerHits;
+    char numberOfNextToInnermostPixelLayerHits;
+    char numberOfPhiHoleLayers;
+    char numberOfPhiLayers;
+    char numberOfPixelDeadSensors;
+    char numberOfPixelHits;
+    char numberOfPixelHoles;
+    char numberOfPixelSharedHits;
+    char numberOfPrecisionHoleLayers;
+    char numberOfPrecisionLayers;
+    char numberOfSCTDeadSensors;
+    char numberOfSCTHits;
+    char numberOfSCTHoles;
+    char numberOfSCTSharedHits;
+    char numberOfTRTHits;
+    char numberOfTRTOutliers;
 
     float phi;
     float qOverP;

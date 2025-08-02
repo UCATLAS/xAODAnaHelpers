@@ -64,6 +64,8 @@ public:
   float          m_pT_max = 1e8;
   /** require pT > pt_min */
   float          m_pT_min = 1e8;
+  /** check if pT is NaN */
+  bool          m_pT_NaNcheck = false;
   /** require quality */
   std::string    m_muonQualityStr = "Medium";
   /** @brief Switch on Run3 geometry for muon selector tool */
@@ -115,6 +117,8 @@ public:
   /** add LRT muon information */
   bool       	 m_doLRT = false;
 
+  std::string m_isoDecSuffix = "";
+
 private:
 
   int            m_muonQuality; //!
@@ -140,6 +144,7 @@ private:
   int   m_mu_cutflow_eta_and_quaility_cut;  //!
   int   m_mu_cutflow_ptmax_cut;  	    //!
   int   m_mu_cutflow_ptmin_cut;  	    //!
+  int   m_mu_cutflow_ptnan_check;  	    //!
   int   m_mu_cutflow_type_cut;		    //!
   int   m_mu_cutflow_z0sintheta_cut;	    //!
   int   m_mu_cutflow_d0_cut;		    //!

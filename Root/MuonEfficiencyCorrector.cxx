@@ -151,6 +151,9 @@ EL::StatusCode MuonEfficiencyCorrector :: initialize ()
     ANA_MSG_WARNING("Overriding muon efficiency calibration release to " << m_overrideCalibRelease);
     ANA_CHECK( m_muRecoSF_tool.setProperty("CalibrationRelease", m_overrideCalibRelease ));
   }
+  if (m_doLRT) {
+    ANA_CHECK( m_muRecoSF_tool.setProperty("UseLRT", true ));
+  }
   ANA_CHECK(m_muRecoSF_tool.retrieve());
   assert(m_muRecoSF_tool.isInitialized());
 
@@ -702,9 +705,13 @@ EL::StatusCode MuonEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* eve
     for (auto const& trig : m_SingleMuTriggerMap) {
 
       auto trig_it = trig.second;
+      // run numbers from MuonTriggerScaleFactors::getYear()
+      // https://gitlab.cern.ch/atlas/athena/-/blob/main/PhysicsAnalysis/MuonID/MuonIDAnalysis/MuonEfficiencyCorrections/Root/MuonTriggerScaleFactors.cxx
       if (trig.first.find("2015")!=std::string::npos && run>284484) continue;
-      else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos || trig.first.find("2018")!=std::string::npos) && (run<=284484 || run >400000) ) continue;
-      else if (trig.first.find("2022")!=std::string::npos && run< 400000) continue;
+      else if ((trig.first.find("2016")!=std::string::npos || trig.first.find("2017")!=std::string::npos || trig.first.find("2018")!=std::string::npos) && (run <= 284484 || run > 364292) ) continue;
+      else if (trig.first.find("2022")!=std::string::npos && (run <= 364292 || run > 440613) ) continue;
+      else if (trig.first.find("2023")!=std::string::npos && (run <= 440613 || run > 456749) ) continue;
+      else if (trig.first.find("2024")!=std::string::npos && run <= 456749 ) continue;
 
       std::unique_ptr< std::vector< std::string > > sysVariationNamesTrig = nullptr;
       if ( writeSystNames ) sysVariationNamesTrig = std::make_unique< std::vector< std::string > >();

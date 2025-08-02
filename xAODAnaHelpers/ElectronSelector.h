@@ -11,6 +11,7 @@
 // EDM include(s):
 #include "xAODEgamma/ElectronContainer.h"
 #include "xAODTracking/Vertex.h"
+#include "EgammaAnalysisInterfaces/IAsgDeadHVCellRemovalTool.h"
 
 // package include(s):
 #include "xAODAnaHelpers/ParticlePIDManager.h"
@@ -128,6 +129,8 @@ public:
   bool           m_doAuthorCut = true;
   /// @brief Perform object quality cut
   bool           m_doOQCut = true;
+  /// @brief Apply veto dead HV cells, affects only 2016 data
+  bool m_applyDeadHVCellVeto = false;
 
   ///// electron PID /////
 
@@ -189,13 +192,13 @@ public:
   /// Recommended threshold for egamma triggers: see https://svnweb.cern.ch/trac/atlasoff/browser/Trigger/TrigAnalysis/TriggerMatchingTool/trunk/src/TestMatchingToolAlg.cxx
   double         m_minDeltaR = 0.07;
 
-  /// @brief Apply fix to EGamma Crack-Electron topocluster association bug for MET (PFlow) / false by default
-  bool m_applyCrackVetoCleaning = false;
-
   /// @brief Element links need to be updated if merged electrons are used (LRT + std) / false by default
   bool           m_merged_electrons = false;
   /// @brief Input prefix of trigger decision tool
   std::string    m_trigInputPrefix = "";
+
+  std::string    m_isoDecSuffix = "";
+
 
 private:
 
@@ -245,6 +248,7 @@ private:
   int   m_el_cutflow_all;              //!
   int   m_el_cutflow_author_cut;       //!
   int   m_el_cutflow_OQ_cut;           //!
+  int   m_el_cutflow_deadHVCell_cut;   //!
   int   m_el_cutflow_ptmax_cut;        //!
   int   m_el_cutflow_ptmin_cut;        //!
   int   m_el_cutflow_eta_cut;          //!
@@ -256,6 +260,8 @@ private:
   int   m_el_cutflow_iso_cut;          //!
 
   std::vector<std::string> m_IsoKeys;  //!
+
+
 
   /* tools */
 
@@ -275,6 +281,9 @@ private:
   ElectronLHPIDManager*                    m_el_LH_PIDManager = nullptr;        //!
   /// @brief class to manage cut-based PID selection/decorations - see ISSUE for explaination
   ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager = nullptr;  //!
+
+  /// @brief tool that selects on dead HV from the 2016 run, according to https://twiki.cern.ch/twiki/bin/view/AtlasProtected/EGammaIdentificationRun2#Removal_of_Electron_Photon_clust
+  asg::AnaToolHandle<IAsgDeadHVCellRemovalTool> m_deadHVTool; //!
 
   /* other private members */
 

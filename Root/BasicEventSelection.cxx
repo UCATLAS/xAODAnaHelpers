@@ -22,6 +22,10 @@
 #include "TrigConfxAOD/xAODConfigTool.h"
 //#include "PMGTools/PMGSherpa22VJetsWeightTool.h"
 
+// For reading metadata
+#include "AsgTools/AsgMetadataTool.h"
+#include "xAODMetaData/FileMetaData.h"
+
 // ROOT include(s):
 #include "TFile.h"
 #include "TTree.h"
@@ -154,6 +158,18 @@ EL::StatusCode BasicEventSelection :: histInitialize ()
 
   m_cutflow_init  = m_cutflowHist->GetXaxis()->FindBin("init");
   m_cutflowHistW->GetXaxis()->FindBin("init");
+
+  // extra cutflows 
+  // create histograms when m_doRunByRunCutflows is set to true
+  // later check if !isMC() for filling so that these only get 
+  // filled when running on data 
+  if (m_doRunByRunCutflows) {
+    m_runByrun_beforeCuts  = new TH1D("runByrun_cutflow_beforeCuts", "Run-by-Run cutflow before cuts", 1, 1, 2);
+    m_runByrun_beforeCuts->SetCanExtend(TH1::kAllAxes);
+
+    m_runByrun_afterCuts  = new TH1D("runByrun_cutflow_afterCuts", "Run-by-Run cutflow after cuts", 1, 1, 2);
+    m_runByrun_afterCuts->SetCanExtend(TH1::kAllAxes);
+  }
 
   ANA_MSG_INFO( "Finished creating histograms");
 
@@ -740,6 +756,14 @@ EL::StatusCode BasicEventSelection :: execute ()
   }
 
   //------------------------------------------------------------------------------------------
+  // Fill cutflows for run-by-run checks on data before cuts
+  //------------------------------------------------------------------------------------------
+  uint32_t runNumberForCutflow = (uint32_t) eventInfo->runNumber();
+  if (m_doRunByRunCutflows && !isMC()) {
+    m_runByrun_beforeCuts->Fill(TString(std::to_string(runNumberForCutflow)), 1.);
+  }
+
+  //------------------------------------------------------------------------------------------
   // Declare an 'eventInfo' decorator with the Sherpa 2.2 reweight to multijet truth
   // https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/CentralMC15ProductionList#Sherpa_v2_2_0_V_jets_NJet_reweig
   //------------------------------------------------------------------------------------------
@@ -785,11 +809,11 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   if ( ( !isMC() && m_checkDuplicatesData ) || ( isMC() && m_checkDuplicatesMC ) ) {
 
-    std::pair<uint32_t,uint32_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
+    std::pair<int, Long64_t> thispair = std::make_pair(eventInfo->runNumber(),eventInfo->eventNumber());
 
     if ( m_RunNr_VS_EvtNr.find(thispair) != m_RunNr_VS_EvtNr.end() ) {
 
-      ANA_MSG_WARNING("Found duplicated event! runNumber = " << static_cast<uint32_t>(eventInfo->runNumber()) << ", eventNumber = " << static_cast<uint32_t>(eventInfo->eventNumber()) << ". Skipping this event");
+      ANA_MSG_WARNING("Found duplicated event! runNumber = " << eventInfo->runNumber() << ", eventNumber = " << eventInfo->eventNumber() << ". Skipping this event");
 
       // Bookkeep info in duplicates TTree
       //
@@ -962,7 +986,19 @@ EL::StatusCode BasicEventSelection :: execute ()
 
     if ( m_applyTriggerCut ) {
 
-      if ( !triggerChainGroup->isPassed() ) {
+      // additional DEBUG logging to validate conditional logic
+      ANA_MSG_DEBUG("Applying trigger cut corresponding to chain group " << m_triggerSelection);
+      ANA_MSG_DEBUG("Is Trigger-Level Analysis (TLA) data = " << int(m_isTLAData));
+      ANA_MSG_DEBUG("Trigger chain group is passed = " << int(m_isTLAData ? triggerChainGroup->isPassed(TrigDefs::requireDecision) : triggerChainGroup->isPassed()));
+
+      // different behaviour for isPassed depending on whether you are running on TLA data or not
+      // if running on TLA data, we only store the HLT part of the trigger decision i.e. the L1 part
+      // will always be "false", so we need to use TrigDefs::requireDecision to limit the decision 
+      // to being satisfied by the HLT leg(s) of the trigger chain
+      // TODO: check performance of this method when using trigger chains with the SAME HLT leg but different L1 seed
+      // e.g. HLT_j20_pf_ftf_L1J100 vs. HLT_j20_pf_ftf_L1HT190-J15s5pETA21
+      if ( (m_isTLAData && !triggerChainGroup->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && !triggerChainGroup->isPassed()) ) {
+      // if (!triggerChainGroup->isPassed(TrigDefs::requireDecision)) {
         wk()->skipEvent();
         return EL::StatusCode::SUCCESS;
       }
@@ -986,7 +1022,7 @@ EL::StatusCode BasicEventSelection :: execute ()
       //
       for ( auto &trigName : triggerChainGroup->getListOfTriggers() ) {
         auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-        if ( trigChain->isPassed() ) {
+        if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
           passedTriggers.push_back( trigName );
           triggerPrescales.push_back( trigChain->getPrescale() );
 
@@ -999,33 +1035,34 @@ EL::StatusCode BasicEventSelection :: execute ()
         }
         isPassedBitsNames.push_back( trigName );
         isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
-	if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
+	      if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
       }
 
       // Save info for extra triggers
       //
       if ( !m_extraTriggerSelection.empty() ) {
-
-	for ( const std::string &trigName : m_extraTriggerSelectionList ) {
-	  auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
-	  if ( trigChain->isPassed() ) {
-	    passedTriggers.push_back( trigName );
-	    triggerPrescales.push_back( trigChain->getPrescale() );
-
-      bool doLumiPrescale = true;
-      for ( const std::string &trigPart : trigChain->getListOfTriggers() ) {
-        if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigPart) == m_triggerUnprescaleList.end()) doLumiPrescale = false;
-      }
-      if ( doLumiPrescale ) {
-        triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
-      } else {
-        triggerPrescalesLumi.push_back( -1 );
-      }
-	  }
-	  isPassedBitsNames.push_back( trigName );
-	  isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
-	  if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
-	}
+        
+        for ( const std::string &trigName : m_extraTriggerSelectionList ) {
+          auto trigChain = m_trigDecTool_handle->getChainGroup( trigName );
+          if ( (m_isTLAData && trigChain->isPassed(TrigDefs::requireDecision)) || (!m_isTLAData && trigChain->isPassed()) ) {
+            passedTriggers.push_back( trigName );
+            triggerPrescales.push_back( trigChain->getPrescale() );
+            
+            bool doLumiPrescale = true;
+            for ( const std::string &trigPart : trigChain->getListOfTriggers() ) {
+              if (std::find(m_triggerUnprescaleList.begin(), m_triggerUnprescaleList.end(), trigPart) == m_triggerUnprescaleList.end()) doLumiPrescale = false;
+            }
+            if ( doLumiPrescale ) {
+              triggerPrescalesLumi.push_back( m_pileup_tool_handle->getDataWeight( *eventInfo, trigName, true ) );
+            } else {
+              triggerPrescalesLumi.push_back( -1 );
+            }
+          }
+          
+          isPassedBitsNames.push_back( trigName );
+          isPassedBits     .push_back( m_trigDecTool_handle->isPassedBits(trigName) );
+          if(trigChain->getPrescale()<1) disabledTriggers.push_back( trigName );
+        }
       }
 
       static SG::AuxElement::Decorator< std::vector< std::string > >  dec_passedTriggers("passedTriggers");
@@ -1054,7 +1091,11 @@ EL::StatusCode BasicEventSelection :: execute ()
     }
     if ( m_storePassHLT ) {
       static SG::AuxElement::Decorator< int > passHLT("passHLT");
-      passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
+      if (!m_isTLAData) {
+        passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str()) : -1;
+      } else {
+        passHLT(*eventInfo) = ( m_triggerSelection.find("HLT_") != std::string::npos ) ? (int)m_trigDecTool_handle->isPassed(m_triggerSelection.c_str(), TrigDefs::requireDecision) : -1;
+      }
     }
 
   } // if giving a specific list of triggers to look at
@@ -1106,11 +1147,19 @@ EL::StatusCode BasicEventSelection :: execute ()
 
   }//if data
 
+  //------------------------------------------------------------------------------------------
+  // Fill cutflows for run-by-run checks on data after cuts
+  //------------------------------------------------------------------------------------------
+  if (m_doRunByRunCutflows && !isMC()) {
+    m_runByrun_afterCuts->Fill(TString(std::to_string(runNumberForCutflow)), 1.);
+  }
+
   return EL::StatusCode::SUCCESS;
 }
 
 // "Borrowed" from SUSYTools
 // https://gitlab.cern.ch/atlas/athena/blob/3be30397de7c6cfdc15de38f532fdb4b9f338297/PhysicsAnalysis/SUSYPhys/SUSYTools/Root/SUSYObjDef_xAOD.cxx#L700
+// Should track official https://gitlab.cern.ch/atlas/athena/-/blob/d09ebd5c011b654159e25ec3e205c09ac1bc64de/PhysicsAnalysis/AnalysisCommon/PileupReweighting/python/AutoconfigurePRW.py
 StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 {
 
@@ -1140,82 +1189,100 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
     case 310000 :
       mcCampaignMD="mc20e";
       break;
+    case 410000 :
+      mcCampaignMD="mc23a";
+      break; 
+    case 450000 :
+      mcCampaignMD="mc23d";
+      break;
+    case 470000 :
+      mcCampaignMD="mc23e";
+      break;
     default :
       ANA_MSG_ERROR( "Could not determine mc campaign from run number! Impossible to autoconfigure PRW. Aborting." );
       return StatusCode::FAILURE;
       break;
     }
-  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
 
+  std::string mcCampaignMD_v2 = "";
+  const xAOD::FileMetaData* fmd(nullptr);
+  if ( !m_event->retrieveMetaInput(fmd, "FileMetaData").isSuccess() || !fmd->value(xAOD::FileMetaData::mcCampaign, mcCampaignMD_v2) ) {
+      ANA_MSG_WARNING("Failed to retrieve FileMetaData from MetaData! Using MC campaign from run number. PLEASE DOUBLE-CHECK this is the correct campaign for your samples!");
+  } else {
+      fmd->value(xAOD::FileMetaData::mcCampaign, mcCampaignMD_v2);
+
+      if(mcCampaignMD!=mcCampaignMD_v2){
+        std::string MetadataAndRunConflict("");
+        MetadataAndRunConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD_v2;
+        MetadataAndRunConflict += " sample, but the run number indiciates " +mcCampaignMD;
+        MetadataAndRunConflict += ". Prioritizing the value from FileMetaData. This could occur if you are using an MC campaign with outdated pile-up reweighting. PLEASE DOUBLE-CHECK your samples!";
+        ANA_MSG_WARNING( MetadataAndRunConflict );
+        mcCampaignMD=mcCampaignMD_v2;
+      }
+  }
+  ANA_MSG_INFO( "Determined MC campaign to be " << mcCampaignMD);
+    
   // Extract campaign from user configuration
   std::string tmp_mcCampaign = m_mcCampaign;
   std::vector<std::string> mcCampaignList;
-  while ( tmp_mcCampaign.size() > 0)
-    {
-      size_t pos = tmp_mcCampaign.find_first_of(',');
-      if ( pos == std::string::npos )
-	{
-	  pos = tmp_mcCampaign.size();
-	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	  tmp_mcCampaign.erase(0, pos);
-	}
-      else
-	{
-	  mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
-	  tmp_mcCampaign.erase(0, pos+1);
-	}
-    }
+  while ( tmp_mcCampaign.size() > 0) {
+    size_t pos = tmp_mcCampaign.find_first_of(',');
+    if ( pos == std::string::npos ) {
+      pos = tmp_mcCampaign.size();
+      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+      tmp_mcCampaign.erase(0, pos);
+	  }
+    else {
+      mcCampaignList.push_back(tmp_mcCampaign.substr(0, pos));
+      tmp_mcCampaign.erase(0, pos+1);
+	  }
+  }
 
   // Sanity checks
-  bool mc20X_GoodFromProperty = !mcCampaignList.empty();
-  bool mc20X_GoodFromMetadata = false;
-  for(const auto& mcCampaignP : mcCampaignList) mc20X_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e");
-  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e") mc20X_GoodFromMetadata = true;
+  bool mc2XX_GoodFromProperty = !mcCampaignList.empty();
+  bool mc2XX_GoodFromMetadata = false;
+  for(const auto& mcCampaignP : mcCampaignList) mc2XX_GoodFromProperty &= ( mcCampaignP == "mc20a" || mcCampaignP == "mc20d" || mcCampaignP == "mc20e" || mcCampaignP == "mc23a" || mcCampaignP == "mc23c" || mcCampaignP == "mc23d" || mcCampaignP == "mc23e");
+  if( mcCampaignMD == "mc20a" || mcCampaignMD == "mc20d" || mcCampaignMD == "mc20e" || mcCampaignMD == "mc23a" || mcCampaignMD == "mc23c" || mcCampaignMD == "mc23d" || mcCampaignMD == "mc23e") mc2XX_GoodFromMetadata = true;
 
-  if( !mc20X_GoodFromMetadata && !mc20X_GoodFromProperty )
-    {
+  if( !mc2XX_GoodFromMetadata && !mc2XX_GoodFromProperty ) {
+    // ::
+    std::string MetadataAndPropertyBAD("");
+    MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
+    MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', 'mc20f', 'mc23a', 'mc23c', 'mc23d', or 'mc23e' and restart your job. If you set it to any other string, you will still incur in this error.";
+    ANA_MSG_ERROR( MetadataAndPropertyBAD );
+    return StatusCode::FAILURE;
+    // ::
+  }
+
+  if ( mc2XX_GoodFromProperty && mc2XX_GoodFromMetadata) {
+    bool MDinP=false;
+    for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
+    if( !MDinP ) {
       // ::
-      std::string MetadataAndPropertyBAD("");
-      MetadataAndPropertyBAD += "autoconfigurePileupRWTool(): access to FileMetaData failed, but don't panic. You can try to manually set the 'mcCampaign' BasicEventSelection property to ";
-      MetadataAndPropertyBAD += "'mc20a', 'mc20c', 'mc20d', 'mc20e', or 'mc20f' and restart your job. If you set it to any other string, you will still incur in this error.";
-      ANA_MSG_ERROR( MetadataAndPropertyBAD );
-      return StatusCode::FAILURE;
+      std::string MetadataAndPropertyConflict("");
+      MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD;
+      MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
+      MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
+      ANA_MSG_WARNING( MetadataAndPropertyConflict );
       // ::
     }
-
-  if ( mc20X_GoodFromProperty && mc20X_GoodFromMetadata)
-    {
-      bool MDinP=false;
-      for(const auto& mcCampaignP : mcCampaignList) MDinP |= (mcCampaignMD==mcCampaignP);
-      if( !MDinP )
-	{
-	  // ::
-	  std::string MetadataAndPropertyConflict("");
-	  MetadataAndPropertyConflict += "autoconfigurePileupRWTool(): access to FileMetaData indicates a " + mcCampaignMD;
-	  MetadataAndPropertyConflict += " sample, but the 'mcCampaign' property passed to BasicEventSelection is set to '" +m_mcCampaign;
-	  MetadataAndPropertyConflict += "'. Prioritizing the value set by user: PLEASE DOUBLE-CHECK the value you set the 'mcCampaign' property to!";
-	  ANA_MSG_WARNING( MetadataAndPropertyConflict );
-	  // ::
-	}
-      else
-	{
-	  // ::
-	  std::string NoMetadataButPropertyOK("");
-	  NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
-	  NoMetadataButPropertyOK += m_mcCampaign;
-	  NoMetadataButPropertyOK += "'. Autoconfiguring PRW accordingly.";
-	  ANA_MSG_WARNING( NoMetadataButPropertyOK );
-	  // ::
-	}
+    else {
+      // ::
+      std::string NoMetadataButPropertyOK("");
+      NoMetadataButPropertyOK += "autoconfigurePileupRWTool(): access to FileMetaData succeeded, but the 'mcCampaign' property is passed to BasicEventSelection as '";
+      NoMetadataButPropertyOK += m_mcCampaign;
+      NoMetadataButPropertyOK += "'. Autoconfiguring PRW accordingly.";
+      ANA_MSG_WARNING( NoMetadataButPropertyOK );
+      // ::
     }
+  }
 
   // ::
   // Retrieve the input file
-  if(!mc20X_GoodFromProperty)
-    {
-      mcCampaignList.clear();
-      mcCampaignList.push_back(mcCampaignMD);
-    }
+  if(!mc2XX_GoodFromProperty) {
+    mcCampaignList.clear();
+    mcCampaignList.push_back(mcCampaignMD);
+  }
   ANA_MSG_INFO( "Setting MC campgains for CP::PileupReweightingTool:");
   for(const auto& mcCampaign : mcCampaignList)
     ANA_MSG_INFO( "\t" << mcCampaign.c_str() );
@@ -1228,26 +1295,48 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
   std::vector<std::string> prwConfigFiles;
   for(const auto& mcCampaign : mcCampaignList)
     {
-      std::string prwConfigFile = PathResolverFindCalibFile("/dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
+      std::string prwConfigFile;
+      // If requested set the PRW file to common PRW file of the processed MC campaign
+      if (m_useCommonPRWFiles) {
+        if      (mcCampaign == "mc20a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20a);}
+        else if (mcCampaign == "mc20d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20d);}
+        else if (mcCampaign == "mc20e") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC20e);}
+        else if (mcCampaign == "mc23a") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23a);}
+        else if (mcCampaign == "mc23c") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23c);}
+        else if (mcCampaign == "mc23d") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23d);}
+        else if (mcCampaign == "mc23e") {prwConfigFile = PathResolverFindCalibFile(m_commonPRWFileMC23e);}
+        else {
+          ANA_MSG_ERROR("autoconfigurePileupRWTool(): no common PRW file known for MC campaign: " << mcCampaign);
+          return StatusCode::FAILURE;
+        }
+      } else {
+        prwConfigFile = PathResolverFindCalibFile("dev/PileupReweighting/share/DSID" + std::to_string(DSID_INT/1000) +"xxx/pileup_" + mcCampaign + "_dsid" + std::to_string(DSID_INT) + "_" + SimulationFlavour + ".root");
+      }
       TFile testF(prwConfigFile.data(),"read");
       if(testF.IsZombie())
-	{
-	  ANA_MSG_ERROR("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
-	  return StatusCode::FAILURE;
-	}
+	    {
+	      ANA_MSG_ERROR("autoconfigurePileupRWTool(): Missing PRW config file for DSID " << std::to_string(DSID_INT) << " in campaign " << mcCampaign);
+	      return StatusCode::FAILURE;
+	    }
       else
-	prwConfigFiles.push_back( prwConfigFile );
+	    prwConfigFiles.push_back( prwConfigFile );
     }
 
   // Add actualMu config files
   for(const auto& mcCampaign : mcCampaignList)
     {
       if( !m_prwActualMu2016File.empty() && mcCampaign == "mc20a" )
-	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2016File));
+	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2016File));
       if( !m_prwActualMu2017File.empty() && (mcCampaign == "mc20c" || mcCampaign=="mc20d") )
-	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2017File));
+	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2017File));
       if( !m_prwActualMu2018File.empty() && (mcCampaign == "mc20e" || mcCampaign=="mc20f") )
-	prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
+	    prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2018File));
+      if( !m_prwActualMu2022File.empty() && mcCampaign == "mc23a" )
+        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2022File));
+      if( !m_prwActualMu2023File.empty() && (mcCampaign == "mc23c" || mcCampaign=="mc23d") )
+        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2023File)); 
+      if( !m_prwActualMu2024File.empty() && (mcCampaign == "mc23e") )
+        prwConfigFiles.push_back(PathResolverFindCalibFile(m_prwActualMu2024File)); 
     }
 
   // also need to handle lumicalc files: only use 2015+2016 with mc20a
@@ -1290,6 +1379,18 @@ StatusCode BasicEventSelection::autoconfigurePileupRWTool()
 	    if (year == "18") {
 	      lumiCalcFiles.push_back(filename);
 	    }
+      } else if (mcCampaign == "mc23a") {
+        if (year == "22") {
+          lumiCalcFiles.push_back(filename);
+        }
+      } else if (mcCampaign == "mc23c" || mcCampaign == "mc23d") {
+        if (year == "23") {
+          lumiCalcFiles.push_back(filename);
+        }
+      } else if (mcCampaign == "mc23e") {
+        if (year == "24") {
+          lumiCalcFiles.push_back(filename);
+        }
 	  } else {
 	    ANA_MSG_ERROR( "No lumicalc file is suitable for your mc campaign!" );
 	  }

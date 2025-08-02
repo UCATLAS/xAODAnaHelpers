@@ -243,7 +243,8 @@ class HistogramManager {
      */
     void fillHist(const std::string& histName, double value, double weight);
     void fillHist(const std::string& histName, double valueX, double valueY, double weight);
-
+    void fillHist(const std::string& histName, double valueX, double valueY, double valueZ, double weight);
+    void fillProfile(const std::string& histName, double valueX, double valueY, double weight);
 
   private:
     /**

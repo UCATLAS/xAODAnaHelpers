@@ -25,7 +25,10 @@
 
 // external tools include(s):
 #include "AsgTools/AnaToolHandle.h"
-#include "JetAnalysisInterfaces/IJetJvtEfficiency.h"
+#include "ParticleJetTools/JetPileupLabelingTool.h"
+#include "JetMomentTools/JetVertexNNTagger.h"
+#include "JetAnalysisInterfaces/IJvtEfficiencyTool.h"
+#include "PATCore/IAsgSelectionTool.h"
 #include "JetInterface/IJetModifier.h"
 #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
 #include "TriggerMatchingTool/IMatchingTool.h"
@@ -124,6 +127,8 @@ public:
   float m_eta_max_JVF = 2.4;
   /// @brief cut value
   float m_JVFCut = 0.5;
+  /// @brief (re-)evaluate the hard-scatter jet label (isJvtHS) required for Jvt efficiency tools
+  bool m_doTruthJetTagging = true;
   /// @brief check JVT
   bool m_doJVT = false;
   /// @brief keep JVT-rejected jets and decorate passing status
@@ -152,73 +157,23 @@ public:
   */
   float m_JVTCut = -1.0;
 
-  /**
-    @rst
-        Available working points for JVT cut from the ``CP::IJetJvtEfficiency`` tool.
-
-        The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
-
-        ======== ================= =============
-        Value    JVT Cut           Efficiency
-        ======== ================= =============
-        "Medium"  (Default) 0.59    92%
-        "Loose"   0.11              97%
-        "Tight"   0.91              85%
-        ======== ================= =============
-
-    @endrst
-  */
+  /// @brief WP for NNJvt
   std::string m_WorkingPointJVT = "FixedEffPt";
 
-  /**
-     @brief Configuration containting JVT scale factors.
-
-     @rst
-     The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
-
-     See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/JVTCalibration for latest recommendation.
-     @endrst
-  */
-  std::string m_SFFileJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
+ /// @brief SF file for NNJvtEfficiencyTool
+  std::string m_SFFileJVT = ""; // empty string means to apply dummy SFs
   std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
-  /// @brief Tagging algorithm to be used to veto PU jets in central region - default in R22 is NNJvt. If another algorithm is needed, use corresponding index for the enum here: https://acode-browser1.usatlas.bnl.gov/lxr/source/athena/PhysicsAnalysis/Interfaces/JetAnalysisInterfaces/JetAnalysisInterfaces/IJetJvtEfficiency.h#0022 (note: this link points to the latest r22 version, i.e. master, if a release is used, please check the corresponding enum for the given release: https://gitlab.cern.ch/atlas/athena/-/tags?search=release%2F22.2&sort=updated_desc)
-  int m_JvtTaggingAlg = CP::JvtTagger::NNJvt;
   /// @brief Do re-calculation of NNJvt - scores need to be re-evaluated in case jet pt changed w.r.t. derivation
   bool m_recalculateJvtScores = true;
 
   float         m_systValJVT = 0.0;
   std::string   m_systNameJVT = "";
 
-  /**
-    @rst
-        Available working points for fJVT cut from the ``CP::IJetJvtEfficiency`` tool.
-
-        The corresponding data/MC SF will be saved as a ``std::vector<float>`` decoration (for MC only), for nominal WP and the available systematics.
-
-        ======== ============== =============
-        Value    HS Efficiency  PU Fake Rate
-        ======== ============== =============
-        "Medium"  87.1-97.0%     53.4-60.9%
-        "Tight"   79.9-95.6%     45.4-50.3%
-        ======== ============== =============
-
-        See :https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/FJVTCalibration for more information.
-    @endrst
-  */
+  /// @brief WP for fJvt
   std::string m_WorkingPointfJVT = "Loose";
 
-  /**
-     @brief Configuration containting fJVT scale factors.
-
-     @rst
-        The configuration file with the scale factors calculated by the ``CP::IJetJvtEfficiency``.
-
-        See :https://twiki.cern.ch/twiki/bin/view/AtlasProtected/FJVTCalibration for latest recommendation.
-     @endrst
-  */
-
-  // Set the correct SF file and format
-  std::string m_SFFilefJVT = ""; // JetJvtEfficiency tool will use latest recommendation per default
+  /// @brief SF file for fJvtEfficiencyTool 
+  std::string m_SFFilefJVT = ""; // empty string means to apply dummy SFs
 
   std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
 
@@ -307,8 +262,13 @@ private:
   std::vector<std::string>            m_singleJetTrigChainsList; //!  /* contains all the HLT trigger chains tokens extracted from m_singleJetTrigChains */
   std::vector<std::string>            m_diJetTrigChainsList;     //!  /* contains all the HLT trigger chains tokens extracted from m_diJetTrigChains */
 
-  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_JVT_tool_handle{"CP::IJetJvtEfficiency/JVT"}; //!
-  asg::AnaToolHandle<CP::IJetJvtEfficiency>  m_fJVT_eff_tool_handle{"CP::JetJvtEfficiency/fJVT"}; //!
+  asg::AnaToolHandle<JetPileupLabelingTool>  m_jetPileupLabelingTool;  //!
+  asg::AnaToolHandle<JetPileupTag::JetVertexNNTagger>  m_jetNNJvtMomentTool;  //!
+  asg::AnaToolHandle<IAsgSelectionTool> m_jetNNJvtSelectionTool;  //!
+  asg::AnaToolHandle<CP::IJvtEfficiencyTool> m_jetNNJvtEfficiencyTool;  //!
+  asg::AnaToolHandle<IAsgSelectionTool> m_jetfJvtSelectionTool;  //!
+  asg::AnaToolHandle<CP::IJvtEfficiencyTool> m_jetfJvtEfficiencyTool;  //!
+
   asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  //!
 
   asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle; //!

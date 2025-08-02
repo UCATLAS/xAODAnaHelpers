@@ -45,16 +45,15 @@ namespace xAH {
 
       // isolation
       std::map< std::string, std::vector< int >* >* m_isIsolated;
-      std::vector<float>* m_etcone20;
-      std::vector<float>* m_ptcone20;
-      std::vector<float>* m_ptcone30;
-      std::vector<float>* m_ptcone40;
-      std::vector<float>* m_ptvarcone20;
-      std::vector<float>* m_ptvarcone30;
-      std::vector<float>* m_ptvarcone40;
       std::vector<float>* m_topoetcone20;
-      std::vector<float>* m_topoetcone30;
-      std::vector<float>* m_topoetcone40;
+      std::vector<float>* m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt500;
+      std::vector<float>* m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000;
+      std::vector<float>* m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt500;
+      std::vector<float>* m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000;
+      std::vector<float>* m_neflowisol20;
+      std::vector<float>* m_topoetcone20_CloseByCorr;
+      std::vector<float>* m_ptcone20_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr;
+      std::vector<float>* m_ptvarcone30_Nonprompt_All_MaxWeightTTVALooseCone_pt1000_CloseByCorr;
 
       // PID
       std::map< std::string, std::vector< int >* >* m_PID;
