@@ -132,7 +132,11 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
   if (!m_RecommendationTag.empty()) { 
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("RecommendationTag",m_RecommendationTag)) 
   };
-  
+ 
+  if (!m_campaign.empty()) {
+    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("Campaign",m_campaign))
+  };
+ 
   // just the tool default settings
   // https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/TauID/TauAnalysisTools/trunk/doc/README-TauEfficiencyCorrectionsTool.rst 
   
@@ -176,7 +180,6 @@ EL::StatusCode TauEfficiencyCorrector :: initialize ()
     configVec = {TauAnalysisTools::SFTriggerHadTau};
      
     ANA_CHECK(m_tauEffCorrTool_handle.setProperty("TriggerName", m_TriggerName));
-    ANA_CHECK(m_tauEffCorrTool_handle.setProperty("PileupReweightingTool",m_pileup_tool_handle));
     
   }           
   
@@ -430,7 +433,7 @@ EL::StatusCode TauEfficiencyCorrector :: executeSF ( const xAOD::EventInfo* /*ev
         ANA_MSG_DEBUG( "Tau eff. SF:");
         ANA_MSG_DEBUG( "\t " << tauEffSF << " (from getEfficiencyScaleFactor())" );
         ANA_MSG_DEBUG( "--------------------------------------");
-
+ 
   	++idx;
 
     } // close tau loop
