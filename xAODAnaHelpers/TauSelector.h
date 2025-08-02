@@ -65,6 +65,9 @@ public:
   std::string    m_EleRNNWP = "";
   bool           m_EleID = true;
 
+  /// @brief Flag to get Run3 Trigger Matching Tool
+  bool        m_isRun3 = false;
+
   /* trigger matching */
   
   /*
