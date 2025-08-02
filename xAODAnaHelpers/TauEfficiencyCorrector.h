@@ -53,6 +53,8 @@ public:
   // combination with the trigger
   std::string   m_TriggerName = "";
 
+  // Campaign for MC20 vs MC23 setup
+  std::string m_campaign = "";
   // systematics
   /**
     @brief The name of the vector containing the names of the systematically-varied taus-related containers from the upstream algorithm, which will be processed by this algorithm.

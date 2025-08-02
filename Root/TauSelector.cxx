@@ -32,6 +32,8 @@
 #include "TauAnalysisTools/TauSelectionTool.h"  
 #include "TriggerMatchingTool/MatchingTool.h"
 #include "TriggerMatchingTool/MatchFromCompositeTool.h"
+#include "TriggerMatchingTool/R3MatchingTool.h"
+#include "TriggerMatchingTool/DRScoringTool.h"
 
 // ROOT include(s):
 #include "TFile.h"
@@ -256,7 +258,12 @@ EL::StatusCode TauSelector :: initialize ()
       ANA_CHECK( m_trigTauMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigTauMatchTool_handle);
     } else {
-      m_trigTauMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
+      if ( m_isRun3 ) {
+        m_trigTauMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::R3MatchingTool/R3MatchingTool");
+        ANA_CHECK( m_trigTauMatchTool_handle.setProperty("ScoringTool", asg::AnaToolHandle<Trig::IMatchScoringTool>("Trig::DRScoringTool/DRScoringTool")) );
+      } else {
+        m_trigTauMatchTool_handle = asg::AnaToolHandle<Trig::IMatchingTool>("Trig::MatchFromCompositeTool/MatchFromCompositeTool");
+      }
       ANA_CHECK( m_trigTauMatchTool_handle.setProperty("OutputLevel", msg().level() ));
       ANA_CHECK( m_trigTauMatchTool_handle.retrieve());
       ANA_MSG_DEBUG("Retrieved tool: " << m_trigTauMatchTool_handle);
@@ -544,10 +551,15 @@ bool TauSelector :: executeSelection ( const xAOD::TauJetContainer* inTaus, floa
             isTrigMatchedMapTauDecor( *tau ) = std::map<std::string,char>();
           }
 
-          // check whether the tau is matched (NOTE: no DR is required for taus)
+          // check whether the tau is matched (NOTE: no DR=0.2 is now required for taus, looser than the 0.1 default:
+          // https://twiki.cern.ch/twiki/bin/view/Atlas/R22TriggerAnalysis#Run_3_Navigation_Run_3_Data_AODs)
           //
-          char matched = ( m_trigTauMatchTool_handle->match( *tau, chain ) );
-
+          char matched;
+          if ( m_isRun3 ) {
+            matched = ( m_trigTauMatchTool_handle->match( *tau, chain, 0.2) );
+          } else {
+            matched = ( m_trigTauMatchTool_handle->match( *tau, chain, 0.2) );
+          }
           ANA_MSG_DEBUG( "\t\t is tau trigger matched? " << matched);
 
           ( isTrigMatchedMapTauDecor( *tau ) )[chain] = matched;
