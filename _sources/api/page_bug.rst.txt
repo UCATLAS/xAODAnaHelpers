@@ -1,0 +1,6 @@
+.. _page_bug:
+
+Bug List
+========
+
+.. doxygenpage:: bug

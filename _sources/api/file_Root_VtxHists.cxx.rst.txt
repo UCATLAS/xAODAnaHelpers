@@ -1,0 +1,48 @@
+
+.. _file_Root_VtxHists.cxx:
+
+File VtxHists.cxx
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/VtxHists.cxx``)
+----------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_VtxHists.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``math.h``
+
+- ``xAODAnaHelpers/VtxHists.h`` (:ref:`file_xAODAnaHelpers_VtxHists.h`)
+
+- ``xAODTracking/TrackParticle.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_VtxHists_8cxx_1ad3f59d8e74980a7f894a85d18a0a7427`
+

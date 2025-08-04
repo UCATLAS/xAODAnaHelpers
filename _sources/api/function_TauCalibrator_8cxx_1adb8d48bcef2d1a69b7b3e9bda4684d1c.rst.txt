@@ -1,0 +1,13 @@
+.. _exhale_function_TauCalibrator_8cxx_1adb8d48bcef2d1a69b7b3e9bda4684d1c:
+
+Function ClassImp(TauCalibrator)
+================================
+
+- Defined in :ref:`file_Root_TauCalibrator.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(TauCalibrator)

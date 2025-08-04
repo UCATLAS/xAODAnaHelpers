@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a319afb86dee2164b9b32c88eafa3cc60:
+
+Function HelperFunctions::dPhi
+==============================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::dPhi(float, float)

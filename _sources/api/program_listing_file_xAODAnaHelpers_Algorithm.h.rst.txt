@@ -1,0 +1,154 @@
+
+.. _program_listing_file_xAODAnaHelpers_Algorithm.h:
+
+Program Listing for File Algorithm.h
+====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_Algorithm.h>` (``xAODAnaHelpers/Algorithm.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_Algorithm_H
+   #define xAODAnaHelpers_Algorithm_H
+   
+   // Infrastructure include(s):
+   #include "xAODRootAccess/Init.h"
+   #include "xAODRootAccess/TEvent.h"
+   #include "xAODRootAccess/TStore.h"
+   #include "xAODMetaData/FileMetaData.h"
+   
+   // EL include(s):
+   #include <EventLoop/StatusCode.h>
+   #include <EventLoop/Algorithm.h>
+   #include <EventLoop/Worker.h>
+   
+   #include <string>
+   
+   // for StatusCode::isSuccess
+   #include "AsgMessaging/MessageCheck.h"
+   #include "AsgMessaging/StatusCode.h"
+   #include "AsgTools/ToolStore.h"
+   #include "AsgTools/AnaToolHandle.h"
+   
+   // for resolving paths of various calibration files
+   #include "PathResolver/PathResolver.h"
+   
+   // messaging includes
+   #include <AsgMessaging/MsgStream.h>
+   #include <AsgMessaging/MsgStreamMacros.h>
+   #include <AsgMessaging/MessageCheck.h>
+   
+   
+   namespace xAH {
+   
+     class Algorithm : public EL::Algorithm {
+         public:
+           Algorithm(std::string className = "Algorithm");
+           ~Algorithm();
+           ClassDef(Algorithm, 1);
+   
+           StatusCode algInitialize();
+   
+           StatusCode algFinalize();
+   
+           std::string m_name = "UnnamedAlgorithm";
+   
+           bool m_debug = false;
+           bool m_verbose = false;
+   
+           MSG::Level m_msgLevel = MSG::INFO;
+   
+           // output stream name for cutflow
+           std::string m_cutFlowStreamName = "cutflow";
+   
+           std::string m_systName = "";
+           float m_systVal = 0.0;
+   
+           std::string m_systValVectorString = "";
+   
+           std::vector<float> m_systValVector;
+   
+           StatusCode parseSystValVector();
+   
+           std::string m_eventInfoContainerName = "EventInfo";
+   
+           std::string m_vertexContainerName = "PrimaryVertices";
+   
+           int m_isMC = -1;
+   
+           int m_isFastSim = -1;
+   
+           int m_isAF3 = -1;
+   
+           bool m_useRun3navigation = false;
+   
+           std::string m_HLTSummary = "HLTNav_Summary_DAODSlimmed"; 
+   
+           bool m_forceFastSim = false;
+           bool m_forceFullSim = false;
+           bool m_forceData    = false;
+   
+           bool m_setAFII = false;
+           bool m_setAF3 = false;
+   
+   
+         protected:
+           std::string m_className = "Algorithm"; 
+   
+           xAOD::TEvent* m_event = nullptr; 
+           xAOD::TStore* m_store = nullptr; 
+   
+           bool isMC();
+           
+           bool isFastSim();
+   
+           bool isAF3();
+   
+       bool isPHYS();
+   
+           void registerInstance();
+           int numInstances();
+   
+           void unregisterInstance();
+   
+           template< typename T >
+           StatusCode checkToolStore( const std::string& tool_name ) {
+   
+               if ( !asg::ToolStore::contains<T>(tool_name) ) {
+                 m_toolAlreadyUsed[tool_name] = false;
+                 ANA_MSG_INFO("Tool " << tool_name << " is being used for the first time!" );
+               } else {
+                 m_toolAlreadyUsed[tool_name] = true;
+                 ANA_MSG_INFO("Tool " << tool_name << " has been already used!" );
+               }
+   
+               return StatusCode::SUCCESS;
+           }
+   
+           inline bool isToolAlreadyUsed( const std::string& tool_name ) {
+              return ( m_toolAlreadyUsed.find(tool_name)->second );
+           }
+   
+   
+           template <typename T>
+       void setToolName(__attribute__((unused)) asg::AnaToolHandle<T>& handle, __attribute__((unused)) const std::string& name = "") const { }
+   
+           std::string getAddress() const {
+             const void * address = static_cast<const void*>(this);
+             std::stringstream ss;
+             ss << address;
+             return ss.str();
+           }
+   
+         private:
+           bool m_registered = false; 
+   
+           static std::map<std::string, int> m_instanceRegistry; 
+   
+           std::map<std::string, bool> m_toolAlreadyUsed; 
+     };
+   
+   }
+   #endif

@@ -1,0 +1,49 @@
+
+.. _file_xAODAnaHelpers_PhotonHists.h:
+
+File PhotonHists.h
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/PhotonHists.h``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_PhotonHists.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/DataVector.h``
+
+- ``xAODAnaHelpers/IParticleHists.h`` (:ref:`file_xAODAnaHelpers_IParticleHists.h`)
+
+- ``xAODEgamma/PhotonContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_PhotonHists.cxx`
+
+- :ref:`file_Root_PhotonHistsAlgo.cxx`
+
+
+

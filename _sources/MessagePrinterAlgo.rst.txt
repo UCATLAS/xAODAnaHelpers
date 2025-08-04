@@ -1,0 +1,5 @@
+MessagePrinterAlgo
+==================
+
+.. doxygenclass:: MessagePrinterAlgo
+   :members:

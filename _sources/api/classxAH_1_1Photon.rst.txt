@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1Photon:
+
+Class Photon
+============
+
+- Defined in :ref:`file_xAODAnaHelpers_Photon.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Particle`` (:ref:`exhale_class_classxAH_1_1Particle`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::Photon
+   :members:
+   :protected-members:
+   :undoc-members:

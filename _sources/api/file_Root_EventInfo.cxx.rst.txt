@@ -1,0 +1,47 @@
+
+.. _file_Root_EventInfo.cxx:
+
+File EventInfo.cxx
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/EventInfo.cxx``)
+-----------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_EventInfo.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``iostream``
+
+- ``xAODAnaHelpers/EventInfo.h`` (:ref:`file_xAODAnaHelpers_EventInfo.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODCaloEvent/CaloClusterContainer.h``
+
+- ``xAODEventShape/EventShape.h``
+
+- ``xAODTruth/TruthEventContainer.h``
+
+
+
+
+

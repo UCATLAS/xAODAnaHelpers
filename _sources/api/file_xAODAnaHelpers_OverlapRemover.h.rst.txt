@@ -1,0 +1,89 @@
+
+.. _file_xAODAnaHelpers_OverlapRemover.h:
+
+File OverlapRemover.h
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+|xAH| algorithm to perform overlap removal between reconstructed physics objects. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/OverlapRemover.h``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_OverlapRemover.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Marco Milesi marco.milesi@cern.ch 
+
+Jeff Dandoy 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``AssociationUtils/OverlapRemovalInit.h``
+
+- ``AssociationUtils/OverlapRemovalTool.h``
+
+- ``AssociationUtils/ToolBox.h``
+
+- ``TH1D.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODBase/IParticleHelpers.h``
+
+- ``xAODEgamma/ElectronContainer.h``
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_OverlapRemover.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classOverlapRemover`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1aed76887c1f4b8f894729c8e6ba0c0f8d:
+
+Template Function HelperFunctions::retrieve(T \*&, std::string, xAOD::TEvent \*, xAOD::TStore \*, MsgStream&)
+=============================================================================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::retrieve(T *&, std::string, xAOD::TEvent *, xAOD::TStore *, MsgStream&)
