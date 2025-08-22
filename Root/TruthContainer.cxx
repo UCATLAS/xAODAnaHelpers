@@ -348,7 +348,7 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
   m_pdgId  ->push_back( truth->pdgId() );
   if(!m_infoSwitch.m_pdgIdOnly){
     m_status ->push_back( truth->status() );
-    m_barcode->push_back( truth->barcode() );
+    m_barcode->push_back( truth->uid() );
   }
   if(m_debug)   std::cout << "Filled status " << std::endl;
 
@@ -386,7 +386,7 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
       const xAOD::TruthParticle* parent = truth->parent(iparent);
       if(parent){
 	m_parent_pdgId  ->back().push_back(parent->pdgId());
-	m_parent_barcode->back().push_back(parent->barcode());
+	m_parent_barcode->back().push_back(parent->uid());
 	m_parent_status ->back().push_back(parent->status());
       }else{
 	m_parent_pdgId  ->back().push_back(-99);
@@ -408,7 +408,7 @@ void TruthContainer::FillTruth( const xAOD::IParticle* particle ){
       const xAOD::TruthParticle* child = truth->child(ichild);
       if(child){
 	m_child_pdgId  ->back().push_back(child->pdgId());
-	m_child_barcode->back().push_back(child->barcode());
+	m_child_barcode->back().push_back(child->uid());
 	m_child_status ->back().push_back(child->status());
       }else{
 	m_child_pdgId  ->back().push_back(-99);
