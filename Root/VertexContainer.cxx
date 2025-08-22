@@ -78,8 +78,8 @@ void VertexContainer::FillTruthVertices( const xAOD::TruthVertexContainer* truth
     int hsBarcode = -999;
     const xAOD::TruthVertex* hsTruthVertex(nullptr);
     for ( auto *truthVertex : *truthVertices ) {
-      if ( truthVertex->barcode()<0 && truthVertex->barcode()>hsBarcode ) {
-        hsBarcode = truthVertex->barcode();
+      if ( truthVertex->uid()<0 && truthVertex->uid()>hsBarcode ) {
+        hsBarcode = truthVertex->uid();
         hsTruthVertex = truthVertex;
       }
     }

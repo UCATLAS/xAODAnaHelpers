@@ -80,7 +80,7 @@ class ColoredLogger(logging.Logger):
 
 
 # Regular expression for comments
-comment_re = re.compile('(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
+comment_re = re.compile(r'(^)?[^\S\n]*/(?:\*(.*?)\*/[^\S\n]*|/[^\n]*)($)?',
                         re.DOTALL | re.MULTILINE)
 
 # http://www.lifl.fr/~damien.riquet/parse-a-json-file-with-comments.html
