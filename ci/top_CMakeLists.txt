@@ -1,7 +1,7 @@
 # Project build configuration.
 
 # Set the minimum required CMake version.
-cmake_minimum_required( VERSION 3.4 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.5 FATAL_ERROR )
 
 project( xAODAnaHelpers VERSION 1.0.0)
 
