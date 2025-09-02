@@ -1,0 +1,70 @@
+
+.. _file_xAODAnaHelpers_BJetEfficiencyCorrector.h:
+
+File BJetEfficiencyCorrector.h
+==============================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/BJetEfficiencyCorrector.h``)
+---------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_BJetEfficiencyCorrector.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``FTagAnalysisInterfaces/IBTaggingEfficiencyTool.h``
+
+- ``FTagAnalysisInterfaces/IBTaggingSelectionTool.h``
+
+- ``PATInterfaces/ISystematicsTool.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicSet.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``PATInterfaces/SystematicsUtil.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODJet/JetContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_BJetEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classBJetEfficiencyCorrector`
+

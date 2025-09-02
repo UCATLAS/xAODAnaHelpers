@@ -1,0 +1,25 @@
+.. _exhale_class_classMetHists:
+
+Class MetHists
+==============
+
+- Defined in :ref:`file_xAODAnaHelpers_MetHists.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public HistogramManager`` (:ref:`exhale_class_classHistogramManager`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: MetHists
+   :members:
+   :protected-members:
+   :undoc-members:

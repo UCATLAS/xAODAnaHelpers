@@ -1,0 +1,44 @@
+
+.. _program_listing_file_Root_PhotonHistsAlgo.cxx:
+
+Program Listing for File PhotonHistsAlgo.cxx
+============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_Root_PhotonHistsAlgo.cxx>` (``Root/PhotonHistsAlgo.cxx``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include <EventLoop/Job.h>
+   #include <EventLoop/StatusCode.h>
+   #include <EventLoop/Worker.h>
+   
+   #include <xAODEgamma/PhotonContainer.h>
+   
+   #include <xAODAnaHelpers/PhotonHistsAlgo.h>
+   #include <xAODAnaHelpers/PhotonHists.h>
+   #include <xAODAnaHelpers/HelperFunctions.h>
+   
+   // this is needed to distribute the algorithm to the workers
+   ClassImp(PhotonHistsAlgo)
+   
+   PhotonHistsAlgo :: PhotonHistsAlgo () :
+   IParticleHistsAlgo("PhotonHistsAlgo")
+   { }
+   
+   EL::StatusCode PhotonHistsAlgo :: setupJob (EL::Job& job)
+   {
+     job.useXAOD();
+     xAOD::Init("PhotonHistsAlgo").ignore();
+   
+     return EL::StatusCode::SUCCESS;
+   }
+   
+   EL::StatusCode PhotonHistsAlgo::AddHists( std::string name ) {
+     return IParticleHistsAlgo::AddHists<PhotonHists>(name);
+   }
+   
+   EL::StatusCode PhotonHistsAlgo :: execute () {
+     return IParticleHistsAlgo::execute<PhotonHists, xAOD::PhotonContainer>();
+   }

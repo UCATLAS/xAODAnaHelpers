@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1ClusterContainer:
+
+Class ClusterContainer
+======================
+
+- Defined in :ref:`file_xAODAnaHelpers_ClusterContainer.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::ParticleContainer< Cluster, HelperClasses::ClusterInfoSwitch >`` (:ref:`exhale_class_classxAH_1_1ParticleContainer`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::ClusterContainer
+   :members:
+   :protected-members:
+   :undoc-members:

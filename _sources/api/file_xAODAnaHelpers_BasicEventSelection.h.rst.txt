@@ -1,0 +1,85 @@
+
+.. _file_xAODAnaHelpers_BasicEventSelection.h:
+
+File BasicEventSelection.h
+==========================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+Algorithm performing general basic cuts for an analysis (GRL, Event Cleaning, Min nr. Tracks for PV candidate). 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/BasicEventSelection.h``)
+-----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_BasicEventSelection.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Gabriel Facini gabriel.facini@cern.ch 
+
+Marco Milesi marco.milesi@cern.ch 
+
+Jeff Dandoy jeff.dandoy@cern.ch 
+
+John Alison john.alison@cern.ch 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgAnalysisInterfaces/IGoodRunsListSelectionTool.h``
+
+- ``AsgAnalysisInterfaces/IPileupReweightingTool.h``
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``PATInterfaces/IWeightTool.h``
+
+- ``TH1D.h``
+
+- ``TrigConfInterfaces/ITrigConfigTool.h``
+
+- ``TrigDecisionTool/TrigDecisionTool.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_BasicEventSelection.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classBasicEventSelection`
+

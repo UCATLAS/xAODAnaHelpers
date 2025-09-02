@@ -1,0 +1,25 @@
+.. _exhale_class_classElectronHistsAlgo:
+
+Class ElectronHistsAlgo
+=======================
+
+- Defined in :ref:`file_xAODAnaHelpers_ElectronHistsAlgo.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public IParticleHistsAlgo`` (:ref:`exhale_class_classIParticleHistsAlgo`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: ElectronHistsAlgo
+   :members:
+   :protected-members:
+   :undoc-members:

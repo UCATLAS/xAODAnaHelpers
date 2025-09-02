@@ -1,0 +1,79 @@
+
+.. _program_listing_file_xAODAnaHelpers_HLTJetGetter.h:
+
+Program Listing for File HLTJetGetter.h
+=======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_HLTJetGetter.h>` (``xAODAnaHelpers/HLTJetGetter.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   /******************************************
+    *
+    * This class gets HLT jets from the TDT and can be expanded to get other features
+    *
+    * Merlin Davies (merlin.davies@cern.ch)
+    * Caterina Doglioni (caterina.doglioni@cern.ch)
+    * John Alison (john.alison@cern.ch)
+    *
+    *
+    ******************************************/
+   
+   #ifndef xAODAnaHelpers_HLTJetGetter_H
+   #define xAODAnaHelpers_HLTJetGetter_H
+   
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   
+   namespace TrigConf {
+       class xAODConfigTool;
+   }
+   
+   namespace Trig {
+       class TrigDecisionTool;
+   }
+   
+   
+   class HLTJetGetter : public xAH::Algorithm
+   {
+   
+   public:
+   
+     /* configuration variables */
+     std::string m_triggerList = ".*";
+     std::string m_inContainerName = "";
+     std::string m_outContainerName = "";
+   
+   private:
+   
+     //Trig::TrigDecisionTool*        m_trigDecTool = nullptr;   //!
+     asg::AnaToolHandle<Trig::TrigDecisionTool>              m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"    }; 
+     TrigConf::xAODConfigTool*      m_trigConfTool = nullptr;   
+     bool                           m_ownTDTAndTCT = false;   
+   
+   public:
+   
+     // this is a standard constructor
+     HLTJetGetter ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(HLTJetGetter, 1);
+   
+   };
+   
+   #endif

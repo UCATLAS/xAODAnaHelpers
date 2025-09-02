@@ -1,0 +1,16 @@
+.. _exhale_class_classxAH_1_1ParticleContainer:
+
+Template Class ParticleContainer
+================================
+
+- Defined in :ref:`file_xAODAnaHelpers_ParticleContainer.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::ParticleContainer
+   :members:
+   :protected-members:
+   :undoc-members:

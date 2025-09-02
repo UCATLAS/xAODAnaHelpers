@@ -1,0 +1,82 @@
+
+.. _file_Root_OverlapRemover.cxx:
+
+File OverlapRemover.cxx
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/OverlapRemover.cxx``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_OverlapRemover.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/OverlapRemover.h`` (:ref:`file_xAODAnaHelpers_OverlapRemover.h`)
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEgamma/Electron.h``
+
+- ``xAODEgamma/ElectronContainer.h``
+
+- ``xAODEgamma/Photon.h``
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODJet/Jet.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODMuon/Muon.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+- ``xAODTau/TauJet.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_OverlapRemover_8cxx_1a8a356a428d3361e989da5060d2983de0`
+

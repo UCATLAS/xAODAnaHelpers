@@ -1,0 +1,75 @@
+
+.. _file_xAODAnaHelpers_TrigMatcher.h:
+
+File TrigMatcher.h
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+|xAH| algorithm to match reconstructed physics objects to trigger objects using the Trig::MatchingTool. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TrigMatcher.h``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TrigMatcher.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Karol Krizka kkrizka@cern.ch 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``TH1D.h``
+
+- ``TrigDecisionTool/TrigDecisionTool.h``
+
+- ``TriggerMatchingTool/IMatchScoringTool.h``
+
+- ``TriggerMatchingTool/IMatchingTool.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_TrigMatcher.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTrigMatcher`
+

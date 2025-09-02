@@ -1,0 +1,13 @@
+.. _exhale_typedef_ClusterContainer_8h_1a6ca87343c5de420749a8af060b5b0bbb:
+
+Typedef floatAccessor
+=====================
+
+- Defined in :ref:`file_xAODAnaHelpers_ClusterContainer.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: floatAccessor

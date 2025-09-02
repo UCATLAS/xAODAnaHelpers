@@ -1,0 +1,16 @@
+.. _exhale_class_classxAH_1_1MetContainer:
+
+Class MetContainer
+==================
+
+- Defined in :ref:`file_xAODAnaHelpers_MetContainer.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::MetContainer
+   :members:
+   :protected-members:
+   :undoc-members:

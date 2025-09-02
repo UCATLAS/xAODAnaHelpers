@@ -1,0 +1,16 @@
+.. _exhale_class_classElectronCutBasedPIDManager:
+
+Class ElectronCutBasedPIDManager
+================================
+
+- Defined in :ref:`file_xAODAnaHelpers_ParticlePIDManager.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: ElectronCutBasedPIDManager
+   :members:
+   :protected-members:
+   :undoc-members:
