@@ -5,9 +5,6 @@
 # Declare the package name:
 atlas_subdir( xAODAnaHelpers )
 
-# Set the minimum required CMake version:
-cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
-
 set( release_libs xAODTriggerCnvLib )
 
 if( AnalysisBase_VERSION AND AnalysisBase_VERSION VERSION_GREATER 21.0 )
