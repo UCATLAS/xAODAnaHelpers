@@ -227,6 +227,7 @@ EL::StatusCode JetSelector :: initialize ()
     ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",	      m_taggerName));
     ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
     ANA_CHECK( m_BJetSelectTool_handle.setProperty("JetAuthor",	      m_jetAuthor));
+    ANA_CHECK( m_BJetSelectTool_handle.setProperty("readFromBTaggingObject", m_readFromBTaggingObject));
     ANA_CHECK( m_BJetSelectTool_handle.setProperty("OutputLevel",  msg().level()));
     ANA_CHECK( m_BJetSelectTool_handle.retrieve());
     ANA_MSG_DEBUG("Retrieved tool: " << m_BJetSelectTool_handle);

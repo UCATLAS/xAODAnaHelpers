@@ -192,6 +192,7 @@ public:
   std::string m_jetAuthor = "AntiKt4EMPFlowJets";
   std::string m_taggerName = "DL1r";
   std::string m_operatingPt = "FixedCutBEff_70";
+  bool        m_readFromBTaggingObject = false;
   // for BTaggingSelectionTool -- doubles are needed or will crash
   // for the b-tagging tool - these are the b-tagging groups minimums
   // users making tighter cuts can use the selector's parameters to keep
