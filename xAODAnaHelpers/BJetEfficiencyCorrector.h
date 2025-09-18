@@ -44,6 +44,7 @@ public:
   std::string m_taggerName = "DL1r";
   bool        m_useDevelopmentFile = true;
   bool        m_coneFlavourLabel = true;
+  bool        m_readFromBTaggingObject = false;
   std::string m_systematicsStrategy = "SFEigen";
   /// @brief BTaggingSelectionTool throws an error on missing tagging weights. If false, a warning is given instead
   bool        m_errorOnTagWeightFailure = true;
