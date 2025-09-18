@@ -1,0 +1,468 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How to Document Code &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Common Issues" href="Issues.html" />
+    <link rel="prev" title="Development" href="Development.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="Development.html">Development</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">How to Document Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-it-up-locally">Setting it up Locally</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#doxygen">Doxygen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-virtual-environment">Python Virtual Environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-packages">Python Packages</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-docs-locally">Generate Docs Locally</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documenting-code">Documenting Code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#one-line-comments">One-Line Comments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#block-comments">Block Comments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#doxygen-rst-directive">Doxygen <code class="docutils literal notranslate"><span class="pre">rst</span></code> directive</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#for-everything-else">For everything else…</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Issues.html">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Development.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Development.html#helpful-suggestions">Helpful Suggestions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="Development.html">Development</a> &raquo;</li>
+        
+      <li>How to Document Code</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/HowToDocumentation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-to-document-code">
+<h1>How to Document Code<a class="headerlink" href="#how-to-document-code" title="Permalink to this headline">¶</a></h1>
+<p>The documentation for xAODAnaHelpers uses a slightly non-trivial workflow:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="http://www.doxygen.org/">Doxygen</a> parses the header and source files to generate an XML tree of the code</p></li>
+<li><p><a class="reference external" href="http://breathe.readthedocs.org/en/latest/">breathe</a>  is a <a class="reference external" href="http://sphinx-doc.org/">sphinx</a> wrapper that enables us to parse the XML tree from doxygen</p></li>
+<li><p><a class="reference external" href="http://sphinx-doc.org/">sphinx</a> is what produces the various output formats such as html, latex, e-pub from source code comments</p></li>
+<li><p><a class="reference external" href="https://readthedocs.org/">ReadTheDocs.org</a> uses <code class="docutils literal notranslate"><span class="pre">doxygen</span></code>, <code class="docutils literal notranslate"><span class="pre">breathe</span></code>, and <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> to automatically produce our documentation everytime <code class="docutils literal notranslate"><span class="pre">main</span></code> changes.</p></li>
+</ol>
+<p>Our documentation is automatically generated for us so we will always guarantee that our documentation is up-to-date for all users.</p>
+<p>The aim of this document is to help you get started with producing your own documentation locally to help resolve errors, typos, and make sure you’re formatting it the way that you want before pushing it to our github repo.</p>
+<div class="section" id="setting-it-up-locally">
+<h2>Setting it up Locally<a class="headerlink" href="#setting-it-up-locally" title="Permalink to this headline">¶</a></h2>
+<p>Locally, we are going to need <a class="reference external" href="http://www.doxygen.org/">doxygen</a> to do the initial parsing. Note that out of the box without doxygen, we can parse python scripts, such as xAH_run.py <a class="reference internal" href="UsingUs.html#xahrunapi"><span class="std std-ref">API Reference</span></a>, which are included as part of xAODAnaHelpers. However, if we wish to have all of our C++ code’s documentation included, we will need <a class="reference external" href="http://www.doxygen.org/">doxygen</a> to do parse it.</p>
+<div class="section" id="doxygen">
+<h3>Doxygen<a class="headerlink" href="#doxygen" title="Permalink to this headline">¶</a></h3>
+<p>Get <a class="reference external" href="http://www.doxygen.org/">doxygen</a> however you want. For Macs, we can use:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">doxygen</span>
+</pre></div>
+</div>
+<p>to install it. At this point, one should be able to generate the XML tree by navigating to the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder and running <code class="docutils literal notranslate"><span class="pre">doxygen</span></code> with no arguments:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="n">docs</span>
+<span class="n">doxygen</span>
+</pre></div>
+</div>
+<p>since we provide a <code class="docutils literal notranslate"><span class="pre">Doxyfile</span></code> in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory with the correct configurations.</p>
+</div>
+<div class="section" id="python-virtual-environment">
+<h3>Python Virtual Environment<a class="headerlink" href="#python-virtual-environment" title="Permalink to this headline">¶</a></h3>
+<p>Next, I suggest setting up a python virtual environment. Luckily, this solution is the hardest part.  Most (rational) people use <a class="reference external" href="https://virtualenvwrapper.readthedocs.org/en/latest/">virtualenvwrapper</a> to manage my python dependencies and workspace. It is assumed you already have <a class="reference external" href="https://pip.readthedocs.org/en/stable/">pip</a>.</p>
+<p>To get the entire functionality of <code class="docutils literal notranslate"><span class="pre">venvwrapper</span></code>, we just need to grab the package and update our environment when we want to use it:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">virtualenvwrapper</span>
+<span class="n">echo</span><span class="w"> </span><span class="s">&quot;source /usr/local/bin/virtualenvwrapper.sh&quot;</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">bash_profile</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Don’t forget to source your profile if you’re going to use the same shell:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">source</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">bash_profile</span>
+</pre></div>
+</div>
+</div>
+<p>From now on, we will have commands like <code class="docutils literal notranslate"><span class="pre">mkvirtualenv</span></code>, <code class="docutils literal notranslate"><span class="pre">workon</span></code>, and <code class="docutils literal notranslate"><span class="pre">rmvirtualenv</span></code> in our shell. As a first-time user, you haven’t made a virtual environment yet, so the first thing we do is make one:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">mkvirtualenv</span><span class="w"> </span><span class="n">xAH</span>
+</pre></div>
+</div>
+<p>This will also automatically call <code class="docutils literal notranslate"><span class="pre">workon</span> <span class="pre">xAH</span></code>. This is something we will always run in the future to enter the virtual environment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you ever forget the name of the virtual environment you made, just run <code class="docutils literal notranslate"><span class="pre">workon</span></code> without any arguments. There is also tab completion.</p>
+</div>
+</div>
+<div class="section" id="python-packages">
+<h3>Python Packages<a class="headerlink" href="#python-packages" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you choose to use a virtual environment, enter it <code class="docutils literal notranslate"><span class="pre">workon</span> <span class="pre">xAH</span></code></p>
+</div>
+<p>This is super easy. We provide a <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="n">docs</span>
+<span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>which will install all the required packages for you. As of the time of this document, this contains the following packages:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">alabaster</span><span class="o">==</span><span class="mf">0.7.12</span>
+<span class="n">Babel</span><span class="o">==</span><span class="mf">2.9.1</span>
+<span class="n">beautifulsoup4</span><span class="o">==</span><span class="mf">4.8.1</span>
+<span class="n">breathe</span><span class="o">==</span><span class="mf">4.35.0</span>
+<span class="n">bs4</span><span class="o">==</span><span class="mf">0.0.1</span>
+<span class="n">certifi</span><span class="o">==</span><span class="mf">2024.7.4</span>
+<span class="n">chardet</span><span class="o">==</span><span class="mf">3.0.4</span>
+<span class="n">docutils</span><span class="o">==</span><span class="mf">0.15.2</span>
+<span class="n">exhale</span><span class="o">==</span><span class="mf">0.2.4</span>
+<span class="n">idna</span><span class="o">==</span><span class="mf">3.7</span>
+<span class="n">imagesize</span><span class="o">==</span><span class="mf">1.1.0</span>
+<span class="n">Jinja2</span><span class="o">==</span><span class="mf">3.1.6</span>
+<span class="n">lxml</span><span class="o">==</span><span class="mf">4.9.1</span>
+<span class="n">MarkupSafe</span><span class="o">==</span><span class="mf">2.1.3</span>
+<span class="n">packaging</span><span class="o">==</span><span class="mf">19.2</span>
+<span class="n">Pygments</span><span class="o">==</span><span class="mf">2.15.0</span>
+<span class="n">pyparsing</span><span class="o">==</span><span class="mf">2.4.5</span>
+<span class="n">pytz</span><span class="o">==</span><span class="mf">2019.3</span>
+<span class="n">PyYAML</span><span class="o">==</span><span class="mf">6.0</span>
+<span class="n">requests</span><span class="o">==</span><span class="mf">2.32.4</span>
+<span class="n">six</span><span class="o">==</span><span class="mf">1.13.0</span>
+<span class="n">snowballstemmer</span><span class="o">==</span><span class="mf">2.0.0</span>
+<span class="n">soupsieve</span><span class="o">==</span><span class="mf">1.9.5</span>
+<span class="n">Sphinx</span><span class="o">==</span><span class="mf">4.5.0</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">argparse</span><span class="o">==</span><span class="mf">0.2.5</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">rtd</span><span class="o">-</span><span class="n">theme</span><span class="o">==</span><span class="mf">0.4.3</span>
+<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">applehelp</span><span class="o">==</span><span class="mf">1.0.1</span>
+<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">devhelp</span><span class="o">==</span><span class="mf">1.0.1</span>
+<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">htmlhelp</span><span class="o">==</span><span class="mf">2.0.0</span>
+<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">jsmath</span><span class="o">==</span><span class="mf">1.0.1</span>
+<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">qthelp</span><span class="o">==</span><span class="mf">1.0.2</span>
+<span class="n">sphinxcontrib</span><span class="o">-</span><span class="n">serializinghtml</span><span class="o">==</span><span class="mf">1.1.5</span>
+<span class="n">urllib3</span><span class="o">==</span><span class="mf">2.5.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="generate-docs-locally">
+<h2>Generate Docs Locally<a class="headerlink" href="#generate-docs-locally" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have <code class="docutils literal notranslate"><span class="pre">doxygen</span></code> and all of the required python packages installed, all you need to do now is process everything:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="n">docs</span>
+<span class="n">make</span><span class="w"> </span><span class="n">clean</span>
+<span class="n">doxygen</span>
+<span class="n">make</span><span class="w"> </span><span class="n">html</span>
+<span class="n">open</span><span class="w"> </span><span class="n">_build</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">html</span>
+</pre></div>
+</div>
+<p>and we’re good to go. Sphinx provides a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> in <code class="docutils literal notranslate"><span class="pre">docs/</span></code> to make the html generation much easier to work with.</p>
+<p>You may not always run all of these pieces each time you generate documentation. For example, if you need to make a change to the header/source files of any kind, you will need to re-run <code class="docutils literal notranslate"><span class="pre">doxygen</span></code>. In the rare case that the html generation isn’t working right, you might want to run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> so you start over again. If you’re only changing the reStructuredText (rst) files in <code class="docutils literal notranslate"><span class="pre">docs/</span></code> you might only ever need to run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>. All in all, it doesn’t take more than 10-15 seconds to generate the necessary documentation.</p>
+</div>
+<div class="section" id="documenting-code">
+<h2>Documenting Code<a class="headerlink" href="#documenting-code" title="Permalink to this headline">¶</a></h2>
+<p>In most cases, we will want to follow the reStructuredText directives and formatting for doing the code documentation. We just want to use <code class="docutils literal notranslate"><span class="pre">doxygen</span></code> + <code class="docutils literal notranslate"><span class="pre">breathe</span></code> to expose those comments to <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> to parse and display correctly. In what follows, we provide a set of guidelines (really, examples) to make it easier to document our code specifically.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All comments for a given class, function, variable should be prior to the given item you’re adding documentation for.</p>
+</div>
+<p>If you have a question about how to do something, google it in the context of reStructuredText or ask on the mailing list. Also have a look through most of our source code and compare it to the docs to figure out how we do something.</p>
+<div class="section" id="one-line-comments">
+<h3>One-Line Comments<a class="headerlink" href="#one-line-comments" title="Permalink to this headline">¶</a></h3>
+<p>One-line comments are very useful in cases where we do not have much to say about something, perhaps because it is a rather trivial item:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/** @brief generically the main name assigned to all histograms */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_name</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>which will render as</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp">
+<span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="Histograms.html#_CPPv416HistogramManager" title="HistogramManager"><span class="n"><span class="pre">HistogramManager</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">m_name</span></span></span><br /></dt>
+<dd><p>generically the main name assigned to all histograms </p>
+</dd></dl>
+
+</div>
+<div class="section" id="block-comments">
+<h3>Block Comments<a class="headerlink" href="#block-comments" title="Permalink to this headline">¶</a></h3>
+<p>Block comments are very useful in all other cases. When in doubt, you can always make a block comment with just a single line, even for a variable. The flexibility allows us to include a lot more detail and formatting such as tables and latex:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm">    @brief Destructor, allows the user to delete histograms that are not being recorded.</span>
+<span class="cm">*/</span>
+<span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">HistogramManager</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>which will render as</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="Histograms.html#_CPPv416HistogramManager" title="HistogramManager"><span class="n"><span class="pre">HistogramManager</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">~HistogramManager</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Destructor, allows the user to delete histograms that are not being recorded. </p>
+</dd></dl>
+
+</div>
+<div class="section" id="doxygen-rst-directive">
+<h3>Doxygen <code class="docutils literal notranslate"><span class="pre">rst</span></code> directive<a class="headerlink" href="#doxygen-rst-directive" title="Permalink to this headline">¶</a></h3>
+<p>To tell <code class="docutils literal notranslate"><span class="pre">doxygen</span></code> and <code class="docutils literal notranslate"><span class="pre">breathe</span></code> that a given block of text should be considered as reStructuredText, we simply need to wrap it:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@rst
+    This is now inside a doxygen directive that tells doxygen not to parse it, so that breathe can parse it for Sphinx.
+
+@endrst
+</pre></div>
+</div>
+<p>which will render as expected if we were writing it inside a standard <code class="docutils literal notranslate"><span class="pre">.rst</span></code> file.  As usual, we have an example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm">    @brief This is used by any class extending to pre-define a set of histograms to book by default.</span>
+<span class="cm">    @rst</span>
+<span class="cm">        .. note:: The expectation is that the user does not directly use this class but rather inherits from it.</span>
+
+<span class="cm">        We expect the user to create a new group of histograms, such as for jets::</span>
+
+<span class="cm">            class JetHists : public HistogramManager</span>
+<span class="cm">            {</span>
+<span class="cm">              public:</span>
+<span class="cm">                JetHists(std::string name, std::string detailStr);</span>
+<span class="cm">                virtual ~JetHists() ;</span>
+
+<span class="cm">                StatusCode initialize();</span>
+<span class="cm">                StatusCode execute( const xAOD::JetContainer* jets, float eventWeight, int pvLoc = -1);</span>
+<span class="cm">                StatusCode execute( const xAOD::Jet* jet, float eventWeight, int pvLoc = -1 );</span>
+<span class="cm">                using HistogramManager::book; // make other overloaded version of book() to show up in subclass</span>
+<span class="cm">                using HistogramManager::execute; // overload</span>
+<span class="cm">            };</span>
+
+<span class="cm">        The above example is taken from our implementation in :cpp:class:`JetHists`.</span>
+
+<span class="cm">    @endrst</span>
+<span class="cm"> */</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HistogramManager</span><span class="w"> </span><span class="p">{};</span>
+</pre></div>
+</div>
+<p>which will render as</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp">
+<span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HistogramManager</span></span></span><br /></dt>
+<dd><p>This is used by any class extending to pre-define a set of histograms to book by default. </p>
+<p><p>We expect the user to create a new group of histograms, such as for jets:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JetHists</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">HistogramManager</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="n">JetHists</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">JetHists</span><span class="p">()</span><span class="w"> </span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_debug</span><span class="p">;</span>
+<span class="w">    </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="p">();</span>
+<span class="w">    </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="w">  </span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">pvLoc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="w">  </span><span class="n">jet</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">pvLoc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">HistogramManager</span><span class="o">::</span><span class="n">book</span><span class="p">;</span><span class="w"> </span><span class="c1">// make other overloaded version of book() to show up in subclass</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">HistogramManager</span><span class="o">::</span><span class="n">execute</span><span class="p">;</span><span class="w"> </span><span class="c1">// overload</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The above example is taken from our implementation in <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">JetHists</span></code>.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The expectation is that the user does not directly use this class but rather inherits from it.</p>
+</div>
+<p>Subclassed by <a class="reference internal" href="api/classMetHists.html#classMetHists"><span class="std std-ref">MetHists</span></a></p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="for-everything-else">
+<h2>For everything else…<a class="headerlink" href="#for-everything-else" title="Permalink to this headline">¶</a></h2>
+<p>These cover the general basics of how to document code for xAODAnaHelpers. Everything else is specific to how doxygen and Sphinx and breathe work. Most of these are well-supported with a large community, so googling is always very helpful here. Otherwise, feel free to ask on the mailing list.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Issues.html" class="btn btn-neutral float-right" title="Common Issues" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Development.html" class="btn btn-neutral float-left" title="Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

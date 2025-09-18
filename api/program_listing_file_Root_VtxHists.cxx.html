@@ -1,0 +1,548 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File VtxHists.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File VtxHists.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_VtxHists.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-vtxhists-cxx">
+<span id="program-listing-file-root-vtxhists-cxx"></span><h1>Program Listing for File VtxHists.cxx<a class="headerlink" href="#program-listing-for-file-vtxhists-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_VtxHists.cxx.html#file-root-vtxhists-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/VtxHists.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/VtxHists.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODTracking/TrackParticle.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;math.h&gt;</span>
+
+<span class="n">ANA_MSG_SOURCE</span><span class="p">(</span><span class="n">msgVtxHists</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;VtxHists&quot;</span><span class="p">)</span>
+
+<span class="n">VtxHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">VtxHists</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">HistogramManager</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">detailStr</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">VtxHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="o">~</span><span class="n">VtxHists</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">VtxHists</span><span class="o">::</span><span class="n">initialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// These plots are always made</span>
+<span class="w">  </span><span class="n">h_type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="p">,</span><span class="w">          </span><span class="s">&quot;vtx type&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">10</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">     </span><span class="mf">9.5</span><span class="p">);</span>
+<span class="w">  </span><span class="n">h_nTrks</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nTrks&quot;</span><span class="p">,</span><span class="w">         </span><span class="s">&quot;nTrks&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">99.5</span><span class="p">);</span>
+<span class="w">  </span><span class="n">h_nTrks_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nTrks_l&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;nTrks&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">499.5</span><span class="p">);</span>
+
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  Trk details</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">m_fillTrkDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_detailStr</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;TrkDetails&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_fillTrkDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="n">h_trk_Pt</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;trkPt&quot;</span><span class="p">,</span><span class="w">         </span><span class="s">&quot;trkPt&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_trk_Pt_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;trkPt_l&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;trkPt&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">99.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss_x</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_x&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;Pt_miss_x&quot;</span><span class="p">,</span><span class="w">      </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-5.5</span><span class="p">,</span><span class="w">    </span><span class="mf">4.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_x_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_x_l&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;Pt_miss_x_l&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-50.5</span><span class="p">,</span><span class="w">   </span><span class="mf">49.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss_y</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_y&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;Pt_miss_y&quot;</span><span class="p">,</span><span class="w">      </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-5.5</span><span class="p">,</span><span class="w">    </span><span class="mf">4.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_y_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_y_l&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;Pt_miss_y_l&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-50.5</span><span class="p">,</span><span class="w">   </span><span class="mf">49.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss&quot;</span><span class="p">,</span><span class="w">         </span><span class="s">&quot;Pt_miss&quot;</span><span class="p">,</span><span class="w">      </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_l</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_l&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;Pt_miss_l&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">99.5</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  Iso Trk details</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">m_fillIsoTrkDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_detailStr</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;IsoTrkDetails&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_fillIsoTrkDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">h_trkIsoAll</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptCone20All&quot;</span><span class="p">,</span><span class="w">         </span><span class="s">&quot;ptCone20All&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_trkIso</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptCone20&quot;</span><span class="p">,</span><span class="w">            </span><span class="s">&quot;ptCone20&quot;</span><span class="p">,</span><span class="w">       </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_dZ0Before</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dZ0Before&quot;</span><span class="p">,</span><span class="w">            </span><span class="s">&quot;dZ0Before&quot;</span><span class="p">,</span><span class="w">       </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.1</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_nIsoTrks</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nIsoTrks&quot;</span><span class="p">,</span><span class="w">         </span><span class="s">&quot;nIsoTrks&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">99.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nIsoTrks_l&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;nIsoTrks&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">499.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_IsoTrk_Pt</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isoTrkPt&quot;</span><span class="p">,</span><span class="w">         </span><span class="s">&quot;IsoTrkPt&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_IsoTrk_Pt_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isoTrkPt_l&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;IsoTrkPt&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">99.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss_iso_x</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_iso_x&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;Pt_miss_x&quot;</span><span class="p">,</span><span class="w">      </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-5.5</span><span class="p">,</span><span class="w">    </span><span class="mf">4.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_iso_x_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_iso_x_l&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;Pt_miss_x_l&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-50.5</span><span class="p">,</span><span class="w">   </span><span class="mf">49.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss_iso_y</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_iso_y&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;Pt_miss_y&quot;</span><span class="p">,</span><span class="w">      </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-5.5</span><span class="p">,</span><span class="w">    </span><span class="mf">4.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_iso_y_l</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_iso_y_l&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;Pt_miss_y_l&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-50.5</span><span class="p">,</span><span class="w">   </span><span class="mf">49.5</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss_iso</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_iso&quot;</span><span class="p">,</span><span class="w">         </span><span class="s">&quot;Pt_miss&quot;</span><span class="p">,</span><span class="w">      </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_iso_l</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Pt_miss_iso_l&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;Pt_miss_l&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">99.5</span><span class="p">);</span>
+
+
+<span class="w">    </span><span class="n">h_nIsoTrks1GeV</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks1GeV&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;nIsoTracks1GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks2GeV</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks2GeV&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;nIsoTracks2GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks5GeV</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks5GeV&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;nIsoTracks5GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks10GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks10GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks10GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks15GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks15GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks15GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks20GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks20GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks20GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks25GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks25GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks25GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks30GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks30GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nIsoTracks30GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_nLeadIsoTrackPts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_nLeadIsoTrackPts</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iLeadTrks</span><span class="p">){</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="n">ss</span><span class="p">;</span>
+<span class="w">      </span><span class="n">ss</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="p">;</span>
+<span class="w">      </span><span class="n">h_IsoTrk_max_Pt</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;IsoTrkPt_&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(),</span><span class="w">        </span><span class="s">&quot;IsoTrkPt(&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;)&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">)</span><span class="w">  </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_IsoTrk_max_Pt_l</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">     </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;IsoTrkPt_&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;_l&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;IsoTrkPt(&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;)&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">99.5</span><span class="p">)</span><span class="w">  </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  Trk Pt details</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">m_fillTrkPtDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_detailStr</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;TrkPtDetails&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_fillTrkPtDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="n">h_nTrks1GeV</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks1GeV&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;nTracks1GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nTrks2GeV</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks2GeV&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;nTracks2GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nTrks5GeV</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks5GeV&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;nTracks5GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nTrks10GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks10GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks10GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nTrks15GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks15GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks15GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nTrks20GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks20GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks20GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nTrks25GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks25GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks25GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nTrks30GeV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks30GeV&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;nTracks30GeV&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">  </span><span class="mf">99.5</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_nLeadTrackPts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_nLeadTrackPts</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iLeadTrks</span><span class="p">){</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="n">ss</span><span class="p">;</span>
+<span class="w">      </span><span class="n">ss</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="p">;</span>
+<span class="w">      </span><span class="n">h_trk_max_Pt</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;trkPt_&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(),</span><span class="w">        </span><span class="s">&quot;trkPt(&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;)&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">    </span><span class="mf">9.5</span><span class="p">)</span><span class="w">  </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_trk_max_Pt_l</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">     </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;trkPt_&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;_l&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;trkPt(&quot;</span><span class="o">+</span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;)&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">100</span><span class="p">,</span><span class="w">   </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">   </span><span class="mf">99.5</span><span class="p">)</span><span class="w">  </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+
+
+<span class="w">  </span><span class="c1">// if worker is passed to the class add histograms to the output</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">VtxHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vtxs</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgVtxHists</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">vtx_itr</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="o">*</span><span class="n">vtxs</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="n">vtx_itr</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">VtxHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vtxs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="n">trks</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgVtxHists</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">vtx_itr</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="o">*</span><span class="n">vtxs</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="n">vtx_itr</span><span class="p">,</span><span class="w"> </span><span class="n">trks</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">VtxHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="n">vtx</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="n">trks</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgVtxHists</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="n">vtx</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">));</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_fillIsoTrkDetails</span><span class="p">){</span>
+
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">nTrksAll</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vtx</span><span class="o">-&gt;</span><span class="n">nTrackParticles</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks1GeV</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks2GeV</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks5GeV</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks10GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks15GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks20GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks25GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nIsoTracks30GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pt_iso_vec</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">pt_miss_iso_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">pt_miss_iso_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">iTrkItr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iTrkItr</span><span class="o">&lt;</span><span class="w"> </span><span class="n">nTrksAll</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iTrkItr</span><span class="p">){</span>
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">thisTrk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vtx</span><span class="o">-&gt;</span><span class="n">trackParticle</span><span class="p">(</span><span class="n">iTrkItr</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">trkPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thisTrk</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">trk_pt_cone20</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getIso</span><span class="p">(</span><span class="n">thisTrk</span><span class="p">,</span><span class="w"> </span><span class="n">trks</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">pt_miss_iso_x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">thisTrk</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Px</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+<span class="w">      </span><span class="n">pt_miss_iso_y</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">thisTrk</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Py</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">h_trkIsoAll</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">trk_pt_cone20</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trk_pt_cone20</span><span class="o">/</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.1</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">h_trkIso</span><span class="w">         </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">trk_pt_cone20</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">h_IsoTrk_Pt</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">trkPt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_IsoTrk_Pt_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">trkPt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">pt_iso_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">trkPt</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks1GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks2GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks5GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks10GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks15GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks20GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks25GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nIsoTracks30GeV</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+
+<span class="w">    </span><span class="c1">// Sort track pts</span>
+<span class="w">    </span><span class="c1">//std::sort(numbers.begin(), numbers.end(), std::greater&lt;int&gt;());</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">pt_iso_vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pt_iso_vec</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">greater</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">());</span>
+
+<span class="w">    </span><span class="c1">// Leading track Pts</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_nLeadIsoTrackPts</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iLeadTrks</span><span class="p">){</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">this_pt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">pt_iso_vec</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">pt_iso_vec</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="n">h_IsoTrk_max_Pt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">this_pt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_IsoTrk_max_Pt_l</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">this_pt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">h_nIsoTrks1GeV</span><span class="w">       </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks1GeV</span><span class="p">,</span><span class="w">        </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks2GeV</span><span class="w">       </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks2GeV</span><span class="p">,</span><span class="w">        </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks5GeV</span><span class="w">       </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks5GeV</span><span class="p">,</span><span class="w">        </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks10GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks10GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks15GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks15GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks20GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks20GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks25GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks25GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_nIsoTrks30GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nIsoTracks30GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss_iso_x</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_iso_x</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_iso_x_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_iso_x</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">h_pt_miss_iso_y</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_iso_y</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_iso_y_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_iso_y</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">pt_miss_iso</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pt_miss_iso_x</span><span class="o">*</span><span class="n">pt_miss_iso_x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">pt_miss_iso_y</span><span class="o">*</span><span class="n">pt_miss_iso_y</span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_iso</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_iso</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_pt_miss_iso_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_iso</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">VtxHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="n">vtx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">//basic</span>
+<span class="w">  </span><span class="n">h_type</span><span class="w">       </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">vtx</span><span class="o">-&gt;</span><span class="n">vertexType</span><span class="p">(),</span><span class="w">            </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">nTrks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vtx</span><span class="o">-&gt;</span><span class="n">nTrackParticles</span><span class="p">();</span>
+<span class="w">  </span><span class="n">h_nTrks</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTrks</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">h_nTrks_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTrks</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_fillTrkDetails</span><span class="p">){</span>
+
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks1GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks2GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks5GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks10GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks15GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks20GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks25GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">uint</span><span class="w"> </span><span class="n">nTracks30GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pt_vec</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">pt_miss_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">pt_miss_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">iTrkItr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iTrkItr</span><span class="o">&lt;</span><span class="w"> </span><span class="n">nTrks</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iTrkItr</span><span class="p">){</span>
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">thisTrk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vtx</span><span class="o">-&gt;</span><span class="n">trackParticle</span><span class="p">(</span><span class="n">iTrkItr</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">trkPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thisTrk</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">h_trk_Pt</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">trkPt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_trk_Pt_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">trkPt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_fillTrkDetails</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">pt_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">trkPt</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">pt_miss_x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">thisTrk</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Px</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+<span class="w">      </span><span class="n">pt_miss_y</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">thisTrk</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Py</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks1GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks2GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks5GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks10GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks15GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks20GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks25GeV</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">trkPt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">nTracks30GeV</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_fillTrkPtDetails</span><span class="p">){</span>
+
+<span class="w">      </span><span class="c1">// Sort track pts</span>
+<span class="w">      </span><span class="c1">//std::sort(numbers.begin(), numbers.end(), std::greater&lt;int&gt;());</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">pt_vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pt_vec</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">greater</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">());</span>
+
+<span class="w">      </span><span class="c1">// Leading track Pts</span>
+<span class="w">      </span><span class="k">for</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_nLeadTrackPts</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iLeadTrks</span><span class="p">){</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">this_pt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">pt_vec</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">pt_vec</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">h_trk_max_Pt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">this_pt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">h_trk_max_Pt_l</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iLeadTrks</span><span class="p">)</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">this_pt</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="n">h_nTrks1GeV</span><span class="w">       </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks1GeV</span><span class="p">,</span><span class="w">        </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_nTrks2GeV</span><span class="w">       </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks2GeV</span><span class="p">,</span><span class="w">        </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_nTrks5GeV</span><span class="w">       </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks5GeV</span><span class="p">,</span><span class="w">        </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_nTrks10GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks10GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_nTrks15GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks15GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_nTrks20GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks20GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_nTrks25GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks25GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_nTrks30GeV</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">nTracks30GeV</span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">h_pt_miss_x</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_x</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_pt_miss_x_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_x</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">h_pt_miss_y</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_y</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_pt_miss_y_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss_y</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">pt_miss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pt_miss_x</span><span class="o">*</span><span class="n">pt_miss_x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">pt_miss_y</span><span class="o">*</span><span class="n">pt_miss_y</span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_pt_miss</span><span class="w">      </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">h_pt_miss_l</span><span class="w">    </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="n">pt_miss</span><span class="w"> </span><span class="p">,</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">VtxHists</span><span class="o">::</span><span class="n">getIso</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="w"> </span><span class="o">*</span><span class="n">inTrack</span><span class="p">,</span><span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="n">trks</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">z0_cut</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">cone_size</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">iso</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">trk_itr</span><span class="w"> </span><span class="o">:</span><span class="w">  </span><span class="o">*</span><span class="n">trks</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">dZ0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">trk_itr</span><span class="o">-&gt;</span><span class="n">z0</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">inTrack</span><span class="o">-&gt;</span><span class="n">z0</span><span class="p">());</span>
+<span class="w">    </span><span class="n">h_dZ0Before</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">dZ0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">dZ0</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">z0_cut</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">dR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trk_itr</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">DeltaR</span><span class="p">(</span><span class="n">inTrack</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">());</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">dR</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cone_size</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">dR</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="n">iso</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">trk_itr</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">iso</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

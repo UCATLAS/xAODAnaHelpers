@@ -1,0 +1,13 @@
+.. _exhale_function_MuonInFatJetCorrector_8cxx_1af5dd74bb24cc9eae708a8eb26983409b:
+
+Function ClassImp(MuonInFatJetCorrector)
+========================================
+
+- Defined in :ref:`file_Root_MuonInFatJetCorrector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(MuonInFatJetCorrector)

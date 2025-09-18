@@ -1,0 +1,1017 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>\(j\) &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="\(\mu\)" href="MuonSelector.html" />
+    <link rel="prev" title="\(e\)" href="ElectronSelector.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Selectors.html">Selecting Objects</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="BasicEventSelection.html">Event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="OverlapRemover.html">Overlap Removal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ElectronSelector.html"><span class="math notranslate nohighlight">\(e\)</span></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><span class="math notranslate nohighlight">\(j\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="MuonSelector.html"><span class="math notranslate nohighlight">\(\mu\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="PhotonSelector.html"><span class="math notranslate nohighlight">\(\gamma\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="TauSelector.html"><span class="math notranslate nohighlight">\(\tau\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="TrackSelector.html">Tracks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TruthSelector.html">Truth</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Outputs.html">Producing Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Selectors.html">Selecting Objects</a> &raquo;</li>
+        
+      <li><span class="math notranslate nohighlight">\(j\)</span></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/JetSelector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="j">
+<h1><span class="math notranslate nohighlight">\(j\)</span><a class="headerlink" href="#j" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv411JetSelector">
+<span id="_CPPv311JetSelector"></span><span id="_CPPv211JetSelector"></span><span id="JetSelector"></span><span class="target" id="classJetSelector"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JetSelector</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><a class="headerlink" href="#_CPPv411JetSelector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11JetSelectorEv">
+<span id="_CPPv3N11JetSelector11JetSelectorEv"></span><span id="_CPPv2N11JetSelector11JetSelectorEv"></span><span id="JetSelector::JetSelector"></span><span class="target" id="classJetSelector_1a172fa990e9ba35997fd0bcff3746086e"></span><span class="sig-name descname"><span class="n"><span class="pre">JetSelector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector11JetSelectorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8setupJobERN2EL3JobE">
+<span id="_CPPv3N11JetSelector8setupJobERN2EL3JobE"></span><span id="_CPPv2N11JetSelector8setupJobERN2EL3JobE"></span><span id="JetSelector::setupJob__EL::JobR"></span><span class="target" id="classJetSelector_1aa0beaf5c8625907b08b91f54ba59cfbe"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector8setupJobERN2EL3JobE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11fileExecuteEv">
+<span id="_CPPv3N11JetSelector11fileExecuteEv"></span><span id="_CPPv2N11JetSelector11fileExecuteEv"></span><span id="JetSelector::fileExecute"></span><span class="target" id="classJetSelector_1aabbd33df38fecffaa790180cf2a6e48b"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector11fileExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14histInitializeEv">
+<span id="_CPPv3N11JetSelector14histInitializeEv"></span><span id="_CPPv2N11JetSelector14histInitializeEv"></span><span id="JetSelector::histInitialize"></span><span class="target" id="classJetSelector_1a43ef67159252efbe96813f3eddb9670a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector14histInitializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11changeInputEb">
+<span id="_CPPv3N11JetSelector11changeInputEb"></span><span id="_CPPv2N11JetSelector11changeInputEb"></span><span id="JetSelector::changeInput__b"></span><span class="target" id="classJetSelector_1ab4cc4fd612aad3b1f9f3d54465af2cd2"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector11changeInputEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10initializeEv">
+<span id="_CPPv3N11JetSelector10initializeEv"></span><span id="_CPPv2N11JetSelector10initializeEv"></span><span id="JetSelector::initialize"></span><span class="target" id="classJetSelector_1a5f61c36694d1f744b02f0da97af6d44a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector10initializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector7executeEv">
+<span id="_CPPv3N11JetSelector7executeEv"></span><span id="_CPPv2N11JetSelector7executeEv"></span><span id="JetSelector::execute"></span><span class="target" id="classJetSelector_1a27e4fde880206f7eee017fab0e7e53c8"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector7executeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11postExecuteEv">
+<span id="_CPPv3N11JetSelector11postExecuteEv"></span><span id="_CPPv2N11JetSelector11postExecuteEv"></span><span id="JetSelector::postExecute"></span><span class="target" id="classJetSelector_1a23b990b3d6d07e34308955b521765641"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector11postExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8finalizeEv">
+<span id="_CPPv3N11JetSelector8finalizeEv"></span><span id="_CPPv2N11JetSelector8finalizeEv"></span><span id="JetSelector::finalize"></span><span class="target" id="classJetSelector_1ab07ad21602342bee28fcca8e99323c7d"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector8finalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12histFinalizeEv">
+<span id="_CPPv3N11JetSelector12histFinalizeEv"></span><span id="_CPPv2N11JetSelector12histFinalizeEv"></span><span id="JetSelector::histFinalize"></span><span class="target" id="classJetSelector_1a386b75593a517ad6510ba944b10b508a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector12histFinalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector16executeSelectionEPKN4xAOD12JetContainerEfbNSt6stringEb">
+<span id="_CPPv3N11JetSelector16executeSelectionEPKN4xAOD12JetContainerEfbNSt6stringEb"></span><span id="_CPPv2N11JetSelector16executeSelectionEPKN4xAOD12JetContainerEfbNSt6stringEb"></span><span id="JetSelector::executeSelection__xAOD::JetContainerCP.float.b.ss.b"></span><span class="target" id="classJetSelector_1a78f866434fa7b469c6e5ca18d1ffa565"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">executeSelection</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">JetContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">inJets</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mcEvtWeight</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">outContainerName</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">isNominal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector16executeSelectionEPKN4xAOD12JetContainerEfbNSt6stringEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8PassCutsEPKN4xAOD3JetE">
+<span id="_CPPv3N11JetSelector8PassCutsEPKN4xAOD3JetE"></span><span id="_CPPv2N11JetSelector8PassCutsEPKN4xAOD3JetE"></span><span id="JetSelector::PassCuts__xAOD::JetCP"></span><span class="target" id="classJetSelector_1ade59f573da93e5b9833070c228b0ab06"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PassCuts</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Jet</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">jet</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11JetSelector8PassCutsEPKN4xAOD3JetE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_useCutFlowE">
+<span id="_CPPv3N11JetSelector12m_useCutFlowE"></span><span id="_CPPv2N11JetSelector12m_useCutFlowE"></span><span id="JetSelector::m_useCutFlow__b"></span><span class="target" id="classJetSelector_1a9dddf27dc49ae44111af3cdde554c047"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useCutFlow</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_useCutFlowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector17m_inContainerNameE">
+<span id="_CPPv3N11JetSelector17m_inContainerNameE"></span><span id="_CPPv2N11JetSelector17m_inContainerNameE"></span><span id="JetSelector::m_inContainerName__ss"></span><span class="target" id="classJetSelector_1a9903ef18a299cd0b8c323cb9b20c1083"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector17m_inContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>input container name </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector18m_outContainerNameE">
+<span id="_CPPv3N11JetSelector18m_outContainerNameE"></span><span id="_CPPv2N11JetSelector18m_outContainerNameE"></span><span id="JetSelector::m_outContainerName__ss"></span><span class="target" id="classJetSelector_1abbdaa3353b39164eeccbef6d255f63b1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector18m_outContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>output container name </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector19m_truthJetContainerE">
+<span id="_CPPv3N11JetSelector19m_truthJetContainerE"></span><span id="_CPPv2N11JetSelector19m_truthJetContainerE"></span><span id="JetSelector::m_truthJetContainer__ss"></span><span class="target" id="classJetSelector_1aabff2572bb4873e5c5000d501947a7b0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthJetContainer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;AntiKt4TruthJets&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector19m_truthJetContainerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>truth jet container name (used for JVT SF) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_inputAlgoE">
+<span id="_CPPv3N11JetSelector11m_inputAlgoE"></span><span id="_CPPv2N11JetSelector11m_inputAlgoE"></span><span id="JetSelector::m_inputAlgo__ss"></span><span class="target" id="classJetSelector_1a20e56c38029c05f959093ac79a462970"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inputAlgo</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_inputAlgoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>input type - from xAOD or from xAODAnaHelper Algo output </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_outputAlgoE">
+<span id="_CPPv3N11JetSelector12m_outputAlgoE"></span><span id="_CPPv2N11JetSelector12m_outputAlgoE"></span><span id="JetSelector::m_outputAlgo__ss"></span><span class="target" id="classJetSelector_1ad54b68d7a13196b6ea6c9065fee33087"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputAlgo</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_outputAlgoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>output type - this is how the vector&lt;string&gt; w/ syst names will be saved in TStore </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector21m_writeSystToMetadataE">
+<span id="_CPPv3N11JetSelector21m_writeSystToMetadataE"></span><span id="_CPPv2N11JetSelector21m_writeSystToMetadataE"></span><span id="JetSelector::m_writeSystToMetadata__b"></span><span class="target" id="classJetSelector_1ab180d91bdeef23484bbe038bfa249597"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_writeSystToMetadata</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector21m_writeSystToMetadataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write systematics names to metadata. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_jetScaleTypeE">
+<span id="_CPPv3N11JetSelector14m_jetScaleTypeE"></span><span id="_CPPv2N11JetSelector14m_jetScaleTypeE"></span><span id="JetSelector::m_jetScaleType__ss"></span><span class="target" id="classJetSelector_1ad47e5657ecb08bc6a344a123fada3619"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetScaleType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_jetScaleTypeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Type of Scale Momementum. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector7m_decorE">
+<span id="_CPPv3N11JetSelector7m_decorE"></span><span id="_CPPv2N11JetSelector7m_decorE"></span><span id="JetSelector::m_decor__ss"></span><span class="target" id="classJetSelector_1ae649d90c4f8e6adcd466ecdc7f9faf8b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_decor</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;passSel&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector7m_decorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The decoration key written to passing objects. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector25m_decorateSelectedObjectsE">
+<span id="_CPPv3N11JetSelector25m_decorateSelectedObjectsE"></span><span id="_CPPv2N11JetSelector25m_decorateSelectedObjectsE"></span><span id="JetSelector::m_decorateSelectedObjects__b"></span><span class="target" id="classJetSelector_1adcc23878fb0ab459a116b82f570b48c6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_decorateSelectedObjects</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector25m_decorateSelectedObjectsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>decorate selected objects? defaul passSel </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector25m_createSelectedContainerE">
+<span id="_CPPv3N11JetSelector25m_createSelectedContainerE"></span><span id="_CPPv2N11JetSelector25m_createSelectedContainerE"></span><span id="JetSelector::m_createSelectedContainer__b"></span><span class="target" id="classJetSelector_1a4436abb8d21689a2678b145fb75458ae"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_createSelectedContainer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector25m_createSelectedContainerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>fill using SG::VIEW_ELEMENTS to be light weight </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_nToProcessE">
+<span id="_CPPv3N11JetSelector12m_nToProcessE"></span><span id="_CPPv2N11JetSelector12m_nToProcessE"></span><span id="JetSelector::m_nToProcess__i"></span><span class="target" id="classJetSelector_1a9cc6d72dd0a48415428b7cfe9808b183"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nToProcess</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_nToProcessE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>look at n objects </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_cleanJetsE">
+<span id="_CPPv3N11JetSelector11m_cleanJetsE"></span><span id="_CPPv2N11JetSelector11m_cleanJetsE"></span><span id="JetSelector::m_cleanJets__b"></span><span class="target" id="classJetSelector_1a37828af1aa6dcfd894c5bebf0f3d620e"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanJets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_cleanJetsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require cleanJet decoration to not be set and false </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector18m_cleanEvtLeadJetsE">
+<span id="_CPPv3N11JetSelector18m_cleanEvtLeadJetsE"></span><span id="_CPPv2N11JetSelector18m_cleanEvtLeadJetsE"></span><span id="JetSelector::m_cleanEvtLeadJets__i"></span><span class="target" id="classJetSelector_1a2af12093e3c63ef8fdc9990e637e8f7e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanEvtLeadJets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N11JetSelector18m_cleanEvtLeadJetsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>kill event if any of the N leading jets are not clean </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_cleanEventE">
+<span id="_CPPv3N11JetSelector12m_cleanEventE"></span><span id="_CPPv2N11JetSelector12m_cleanEventE"></span><span id="JetSelector::m_cleanEvent__b"></span><span class="target" id="classJetSelector_1a1cc1c13c638af2cc7d6458d7367122c9"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanEvent</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_cleanEventE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Kill event if any passing jets are not clean. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The jets need the <cite>cleanJet</cite> decoration which is set when you enable <a class="reference internal" href="JetCalibrator.html#_CPPv4N13JetCalibrator12m_doCleaningE" title="JetCalibrator::m_doCleaning"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">JetCalibrator::m_doCleaning</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector16m_markCleanEventE">
+<span id="_CPPv3N11JetSelector16m_markCleanEventE"></span><span id="_CPPv2N11JetSelector16m_markCleanEventE"></span><span id="JetSelector::m_markCleanEvent__b"></span><span class="target" id="classJetSelector_1a06017e0686820277302b611e26b088ed"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_markCleanEvent</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector16m_markCleanEventE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Mark event with decorator if any passing jets are not clean. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector20m_jetScale4SelectionE">
+<span id="_CPPv3N11JetSelector20m_jetScale4SelectionE"></span><span id="_CPPv2N11JetSelector20m_jetScale4SelectionE"></span><span id="JetSelector::m_jetScale4Selection__ss"></span><span class="target" id="classJetSelector_1add858ccb19a36d1895fb6f8ed83b010e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetScale4Selection</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Final&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector20m_jetScale4SelectionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Choose the scale at which the selection is performed (default “Final”, i.e. default 4vector) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_doMCCleaningE">
+<span id="_CPPv3N11JetSelector14m_doMCCleaningE"></span><span id="_CPPv2N11JetSelector14m_doMCCleaningE"></span><span id="JetSelector::m_doMCCleaning__b"></span><span class="target" id="classJetSelector_1a41bb1f220481aab3562e9761d104347b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doMCCleaning</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_doMCCleaningE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>(MC-only) Kill pileup overlay event if reconstructed jets avg(pT1,pT2) &gt; 1.4*(truth jet pT1) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector15m_mcCleaningCutE">
+<span id="_CPPv3N11JetSelector15m_mcCleaningCutE"></span><span id="_CPPv2N11JetSelector15m_mcCleaningCutE"></span><span id="JetSelector::m_mcCleaningCut__float"></span><span class="target" id="classJetSelector_1a7ce9c5ba775e55f1ebe27da9ffedb6d3"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_mcCleaningCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.4</span></span><a class="headerlink" href="#_CPPv4N11JetSelector15m_mcCleaningCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Change the default 1.4 cut to x &gt; 1.0. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_pass_minE">
+<span id="_CPPv3N11JetSelector10m_pass_minE"></span><span id="_CPPv2N11JetSelector10m_pass_minE"></span><span id="JetSelector::m_pass_min__i"></span><span class="target" id="classJetSelector_1aeacd54423397fa7b80de3040badca935"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pass_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_pass_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum number of objects passing cuts </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_pass_maxE">
+<span id="_CPPv3N11JetSelector10m_pass_maxE"></span><span id="_CPPv2N11JetSelector10m_pass_maxE"></span><span id="JetSelector::m_pass_max__i"></span><span class="target" id="classJetSelector_1a12100484cc3ac90f8fbf59647c1e06dd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pass_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_pass_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum number of objects passing cuts </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8m_pT_maxE">
+<span id="_CPPv3N11JetSelector8m_pT_maxE"></span><span id="_CPPv2N11JetSelector8m_pT_maxE"></span><span id="JetSelector::m_pT_max__float"></span><span class="target" id="classJetSelector_1a2a708ebcc5763889df501625e005e4b9"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pT_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector8m_pT_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require pT &lt; pt_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8m_pT_minE">
+<span id="_CPPv3N11JetSelector8m_pT_minE"></span><span id="_CPPv2N11JetSelector8m_pT_minE"></span><span id="JetSelector::m_pT_min__float"></span><span class="target" id="classJetSelector_1a148bed36cdb67a37f0e9a406e9748d05"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pT_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector8m_pT_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require pT &gt; pt_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8m_ET_maxE">
+<span id="_CPPv3N11JetSelector8m_ET_maxE"></span><span id="_CPPv2N11JetSelector8m_ET_maxE"></span><span id="JetSelector::m_ET_max__float"></span><span class="target" id="classJetSelector_1a71cf04acb510130e1d62b6ef58b10665"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_ET_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector8m_ET_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require ET &lt; ET_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8m_ET_minE">
+<span id="_CPPv3N11JetSelector8m_ET_minE"></span><span id="_CPPv2N11JetSelector8m_ET_minE"></span><span id="JetSelector::m_ET_min__float"></span><span class="target" id="classJetSelector_1ae7e0168369631441dc4f480958881f4b"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_ET_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector8m_ET_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require ET &gt; ET_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector9m_eta_maxE">
+<span id="_CPPv3N11JetSelector9m_eta_maxE"></span><span id="_CPPv2N11JetSelector9m_eta_maxE"></span><span id="JetSelector::m_eta_max__float"></span><span class="target" id="classJetSelector_1a88e5d5a59fed947dd03b13a658b6f6e4"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eta_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector9m_eta_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require eta &lt; eta_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector9m_eta_minE">
+<span id="_CPPv3N11JetSelector9m_eta_minE"></span><span id="_CPPv2N11JetSelector9m_eta_minE"></span><span id="JetSelector::m_eta_min__float"></span><span class="target" id="classJetSelector_1a89044635b414e272f12ddb366f00b029"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eta_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector9m_eta_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require eta &gt; eta_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_detEta_maxE">
+<span id="_CPPv3N11JetSelector12m_detEta_maxE"></span><span id="_CPPv2N11JetSelector12m_detEta_maxE"></span><span id="JetSelector::m_detEta_max__float"></span><span class="target" id="classJetSelector_1a162b2571d55393b81ff2af80f5aedf0b"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_detEta_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_detEta_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require detEta &lt; detEta_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_detEta_minE">
+<span id="_CPPv3N11JetSelector12m_detEta_minE"></span><span id="_CPPv2N11JetSelector12m_detEta_minE"></span><span id="JetSelector::m_detEta_min__float"></span><span class="target" id="classJetSelector_1a7925fb9903f0010c3f051ce6ca1bd7d1"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_detEta_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_detEta_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require detEta &gt; detEta_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_mass_maxE">
+<span id="_CPPv3N11JetSelector10m_mass_maxE"></span><span id="_CPPv2N11JetSelector10m_mass_maxE"></span><span id="JetSelector::m_mass_max__float"></span><span class="target" id="classJetSelector_1ab85b7fe458795701ce0e708febb8232d"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_mass_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_mass_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require mass &lt; mass_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_mass_minE">
+<span id="_CPPv3N11JetSelector10m_mass_minE"></span><span id="_CPPv2N11JetSelector10m_mass_minE"></span><span id="JetSelector::m_mass_min__float"></span><span class="target" id="classJetSelector_1ad991e62959aae9575157706fd24a1594"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_mass_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_mass_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require mass &gt; mass_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_rapidity_maxE">
+<span id="_CPPv3N11JetSelector14m_rapidity_maxE"></span><span id="_CPPv2N11JetSelector14m_rapidity_maxE"></span><span id="JetSelector::m_rapidity_max__float"></span><span class="target" id="classJetSelector_1a9dc7aec7381d7bc1682648a79304d4d4"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_rapidity_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_rapidity_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require rapidity &lt; rapidity_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_rapidity_minE">
+<span id="_CPPv3N11JetSelector14m_rapidity_minE"></span><span id="_CPPv2N11JetSelector14m_rapidity_minE"></span><span id="JetSelector::m_rapidity_min__float"></span><span class="target" id="classJetSelector_1ac7578a6615bcddbf9395e67583ceb19e"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_rapidity_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_rapidity_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require rapidity &gt; rapidity_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_truthLabelE">
+<span id="_CPPv3N11JetSelector12m_truthLabelE"></span><span id="_CPPv2N11JetSelector12m_truthLabelE"></span><span id="JetSelector::m_truthLabel__i"></span><span class="target" id="classJetSelector_1ad281f03168e71050fafb7cd207266b26"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthLabel</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_truthLabelE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require truth level on truth jets </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector19m_useHadronConeExclE">
+<span id="_CPPv3N11JetSelector19m_useHadronConeExclE"></span><span id="_CPPv2N11JetSelector19m_useHadronConeExclE"></span><span id="JetSelector::m_useHadronConeExcl__b"></span><span class="target" id="classJetSelector_1a46e1ba9c4943805065b262e65e58d538"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useHadronConeExcl</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector19m_useHadronConeExclE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>use HadronConeExclTruthLabelID for truth match (default) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector7m_doJVFE">
+<span id="_CPPv3N11JetSelector7m_doJVFE"></span><span id="_CPPv2N11JetSelector7m_doJVFE"></span><span id="JetSelector::m_doJVF__b"></span><span class="target" id="classJetSelector_1a7cad22e48eddf3e47f164f01fec6414b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doJVF</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector7m_doJVFE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>check JVF </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_pt_max_JVFE">
+<span id="_CPPv3N11JetSelector12m_pt_max_JVFE"></span><span id="_CPPv2N11JetSelector12m_pt_max_JVFE"></span><span id="JetSelector::m_pt_max_JVF__float"></span><span class="target" id="classJetSelector_1a812fc946ae2f2400a0b1ca76d89b54d8"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pt_max_JVF</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">50e3</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_pt_max_JVFE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>max pT [GeV] (JVF is a pileup cut) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_eta_max_JVFE">
+<span id="_CPPv3N11JetSelector13m_eta_max_JVFE"></span><span id="_CPPv2N11JetSelector13m_eta_max_JVFE"></span><span id="JetSelector::m_eta_max_JVF__float"></span><span class="target" id="classJetSelector_1a7d7100c1391097e4f3ee1146c4b3fb35"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eta_max_JVF</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2.4</span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_eta_max_JVFE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>detector eta cut </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8m_JVFCutE">
+<span id="_CPPv3N11JetSelector8m_JVFCutE"></span><span id="_CPPv2N11JetSelector8m_JVFCutE"></span><span id="JetSelector::m_JVFCut__float"></span><span class="target" id="classJetSelector_1a6dd02b2759101592824a84bd3afbb885"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_JVFCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.5</span></span><a class="headerlink" href="#_CPPv4N11JetSelector8m_JVFCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>cut value </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector19m_doTruthJetTaggingE">
+<span id="_CPPv3N11JetSelector19m_doTruthJetTaggingE"></span><span id="_CPPv2N11JetSelector19m_doTruthJetTaggingE"></span><span id="JetSelector::m_doTruthJetTagging__b"></span><span class="target" id="classJetSelector_1a30576fcb0c4932454a61599c6155c823"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doTruthJetTagging</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector19m_doTruthJetTaggingE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>(re-)evaluate the hard-scatter jet label (isJvtHS) required for Jvt efficiency tools </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector7m_doJVTE">
+<span id="_CPPv3N11JetSelector7m_doJVTE"></span><span id="_CPPv2N11JetSelector7m_doJVTE"></span><span id="JetSelector::m_doJVT__b"></span><span class="target" id="classJetSelector_1a9813623073230a355b17dff411c20501"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector7m_doJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>check JVT </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_noJVTVetoE">
+<span id="_CPPv3N11JetSelector11m_noJVTVetoE"></span><span id="_CPPv2N11JetSelector11m_noJVTVetoE"></span><span id="JetSelector::m_noJVTVeto__b"></span><span class="target" id="classJetSelector_1a78f012eee9ba4967c1c55c8d9382e405"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_noJVTVeto</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_noJVTVetoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>keep JVT-rejected jets and decorate passing status </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8m_dofJVTE">
+<span id="_CPPv3N11JetSelector8m_dofJVTE"></span><span id="_CPPv2N11JetSelector8m_dofJVTE"></span><span id="JetSelector::m_dofJVT__b"></span><span class="target" id="classJetSelector_1a179bf56a343295b7636474a48bcce02c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_dofJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector8m_dofJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>check forward JVT </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_dofJVTVetoE">
+<span id="_CPPv3N11JetSelector12m_dofJVTVetoE"></span><span id="_CPPv2N11JetSelector12m_dofJVTVetoE"></span><span id="JetSelector::m_dofJVTVeto__b"></span><span class="target" id="classJetSelector_1a73fda6c6256a8098c964b8d24ec1b6fb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_dofJVTVeto</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_dofJVTVetoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove jets that fail fJVT. Like JVT, the default is to clean the collection. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_pt_max_JVTE">
+<span id="_CPPv3N11JetSelector12m_pt_max_JVTE"></span><span id="_CPPv2N11JetSelector12m_pt_max_JVTE"></span><span id="JetSelector::m_pt_max_JVT__float"></span><span class="target" id="classJetSelector_1aaa2e8209ae2df799428e9100a4b9a8a5"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pt_max_JVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">60e3</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_pt_max_JVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>max pT [GeV] (JVT is a pileup cut) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_eta_max_JVTE">
+<span id="_CPPv3N11JetSelector13m_eta_max_JVTE"></span><span id="_CPPv2N11JetSelector13m_eta_max_JVTE"></span><span id="JetSelector::m_eta_max_JVT__float"></span><span class="target" id="classJetSelector_1a8149ca6073cc9db0ceaec5871d992c9d"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eta_max_JVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2.4</span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_eta_max_JVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>detector eta cut </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector15m_jvtUsedBeforeE">
+<span id="_CPPv3N11JetSelector15m_jvtUsedBeforeE"></span><span id="_CPPv2N11JetSelector15m_jvtUsedBeforeE"></span><span id="JetSelector::m_jvtUsedBefore__b"></span><span class="target" id="classJetSelector_1a8ac222f1149b2e26ce8c8e9d346c18f2"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jvtUsedBefore</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector15m_jvtUsedBeforeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>was JVT already run in an earlier instance of <a class="reference internal" href="api/classJetSelector.html#classJetSelector"><span class="std std-ref">JetSelector</span></a>? </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector15m_haveTruthJetsE">
+<span id="_CPPv3N11JetSelector15m_haveTruthJetsE"></span><span id="_CPPv2N11JetSelector15m_haveTruthJetsE"></span><span id="JetSelector::m_haveTruthJets__b"></span><span class="target" id="classJetSelector_1a2875d22d527ffba57b59fbd487aaf49f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_haveTruthJets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector15m_haveTruthJetsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Does the input have truth jets? If not, cannot decorate with true hard scatter / pileup info. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_getJVTSFE">
+<span id="_CPPv3N11JetSelector10m_getJVTSFE"></span><span id="_CPPv2N11JetSelector10m_getJVTSFE"></span><span id="JetSelector::m_getJVTSF__b"></span><span class="target" id="classJetSelector_1a1f8e6a63cb9fb0796a8092e546660e18"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_getJVTSF</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_getJVTSFE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieve JVT SFs (true by default, when false: allows to get JVT decision w/o needing truth jets) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector8m_JVTCutE">
+<span id="_CPPv3N11JetSelector8m_JVTCutE"></span><span id="_CPPv2N11JetSelector8m_JVTCutE"></span><span id="JetSelector::m_JVTCut__float"></span><span class="target" id="classJetSelector_1adc635bb6eb3355254c04b756ea9e2206"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_JVTCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1.0</span></span><a class="headerlink" href="#_CPPv4N11JetSelector8m_JVTCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Minimum value of JVT for selecting jets. </p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If set to a non-negative value (default is -1.0), it will override any set value for <a class="reference internal" href="#_CPPv4N11JetSelector17m_WorkingPointJVTE" title="JetSelector::m_WorkingPointJVT"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">JetSelector::m_WorkingPointJVT</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector17m_WorkingPointJVTE">
+<span id="_CPPv3N11JetSelector17m_WorkingPointJVTE"></span><span id="_CPPv2N11JetSelector17m_WorkingPointJVTE"></span><span id="JetSelector::m_WorkingPointJVT__ss"></span><span class="target" id="classJetSelector_1a03636e8197206da42bbe0db2cbf93040"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;FixedEffPt&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector17m_WorkingPointJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>WP for NNJvt. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_SFFileJVTE">
+<span id="_CPPv3N11JetSelector11m_SFFileJVTE"></span><span id="_CPPv2N11JetSelector11m_SFFileJVTE"></span><span id="JetSelector::m_SFFileJVT__ss"></span><span class="target" id="classJetSelector_1abad5ad0c48b2a4c0cc4e576a5feba072"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_SFFileJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_SFFileJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SF file for NNJvtEfficiencyTool. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector20m_outputSystNamesJVTE">
+<span id="_CPPv3N11JetSelector20m_outputSystNamesJVTE"></span><span id="_CPPv2N11JetSelector20m_outputSystNamesJVTE"></span><span id="JetSelector::m_outputSystNamesJVT__ss"></span><span class="target" id="classJetSelector_1ab283ebb3c60dc75a33cada6a57e27a85"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;JetJvtEfficiency_JVTSyst&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector20m_outputSystNamesJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector22m_recalculateJvtScoresE">
+<span id="_CPPv3N11JetSelector22m_recalculateJvtScoresE"></span><span id="_CPPv2N11JetSelector22m_recalculateJvtScoresE"></span><span id="JetSelector::m_recalculateJvtScores__b"></span><span class="target" id="classJetSelector_1a6b7f7d933a42ec874b73b909b328ed85"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_recalculateJvtScores</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector22m_recalculateJvtScoresE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Do re-calculation of NNJvt - scores need to be re-evaluated in case jet pt changed w.r.t. derivation. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_systValJVTE">
+<span id="_CPPv3N11JetSelector12m_systValJVTE"></span><span id="_CPPv2N11JetSelector12m_systValJVTE"></span><span id="JetSelector::m_systValJVT__float"></span><span class="target" id="classJetSelector_1a87b84dabe9d088089060dfa7f8d9fe4f"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_systValJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_systNameJVTE">
+<span id="_CPPv3N11JetSelector13m_systNameJVTE"></span><span id="_CPPv2N11JetSelector13m_systNameJVTE"></span><span id="JetSelector::m_systNameJVT__ss"></span><span class="target" id="classJetSelector_1aba8c20f86810b4b9c5807cbeda303ea0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_systNameJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector18m_WorkingPointfJVTE">
+<span id="_CPPv3N11JetSelector18m_WorkingPointfJVTE"></span><span id="_CPPv2N11JetSelector18m_WorkingPointfJVTE"></span><span id="JetSelector::m_WorkingPointfJVT__ss"></span><span class="target" id="classJetSelector_1a4e7e73430826586d843807ae09930ff0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointfJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Loose&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector18m_WorkingPointfJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>WP for fJvt. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_SFFilefJVTE">
+<span id="_CPPv3N11JetSelector12m_SFFilefJVTE"></span><span id="_CPPv2N11JetSelector12m_SFFilefJVTE"></span><span id="JetSelector::m_SFFilefJVT__ss"></span><span class="target" id="classJetSelector_1af6b18bd59c73b75883f7220e556302fc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_SFFilefJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_SFFilefJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SF file for fJvtEfficiencyTool. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector21m_outputSystNamesfJVTE">
+<span id="_CPPv3N11JetSelector21m_outputSystNamesfJVTE"></span><span id="_CPPv2N11JetSelector21m_outputSystNamesfJVTE"></span><span id="JetSelector::m_outputSystNamesfJVT__ss"></span><span class="target" id="classJetSelector_1a7a80587f5c28ee387ed710a26b6575b8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesfJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;JetJvtEfficiency_fJVTSyst&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector21m_outputSystNamesfJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_systValfJVTE">
+<span id="_CPPv3N11JetSelector13m_systValfJVTE"></span><span id="_CPPv2N11JetSelector13m_systValfJVTE"></span><span id="JetSelector::m_systValfJVT__float"></span><span class="target" id="classJetSelector_1a2b2dc629cc15ecde35431bcaa2bade32"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValfJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_systValfJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_systNamefJVTE">
+<span id="_CPPv3N11JetSelector14m_systNamefJVTE"></span><span id="_CPPv2N11JetSelector14m_systNamefJVTE"></span><span id="JetSelector::m_systNamefJVT__ss"></span><span class="target" id="classJetSelector_1a0c58d9d5d29227fff1e8f1607815267c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNamefJVT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_systNamefJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector16m_fjvtUsedBeforeE">
+<span id="_CPPv3N11JetSelector16m_fjvtUsedBeforeE"></span><span id="_CPPv2N11JetSelector16m_fjvtUsedBeforeE"></span><span id="JetSelector::m_fjvtUsedBefore__b"></span><span class="target" id="classJetSelector_1a45b517ad03feaf6a537de0e8dc169679"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fjvtUsedBefore</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector16m_fjvtUsedBeforeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>was fJVT already run in an earlier instance of <a class="reference internal" href="api/classJetSelector.html#classJetSelector"><span class="std std-ref">JetSelector</span></a>? </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector16m_doJetTimingCutE">
+<span id="_CPPv3N11JetSelector16m_doJetTimingCutE"></span><span id="_CPPv2N11JetSelector16m_doJetTimingCutE"></span><span id="JetSelector::m_doJetTimingCut__b"></span><span class="target" id="classJetSelector_1adc61ef233648de71ef2a4c172295a7d0"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doJetTimingCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector16m_doJetTimingCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Timing cut. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector15m_jetTiming_maxE">
+<span id="_CPPv3N11JetSelector15m_jetTiming_maxE"></span><span id="_CPPv2N11JetSelector15m_jetTiming_maxE"></span><span id="JetSelector::m_jetTiming_max__float"></span><span class="target" id="classJetSelector_1abaa0a90ef70448d8c6f1f756d2ae3e85"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetTiming_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N11JetSelector15m_jetTiming_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_doBTagCutE">
+<span id="_CPPv3N11JetSelector11m_doBTagCutE"></span><span id="_CPPv2N11JetSelector11m_doBTagCutE"></span><span id="JetSelector::m_doBTagCut__b"></span><span class="target" id="classJetSelector_1ac6bdc49e73a912c627abe496d93a8341"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doBTagCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_doBTagCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Flag to apply btagging cut, if false just decorate decisions. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_corrFileNameE">
+<span id="_CPPv3N11JetSelector14m_corrFileNameE"></span><span id="_CPPv2N11JetSelector14m_corrFileNameE"></span><span id="JetSelector::m_corrFileName__ss"></span><span class="target" id="classJetSelector_1a2e2cf36ce961b2a1e4e51f677eb0f1dd"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_corrFileName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;xAODBTaggingEfficiency/cutprofiles_22072015.root&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_corrFileNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_jetAuthorE">
+<span id="_CPPv3N11JetSelector11m_jetAuthorE"></span><span id="_CPPv2N11JetSelector11m_jetAuthorE"></span><span id="JetSelector::m_jetAuthor__ss"></span><span class="target" id="classJetSelector_1afdff39461251a11d446628844c16c15c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetAuthor</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;AntiKt4EMPFlowJets&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_jetAuthorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_taggerNameE">
+<span id="_CPPv3N11JetSelector12m_taggerNameE"></span><span id="_CPPv2N11JetSelector12m_taggerNameE"></span><span id="JetSelector::m_taggerName__ss"></span><span class="target" id="classJetSelector_1a097940a4114b9434416e44698b701e00"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_taggerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;DL1r&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_taggerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_operatingPtE">
+<span id="_CPPv3N11JetSelector13m_operatingPtE"></span><span id="_CPPv2N11JetSelector13m_operatingPtE"></span><span id="JetSelector::m_operatingPt__ss"></span><span class="target" id="classJetSelector_1adda707ff7871948d0b5f09c0432a5c85"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_operatingPt</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;FixedCutBEff_70&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_operatingPtE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector24m_readFromBTaggingObjectE">
+<span id="_CPPv3N11JetSelector24m_readFromBTaggingObjectE"></span><span id="_CPPv2N11JetSelector24m_readFromBTaggingObjectE"></span><span id="JetSelector::m_readFromBTaggingObject__b"></span><span class="target" id="classJetSelector_1ad4b1afb3b74e2502825e3a875c7e4d4e"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_readFromBTaggingObject</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector24m_readFromBTaggingObjectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_b_eta_maxE">
+<span id="_CPPv3N11JetSelector11m_b_eta_maxE"></span><span id="_CPPv2N11JetSelector11m_b_eta_maxE"></span><span id="JetSelector::m_b_eta_max__double"></span><span class="target" id="classJetSelector_1afb4ea6a4e78a35b869ecd180c5387480"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_b_eta_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2.5</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_b_eta_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_b_pt_minE">
+<span id="_CPPv3N11JetSelector10m_b_pt_minE"></span><span id="_CPPv2N11JetSelector10m_b_pt_minE"></span><span id="JetSelector::m_b_pt_min__double"></span><span class="target" id="classJetSelector_1a954214b7b81487f35cddebf141eb1e8d"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_b_pt_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">20e3</span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_b_pt_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_doHLTBTagCutE">
+<span id="_CPPv3N11JetSelector14m_doHLTBTagCutE"></span><span id="_CPPv2N11JetSelector14m_doHLTBTagCutE"></span><span id="JetSelector::m_doHLTBTagCut__b"></span><span class="target" id="classJetSelector_1a89e612853c57ab0f5577056737679bed"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doHLTBTagCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_doHLTBTagCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector19m_HLTBTagTaggerNameE">
+<span id="_CPPv3N11JetSelector19m_HLTBTagTaggerNameE"></span><span id="_CPPv2N11JetSelector19m_HLTBTagTaggerNameE"></span><span id="JetSelector::m_HLTBTagTaggerName__ss"></span><span class="target" id="classJetSelector_1a1d38c13d1d653a17a772a0aaded75869"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_HLTBTagTaggerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;DL1r&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector19m_HLTBTagTaggerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector17m_HLTBTagCutValueE">
+<span id="_CPPv3N11JetSelector17m_HLTBTagCutValueE"></span><span id="_CPPv2N11JetSelector17m_HLTBTagCutValueE"></span><span id="JetSelector::m_HLTBTagCutValue__float"></span><span class="target" id="classJetSelector_1a38572112e67f5e098ecd1427a869f5a3"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_HLTBTagCutValue</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">0.4434</span></span><a class="headerlink" href="#_CPPv4N11JetSelector17m_HLTBTagCutValueE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector15m_requireHLTVtxE">
+<span id="_CPPv3N11JetSelector15m_requireHLTVtxE"></span><span id="_CPPv2N11JetSelector15m_requireHLTVtxE"></span><span id="JetSelector::m_requireHLTVtx__b"></span><span class="target" id="classJetSelector_1a904c9cf67a11f3a62da8f8f2aa61527d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_requireHLTVtx</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector15m_requireHLTVtxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector17m_requireNoHLTVtxE">
+<span id="_CPPv3N11JetSelector17m_requireNoHLTVtxE"></span><span id="_CPPv2N11JetSelector17m_requireNoHLTVtxE"></span><span id="JetSelector::m_requireNoHLTVtx__b"></span><span class="target" id="classJetSelector_1a976ddf2ddf14e3ef3c0125d5a7a7547e"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_requireNoHLTVtx</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector17m_requireNoHLTVtxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector18m_passAuxDecorKeysE">
+<span id="_CPPv3N11JetSelector18m_passAuxDecorKeysE"></span><span id="_CPPv2N11JetSelector18m_passAuxDecorKeysE"></span><span id="JetSelector::m_passAuxDecorKeys__ss"></span><span class="target" id="classJetSelector_1acce4605bf0c051ea133d906431ba20f5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_passAuxDecorKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector18m_passAuxDecorKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector18m_failAuxDecorKeysE">
+<span id="_CPPv3N11JetSelector18m_failAuxDecorKeysE"></span><span id="_CPPv2N11JetSelector18m_failAuxDecorKeysE"></span><span id="JetSelector::m_failAuxDecorKeys__ss"></span><span class="target" id="classJetSelector_1aedeff687eddbcc4356b1b05937fc7941"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_failAuxDecorKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector18m_failAuxDecorKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector21m_singleJetTrigChainsE">
+<span id="_CPPv3N11JetSelector21m_singleJetTrigChainsE"></span><span id="_CPPv2N11JetSelector21m_singleJetTrigChainsE"></span><span id="JetSelector::m_singleJetTrigChains__ss"></span><span class="target" id="classJetSelector_1afa10bf9956794e130da8bbdd924404cc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_singleJetTrigChains</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector21m_singleJetTrigChainsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A comma-separated string w/ alll the HLT single jet trigger chains for which you want to perform the matching. If left empty (as it is by default), no trigger matching will be attempted at all </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector17m_diJetTrigChainsE">
+<span id="_CPPv3N11JetSelector17m_diJetTrigChainsE"></span><span id="_CPPv2N11JetSelector17m_diJetTrigChainsE"></span><span id="JetSelector::m_diJetTrigChains__ss"></span><span class="target" id="classJetSelector_1a606d89936f103476f486932b60519001"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_diJetTrigChains</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector17m_diJetTrigChainsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A comma-separated string w/ all the HLT dijet trigger chains for which you want to perform the matching. If left empty (as it is by default), no trigger matching will be attempted at all </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector18m_removeDuplicatesE">
+<span id="_CPPv3N11JetSelector18m_removeDuplicatesE"></span><span id="_CPPv2N11JetSelector18m_removeDuplicatesE"></span><span id="JetSelector::m_removeDuplicates__b"></span><span class="target" id="classJetSelector_1a87dcdcbc15d584b2fa42d71a2a2fc84b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_removeDuplicates</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector18m_removeDuplicatesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>remove duplicate jets (exactly the same eta) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector30m_count_events_with_duplicatesE">
+<span id="_CPPv3N11JetSelector30m_count_events_with_duplicatesE"></span><span id="_CPPv2N11JetSelector30m_count_events_with_duplicatesE"></span><span id="JetSelector::m_count_events_with_duplicates__i"></span><span class="target" id="classJetSelector_1ae63d8ca75db8aca63a70328cc00b228a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_count_events_with_duplicates</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N11JetSelector30m_count_events_with_duplicatesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>number of events with duplicates </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector6m_sortE">
+<span id="_CPPv3N11JetSelector6m_sortE"></span><span id="_CPPv2N11JetSelector6m_sortE"></span><span id="JetSelector::m_sort__b"></span><span class="target" id="classJetSelector_1a33826bdd669400fd84bdc741bafa0c13"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sort</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N11JetSelector6m_sortE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>sort jets (normally done by <a class="reference internal" href="api/classJetCalibrator.html#classJetCalibrator"><span class="std std-ref">JetCalibrator</span></a>, but HLT jets need sorting and don’t get calibrated here) </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_numEventE">
+<span id="_CPPv3N11JetSelector10m_numEventE"></span><span id="_CPPv2N11JetSelector10m_numEventE"></span><span id="JetSelector::m_numEvent__i"></span><span class="target" id="classJetSelector_1afbf62662f181de890db6e631af7465bf"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numEvent</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_numEventE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_numObjectE">
+<span id="_CPPv3N11JetSelector11m_numObjectE"></span><span id="_CPPv2N11JetSelector11m_numObjectE"></span><span id="JetSelector::m_numObject__i"></span><span class="target" id="classJetSelector_1a6cec9f93fb062cd9ed1478732ad6c9ea"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numObject</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_numObjectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_numEventPassE">
+<span id="_CPPv3N11JetSelector14m_numEventPassE"></span><span id="_CPPv2N11JetSelector14m_numEventPassE"></span><span id="JetSelector::m_numEventPass__i"></span><span class="target" id="classJetSelector_1a3376757a75f632c62a0c98bf897957f1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numEventPass</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_numEventPassE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector20m_weightNumEventPassE">
+<span id="_CPPv3N11JetSelector20m_weightNumEventPassE"></span><span id="_CPPv2N11JetSelector20m_weightNumEventPassE"></span><span id="JetSelector::m_weightNumEventPass__i"></span><span class="target" id="classJetSelector_1abed145ec7f6a0fcaf5a16f9127b05c1c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_weightNumEventPass</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector20m_weightNumEventPassE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector15m_numObjectPassE">
+<span id="_CPPv3N11JetSelector15m_numObjectPassE"></span><span id="_CPPv2N11JetSelector15m_numObjectPassE"></span><span id="JetSelector::m_numObjectPass__i"></span><span class="target" id="classJetSelector_1a70c773fe4c852bb3f51c0f452cee0dd5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numObjectPass</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector15m_numObjectPassE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector12m_pvLocationE">
+<span id="_CPPv3N11JetSelector12m_pvLocationE"></span><span id="_CPPv2N11JetSelector12m_pvLocationE"></span><span id="JetSelector::m_pvLocation__i"></span><span class="target" id="classJetSelector_1acf1e129bd053c6f26929975f34fbe2ef"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pvLocation</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector12m_pvLocationE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector9m_isEMjetE">
+<span id="_CPPv3N11JetSelector9m_isEMjetE"></span><span id="_CPPv2N11JetSelector9m_isEMjetE"></span><span id="JetSelector::m_isEMjet__b"></span><span class="target" id="classJetSelector_1a0389bd941d1370af16d9b8565c03a94e"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isEMjet</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector9m_isEMjetE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector9m_isLCjetE">
+<span id="_CPPv3N11JetSelector9m_isLCjetE"></span><span id="_CPPv2N11JetSelector9m_isLCjetE"></span><span id="JetSelector::m_isLCjet__b"></span><span class="target" id="classJetSelector_1a9b7363ef361db47b859c8e970546cc83"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isLCjet</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector9m_isLCjetE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_cutflowHistE">
+<span id="_CPPv3N11JetSelector13m_cutflowHistE"></span><span id="_CPPv2N11JetSelector13m_cutflowHistE"></span><span id="JetSelector::m_cutflowHist__TH1DP"></span><span class="target" id="classJetSelector_1a6d4dd877248de44a94221afec123f101"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflowHist</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_cutflowHistE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_cutflowHistWE">
+<span id="_CPPv3N11JetSelector14m_cutflowHistWE"></span><span id="_CPPv2N11JetSelector14m_cutflowHistWE"></span><span id="JetSelector::m_cutflowHistW__TH1DP"></span><span class="target" id="classJetSelector_1a02e355650ff2dd9077eb8c9282623082"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflowHistW</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_cutflowHistWE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_cutflow_binE">
+<span id="_CPPv3N11JetSelector13m_cutflow_binE"></span><span id="_CPPv2N11JetSelector13m_cutflow_binE"></span><span id="JetSelector::m_cutflow_bin__i"></span><span class="target" id="classJetSelector_1abdb8e9c4a8abb20d8671905cf09fa4cb"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_bin</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_cutflow_binE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_passKeysE">
+<span id="_CPPv3N11JetSelector10m_passKeysE"></span><span id="_CPPv2N11JetSelector10m_passKeysE"></span><span id="JetSelector::m_passKeys__std::vector:ss:"></span><span class="target" id="classJetSelector_1a1330cce93367aac0e6eaf4c240dba1bc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_passKeys</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_passKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector10m_failKeysE">
+<span id="_CPPv3N11JetSelector10m_failKeysE"></span><span id="_CPPv2N11JetSelector10m_failKeysE"></span><span id="JetSelector::m_failKeys__std::vector:ss:"></span><span class="target" id="classJetSelector_1a16ec0a27e663dca466493c4d2d02526b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_failKeys</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector10m_failKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector19m_jet_cutflowHist_1E">
+<span id="_CPPv3N11JetSelector19m_jet_cutflowHist_1E"></span><span id="_CPPv2N11JetSelector19m_jet_cutflowHist_1E"></span><span id="JetSelector::m_jet_cutflowHist_1__TH1DP"></span><span class="target" id="classJetSelector_1a32bbad737e66c5dea118ccc34f38d515"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N11JetSelector19m_jet_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector17m_jet_cutflow_allE">
+<span id="_CPPv3N11JetSelector17m_jet_cutflow_allE"></span><span id="_CPPv2N11JetSelector17m_jet_cutflow_allE"></span><span id="JetSelector::m_jet_cutflow_all__i"></span><span class="target" id="classJetSelector_1acd1b4f5c401415bd5f4b7989565c1a47"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_all</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector17m_jet_cutflow_allE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector26m_jet_cutflow_cleaning_cutE">
+<span id="_CPPv3N11JetSelector26m_jet_cutflow_cleaning_cutE"></span><span id="_CPPv2N11JetSelector26m_jet_cutflow_cleaning_cutE"></span><span id="JetSelector::m_jet_cutflow_cleaning_cut__i"></span><span class="target" id="classJetSelector_1a30712deb322495e018b6dba6556b4379"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_cleaning_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector26m_jet_cutflow_cleaning_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_jet_cutflow_ptmax_cutE">
+<span id="_CPPv3N11JetSelector23m_jet_cutflow_ptmax_cutE"></span><span id="_CPPv2N11JetSelector23m_jet_cutflow_ptmax_cutE"></span><span id="JetSelector::m_jet_cutflow_ptmax_cut__i"></span><span class="target" id="classJetSelector_1abdbe33db58918b5eb5fc937735a3669a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_ptmax_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_jet_cutflow_ptmax_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_jet_cutflow_ptmin_cutE">
+<span id="_CPPv3N11JetSelector23m_jet_cutflow_ptmin_cutE"></span><span id="_CPPv2N11JetSelector23m_jet_cutflow_ptmin_cutE"></span><span id="JetSelector::m_jet_cutflow_ptmin_cut__i"></span><span class="target" id="classJetSelector_1a4669946143c88a8d7c3e2ad68e7f182e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_ptmin_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_jet_cutflow_ptmin_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_jet_cutflow_etmax_cutE">
+<span id="_CPPv3N11JetSelector23m_jet_cutflow_etmax_cutE"></span><span id="_CPPv2N11JetSelector23m_jet_cutflow_etmax_cutE"></span><span id="JetSelector::m_jet_cutflow_etmax_cut__i"></span><span class="target" id="classJetSelector_1a121d086762d4ca7e51f561c679fc2c59"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_etmax_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_jet_cutflow_etmax_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_jet_cutflow_etmin_cutE">
+<span id="_CPPv3N11JetSelector23m_jet_cutflow_etmin_cutE"></span><span id="_CPPv2N11JetSelector23m_jet_cutflow_etmin_cutE"></span><span id="JetSelector::m_jet_cutflow_etmin_cut__i"></span><span class="target" id="classJetSelector_1aabc003c04b5213c421a114605974b137"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_etmin_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_jet_cutflow_etmin_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector21m_jet_cutflow_eta_cutE">
+<span id="_CPPv3N11JetSelector21m_jet_cutflow_eta_cutE"></span><span id="_CPPv2N11JetSelector21m_jet_cutflow_eta_cutE"></span><span id="JetSelector::m_jet_cutflow_eta_cut__i"></span><span class="target" id="classJetSelector_1a14370c4ae52c428ed7b72b619e15f479"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_eta_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector21m_jet_cutflow_eta_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector21m_jet_cutflow_jvt_cutE">
+<span id="_CPPv3N11JetSelector21m_jet_cutflow_jvt_cutE"></span><span id="_CPPv2N11JetSelector21m_jet_cutflow_jvt_cutE"></span><span id="JetSelector::m_jet_cutflow_jvt_cut__i"></span><span class="target" id="classJetSelector_1a0cd6f0cad7ff4b0499d14a4818918022"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_jvt_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector21m_jet_cutflow_jvt_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector24m_jet_cutflow_timing_cutE">
+<span id="_CPPv3N11JetSelector24m_jet_cutflow_timing_cutE"></span><span id="_CPPv2N11JetSelector24m_jet_cutflow_timing_cutE"></span><span id="JetSelector::m_jet_cutflow_timing_cut__i"></span><span class="target" id="classJetSelector_1ac45ebaf749c539a5332b23a741145c4c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_timing_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector24m_jet_cutflow_timing_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector22m_jet_cutflow_btag_cutE">
+<span id="_CPPv3N11JetSelector22m_jet_cutflow_btag_cutE"></span><span id="_CPPv2N11JetSelector22m_jet_cutflow_btag_cutE"></span><span id="JetSelector::m_jet_cutflow_btag_cut__i"></span><span class="target" id="classJetSelector_1a9b2c8d6f73c1ea7fb40adf4bc5155432"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflow_btag_cut</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector22m_jet_cutflow_btag_cutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_systListJVTE">
+<span id="_CPPv3N11JetSelector13m_systListJVTE"></span><span id="_CPPv2N11JetSelector13m_systListJVTE"></span><span id="JetSelector::m_systListJVT__std::vector:CP::SystematicSet:"></span><span class="target" id="classJetSelector_1afce429d295147f1b3cfec3ffe64ca648"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystematicSet</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systListJVT</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_systListJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector14m_systListfJVTE">
+<span id="_CPPv3N11JetSelector14m_systListfJVTE"></span><span id="_CPPv2N11JetSelector14m_systListfJVTE"></span><span id="JetSelector::m_systListfJVT__std::vector:CP::SystematicSet:"></span><span class="target" id="classJetSelector_1a3ed2b41d514c431cc7c8519271e316ff"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystematicSet</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systListfJVT</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector14m_systListfJVTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector25m_singleJetTrigChainsListE">
+<span id="_CPPv3N11JetSelector25m_singleJetTrigChainsListE"></span><span id="_CPPv2N11JetSelector25m_singleJetTrigChainsListE"></span><span id="JetSelector::m_singleJetTrigChainsList__std::vector:ss:"></span><span class="target" id="classJetSelector_1ae68d630ba9860d0aafbefbf077691a13"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_singleJetTrigChainsList</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector25m_singleJetTrigChainsListE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector21m_diJetTrigChainsListE">
+<span id="_CPPv3N11JetSelector21m_diJetTrigChainsListE"></span><span id="_CPPv2N11JetSelector21m_diJetTrigChainsListE"></span><span id="JetSelector::m_diJetTrigChainsList__std::vector:ss:"></span><span class="target" id="classJetSelector_1a6214899db9abbeaa6caf6604d2614794"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_diJetTrigChainsList</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector21m_diJetTrigChainsListE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>/* contains all the HLT trigger chains tokens extracted from m_singleJetTrigChains */ </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_jetPileupLabelingToolE">
+<span id="_CPPv3N11JetSelector23m_jetPileupLabelingToolE"></span><span id="_CPPv2N11JetSelector23m_jetPileupLabelingToolE"></span><span id="JetSelector::m_jetPileupLabelingTool__asg::AnaToolHandle:JetPileupLabelingTool:"></span><span class="target" id="classJetSelector_1ae3b79b0a4c526543cf0a133caed1d9b5"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">JetPileupLabelingTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetPileupLabelingTool</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_jetPileupLabelingToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>/* contains all the HLT trigger chains tokens extracted from m_diJetTrigChains */ </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector20m_jetNNJvtMomentToolE">
+<span id="_CPPv3N11JetSelector20m_jetNNJvtMomentToolE"></span><span id="_CPPv2N11JetSelector20m_jetNNJvtMomentToolE"></span><span id="JetSelector::m_jetNNJvtMomentTool__asg::AnaToolHandle:JetPileupTag::JetVertexNNTagger:"></span><span class="target" id="classJetSelector_1a7454486ef324a817896b9461754bbccb"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">JetPileupTag</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">JetVertexNNTagger</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetNNJvtMomentTool</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector20m_jetNNJvtMomentToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_jetNNJvtSelectionToolE">
+<span id="_CPPv3N11JetSelector23m_jetNNJvtSelectionToolE"></span><span id="_CPPv2N11JetSelector23m_jetNNJvtSelectionToolE"></span><span id="JetSelector::m_jetNNJvtSelectionTool__asg::AnaToolHandle:IAsgSelectionTool:"></span><span class="target" id="classJetSelector_1acb777af6ce4c0e68a7ae70b8019d8213"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">IAsgSelectionTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetNNJvtSelectionTool</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_jetNNJvtSelectionToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector24m_jetNNJvtEfficiencyToolE">
+<span id="_CPPv3N11JetSelector24m_jetNNJvtEfficiencyToolE"></span><span id="_CPPv2N11JetSelector24m_jetNNJvtEfficiencyToolE"></span><span id="JetSelector::m_jetNNJvtEfficiencyTool__asg::AnaToolHandle:CP::IJvtEfficiencyTool:"></span><span class="target" id="classJetSelector_1a3009ec1af0a7d1d12e38a7f57ee6fe7b"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IJvtEfficiencyTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetNNJvtEfficiencyTool</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector24m_jetNNJvtEfficiencyToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector22m_jetfJvtSelectionToolE">
+<span id="_CPPv3N11JetSelector22m_jetfJvtSelectionToolE"></span><span id="_CPPv2N11JetSelector22m_jetfJvtSelectionToolE"></span><span id="JetSelector::m_jetfJvtSelectionTool__asg::AnaToolHandle:IAsgSelectionTool:"></span><span class="target" id="classJetSelector_1abadb44bb3dd70b7d00e5cf6cf3c6c18a"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">IAsgSelectionTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetfJvtSelectionTool</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector22m_jetfJvtSelectionToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_jetfJvtEfficiencyToolE">
+<span id="_CPPv3N11JetSelector23m_jetfJvtEfficiencyToolE"></span><span id="_CPPv2N11JetSelector23m_jetfJvtEfficiencyToolE"></span><span id="JetSelector::m_jetfJvtEfficiencyTool__asg::AnaToolHandle:CP::IJvtEfficiencyTool:"></span><span class="target" id="classJetSelector_1a525f0f555d4bcd052f2636deca9fd2f6"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IJvtEfficiencyTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetfJvtEfficiencyTool</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_jetfJvtEfficiencyToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector23m_BJetSelectTool_handleE">
+<span id="_CPPv3N11JetSelector23m_BJetSelectTool_handleE"></span><span id="_CPPv2N11JetSelector23m_BJetSelectTool_handleE"></span><span id="JetSelector::m_BJetSelectTool_handle__asg::AnaToolHandle:IBTaggingSelectionTool:"></span><span class="target" id="classJetSelector_1a48cb66b148745d2c519bc89180c4b56b"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">IBTaggingSelectionTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_BJetSelectTool_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;BTaggingSelectionTool&quot;</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N11JetSelector23m_BJetSelectTool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector25m_trigJetMatchTool_handleE">
+<span id="_CPPv3N11JetSelector25m_trigJetMatchTool_handleE"></span><span id="_CPPv2N11JetSelector25m_trigJetMatchTool_handleE"></span><span id="JetSelector::m_trigJetMatchTool_handle__asg::AnaToolHandle:Trig::IMatchingTool:"></span><span class="target" id="classJetSelector_1a86f7cfe4d6ff3b389bcf5ba7354d5f30"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">Trig</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IMatchingTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigJetMatchTool_handle</span></span></span><a class="headerlink" href="#_CPPv4N11JetSelector25m_trigJetMatchTool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector20m_trigDecTool_handleE">
+<span id="_CPPv3N11JetSelector20m_trigDecTool_handleE"></span><span id="_CPPv2N11JetSelector20m_trigDecTool_handleE"></span><span id="JetSelector::m_trigDecTool_handle__asg::AnaToolHandle:Trig::TrigDecisionTool:"></span><span class="target" id="classJetSelector_1ab57c7ec317655519e23e050f372db510"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">Trig</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TrigDecisionTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigDecTool_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;Trig::TrigDecisionTool/TrigDecisionTool&quot;</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N11JetSelector20m_trigDecTool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector11m_scoreToolE">
+<span id="_CPPv3N11JetSelector11m_scoreToolE"></span><span id="_CPPv2N11JetSelector11m_scoreToolE"></span><span id="JetSelector::m_scoreTool__asg::AnaToolHandle:Trig::IMatchScoringTool:"></span><span class="target" id="classJetSelector_1a754cbf7248f82da10b9eb9debf23e157"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">Trig</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IMatchScoringTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_scoreTool</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;Trig::DRScoringTool/DRScoringTool&quot;</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N11JetSelector11m_scoreToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector13m_doTrigMatchE">
+<span id="_CPPv3N11JetSelector13m_doTrigMatchE"></span><span id="_CPPv2N11JetSelector13m_doTrigMatchE"></span><span id="JetSelector::m_doTrigMatch__b"></span><span class="target" id="classJetSelector_1a53b2c624c0f9a48453d134d237719bae"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doTrigMatch</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N11JetSelector13m_doTrigMatchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>This internal variable gets set to false if no triggers are defined or if TrigDecisionTool is missing. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector17m_outputJVTPassedE">
+<span id="_CPPv3N11JetSelector17m_outputJVTPassedE"></span><span id="_CPPv2N11JetSelector17m_outputJVTPassedE"></span><span id="JetSelector::m_outputJVTPassed__ss"></span><span class="target" id="classJetSelector_1ada56c0940dba954f3b6d5ec14b89bcb9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputJVTPassed</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;JetJVT_Passed&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector17m_outputJVTPassedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11JetSelector18m_outputfJVTPassedE">
+<span id="_CPPv3N11JetSelector18m_outputfJVTPassedE"></span><span id="_CPPv2N11JetSelector18m_outputfJVTPassedE"></span><span id="JetSelector::m_outputfJVTPassed__ss"></span><span class="target" id="classJetSelector_1a3d23fd103c2d0435069c62bdba72c351"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputfJVTPassed</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;JetfJVT_Passed&quot;</span></span><a class="headerlink" href="#_CPPv4N11JetSelector18m_outputfJVTPassedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="MuonSelector.html" class="btn btn-neutral float-right" title="\(\mu\)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ElectronSelector.html" class="btn btn-neutral float-left" title="\(e\)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

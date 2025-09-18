@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File MetContainer.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File MetContainer.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_MetContainer.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-metcontainer-h">
+<span id="program-listing-file-xaodanahelpers-metcontainer-h"></span><h1>Program Listing for File MetContainer.h<a class="headerlink" href="#program-listing-for-file-metcontainer-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_MetContainer.h.html#file-xaodanahelpers-metcontainer-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/MetContainer.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_MetContainer_H</span>
+<span class="cp">#define xAODAnaHelpers_MetContainer_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;TTree.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingETContainer.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/HelperClasses.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">MetContainer</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="n">MetContainer</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;met&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">detailStr</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e3</span><span class="p">);</span>
+<span class="w">    </span><span class="o">~</span><span class="n">MetContainer</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">setTree</span><span class="w">    </span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">setBranches</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">FillMET</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="o">*</span><span class="w"> </span><span class="n">met</span><span class="p">);</span>
+<span class="w">    </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T_BR</span><span class="o">&gt;</span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">connectBranch</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">T_BR</span><span class="w"> </span><span class="o">*</span><span class="n">variable</span><span class="p">);</span>
+<span class="w">    </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T_BR</span><span class="o">&gt;</span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">setBranch</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">T_BR</span><span class="w"> </span><span class="o">*</span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">type</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_name</span><span class="p">;</span>
+<span class="w">    </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">METInfoSwitch</span><span class="w">  </span><span class="n">m_infoSwitch</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_debug</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_units</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+
+<span class="w">    </span><span class="c1">// met</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClus</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusPx</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusPy</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusSumEt</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusOverSqrtSumEt</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusOverSqrtHt</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusSignificance</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusSigDirectional</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusRho</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusVarL</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalClusVarT</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrk</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkPx</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkPy</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkSumEt</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkOverSqrtSumEt</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkOverSqrtHt</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkSignificance</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkSigDirectional</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkRho</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkVarL</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metFinalTrkVarT</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metEle</span><span class="p">;</span><span class="w">       </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metEleSumEt</span><span class="p">;</span><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metElePhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metGamma</span><span class="p">;</span><span class="w">     </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metGammaSumEt</span><span class="p">;</span><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metGammaPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metTau</span><span class="p">;</span><span class="w">       </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metTauSumEt</span><span class="p">;</span><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metTauPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metMuons</span><span class="p">;</span><span class="w">     </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metMuonsSumEt</span><span class="p">;</span><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metMuonsPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metJet</span><span class="p">;</span><span class="w">       </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metJetSumEt</span><span class="p">;</span><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metJetPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metJetTrk</span><span class="p">;</span><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metJetTrkSumEt</span><span class="p">;</span><span class="w">   </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metJetTrkPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metSoftClus</span><span class="p">;</span><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metSoftClusSumEt</span><span class="p">;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metSoftClusPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metSoftTrk</span><span class="p">;</span><span class="w">   </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metSoftTrkSumEt</span><span class="p">;</span><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_metSoftTrkPhi</span><span class="p">;</span>
+
+
+
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T_BR</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">MetContainer</span><span class="o">::</span><span class="n">connectBranch</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">T_BR</span><span class="w"> </span><span class="o">*</span><span class="n">variable</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w">  </span><span class="p">((</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="w"> </span><span class="p">((</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">variable</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T_BR</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">MetContainer</span><span class="o">::</span><span class="n">setBranch</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">T_BR</span><span class="w"> </span><span class="o">*</span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">type</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">type</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">((</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="p">).</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">type</span><span class="p">).</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">((</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="p">).</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">variable</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+
+
+<span class="cp">#endif </span><span class="c1">// xAODAnaHelpers_MetContainer_H</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+
+.. _file_Root_ElectronEfficiencyCorrector.cxx:
+
+File ElectronEfficiencyCorrector.cxx
+====================================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/ElectronEfficiencyCorrector.cxx``)
+-----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_ElectronEfficiencyCorrector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``AthContainers/DataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``iostream``
+
+- ``memory``
+
+- ``xAODAnaHelpers/ElectronEfficiencyCorrector.h`` (:ref:`file_xAODAnaHelpers_ElectronEfficiencyCorrector.h`)
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODBase/IParticle.h``
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODBase/IParticleHelpers.h``
+
+- ``xAODEgamma/Electron.h``
+
+- ``xAODEgamma/ElectronAuxContainer.h``
+
+- ``xAODEgamma/ElectronContainer.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_ElectronEfficiencyCorrector_8cxx_1a716232747b12c4b304bb61213513eb85`
+

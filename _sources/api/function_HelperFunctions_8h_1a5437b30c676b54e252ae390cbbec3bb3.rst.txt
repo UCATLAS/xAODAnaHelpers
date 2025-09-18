@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a5437b30c676b54e252ae390cbbec3bb3:
+
+Function HelperFunctions::jetReclustering
+=========================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::jetReclustering(const xAOD::JetContainer *, double, double, fastjet::JetAlgorithm)

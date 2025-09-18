@@ -1,0 +1,690 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class Algorithm &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class Cluster" href="classxAH_1_1Cluster.html" />
+    <link rel="prev" title="Class Writer" href="classWriter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Doxygen API</a> &raquo;</li>
+        
+      <li>Class Algorithm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classxAH_1_1Algorithm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-algorithm">
+<span id="exhale-class-classxah-1-1algorithm"></span><h1>Class Algorithm<a class="headerlink" href="#class-algorithm" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_xAODAnaHelpers_Algorithm.h.html#file-xaodanahelpers-algorithm-h"><span class="std std-ref">File Algorithm.h</span></a></p></li>
+</ul>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">EL::Algorithm</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="derived-types">
+<h3>Derived Types<a class="headerlink" href="#derived-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">BJetEfficiencyCorrector</span></code> (<a class="reference internal" href="classBJetEfficiencyCorrector.html#exhale-class-classbjetefficiencycorrector"><span class="std std-ref">Class BJetEfficiencyCorrector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">BasicEventSelection</span></code> (<a class="reference internal" href="classBasicEventSelection.html#exhale-class-classbasiceventselection"><span class="std std-ref">Class BasicEventSelection</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">ClusterHistsAlgo</span></code> (<a class="reference internal" href="classClusterHistsAlgo.html#exhale-class-classclusterhistsalgo"><span class="std std-ref">Class ClusterHistsAlgo</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">DebugTool</span></code> (<a class="reference internal" href="classDebugTool.html#exhale-class-classdebugtool"><span class="std std-ref">Class DebugTool</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">ElectronCalibrator</span></code> (<a class="reference internal" href="classElectronCalibrator.html#exhale-class-classelectroncalibrator"><span class="std std-ref">Class ElectronCalibrator</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">ElectronEfficiencyCorrector</span></code> (<a class="reference internal" href="classElectronEfficiencyCorrector.html#exhale-class-classelectronefficiencycorrector"><span class="std std-ref">Class ElectronEfficiencyCorrector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">ElectronSelector</span></code> (<a class="reference internal" href="classElectronSelector.html#exhale-class-classelectronselector"><span class="std std-ref">Class ElectronSelector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">HLTJetGetter</span></code> (<a class="reference internal" href="classHLTJetGetter.html#exhale-class-classhltjetgetter"><span class="std std-ref">Class HLTJetGetter</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">IParticleHistsAlgo</span></code> (<a class="reference internal" href="classIParticleHistsAlgo.html#exhale-class-classiparticlehistsalgo"><span class="std std-ref">Class IParticleHistsAlgo</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">IsoCloseByCorr</span></code> (<a class="reference internal" href="classIsoCloseByCorr.html#exhale-class-classisoclosebycorr"><span class="std std-ref">Class IsoCloseByCorr</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">JetCalibrator</span></code> (<a class="reference internal" href="classJetCalibrator.html#exhale-class-classjetcalibrator"><span class="std std-ref">Class JetCalibrator</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">JetSelector</span></code> (<a class="reference internal" href="classJetSelector.html#exhale-class-classjetselector"><span class="std std-ref">Class JetSelector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">METConstructor</span></code> (<a class="reference internal" href="classMETConstructor.html#exhale-class-classmetconstructor"><span class="std std-ref">Class METConstructor</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">MessagePrinterAlgo</span></code> (<a class="reference internal" href="classMessagePrinterAlgo.html#exhale-class-classmessageprinteralgo"><span class="std std-ref">Class MessagePrinterAlgo</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">MetHistsAlgo</span></code> (<a class="reference internal" href="classMetHistsAlgo.html#exhale-class-classmethistsalgo"><span class="std std-ref">Class MetHistsAlgo</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">MinixAOD</span></code> (<a class="reference internal" href="classMinixAOD.html#exhale-class-classminixaod"><span class="std std-ref">Class MinixAOD</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">MuonCalibrator</span></code> (<a class="reference internal" href="classMuonCalibrator.html#exhale-class-classmuoncalibrator"><span class="std std-ref">Class MuonCalibrator</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">MuonEfficiencyCorrector</span></code> (<a class="reference internal" href="classMuonEfficiencyCorrector.html#exhale-class-classmuonefficiencycorrector"><span class="std std-ref">Class MuonEfficiencyCorrector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">MuonInFatJetCorrector</span></code> (<a class="reference internal" href="classMuonInFatJetCorrector.html#exhale-class-classmuoninfatjetcorrector"><span class="std std-ref">Class MuonInFatJetCorrector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">MuonSelector</span></code> (<a class="reference internal" href="classMuonSelector.html#exhale-class-classmuonselector"><span class="std std-ref">Class MuonSelector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">OverlapRemover</span></code> (<a class="reference internal" href="classOverlapRemover.html#exhale-class-classoverlapremover"><span class="std std-ref">Class OverlapRemover</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">PhotonCalibrator</span></code> (<a class="reference internal" href="classPhotonCalibrator.html#exhale-class-classphotoncalibrator"><span class="std std-ref">Class PhotonCalibrator</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">PhotonSelector</span></code> (<a class="reference internal" href="classPhotonSelector.html#exhale-class-classphotonselector"><span class="std std-ref">Class PhotonSelector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TauCalibrator</span></code> (<a class="reference internal" href="classTauCalibrator.html#exhale-class-classtaucalibrator"><span class="std std-ref">Class TauCalibrator</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TauEfficiencyCorrector</span></code> (<a class="reference internal" href="classTauEfficiencyCorrector.html#exhale-class-classtauefficiencycorrector"><span class="std std-ref">Class TauEfficiencyCorrector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TauJetMatching</span></code> (<a class="reference internal" href="classTauJetMatching.html#exhale-class-classtaujetmatching"><span class="std std-ref">Class TauJetMatching</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TauSelector</span></code> (<a class="reference internal" href="classTauSelector.html#exhale-class-classtauselector"><span class="std std-ref">Class TauSelector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TrackHistsAlgo</span></code> (<a class="reference internal" href="classTrackHistsAlgo.html#exhale-class-classtrackhistsalgo"><span class="std std-ref">Class TrackHistsAlgo</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TrackSelector</span></code> (<a class="reference internal" href="classTrackSelector.html#exhale-class-classtrackselector"><span class="std std-ref">Class TrackSelector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TreeAlgo</span></code> (<a class="reference internal" href="classTreeAlgo.html#exhale-class-classtreealgo"><span class="std std-ref">Class TreeAlgo</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TrigMatcher</span></code> (<a class="reference internal" href="classTrigMatcher.html#exhale-class-classtrigmatcher"><span class="std std-ref">Class TrigMatcher</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">TruthSelector</span></code> (<a class="reference internal" href="classTruthSelector.html#exhale-class-classtruthselector"><span class="std std-ref">Class TruthSelector</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">Writer</span></code> (<a class="reference internal" href="classWriter.html#exhale-class-classwriter"><span class="std std-ref">Class Writer</span></a>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9AlgorithmE">
+<span id="_CPPv3N3xAH9AlgorithmE"></span><span id="_CPPv2N3xAH9AlgorithmE"></span><span id="xAH::Algorithm"></span><span class="target" id="classxAH_1_1Algorithm"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Algorithm</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Algorithm</span></span><a class="headerlink" href="#_CPPv4N3xAH9AlgorithmE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>This is used by all algorithms within xAODAnaHelpers.</p>
+<p>The main goal of this algorithm class is to standardize how everyone defines an algorithm that plugs into xAODAnaHelpers. A series of common utilities are provided such as <a class="reference internal" href="#_CPPv4N3xAH9Algorithm11m_classNameE" title="xAH::Algorithm::m_className"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_className</span></code></a> which defines the class name so we can manage a registry <a class="reference internal" href="../xAHAlgorithm.html#_CPPv4N3xAH9Algorithm18m_instanceRegistryE" title="xAH::Algorithm::m_instanceRegistry"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_instanceRegistry</span></code></a> to keep xAODAnaHelpers as flexible as possible to our users.</p>
+<p>We expect the user to create a new algorithm, such as a selector for jets:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JetSelector</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The above example is taken from our implementation in <a class="reference internal" href="../JetSelector.html#_CPPv411JetSelector" title="JetSelector"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">JetSelector</span></code></a>. Just remember that when you write your initializer, you will be expected to do something like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">JetSelector</span><span class="p">)</span>
+
+
+<span class="n">JetSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">JetSelector</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;JetSelector&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>which this class will automatically register all instances of for you. Each instance can have a different algorithm name but will have the same <a class="reference internal" href="#_CPPv4N3xAH9Algorithm11m_classNameE" title="xAH::Algorithm::m_className"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_className</span></code></a> so we can track how many references have been made. This is useful for selectors to deal with cutflows, but can be useful for other algorithms that need to know how many times they’ve been instantiated in a single job.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The expectation is that the user does not directly use this class but rather inherits from it.</p>
+</div>
+<p>Subclassed by <a class="reference internal" href="classBJetEfficiencyCorrector.html#classBJetEfficiencyCorrector"><span class="std std-ref">BJetEfficiencyCorrector</span></a>, <a class="reference internal" href="classBasicEventSelection.html#classBasicEventSelection"><span class="std std-ref">BasicEventSelection</span></a>, <a class="reference internal" href="classClusterHistsAlgo.html#classClusterHistsAlgo"><span class="std std-ref">ClusterHistsAlgo</span></a>, <a class="reference internal" href="classDebugTool.html#classDebugTool"><span class="std std-ref">DebugTool</span></a>, <a class="reference internal" href="classElectronCalibrator.html#classElectronCalibrator"><span class="std std-ref">ElectronCalibrator</span></a>, <a class="reference internal" href="classElectronEfficiencyCorrector.html#classElectronEfficiencyCorrector"><span class="std std-ref">ElectronEfficiencyCorrector</span></a>, <a class="reference internal" href="classElectronSelector.html#classElectronSelector"><span class="std std-ref">ElectronSelector</span></a>, <a class="reference internal" href="classHLTJetGetter.html#classHLTJetGetter"><span class="std std-ref">HLTJetGetter</span></a>, <a class="reference internal" href="classIParticleHistsAlgo.html#classIParticleHistsAlgo"><span class="std std-ref">IParticleHistsAlgo</span></a>, <a class="reference internal" href="classIsoCloseByCorr.html#classIsoCloseByCorr"><span class="std std-ref">IsoCloseByCorr</span></a>, <a class="reference internal" href="classJetCalibrator.html#classJetCalibrator"><span class="std std-ref">JetCalibrator</span></a>, <a class="reference internal" href="classJetSelector.html#classJetSelector"><span class="std std-ref">JetSelector</span></a>, <a class="reference internal" href="classMETConstructor.html#classMETConstructor"><span class="std std-ref">METConstructor</span></a>, <a class="reference internal" href="classMessagePrinterAlgo.html#classMessagePrinterAlgo"><span class="std std-ref">MessagePrinterAlgo</span></a>, <a class="reference internal" href="classMetHistsAlgo.html#classMetHistsAlgo"><span class="std std-ref">MetHistsAlgo</span></a>, <a class="reference internal" href="classMinixAOD.html#classMinixAOD"><span class="std std-ref">MinixAOD</span></a>, <a class="reference internal" href="classMuonCalibrator.html#classMuonCalibrator"><span class="std std-ref">MuonCalibrator</span></a>, <a class="reference internal" href="classMuonEfficiencyCorrector.html#classMuonEfficiencyCorrector"><span class="std std-ref">MuonEfficiencyCorrector</span></a>, <a class="reference internal" href="classMuonInFatJetCorrector.html#classMuonInFatJetCorrector"><span class="std std-ref">MuonInFatJetCorrector</span></a>, <a class="reference internal" href="classMuonSelector.html#classMuonSelector"><span class="std std-ref">MuonSelector</span></a>, <a class="reference internal" href="classOverlapRemover.html#classOverlapRemover"><span class="std std-ref">OverlapRemover</span></a>, <a class="reference internal" href="classPhotonCalibrator.html#classPhotonCalibrator"><span class="std std-ref">PhotonCalibrator</span></a>, <a class="reference internal" href="classPhotonSelector.html#classPhotonSelector"><span class="std std-ref">PhotonSelector</span></a>, <a class="reference internal" href="classTauCalibrator.html#classTauCalibrator"><span class="std std-ref">TauCalibrator</span></a>, <a class="reference internal" href="classTauEfficiencyCorrector.html#classTauEfficiencyCorrector"><span class="std std-ref">TauEfficiencyCorrector</span></a>, <a class="reference internal" href="classTauJetMatching.html#classTauJetMatching"><span class="std std-ref">TauJetMatching</span></a>, <a class="reference internal" href="classTauSelector.html#classTauSelector"><span class="std std-ref">TauSelector</span></a>, <a class="reference internal" href="classTrackHistsAlgo.html#classTrackHistsAlgo"><span class="std std-ref">TrackHistsAlgo</span></a>, <a class="reference internal" href="classTrackSelector.html#classTrackSelector"><span class="std std-ref">TrackSelector</span></a>, <a class="reference internal" href="classTreeAlgo.html#classTreeAlgo"><span class="std std-ref">TreeAlgo</span></a>, <a class="reference internal" href="classTrigMatcher.html#classTrigMatcher"><span class="std std-ref">TrigMatcher</span></a>, <a class="reference internal" href="classTruthSelector.html#classTruthSelector"><span class="std std-ref">TruthSelector</span></a>, <a class="reference internal" href="classWriter.html#classWriter"><span class="std std-ref">Writer</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm9AlgorithmENSt6stringE">
+<span id="_CPPv3N3xAH9Algorithm9AlgorithmENSt6stringE"></span><span id="_CPPv2N3xAH9Algorithm9AlgorithmENSt6stringE"></span><span id="xAH::Algorithm::Algorithm__ss"></span><span class="target" id="classxAH_1_1Algorithm_1a431d8aa34cdbc2d83123c23adc96b6a0"></span><span class="sig-name descname"><span class="n"><span class="pre">Algorithm</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">className</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Algorithm&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm9AlgorithmENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initialization. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>className</strong> – This is the name of the class that inherits from :cpp:namespace:<code class="docutils literal notranslate"><span class="pre">~xAH</span><a class="reference internal" href="../xAHAlgorithm.html#classxAH_1_1Algorithm_1a431d8aa34cdbc2d83123c23adc96b6a0"><span class="std std-ref"><span class="pre">Algorithm</span></span></a></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9AlgorithmD0Ev">
+<span id="_CPPv3N3xAH9AlgorithmD0Ev"></span><span id="_CPPv2N3xAH9AlgorithmD0Ev"></span><span id="xAH::Algorithm::~Algorithm"></span><span class="target" id="classxAH_1_1Algorithm_1ab6dcb39dbf80330058296845a3a8f083"></span><span class="sig-name descname"><span class="n"><span class="pre">~Algorithm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9AlgorithmD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm13algInitializeEv">
+<span id="_CPPv3N3xAH9Algorithm13algInitializeEv"></span><span id="_CPPv2N3xAH9Algorithm13algInitializeEv"></span><span id="xAH::Algorithm::algInitialize"></span><span class="target" id="classxAH_1_1Algorithm_1ae8fd8541cf785803ec19d9c4f8cfe602"></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">algInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm13algInitializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Run any initializations commmon to all xAH Algorithms (such as registerInstance). Call this inside <code class="docutils literal notranslate"><span class="pre">histInitialize</span></code> for best results. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm11algFinalizeEv">
+<span id="_CPPv3N3xAH9Algorithm11algFinalizeEv"></span><span id="_CPPv2N3xAH9Algorithm11algFinalizeEv"></span><span id="xAH::Algorithm::algFinalize"></span><span class="target" id="classxAH_1_1Algorithm_1ad953653631da2d160893153f0b30f919"></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">algFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm11algFinalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Run any finalizations common to all xAH Algorithms (such as unregisterInstance). Call this inside <code class="docutils literal notranslate"><span class="pre">histFinalize</span></code> for best results. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm18parseSystValVectorEv">
+<span id="_CPPv3N3xAH9Algorithm18parseSystValVectorEv"></span><span id="_CPPv2N3xAH9Algorithm18parseSystValVectorEv"></span><span id="xAH::Algorithm::parseSystValVector"></span><span class="target" id="classxAH_1_1Algorithm_1a4859dee0ea827841c1adbbf56b159257"></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parseSystValVector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm18parseSystValVectorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Parse string of systematic sigma levels in m_systValVectorString into m_systValVector. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm6m_nameE">
+<span id="_CPPv3N3xAH9Algorithm6m_nameE"></span><span id="_CPPv2N3xAH9Algorithm6m_nameE"></span><span id="xAH::Algorithm::m_name__ss"></span><span class="target" id="classxAH_1_1Algorithm_1a2fe89b9cfdbba9b2d5dbd77d78d017ba"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_name</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;UnnamedAlgorithm&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm6m_nameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>All algorithms initialized should have a unique name, to differentiate them at the TObject level. </p>
+<p>Note, <code class="docutils literal notranslate"><span class="pre">GetName()</span></code> returns a <code class="docutils literal notranslate"><span class="pre">char*</span></code> while this returns a <code class="docutils literal notranslate"><span class="pre">std::string</span></code>. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm7m_debugE">
+<span id="_CPPv3N3xAH9Algorithm7m_debugE"></span><span id="_CPPv2N3xAH9Algorithm7m_debugE"></span><span id="xAH::Algorithm::m_debug__b"></span><span class="target" id="classxAH_1_1Algorithm_1a536ad066b37192ae8234da9088ca37cb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_debug</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm7m_debugE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>m_debug is being deprecated </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm9m_verboseE">
+<span id="_CPPv3N3xAH9Algorithm9m_verboseE"></span><span id="_CPPv2N3xAH9Algorithm9m_verboseE"></span><span id="xAH::Algorithm::m_verbose__b"></span><span class="target" id="classxAH_1_1Algorithm_1aa6f548d723aa93b42dd9915c36c7b9a4"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_verbose</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm9m_verboseE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>m_verbose is being deprecated </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm10m_msgLevelE">
+<span id="_CPPv3N3xAH9Algorithm10m_msgLevelE"></span><span id="_CPPv2N3xAH9Algorithm10m_msgLevelE"></span><span id="xAH::Algorithm::m_msgLevel__MSG::Level"></span><span class="target" id="classxAH_1_1Algorithm_1a903600b01ce81ba57bd004e32a905254"></span><span class="n"><span class="pre">MSG</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Level</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_msgLevel</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">MSG</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">INFO</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm10m_msgLevelE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>debug level </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm19m_cutFlowStreamNameE">
+<span id="_CPPv3N3xAH9Algorithm19m_cutFlowStreamNameE"></span><span id="_CPPv2N3xAH9Algorithm19m_cutFlowStreamNameE"></span><span id="xAH::Algorithm::m_cutFlowStreamName__ss"></span><span class="target" id="classxAH_1_1Algorithm_1ad6c39ec352ef9d5f5cd7a25b9907b659"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutFlowStreamName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;cutflow&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm19m_cutFlowStreamNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm10m_systNameE">
+<span id="_CPPv3N3xAH9Algorithm10m_systNameE"></span><span id="_CPPv2N3xAH9Algorithm10m_systNameE"></span><span id="xAH::Algorithm::m_systName__ss"></span><span class="target" id="classxAH_1_1Algorithm_1a79e26ab76909dcaeec857fd683289f87"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm10m_systNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If running systematics, the name of the systematic </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm9m_systValE">
+<span id="_CPPv3N3xAH9Algorithm9m_systValE"></span><span id="_CPPv2N3xAH9Algorithm9m_systValE"></span><span id="xAH::Algorithm::m_systVal__float"></span><span class="target" id="classxAH_1_1Algorithm_1a7e34030fb2a71902b0d65797bb90366b"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systVal</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm9m_systValE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If running systematics, the value to set the systematic to <p></p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This will set the systematic to the value <span class="math notranslate nohighlight">\(\pm x\)</span>.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm21m_systValVectorStringE">
+<span id="_CPPv3N3xAH9Algorithm21m_systValVectorStringE"></span><span id="_CPPv2N3xAH9Algorithm21m_systValVectorStringE"></span><span id="xAH::Algorithm::m_systValVectorString__ss"></span><span class="target" id="classxAH_1_1Algorithm_1ab1386db1ff9f8586e603924d23e3d9ea"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValVectorString</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm21m_systValVectorStringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If running systematics, you can run multiple points and store them in here. A comma separated list of working points should be given to m_systValVectorString, and then parsed by calling parseSystValVector. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm15m_systValVectorE">
+<span id="_CPPv3N3xAH9Algorithm15m_systValVectorE"></span><span id="_CPPv2N3xAH9Algorithm15m_systValVectorE"></span><span id="xAH::Algorithm::m_systValVector__std::vector:float:"></span><span class="target" id="classxAH_1_1Algorithm_1ad033047e9456204a32165a5d3847661d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">float</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValVector</span></span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm15m_systValVectorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm24m_eventInfoContainerNameE">
+<span id="_CPPv3N3xAH9Algorithm24m_eventInfoContainerNameE"></span><span id="_CPPv2N3xAH9Algorithm24m_eventInfoContainerNameE"></span><span id="xAH::Algorithm::m_eventInfoContainerName__ss"></span><span class="target" id="classxAH_1_1Algorithm_1a3a28d57c78d08c235cbdbfb2db4d8ee0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eventInfoContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;EventInfo&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm24m_eventInfoContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If the xAOD has a different <a class="reference internal" href="classxAH_1_1EventInfo.html#classxAH_1_1EventInfo"><span class="std std-ref">EventInfo</span></a> container name, set it here </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm21m_vertexContainerNameE">
+<span id="_CPPv3N3xAH9Algorithm21m_vertexContainerNameE"></span><span id="_CPPv2N3xAH9Algorithm21m_vertexContainerNameE"></span><span id="xAH::Algorithm::m_vertexContainerName__ss"></span><span class="target" id="classxAH_1_1Algorithm_1a608a4fa109bcb91480c4f37b3433717c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vertexContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PrimaryVertices&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm21m_vertexContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If the xAOD has a different PrimaryVertex container name, set it here </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm6m_isMCE">
+<span id="_CPPv3N3xAH9Algorithm6m_isMCE"></span><span id="_CPPv2N3xAH9Algorithm6m_isMCE"></span><span id="xAH::Algorithm::m_isMC__i"></span><span class="target" id="classxAH_1_1Algorithm_1a2fe08016f341df4f708872f6a43e70dd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isMC</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm6m_isMCE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>This stores the isMC decision, and can also be used to override at the algorithm level to force analyzing MC or not.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 92%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-1</p></td>
+<td><p>Default, use eventInfo object to determine if data or mc</p></td>
+</tr>
+<tr class="row-odd"><td><p>0</p></td>
+<td><p>Treat the input as data</p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Treat the input as MC</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm11m_isFastSimE">
+<span id="_CPPv3N3xAH9Algorithm11m_isFastSimE"></span><span id="_CPPv2N3xAH9Algorithm11m_isFastSimE"></span><span id="xAH::Algorithm::m_isFastSim__i"></span><span class="target" id="classxAH_1_1Algorithm_1a59de8b313c0adc8c008d3b1440af452f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isFastSim</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm11m_isFastSimE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>This stores the isFastSim decision, and can also be used to override at the algorithm level to force analyzing FastSim or not.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 93%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-1</p></td>
+<td><p>Default, use Metadata object to determine if FullSim or FastSim</p></td>
+</tr>
+<tr class="row-odd"><td><p>0</p></td>
+<td><p>Treat the input as FullSim</p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Treat the input as FastSim</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm7m_isAF3E">
+<span id="_CPPv3N3xAH9Algorithm7m_isAF3E"></span><span id="_CPPv2N3xAH9Algorithm7m_isAF3E"></span><span id="xAH::Algorithm::m_isAF3__i"></span><span class="target" id="classxAH_1_1Algorithm_1ac7b8c8c721e2c877b106af595a8f5684"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isAF3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm7m_isAF3E" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>This stores the isAF3 decision, and can also be used to override at the algorithm level to force analyzing FastSim with AF3 or not.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 93%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-1</p></td>
+<td><p>Default, use Metadata object to determine if AF3 FastSim or not</p></td>
+</tr>
+<tr class="row-odd"><td><p>0</p></td>
+<td><p>Treat the input as FullSim or AFII</p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Treat the input as FastSim with AF3</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm19m_useRun3navigationE">
+<span id="_CPPv3N3xAH9Algorithm19m_useRun3navigationE"></span><span id="_CPPv2N3xAH9Algorithm19m_useRun3navigationE"></span><span id="xAH::Algorithm::m_useRun3navigation__b"></span><span class="target" id="classxAH_1_1Algorithm_1a36e35dbe455152048c26de0b32122181"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useRun3navigation</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm19m_useRun3navigationE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Flag to use Run 3 trigger navigation (true), or Run 2 navigation (false) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm12m_HLTSummaryE">
+<span id="_CPPv3N3xAH9Algorithm12m_HLTSummaryE"></span><span id="_CPPv2N3xAH9Algorithm12m_HLTSummaryE"></span><span id="xAH::Algorithm::m_HLTSummary__ss"></span><span class="target" id="classxAH_1_1Algorithm_1a68f54d2376f08e34cb702388fc3474a3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_HLTSummary</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;HLTNav_Summary_DAODSlimmed&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm12m_HLTSummaryE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>String storing the type of HLT navigation info available for Run 3 samples. For AODs or unslimmed DAODs: HLTNav_Summary_AODSlimmed </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm14m_forceFastSimE">
+<span id="_CPPv3N3xAH9Algorithm14m_forceFastSimE"></span><span id="_CPPv2N3xAH9Algorithm14m_forceFastSimE"></span><span id="xAH::Algorithm::m_forceFastSim__b"></span><span class="target" id="classxAH_1_1Algorithm_1a92a04e27a516b1be6658c7f57e43413b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_forceFastSim</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm14m_forceFastSimE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Flags to force a specific data-type, even if it disagrees with your input </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm14m_forceFullSimE">
+<span id="_CPPv3N3xAH9Algorithm14m_forceFullSimE"></span><span id="_CPPv2N3xAH9Algorithm14m_forceFullSimE"></span><span id="xAH::Algorithm::m_forceFullSim__b"></span><span class="target" id="classxAH_1_1Algorithm_1a3d48a83978993f2583b763cb354d19db"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_forceFullSim</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm14m_forceFullSimE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm11m_forceDataE">
+<span id="_CPPv3N3xAH9Algorithm11m_forceDataE"></span><span id="_CPPv2N3xAH9Algorithm11m_forceDataE"></span><span id="xAH::Algorithm::m_forceData__b"></span><span class="target" id="classxAH_1_1Algorithm_1a4bd63aa9274b953f323716a223e8229a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_forceData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm11m_forceDataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm9m_setAFIIE">
+<span id="_CPPv3N3xAH9Algorithm9m_setAFIIE"></span><span id="_CPPv2N3xAH9Algorithm9m_setAFIIE"></span><span id="xAH::Algorithm::m_setAFII__b"></span><span class="target" id="classxAH_1_1Algorithm_1ae72a5ef3893e6157b6e12b4138d0f7d3"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_setAFII</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm9m_setAFIIE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Backwards compatibility, same as m_forceFastSim </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm8m_setAF3E">
+<span id="_CPPv3N3xAH9Algorithm8m_setAF3E"></span><span id="_CPPv2N3xAH9Algorithm8m_setAF3E"></span><span id="xAH::Algorithm::m_setAF3__b"></span><span class="target" id="classxAH_1_1Algorithm_1ae56956b8496fcd4e61d121c601a9ba34"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_setAF3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm8m_setAF3E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-protected-functions">Protected Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm4isMCEv">
+<span id="_CPPv3N3xAH9Algorithm4isMCEv"></span><span id="_CPPv2N3xAH9Algorithm4isMCEv"></span><span id="xAH::Algorithm::isMC"></span><span class="target" id="classxAH_1_1Algorithm_1ac6974b849cbb6c3ca7f061dfbd79293d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isMC</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm4isMCEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>\verbatim embed:rst:leading-asterisk
+    Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isMC` can be used
+</pre></div>
+</div>
+ to fix the return value. Otherwise the <code class="docutils literal notranslate"><a class="reference internal" href="classxAH_1_1EventInfo.html#classxAH_1_1EventInfo"><span class="std std-ref"><span class="pre">EventInfo</span></span></a></code> object is queried.</p>
+<p>An exception is thrown if the type cannot be determined. <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>    ============ =======
+    Return Value Meaning
+    ============ =======
+    0            Data
+    1            MC
+    ============ =======
+
+\endverbatim
+</pre></div>
+</div>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm9isFastSimEv">
+<span id="_CPPv3N3xAH9Algorithm9isFastSimEv"></span><span id="_CPPv2N3xAH9Algorithm9isFastSimEv"></span><span id="xAH::Algorithm::isFastSim"></span><span class="target" id="classxAH_1_1Algorithm_1a7756a5e5b4bf2576f055c2c77186fe00"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isFastSim</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm9isFastSimEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>\verbatim embed:rst:leading-asterisk
+    Try to determine if we are running over data or MC. The :cpp:member:`xAH::Algorithm::m_isFastSim` can be used
+</pre></div>
+</div>
+ to fix the return value. Otherwise the metadata is queried.</p>
+<p>An exception is thrown if the type cannot be determined. <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>    ============ =======
+    Return Value Meaning
+    ============ =======
+    0            FullSim (or Data)
+    1            FastSim
+    ============ =======
+
+\endverbatim
+</pre></div>
+</div>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm5isAF3Ev">
+<span id="_CPPv3N3xAH9Algorithm5isAF3Ev"></span><span id="_CPPv2N3xAH9Algorithm5isAF3Ev"></span><span id="xAH::Algorithm::isAF3"></span><span class="target" id="classxAH_1_1Algorithm_1a8b3bcca6c554fbc3b8ed8d0ab3aea943"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isAF3</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm5isAF3Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>If the name includes ATLFASTII or ATLFAST3 then set to AFII or AF3, if deemed fullSim then FS else leave as empty string and complain </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm6isPHYSEv">
+<span id="_CPPv3N3xAH9Algorithm6isPHYSEv"></span><span id="_CPPv2N3xAH9Algorithm6isPHYSEv"></span><span id="xAH::Algorithm::isPHYS"></span><span class="target" id="classxAH_1_1Algorithm_1a7267f50972b43625c4e4aa1a6e18b185"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isPHYS</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm6isPHYSEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determines if using DAOD_PHYS or not. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm16registerInstanceEv">
+<span id="_CPPv3N3xAH9Algorithm16registerInstanceEv"></span><span id="_CPPv2N3xAH9Algorithm16registerInstanceEv"></span><span id="xAH::Algorithm::registerInstance"></span><span class="target" id="classxAH_1_1Algorithm_1ad985e6075dc2794ba53d92663c84da08"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">registerInstance</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm16registerInstanceEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>Register the given instance under the moniker <a class="reference internal" href="#_CPPv4N3xAH9Algorithm11m_classNameE" title="xAH::Algorithm::m_className"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">xAH::Algorithm::m_className</span></code></a></p>
+<p>This will increase the reference count by 1.</p>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm12numInstancesEv">
+<span id="_CPPv3N3xAH9Algorithm12numInstancesEv"></span><span id="_CPPv2N3xAH9Algorithm12numInstancesEv"></span><span id="xAH::Algorithm::numInstances"></span><span class="target" id="classxAH_1_1Algorithm_1a668fbd5fb7180046a8a41b496cf5ccbd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numInstances</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm12numInstancesEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>Return number of instances registered under the moniker <a class="reference internal" href="#_CPPv4N3xAH9Algorithm11m_classNameE" title="xAH::Algorithm::m_className"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">xAH::Algorithm::m_className</span></code></a></p>
+<p>This will return the reference count.</p>
+</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If for some reason the instance wasn’t registered, we spit out a warning.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm18unregisterInstanceEv">
+<span id="_CPPv3N3xAH9Algorithm18unregisterInstanceEv"></span><span id="_CPPv2N3xAH9Algorithm18unregisterInstanceEv"></span><span id="xAH::Algorithm::unregisterInstance"></span><span class="target" id="classxAH_1_1Algorithm_1a5db7105c8aba80421821c555bca6ca93"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">unregisterInstance</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm18unregisterInstanceEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>Unregister the given instance under the moniker <a class="reference internal" href="#_CPPv4N3xAH9Algorithm11m_classNameE" title="xAH::Algorithm::m_className"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">xAH::Algorithm::m_className</span></code></a></p>
+<p>This will decrease the reference count by 1.</p>
+</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If for some reason the instance wasn’t registered, we spit out a warning.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN3xAH9Algorithm14checkToolStoreE10StatusCodeRKNSt6stringE">
+<span id="_CPPv3I0EN3xAH9Algorithm14checkToolStoreERKNSt6stringE"></span><span id="_CPPv2I0EN3xAH9Algorithm14checkToolStoreERKNSt6stringE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classxAH_1_1Algorithm_1a064eba684de39e15a2368064dafee485"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkToolStore</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">tool_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3xAH9Algorithm14checkToolStoreE10StatusCodeRKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>\verbatim embed:rst:leading-asterisk
+    Check whether the input CP tool already exists with *this* name in the asg::ToolStore
+</pre></div>
+</div>
+ Depending on the outcome, the content of the map :cpp:member:<code class="docutils literal notranslate"><span class="pre">xAH::Algorithm::m_toolAlreadyUsed</span></code> wll be set accordingly. <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>\endverbatim
+</pre></div>
+</div>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm17isToolAlreadyUsedERKNSt6stringE">
+<span id="_CPPv3N3xAH9Algorithm17isToolAlreadyUsedERKNSt6stringE"></span><span id="_CPPv2N3xAH9Algorithm17isToolAlreadyUsedERKNSt6stringE"></span><span id="xAH::Algorithm::isToolAlreadyUsed__ssCR"></span><span class="target" id="classxAH_1_1Algorithm_1aba740002a03904fa58d6f3762965c733"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isToolAlreadyUsed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">tool_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm17isToolAlreadyUsedERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether the input CP tool has been already used by any <a class="reference internal" href="#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">xAH::Algorithm</span></code></a> in the current job by scanning <a class="reference internal" href="../xAHAlgorithm.html#_CPPv4N3xAH9Algorithm17m_toolAlreadyUsedE" title="xAH::Algorithm::m_toolAlreadyUsed"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">xAH::Algorithm::m_toolAlreadyUsed</span></code></a>.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENK3xAH9Algorithm11setToolNameEvRN3asg13AnaToolHandleI1TEERKNSt6stringE">
+<span id="_CPPv3I0ENK3xAH9Algorithm11setToolNameERN3asg13AnaToolHandleI1TEERKNSt6stringE"></span><span id="_CPPv2I0ENK3xAH9Algorithm11setToolNameERN3asg13AnaToolHandleI1TEERKNSt6stringE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classxAH_1_1Algorithm_1acbe505b1bc3ef8a6e68d5664e054d1ee"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setToolName</span></span></span><span class="sig-paren">(</span><span class="pre">__attribute__((unused))</span><span class="w"> </span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENK3xAH9Algorithm11setToolNameEvRN3asg13AnaToolHandleI1TEERKNSt6stringE" title="xAH::Algorithm::setToolName::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">handle</span></span>, <span class="pre">__attribute__((unused))</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4I0ENK3xAH9Algorithm11setToolNameEvRN3asg13AnaToolHandleI1TEERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><blockquote>
+<div></div></blockquote>
+<p>Sets the name of a tool. If no name is needed, the tool will use the name of the algorithm plus a unique identifier (<a class="reference internal" href="#_CPPv4NK3xAH9Algorithm10getAddressEv" title="xAH::Algorithm::getAddress"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">xAH::Algorithm::getAddress()</span></code></a>) appended to ensure the tool is unique and effectively private.</p>
+<p>The tool will not be guaranteed unique if two tools of the same type are created without a name passed in. But this is, at this point, up to the user and a more complex scenario than what this function tries to simplify on its own.</p>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK3xAH9Algorithm10getAddressEv">
+<span id="_CPPv3NK3xAH9Algorithm10getAddressEv"></span><span id="_CPPv2NK3xAH9Algorithm10getAddressEv"></span><span id="xAH::Algorithm::getAddressC"></span><span class="target" id="classxAH_1_1Algorithm_1a954a9ac63148479adf48a1e07a044745"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAddress</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3xAH9Algorithm10getAddressEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">std::string</span></code> representation of <code class="docutils literal notranslate"><span class="pre">this</span></code></p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-protected-attributes">Protected Attributes</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm11m_classNameE">
+<span id="_CPPv3N3xAH9Algorithm11m_classNameE"></span><span id="_CPPv2N3xAH9Algorithm11m_classNameE"></span><span id="xAH::Algorithm::m_className__ss"></span><span class="target" id="classxAH_1_1Algorithm_1aff1b344c0be87d17890333bb65421c39"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_className</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Algorithm&quot;</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm11m_classNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The moniker by which all instances are tracked in <a class="reference internal" href="../xAHAlgorithm.html#_CPPv4N3xAH9Algorithm18m_instanceRegistryE" title="xAH::Algorithm::m_instanceRegistry"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">xAH::Algorithm::m_instanceRegistry</span></code></a></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm7m_eventE">
+<span id="_CPPv3N3xAH9Algorithm7m_eventE"></span><span id="_CPPv2N3xAH9Algorithm7m_eventE"></span><span id="xAH::Algorithm::m_event__xAOD::TEventP"></span><span class="target" id="classxAH_1_1Algorithm_1a6c1a280a55c7e0ff39c6f90e2ba9b05b"></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TEvent</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_event</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm7m_eventE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The TEvent object </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N3xAH9Algorithm7m_storeE">
+<span id="_CPPv3N3xAH9Algorithm7m_storeE"></span><span id="_CPPv2N3xAH9Algorithm7m_storeE"></span><span id="xAH::Algorithm::m_store__xAOD::TStoreP"></span><span class="target" id="classxAH_1_1Algorithm_1a58d778d2d1351cbb863f30fadb1a727c"></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TStore</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_store</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N3xAH9Algorithm7m_storeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The TStore object </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classxAH_1_1Cluster.html" class="btn btn-neutral float-right" title="Class Cluster" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classWriter.html" class="btn btn-neutral float-left" title="Class Writer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

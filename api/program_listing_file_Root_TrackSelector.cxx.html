@@ -1,0 +1,670 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File TrackSelector.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File TrackSelector.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_TrackSelector.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-trackselector-cxx">
+<span id="program-listing-file-root-trackselector-cxx"></span><h1>Program Listing for File TrackSelector.cxx<a class="headerlink" href="#program-listing-for-file-trackselector-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_TrackSelector.cxx.html#file-root-trackselector-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/TrackSelector.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AthContainers/ConstDataVector.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/TrackSelector.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;InDetTrackSelectionTool/InDetTrackSelectionTool.h&quot;</span>
+
+<span class="c1">// ROOT include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TFile.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TObjArray.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TObjString.h&quot;</span>
+
+<span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;typeinfo&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">TrackSelector</span><span class="p">)</span>
+
+
+<span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;TrackSelector&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you put code that sets up the job on the submission object</span>
+<span class="w">  </span><span class="c1">// so that it is ready to work with your algorithm, e.g. you can</span>
+<span class="w">  </span><span class="c1">// request the D3PDReader service or add output files.  Any code you</span>
+<span class="w">  </span><span class="c1">// put here could instead also go into the submission script.  The</span>
+<span class="w">  </span><span class="c1">// sole advantage of putting it here is that it gets automatically</span>
+<span class="w">  </span><span class="c1">// activated/deactivated when you add/remove the algorithm from your</span>
+<span class="w">  </span><span class="c1">// job, which may or may not be of value to you.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TrackSelector&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done at the very</span>
+<span class="w">  </span><span class="c1">// beginning on each worker node, e.g. create histograms and output</span>
+<span class="w">  </span><span class="c1">// trees.  This method gets called before any input files are</span>
+<span class="w">  </span><span class="c1">// connected.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling histInitialize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done exactly once for every</span>
+<span class="w">  </span><span class="c1">// single file, e.g. collect a list of all lumi-blocks processed</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling fileExecute&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="cm">/*firstFile*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything you need to do when we change input files,</span>
+<span class="w">  </span><span class="c1">// e.g. resetting branch addresses on trees.  If you are using</span>
+<span class="w">  </span><span class="c1">// D3PDReader or a similar service this method is not needed.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling changeInput&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that you need to do after the first input</span>
+<span class="w">  </span><span class="c1">// file has been connected and before the first event is processed,</span>
+<span class="w">  </span><span class="c1">// e.g. create additional histograms based on which variables are</span>
+<span class="w">  </span><span class="c1">// available in the input files.  You can also create all of your</span>
+<span class="w">  </span><span class="c1">// histograms and trees in here, but be aware that this method</span>
+<span class="w">  </span><span class="c1">// doesn&#39;t get called if no events are processed.  So any objects</span>
+<span class="w">  </span><span class="c1">// you create here won&#39;t be available in the output if you have no</span>
+<span class="w">  </span><span class="c1">// input events.</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getOutputFile</span><span class="w"> </span><span class="p">(</span><span class="n">m_cutFlowStreamName</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHist</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow_weighted&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflow_bin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_cutflowHist</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="n">m_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="n">m_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// parse and split by comma</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">m_passAuxDecorKeys</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">)){</span>
+<span class="w">    </span><span class="n">m_passKeys</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">ss</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="n">m_failAuxDecorKeys</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">)){</span>
+<span class="w">    </span><span class="n">m_failKeys</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;InputContainer is empty!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Number of events in file: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">getEntries</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_numEvent</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numObject</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numEventPass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numObjectPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Initializing InDetTrackSelectionTool...&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_pT_min</span><span class="w">                           </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minPt&quot;</span><span class="p">,</span><span class="w">                           </span><span class="n">m_pT_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_p_min</span><span class="w">                            </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minP&quot;</span><span class="p">,</span><span class="w">                            </span><span class="n">m_p_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_eta_max</span><span class="w">                          </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxAbsEta&quot;</span><span class="p">,</span><span class="w">                       </span><span class="n">m_eta_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_d0_max</span><span class="w">                           </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxD0&quot;</span><span class="p">,</span><span class="w">                           </span><span class="n">m_d0_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_sigmad0_max</span><span class="w">                      </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxSigmaD0&quot;</span><span class="p">,</span><span class="w">                      </span><span class="n">m_sigmad0_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_d0oversigmad0_max</span><span class="w">                </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxD0overSigmaD0&quot;</span><span class="p">,</span><span class="w">                </span><span class="n">m_d0oversigmad0_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_z0_max</span><span class="w">                           </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxZ0&quot;</span><span class="p">,</span><span class="w">                           </span><span class="n">m_z0_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_z0sinT_max</span><span class="w">                       </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxZ0SinTheta&quot;</span><span class="p">,</span><span class="w">                   </span><span class="n">m_z0sinT_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_sigmaz0_max</span><span class="w">                      </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxSigmaZ0&quot;</span><span class="p">,</span><span class="w">                      </span><span class="n">m_sigmaz0_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_sigmaz0sintheta_max</span><span class="w">              </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxSigmaZ0SinTheta&quot;</span><span class="p">,</span><span class="w">              </span><span class="n">m_sigmaz0sintheta_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_z0oversigmaz0_max</span><span class="w">                </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxZ0overSigmaZ0&quot;</span><span class="p">,</span><span class="w">                </span><span class="n">m_z0oversigmaz0_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_z0sinthetaoversigmaz0sintheta_max</span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxZ0SinThetaoverSigmaZ0SinTheta&quot;</span><span class="p">,</span><span class="n">m_z0sinthetaoversigmaz0sintheta_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nInnermostPixel_min</span><span class="w">              </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNInnermostLayerHits&quot;</span><span class="p">,</span><span class="w">          </span><span class="n">m_nInnermostPixel_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nNextToInnermostPixel_min</span><span class="w">        </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNNextToInnermostLayerHits&quot;</span><span class="p">,</span><span class="w">    </span><span class="n">m_nNextToInnermostPixel_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nBothInnermostLayersHits_min</span><span class="w">     </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNBothInnermostLayersHits&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_nBothInnermostLayersHits_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSi_min</span><span class="w">                          </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNSiHits&quot;</span><span class="p">,</span><span class="w">                      </span><span class="n">m_nSi_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSiPhysical_min</span><span class="w">                  </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNSiHitsPhysical&quot;</span><span class="p">,</span><span class="w">              </span><span class="n">m_nSiPhysical_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSiSharedHits_max</span><span class="w">                </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxNSiSharedHits&quot;</span><span class="p">,</span><span class="w">                </span><span class="n">m_nSiSharedHits_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSiHoles_max</span><span class="w">                     </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxNSiHoles&quot;</span><span class="p">,</span><span class="w">                     </span><span class="n">m_nSiHoles_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nPixelHits_min</span><span class="w">                   </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNPixelHits&quot;</span><span class="p">,</span><span class="w">                   </span><span class="n">m_nPixelHits_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nPixelHitsPhysical_min</span><span class="w">           </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNPixelHitsPhysical&quot;</span><span class="p">,</span><span class="w">           </span><span class="n">m_nPixelHitsPhysical_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nPixelSharedHits_max</span><span class="w">             </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxNPixelSharedHits&quot;</span><span class="p">,</span><span class="w">             </span><span class="n">m_nPixelSharedHits_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nPixHoles_max</span><span class="w">                    </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxNPixelHoles&quot;</span><span class="p">,</span><span class="w">                  </span><span class="n">m_nPixHoles_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSctHits_min</span><span class="w">                     </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNSctHits&quot;</span><span class="p">,</span><span class="w">                     </span><span class="n">m_nSctHits_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSctHitsPhysical_min</span><span class="w">             </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minNSctHitsPhysical&quot;</span><span class="p">,</span><span class="w">             </span><span class="n">m_nSctHitsPhysical_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSctSharedHits_max</span><span class="w">               </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxNSctSharedHits&quot;</span><span class="p">,</span><span class="w">               </span><span class="n">m_nSctSharedHits_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSctHoles_max</span><span class="w">                    </span><span class="o">!=</span><span class="w"> </span><span class="mf">2e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxNSctHoles&quot;</span><span class="p">,</span><span class="w">                    </span><span class="n">m_nSctHoles_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_nSiSharedModules_max</span><span class="w">             </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxNSiSharedModules&quot;</span><span class="p">,</span><span class="w">             </span><span class="n">m_nSiSharedModules_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_chi2Prob_min</span><span class="w">                     </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minProb&quot;</span><span class="p">,</span><span class="w">                         </span><span class="n">m_chi2Prob_min</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_chi2NdofCut_max</span><span class="w">                  </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;maxChiSqperNdf&quot;</span><span class="p">,</span><span class="w">                  </span><span class="n">m_chi2NdofCut_max</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_cutLevelString</span><span class="w">                   </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">)</span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;CutLevel&quot;</span><span class="p">,</span><span class="w">                        </span><span class="n">m_cutLevelString</span><span class="p">));</span>
+
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trkSelTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TrackSelector Interface succesfully initialized!&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Applying Track Selection... &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_name</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="nf">eventInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// MC event weight</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="nf">mcEvtWeight</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventType</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">IS_SIMULATION</span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="n">mcEvtWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">mcEventWeight</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_doTracksInJets</span><span class="p">){</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">executeTracksInJets</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">executeTrackCollection</span><span class="p">(</span><span class="n">mcEvtWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">executeTrackCollection</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">m_numEvent</span><span class="o">++</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// get the collection from TEvent or TStore</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inTracks</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inTracks</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// get primary vertex</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="w"> </span><span class="o">*</span><span class="nf">vertices</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span><span class="w"> </span><span class="n">m_vertexContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="w"> </span><span class="o">*</span><span class="n">pvx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getPrimaryVertex</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">());</span>
+
+
+<span class="w">  </span><span class="c1">// create output container (if requested) - deep copy</span>
+
+<span class="w">  </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">selectedTracks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_createSelectedContainer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">selectedTracks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">::</span><span class="n">const_iterator</span><span class="w"> </span><span class="n">trk_itr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inTracks</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">::</span><span class="n">const_iterator</span><span class="w"> </span><span class="n">trk_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inTracks</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">nPass</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">nObj</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">trk_itr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">trk_end</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">trk_itr</span><span class="w"> </span><span class="p">){</span>
+
+<span class="w">    </span><span class="c1">// if only looking at a subset of tracks make sure all are decorrated</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_nToProcess</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nObj</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">m_nToProcess</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">m_decorateSelectedObjects</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">trk_itr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;passSel&quot;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">nObj</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">passSel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">PassCuts</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">trk_itr</span><span class="p">),</span><span class="w"> </span><span class="n">pvx</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_decorateSelectedObjects</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">(</span><span class="o">*</span><span class="n">trk_itr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;passSel&quot;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">passSel</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">passSel</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">nPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">m_createSelectedContainer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">selectedTracks</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">trk_itr</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_numObject</span><span class="w">     </span><span class="o">+=</span><span class="w"> </span><span class="n">nObj</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numObjectPass</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">nPass</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_pass_min</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nPass</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_pass_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">skipEvent</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_pass_max</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nPass</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pass_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">skipEvent</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// add output container to TStore</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">selectedTracks</span><span class="p">,</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_numEventPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_cutflowHist</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_cutflow_bin</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_cutflow_bin</span><span class="p">,</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">executeTracksInJets</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Applying TracksInJet Selection... &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inJetContainerName</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_numEvent</span><span class="o">++</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// get input jet collection</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inJets</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inJets</span><span class="p">,</span><span class="w"> </span><span class="n">m_inJetContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//const xAOD::VertexContainer *vertices(nullptr);</span>
+<span class="w">  </span><span class="c1">//ANA_CHECK( HelperFunctions::retrieve(vertices, m_vertexContainerName, m_event, m_store, msg()) );</span>
+<span class="w">  </span><span class="c1">//const xAOD::Vertex *pvx = HelperFunctions::getPrimaryVertex(vertices, msg());</span>
+
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">nPass</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">nObj</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  Accessor for adding the output jets</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_track_decoration</span><span class="p">(</span><span class="n">m_outContainerName</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*&gt;</span><span class="w">                 </span><span class="n">m_vtx_decoration</span><span class="w">  </span><span class="p">((</span><span class="n">m_outContainerName</span><span class="o">+</span><span class="s">&quot;_vtx&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// loop on Jets</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">jet_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">inJets</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">//  output container with in the jet</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">outputTracks</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// loop on tracks with in jet</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">inputTracks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jet_itr</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*&gt;</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inContainerName</span><span class="p">);</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="n">pvx</span><span class="w">                              </span><span class="o">=</span><span class="w"> </span><span class="n">jet_itr</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w">                 </span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inContainerName</span><span class="o">+</span><span class="s">&quot;_vtx&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">trkInJet</span><span class="o">:</span><span class="w"> </span><span class="n">inputTracks</span><span class="p">){</span>
+
+<span class="w">      </span><span class="n">nObj</span><span class="o">++</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="c1">// Get cut desicion</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">passSel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">PassCuts</span><span class="p">(</span><span class="w"> </span><span class="n">trkInJet</span><span class="p">,</span><span class="w"> </span><span class="n">pvx</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="c1">// if</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">passSel</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">nPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">outputTracks</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">trkInJet</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="c1">// tracks</span>
+
+<span class="w">    </span><span class="n">m_numObject</span><span class="w">     </span><span class="o">+=</span><span class="w"> </span><span class="n">nObj</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numObjectPass</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">nPass</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">m_track_decoration</span><span class="p">(</span><span class="o">*</span><span class="n">jet_itr</span><span class="p">)</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">outputTracks</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_vtx_decoration</span><span class="p">(</span><span class="o">*</span><span class="n">jet_itr</span><span class="p">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">jet_itr</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">m_inContainerName</span><span class="o">+</span><span class="s">&quot;_vtx&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span><span class="c1">//jets</span>
+
+<span class="w">  </span><span class="n">m_numEventPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done after the main event</span>
+<span class="w">  </span><span class="c1">// processing.  This is typically very rare, particularly in user</span>
+<span class="w">  </span><span class="c1">// code.  It is mainly used in implementing the NTupleSvc.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling postExecute&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">finalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of initialize(), meaning it gets</span>
+<span class="w">  </span><span class="c1">// called after the last event has been processed on the worker node</span>
+<span class="w">  </span><span class="c1">// and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// initialize() before they are written to disk.  This is actually</span>
+<span class="w">  </span><span class="c1">// fairly rare, since this happens separately for each worker node.</span>
+<span class="w">  </span><span class="c1">// Most of the time you want to do your post-processing on the</span>
+<span class="w">  </span><span class="c1">// submission node after all your histogram outputs have been</span>
+<span class="w">  </span><span class="c1">// merged.  This is different from histFinalize() in that it only</span>
+<span class="w">  </span><span class="c1">// gets called on worker nodes that processed input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Deleting tool instances...&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of histInitialize(), meaning it</span>
+<span class="w">  </span><span class="c1">// gets called after the last event has been processed on the worker</span>
+<span class="w">  </span><span class="c1">// node and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// histInitialize() before they are written to disk.  This is</span>
+<span class="w">  </span><span class="c1">// actually fairly rare, since this happens separately for each</span>
+<span class="w">  </span><span class="c1">// worker node.  Most of the time you want to do your</span>
+<span class="w">  </span><span class="c1">// post-processing on the submission node after all your histogram</span>
+<span class="w">  </span><span class="c1">// outputs have been merged.  This is different from finalize() in</span>
+<span class="w">  </span><span class="c1">// that it gets called on all worker nodes regardless of whether</span>
+<span class="w">  </span><span class="c1">// they processed input events.</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">TrackSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">PassCuts</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="w"> </span><span class="o">*</span><span class="n">pvx</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// InDetTrackSelectionTool</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_trkSelTool_handle</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span><span class="o">*</span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="n">pvx</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Cuts not available with the InDetTrackSelectionTool</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// pT_max</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_pT_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pT_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// eta</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_eta_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">())</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_eta_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_etaSigned_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_etaSigned_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_etaSigned_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_etaSigned_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  nBLayer</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nBL</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_nBL_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="c1">//  xAOD::numberOfBLayerHits is deprecated, keeping it for compatibility</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">summaryValue</span><span class="p">(</span><span class="n">nBL</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">numberOfBLayerHits</span><span class="p">))</span><span class="w"> </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;BLayer hits not filled&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">nBL</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_nBL_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  chi2Prob_max</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="kt">float</span><span class="w">        </span><span class="n">chi2</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">chiSquared</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w">        </span><span class="n">ndof</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">numberDoF</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_chi2Prob_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="kt">float</span><span class="w">        </span><span class="n">chi2Prob</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">TMath</span><span class="o">::</span><span class="n">Prob</span><span class="p">(</span><span class="n">chi2</span><span class="p">,</span><span class="n">ndof</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">chi2Prob</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_chi2Prob_max</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  Pass Keys</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">passKey</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_passKeys</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="n">passKey</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;1&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  Fail Keys</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">failKey</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_failKeys</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="n">failKey</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;0&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

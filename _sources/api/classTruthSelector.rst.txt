@@ -1,0 +1,25 @@
+.. _exhale_class_classTruthSelector:
+
+Class TruthSelector
+===================
+
+- Defined in :ref:`file_xAODAnaHelpers_TruthSelector.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: TruthSelector
+   :members:
+   :protected-members:
+   :undoc-members:

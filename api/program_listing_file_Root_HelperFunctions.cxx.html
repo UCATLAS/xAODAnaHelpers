@@ -1,0 +1,776 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File HelperFunctions.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File HelperFunctions.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_HelperFunctions.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-helperfunctions-cxx">
+<span id="program-listing-file-root-helperfunctions-cxx"></span><h1>Program Listing for File HelperFunctions.cxx<a class="headerlink" href="#program-listing-for-file-helperfunctions-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_HelperFunctions.cxx.html#file-root-helperfunctions-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/HelperFunctions.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;AsgMessaging/MessageCheck.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODBase/IParticleContainer.h&quot;</span>
+
+<span class="c1">// samples</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SampleHandler/SampleGrid.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SampleHandler/MetaFields.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SampleHandler/MetaObject.h&gt;</span>
+
+<span class="c1">// jet reclustering</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fastjet/PseudoJet.hh&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fastjet/ClusterSequence.hh&gt;</span>
+
+<span class="c1">// jet trimming</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fastjet/tools/Filter.hh&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;JetEDM/JetConstituentFiller.h&gt;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">xAH::addRucio</span><span class="p">(</span><span class="n">SH</span><span class="o">::</span><span class="n">SampleHandler</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dslist</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">SH</span><span class="o">::</span><span class="n">SampleGrid</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sample</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SH</span><span class="o">::</span><span class="n">SampleGrid</span><span class="p">(</span><span class="n">name</span><span class="p">));</span>
+<span class="w">  </span><span class="n">sample</span><span class="o">-&gt;</span><span class="n">meta</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setString</span><span class="p">(</span><span class="n">SH</span><span class="o">::</span><span class="n">MetaFields</span><span class="o">::</span><span class="n">gridName</span><span class="p">,</span><span class="w"> </span><span class="n">dslist</span><span class="p">);</span>
+<span class="w">  </span><span class="n">sample</span><span class="o">-&gt;</span><span class="n">meta</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setString</span><span class="p">(</span><span class="n">SH</span><span class="o">::</span><span class="n">MetaFields</span><span class="o">::</span><span class="n">gridFilter</span><span class="p">,</span><span class="w"> </span><span class="n">SH</span><span class="o">::</span><span class="n">MetaFields</span><span class="o">::</span><span class="n">gridFilter_default</span><span class="p">);</span>
+<span class="w">  </span><span class="n">sh</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">sample</span><span class="p">.</span><span class="n">release</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">HelperFunctions::msg</span><span class="p">(</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">Level</span><span class="w"> </span><span class="n">lvl</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">MsgStream</span><span class="w"> </span><span class="n">msgStream</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;HelperFunctions&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">msgStream</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">lvl</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">msgStream</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Get Number of Vertices with at least Ntracks</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">HelperFunctions::passPrimaryVertexSelection</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Ntracks</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="n">primaryVertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getPrimaryVertex</span><span class="p">(</span><span class="w"> </span><span class="n">vertexContainer</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">primaryVertex</span><span class="p">){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">((</span><span class="kt">int</span><span class="p">)(</span><span class="n">primaryVertex</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">nTrackParticles</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Ntracks</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">HelperFunctions::countPrimaryVertices</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Ntracks</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">NPV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Loop over vertices in the container</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">vtx_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">vertexContainer</span><span class="w"> </span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">vtx_itr</span><span class="o">-&gt;</span><span class="n">nTrackParticles</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Ntracks</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">NPV</span><span class="o">++</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">NPV</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">HelperFunctions::getPrimaryVertexLocation</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">vertexContainer</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;No primary vertex container was found! Returning -1&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">vtx_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">vertexContainer</span><span class="w"> </span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">vtx_itr</span><span class="o">-&gt;</span><span class="n">vertexType</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VxType</span><span class="o">::</span><span class="n">VertexType</span><span class="o">::</span><span class="n">PriVtx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">location</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">location</span><span class="o">++</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">WARNING</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;No primary vertex location was found! Returning -1&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="nf">HelperFunctions::applyPrimaryVertexSelection</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertices</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// if(jets-&gt;empty()) { return true; }</span>
+
+<span class="w">  </span><span class="c1">// int pvLocation = HelperFunctions::getPrimaryVertexLocation(vertices);</span>
+<span class="w">  </span><span class="c1">// if ( pvLocation &lt; 0 ) { return false; }</span>
+<span class="w">  </span><span class="c1">// const xAOD::Vertex* vertex = vertices-&gt;at( pvLocation );</span>
+
+<span class="w">  </span><span class="c1">// // check if the PV compatible Ghost Matched tracks are already here</span>
+<span class="w">  </span><span class="c1">// static SG::AuxElement::ConstAccessor&lt; std::vector&lt;ElementLink&lt; xAOD::IParticleContainer &gt; &gt; &gt;ghostTrackPVAcc (&quot;GhostTrackPV&quot;);</span>
+<span class="w">  </span><span class="c1">// if( ghostTrackPVAcc.isAvailable( *(jets-&gt;at(0)) ) ) { return true; }</span>
+
+<span class="w">  </span><span class="c1">// // get the originals and apply selection</span>
+<span class="w">  </span><span class="c1">// static SG::AuxElement::ConstAccessor&lt; std::vector&lt;ElementLink&lt; xAOD::IParticleContainer &gt; &gt; &gt;ghostTrack (&quot;GhostTrack&quot;);</span>
+<span class="w">  </span><span class="c1">// for( auto jet_itr : *jets ) {</span>
+
+<span class="w">  </span><span class="c1">//   if ( !ghostTrack.isAvailable( *jet_itr ) ) { continue; }</span>
+<span class="w">  </span><span class="c1">//   std::vector&lt;ElementLink&lt;xAOD::IParticleContainer&gt; &gt; trackLinks = ghostTrack( *jet_itr );</span>
+
+<span class="w">  </span><span class="c1">//   // store the selected tracks</span>
+<span class="w">  </span><span class="c1">//   std::vector&lt;ElementLink&lt; xAOD::IParticleContainer &gt; &gt; selectedTrackHolder;</span>
+
+<span class="w">  </span><span class="c1">//   int originalIndex(-1);</span>
+<span class="w">  </span><span class="c1">//   for ( auto link_itr : trackLinks ) {</span>
+<span class="w">  </span><span class="c1">//     originalIndex++;</span>
+
+<span class="w">  </span><span class="c1">//     if( !link_itr.isValid() ) { continue; }</span>
+<span class="w">  </span><span class="c1">//     const xAOD::TrackParticle* track = dynamic_cast&lt;const xAOD::TrackParticle*&gt;( *link_itr );</span>
+
+<span class="w">  </span><span class="c1">//     if( track-&gt;pt() &lt; 500 )                     { continue; } // pT cut</span>
+<span class="w">  </span><span class="c1">//     if( track-&gt;vertex() != vertex ) {                        // if not in PV vertex fit</span>
+<span class="w">  </span><span class="c1">//       if( track-&gt;vertex() != 0 )                { continue; } // make sure in no vertex fits</span>
+<span class="w">  </span><span class="c1">//       if( fabs((track-&gt;z0()+track-&gt;vz()-vertex-&gt;z())*sin(track-&gt;theta())) &gt; 3.0 ) { continue; } // make sure close to PV in z</span>
+<span class="w">  </span><span class="c1">//     }</span>
+
+<span class="w">  </span><span class="c1">//     selectedTrackHolder.push_back( link_itr );</span>
+
+<span class="w">  </span><span class="c1">//   } // loop over tracks</span>
+
+<span class="w">  </span><span class="c1">//   jet_itr-&gt;auxdecor&lt; std::vector&lt; ElementLink&lt; xAOD::IParticleContainer &gt; &gt; &gt; (&quot;GhostTrackPV&quot;) = selectedTrackHolder;</span>
+
+<span class="w">  </span><span class="c1">// } // loop over jets</span>
+
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">HelperFunctions::replaceString</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">subject</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">search</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">replace</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subject</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">search</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">subject</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">search</span><span class="p">.</span><span class="n">length</span><span class="p">(),</span><span class="w"> </span><span class="n">replace</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pos</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">replace</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">subject</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TString</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">SplitString</span><span class="p">(</span><span class="n">TString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">separator</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// &#39;splitV&#39; with the primitive strings</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TString</span><span class="o">&gt;</span><span class="w"> </span><span class="n">splitV</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TString</span><span class="w"> </span><span class="nf">splitOpt</span><span class="p">(</span><span class="n">orig</span><span class="p">);</span>
+<span class="w">    </span><span class="n">splitOpt</span><span class="p">.</span><span class="n">ReplaceAll</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="s">&quot; &quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">splitOpt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">splitOpt</span><span class="p">.</span><span class="n">Strip</span><span class="p">(</span><span class="n">TString</span><span class="o">::</span><span class="n">kBoth</span><span class="p">,</span><span class="n">separator</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">splitOpt</span><span class="p">.</span><span class="n">Length</span><span class="p">()</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">splitOpt</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">splitOpt</span><span class="p">.</span><span class="n">ReplaceAll</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// clear empty spaces</span>
+<span class="w">        </span><span class="n">splitV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">splitOpt</span><span class="p">);</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">TString</span><span class="w"> </span><span class="n">toSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">splitOpt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">splitOpt</span><span class="p">.</span><span class="n">First</span><span class="p">(</span><span class="n">separator</span><span class="p">));</span>
+<span class="w">        </span><span class="n">splitV</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">toSave</span><span class="p">);</span>
+<span class="w">        </span><span class="n">splitOpt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">splitOpt</span><span class="p">(</span><span class="n">splitOpt</span><span class="p">.</span><span class="n">First</span><span class="p">(</span><span class="n">separator</span><span class="p">),</span><span class="n">splitOpt</span><span class="p">.</span><span class="n">Length</span><span class="p">());</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">splitOpt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">splitOpt</span><span class="p">.</span><span class="n">Strip</span><span class="p">(</span><span class="n">TString</span><span class="o">::</span><span class="n">kLeading</span><span class="p">,</span><span class="n">separator</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">splitV</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">isAvailableMetaData</span><span class="p">(</span><span class="n">TTree</span><span class="o">*</span><span class="w"> </span><span class="n">metaData</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">metaData</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;HelperFunctions::isAvailableMetaData()&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MetaData tree missing from input file. Aborting &quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">isFilePrimaryxAOD</span><span class="p">(</span><span class="n">TFile</span><span class="o">*</span><span class="w"> </span><span class="n">inputFile</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">TTree</span><span class="o">*</span><span class="w"> </span><span class="n">metaData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">TTree</span><span class="o">*&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">inputFile</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;MetaData&quot;</span><span class="p">));</span>
+
+<span class="w">    </span><span class="cm">/* check that MetaData tree exists */</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">isAvailableMetaData</span><span class="p">(</span><span class="n">metaData</span><span class="p">));</span>
+
+<span class="w">    </span><span class="n">metaData</span><span class="o">-&gt;</span><span class="n">LoadTree</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">TObjArray</span><span class="o">*</span><span class="w"> </span><span class="n">ar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">metaData</span><span class="o">-&gt;</span><span class="n">GetListOfBranches</span><span class="p">();</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ar</span><span class="o">-&gt;</span><span class="n">GetEntries</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">TBranch</span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TBranch</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">ar</span><span class="o">-&gt;</span><span class="n">At</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">b</span><span class="o">-&gt;</span><span class="n">GetName</span><span class="p">());</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;StreamAOD&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TLorentzVector</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">jetReclustering</span><span class="p">(</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">jets</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">fcut</span><span class="p">,</span>
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetAlgorithm</span><span class="w"> </span><span class="n">rc_alg</span>
+<span class="p">){</span>
+
+<span class="w">  </span><span class="c1">//1. Need to convert the vector of jets to a vector of pseudojets</span>
+<span class="w">  </span><span class="c1">//    only need p4() since we&#39;re using them as inputs</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">fastjet</span><span class="o">::</span><span class="n">PseudoJet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input_jets</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">jet</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">jets</span><span class="p">){</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">jet_p4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">();</span>
+<span class="w">    </span><span class="n">input_jets</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span>
+<span class="w">      </span><span class="n">fastjet</span><span class="o">::</span><span class="n">PseudoJet</span><span class="p">(</span>
+<span class="w">        </span><span class="n">jet_p4</span><span class="p">.</span><span class="n">Px</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+<span class="w">        </span><span class="n">jet_p4</span><span class="p">.</span><span class="n">Py</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+<span class="w">        </span><span class="n">jet_p4</span><span class="p">.</span><span class="n">Pz</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.</span><span class="p">,</span>
+<span class="w">        </span><span class="n">jet_p4</span><span class="p">.</span><span class="n">E</span><span class="w"> </span><span class="p">()</span><span class="o">/</span><span class="mf">1000.</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//2. Build up the new jet definitions using input configurations</span>
+<span class="w">  </span><span class="c1">//    - jet algorithm</span>
+<span class="w">  </span><span class="c1">//    - radius</span>
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetDefinition</span><span class="w"> </span><span class="n">jet_def</span><span class="p">(</span><span class="n">rc_alg</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//3. Run the Cluster Sequence on pseudojets with the right jet definition above</span>
+<span class="w">  </span><span class="c1">//    cs = clustersequence</span>
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">ClusterSequence</span><span class="w"> </span><span class="nf">cs</span><span class="p">(</span><span class="n">input_jets</span><span class="p">,</span><span class="w"> </span><span class="n">jet_def</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// 4. Grab the reclustered jets, sorted by pt()</span>
+<span class="w">  </span><span class="c1">//    rc_jets == reclustered jets</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">fastjet</span><span class="o">::</span><span class="n">PseudoJet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rc_jets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastjet</span><span class="o">::</span><span class="n">sorted_by_pt</span><span class="p">(</span><span class="n">cs</span><span class="p">.</span><span class="n">inclusive_jets</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">//5.  Apply trimming on PJ.constituents() using fcut</span>
+<span class="w">  </span><span class="c1">//    rc_t_jets == reclustered, trimmed jets</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TLorentzVector</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rc_t_jets</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">rc_jet</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rc_jets</span><span class="p">){</span>
+<span class="w">    </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">rc_t_jet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// loop over subjets</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">rc_jet_subjet</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rc_jet</span><span class="p">.</span><span class="n">constituents</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">subjet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="p">();</span>
+<span class="w">      </span><span class="n">subjet</span><span class="p">.</span><span class="n">SetPtEtaPhiE</span><span class="p">(</span>
+<span class="w">        </span><span class="n">rc_jet_subjet</span><span class="p">.</span><span class="n">pt</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">rc_jet_subjet</span><span class="p">.</span><span class="n">eta</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">rc_jet_subjet</span><span class="p">.</span><span class="n">phi</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">rc_jet_subjet</span><span class="p">.</span><span class="n">e</span><span class="p">()</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">subjet</span><span class="p">.</span><span class="n">Pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">fcut</span><span class="o">*</span><span class="n">rc_jet</span><span class="p">.</span><span class="n">pt</span><span class="p">())</span><span class="w"> </span><span class="n">rc_t_jet</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">subjet</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">rc_t_jets</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">rc_t_jet</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// notes: rc_t_jets is not sorted by pt due to trimming applied</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">sort_by_pt</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">Pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">Pt</span><span class="p">());</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">rc_t_jets</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">rc_t_jets</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">sort_by_pt</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">rc_t_jets</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TLorentzVector</span><span class="o">&gt;</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">jetTrimming</span><span class="p">(</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">jets</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">fcut</span><span class="p">,</span>
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetAlgorithm</span><span class="w"> </span><span class="n">s_alg</span>
+<span class="p">){</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TLorentzVector</span><span class="o">&gt;</span><span class="w"> </span><span class="n">t_jets</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">jet</span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">jets</span><span class="p">){</span>
+<span class="w">    </span><span class="n">t_jets</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">jetTrimming</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">fcut</span><span class="p">,</span><span class="w"> </span><span class="n">s_alg</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// notes: t_jets is not sorted by pt due to trimming applied</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">sort_by_pt</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">      </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">Pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">Pt</span><span class="p">());</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">t_jets</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">t_jets</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">sort_by_pt</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">t_jets</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">TLorentzVector</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">jetTrimming</span><span class="p">(</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">fcut</span><span class="p">,</span>
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetAlgorithm</span><span class="w"> </span><span class="n">s_alg</span>
+<span class="p">){</span>
+
+<span class="w">  </span><span class="c1">//1. Create the trimmer</span>
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">Filter</span><span class="w"> </span><span class="nf">trimmer</span><span class="p">(</span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetDefinition</span><span class="p">(</span><span class="n">s_alg</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">),</span><span class="w"> </span><span class="n">fastjet</span><span class="o">::</span><span class="n">SelectorPtFractionMin</span><span class="p">(</span><span class="n">fcut</span><span class="p">));</span>
+
+<span class="w">  </span><span class="c1">//2.  Apply the trimmer to the jet, this requires the JetEDM</span>
+<span class="w">  </span><span class="c1">//        convert xAOD::Jet to PseudoJet with constituents</span>
+<span class="w">  </span><span class="c1">//        apply trimmer on the PseudoJet</span>
+<span class="w">  </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">t_jet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="p">();</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">fastjet</span><span class="o">::</span><span class="n">PseudoJet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">constit_pseudojets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jet</span><span class="o">::</span><span class="n">JetConstituentFiller</span><span class="o">::</span><span class="n">constituentPseudoJets</span><span class="p">(</span><span class="o">*</span><span class="n">jet</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//3. Need to use ClusterSequence to recluster jet again once we found constituents</span>
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">ClusterSequence</span><span class="w"> </span><span class="nf">cs</span><span class="p">(</span><span class="n">constit_pseudojets</span><span class="p">,</span><span class="w"> </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetDefinition</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetAlgorithm</span><span class="p">)</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">getAlgorithmType</span><span class="p">(),</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">getSizeParameter</span><span class="p">()));</span>
+
+<span class="w">  </span><span class="n">fastjet</span><span class="o">::</span><span class="n">PseudoJet</span><span class="w"> </span><span class="n">t_pjet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trimmer</span><span class="p">(</span><span class="n">fastjet</span><span class="o">::</span><span class="n">join</span><span class="p">(</span><span class="n">cs</span><span class="p">.</span><span class="n">inclusive_jets</span><span class="p">()));</span>
+
+<span class="w">  </span><span class="n">t_jet</span><span class="p">.</span><span class="n">SetPtEtaPhiE</span><span class="p">(</span>
+<span class="w">    </span><span class="n">t_pjet</span><span class="p">.</span><span class="n">pt</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">t_pjet</span><span class="p">.</span><span class="n">eta</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">t_pjet</span><span class="p">.</span><span class="n">phi</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">t_pjet</span><span class="p">.</span><span class="n">e</span><span class="p">()</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">t_jet</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getPrimaryVertex</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// vertex types are listed on L328 of</span>
+<span class="w">  </span><span class="c1">// https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODTracking/trunk/xAODTracking/TrackingPrimitives.h</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">vtx_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">vertexContainer</span><span class="w"> </span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">vtx_itr</span><span class="o">-&gt;</span><span class="n">vertexType</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VxType</span><span class="o">::</span><span class="n">VertexType</span><span class="o">::</span><span class="n">PriVtx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vtx_itr</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">WARNING</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;No primary vertex was found! Returning nullptr&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getPrimaryVertexZ</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="n">pvx</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">pvx_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">pvx</span><span class="p">)</span><span class="w"> </span><span class="n">pvx_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pvx</span><span class="o">-&gt;</span><span class="n">z</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pvx_z</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">sort_pt</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">partA</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">partB</span><span class="p">){</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">partA</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">partB</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// Get the subset of systematics to consider</span>
+<span class="c1">// can also return full set if systName = &quot;All&quot;</span>
+<span class="c1">//</span>
+<span class="c1">// CP::make_systematics_vector(recSysts); has some similar functionality but does not</span>
+<span class="c1">// prune down to 1 systematic if only request that one.  It does however include the</span>
+<span class="c1">// nominal case as a null SystematicSet</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getListofSystematics</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="n">inSysts</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">systNames</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">systVal</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">outSystList</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// parse and split by comma</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">systNamesList</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">systNames</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">systNamesList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;systNames: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">name</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">systNamesList</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// loop over input set</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">syst</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">inSysts</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">syst</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 1.</span>
+<span class="w">    </span><span class="c1">// input systName does not contain &quot;All&quot;:</span>
+<span class="w">    </span><span class="c1">// match with input systName(s) from the list:</span>
+<span class="w">    </span><span class="c1">// add these systematics only to the output list</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">systNames</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;All&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// do systNames vector matching</span>
+<span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">systNamesList</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">syst</span><span class="p">.</span><span class="n">basename</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">          </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// continue if not matched</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">valid</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Found match! Adding systematic &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">syst</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// continuous systematics - can choose at what sigma to evaluate</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">syst</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="w"> </span><span class="p">(</span><span class="n">syst</span><span class="p">.</span><span class="n">basename</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="o">::</span><span class="n">CONTINUOUS</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">());</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">systVal</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">ERROR</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Setting continuous systematic to 0 is nominal! Please check!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">          </span><span class="n">RCU_THROW_MSG</span><span class="p">(</span><span class="s">&quot;Failure&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">insert</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="w"> </span><span class="p">(</span><span class="n">syst</span><span class="p">.</span><span class="n">basename</span><span class="p">(),</span><span class="w"> </span><span class="n">systVal</span><span class="p">));</span>
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">());</span>
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">insert</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="w"> </span><span class="p">(</span><span class="n">syst</span><span class="p">.</span><span class="n">basename</span><span class="p">(),</span><span class="w"> </span><span class="mf">-1.0</span><span class="o">*</span><span class="n">fabs</span><span class="p">(</span><span class="n">systVal</span><span class="p">)));</span>
+
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// not a continuous system</span>
+
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">());</span>
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">insert</span><span class="p">(</span><span class="n">syst</span><span class="p">);</span>
+
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// 2.</span>
+<span class="w">    </span><span class="c1">// input systName contains &quot;All&quot;:</span>
+<span class="w">    </span><span class="c1">// add all systematics to the output list</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">systNames</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;All&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Adding systematic &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">syst</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// continuous systematics - can choose at what sigma to evaluate</span>
+<span class="w">      </span><span class="c1">// add +1 and -1 for when running all</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">syst</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="w"> </span><span class="p">(</span><span class="n">syst</span><span class="p">.</span><span class="n">basename</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="o">::</span><span class="n">CONTINUOUS</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">systVal</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">ERROR</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Setting continuous systematic to 0 is nominal! Please check!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">        </span><span class="n">RCU_THROW_MSG</span><span class="p">(</span><span class="s">&quot;Failure&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="n">outSystList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">());</span>
+<span class="w">      </span><span class="n">outSystList</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">insert</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="w"> </span><span class="p">(</span><span class="n">syst</span><span class="p">.</span><span class="n">basename</span><span class="p">(),</span><span class="w">  </span><span class="n">fabs</span><span class="p">(</span><span class="n">systVal</span><span class="p">)));</span>
+<span class="w">      </span><span class="n">outSystList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">());</span>
+<span class="w">      </span><span class="n">outSystList</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">insert</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="w"> </span><span class="p">(</span><span class="n">syst</span><span class="p">.</span><span class="n">basename</span><span class="p">(),</span><span class="w"> </span><span class="mf">-1.0</span><span class="o">*</span><span class="n">fabs</span><span class="p">(</span><span class="n">systVal</span><span class="p">)));</span>
+
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// not a continuous systematic</span>
+
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">());</span>
+<span class="w">        </span><span class="n">outSystList</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">insert</span><span class="p">(</span><span class="n">syst</span><span class="p">);</span>
+
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="c1">// loop over recommended systematics</span>
+
+<span class="w">  </span><span class="c1">// Add an empty CP::SystematicVariation at the top of output list to account for the nominal case</span>
+<span class="w">  </span><span class="c1">// when running on all systematics or on nominal only</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">systNames</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Nominal&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">systNames</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;All&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">systNames</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">outSystList</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">outSystList</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="w"> </span><span class="n">nullVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">outSystList</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">insert</span><span class="p">(</span><span class="n">nullVar</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">outSystList</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">writeSystematicsListHist</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">systs</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">histName</span><span class="p">,</span><span class="w"> </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">folderName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;systematics&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">folderName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">histName</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">systs</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">histName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">c_str</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="n">folderName</span><span class="p">.</span><span class="n">c_str</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">file</span><span class="o">-&gt;</span><span class="n">mkdir</span><span class="p">(</span><span class="n">folderName</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">file</span><span class="o">-&gt;</span><span class="n">cd</span><span class="p">(</span><span class="n">folderName</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+
+<span class="w">  </span><span class="n">TH1D</span><span class="w"> </span><span class="nf">hist</span><span class="p">(</span><span class="n">histName</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">histName</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">systs</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">systs</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">systs</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">().</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">hist</span><span class="p">.</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">SetBinLabel</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nominal&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">hist</span><span class="p">.</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">SetBinLabel</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">systs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">().</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">hist</span><span class="p">.</span><span class="n">Write</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">dPhi</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">phi1</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">phi2</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">dPhi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">phi1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">phi2</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">dPhi</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">3.14</span><span class="p">)</span><span class="w">  </span><span class="n">dPhi</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="mf">3.14</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">dPhi</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">-3.14</span><span class="p">)</span><span class="w"> </span><span class="n">dPhi</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="mf">3.14</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">dPhi</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">string_pos</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">haystack</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">needle</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">    </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">haystack</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">needle</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">has_exact</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">flag</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputSet</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// parse and split by space</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="n">inputSet</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">inputSet</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">inputSet</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">HelperFunctions</span><span class="o">::</span><span class="n">ShowerType</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getMCShowerType</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sample_name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_taggerName</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//pre-process sample name</span>
+<span class="w">  </span><span class="n">TString</span><span class="w"> </span><span class="nf">tmp_name</span><span class="p">(</span><span class="n">sample_name</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tmp_name</span><span class="p">.</span><span class="n">ReplaceAll</span><span class="p">(</span><span class="s">&quot;Py8EG&quot;</span><span class="p">,</span><span class="s">&quot;PYTHIA8EVTGEN&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tmp_name</span><span class="p">.</span><span class="n">ReplaceAll</span><span class="p">(</span><span class="s">&quot;Py8EvtGen&quot;</span><span class="p">,</span><span class="s">&quot;PYTHIA8EVTGEN&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tmp_name</span><span class="p">.</span><span class="n">ReplaceAll</span><span class="p">(</span><span class="s">&quot;Py8&quot;</span><span class="p">,</span><span class="s">&quot;Pythia8&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;Pythia&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;Pythia8&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;EvtGen&quot;</span><span class="p">))</span><span class="w"> </span><span class="n">tmp_name</span><span class="p">.</span><span class="n">ReplaceAll</span><span class="p">(</span><span class="s">&quot;Pythia&quot;</span><span class="p">,</span><span class="s">&quot;PYTHIA8EVTGEN&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;Pythia8&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;EvtGen&quot;</span><span class="p">))</span><span class="w"> </span><span class="n">tmp_name</span><span class="p">.</span><span class="n">ReplaceAll</span><span class="p">(</span><span class="s">&quot;Pythia8&quot;</span><span class="p">,</span><span class="s">&quot;PYTHIA8EVTGEN&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">//capitalize the entire sample name</span>
+<span class="w">  </span><span class="n">tmp_name</span><span class="p">.</span><span class="n">ToUpper</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Determine shower type by looking for keywords in name</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_taggerName</span><span class="o">==</span><span class="s">&quot;DL1dv01&quot;</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;AMCATNLOPY&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">AmcPy8</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;AMCATNLOH&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">AmcH7</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;PYTHIA8EVTGEN&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Pythia8</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;HERWIG&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Herwig7p1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;PHH7EG&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Herwig7p2</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SHERPA_221_&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa221</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_221_&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa221</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2210&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2210</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2211&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2210</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2212&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2212</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Unknown</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">m_taggerName</span><span class="o">==</span><span class="s">&quot;GN2v01&quot;</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;PYTHIA8EVTGEN&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="o">!</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;AMCATNLO&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Pythia8</span><span class="p">;</span><span class="w"> </span><span class="c1">//aMcAtNlo not supported for GN2, so don&#39;t let it count as Pythia8</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;HERWIG&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="o">!</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;AMCATNLO&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Herwig7p1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;PHH7EG&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Herwig7p2</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2210&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">;</span><span class="c1">//FTAG uses 2.2.14 SFs for 2.2.10</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2211&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">;</span><span class="c1">//MC-to-MC maps for versions of Sherpa between 2.2.11 and 2.2.16 are equivalent.</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2212&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2213&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2214&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2215&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2216&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="o">!</span><span class="n">tmp_name</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;SH_2&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Sherpa_Unknown</span><span class="p">;</span><span class="c1">//Unknown Sherpa Version. This is to handle Sh_blank (e.g. DSID 701050). The examples I&#39;ve found are all 2.2.16, but that&#39;s not guaranteed.</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Unknown</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w">  </span><span class="n">Unknown</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

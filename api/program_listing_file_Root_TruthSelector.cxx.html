@@ -1,0 +1,628 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File TruthSelector.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File TruthSelector.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_TruthSelector.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-truthselector-cxx">
+<span id="program-listing-file-root-truthselector-cxx"></span><h1>Program Listing for File TruthSelector.cxx<a class="headerlink" href="#program-listing-for-file-truthselector-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_TruthSelector.cxx.html#file-root-truthselector-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/TruthSelector.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * Truth selector tool</span>
+<span class="cm"> *</span>
+<span class="cm"> * J.Alison (john.alison@cern.ch)</span>
+<span class="cm"> *</span>
+<span class="cm"> ************************************/</span>
+
+<span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;typeinfo&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="c1">// EL include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="c1">// EDM include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODTruth/TruthParticleContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODCore/ShallowCopy.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AthContainers/ConstDataVector.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicVariation.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicRegistry.h&quot;</span>
+
+<span class="c1">// package include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEventInfo/EventInfo.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/TruthSelector.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperClasses.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+
+<span class="c1">// external tools include(s):</span>
+
+<span class="c1">// ROOT include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TFile.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TObjArray.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TObjString.h&quot;</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">TruthSelector</span><span class="p">)</span>
+
+<span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;TruthSelector&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TruthSelector&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histInitialize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling fileExecute&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="cm">/*firstFile*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling changeInput&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling initialize&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_useCutFlow</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">   </span><span class="c1">// retrieve the file in which the cutflow hists are stored</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getOutputFile</span><span class="w"> </span><span class="p">(</span><span class="n">m_cutFlowStreamName</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// retrieve the event cutflows</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">m_cutflowHist</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow_weighted&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflow_bin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_cutflowHist</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="n">m_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="n">m_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+
+<span class="w">    </span><span class="c1">// retrieve the object cutflow</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">m_truth_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow_truths_1&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_truth_cutflow_all</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;all&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_truth_cutflow_ptmax_cut</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;ptmax_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_truth_cutflow_ptmin_cut</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;ptmin_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_truth_cutflow_eta_cut</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;eta_cut&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;InputContainer is empty!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_decor</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;passSel&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_decorateSelectedObjects</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="s">&quot; Decorate Jets with &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_decor</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Number of events in file: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">getEntries</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_numEvent</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numObject</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numEventPass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_weightNumEventPass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numObjectPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TruthSelector Interface succesfully initialized!&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Applying Jet Selection... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// retrieve event</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="nf">eventInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// MC event weight</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="nf">mcEvtWeight</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">mcEvtWeightAcc</span><span class="p">(</span><span class="s">&quot;mcEventWeight&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">mcEvtWeightAcc</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;mcEventWeight is not available as decoration! Aborting&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">mcEvtWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mcEvtWeightAcc</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_numEvent</span><span class="o">++</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// did any collection pass the cuts?</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">pass</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span><span class="w"> </span><span class="c1">// count for the 1st collection in the container - could be better as</span>
+<span class="w">                    </span><span class="c1">// shoudl only count for the nominal</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inTruthParts</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// if input comes from xAOD, or just running one collection,</span>
+<span class="w">  </span><span class="c1">// then get the one collection and be done with it</span>
+
+<span class="w">  </span><span class="c1">// this will be the collection processed - no matter what!!</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inTruthParts</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">pass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executeSelection</span><span class="p">(</span><span class="w"> </span><span class="n">inTruthParts</span><span class="p">,</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// look what we have in TStore</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">msgLvl</span><span class="p">(</span><span class="n">MSG</span><span class="o">::</span><span class="n">VERBOSE</span><span class="p">))</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">print</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">pass</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">skipEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">executeSelection</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inTruthParts</span><span class="p">,</span>
+<span class="w">                     </span><span class="kt">float</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">,</span>
+<span class="w">                     </span><span class="kt">bool</span><span class="w"> </span><span class="n">count</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">outContainerName</span>
+<span class="w">                     </span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// create output container (if requested)</span>
+<span class="w">  </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthParticleContainer</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">selectedTruthParts</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">selectedTruthParts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthParticleContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">nPass</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">nObj</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">passSelDecor</span><span class="p">(</span><span class="w"> </span><span class="n">m_decor</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">truth_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">inTruthParts</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// duplicated of basic loop</span>
+
+<span class="w">    </span><span class="c1">// if only looking at a subset of jets make sure all are decorated</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_nToProcess</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nObj</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">m_nToProcess</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_decorateSelectedObjects</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">passSelDecor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">truth_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">nObj</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">passSel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">PassCuts</span><span class="p">(</span><span class="w"> </span><span class="n">truth_itr</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_decorateSelectedObjects</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">passSelDecor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">truth_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">passSel</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">passSel</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">nPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">selectedTruthParts</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">truth_itr</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_numObject</span><span class="w">     </span><span class="o">+=</span><span class="w"> </span><span class="n">nObj</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numObjectPass</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">nPass</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// add ConstDataVector to TStore</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">selectedTruthParts</span><span class="p">,</span><span class="w"> </span><span class="n">outContainerName</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pass_min</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nPass</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_pass_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pass_max</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nPass</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pass_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_numEventPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_weightNumEventPass</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling postExecute&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">finalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="n">m_name</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_useCutFlow</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Filling cutflow&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHist</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">SetBinContent</span><span class="p">(</span><span class="w"> </span><span class="n">m_cutflow_bin</span><span class="p">,</span><span class="w"> </span><span class="n">m_numEventPass</span><span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="o">-&gt;</span><span class="n">SetBinContent</span><span class="p">(</span><span class="w"> </span><span class="n">m_cutflow_bin</span><span class="p">,</span><span class="w"> </span><span class="n">m_weightNumEventPass</span><span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histFinalize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">TruthSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">PassCuts</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthParticle</span><span class="o">*</span><span class="w"> </span><span class="n">truthPart</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// fill cutflow bin &#39;all&#39; before any cut</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_truth_cutflow_all</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// pT</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pT_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pT_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_truth_cutflow_ptmax_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pT_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_pT_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_truth_cutflow_ptmin_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// eta</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_eta_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">())</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_eta_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_eta_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">())</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_eta_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_truth_cutflow_eta_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// mass</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_mass_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">m</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_mass_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_mass_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">m</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_mass_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// rapidity</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_rapidity_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">rapidity</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_rapidity_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_rapidity_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">rapidity</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_rapidity_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// selections for particles from MCTruthClassifier</span>
+
+<span class="w">  </span><span class="c1">// type</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_typeOptions</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// check w.r.t. multiple possible type values</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;single and multiple type conditions were selected, only the former will be used&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">typeVec</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">m_typeOptions</span><span class="p">);</span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;|&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">typeVec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">stoi</span><span class="p">(</span><span class="n">token</span><span class="p">));</span>
+<span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleType&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleType&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">typeVec</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="o">++</span><span class="n">i</span><span class="p">){</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">typeVec</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">found</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;classifierParticleType is not available&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// single type value</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleType&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleType&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_type</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;classifierParticleType is not available&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// origin</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_originOptions</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// check w.r.t. multiple possible origin values</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_origin</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;single and multiple origin conditions were selected, only the former will be used&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">originVec</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">m_originOptions</span><span class="p">);</span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;|&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">originVec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">stoi</span><span class="p">(</span><span class="n">token</span><span class="p">));</span>
+<span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleOrigin&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleOrigin&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">originVec</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="o">++</span><span class="n">i</span><span class="p">){</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">origin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">originVec</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">found</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;classifierParticleOrigin is not available&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_origin</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// single origin value</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleOrigin&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;classifierParticleOrigin&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_origin</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;classifierParticleOrigin is not available&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// pt_dressed</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pT_dressed_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;pt_dressed&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">pT_dressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;pt_dressed&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">pT_dressed</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_pT_dressed_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;pt_dressed is not available&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// eta_dressed</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_eta_dressed_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;eta_dressed&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">eta_dressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;eta_dressed&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eta_dressed</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_eta_dressed_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;eta_dressed is not available&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_eta_dressed_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;eta_dressed&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">eta_dressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthPart</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;eta_dressed&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eta_dressed</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_eta_dressed_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;eta_dressed is not available&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

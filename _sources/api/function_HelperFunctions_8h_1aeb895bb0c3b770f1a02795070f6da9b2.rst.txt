@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1aeb895bb0c3b770f1a02795070f6da9b2:
+
+Function HelperFunctions::isFilePrimaryxAOD
+===========================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::isFilePrimaryxAOD(TFile *)

@@ -1,0 +1,583 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File JetHists.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File JetHists.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_JetHists.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-jethists-h">
+<span id="program-listing-file-xaodanahelpers-jethists-h"></span><h1>Program Listing for File JetHists.h<a class="headerlink" href="#program-listing-for-file-jethists-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_JetHists.h.html#file-xaodanahelpers-jethists-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/JetHists.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_JetHists_H</span>
+<span class="cp">#define xAODAnaHelpers_JetHists_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/IParticleHists.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperClasses.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/TracksInJetHists.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODJet/JetContainer.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/Jet.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/EventInfo.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/OnlineBeamSpotTool.h&quot;</span>
+
+<span class="n">ANA_MSG_HEADER</span><span class="p">(</span><span class="n">msgJetHists</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">JetHists</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">IParticleHists</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+
+
+<span class="w">  </span><span class="n">JetHists</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">prefix</span><span class="o">=</span><span class="s">&quot;jet&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">titleprefix</span><span class="o">=</span><span class="s">&quot;jet&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">JetHists</span><span class="p">()</span><span class="w"> </span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="p">,</span><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">finalize</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">HistogramManager</span><span class="o">::</span><span class="n">book</span><span class="p">;</span><span class="w"> </span><span class="c1">// make other overloaded version of book() to show up in subclass</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">execute</span><span class="p">;</span><span class="w"> </span><span class="c1">// overload</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">record</span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">IWorker</span><span class="o">*</span><span class="w"> </span><span class="n">wk</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">protected</span><span class="o">:</span>
+
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Particle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="p">,</span><span class="w">   </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// holds bools that control which histograms are filled</span>
+<span class="w">    </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">JetInfoSwitch</span><span class="o">*</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">private</span><span class="o">:</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_titlePrefix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">xAH</span><span class="o">::</span><span class="n">OnlineBeamSpotTool</span><span class="w">      </span><span class="n">m_onlineBSTool</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// clean</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetTime</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_LArQuality</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_hecq</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_negE</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_avLArQF</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_bchCorrCell</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_N90Const</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_LArQmean;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_LArBadHVEFrac;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_LArBadHVNCell;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_ChargedFraction</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_OotFracClusters5;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_OotFracClusters10;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_LeadingClusterPt;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_LeadingClusterSecondLambda;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_LeadingClusterCenterLambda;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_LeadingClusterSecondR;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_clean_passLooseBad;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_clean_passLooseBadUgly;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_clean_passTightBad;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_clean_passTightBadUgly;</span>
+
+
+<span class="w">    </span><span class="c1">//layer</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_PreSamplerB</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_EMB1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_EMB2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_EMB3</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_PreSamplerE</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_EME1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_EME2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_EME3</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_HEC0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_HEC1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_HEC2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_HEC3</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileBar0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileBar1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileBar2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileGap1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileGap2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileGap3</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileExt0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileExt1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_TileExt2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_FCAL0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_FCAL1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_FCAL2</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// area</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_actArea</span><span class="p">;</span>
+
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_chf</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//energy</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_HECf</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_EMf</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_centroidR</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_fracSampMax</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_fracSampMaxIdx</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_lowEtFrac</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_GhostMuonSegmentCount;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_Width;</span>
+
+
+<span class="w">    </span><span class="c1">// resolution</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetGhostTruthPt</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_vs_resolution</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetGhostTruthPt_vs_resolution</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// truth jets</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthLabelID</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_hadronConeExclTruthLabelID</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_partonTruthLabelID</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthEta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPhi</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthDr_B</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthDr_C</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthDr_T</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">//TH1F *m_GhostTruthAssociationFraction;</span>
+
+<span class="w">    </span><span class="c1">// Detailed truth jet plots</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount_BhadFinal</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount_BhadInit</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount_BQFinal</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_BhadFinal</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_BhadInit</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_BQFinal</span><span class="w">  </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount_ChadFinal</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount_ChadInit</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount_CQFinal</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_ChadFinal</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_ChadInit</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_CQFinal</span><span class="w">  </span><span class="p">;</span>
+
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthCount_TausFinal</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_truthPt_TausFinal</span><span class="w">   </span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// JVC</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_JVC</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Flavor Tag</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_COMB</span><span class="w">   </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV0</span><span class="w">             </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_JetFitter</span><span class="w">       </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxClass_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxEff10_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxEff1_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxEff10_raw_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxEff1_raw_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxEff10_noDummy_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxEff1_noDummy_vs_lBlock</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trkSum_ntrk</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trkSum_sPt</span><span class="w">      </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trkSum_vPt</span><span class="w">      </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trkSum_vAbsEta</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_width</span><span class="w">           </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_n_trk_sigd0cut</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk3_d0sig</span><span class="w">      </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk3_z0sig</span><span class="w">      </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv_scaled_efc</span><span class="w">   </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_scaled_efc</span><span class="w">   </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_nVTX</span><span class="w">           </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_nSingleTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_nTracksAtVtx</span><span class="w">   </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_mass</span><span class="w">           </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_energyFraction</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_significance3d</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_deltaeta</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_deltaeta_l</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_deltaphi</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_deltaphi_l</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_deltaR</span><span class="w">         </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_N2Tpar</span><span class="w">         </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_pb</span><span class="w">             </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_pc</span><span class="w">             </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_pu</span><span class="w">             </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_mass_unco</span><span class="w">      </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jf_dR_flight</span><span class="w">      </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv0_NGTinSvx</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv0_N2Tpair</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv0_massvx</span><span class="w">   </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv0_efracsvx</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv0_normdist</span><span class="w"> </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_pu</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_pb</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_pc</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1</span><span class="w">          </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_c</span><span class="w">        </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_cu</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv1_NGTinSvx</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv1_N2Tpair</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv1_massvx</span><span class="w">   </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv1_efracsvx</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_sv1_normdist</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_Lxy</span><span class="w">        </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_sig3d</span><span class="w">        </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_L3d</span><span class="w">        </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_distmatlay</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_SV1_dR</span><span class="w">         </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_nIP2DTracks</span><span class="w">              </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_gradeOfTracks</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_flagFromV0ofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_valD0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_sigD0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_sigD0wrtPVofTracks_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_errD0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_weightBofTracks</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_weightCofTracks</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_weightUofTracks</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_pu</span><span class="w">                  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_pb</span><span class="w">                  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_pc</span><span class="w">                  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D</span><span class="w">                     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_c</span><span class="w">                   </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP2D_cu</span><span class="w">                  </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_nIP3DTracks</span><span class="w">              </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_gradeOfTracks</span><span class="w">       </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_flagFromV0ofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_valD0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_sigD0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_sigD0wrtPVofTracks_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_errD0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_valZ0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_sigZ0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_sigZ0wrtPVofTracks_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_errZ0wrtPVofTracks</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_weightBofTracks</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_weightCofTracks</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_weightUofTracks</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_pu</span><span class="w">                  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_pb</span><span class="w">                  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_pc</span><span class="w">                  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D</span><span class="w">                     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_c</span><span class="w">                   </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_IP3D_cu</span><span class="w">                  </span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// substructure</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau3</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau21</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau32</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau1_wta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau2_wta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau3_wta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau21_wta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau32_wta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_numConstituents</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Tracks in Jets</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_nTrk</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TracksInJetHists</span><span class="o">*</span><span class="w"> </span><span class="n">m_tracksInJet</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// By eta</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_eta_0_1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_eta_1_2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_eta_2_2p5</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_eta_1_2p5</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// bs information</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_bs_online_vx</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_bs_online_vy</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_bs_online_vz</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_bs_online_vz_l</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_eta_bs_online_vz_0_1</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_eta_bs_online_vz_1_1p5</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_eta_bs_online_vz_1p5_2</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// HLT Vertex Comp</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_offline_x0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_offline_y0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_offline_z0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_offline_z0_s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_online_x0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_online_y0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_online_z0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_online_z0_s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_online_x0_raw</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_online_y0_raw</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_vtx_online_z0_raw</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxOnlineValid</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxOfflineValid</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffz0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffz0_m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffz0_s</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxBkgDiffz0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxBkgDiffz0_m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxBkgDiffz0_s</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffx0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffx0_l</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffy0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffy0_l</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxClass</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w">   </span><span class="n">m_vtxDiffx0_vs_lBlock</span><span class="w">    </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w">   </span><span class="n">m_vtxDiffy0_vs_lBlock</span><span class="w">    </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w">   </span><span class="n">m_vtxDiffz0_vs_lBlock</span><span class="w">    </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_lumiB_runN</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_lumiB_runN_vtxClass</span><span class="w">     </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_lumiB_runN_vtxDiffz0</span><span class="w">    </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_lumiB_runN_lumiB</span><span class="w">        </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_lumiB_runN_bs_online_vz</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_lumiB_runN_bs_den</span><span class="w">       </span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w">   </span><span class="n">m_vtx_online_x0_vs_vtx_online_z0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w">   </span><span class="n">m_vtx_online_y0_vs_vtx_online_z0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// trackPV</span>
+<span class="w">    </span><span class="c1">//TH1F* m_NumTrkPt1000PV;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_SumPtTrkPt1000PV;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_TrackWidthPt1000PV;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_NumTrkPt500PV;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_SumPtTrkPt500PV;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_TrackWidthPt500PV;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_JVFPV;</span>
+
+<span class="w">    </span><span class="c1">// trackAll or trackPV</span>
+<span class="w">    </span><span class="c1">//TH1F* m_Jvt;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_JvtJvfcorr;</span>
+<span class="w">    </span><span class="c1">//TH1F* m_JvtRpt;</span>
+
+
+<span class="w">    </span><span class="c1">// charge</span>
+<span class="w">    </span><span class="c1">//TH1F *m_charge;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_actualMu</span><span class="p">;</span><span class="w">                   </span><span class="c1">// !</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_avgMu</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_avgMu_00_15</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_avgMu_15_25</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_jetPt_avgMu_25</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_avgMu_vs_jetPt</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Eta-phi map</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_etaPhi</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Some other 2D plots</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffz0_vs_vtx_offline_z0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffz0_s_vs_vtx_offline_z0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffz0_s_vs_vtxDiffx0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_vtxDiffz0_s_vs_vtxDiffy0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// TProfile in prep for showing it is flat</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w">  </span><span class="n">m_vtxClass_vs_jetPt</span><span class="p">;</span>
+
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

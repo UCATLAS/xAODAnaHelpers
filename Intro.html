@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing" href="Installing.html" />
+    <link rel="prev" title="xAODAnaHelpers" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-packages">Related Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xaoddumper">xAODDumper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#goodruns">goodruns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Introduction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Intro.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>This package is meant to be the minimal needed to use the CP tools
+properly to calibrate, select, and correct the physics objects used for
+most physics analyses. Each step of the analysis chain is done by an
+EL::Algorithm which utilizes TStore to pass information to the Algos
+down the chain. The final product can be a TTree, histograms, or a mini
+xAOD (coming soon!). The philosophy adopted is not to remake the EDM or
+to alter it but to make minimal wrapper around CP tools to help users
+configure them properly and connect the full chain without much hassle.
+To this end, some details are hidden for the user and set automatically
+in the tools. As much as possible we used the same names as is shipped
+with the xAOD objects or the CP tools themselves. The user is not meant
+to learn a new EDM but rather to learn the minimal needed to start doing
+the fun stuff - Physics!!</p>
+<div class="section" id="background">
+<h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<p>An analysis is done in steps with a <code class="docutils literal notranslate"><span class="pre">EL::Algorithm</span></code> running for each.
+For example, one algo is used to calibrate the jet collection, another
+to apply some selection cuts, and then a third algorithm can contain
+your analysis code to calculate something with the jets or one of the
+general plotting algorithms that will fill a configurable set of plots.
+A second jet calibrator and selector can be added to have a second jet
+collection at the same time. A base class for a tree has also been
+created with some standard branches and a way for the user to add more
+as well. The tree is configurable with the same options as the
+histograming classes - with a string of categories of interest. Each
+algorithm can be configured via a text file read by TEnv. Example for
+all are given and one can look for the “configure” function to see what
+options are available (also noted below). Development changes and help
+requests can be obtained on the e-group “atlas-sw-xAODAnaHelpersFW” or
+directly here on GitHub.</p>
+<p>A word on <strong>systematics</strong>. When the object itself is altered (i.e. JES
+calibration and JES systematics) a new collection is made and put into
+TStore. The name of the nominal collection after calibration is set from
+the config file. The name of the systematically varied collection uses
+the same name plus the name of the systematic directly from the CP tool.
+The next algo in the chain using these objects needs to know which
+collections where created. To avoid hardcoding things and all that, when
+the systematics are applied a vector is created containing the names of
+each systematic. Downstream, algos pick up this vector then know which
+collections to run over. Each Algo will loop over all collections before
+going to the next step. If selectors are configured with limits in the
+number of events passing the cuts, only collections passing the cuts
+will be passed to algos downstream. If none pass, the next event is
+analyzed.</p>
+</div>
+<div class="section" id="related-packages">
+<h2>Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h2>
+<p>Here we list some useful packages that don’t depend on xAH, but can be used along with it.</p>
+<div class="section" id="xaoddumper">
+<h3>xAODDumper<a class="headerlink" href="#xaoddumper" title="Permalink to this headline">¶</a></h3>
+<p>This python package (developed by <a class="reference external" href="http://giordonstark.com/">Giordon Stark, UChicago</a>) contains a useful python script to dump the full content of a generic xAOD file (full breakdown of available containers and attributes, basic plots, size and memory usage). See the dedicated <a class="reference external" href="http://kratsg.github.io/xAODDumper/">webpage</a> for more info.</p>
+</div>
+<div class="section" id="goodruns">
+<h3>goodruns<a class="headerlink" href="#goodruns" title="Permalink to this headline">¶</a></h3>
+<p>This python package (made by Noel Dawe, Univeristy of Melbourne) provides a useful set of tools to handle GoodRunLists, e.g., merging N GRLs into a single one etc. All the details and instructions are well documented <a class="reference external" href="http://ndawe.github.io/goodruns/">here</a>.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Installing.html" class="btn btn-neutral float-right" title="Installing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="xAODAnaHelpers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

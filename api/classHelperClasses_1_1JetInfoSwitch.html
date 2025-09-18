@@ -1,0 +1,825 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class JetInfoSwitch &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class METInfoSwitch" href="classHelperClasses_1_1METInfoSwitch.html" />
+    <link rel="prev" title="Class IParticleInfoSwitch" href="classHelperClasses_1_1IParticleInfoSwitch.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Doxygen API</a> &raquo;</li>
+        
+      <li>Class JetInfoSwitch</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classHelperClasses_1_1JetInfoSwitch.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-jetinfoswitch">
+<span id="exhale-class-classhelperclasses-1-1jetinfoswitch"></span><h1>Class JetInfoSwitch<a class="headerlink" href="#class-jetinfoswitch" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_xAODAnaHelpers_HelperClasses.h.html#file-xaodanahelpers-helperclasses-h"><span class="std std-ref">File HelperClasses.h</span></a></p></li>
+</ul>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">HelperClasses::IParticleInfoSwitch</span></code> (<a class="reference internal" href="classHelperClasses_1_1IParticleInfoSwitch.html#exhale-class-classhelperclasses-1-1iparticleinfoswitch"><span class="std std-ref">Class IParticleInfoSwitch</span></a>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitchE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitchE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitchE"></span><span id="HelperClasses::JetInfoSwitch"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JetInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../HelperClasses.html#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../HelperClasses.html#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><br /></dt>
+<dd><p><p>The <a class="reference internal" href="../HelperClasses.html#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::IParticleInfoSwitch</span></code></a> class for Jet Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_noMultiplicity</p></td>
+<td><p>noMultiplicity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_kinematic</p></td>
+<td><p>kinematic</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trigger</p></td>
+<td><p>trigger</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_substructure</p></td>
+<td><p>substructure</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_ntrimsubjets</p></td>
+<td><p>ntrimsubjets</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_bosonCount</p></td>
+<td><p>bosonCount</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_VTags</p></td>
+<td><p>VTags</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_rapidity</p></td>
+<td><p>rapidity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_clean</p></td>
+<td><p>clean</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_cleanLight</p></td>
+<td><p>cleanLight</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_cleanLightLLP</p></td>
+<td><p>cleanLightLLP</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_cleanTrig</p></td>
+<td><p>cleanTrig</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_timing</p></td>
+<td><p>timing</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_energy</p></td>
+<td><p>energy</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_energyLight</p></td>
+<td><p>energyLight</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_scales</p></td>
+<td><p>scales</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_constscaleEta</p></td>
+<td><p>constscaleEta</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_detectorEta</p></td>
+<td><p>detectorEta</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_resolution</p></td>
+<td><p>resolution</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_truth</p></td>
+<td><p>truth</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_truthDetails</p></td>
+<td><p>truth_details</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_layer</p></td>
+<td><p>layer</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trackPV</p></td>
+<td><p>trackPV</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_trackAll</p></td>
+<td><p>trackAll</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_chargedPFOPV</p></td>
+<td><p>chargedPFOPV</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_jvt</p></td>
+<td><p>JVT</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_NNJvt</p></td>
+<td><p>NNJvt</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sfJVTName</p></td>
+<td><p>sfJVT</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_sffJVTName</p></td>
+<td><p>sffJVT</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_allTrack</p></td>
+<td><p>allTrack</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_allTrackPVSel</p></td>
+<td><p>allTrackPVSel</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_allTrackDetail</p></td>
+<td><p>allTrackDetail</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_constituent</p></td>
+<td><p>constituent</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_constituentAll</p></td>
+<td><p>constituentAll</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_flavorTag</p></td>
+<td><p>flavorTag</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_flavorTagHLT</p></td>
+<td><p>flavorTagHLT</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_flavorTagTLA</p></td>
+<td><p>flavorTagTLA</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sfFTagFix</p></td>
+<td><p>sfFTagFix</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_sfFTagFlt</p></td>
+<td><p>sfFTagFlt</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sfFTagHyb</p></td>
+<td><p>sfFTagHyb</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_jetBTag</p></td>
+<td><p>jetBTag</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_area</p></td>
+<td><p>area</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_JVC</p></td>
+<td><p>JVC</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_tracksInJet</p></td>
+<td><p>tracksInJet</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trackJetName</p></td>
+<td><p>trackJetName</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_hltVtxComp</p></td>
+<td><p>hltVtxComp</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_onlineBS</p></td>
+<td><p>onlineBS</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_onlineBSTool</p></td>
+<td><p>onlineBSTool</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_charge</p></td>
+<td><p>charge</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_passSel</p></td>
+<td><p>passSel</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_passOR</p></td>
+<td><p>passOR</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_vsLumiBlock</p></td>
+<td><p>vsLumiBlock</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_vsActualMu</p></td>
+<td><p>vsActualMu</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_lumiB_runN</p></td>
+<td><p>lumiB_runN</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_byAverageMu</p></td>
+<td><p>byAverageMu</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_byEta</p></td>
+<td><p>byEta</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_etaPhiMap</p></td>
+<td><p>etaPhiMap</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_muonCorrection</p></td>
+<td><p>muonCorrection</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">trackJetName</span></code> expects one or more track jet container names separated by an underscore. For example, the string <code class="docutils literal notranslate"><span class="pre">trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet</span></code> will set the attriubte <code class="docutils literal notranslate"><span class="pre">m_trackJetNames</span></code>
+to <code class="docutils literal notranslate"><span class="pre">{&quot;GhostAntiKt2TrackJet&quot;,</span> <span class="pre">&quot;GhostVR30Rmax4Rmin02TrackJet&quot;}</span></code>.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">sfJVT</span></code> requires a working point after it, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... sfJVTMedium ...&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">jetBTag</span></code> expects the format <code class="docutils literal notranslate"><span class="pre">jetBTag_tagger_type_AABB..MM..YY.ZZ</span></code>. This will create a vector of working points (AA, BB, CC, …, ZZ) associated with that tagger. Several entries can be given. For example:</p>
+<p>m_configStr = “… jetBTag_DL1r_FixedCutBEff_60707785 …”</p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13JetInfoSwitchEKNSt6stringE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13JetInfoSwitchEKNSt6stringE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13JetInfoSwitchEKNSt6stringE"></span><span id="HelperClasses::JetInfoSwitch::JetInfoSwitch__ssC"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ab821151ad2ce2f5425d9e8bf061fbb86"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JetInfoSwitch</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">configStr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13JetInfoSwitchEKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitchD0Ev">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitchD0Ev"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitchD0Ev"></span><span id="HelperClasses::JetInfoSwitch::~JetInfoSwitch"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a091d5bfd6430964034a6741695551e98"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~JetInfoSwitch</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitchD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch9m_triggerE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch9m_triggerE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch9m_triggerE"></span><span id="HelperClasses::JetInfoSwitch::m_trigger__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ae15f24a05982be2eb1cef5b2662bcc90"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigger</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch9m_triggerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch14m_substructureE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch14m_substructureE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch14m_substructureE"></span><span id="HelperClasses::JetInfoSwitch::m_substructure__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1aa7bb797a28d16f0a1f734e0989db8f78"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_substructure</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch14m_substructureE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch14m_ntrimsubjetsE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch14m_ntrimsubjetsE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch14m_ntrimsubjetsE"></span><span id="HelperClasses::JetInfoSwitch::m_ntrimsubjets__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a5728ca97324a257fb34294a2a22f571c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_ntrimsubjets</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch14m_ntrimsubjetsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_bosonCountE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_bosonCountE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_bosonCountE"></span><span id="HelperClasses::JetInfoSwitch::m_bosonCount__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a1957b9900b67c3767d4f605fd4e6881a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_bosonCount</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_bosonCountE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch7m_VTagsE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch7m_VTagsE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch7m_VTagsE"></span><span id="HelperClasses::JetInfoSwitch::m_VTags__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a9220cd1cc033e1fec389cb9054462773"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_VTags</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch7m_VTagsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch10m_rapidityE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch10m_rapidityE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch10m_rapidityE"></span><span id="HelperClasses::JetInfoSwitch::m_rapidity__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a7bfe2e31320f2935920fca602272d214"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_rapidity</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch10m_rapidityE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch7m_cleanE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch7m_cleanE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch7m_cleanE"></span><span id="HelperClasses::JetInfoSwitch::m_clean__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1abf6402aeb378e8e7e71cec866deb1bc6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_clean</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch7m_cleanE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_cleanLightE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_cleanLightE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_cleanLightE"></span><span id="HelperClasses::JetInfoSwitch::m_cleanLight__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ae8d06460ddb1121978416c051f86a281"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanLight</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_cleanLightE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch10m_cleanLLPE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch10m_cleanLLPE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch10m_cleanLLPE"></span><span id="HelperClasses::JetInfoSwitch::m_cleanLLP__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a2c067ce0577b66b9bbeba873712cc598"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanLLP</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch10m_cleanLLPE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch11m_cleanTrigE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch11m_cleanTrigE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch11m_cleanTrigE"></span><span id="HelperClasses::JetInfoSwitch::m_cleanTrig__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ac1aaa2e97420ed22306fa48d985a0ffd"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanTrig</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch11m_cleanTrigE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch8m_timingE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch8m_timingE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch8m_timingE"></span><span id="HelperClasses::JetInfoSwitch::m_timing__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ab0c033107172282cec106f2ec1f9771c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_timing</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch8m_timingE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch8m_energyE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch8m_energyE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch8m_energyE"></span><span id="HelperClasses::JetInfoSwitch::m_energy__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1af0c99f1a97a7035792f0efc69698b5b8"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_energy</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch8m_energyE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13m_energyLightE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13m_energyLightE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13m_energyLightE"></span><span id="HelperClasses::JetInfoSwitch::m_energyLight__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a5c258ceac71f9658d5c923b87c5b282d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_energyLight</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13m_energyLightE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch8m_scalesE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch8m_scalesE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch8m_scalesE"></span><span id="HelperClasses::JetInfoSwitch::m_scales__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a1fac7c7d5b410107801f10385d9aaf8a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_scales</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch8m_scalesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch15m_constscaleEtaE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch15m_constscaleEtaE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch15m_constscaleEtaE"></span><span id="HelperClasses::JetInfoSwitch::m_constscaleEta__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a920c41c69ea9a3a145577add6dabfa1f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_constscaleEta</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch15m_constscaleEtaE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13m_detectorEtaE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13m_detectorEtaE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13m_detectorEtaE"></span><span id="HelperClasses::JetInfoSwitch::m_detectorEta__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a2f37eee1b584efb7f5e534b9bc107566"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_detectorEta</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13m_detectorEtaE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_resolutionE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_resolutionE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_resolutionE"></span><span id="HelperClasses::JetInfoSwitch::m_resolution__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a3984c2e54d4c91beb23200c87fed966b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_resolution</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_resolutionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch7m_truthE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch7m_truthE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch7m_truthE"></span><span id="HelperClasses::JetInfoSwitch::m_truth__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a002cf5cedfd8470e7b8974712751b10d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truth</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch7m_truthE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch14m_truthDetailsE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch14m_truthDetailsE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch14m_truthDetailsE"></span><span id="HelperClasses::JetInfoSwitch::m_truthDetails__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a6f74a5bc38b098cf0353db20709851fb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthDetails</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch14m_truthDetailsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch7m_layerE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch7m_layerE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch7m_layerE"></span><span id="HelperClasses::JetInfoSwitch::m_layer__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ad898f979cc7324e35f70085fa0bf6016"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_layer</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch7m_layerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch9m_trackPVE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch9m_trackPVE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch9m_trackPVE"></span><span id="HelperClasses::JetInfoSwitch::m_trackPV__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ae412ae8e75775d69ebdca9d13169f816"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trackPV</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch9m_trackPVE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch10m_trackAllE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch10m_trackAllE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch10m_trackAllE"></span><span id="HelperClasses::JetInfoSwitch::m_trackAll__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a8c7120ede7eac5b69965cb3d2dc41ba5"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trackAll</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch10m_trackAllE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch6m_fJvtE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch6m_fJvtE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch6m_fJvtE"></span><span id="HelperClasses::JetInfoSwitch::m_fJvt__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a4b408086891b6eec6367ecb5550ff772"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fJvt</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch6m_fJvtE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch14m_chargedPFOPVE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch14m_chargedPFOPVE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch14m_chargedPFOPVE"></span><span id="HelperClasses::JetInfoSwitch::m_chargedPFOPV__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a2e41c25aeed95ecf9a74722529b48e2d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_chargedPFOPV</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch14m_chargedPFOPVE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch5m_jvtE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch5m_jvtE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch5m_jvtE"></span><span id="HelperClasses::JetInfoSwitch::m_jvt__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1aaa464f7383143d847ccbb2a814dd2ccf"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jvt</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch5m_jvtE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch7m_NNJvtE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch7m_NNJvtE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch7m_NNJvtE"></span><span id="HelperClasses::JetInfoSwitch::m_NNJvt__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a600673d3fa3124e3433fe068aa2e278c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_NNJvt</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch7m_NNJvtE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch10m_allTrackE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch10m_allTrackE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch10m_allTrackE"></span><span id="HelperClasses::JetInfoSwitch::m_allTrack__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a9463305d9619bc87d2c0b5216e5761ac"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_allTrack</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch10m_allTrackE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch16m_allTrackDetailE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch16m_allTrackDetailE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch16m_allTrackDetailE"></span><span id="HelperClasses::JetInfoSwitch::m_allTrackDetail__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a955cd4884f7e4fc3fc25da64d1e1cf31"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_allTrackDetail</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch16m_allTrackDetailE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch15m_allTrackPVSelE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch15m_allTrackPVSelE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch15m_allTrackPVSelE"></span><span id="HelperClasses::JetInfoSwitch::m_allTrackPVSel__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1adc90b632141a3bdf7cadbffeaf2c2cec"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_allTrackPVSel</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch15m_allTrackPVSelE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13m_constituentE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13m_constituentE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13m_constituentE"></span><span id="HelperClasses::JetInfoSwitch::m_constituent__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a72d4a611f12f8205bd65cad87b3acdcf"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_constituent</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13m_constituentE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch16m_constituentAllE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch16m_constituentAllE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch16m_constituentAllE"></span><span id="HelperClasses::JetInfoSwitch::m_constituentAll__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a82f296738f492e57f2e7e7aae9037176"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_constituentAll</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch16m_constituentAllE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch11m_flavorTagE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch11m_flavorTagE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch11m_flavorTagE"></span><span id="HelperClasses::JetInfoSwitch::m_flavorTag__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a9af4baa07d236c37764b30cefe1afd02"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_flavorTag</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch11m_flavorTagE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch14m_flavorTagHLTE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch14m_flavorTagHLTE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch14m_flavorTagHLTE"></span><span id="HelperClasses::JetInfoSwitch::m_flavorTagHLT__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a6d8dda1be2ceacc2280873945d97f669"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_flavorTagHLT</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch14m_flavorTagHLTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch14m_flavorTagTLAE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch14m_flavorTagTLAE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch14m_flavorTagTLAE"></span><span id="HelperClasses::JetInfoSwitch::m_flavorTagTLA__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a0985cedffaa117c5265640814c8ea2cf"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_flavorTagTLA</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch14m_flavorTagTLAE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13m_btag_jettrkE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13m_btag_jettrkE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13m_btag_jettrkE"></span><span id="HelperClasses::JetInfoSwitch::m_btag_jettrk__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a7c26d066b03dba8adf6b0b3f7e5079e6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_btag_jettrk</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13m_btag_jettrkE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch18m_jetFitterDetailsE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch18m_jetFitterDetailsE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch18m_jetFitterDetailsE"></span><span id="HelperClasses::JetInfoSwitch::m_jetFitterDetails__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a6b78f6c1f0222390603891ae5d52d9bc"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetFitterDetails</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch18m_jetFitterDetailsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch11m_svDetailsE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch11m_svDetailsE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch11m_svDetailsE"></span><span id="HelperClasses::JetInfoSwitch::m_svDetails__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a3d6785452bc708b857c4610565b796e1"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_svDetails</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch11m_svDetailsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch11m_ipDetailsE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch11m_ipDetailsE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch11m_ipDetailsE"></span><span id="HelperClasses::JetInfoSwitch::m_ipDetails__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a362053013717de952ad8d50c4163a9eb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_ipDetails</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch11m_ipDetailsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13m_tracksInJetE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13m_tracksInJetE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13m_tracksInJetE"></span><span id="HelperClasses::JetInfoSwitch::m_tracksInJet__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a6f708a79463b5121fe48b21603fdc520"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_tracksInJet</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13m_tracksInJetE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_hltVtxCompE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_hltVtxCompE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_hltVtxCompE"></span><span id="HelperClasses::JetInfoSwitch::m_hltVtxComp__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1acb947dda0a8022d278e4da3bca2282f7"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_hltVtxComp</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_hltVtxCompE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch10m_onlineBSE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch10m_onlineBSE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch10m_onlineBSE"></span><span id="HelperClasses::JetInfoSwitch::m_onlineBS__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a7c26d6d979f9e3d9caad100a6048ba2a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_onlineBS</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch10m_onlineBSE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch14m_onlineBSToolE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch14m_onlineBSToolE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch14m_onlineBSToolE"></span><span id="HelperClasses::JetInfoSwitch::m_onlineBSTool__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1af6173f9202dbcfe0cb4216ed5507d424"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_onlineBSTool</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch14m_onlineBSToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch8m_chargeE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch8m_chargeE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch8m_chargeE"></span><span id="HelperClasses::JetInfoSwitch::m_charge__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a27074be7957a8442437bb31b732a9210"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_charge</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch8m_chargeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch9m_passSelE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch9m_passSelE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch9m_passSelE"></span><span id="HelperClasses::JetInfoSwitch::m_passSel__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a1ea77a41ace50721fa66df7da766b89c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_passSel</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch9m_passSelE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch8m_passORE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch8m_passORE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch8m_passORE"></span><span id="HelperClasses::JetInfoSwitch::m_passOR__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a44f6a580a78e96c1dbcd6a27a47f1368"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_passOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch8m_passORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch11m_etaPhiMapE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch11m_etaPhiMapE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch11m_etaPhiMapE"></span><span id="HelperClasses::JetInfoSwitch::m_etaPhiMap__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a668de9f943de787ff01a153640ab3ce0"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_etaPhiMap</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch11m_etaPhiMapE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13m_vsLumiBlockE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13m_vsLumiBlockE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13m_vsLumiBlockE"></span><span id="HelperClasses::JetInfoSwitch::m_vsLumiBlock__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1aa537306e486fbad204bdd6e9eb479f8b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vsLumiBlock</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13m_vsLumiBlockE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_vsActualMuE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_vsActualMuE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_vsActualMuE"></span><span id="HelperClasses::JetInfoSwitch::m_vsActualMu__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a5b759a3e4ad57a2f1c461fba33c4cc1d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vsActualMu</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_vsActualMuE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_lumiB_runNE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_lumiB_runNE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_lumiB_runNE"></span><span id="HelperClasses::JetInfoSwitch::m_lumiB_runN__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a7137c5ba0e3d5c9cf3935d4b0e7cffc3"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_lumiB_runN</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_lumiB_runNE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch7m_byEtaE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch7m_byEtaE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch7m_byEtaE"></span><span id="HelperClasses::JetInfoSwitch::m_byEta__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1aaaa9415b706486c41fa2cc741e5704e4"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_byEta</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch7m_byEtaE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch13m_byAverageMuE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch13m_byAverageMuE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch13m_byAverageMuE"></span><span id="HelperClasses::JetInfoSwitch::m_byAverageMu__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a7ecd074969761032fb56c5d77f1ea421"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_byAverageMu</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch13m_byAverageMuE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch6m_areaE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch6m_areaE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch6m_areaE"></span><span id="HelperClasses::JetInfoSwitch::m_area__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1af54a8add84d6ea54282a3ad9f4d287ed"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_area</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch6m_areaE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch5m_JVCE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch5m_JVCE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch5m_JVCE"></span><span id="HelperClasses::JetInfoSwitch::m_JVC__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a01b188233b15cd817947d9aa8ac640ea"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_JVC</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch5m_JVCE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch16m_muonCorrectionE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch16m_muonCorrectionE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch16m_muonCorrectionE"></span><span id="HelperClasses::JetInfoSwitch::m_muonCorrection__b"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a45cacb24b6a447b394b76fcc5d3f6310"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muonCorrection</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch16m_muonCorrectionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch11m_trackNameE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch11m_trackNameE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch11m_trackNameE"></span><span id="HelperClasses::JetInfoSwitch::m_trackName__ss"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1af35d130df8f11b55821fdb1d33f72e5c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trackName</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch11m_trackNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch15m_trackJetNamesE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch15m_trackJetNamesE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch15m_trackJetNamesE"></span><span id="HelperClasses::JetInfoSwitch::m_trackJetNames__std::vector:ss:"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a3f1873866941a1a371660cda9e994da1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trackJetNames</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch15m_trackJetNamesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch11m_sfJVTNameE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch11m_sfJVTNameE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch11m_sfJVTNameE"></span><span id="HelperClasses::JetInfoSwitch::m_sfJVTName__ss"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a0b7bd2667c14efdae7c7feb9906d3f6b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sfJVTName</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch11m_sfJVTNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_sffJVTNameE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_sffJVTNameE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_sffJVTNameE"></span><span id="HelperClasses::JetInfoSwitch::m_sffJVTName__ss"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a95dad6d9b56f622bc8b4b6a54134e741"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sffJVTName</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_sffJVTNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch9m_jetBTagE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch9m_jetBTagE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch9m_jetBTagE"></span><span id="HelperClasses::JetInfoSwitch::m_jetBTag__std::map:ss.std::vector:std::pair:ss.uint:::"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1ac8194f25bf97f2971994e948e2ef1320"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">uint</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetBTag</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch9m_jetBTagE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch12m_jetBTagCtsE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch12m_jetBTagCtsE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch12m_jetBTagCtsE"></span><span id="HelperClasses::JetInfoSwitch::m_jetBTagCts__std::vector:ss:"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1a70c38d93199ed4795e23b6a747f5d1e1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetBTagCts</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch12m_jetBTagCtsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-protected-functions">Protected Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitch10initializeEv">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitch10initializeEv"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitch10initializeEv"></span><span id="HelperClasses::JetInfoSwitch::initialize"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch_1acd6b45706be5df296bcd98ec1cde5eda"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitch10initializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classHelperClasses_1_1METInfoSwitch.html" class="btn btn-neutral float-right" title="Class METInfoSwitch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classHelperClasses_1_1IParticleInfoSwitch.html" class="btn btn-neutral float-left" title="Class IParticleInfoSwitch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

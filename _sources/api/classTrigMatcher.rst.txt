@@ -1,0 +1,25 @@
+.. _exhale_class_classTrigMatcher:
+
+Class TrigMatcher
+=================
+
+- Defined in :ref:`file_xAODAnaHelpers_TrigMatcher.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: TrigMatcher
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File BJetEfficiencyCorrector.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File BJetEfficiencyCorrector.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_BJetEfficiencyCorrector.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-bjetefficiencycorrector-h">
+<span id="program-listing-file-xaodanahelpers-bjetefficiencycorrector-h"></span><h1>Program Listing for File BJetEfficiencyCorrector.h<a class="headerlink" href="#program-listing-for-file-bjetefficiencycorrector-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_BJetEfficiencyCorrector.h.html#file-xaodanahelpers-bjetefficiencycorrector-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/BJetEfficiencyCorrector.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_BJetEfficiencyCorrector_H</span>
+<span class="cp">#define xAODAnaHelpers_BJetEfficiencyCorrector_H</span>
+<span class="c1">// EDM includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEventInfo/EventInfo.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetContainer.h&quot;</span>
+
+<span class="c1">// CP interface includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicRegistry.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicSet.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicsUtil.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicVariation.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/ISystematicsTool.h&quot;</span>
+
+<span class="c1">// external tools include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;FTagAnalysisInterfaces/IBTaggingSelectionTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;FTagAnalysisInterfaces/IBTaggingEfficiencyTool.h&quot;</span>
+
+<span class="c1">// algorithm wrapper</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/Algorithm.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// put your configuration variables here as public variables.</span>
+<span class="w">  </span><span class="c1">// that way they can be set directly from CINT and python.</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_inputAlgo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// systematics</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_systName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputSystName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;BJetEfficiency_Algo&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_writeSystToMetadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_corrFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;xAODBTaggingEfficiency/13p6TeV/2023-22-13p6TeV-MC21-CDI_Test_2023-08-1_v1.root&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_jetAuthor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;AntiKt4EMPFlowJets&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w">       </span><span class="n">m_minPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">20e3</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DL1r&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_useDevelopmentFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_coneFlavourLabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_readFromBTaggingObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_systematicsStrategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SFEigen&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_errorOnTagWeightFailure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_alwaysGetTagWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_isRun3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// allowed operating points:</span>
+<span class="w">  </span><span class="c1">// https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface</span>
+<span class="w">  </span><span class="c1">//For the fixed cut, valid options are: [ &quot;FixedCutBEff_60&quot;, &quot;FixedCutBEff_70&quot;, &quot;FixedCutBEff_77&quot;, &quot;FixedCutBEff_85&quot; ]</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_70&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_operatingPtCDI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_useContinuous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_decor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;BTag&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_tagDecisionOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_setMapIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_DSIDtoGenerator_filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;xAODAnaHelpers/DSIDtoGenerator.txt&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_orBJetPtUpperThres</span><span class="o">=</span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_EfficiencyCalibration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_allowCalibrationFallback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_EigenvectorReductionB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Loose&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_EigenvectorReductionC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Loose&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_EigenvectorReductionLight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Loose&quot;</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_decorSF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_decorWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// only for continuous b-tagging</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_decorQuantile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// only for continuous b-tagging</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_DSIDtoGenerator</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_inputAlgoList</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_runAllSyst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// tools</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IBTaggingSelectionTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">{</span><span class="s">&quot;BTaggingSelectionTool&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IBTaggingEfficiencyTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">{</span><span class="s">&quot;BTaggingEfficiencyTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systList</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// variables that don&#39;t get filled at submission time should be</span>
+<span class="w">  </span><span class="c1">// protected from being send from the submission node to the worker</span>
+<span class="w">  </span><span class="c1">// node (done by the //!)</span>
+<span class="k">public</span><span class="o">:</span>
+
+<span class="w">  </span><span class="c1">// this is a standard constructor</span>
+<span class="w">  </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// these are the functions inherited from Algorithm</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">fileExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histInitialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">firstFile</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">executeEfficiencyCorrection</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inJets</span><span class="p">,</span>
+<span class="w">                         </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">,</span>
+<span class="w">                         </span><span class="kt">bool</span><span class="w"> </span><span class="n">doNominal</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">postExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">finalize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histFinalize</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// Functions needed only if m_setMapIndex is true</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">getMCIndex</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">dsid</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">makeMCIndexMap</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">effCalib</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">getFlavorLabel</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="w"> </span><span class="o">&amp;</span><span class="n">jet</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="w">  </span><span class="n">ClassDef</span><span class="p">(</span><span class="n">BJetEfficiencyCorrector</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,605 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File HelperFunctions.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File HelperFunctions.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_HelperFunctions.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-helperfunctions-h">
+<span id="program-listing-file-xaodanahelpers-helperfunctions-h"></span><h1>Program Listing for File HelperFunctions.h<a class="headerlink" href="#program-listing-for-file-helperfunctions-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_HelperFunctions.h.html#file-xaodanahelpers-helperfunctions-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/HelperFunctions.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_HELPERFUNCTIONS_H</span>
+<span class="cp">#define xAODAnaHelpers_HELPERFUNCTIONS_H</span>
+
+<span class="c1">// for typing in template</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;typeinfo&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cxxabi.h&gt;</span>
+<span class="c1">// Gaudi/Athena include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AthContainers/normalizedTypeinfoName.h&quot;</span>
+
+<span class="c1">// local includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgMessaging/StatusCode.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;AsgMessaging/MessageCheck.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SampleHandler/SampleHandler.h&gt;</span>
+
+<span class="c1">// jet reclustering and trimming</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fastjet/JetDefinition.hh&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetContainer.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODTracking/VertexContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AthContainers/ConstDataVector.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperClasses.h&quot;</span>
+
+<span class="c1">// CP interface includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicRegistry.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicSet.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicsUtil.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicVariation.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/ISystematicsTool.h&quot;</span>
+
+<span class="c1">// ROOT includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TTree.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TBranch.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TFile.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TH1D.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TObjArray.h&quot;</span>
+
+<span class="c1">// messaging includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;AsgMessaging/MsgStream.h&gt;</span>
+
+<span class="c1">// Functions that need to have a dictionary built. PyROOT does not</span>
+<span class="c1">// seem to like the HelperFunctions namespace for some reason.</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">addRucio</span><span class="p">(</span><span class="n">SH</span><span class="o">::</span><span class="n">SampleHandler</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dslist</span><span class="p">);</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// close namespace xAH</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">HelperFunctions</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">msg</span><span class="p">(</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">Level</span><span class="w"> </span><span class="n">lvl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">INFO</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// primary vertex</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">passPrimaryVertexSelection</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Ntracks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">countPrimaryVertices</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Ntracks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="nf">getPrimaryVertex</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+<span class="w">  </span><span class="kr">inline</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="nf">getPrimaryVertex</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">getPrimaryVertex</span><span class="p">(</span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">());</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="nf">getPrimaryVertexZ</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="o">*</span><span class="w"> </span><span class="n">pvx</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">getPrimaryVertexLocation</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+<span class="w">  </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">getPrimaryVertexLocation</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertexContainer</span><span class="p">){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">getPrimaryVertexLocation</span><span class="p">(</span><span class="n">vertexContainer</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">());</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">applyPrimaryVertexSelection</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertices</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">replaceString</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">subjet</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">search</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">replace</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TString</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SplitString</span><span class="p">(</span><span class="n">TString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">separator</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="nf">dPhi</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">phi1</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">phi2</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_exact</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">flag</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="nf">string_pos</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">haystack</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">needle</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  |   Author  : Marco Milesi                                                   |</span>
+<span class="cm">  |   Email   : marco.milesi@cern.ch                                           |</span>
+<span class="cm">  |   Logic copied from:</span>
+<span class="cm">    PhysicsAnalysis/TopPhys/xAOD/TopAnalysis/trunk/Root/Tools.cxx          |</span>
+
+<span class="cm">  Function to check if file is Full xAOD</span>
+
+<span class="cm">  \*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/</span>
+
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">isAvailableMetaData</span><span class="p">(</span><span class="n">TTree</span><span class="o">*</span><span class="w"> </span><span class="n">metaData</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">isFilePrimaryxAOD</span><span class="p">(</span><span class="n">TFile</span><span class="o">*</span><span class="w"> </span><span class="n">inputFile</span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  |   Author  : Giordon Stark                                                  |</span>
+<span class="cm">  |   Email   : gstark@cern.ch                                                 |</span>
+<span class="cm">  |   Thanks to Ben Nachman for inspiration                                    |</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  |   jetReclustering():                                                       |</span>
+<span class="cm">  |       Takes a set of small-R jets and reclusters to large-R jets           |</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  |       @jets                                                                |</span>
+<span class="cm">  |         jet container to recluster and trim                                |</span>
+<span class="cm">  |       @radius   [1.0]                                                      |</span>
+<span class="cm">  |         radius of large-R jet                                              |</span>
+<span class="cm">  |       @fcut     [0.05]                                                     |</span>
+<span class="cm">  |         trimming cut to apply                                              |</span>
+<span class="cm">  |       @rc_alg   [fastjet::kt_algorithm]                                    |</span>
+<span class="cm">  |         clustering algorithm                                               |</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  |   jetTrimming():                                                           |</span>
+<span class="cm">  |       Takes a jet or a set of jets and applies an fcut on subjets          |</span>
+<span class="cm">  |         and reclusters into a TLorentzVector                               |</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  |       @jet(s)                                                              |</span>
+<span class="cm">  |         jet (container to loop over and) to apply trimming                 |</span>
+<span class="cm">  |       @radius   [0.3]                                                      |</span>
+<span class="cm">  |         radius of subjets to form                                          |</span>
+<span class="cm">  |       @fcut     [0.05]                                                     |</span>
+<span class="cm">  |         trimming cut to apply on subjets                                   |</span>
+<span class="cm">  |       @s_alg    [fastjet::kt_algorithm]                                    |</span>
+<span class="cm">  |         algorithm for building subjets                                     |</span>
+<span class="cm">  |                                                                            |</span>
+<span class="cm">  \*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TLorentzVector</span><span class="o">&gt;</span><span class="w"> </span><span class="n">jetReclustering</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">jets</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">fcut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span>
+<span class="w">    </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetAlgorithm</span><span class="w"> </span><span class="n">rc_alg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastjet</span><span class="o">::</span><span class="n">antikt_algorithm</span><span class="p">);</span>
+<span class="w">  </span><span class="cm">/* http://www.lpthe.jussieu.fr/~salam/fastjet/repo/doxygen-3.0alpha2/classfastjet_1_1Filter.html#usage */</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TLorentzVector</span><span class="o">&gt;</span><span class="w"> </span><span class="n">jetTrimming</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">jets</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">fcut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span>
+<span class="w">    </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetAlgorithm</span><span class="w"> </span><span class="n">s_alg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastjet</span><span class="o">::</span><span class="n">kt_algorithm</span><span class="p">);</span>
+<span class="w">  </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="nf">jetTrimming</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">fcut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span>
+<span class="w">    </span><span class="n">fastjet</span><span class="o">::</span><span class="n">JetAlgorithm</span><span class="w"> </span><span class="n">s_alg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastjet</span><span class="o">::</span><span class="n">kt_algorithm</span><span class="p">);</span>
+
+
+
+<span class="w">  </span><span class="c1">// miscellaneous</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">sort_pt</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">partA</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">partB</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">getListofSystematics</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="n">inSysts</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">systNames</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">systVal</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSystematicsListHist</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">systs</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">histName</span><span class="p">,</span><span class="w"> </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/*    type_name&lt;T&gt;()      The awesome type demangler!</span>
+<span class="cm">          - normally, typeid(T).name() is gibberish with gcc. This decodes it. Fucking magic man.</span>
+
+<span class="cm">          @ useXAOD [true]  If set to false, will use the standard demangling</span>
+<span class="cm">                            tool. Otherwise, use built-in StoreGate tool</span>
+
+<span class="cm">        Example Usage:</span>
+<span class="cm">        template &lt;typename T&gt;</span>
+<span class="cm">        void echoType(){</span>
+<span class="cm">          std::cout &lt;&lt; &quot;This is type &quot; &lt;&lt; HelperFunctions::type_name&lt;T&gt;() &lt;&lt; std::endl;</span>
+<span class="cm">        }</span>
+<span class="cm">  */</span>
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">type_name</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">useXAOD</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">useXAOD</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">normalizedTypeinfoName</span><span class="p">(</span><span class="w"> </span><span class="k">typeid</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">tname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">typeid</span><span class="p">(</span><span class="n">T</span><span class="p">).</span><span class="n">name</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">demangled_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abi</span><span class="o">::</span><span class="n">__cxa_demangle</span><span class="p">(</span><span class="n">tname</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">status</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">tname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">demangled_name</span><span class="p">;</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">free</span><span class="p">(</span><span class="n">demangled_name</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">tname</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T1</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T2</span><span class="w"> </span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">makeSubsetCont</span><span class="p">(</span><span class="w"> </span><span class="n">T1</span><span class="o">*&amp;</span><span class="w"> </span><span class="n">intCont</span><span class="p">,</span><span class="w"> </span><span class="n">T2</span><span class="o">*&amp;</span><span class="w"> </span><span class="n">outCont</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">flagSelect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">ToolName</span><span class="w"> </span><span class="n">tool_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">ToolName</span><span class="o">::</span><span class="n">DEFAULT</span><span class="p">){</span>
+<span class="w">     </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">funcName</span><span class="p">{</span><span class="s">&quot;in makeSubsetCont&lt;&quot;</span><span class="o">+</span><span class="n">type_name</span><span class="o">&lt;</span><span class="n">T1</span><span class="o">&gt;</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;,&quot;</span><span class="o">+</span><span class="n">type_name</span><span class="o">&lt;</span><span class="n">T2</span><span class="o">&gt;</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;&gt;(): &quot;</span><span class="p">};</span>
+
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tool_name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">ToolName</span><span class="o">::</span><span class="n">DEFAULT</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">       </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">in_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">intCont</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">outCont</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">in_itr</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">flagSelect</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">ERROR</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;flagSelect is an empty string, and passing a non-DEFAULT tool (presumably a SELECTOR). Please pass a non-empty flagSelect!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">myAccessor</span><span class="p">(</span><span class="n">flagSelect</span><span class="p">);</span>
+
+<span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">in_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">intCont</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">myAccessor</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">in_itr</span><span class="p">))</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="n">ss</span><span class="p">;</span><span class="w"> </span><span class="n">ss</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">in_itr</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">();</span>
+<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">ERROR</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;flag &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">flagSelect</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is missing for object of type &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; ! Will not make a subset of its container&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">       </span><span class="p">}</span>
+
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">myAccessor</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">in_itr</span><span class="p">))</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">outCont</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">in_itr</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="w">   </span><span class="p">}</span>
+<span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T1</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T2</span><span class="w"> </span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">makeSubsetCont</span><span class="p">(</span><span class="w"> </span><span class="n">T1</span><span class="o">*&amp;</span><span class="w"> </span><span class="n">intCont</span><span class="p">,</span><span class="w"> </span><span class="n">T2</span><span class="o">*&amp;</span><span class="w"> </span><span class="n">outCont</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">flagSelect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">ToolName</span><span class="w"> </span><span class="n">tool_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">ToolName</span><span class="o">::</span><span class="n">DEFAULT</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">makeSubsetCont</span><span class="o">&lt;</span><span class="n">T1</span><span class="p">,</span><span class="w"> </span><span class="n">T2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">intCont</span><span class="p">,</span><span class="w"> </span><span class="n">outCont</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">(),</span><span class="w"> </span><span class="n">flagSelect</span><span class="p">,</span><span class="w"> </span><span class="n">tool_name</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">retrieve</span><span class="p">(</span><span class="n">T</span><span class="o">*&amp;</span><span class="w"> </span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TEvent</span><span class="o">*</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TStore</span><span class="o">*</span><span class="w"> </span><span class="n">store</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">){</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">funcName</span><span class="p">{</span><span class="s">&quot;in retrieve&lt;&quot;</span><span class="o">+</span><span class="n">type_name</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;&gt;(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;): &quot;</span><span class="p">};</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">event</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">store</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">ERROR</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Both TEvent and TStore objects are null. Cannot retrieve anything.&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t</span><span class="s">Attempting to retrieve &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; of type &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">type_name</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">event</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">store</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">))</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Looking inside: xAOD::TEvent&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">event</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">store</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">))</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Looking inside: xAOD::TStore&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">event</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">store</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">))</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Looking inside: xAOD::TStore, xAOD::TEvent&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">store</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">))){</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t\t</span><span class="s">Found inside xAOD::TStore&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">store</span><span class="o">-&gt;</span><span class="n">retrieve</span><span class="p">(</span><span class="w"> </span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">).</span><span class="n">isSuccess</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t\t</span><span class="s">Retrieved from xAOD::TStore&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">((</span><span class="n">event</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">))){</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t\t</span><span class="s">Found inside xAOD::TEvent&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">retrieve</span><span class="p">(</span><span class="w"> </span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">).</span><span class="n">isSuccess</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t\t</span><span class="s">Retrieved from xAOD::TEvent&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Not found at all&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="cm">/* retrieve() overload for no msgStream object passed in */</span>
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">retrieve</span><span class="p">(</span><span class="n">T</span><span class="o">*&amp;</span><span class="w"> </span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TEvent</span><span class="o">*</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TStore</span><span class="o">*</span><span class="w"> </span><span class="n">store</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">retrieve</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">());</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;retrieve&lt;T&gt;(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882&quot;</span><span class="p">)))</span><span class="w"> </span><span class="n">retrieve</span><span class="p">(</span><span class="n">T</span><span class="o">*&amp;</span><span class="w"> </span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TEvent</span><span class="o">*</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TStore</span><span class="o">*</span><span class="w"> </span><span class="n">store</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">debug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">retrieve</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">());</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">isAvailable</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TEvent</span><span class="o">*</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TStore</span><span class="o">*</span><span class="w"> </span><span class="n">store</span><span class="p">,</span><span class="w"> </span><span class="n">MsgStream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">msg</span><span class="p">){</span>
+<span class="w">    </span><span class="cm">/* Checking Order:</span>
+<span class="cm">        - check if store contains &#39;xAOD::JetContainer&#39; named &#39;name&#39;</span>
+<span class="cm">        --- checkstore store</span>
+<span class="cm">        - check if event contains &#39;xAOD::JetContainer&#39; named &#39;name&#39;</span>
+<span class="cm">        --- checkstore event</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">funcName</span><span class="p">{</span><span class="s">&quot;in isAvailable&lt;&quot;</span><span class="o">+</span><span class="n">type_name</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()</span><span class="o">+</span><span class="s">&quot;&gt;(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;): &quot;</span><span class="p">};</span>
+<span class="w">    </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t</span><span class="s">Attempting to retrieve &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; of type &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">type_name</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">store</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w">                      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Looking inside: xAOD::TEvent&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">event</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w">                      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Looking inside: xAOD::TStore&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">event</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">store</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">))</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Looking inside: xAOD::TStore, xAOD::TEvent&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">store</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">))){</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t\t</span><span class="s">Found inside xAOD::TStore&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">((</span><span class="n">event</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">))){</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t\t</span><span class="s">Found inside xAOD::TEvent&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">msg</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">funcName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s">Not found at all&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endmsg</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="cm">/* isAvailable() overload for no msgStream object passed in */</span>
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">isAvailable</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TEvent</span><span class="o">*</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TStore</span><span class="o">*</span><span class="w"> </span><span class="n">store</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">());</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// stolen from here</span>
+<span class="w">  </span><span class="c1">// https://svnweb.cern.ch/trac/atlasoff/browser/Event/xAOD/xAODEgamma/trunk/xAODEgamma/EgammaTruthxAODHelpers.h#L20</span>
+<span class="w">  </span><span class="c1">// util becomes a general xAOD tool</span>
+<span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">getLink</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">){</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">particle</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="n">ElementLink</span><span class="o">&lt;</span><span class="w"> </span><span class="n">DataVector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">Link_t</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="w"> </span><span class="n">Link_t</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">Link_t</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="n">Link_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">link</span><span class="p">.</span><span class="n">isValid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">link</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// For Sorting</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">pt_sort</span>
+<span class="w">  </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="o">&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">Pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">Pt</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="o">*</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">lhs</span><span class="o">-&gt;</span><span class="n">Pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="o">-&gt;</span><span class="n">Pt</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">pt</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">lhs</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rhs</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">};</span>
+
+
+<span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="n">sort_container_pt</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">inCont</span><span class="p">){</span>
+<span class="w">    </span><span class="n">T</span><span class="w"> </span><span class="nf">sortedCont</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">inCont</span><span class="p">)</span><span class="w"> </span><span class="n">sortedCont</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">sortedCont</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">sortedCont</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">pt_sort</span><span class="p">());</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sortedCont</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">sort_container_pt</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">inCont</span><span class="p">){</span>
+<span class="w">    </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sortedCont</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">inCont</span><span class="p">)</span><span class="w"> </span><span class="n">sortedCont</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">sortedCont</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">sortedCont</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">pt_sort</span><span class="p">());</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">sortedCont</span><span class="p">.</span><span class="n">asDataVector</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="cm">/* return true if there&#39;s a least one non-empty string (i.e., syst name) in input list */</span>
+<span class="w">  </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">found_non_dummy_sys</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">sys_list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">sys_list</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">sys</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">sys_list</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">sys</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T1</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T2</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T3</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">makeDeepCopy</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TStore</span><span class="o">*</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">containerName</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T1</span><span class="o">*</span><span class="w"> </span><span class="n">cont</span><span class="p">){</span>
+<span class="w">    </span><span class="n">T1</span><span class="o">*</span><span class="w"> </span><span class="n">cont_new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">T1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">T2</span><span class="o">*</span><span class="w"> </span><span class="n">auxcont_new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">T2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cont_new</span><span class="o">-&gt;</span><span class="n">setStore</span><span class="p">(</span><span class="n">auxcont_new</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="n">cont_new</span><span class="p">,</span><span class="w"> </span><span class="n">containerName</span><span class="p">).</span><span class="n">isSuccess</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;can&#39;t record &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">containerName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="n">auxcont_new</span><span class="p">,</span><span class="w"> </span><span class="n">containerName</span><span class="o">+</span><span class="s">&quot;Aux.&quot;</span><span class="p">).</span><span class="n">isSuccess</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;can&#39;t record aux&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">containerName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">p</span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">cont</span><span class="p">){</span>
+<span class="w">      </span><span class="n">T3</span><span class="o">*</span><span class="w"> </span><span class="n">p_new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">T3</span><span class="p">;</span>
+<span class="w">      </span><span class="n">cont_new</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">p_new</span><span class="p">);</span>
+<span class="w">      </span><span class="o">*</span><span class="n">p_new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T1</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T2</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="n">StatusCode</span><span class="w"> </span><span class="n">recordOutput</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TEvent</span><span class="o">*</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TStore</span><span class="o">*</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">containerName</span><span class="p">){</span>
+<span class="w">    </span><span class="n">T1</span><span class="o">*</span><span class="w"> </span><span class="nf">cont</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">T2</span><span class="o">*</span><span class="w"> </span><span class="nf">auxcont</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">retrieve</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">containerName</span><span class="p">).</span><span class="n">isSuccess</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">retrieve</span><span class="p">(</span><span class="n">auxcont</span><span class="p">,</span><span class="w"> </span><span class="n">containerName</span><span class="o">+</span><span class="s">&quot;Aux.&quot;</span><span class="p">).</span><span class="n">isSuccess</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">containerName</span><span class="p">).</span><span class="n">isSuccess</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="n">auxcont</span><span class="p">,</span><span class="w"> </span><span class="n">containerName</span><span class="o">+</span><span class="s">&quot;Aux.&quot;</span><span class="p">).</span><span class="n">isSuccess</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T_BR</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">connectBranch</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">branch</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T_BR</span><span class="o">&gt;</span><span class="w"> </span><span class="o">**</span><span class="n">variable</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w">  </span><span class="p">((</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;_&quot;</span><span class="o">+</span><span class="n">branch</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="w"> </span><span class="p">((</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;_&quot;</span><span class="o">+</span><span class="n">branch</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">variable</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// function to remove duplicates from a vector. Thank you, oh internet!</span>
+<span class="w">  </span><span class="c1">// http://stackoverflow.com/questions/9237216/removing-duplicates-in-a-vector-of-strings</span>
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">remove_duplicates</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">vec</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="w">    </span><span class="n">vec</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">unique</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">()),</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">enum</span><span class="w"> </span><span class="nc">ShowerType</span><span class="w"> </span><span class="p">{</span><span class="n">Unknown</span><span class="p">,</span><span class="w"> </span><span class="n">Pythia8</span><span class="p">,</span><span class="w"> </span><span class="n">Herwig7p1</span><span class="p">,</span><span class="w"> </span><span class="n">Herwig7p2</span><span class="p">,</span><span class="w"> </span><span class="n">Sherpa221</span><span class="p">,</span><span class="w"> </span><span class="n">Sherpa2210</span><span class="p">,</span><span class="w"> </span><span class="n">Sherpa2212</span><span class="p">,</span><span class="w"> </span><span class="n">AmcPy8</span><span class="p">,</span><span class="w"> </span><span class="n">AmcH7</span><span class="p">,</span><span class="w"> </span><span class="n">Sherpa2214</span><span class="p">,</span><span class="w"> </span><span class="n">Sherpa_Unknown</span><span class="p">};</span>
+
+<span class="w">  </span><span class="n">ShowerType</span><span class="w"> </span><span class="nf">getMCShowerType</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sample_name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_taggerName</span><span class="p">);</span>
+
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// close namespace HelperFunctions</span>
+
+<span class="cp"># endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

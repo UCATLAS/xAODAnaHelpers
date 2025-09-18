@@ -1,0 +1,60 @@
+
+.. _file_xAODAnaHelpers_TauJetMatching.h:
+
+File TauJetMatching.h
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TauJetMatching.h``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TauJetMatching.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODJet/Jet.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODTau/TauJet.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_TauJetMatching.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTauJetMatching`
+

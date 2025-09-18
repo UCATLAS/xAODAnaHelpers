@@ -1,0 +1,25 @@
+.. _exhale_class_classJetCalibrator:
+
+Class JetCalibrator
+===================
+
+- Defined in :ref:`file_xAODAnaHelpers_JetCalibrator.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: JetCalibrator
+   :members:
+   :protected-members:
+   :undoc-members:

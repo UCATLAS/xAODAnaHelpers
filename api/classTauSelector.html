@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class TauSelector &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class TrackHistsAlgo" href="classTrackHistsAlgo.html" />
+    <link rel="prev" title="Class TauJetMatching" href="classTauJetMatching.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Doxygen API</a> &raquo;</li>
+        
+      <li>Class TauSelector</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classTauSelector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-tauselector">
+<span id="exhale-class-classtauselector"></span><h1>Class TauSelector<a class="headerlink" href="#class-tauselector" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_xAODAnaHelpers_TauSelector.h.html#file-xaodanahelpers-tauselector-h"><span class="std std-ref">File TauSelector.h</span></a></p></li>
+</ul>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">xAH::Algorithm</span></code> (<a class="reference internal" href="classxAH_1_1Algorithm.html#exhale-class-classxah-1-1algorithm"><span class="std std-ref">Class Algorithm</span></a>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv411TauSelector">
+<span id="_CPPv311TauSelector"></span><span id="_CPPv211TauSelector"></span><span id="TauSelector"></span><span class="target" id="classTauSelector"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TauSelector</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector11TauSelectorEv">
+<span id="_CPPv3N11TauSelector11TauSelectorEv"></span><span id="_CPPv2N11TauSelector11TauSelectorEv"></span><span id="TauSelector::TauSelector"></span><span class="target" id="classTauSelector_1acfc5dab9ef0dfb7aad50c69ee20576bd"></span><span class="sig-name descname"><span class="n"><span class="pre">TauSelector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelectorD0Ev">
+<span id="_CPPv3N11TauSelectorD0Ev"></span><span id="_CPPv2N11TauSelectorD0Ev"></span><span id="TauSelector::~TauSelector"></span><span class="target" id="classTauSelector_1a82794eb9a7d3a8951b734d8a5ed940bf"></span><span class="sig-name descname"><span class="n"><span class="pre">~TauSelector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector8setupJobERN2EL3JobE">
+<span id="_CPPv3N11TauSelector8setupJobERN2EL3JobE"></span><span id="_CPPv2N11TauSelector8setupJobERN2EL3JobE"></span><span id="TauSelector::setupJob__EL::JobR"></span><span class="target" id="classTauSelector_1a267f1f47179ce008ccf5d25a7baa9546"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector11fileExecuteEv">
+<span id="_CPPv3N11TauSelector11fileExecuteEv"></span><span id="_CPPv2N11TauSelector11fileExecuteEv"></span><span id="TauSelector::fileExecute"></span><span class="target" id="classTauSelector_1a3b5df134a05936566619c7f22563a701"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector14histInitializeEv">
+<span id="_CPPv3N11TauSelector14histInitializeEv"></span><span id="_CPPv2N11TauSelector14histInitializeEv"></span><span id="TauSelector::histInitialize"></span><span class="target" id="classTauSelector_1a994f514871f353498b87fb615b6e04f0"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector11changeInputEb">
+<span id="_CPPv3N11TauSelector11changeInputEb"></span><span id="_CPPv2N11TauSelector11changeInputEb"></span><span id="TauSelector::changeInput__b"></span><span class="target" id="classTauSelector_1ad5af2c40824d9c6ef1c8c59fa9417b64"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector10initializeEv">
+<span id="_CPPv3N11TauSelector10initializeEv"></span><span id="_CPPv2N11TauSelector10initializeEv"></span><span id="TauSelector::initialize"></span><span class="target" id="classTauSelector_1a180bd08c0c11b5568733a3557e3c7db9"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector7executeEv">
+<span id="_CPPv3N11TauSelector7executeEv"></span><span id="_CPPv2N11TauSelector7executeEv"></span><span id="TauSelector::execute"></span><span class="target" id="classTauSelector_1a37ac6ec145e91d1f4a246e77385aabf2"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector11postExecuteEv">
+<span id="_CPPv3N11TauSelector11postExecuteEv"></span><span id="_CPPv2N11TauSelector11postExecuteEv"></span><span id="TauSelector::postExecute"></span><span class="target" id="classTauSelector_1aea1bac83c061015a4a671bc7e97612e6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector8finalizeEv">
+<span id="_CPPv3N11TauSelector8finalizeEv"></span><span id="_CPPv2N11TauSelector8finalizeEv"></span><span id="TauSelector::finalize"></span><span class="target" id="classTauSelector_1a283c813c25d7a9d0d929149d6697f8ad"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector12histFinalizeEv">
+<span id="_CPPv3N11TauSelector12histFinalizeEv"></span><span id="_CPPv2N11TauSelector12histFinalizeEv"></span><span id="TauSelector::histFinalize"></span><span class="target" id="classTauSelector_1ae47f3087a537afba051623de1006a70e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector16executeSelectionEPKN4xAOD15TauJetContainerEfbP15ConstDataVectorIN4xAOD15TauJetContainerEE">
+<span id="_CPPv3N11TauSelector16executeSelectionEPKN4xAOD15TauJetContainerEfbP15ConstDataVectorIN4xAOD15TauJetContainerEE"></span><span id="_CPPv2N11TauSelector16executeSelectionEPKN4xAOD15TauJetContainerEfbP15ConstDataVectorIN4xAOD15TauJetContainerEE"></span><span id="TauSelector::executeSelection__xAOD::TauJetContainerCP.float.b.ConstDataVector:xAOD::TauJetContainer:P"></span><span class="target" id="classTauSelector_1a49bffb4a13e393dabeee92ada0d26669"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">executeSelection</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TauJetContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">inTaus</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mcEvtWeight</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">countPass</span></span>, <span class="n"><span class="pre">ConstDataVector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TauJetContainer</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">selectedTaus</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector8passCutsEPKN4xAOD6TauJetE">
+<span id="_CPPv3N11TauSelector8passCutsEPKN4xAOD6TauJetE"></span><span id="_CPPv2N11TauSelector8passCutsEPKN4xAOD6TauJetE"></span><span id="TauSelector::passCuts__xAOD::TauJetCP"></span><span class="target" id="classTauSelector_1a0b6a39b922044ca08013d1bdac79d101"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">passCuts</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TauJet</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tau</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector12m_useCutFlowE">
+<span id="_CPPv3N11TauSelector12m_useCutFlowE"></span><span id="_CPPv2N11TauSelector12m_useCutFlowE"></span><span id="TauSelector::m_useCutFlow__b"></span><span class="target" id="classTauSelector_1a9903b3de10ed748f3e53818e87295bde"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useCutFlow</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector17m_inContainerNameE">
+<span id="_CPPv3N11TauSelector17m_inContainerNameE"></span><span id="_CPPv2N11TauSelector17m_inContainerNameE"></span><span id="TauSelector::m_inContainerName__ss"></span><span class="target" id="classTauSelector_1ad77018ad91086f7e990199c0f6828f5a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector18m_outContainerNameE">
+<span id="_CPPv3N11TauSelector18m_outContainerNameE"></span><span id="_CPPv2N11TauSelector18m_outContainerNameE"></span><span id="TauSelector::m_outContainerName__ss"></span><span class="target" id="classTauSelector_1afeb13d96fb86f2fceba58cbfb37d711c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outContainerName</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector21m_outAuxContainerNameE">
+<span id="_CPPv3N11TauSelector21m_outAuxContainerNameE"></span><span id="_CPPv2N11TauSelector21m_outAuxContainerNameE"></span><span id="TauSelector::m_outAuxContainerName__ss"></span><span class="target" id="classTauSelector_1a011340b1e6ba87f33d6981d939cf58ef"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outAuxContainerName</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector20m_inputAlgoSystNamesE">
+<span id="_CPPv3N11TauSelector20m_inputAlgoSystNamesE"></span><span id="_CPPv2N11TauSelector20m_inputAlgoSystNamesE"></span><span id="TauSelector::m_inputAlgoSystNames__ss"></span><span class="target" id="classTauSelector_1a1f83b78a058bdf5f11b7d9d3538a6a78"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inputAlgoSystNames</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector21m_outputAlgoSystNamesE">
+<span id="_CPPv3N11TauSelector21m_outputAlgoSystNamesE"></span><span id="_CPPv2N11TauSelector21m_outputAlgoSystNamesE"></span><span id="TauSelector::m_outputAlgoSystNames__ss"></span><span class="target" id="classTauSelector_1a5999e6b61e894a834d669386b0573538"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputAlgoSystNames</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;TauSelector_Syst&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector20m_decorateWithTracksE">
+<span id="_CPPv3N11TauSelector20m_decorateWithTracksE"></span><span id="_CPPv2N11TauSelector20m_decorateWithTracksE"></span><span id="TauSelector::m_decorateWithTracks__b"></span><span class="target" id="classTauSelector_1a32f7e6acd1ce2d90c613006488e71d41"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_decorateWithTracks</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector25m_decorateSelectedObjectsE">
+<span id="_CPPv3N11TauSelector25m_decorateSelectedObjectsE"></span><span id="_CPPv2N11TauSelector25m_decorateSelectedObjectsE"></span><span id="TauSelector::m_decorateSelectedObjects__b"></span><span class="target" id="classTauSelector_1a94f9dfba116a38af6ae0a589bbda64bd"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_decorateSelectedObjects</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector16m_decorationNameE">
+<span id="_CPPv3N11TauSelector16m_decorationNameE"></span><span id="_CPPv2N11TauSelector16m_decorationNameE"></span><span id="TauSelector::m_decorationName__ss"></span><span class="target" id="classTauSelector_1aa9309fb70383165ad2edc084365ce888"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_decorationName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;passSel&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector25m_createSelectedContainerE">
+<span id="_CPPv3N11TauSelector25m_createSelectedContainerE"></span><span id="_CPPv2N11TauSelector25m_createSelectedContainerE"></span><span id="TauSelector::m_createSelectedContainer__b"></span><span class="target" id="classTauSelector_1ac7e004ee6d9a76801cdaeb2824389328"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_createSelectedContainer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector12m_nToProcessE">
+<span id="_CPPv3N11TauSelector12m_nToProcessE"></span><span id="_CPPv2N11TauSelector12m_nToProcessE"></span><span id="TauSelector::m_nToProcess__i"></span><span class="target" id="classTauSelector_1a27f24f70c5acaed67d2294dea6069b42"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nToProcess</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector10m_pass_minE">
+<span id="_CPPv3N11TauSelector10m_pass_minE"></span><span id="_CPPv2N11TauSelector10m_pass_minE"></span><span id="TauSelector::m_pass_min__i"></span><span class="target" id="classTauSelector_1a704b3aedc160a1e047d9784d282d867a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pass_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector10m_pass_maxE">
+<span id="_CPPv3N11TauSelector10m_pass_maxE"></span><span id="_CPPv2N11TauSelector10m_pass_maxE"></span><span id="TauSelector::m_pass_max__i"></span><span class="target" id="classTauSelector_1a695488b184b58072cb28485444cf9f66"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pass_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector12m_ConfigPathE">
+<span id="_CPPv3N11TauSelector12m_ConfigPathE"></span><span id="_CPPv2N11TauSelector12m_ConfigPathE"></span><span id="TauSelector::m_ConfigPath__ss"></span><span class="target" id="classTauSelector_1a0f076f09aa878943b6931a17b34e62c8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_ConfigPath</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;xAODAnaHelpers/TauConf/00-01-19/Selection/recommended_selection_mc15.conf&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector11m_minPtDAODE">
+<span id="_CPPv3N11TauSelector11m_minPtDAODE"></span><span id="_CPPv2N11TauSelector11m_minPtDAODE"></span><span id="TauSelector::m_minPtDAOD__float"></span><span class="target" id="classTauSelector_1a4529135ee1569129e7ceae38be893f9d"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_minPtDAOD</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">15e3</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector9m_JetIDWPE">
+<span id="_CPPv3N11TauSelector9m_JetIDWPE"></span><span id="_CPPv2N11TauSelector9m_JetIDWPE"></span><span id="TauSelector::m_JetIDWP__ss"></span><span class="target" id="classTauSelector_1ab3248682edfa8d3fd0d30372211a50dc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_JetIDWP</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector10m_EleRNNWPE">
+<span id="_CPPv3N11TauSelector10m_EleRNNWPE"></span><span id="_CPPv2N11TauSelector10m_EleRNNWPE"></span><span id="TauSelector::m_EleRNNWP__ss"></span><span class="target" id="classTauSelector_1a8c352e67be711676b08a966ee3003c46"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_EleRNNWP</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector7m_EleIDE">
+<span id="_CPPv3N11TauSelector7m_EleIDE"></span><span id="_CPPv2N11TauSelector7m_EleIDE"></span><span id="TauSelector::m_EleID__b"></span><span class="target" id="classTauSelector_1abeab621739b08b8cc1f0b4e2b4c52f6f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_EleID</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector8m_isRun3E">
+<span id="_CPPv3N11TauSelector8m_isRun3E"></span><span id="_CPPv2N11TauSelector8m_isRun3E"></span><span id="TauSelector::m_isRun3__b"></span><span class="target" id="classTauSelector_1a51acf5117cdf03e3f5c3f6a4f9e7e5a4"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isRun3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Flag to get Run3 Trigger Matching Tool. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector21m_singleTauTrigChainsE">
+<span id="_CPPv3N11TauSelector21m_singleTauTrigChainsE"></span><span id="_CPPv2N11TauSelector21m_singleTauTrigChainsE"></span><span id="TauSelector::m_singleTauTrigChains__ss"></span><span class="target" id="classTauSelector_1a03baa54e1c0679d0cc5e9a33c842bc80"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_singleTauTrigChains</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11TauSelector17m_diTauTrigChainsE">
+<span id="_CPPv3N11TauSelector17m_diTauTrigChainsE"></span><span id="_CPPv2N11TauSelector17m_diTauTrigChainsE"></span><span id="TauSelector::m_diTauTrigChains__ss"></span><span class="target" id="classTauSelector_1a1dfc447b9dad6cf517f36ab91203e99c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_diTauTrigChains</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classTrackHistsAlgo.html" class="btn btn-neutral float-right" title="Class TrackHistsAlgo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classTauJetMatching.html" class="btn btn-neutral float-left" title="Class TauJetMatching" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

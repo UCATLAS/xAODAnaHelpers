@@ -1,0 +1,1348 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Helper Classes &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Helper Functions" href="HelperFunctions.html" />
+    <link rel="prev" title="Debug Tool" href="DebugTool.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Selectors.html">Selecting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Outputs.html">Producing Outputs</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Utilities.html">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="DebugTool.html">Debug Tool</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Helper Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="HelperFunctions.html">Helper Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="METConstructor.html">MET Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ParticlePIDManager.html">Particle PID Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xAHAlgorithm.html">xAH::Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MessagePrinterAlgo.html">MessagePrinterAlgo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Utilities.html">Utilities</a> &raquo;</li>
+        
+      <li>Helper Classes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/HelperClasses.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="helper-classes">
+<h1>Helper Classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv413HelperClasses">
+<span id="_CPPv313HelperClasses"></span><span id="_CPPv213HelperClasses"></span><span id="HelperClasses"></span><span class="target" id="namespaceHelperClasses"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HelperClasses</span></span></span><a class="headerlink" href="#_CPPv413HelperClasses" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum-class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13ContainerTypeE">
+<span id="_CPPv3N13HelperClasses13ContainerTypeE"></span><span id="_CPPv2N13HelperClasses13ContainerTypeE"></span><span class="target" id="HelperClasses_8h_1ae759666962f41b8b383e887f415d41bf"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ContainerType</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13ContainerTypeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13ContainerType7UNKNOWNE">
+<span id="_CPPv3N13HelperClasses13ContainerType7UNKNOWNE"></span><span id="_CPPv2N13HelperClasses13ContainerType7UNKNOWNE"></span><span class="target" id="HelperClasses_8h_1ae759666962f41b8b383e887f415d41bfa696b031073e74bf2cb98e5ef201d4aa3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UNKNOWN</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13ContainerType7UNKNOWNE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13ContainerType7CONSTDVE">
+<span id="_CPPv3N13HelperClasses13ContainerType7CONSTDVE"></span><span id="_CPPv2N13HelperClasses13ContainerType7CONSTDVE"></span><span class="target" id="HelperClasses_8h_1ae759666962f41b8b383e887f415d41bfaf37af313057d6b5ff1cce6a55938affb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CONSTDV</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13ContainerType7CONSTDVE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13ContainerType9CONSTCONTE">
+<span id="_CPPv3N13HelperClasses13ContainerType9CONSTCONTE"></span><span id="_CPPv2N13HelperClasses13ContainerType9CONSTCONTE"></span><span class="target" id="HelperClasses_8h_1ae759666962f41b8b383e887f415d41bfa33bdfe579c95c20e08cd1766450a4020"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CONSTCONT</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses13ContainerType9CONSTCONTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum-class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolNameE">
+<span id="_CPPv3N13HelperClasses8ToolNameE"></span><span id="_CPPv2N13HelperClasses8ToolNameE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97baf"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ToolName</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName12MUONSELECTORE">
+<span id="_CPPv3N13HelperClasses8ToolName12MUONSELECTORE"></span><span id="_CPPv2N13HelperClasses8ToolName12MUONSELECTORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafabdfe7c1ab9f02d0a3cfcc0f349dbf49c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MUONSELECTOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName12MUONSELECTORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName16ELECTRONSELECTORE">
+<span id="_CPPv3N13HelperClasses8ToolName16ELECTRONSELECTORE"></span><span id="_CPPv2N13HelperClasses8ToolName16ELECTRONSELECTORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafa34b967e8641b7e34aebc97a29527b712"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ELECTRONSELECTOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName16ELECTRONSELECTORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName14PHOTONSELECTORE">
+<span id="_CPPv3N13HelperClasses8ToolName14PHOTONSELECTORE"></span><span id="_CPPv2N13HelperClasses8ToolName14PHOTONSELECTORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafa972b36725d5319099a84ad4a1ef86e8b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PHOTONSELECTOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName14PHOTONSELECTORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName11JETSELECTORE">
+<span id="_CPPv3N13HelperClasses8ToolName11JETSELECTORE"></span><span id="_CPPv2N13HelperClasses8ToolName11JETSELECTORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafad0150ac3210a498dae8ee88210f7f173"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JETSELECTOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName11JETSELECTORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName12BJETSELECTORE">
+<span id="_CPPv3N13HelperClasses8ToolName12BJETSELECTORE"></span><span id="_CPPv2N13HelperClasses8ToolName12BJETSELECTORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafa8871453335e07ac7701ffb5efa53f249"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BJETSELECTOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName12BJETSELECTORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName10CALIBRATORE">
+<span id="_CPPv3N13HelperClasses8ToolName10CALIBRATORE"></span><span id="_CPPv2N13HelperClasses8ToolName10CALIBRATORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafafa94033c5fe3b795374b88fc4069e39b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CALIBRATOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName10CALIBRATORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName9CORRECTORE">
+<span id="_CPPv3N13HelperClasses8ToolName9CORRECTORE"></span><span id="_CPPv2N13HelperClasses8ToolName9CORRECTORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafaf9107ca0ee7a6cf147bb16268c79e5c5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CORRECTOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName9CORRECTORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName8SELECTORE">
+<span id="_CPPv3N13HelperClasses8ToolName8SELECTORE"></span><span id="_CPPv2N13HelperClasses8ToolName8SELECTORE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafa0306d365caace98e8f301b031565521b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SELECTOR</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName8SELECTORE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses8ToolName7DEFAULTE">
+<span id="_CPPv3N13HelperClasses8ToolName7DEFAULTE"></span><span id="_CPPv2N13HelperClasses8ToolName7DEFAULTE"></span><span class="target" id="HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97bafa5b39c8b553c821e7cddc6da64b5bd2ee"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DEFAULT</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses8ToolName7DEFAULTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses17ClusterInfoSwitchE">
+<span id="_CPPv3N13HelperClasses17ClusterInfoSwitchE"></span><span id="_CPPv2N13HelperClasses17ClusterInfoSwitchE"></span><span id="HelperClasses::ClusterInfoSwitch"></span><span class="target" id="classHelperClasses_1_1ClusterInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ClusterInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses17ClusterInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses18ElectronInfoSwitchE">
+<span id="_CPPv3N13HelperClasses18ElectronInfoSwitchE"></span><span id="_CPPv2N13HelperClasses18ElectronInfoSwitchE"></span><span id="HelperClasses::ElectronInfoSwitch"></span><span class="target" id="classHelperClasses_1_1ElectronInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ElectronInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses18ElectronInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::IParticleInfoSwitch</span></code></a> class for Electron Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 40%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_trigger</p></td>
+<td><p>trigger</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_isolation</p></td>
+<td><p>isolation</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_isolationKinematics</p></td>
+<td><p>isolationKinematics</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_PID</p></td>
+<td><p>PID</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trackparams</p></td>
+<td><p>trackparams</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_trackhitcont</p></td>
+<td><p>trackhitcont</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_effSF</p></td>
+<td><p>effSF</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_PIDWPs[XYZ]</p></td>
+<td><p>PID_XYZ</p></td>
+<td><p>pattern</p></td>
+</tr>
+<tr class="row-even"><td><p>m_PIDSFWPs[XYZ]</p></td>
+<td><p>PIDSF_XYZ</p></td>
+<td><p>pattern</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_isolWPs[“”]</p></td>
+<td><p><a href="#id1"><span class="problematic" id="id2">ISOL_</span></a></p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_isolWPs[“”]</p></td>
+<td><p>ISOL_NONE</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_isolWPs[XYZ]</p></td>
+<td><p>ISOL_XYZ</p></td>
+<td><p>pattern</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trigWPs[XYZ]</p></td>
+<td><p>TRIG_XYZ</p></td>
+<td><p>pattern</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_passSel</p></td>
+<td><p>passSel</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_passOR</p></td>
+<td><p>passOR</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">PID</span></code>, <code class="docutils literal notranslate"><span class="pre">isolation</span></code> and <code class="docutils literal notranslate"><span class="pre">effSF</span></code> switches do not enable any additional output by themselves. They require additional working point pattern using <code class="docutils literal notranslate"><span class="pre">PID_XYZ</span></code> for PID working points, <code class="docutils literal notranslate"><span class="pre">PIDSF_XYZ</span></code> for PID scale factors, <code class="docutils literal notranslate"><span class="pre">ISOL_XYZ</span></code> for isolation working points and scale factors, and <code class="docutils literal notranslate"><span class="pre">TRIG_XYZ</span></code> for trigger scale factors. <code class="docutils literal notranslate"><span class="pre">XYZ</span></code> in the pattern should be replaced using the working point name, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... PID_LHMedium PIDSF_MediumLLH ...&quot;</span>
+</pre></div>
+</div>
+<p>will define the <code class="docutils literal notranslate"><span class="pre">LHMedium</span></code> PID working point and the accompanying scale factors. Note that not all PID working points have scale factors available.</p>
+<p>Isolation supports <code class="docutils literal notranslate"><span class="pre">NONE</span></code> or empty option which will enable scale factors without additional isolation requirements, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... ISOL_NONE ISOL_Loose ...&quot;</span>
+</pre></div>
+</div>
+<p>will define the <code class="docutils literal notranslate"><span class="pre">Loose</span></code> isolation working point status branch, and scale factors without isolation requirements and using the <code class="docutils literal notranslate"><span class="pre">Loose</span></code> WP.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN13HelperClasses10EnumParserE">
+<span id="_CPPv3I0EN13HelperClasses10EnumParserE"></span><span id="_CPPv2I0EN13HelperClasses10EnumParserE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classHelperClasses_1_1EnumParser"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EnumParser</span></span></span><a class="headerlink" href="#_CPPv4I0EN13HelperClasses10EnumParserE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p>template enum parser. Copied from: <a class="reference external" href="http://stackoverflow.com/a/726681">http://stackoverflow.com/a/726681</a></p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses15EventInfoSwitchE">
+<span id="_CPPv3N13HelperClasses15EventInfoSwitchE"></span><span id="_CPPv2N13HelperClasses15EventInfoSwitchE"></span><span id="HelperClasses::EventInfoSwitch"></span><span class="target" id="classHelperClasses_1_1EventInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><span class="n"><span class="pre">InfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses15EventInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::InfoSwitch</span></code></a> struct for Event Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_noDataInfo</p></td>
+<td><p>noDataInfo</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_eventCleaning</p></td>
+<td><p>eventCleaning</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_bcidInfo</p></td>
+<td><p>bcidInfo</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_pileup</p></td>
+<td><p>pileup</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_pileupsys</p></td>
+<td><p>pileupsys</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_shapeEM</p></td>
+<td><p>shapeEM</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_shapeEMPFLOW</p></td>
+<td><p>shapeEMPFLOW</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_shapeLC</p></td>
+<td><p>shapeLC</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_truth</p></td>
+<td><p>truth</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_caloClus</p></td>
+<td><p>caloClusters</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_weightsSys</p></td>
+<td><p>weightsSys</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_beamspotweight</p></td>
+<td><p>beamspotweight</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitchE">
+<span id="_CPPv3N13HelperClasses10InfoSwitchE"></span><span id="_CPPv2N13HelperClasses10InfoSwitchE"></span><span id="HelperClasses::InfoSwitch"></span><span class="target" id="classHelperClasses_1_1InfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">InfoSwitch</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p>A struct that is used for parsing configuration strings and assigning booleans to various properties. Currently used in plotting code. </p>
+<p><p>Strings are used to turn on and off histograms and branches in the tree The following structs hold the bools used to control the content and also have the string which is necessary to turn a set on.
+See the derived members for more information about what is supported. Each derived member should provide a table of parameters, patterns, and type of matching scheme used. The pattern will use standard PCRE-syntax when appropriate.</p>
+<p>We support two major matching schemes:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Exact</dt><dd><p>If a variable is matched exactly to a string, then a boolean is set to True or False based on whether an exact match exists or not.</p>
+</dd>
+<dt>Partial</dt><dd><p>If a variable is partially matched to a string, then there is some specific pattern we are extracting that will succeed the partial match that determines what the variable will be set to (usually not a bool).</p>
+</dd>
+</dl>
+</div></blockquote>
+</p>
+<p>Subclassed by <a class="reference internal" href="api/classHelperClasses_1_1EventInfoSwitch.html#classHelperClasses_1_1EventInfoSwitch"><span class="std std-ref">HelperClasses::EventInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1IParticleInfoSwitch.html#classHelperClasses_1_1IParticleInfoSwitch"><span class="std std-ref">HelperClasses::IParticleInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1METInfoSwitch.html#classHelperClasses_1_1METInfoSwitch"><span class="std std-ref">HelperClasses::METInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1TrackInfoSwitch.html#classHelperClasses_1_1TrackInfoSwitch"><span class="std std-ref">HelperClasses::TrackInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1TriggerInfoSwitch.html#classHelperClasses_1_1TriggerInfoSwitch"><span class="std std-ref">HelperClasses::TriggerInfoSwitch</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitch10InfoSwitchEKNSt6stringE">
+<span id="_CPPv3N13HelperClasses10InfoSwitch10InfoSwitchEKNSt6stringE"></span><span id="_CPPv2N13HelperClasses10InfoSwitch10InfoSwitchEKNSt6stringE"></span><span id="HelperClasses::InfoSwitch::InfoSwitch__ssC"></span><span class="target" id="classHelperClasses_1_1InfoSwitch_1a93dc63f941d3d776f11f3787165b6422"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">InfoSwitch</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">configStr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitch10InfoSwitchEKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Constructor. Take in input string, create vector of tokens. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>configStr</strong> – The configuration string to split up. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitch9has_exactEKNSt6stringE">
+<span id="_CPPv3N13HelperClasses10InfoSwitch9has_exactEKNSt6stringE"></span><span id="_CPPv2N13HelperClasses10InfoSwitch9has_exactEKNSt6stringE"></span><span id="HelperClasses::InfoSwitch::has_exact__ssC"></span><span class="target" id="classHelperClasses_1_1InfoSwitch_1a3c2a2fc1463538c2fa698425a6cc9bc3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">has_exact</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">flag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitch9has_exactEKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>Search for an exact match in <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitch15m_configDetailsE" title="HelperClasses::InfoSwitch::m_configDetails"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_configDetails</span></code></a>.</p>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flag</strong> – The string we search for. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitch9has_matchEKNSt6stringE">
+<span id="_CPPv3N13HelperClasses10InfoSwitch9has_matchEKNSt6stringE"></span><span id="_CPPv2N13HelperClasses10InfoSwitch9has_matchEKNSt6stringE"></span><span id="HelperClasses::InfoSwitch::has_match__ssC"></span><span class="target" id="classHelperClasses_1_1InfoSwitch_1a78024e43942a516f9dc106c58b031022"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">has_match</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">flag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitch9has_matchEKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>Search for a partial match in <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitch11m_configStrE" title="HelperClasses::InfoSwitch::m_configStr"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_configStr</span></code></a>.</p>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flag</strong> – The string we search for. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitch17get_working_pointEKNSt6stringE">
+<span id="_CPPv3N13HelperClasses10InfoSwitch17get_working_pointEKNSt6stringE"></span><span id="_CPPv2N13HelperClasses10InfoSwitch17get_working_pointEKNSt6stringE"></span><span id="HelperClasses::InfoSwitch::get_working_point__ssC"></span><span class="target" id="classHelperClasses_1_1InfoSwitch_1a633da21ca71aa731e21b70ddd4d887f0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_working_point</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">flag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitch17get_working_pointEKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>Search for a single flag in <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitch15m_configDetailsE" title="HelperClasses::InfoSwitch::m_configDetails"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_configDetails</span></code></a> and parse out the working point.</p>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flag</strong> – The string we search for. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitch18get_working_pointsEKNSt6stringE">
+<span id="_CPPv3N13HelperClasses10InfoSwitch18get_working_pointsEKNSt6stringE"></span><span id="_CPPv2N13HelperClasses10InfoSwitch18get_working_pointsEKNSt6stringE"></span><span id="HelperClasses::InfoSwitch::get_working_points__ssC"></span><span class="target" id="classHelperClasses_1_1InfoSwitch_1ac362f2cef4bf6a681bb1413f07370e53"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_working_points</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">flag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitch18get_working_pointsEKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>Search for multiple flags in <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitch15m_configDetailsE" title="HelperClasses::InfoSwitch::m_configDetails"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_configDetails</span></code></a> and parse out the working points.</p>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flag</strong> – The string we search for. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-protected-attributes">Protected Attributes</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitch11m_configStrE">
+<span id="_CPPv3N13HelperClasses10InfoSwitch11m_configStrE"></span><span id="_CPPv2N13HelperClasses10InfoSwitch11m_configStrE"></span><span id="HelperClasses::InfoSwitch::m_configStr__ssC"></span><span class="target" id="classHelperClasses_1_1InfoSwitch_1a1af7a2697ed6f1094b3a9f31fec82025"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_configStr</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitch11m_configStrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The input configuration string from which we split up into tokens. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses10InfoSwitch15m_configDetailsE">
+<span id="_CPPv3N13HelperClasses10InfoSwitch15m_configDetailsE"></span><span id="_CPPv2N13HelperClasses10InfoSwitch15m_configDetailsE"></span><span id="HelperClasses::InfoSwitch::m_configDetails__std::set:ss:"></span><span class="target" id="classHelperClasses_1_1InfoSwitch_1ae0f3ce703ff23b7ebdde647189e425e5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">set</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_configDetails</span></span></span><a class="headerlink" href="#_CPPv4N13HelperClasses10InfoSwitch15m_configDetailsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The vector of tokens from which we search through for finding matches. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses19IParticleInfoSwitchE">
+<span id="_CPPv3N13HelperClasses19IParticleInfoSwitchE"></span><span id="_CPPv2N13HelperClasses19IParticleInfoSwitchE"></span><span id="HelperClasses::IParticleInfoSwitch"></span><span class="target" id="classHelperClasses_1_1IParticleInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><span class="n"><span class="pre">InfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::InfoSwitch</span></code></a> struct for IParticle Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_noMultiplicity</p></td>
+<td><p>noMultiplicity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_kinematic</p></td>
+<td><p>kinematic</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_numLeading</p></td>
+<td><p>NLeading</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_useTheS</p></td>
+<td><p>useTheS</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">m_numLeading</span></code> requires a number <code class="docutils literal notranslate"><span class="pre">XX</span></code> to follow it, defining the number of leading partiles and associate it with that variable.</p>
+<p>For example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... NLeading4 ...&quot;</span>
+</pre></div>
+</div>
+<p>will define <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">m_numLeading</span> <span class="pre">=</span> <span class="pre">4</span></code>.</p>
+</div>
+<p>Subclassed by <a class="reference internal" href="api/classHelperClasses_1_1ClusterInfoSwitch.html#classHelperClasses_1_1ClusterInfoSwitch"><span class="std std-ref">HelperClasses::ClusterInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1ElectronInfoSwitch.html#classHelperClasses_1_1ElectronInfoSwitch"><span class="std std-ref">HelperClasses::ElectronInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1JetInfoSwitch.html#classHelperClasses_1_1JetInfoSwitch"><span class="std std-ref">HelperClasses::JetInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1MuonInfoSwitch.html#classHelperClasses_1_1MuonInfoSwitch"><span class="std std-ref">HelperClasses::MuonInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1PhotonInfoSwitch.html#classHelperClasses_1_1PhotonInfoSwitch"><span class="std std-ref">HelperClasses::PhotonInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1TauInfoSwitch.html#classHelperClasses_1_1TauInfoSwitch"><span class="std std-ref">HelperClasses::TauInfoSwitch</span></a>, <a class="reference internal" href="api/classHelperClasses_1_1TruthInfoSwitch.html#classHelperClasses_1_1TruthInfoSwitch"><span class="std std-ref">HelperClasses::TruthInfoSwitch</span></a></p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13JetInfoSwitchE">
+<span id="_CPPv3N13HelperClasses13JetInfoSwitchE"></span><span id="_CPPv2N13HelperClasses13JetInfoSwitchE"></span><span id="HelperClasses::JetInfoSwitch"></span><span class="target" id="classHelperClasses_1_1JetInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JetInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses13JetInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::IParticleInfoSwitch</span></code></a> class for Jet Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_noMultiplicity</p></td>
+<td><p>noMultiplicity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_kinematic</p></td>
+<td><p>kinematic</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trigger</p></td>
+<td><p>trigger</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_substructure</p></td>
+<td><p>substructure</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_ntrimsubjets</p></td>
+<td><p>ntrimsubjets</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_bosonCount</p></td>
+<td><p>bosonCount</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_VTags</p></td>
+<td><p>VTags</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_rapidity</p></td>
+<td><p>rapidity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_clean</p></td>
+<td><p>clean</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_cleanLight</p></td>
+<td><p>cleanLight</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_cleanLightLLP</p></td>
+<td><p>cleanLightLLP</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_cleanTrig</p></td>
+<td><p>cleanTrig</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_timing</p></td>
+<td><p>timing</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_energy</p></td>
+<td><p>energy</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_energyLight</p></td>
+<td><p>energyLight</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_scales</p></td>
+<td><p>scales</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_constscaleEta</p></td>
+<td><p>constscaleEta</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_detectorEta</p></td>
+<td><p>detectorEta</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_resolution</p></td>
+<td><p>resolution</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_truth</p></td>
+<td><p>truth</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_truthDetails</p></td>
+<td><p>truth_details</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_layer</p></td>
+<td><p>layer</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trackPV</p></td>
+<td><p>trackPV</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_trackAll</p></td>
+<td><p>trackAll</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_chargedPFOPV</p></td>
+<td><p>chargedPFOPV</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_jvt</p></td>
+<td><p>JVT</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_NNJvt</p></td>
+<td><p>NNJvt</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sfJVTName</p></td>
+<td><p>sfJVT</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_sffJVTName</p></td>
+<td><p>sffJVT</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_allTrack</p></td>
+<td><p>allTrack</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_allTrackPVSel</p></td>
+<td><p>allTrackPVSel</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_allTrackDetail</p></td>
+<td><p>allTrackDetail</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_constituent</p></td>
+<td><p>constituent</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_constituentAll</p></td>
+<td><p>constituentAll</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_flavorTag</p></td>
+<td><p>flavorTag</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_flavorTagHLT</p></td>
+<td><p>flavorTagHLT</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_flavorTagTLA</p></td>
+<td><p>flavorTagTLA</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sfFTagFix</p></td>
+<td><p>sfFTagFix</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_sfFTagFlt</p></td>
+<td><p>sfFTagFlt</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sfFTagHyb</p></td>
+<td><p>sfFTagHyb</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_jetBTag</p></td>
+<td><p>jetBTag</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_area</p></td>
+<td><p>area</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_JVC</p></td>
+<td><p>JVC</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_tracksInJet</p></td>
+<td><p>tracksInJet</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trackJetName</p></td>
+<td><p>trackJetName</p></td>
+<td><p>partial</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_hltVtxComp</p></td>
+<td><p>hltVtxComp</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_onlineBS</p></td>
+<td><p>onlineBS</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_onlineBSTool</p></td>
+<td><p>onlineBSTool</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_charge</p></td>
+<td><p>charge</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_passSel</p></td>
+<td><p>passSel</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_passOR</p></td>
+<td><p>passOR</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_vsLumiBlock</p></td>
+<td><p>vsLumiBlock</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_vsActualMu</p></td>
+<td><p>vsActualMu</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_lumiB_runN</p></td>
+<td><p>lumiB_runN</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_byAverageMu</p></td>
+<td><p>byAverageMu</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_byEta</p></td>
+<td><p>byEta</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_etaPhiMap</p></td>
+<td><p>etaPhiMap</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_muonCorrection</p></td>
+<td><p>muonCorrection</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">trackJetName</span></code> expects one or more track jet container names separated by an underscore. For example, the string <code class="docutils literal notranslate"><span class="pre">trackJetName_GhostAntiKt2TrackJet_GhostVR30Rmax4Rmin02TrackJet</span></code> will set the attriubte <code class="docutils literal notranslate"><span class="pre">m_trackJetNames</span></code>
+to <code class="docutils literal notranslate"><span class="pre">{&quot;GhostAntiKt2TrackJet&quot;,</span> <span class="pre">&quot;GhostVR30Rmax4Rmin02TrackJet&quot;}</span></code>.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">sfJVT</span></code> requires a working point after it, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... sfJVTMedium ...&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">jetBTag</span></code> expects the format <code class="docutils literal notranslate"><span class="pre">jetBTag_tagger_type_AABB..MM..YY.ZZ</span></code>. This will create a vector of working points (AA, BB, CC, …, ZZ) associated with that tagger. Several entries can be given. For example:</p>
+<p>m_configStr = “… jetBTag_DL1r_FixedCutBEff_60707785 …”</p>
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13METInfoSwitchE">
+<span id="_CPPv3N13HelperClasses13METInfoSwitchE"></span><span id="_CPPv2N13HelperClasses13METInfoSwitchE"></span><span id="HelperClasses::METInfoSwitch"></span><span class="target" id="classHelperClasses_1_1METInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">METInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><span class="n"><span class="pre">InfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses13METInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::InfoSwitch</span></code></a> struct for Missing <span class="math notranslate nohighlight">\(\text{E}_{\text{T}}\)</span> Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 45%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_metClus</p></td>
+<td><p>metClus</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_metTrk</p></td>
+<td><p>metTrk</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_sigClus</p></td>
+<td><p>sigClus|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sigTrk</p></td>
+<td><p>sigTrk|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_sigResolutionClus</p></td>
+<td><p>sigResolutionClus|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_sigResolutionTrk</p></td>
+<td><p>sigResolutionTrk|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_refEle</p></td>
+<td><p>refEle|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_refGamma</p></td>
+<td><p>refGamma|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_refTau</p></td>
+<td><p>refTau|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_refMuons</p></td>
+<td><p>refMuons|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_refJet</p></td>
+<td><p>refJet|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_refJetTrk</p></td>
+<td><p>refJetTrk</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_softClus</p></td>
+<td><p>softClus|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_softTrk</p></td>
+<td><p>softTrk|all</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_noExtra</p></td>
+<td><p>noExtra</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For all except <a class="reference internal" href="api/classHelperClasses_1_1METInfoSwitch.html#_CPPv4N13HelperClasses13METInfoSwitch11m_refJetTrkE" title="HelperClasses::METInfoSwitch::m_refJetTrk"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_refJetTrk</span></code></a>, you can pass in the string <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code> to enable all information. You can force only calocluster- or track-based MET using <a class="reference internal" href="api/classHelperClasses_1_1METInfoSwitch.html#_CPPv4N13HelperClasses13METInfoSwitch9m_metClusE" title="HelperClasses::METInfoSwitch::m_metClus"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_metClus</span></code></a> or <a class="reference internal" href="api/classHelperClasses_1_1METInfoSwitch.html#_CPPv4N13HelperClasses13METInfoSwitch8m_metTrkE" title="HelperClasses::METInfoSwitch::m_metTrk"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_metTrk</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses14MuonInfoSwitchE">
+<span id="_CPPv3N13HelperClasses14MuonInfoSwitchE"></span><span id="_CPPv2N13HelperClasses14MuonInfoSwitchE"></span><span id="HelperClasses::MuonInfoSwitch"></span><span class="target" id="classHelperClasses_1_1MuonInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MuonInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses14MuonInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::IParticleInfoSwitch</span></code></a> class for Muon Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 41%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_trigger</p></td>
+<td><p>trigger</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_isolation</p></td>
+<td><p>isolation</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_isolationKinematics</p></td>
+<td><p>isolationKinematics</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_quality</p></td>
+<td><p>quality</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_recoparams</p></td>
+<td><p>recoparams</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_trackparams</p></td>
+<td><p>trackparams</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trackhitcont</p></td>
+<td><p>trackhitcont</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_effSF</p></td>
+<td><p>effSF</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_energyLoss</p></td>
+<td><p>energyLoss</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_recoWPs[XYZ]</p></td>
+<td><p>RECO_XYZ</p></td>
+<td><p>pattern</p></td>
+</tr>
+<tr class="row-even"><td><p>m_isolWPs[“”]</p></td>
+<td><p><a href="#id3"><span class="problematic" id="id4">ISOL_</span></a></p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_isolWPs[“”]</p></td>
+<td><p>ISOL_NONE</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_isolWPs[XYZ]</p></td>
+<td><p>ISOL_XYZ</p></td>
+<td><p>pattern</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_trigWPs[XYZ]</p></td>
+<td><p>TRIG_XYZ</p></td>
+<td><p>pattern</p></td>
+</tr>
+<tr class="row-even"><td><p>m_passSel</p></td>
+<td><p>passSel</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_passOR</p></td>
+<td><p>passOR</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">quality</span></code>, <code class="docutils literal notranslate"><span class="pre">isolation</span></code> and <code class="docutils literal notranslate"><span class="pre">effSF</span></code> switches do not enable any additional output by themselves. They require additional working point pattern using <code class="docutils literal notranslate"><span class="pre">RECO_XYZ</span></code> for quality working points and scale factors, <code class="docutils literal notranslate"><span class="pre">ISOL_XYZ</span></code> for isolation working points and scale factors, and <code class="docutils literal notranslate"><span class="pre">TRIG_XYZ</span></code> for trigger scale factors. <code class="docutils literal notranslate"><span class="pre">XYZ</span></code> in the pattern should be replaced using the working point name, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... RECO_Medium ...&quot;</span>
+</pre></div>
+</div>
+<p>will define the <code class="docutils literal notranslate"><span class="pre">Medium</span></code> quality working point and the accompanying scale factors.</p>
+<p>Isolation supports <code class="docutils literal notranslate"><span class="pre">NONE</span></code> or empty option which will enable scale factors without additional isolation requirements, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... ISOL_NONE ISOL_Loose ...&quot;</span>
+</pre></div>
+</div>
+<p>will define the <code class="docutils literal notranslate"><span class="pre">Loose</span></code> isolation working point status branch, and scale factors without isolation requirements and using the <code class="docutils literal notranslate"><span class="pre">Loose</span></code> WP.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses16PhotonInfoSwitchE">
+<span id="_CPPv3N13HelperClasses16PhotonInfoSwitchE"></span><span id="_CPPv2N13HelperClasses16PhotonInfoSwitchE"></span><span id="HelperClasses::PhotonInfoSwitch"></span><span class="target" id="classHelperClasses_1_1PhotonInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PhotonInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses16PhotonInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::IParticleInfoSwitch</span></code></a> class for Photon Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 36%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_isolation</p></td>
+<td><p>isolation</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_PID</p></td>
+<td><p>PID</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_purity</p></td>
+<td><p>purity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_effSF</p></td>
+<td><p>effSF</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_trigger</p></td>
+<td><p>trigger</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_isoCones</p></td>
+<td><p>isoCone</p></td>
+<td><p>partial</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">isoCone</span></code> can be repeated but requires a number after it, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... isoCone20 isoCone40 ...&quot;</span>
+</pre></div>
+</div>
+<p>which will define <code class="docutils literal notranslate"><span class="pre">std::vector&lt;int&gt;</span> <span class="pre">m_isoCones</span> <span class="pre">=</span> <span class="pre">{20,40}</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses13TauInfoSwitchE">
+<span id="_CPPv3N13HelperClasses13TauInfoSwitchE"></span><span id="_CPPv2N13HelperClasses13TauInfoSwitchE"></span><span id="HelperClasses::TauInfoSwitch"></span><span class="target" id="classHelperClasses_1_1TauInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TauInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses13TauInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::IParticleInfoSwitch</span></code></a> struct for Tau Information.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">identification</span></code> and <code class="docutils literal notranslate"><span class="pre">effSF</span></code> switches do not enable any additional output by themselves.
+They require additional working point pattern using <code class="docutils literal notranslate"><span class="pre">TAUEFF_XYZ</span></code> for combined scale factors, and <code class="docutils literal notranslate"><span class="pre">TRIG_XYZ</span></code>
+for trigger scale factors. <code class="docutils literal notranslate"><span class="pre">XYZ</span></code> in the pattern should be replaced using the working point name, for example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_configStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;... TAUEFF_EleOLRElectronEleRNNLoose_TauIDMedium ... TRIG_EleOLRElectronEleRNNMedium_TauIDLoose_TrigMyTriggerMenu&quot;</span>
+</pre></div>
+</div>
+<p>Notice that the working point for TAUEFF is a combination of two working points from EleOLRElectron and TauID.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses15TrackInfoSwitchE">
+<span id="_CPPv3N13HelperClasses15TrackInfoSwitchE"></span><span id="_CPPv2N13HelperClasses15TrackInfoSwitchE"></span><span id="HelperClasses::TrackInfoSwitch"></span><span class="target" id="classHelperClasses_1_1TrackInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TrackInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><span class="n"><span class="pre">InfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses15TrackInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::InfoSwitch</span></code></a> struct for Track Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_noMultiplicity</p></td>
+<td><p>noMultiplicity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_kinematic</p></td>
+<td><p>kinematic</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_fitpars</p></td>
+<td><p>fitpars</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_numbers</p></td>
+<td><p>numbers</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_vertex</p></td>
+<td><p>vertex</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_useTheS</p></td>
+<td><p>useTheS</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses17TriggerInfoSwitchE">
+<span id="_CPPv3N13HelperClasses17TriggerInfoSwitchE"></span><span id="_CPPv2N13HelperClasses17TriggerInfoSwitchE"></span><span id="HelperClasses::TriggerInfoSwitch"></span><span class="target" id="classHelperClasses_1_1TriggerInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TriggerInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><span class="n"><span class="pre">InfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses17TriggerInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::InfoSwitch</span></code></a> struct for Trigger Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_basic</p></td>
+<td><p>basic</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_menuKeys</p></td>
+<td><p>menuKeys</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_passTriggers</p></td>
+<td><p>passTriggers</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_passTrigBits</p></td>
+<td><p>passTrigBits</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_prescales</p></td>
+<td><p>prescales</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_prescalesLumi</p></td>
+<td><p>prescalesLumi</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">m_prescales</span></code> contains information from the <code class="docutils literal notranslate"><span class="pre">TrigDecisionTool</span></code> for every trigger used in event selection and event trigger-matching. <code class="docutils literal notranslate"><span class="pre">m_prescalesLumi</span></code> contains information retrieved from the pile-up reweighting tool based on the actual luminosities of triggers.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N13HelperClasses15TruthInfoSwitchE">
+<span id="_CPPv3N13HelperClasses15TruthInfoSwitchE"></span><span id="_CPPv2N13HelperClasses15TruthInfoSwitchE"></span><span id="HelperClasses::TruthInfoSwitch"></span><span class="target" id="classHelperClasses_1_1TruthInfoSwitch"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TruthInfoSwitch</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413HelperClasses" title="HelperClasses"><span class="n"><span class="pre">HelperClasses</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N13HelperClasses19IParticleInfoSwitchE" title="HelperClasses::IParticleInfoSwitch"><span class="n"><span class="pre">IParticleInfoSwitch</span></span></a><a class="headerlink" href="#_CPPv4N13HelperClasses15TruthInfoSwitchE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;HelperClasses.h&gt;</em></div>
+<p><p>The <a class="reference internal" href="#_CPPv4N13HelperClasses10InfoSwitchE" title="HelperClasses::InfoSwitch"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelperClasses::InfoSwitch</span></code></a> struct for Truth Information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 38%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Pattern</p></th>
+<th class="head"><p>Match</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>m_noMultiplicity</p></td>
+<td><p>noMultiplicity</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_kinematic</p></td>
+<td><p>kinematic</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_type</p></td>
+<td><p>type</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_bVtx</p></td>
+<td><p>bVtx</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_parents</p></td>
+<td><p>parents</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_children</p></td>
+<td><p>children</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_dressed</p></td>
+<td><p>dressed</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_origin</p></td>
+<td><p>origin</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-even"><td><p>m_particleType</p></td>
+<td><p>particleType</p></td>
+<td><p>exact</p></td>
+</tr>
+<tr class="row-odd"><td><p>m_pdgIdOnly</p></td>
+<td><p>pdgIdOnly</p></td>
+<td><p>exact</p></td>
+</tr>
+</tbody>
+</table>
+</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="HelperFunctions.html" class="btn btn-neutral float-right" title="Helper Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="DebugTool.html" class="btn btn-neutral float-left" title="Debug Tool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

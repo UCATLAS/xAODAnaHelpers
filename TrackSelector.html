@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tracks &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Truth" href="TruthSelector.html" />
+    <link rel="prev" title="\(\tau\)" href="TauSelector.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Selectors.html">Selecting Objects</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="BasicEventSelection.html">Event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="OverlapRemover.html">Overlap Removal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ElectronSelector.html"><span class="math notranslate nohighlight">\(e\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="JetSelector.html"><span class="math notranslate nohighlight">\(j\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="MuonSelector.html"><span class="math notranslate nohighlight">\(\mu\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="PhotonSelector.html"><span class="math notranslate nohighlight">\(\gamma\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="TauSelector.html"><span class="math notranslate nohighlight">\(\tau\)</span></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tracks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TruthSelector.html">Truth</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Outputs.html">Producing Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Selectors.html">Selecting Objects</a> &raquo;</li>
+        
+      <li>Tracks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TrackSelector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tracks">
+<h1>Tracks<a class="headerlink" href="#tracks" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv413TrackSelector">
+<span id="_CPPv313TrackSelector"></span><span id="_CPPv213TrackSelector"></span><span id="TrackSelector"></span><span class="target" id="classTrackSelector"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TrackSelector</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><a class="headerlink" href="#_CPPv413TrackSelector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector13TrackSelectorEv">
+<span id="_CPPv3N13TrackSelector13TrackSelectorEv"></span><span id="_CPPv2N13TrackSelector13TrackSelectorEv"></span><span id="TrackSelector::TrackSelector"></span><span class="target" id="classTrackSelector_1a5e13c46c5a88e3a269bcff4a9d8b507a"></span><span class="sig-name descname"><span class="n"><span class="pre">TrackSelector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector13TrackSelectorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector8setupJobERN2EL3JobE">
+<span id="_CPPv3N13TrackSelector8setupJobERN2EL3JobE"></span><span id="_CPPv2N13TrackSelector8setupJobERN2EL3JobE"></span><span id="TrackSelector::setupJob__EL::JobR"></span><span class="target" id="classTrackSelector_1a850ad55971ee4ee16c281909d9750b49"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector8setupJobERN2EL3JobE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector11fileExecuteEv">
+<span id="_CPPv3N13TrackSelector11fileExecuteEv"></span><span id="_CPPv2N13TrackSelector11fileExecuteEv"></span><span id="TrackSelector::fileExecute"></span><span class="target" id="classTrackSelector_1a517b96a1269ee6e3840362fb169a3a5f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector11fileExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector14histInitializeEv">
+<span id="_CPPv3N13TrackSelector14histInitializeEv"></span><span id="_CPPv2N13TrackSelector14histInitializeEv"></span><span id="TrackSelector::histInitialize"></span><span class="target" id="classTrackSelector_1a3b8bf0b5e06ed7ac9a8363903e59741f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector14histInitializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector11changeInputEb">
+<span id="_CPPv3N13TrackSelector11changeInputEb"></span><span id="_CPPv2N13TrackSelector11changeInputEb"></span><span id="TrackSelector::changeInput__b"></span><span class="target" id="classTrackSelector_1a0c6f6fd70f450c3a93184736f67a28a6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector11changeInputEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector10initializeEv">
+<span id="_CPPv3N13TrackSelector10initializeEv"></span><span id="_CPPv2N13TrackSelector10initializeEv"></span><span id="TrackSelector::initialize"></span><span class="target" id="classTrackSelector_1a7e66296d8a1262173ab7d10956f14794"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector10initializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector7executeEv">
+<span id="_CPPv3N13TrackSelector7executeEv"></span><span id="_CPPv2N13TrackSelector7executeEv"></span><span id="TrackSelector::execute"></span><span class="target" id="classTrackSelector_1aa3e6a1369dbe114ca32fbebdc21a91ec"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector7executeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector22executeTrackCollectionEf">
+<span id="_CPPv3N13TrackSelector22executeTrackCollectionEf"></span><span id="_CPPv2N13TrackSelector22executeTrackCollectionEf"></span><span id="TrackSelector::executeTrackCollection__float"></span><span class="target" id="classTrackSelector_1a28ba80d503f576cecfc172275e8a833f"></span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">executeTrackCollection</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mcEvtWeight</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector22executeTrackCollectionEf" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector19executeTracksInJetsEv">
+<span id="_CPPv3N13TrackSelector19executeTracksInJetsEv"></span><span id="_CPPv2N13TrackSelector19executeTracksInJetsEv"></span><span id="TrackSelector::executeTracksInJets"></span><span class="target" id="classTrackSelector_1a23f661212a3fec16bcd3bee679d52b63"></span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">executeTracksInJets</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector19executeTracksInJetsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector11postExecuteEv">
+<span id="_CPPv3N13TrackSelector11postExecuteEv"></span><span id="_CPPv2N13TrackSelector11postExecuteEv"></span><span id="TrackSelector::postExecute"></span><span class="target" id="classTrackSelector_1a68ca4a7a10d91455f2b6cb88931dd005"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector11postExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector8finalizeEv">
+<span id="_CPPv3N13TrackSelector8finalizeEv"></span><span id="_CPPv2N13TrackSelector8finalizeEv"></span><span id="TrackSelector::finalize"></span><span class="target" id="classTrackSelector_1a9258b23e6b97b59c0dc5236f7e45a20b"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector8finalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector12histFinalizeEv">
+<span id="_CPPv3N13TrackSelector12histFinalizeEv"></span><span id="_CPPv2N13TrackSelector12histFinalizeEv"></span><span id="TrackSelector::histFinalize"></span><span class="target" id="classTrackSelector_1ab11f5eb7cbf0e6cfd44085cd2a7db43f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector12histFinalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector8PassCutsEPKN4xAOD13TrackParticleEPKN4xAOD6VertexE">
+<span id="_CPPv3N13TrackSelector8PassCutsEPKN4xAOD13TrackParticleEPKN4xAOD6VertexE"></span><span id="_CPPv2N13TrackSelector8PassCutsEPKN4xAOD13TrackParticleEPKN4xAOD6VertexE"></span><span id="TrackSelector::PassCuts__xAOD::TrackParticleCP.xAOD::VertexCP"></span><span class="target" id="classTrackSelector_1ac89bacfcee9b7ca107d7f01c81bd5bee"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PassCuts</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TrackParticle</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">jet</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Vertex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pvx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13TrackSelector8PassCutsEPKN4xAOD13TrackParticleEPKN4xAOD6VertexE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector12m_useCutFlowE">
+<span id="_CPPv3N13TrackSelector12m_useCutFlowE"></span><span id="_CPPv2N13TrackSelector12m_useCutFlowE"></span><span id="TrackSelector::m_useCutFlow__b"></span><span class="target" id="classTrackSelector_1ae3f5269c439eac3d490586b099632788"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useCutFlow</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector12m_useCutFlowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector17m_inContainerNameE">
+<span id="_CPPv3N13TrackSelector17m_inContainerNameE"></span><span id="_CPPv2N13TrackSelector17m_inContainerNameE"></span><span id="TrackSelector::m_inContainerName__ss"></span><span class="target" id="classTrackSelector_1a69a9ae6572096dd4c009514916fb0009"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector17m_inContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>input container name </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector18m_outContainerNameE">
+<span id="_CPPv3N13TrackSelector18m_outContainerNameE"></span><span id="_CPPv2N13TrackSelector18m_outContainerNameE"></span><span id="TrackSelector::m_outContainerName__ss"></span><span class="target" id="classTrackSelector_1a5ae5c0bc214efc956b870ec92fde77e0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector18m_outContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>output container name </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector20m_inJetContainerNameE">
+<span id="_CPPv3N13TrackSelector20m_inJetContainerNameE"></span><span id="_CPPv2N13TrackSelector20m_inJetContainerNameE"></span><span id="TrackSelector::m_inJetContainerName__ss"></span><span class="target" id="classTrackSelector_1a792b0b6f48e5f44141d31fc55179b95b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inJetContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector20m_inJetContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>input jet container name </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector25m_decorateSelectedObjectsE">
+<span id="_CPPv3N13TrackSelector25m_decorateSelectedObjectsE"></span><span id="_CPPv2N13TrackSelector25m_decorateSelectedObjectsE"></span><span id="TrackSelector::m_decorateSelectedObjects__b"></span><span class="target" id="classTrackSelector_1a4efaf8c976471fa475912e72e1bbc6ad"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_decorateSelectedObjects</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector25m_decorateSelectedObjectsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>decorate selected objects? defaul passSel </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector25m_createSelectedContainerE">
+<span id="_CPPv3N13TrackSelector25m_createSelectedContainerE"></span><span id="_CPPv2N13TrackSelector25m_createSelectedContainerE"></span><span id="TrackSelector::m_createSelectedContainer__b"></span><span class="target" id="classTrackSelector_1ae516d4fee0cf20353f9b59298717dbc1"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_createSelectedContainer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector25m_createSelectedContainerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>fill using SG::VIEW_ELEMENTS to be light weight </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector12m_nToProcessE">
+<span id="_CPPv3N13TrackSelector12m_nToProcessE"></span><span id="_CPPv2N13TrackSelector12m_nToProcessE"></span><span id="TrackSelector::m_nToProcess__i"></span><span class="target" id="classTrackSelector_1a64efa237db31a68aa81cb22dbf3454ed"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nToProcess</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector12m_nToProcessE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>look at n objects </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector10m_pass_minE">
+<span id="_CPPv3N13TrackSelector10m_pass_minE"></span><span id="_CPPv2N13TrackSelector10m_pass_minE"></span><span id="TrackSelector::m_pass_min__i"></span><span class="target" id="classTrackSelector_1aafef0c77dd7e2bd737232bfedadb757a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pass_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector10m_pass_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum number of objects passing cuts </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector10m_pass_maxE">
+<span id="_CPPv3N13TrackSelector10m_pass_maxE"></span><span id="_CPPv2N13TrackSelector10m_pass_maxE"></span><span id="TrackSelector::m_pass_max__i"></span><span class="target" id="classTrackSelector_1ab98a08d87b7db0086411ce4c30d3a05c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pass_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector10m_pass_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum number of objects passing cuts </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector16m_cutLevelStringE">
+<span id="_CPPv3N13TrackSelector16m_cutLevelStringE"></span><span id="_CPPv2N13TrackSelector16m_cutLevelStringE"></span><span id="TrackSelector::m_cutLevelString__ss"></span><span class="target" id="classTrackSelector_1a0fff7c83279fba8c04aad15011fb2f82"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutLevelString</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector16m_cutLevelStringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>available: Loose LoosePrimary TightPrimary LooseMuon LooseElectron MinBias HILoose HITight </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector8m_pT_maxE">
+<span id="_CPPv3N13TrackSelector8m_pT_maxE"></span><span id="_CPPv2N13TrackSelector8m_pT_maxE"></span><span id="TrackSelector::m_pT_max__float"></span><span class="target" id="classTrackSelector_1abb6790465ed51463393a4eefa921cc66"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pT_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector8m_pT_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require pT &lt; pt_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector8m_pT_minE">
+<span id="_CPPv3N13TrackSelector8m_pT_minE"></span><span id="_CPPv2N13TrackSelector8m_pT_minE"></span><span id="TrackSelector::m_pT_min__float"></span><span class="target" id="classTrackSelector_1add4cc49e7c5a609fa9a15eeaec080da2"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pT_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector8m_pT_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require pT &gt; pt_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector7m_p_minE">
+<span id="_CPPv3N13TrackSelector7m_p_minE"></span><span id="_CPPv2N13TrackSelector7m_p_minE"></span><span id="TrackSelector::m_p_min__float"></span><span class="target" id="classTrackSelector_1ac96a8dfe60ce41f7f11de92dbe196252"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_p_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector7m_p_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require |p| &gt; p_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector9m_eta_maxE">
+<span id="_CPPv3N13TrackSelector9m_eta_maxE"></span><span id="_CPPv2N13TrackSelector9m_eta_maxE"></span><span id="TrackSelector::m_eta_max__float"></span><span class="target" id="classTrackSelector_1a5abfb18b7cc09afdd7c2887c60b35ffd"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eta_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector9m_eta_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require |eta| &lt; eta_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector9m_eta_minE">
+<span id="_CPPv3N13TrackSelector9m_eta_minE"></span><span id="_CPPv2N13TrackSelector9m_eta_minE"></span><span id="TrackSelector::m_eta_min__float"></span><span class="target" id="classTrackSelector_1a8bfa4a4ef8f977cb317d11f0b2bde785"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eta_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector9m_eta_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require |eta| &gt; eta_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector15m_etaSigned_minE">
+<span id="_CPPv3N13TrackSelector15m_etaSigned_minE"></span><span id="_CPPv2N13TrackSelector15m_etaSigned_minE"></span><span id="TrackSelector::m_etaSigned_min__float"></span><span class="target" id="classTrackSelector_1a8e9dd2ac0237d4b0218424e7c5d6c9d5"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_etaSigned_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector15m_etaSigned_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require eta &gt; eta_min </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector15m_etaSigned_maxE">
+<span id="_CPPv3N13TrackSelector15m_etaSigned_maxE"></span><span id="_CPPv2N13TrackSelector15m_etaSigned_maxE"></span><span id="TrackSelector::m_etaSigned_max__float"></span><span class="target" id="classTrackSelector_1aba48d6b3c36fdc8e726e8071d9764fab"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_etaSigned_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector15m_etaSigned_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require eta &lt; eta_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector8m_d0_maxE">
+<span id="_CPPv3N13TrackSelector8m_d0_maxE"></span><span id="_CPPv2N13TrackSelector8m_d0_maxE"></span><span id="TrackSelector::m_d0_max__float"></span><span class="target" id="classTrackSelector_1a69c03365ff64abc05ab93c2eb30162be"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_d0_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector8m_d0_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require |d0| &lt; d0_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector8m_z0_maxE">
+<span id="_CPPv3N13TrackSelector8m_z0_maxE"></span><span id="_CPPv2N13TrackSelector8m_z0_maxE"></span><span id="TrackSelector::m_z0_max__float"></span><span class="target" id="classTrackSelector_1aeaf222bf16ff2055a2c38b846d32476c"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_z0_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector8m_z0_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require |z0| &lt; z0_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector13m_sigmad0_maxE">
+<span id="_CPPv3N13TrackSelector13m_sigmad0_maxE"></span><span id="_CPPv2N13TrackSelector13m_sigmad0_maxE"></span><span id="TrackSelector::m_sigmad0_max__float"></span><span class="target" id="classTrackSelector_1a78ab1bfaeacba93392788efcc481faea"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sigmad0_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector13m_sigmad0_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum error on d0 </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector19m_d0oversigmad0_maxE">
+<span id="_CPPv3N13TrackSelector19m_d0oversigmad0_maxE"></span><span id="_CPPv2N13TrackSelector19m_d0oversigmad0_maxE"></span><span id="TrackSelector::m_d0oversigmad0_max__float"></span><span class="target" id="classTrackSelector_1a7182535bae87b6a35227885cee61546a"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_d0oversigmad0_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector19m_d0oversigmad0_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum significance of |d0| </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector12m_z0sinT_maxE">
+<span id="_CPPv3N13TrackSelector12m_z0sinT_maxE"></span><span id="_CPPv2N13TrackSelector12m_z0sinT_maxE"></span><span id="TrackSelector::m_z0sinT_max__float"></span><span class="target" id="classTrackSelector_1a9bc562860c748ad03726151196a9c7ec"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_z0sinT_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector12m_z0sinT_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require |z0xsin(theta)| &lt; z0sintheta_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector13m_sigmaz0_maxE">
+<span id="_CPPv3N13TrackSelector13m_sigmaz0_maxE"></span><span id="_CPPv2N13TrackSelector13m_sigmaz0_maxE"></span><span id="TrackSelector::m_sigmaz0_max__float"></span><span class="target" id="classTrackSelector_1a4b9cbca99d899b97413e35d8a956fe74"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sigmaz0_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector13m_sigmaz0_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum error on z0 </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector21m_sigmaz0sintheta_maxE">
+<span id="_CPPv3N13TrackSelector21m_sigmaz0sintheta_maxE"></span><span id="_CPPv2N13TrackSelector21m_sigmaz0sintheta_maxE"></span><span id="TrackSelector::m_sigmaz0sintheta_max__float"></span><span class="target" id="classTrackSelector_1a24dc3b2990d1a355547815a87f660e53"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sigmaz0sintheta_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector21m_sigmaz0sintheta_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum error on z0*sin(theta) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector19m_z0oversigmaz0_maxE">
+<span id="_CPPv3N13TrackSelector19m_z0oversigmaz0_maxE"></span><span id="_CPPv2N13TrackSelector19m_z0oversigmaz0_maxE"></span><span id="TrackSelector::m_z0oversigmaz0_max__float"></span><span class="target" id="classTrackSelector_1a215d23e131b678c2b9ae80d064b871c9"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_z0oversigmaz0_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector19m_z0oversigmaz0_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>max |z0| significance </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector35m_z0sinthetaoversigmaz0sintheta_maxE">
+<span id="_CPPv3N13TrackSelector35m_z0sinthetaoversigmaz0sintheta_maxE"></span><span id="_CPPv2N13TrackSelector35m_z0sinthetaoversigmaz0sintheta_maxE"></span><span id="TrackSelector::m_z0sinthetaoversigmaz0sintheta_max__float"></span><span class="target" id="classTrackSelector_1af94441038e1c7c3f1e6d63ebf6ae7d0d"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_z0sinthetaoversigmaz0sintheta_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector35m_z0sinthetaoversigmaz0sintheta_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>max |z0sin(theta)| significance </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector16m_nPixelHits_minE">
+<span id="_CPPv3N13TrackSelector16m_nPixelHits_minE"></span><span id="_CPPv2N13TrackSelector16m_nPixelHits_minE"></span><span id="TrackSelector::m_nPixelHits_min__i"></span><span class="target" id="classTrackSelector_1ac0745f3097c10ca8e7ce99c1de13a276"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nPixelHits_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector16m_nPixelHits_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum pixel hits (counting dead sensors) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector24m_nPixelHitsPhysical_minE">
+<span id="_CPPv3N13TrackSelector24m_nPixelHitsPhysical_minE"></span><span id="_CPPv2N13TrackSelector24m_nPixelHitsPhysical_minE"></span><span id="TrackSelector::m_nPixelHitsPhysical_min__i"></span><span class="target" id="classTrackSelector_1af7148b54f45a0e5482b6ca06e27f40c3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nPixelHitsPhysical_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector24m_nPixelHitsPhysical_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum pixel hits (no dead sensors) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector14m_nSctHits_minE">
+<span id="_CPPv3N13TrackSelector14m_nSctHits_minE"></span><span id="_CPPv2N13TrackSelector14m_nSctHits_minE"></span><span id="TrackSelector::m_nSctHits_min__i"></span><span class="target" id="classTrackSelector_1a74c12a3dc80c7d540c474f3a623982b5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSctHits_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector14m_nSctHits_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum SCT hits (counting dead sensors) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector22m_nSctHitsPhysical_minE">
+<span id="_CPPv3N13TrackSelector22m_nSctHitsPhysical_minE"></span><span id="_CPPv2N13TrackSelector22m_nSctHitsPhysical_minE"></span><span id="TrackSelector::m_nSctHitsPhysical_min__i"></span><span class="target" id="classTrackSelector_1a435b39a6527f5ff5d5b8137b488791b4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSctHitsPhysical_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector22m_nSctHitsPhysical_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum SCT hits (no dead sensors) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector9m_nSi_minE">
+<span id="_CPPv3N13TrackSelector9m_nSi_minE"></span><span id="_CPPv2N13TrackSelector9m_nSi_minE"></span><span id="TrackSelector::m_nSi_min__i"></span><span class="target" id="classTrackSelector_1a23b3bb8cda098591522d24a1b677cf75"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSi_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector9m_nSi_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require nSi &gt;= nSi_min (nSi = nPix + nSct) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector17m_nSiPhysical_minE">
+<span id="_CPPv3N13TrackSelector17m_nSiPhysical_minE"></span><span id="_CPPv2N13TrackSelector17m_nSiPhysical_minE"></span><span id="TrackSelector::m_nSiPhysical_min__i"></span><span class="target" id="classTrackSelector_1ae52f8614e35bdc2cd4e9048b6aba7d26"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSiPhysical_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector17m_nSiPhysical_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require nSi &gt;= nSi_min (nSi = nPix + nSct, no dead sensors) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector15m_nPixHoles_maxE">
+<span id="_CPPv3N13TrackSelector15m_nPixHoles_maxE"></span><span id="_CPPv2N13TrackSelector15m_nPixHoles_maxE"></span><span id="TrackSelector::m_nPixHoles_max__i"></span><span class="target" id="classTrackSelector_1a4e222ef2a9bd4b6cdb156aadb67c0cd5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nPixHoles_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector15m_nPixHoles_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require nPixHoles &lt;= nPixHoles_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector15m_nSctHoles_maxE">
+<span id="_CPPv3N13TrackSelector15m_nSctHoles_maxE"></span><span id="_CPPv2N13TrackSelector15m_nSctHoles_maxE"></span><span id="TrackSelector::m_nSctHoles_max__i"></span><span class="target" id="classTrackSelector_1a9a0c3de9fb9d35971d1d929576dffc8b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSctHoles_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector15m_nSctHoles_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require nSCTHoles &lt;= nSCTHoles_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector14m_nSiHoles_maxE">
+<span id="_CPPv3N13TrackSelector14m_nSiHoles_maxE"></span><span id="_CPPv2N13TrackSelector14m_nSiHoles_maxE"></span><span id="TrackSelector::m_nSiHoles_max__i"></span><span class="target" id="classTrackSelector_1a35e5323d8946c873bf5abe648be618d6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSiHoles_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector14m_nSiHoles_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum silicon holes </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector21m_nInnermostPixel_minE">
+<span id="_CPPv3N13TrackSelector21m_nInnermostPixel_minE"></span><span id="_CPPv2N13TrackSelector21m_nInnermostPixel_minE"></span><span id="TrackSelector::m_nInnermostPixel_min__i"></span><span class="target" id="classTrackSelector_1ad7755e4b794f41ddd7a805dd467589ab"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nInnermostPixel_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector21m_nInnermostPixel_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum nIBL (if expected) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector27m_nNextToInnermostPixel_minE">
+<span id="_CPPv3N13TrackSelector27m_nNextToInnermostPixel_minE"></span><span id="_CPPv2N13TrackSelector27m_nNextToInnermostPixel_minE"></span><span id="TrackSelector::m_nNextToInnermostPixel_min__i"></span><span class="target" id="classTrackSelector_1a2d7724a6389e67c00baeca9a44d3a404"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nNextToInnermostPixel_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector27m_nNextToInnermostPixel_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum nBL (if expected) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector30m_nBothInnermostLayersHits_minE">
+<span id="_CPPv3N13TrackSelector30m_nBothInnermostLayersHits_minE"></span><span id="_CPPv2N13TrackSelector30m_nBothInnermostLayersHits_minE"></span><span id="TrackSelector::m_nBothInnermostLayersHits_min__i"></span><span class="target" id="classTrackSelector_1a1fd0cf468dfaafb91c7208c43312e74a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nBothInnermostLayersHits_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector30m_nBothInnermostLayersHits_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>minimum nIBL + nBL (if every hit that is not expected, we require one less) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector22m_nPixelSharedHits_maxE">
+<span id="_CPPv3N13TrackSelector22m_nPixelSharedHits_maxE"></span><span id="_CPPv2N13TrackSelector22m_nPixelSharedHits_maxE"></span><span id="TrackSelector::m_nPixelSharedHits_max__i"></span><span class="target" id="classTrackSelector_1a51230e6c9f16aa3d4c6741c91e0f6fb5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nPixelSharedHits_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector22m_nPixelSharedHits_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum pixel hits shared with other tracks </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector20m_nSctSharedHits_maxE">
+<span id="_CPPv3N13TrackSelector20m_nSctSharedHits_maxE"></span><span id="_CPPv2N13TrackSelector20m_nSctSharedHits_maxE"></span><span id="TrackSelector::m_nSctSharedHits_max__i"></span><span class="target" id="classTrackSelector_1a4476c506c146927b2a88c174904b1168"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSctSharedHits_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector20m_nSctSharedHits_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum SCT hits shared with other tracks </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector19m_nSiSharedHits_maxE">
+<span id="_CPPv3N13TrackSelector19m_nSiSharedHits_maxE"></span><span id="_CPPv2N13TrackSelector19m_nSiSharedHits_maxE"></span><span id="TrackSelector::m_nSiSharedHits_max__i"></span><span class="target" id="classTrackSelector_1a0c0f400bdb87820d8ecfff672e9139b6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSiSharedHits_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector19m_nSiSharedHits_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum silicon hits shared with other tracks </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector22m_nSiSharedModules_maxE">
+<span id="_CPPv3N13TrackSelector22m_nSiSharedModules_maxE"></span><span id="_CPPv2N13TrackSelector22m_nSiSharedModules_maxE"></span><span id="TrackSelector::m_nSiSharedModules_max__i"></span><span class="target" id="classTrackSelector_1a743a862b15fd8a774e2b6d16bf08171d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nSiSharedModules_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector22m_nSiSharedModules_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>maximum (pixel + SCT/2) shared hits </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector17m_chi2NdofCut_maxE">
+<span id="_CPPv3N13TrackSelector17m_chi2NdofCut_maxE"></span><span id="_CPPv2N13TrackSelector17m_chi2NdofCut_maxE"></span><span id="TrackSelector::m_chi2NdofCut_max__float"></span><span class="target" id="classTrackSelector_1aaa374d13b68799f26829772d6b0fdc3f"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_chi2NdofCut_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector17m_chi2NdofCut_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require chi2/ndof &lt; chi2NdofCut_max </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector14m_chi2Prob_maxE">
+<span id="_CPPv3N13TrackSelector14m_chi2Prob_maxE"></span><span id="_CPPv2N13TrackSelector14m_chi2Prob_maxE"></span><span id="TrackSelector::m_chi2Prob_max__float"></span><span class="target" id="classTrackSelector_1aab4625a80a97813968fbeb55cfd62f78"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_chi2Prob_max</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector14m_chi2Prob_maxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require TMath::Prob(chi2,ndof) &lt; chi2ProbMax </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector14m_chi2Prob_minE">
+<span id="_CPPv3N13TrackSelector14m_chi2Prob_minE"></span><span id="_CPPv2N13TrackSelector14m_chi2Prob_minE"></span><span id="TrackSelector::m_chi2Prob_min__float"></span><span class="target" id="classTrackSelector_1ad3c634e50a18f3dd31c60cff9f228127"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_chi2Prob_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector14m_chi2Prob_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require TMath::Prob(chi2,ndof) &gt; chi2ProbMax </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector9m_nBL_minE">
+<span id="_CPPv3N13TrackSelector9m_nBL_minE"></span><span id="_CPPv2N13TrackSelector9m_nBL_minE"></span><span id="TrackSelector::m_nBL_min__i"></span><span class="target" id="classTrackSelector_1ad6d35c3248e3d1c56a754ca5b5d1a3e3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nBL_min</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e8</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector9m_nBL_minE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>require nIBL &gt;= nBL_min (not recommended; for downward compatibility) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector18m_passAuxDecorKeysE">
+<span id="_CPPv3N13TrackSelector18m_passAuxDecorKeysE"></span><span id="_CPPv2N13TrackSelector18m_passAuxDecorKeysE"></span><span id="TrackSelector::m_passAuxDecorKeys__ss"></span><span class="target" id="classTrackSelector_1a3b7f5c239309144dce6ad1d4aa5647a8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_passAuxDecorKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector18m_passAuxDecorKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector18m_failAuxDecorKeysE">
+<span id="_CPPv3N13TrackSelector18m_failAuxDecorKeysE"></span><span id="_CPPv2N13TrackSelector18m_failAuxDecorKeysE"></span><span id="TrackSelector::m_failAuxDecorKeys__ss"></span><span class="target" id="classTrackSelector_1a5e623593681e09b5db07a84ca584988f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_failAuxDecorKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector18m_failAuxDecorKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector16m_doTracksInJetsE">
+<span id="_CPPv3N13TrackSelector16m_doTracksInJetsE"></span><span id="_CPPv2N13TrackSelector16m_doTracksInJetsE"></span><span id="TrackSelector::m_doTracksInJets__b"></span><span class="target" id="classTrackSelector_1a8f268226b193de1cf6525f25f9829b82"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doTracksInJets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector16m_doTracksInJetsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>do track selection on track within jets </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector10m_passKeysE">
+<span id="_CPPv3N13TrackSelector10m_passKeysE"></span><span id="_CPPv2N13TrackSelector10m_passKeysE"></span><span id="TrackSelector::m_passKeys__std::vector:ss:"></span><span class="target" id="classTrackSelector_1a12bae703576dc490a003a4bfc76b0ebf"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_passKeys</span></span></span><a class="headerlink" href="#_CPPv4N13TrackSelector10m_passKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector10m_failKeysE">
+<span id="_CPPv3N13TrackSelector10m_failKeysE"></span><span id="_CPPv2N13TrackSelector10m_failKeysE"></span><span id="TrackSelector::m_failKeys__std::vector:ss:"></span><span class="target" id="classTrackSelector_1a72a2d6e815d954774cb51923a66bd08f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_failKeys</span></span></span><a class="headerlink" href="#_CPPv4N13TrackSelector10m_failKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector19m_trkSelTool_handleE">
+<span id="_CPPv3N13TrackSelector19m_trkSelTool_handleE"></span><span id="_CPPv2N13TrackSelector19m_trkSelTool_handleE"></span><span id="TrackSelector::m_trkSelTool_handle__asg::AnaToolHandle:InDet::IInDetTrackSelectionTool:"></span><span class="target" id="classTrackSelector_1aee20d4463f5a26b216ce2b485cb83c67"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">InDet</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IInDetTrackSelectionTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trkSelTool_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;InDet::InDetTrackSelectionTool/TrackSelectionTool&quot;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">this</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector19m_trkSelTool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector10m_numEventE">
+<span id="_CPPv3N13TrackSelector10m_numEventE"></span><span id="_CPPv2N13TrackSelector10m_numEventE"></span><span id="TrackSelector::m_numEvent__i"></span><span class="target" id="classTrackSelector_1a6866fcda7edf0a9f895b713a8fd0332e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numEvent</span></span></span><a class="headerlink" href="#_CPPv4N13TrackSelector10m_numEventE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector11m_numObjectE">
+<span id="_CPPv3N13TrackSelector11m_numObjectE"></span><span id="_CPPv2N13TrackSelector11m_numObjectE"></span><span id="TrackSelector::m_numObject__i"></span><span class="target" id="classTrackSelector_1afe2d57208d299ad24b62c493cbd1376b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numObject</span></span></span><a class="headerlink" href="#_CPPv4N13TrackSelector11m_numObjectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector14m_numEventPassE">
+<span id="_CPPv3N13TrackSelector14m_numEventPassE"></span><span id="_CPPv2N13TrackSelector14m_numEventPassE"></span><span id="TrackSelector::m_numEventPass__i"></span><span class="target" id="classTrackSelector_1a64090f412f7659e5b045fa5f8af6dbe4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numEventPass</span></span></span><a class="headerlink" href="#_CPPv4N13TrackSelector14m_numEventPassE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector15m_numObjectPassE">
+<span id="_CPPv3N13TrackSelector15m_numObjectPassE"></span><span id="_CPPv2N13TrackSelector15m_numObjectPassE"></span><span id="TrackSelector::m_numObjectPass__i"></span><span class="target" id="classTrackSelector_1a622b757590b23a175b8ed192f6f8870a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numObjectPass</span></span></span><a class="headerlink" href="#_CPPv4N13TrackSelector15m_numObjectPassE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector13m_cutflowHistE">
+<span id="_CPPv3N13TrackSelector13m_cutflowHistE"></span><span id="_CPPv2N13TrackSelector13m_cutflowHistE"></span><span id="TrackSelector::m_cutflowHist__TH1DP"></span><span class="target" id="classTrackSelector_1a5fe09844d04a3e117ff8de7a60d3581c"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflowHist</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector13m_cutflowHistE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector14m_cutflowHistWE">
+<span id="_CPPv3N13TrackSelector14m_cutflowHistWE"></span><span id="_CPPv2N13TrackSelector14m_cutflowHistWE"></span><span id="TrackSelector::m_cutflowHistW__TH1DP"></span><span class="target" id="classTrackSelector_1aac2273420a548a5c29ae4a25fe078231"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflowHistW</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N13TrackSelector14m_cutflowHistWE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13TrackSelector13m_cutflow_binE">
+<span id="_CPPv3N13TrackSelector13m_cutflow_binE"></span><span id="_CPPv2N13TrackSelector13m_cutflow_binE"></span><span id="TrackSelector::m_cutflow_bin__i"></span><span class="target" id="classTrackSelector_1a12e3a7dbbc8754d64d4621ddc099f9f7"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_bin</span></span></span><a class="headerlink" href="#_CPPv4N13TrackSelector13m_cutflow_binE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TruthSelector.html" class="btn btn-neutral float-right" title="Truth" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TauSelector.html" class="btn btn-neutral float-left" title="\(\tau\)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

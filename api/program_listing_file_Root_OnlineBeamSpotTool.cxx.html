@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File OnlineBeamSpotTool.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File OnlineBeamSpotTool.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_OnlineBeamSpotTool.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-onlinebeamspottool-cxx">
+<span id="program-listing-file-root-onlinebeamspottool-cxx"></span><h1>Program Listing for File OnlineBeamSpotTool.cxx<a class="headerlink" href="#program-listing-for-file-onlinebeamspottool-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_OnlineBeamSpotTool.cxx.html#file-root-onlinebeamspottool-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/OnlineBeamSpotTool.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/OnlineBeamSpotTool.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PathResolver/PathResolver.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="c1">// ROOT include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TSystem.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TFile.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TTree.h&quot;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="p">;</span>
+
+<span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">OnlineBeamSpotTool</span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">m_cachedRunNum</span><span class="p">(</span><span class="mi">-1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_cachedLB</span><span class="p">(</span><span class="mi">-1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_cachedRunInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_cachedLBData</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_mcLBData</span><span class="p">(</span><span class="k">nullptr</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.A.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.B.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.C.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.D.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.E.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.F.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.G.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.H.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.I.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.K.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2016.L.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.A.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.B.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.C.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.D.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.E.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.F.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.G.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.H.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.I.root&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">readFile</span><span class="p">(</span><span class="s">&quot;xAODAnaHelpers/OnlineBSInfo/OnlineBSInfo.2017.K.root&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_mcLBData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">LBData</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">999999</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">OnlineBeamSpotTool</span><span class="o">::~</span><span class="n">OnlineBeamSpotTool</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">//std::cout &lt;&lt; &quot;In ~OnlineBeamSpotTool&quot; &lt;&lt; std::endl;</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">setRunInfo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">runNumber</span><span class="p">){</span>
+<span class="w">  </span><span class="n">RunToLBDataMapItr</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_runList</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">runNumber</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_runList</span><span class="p">.</span><span class="n">end</span><span class="p">()){</span>
+<span class="w">    </span><span class="n">m_cachedRunInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_cachedRunInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">m_cachedRunNum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runNumber</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">LBData</span><span class="o">*</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">getLBData</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">lumiBlock</span><span class="p">){</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_cachedRunInfo</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">LBData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">thisLBData</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">m_cachedRunInfo</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">((</span><span class="n">lumiBlock</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">thisLBData</span><span class="p">.</span><span class="n">m_LBStart</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">lumiBlock</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">thisLBData</span><span class="p">.</span><span class="n">m_LBEnd</span><span class="p">)){</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="n">thisLBData</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">LBData</span><span class="o">*</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">getLBData</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">runNumber</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">lumiBlock</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">isMC</span><span class="p">){</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Check MC</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">isMC</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_mcLBData</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Check cached data</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">((</span><span class="n">runNumber</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">m_cachedRunNum</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">lumiBlock</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">m_cachedLB</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_cachedLBData</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// GetRun info</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">runNumber</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_cachedRunNum</span><span class="p">)</span>
+<span class="w">    </span><span class="n">setRunInfo</span><span class="p">(</span><span class="n">runNumber</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">getLBData</span><span class="p">(</span><span class="n">lumiBlock</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">getOnlineBSInfo</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">BSData</span><span class="w"> </span><span class="n">datakey</span><span class="p">){</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">getOnlineBSInfo</span><span class="p">(</span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">runNumber</span><span class="p">(),</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">lumiBlock</span><span class="p">(),</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventType</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">IS_SIMULATION</span><span class="w"> </span><span class="p">),</span><span class="w"> </span><span class="n">datakey</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">getOnlineBSInfo</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">BSData</span><span class="w"> </span><span class="n">datakey</span><span class="p">){</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">getOnlineBSInfo</span><span class="p">(</span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">m_runNumber</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">m_lumiBlock</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">m_mc</span><span class="p">,</span><span class="w"> </span><span class="n">datakey</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">getOnlineBSInfo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">runNumber</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">lumiBlock</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">isMC</span><span class="p">,</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">BSData</span><span class="w"> </span><span class="n">datakey</span><span class="p">){</span>
+<span class="w">  </span><span class="c1">//std::cout &lt;&lt; &quot;In OnlineBeamSpotTool (&quot; &lt;&lt; runNumber &lt;&lt; &quot; , &quot; &lt;&lt; lumiBlock&lt;&lt; &quot;)&quot; &lt;&lt; std::endl;</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">LBData</span><span class="o">*</span><span class="w"> </span><span class="n">thisLBInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getLBData</span><span class="p">(</span><span class="n">runNumber</span><span class="p">,</span><span class="w"> </span><span class="n">lumiBlock</span><span class="p">,</span><span class="w"> </span><span class="n">isMC</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">thisLBInfo</span><span class="p">){</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;OnlineBeamSpotTool::ERROR no LB data for run: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">runNumber</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; LB: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">lumiBlock</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">datakey</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">BSx</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">thisLBInfo</span><span class="o">-&gt;</span><span class="n">m_BSx</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">datakey</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">BSy</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">thisLBInfo</span><span class="o">-&gt;</span><span class="n">m_BSy</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">thisLBInfo</span><span class="o">-&gt;</span><span class="n">m_BSz</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">OnlineBeamSpotTool</span><span class="o">::</span><span class="n">readFile</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">rootFileName</span><span class="p">){</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">fullRootFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PathResolverFindCalibFile</span><span class="p">(</span><span class="w"> </span><span class="n">rootFileName</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">TFile</span><span class="o">*</span><span class="w"> </span><span class="n">thisFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TFile</span><span class="p">(</span><span class="n">fullRootFileName</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="s">&quot;READ&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">TTree</span><span class="o">*</span><span class="w"> </span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TTree</span><span class="o">*</span><span class="p">)</span><span class="n">thisFile</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;LBInfo&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">RunNumber</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;*</span><span class="w">   </span><span class="n">LBStart</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;*</span><span class="w">   </span><span class="n">LBEnd</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">BSx</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">BSy</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">BSz</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="s">&quot;RunNumber&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">RunNumber</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="s">&quot;LBStart&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">LBStart</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="s">&quot;LBEnd&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">LBEnd</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="s">&quot;BSx&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">BSx</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="s">&quot;BSy&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">BSy</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="s">&quot;BSz&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">BSz</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">Long64_t</span><span class="w"> </span><span class="n">nentries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">GetEntries</span><span class="p">();</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Long64_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">nentries</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">GetEntry</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="w">    </span><span class="n">RunInfo</span><span class="w"> </span><span class="n">thisRunInfo</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LBIt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">LBIt</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LBStart</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">LBIt</span><span class="p">){</span>
+<span class="w">      </span><span class="n">thisRunInfo</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">LBData</span><span class="p">(</span><span class="n">LBStart</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">LBIt</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">LBEnd</span><span class="w">   </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">LBIt</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">BSx</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">LBIt</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">BSy</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">LBIt</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">BSz</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">LBIt</span><span class="p">)</span>
+<span class="w">                   </span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">m_runList</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="n">RunNumber</span><span class="p">,</span><span class="w"> </span><span class="n">thisRunInfo</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">thisFile</span><span class="o">-&gt;</span><span class="n">Close</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

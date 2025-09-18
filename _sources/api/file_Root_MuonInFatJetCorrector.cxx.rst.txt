@@ -1,0 +1,66 @@
+
+.. _file_Root_MuonInFatJetCorrector.cxx:
+
+File MuonInFatJetCorrector.cxx
+==============================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/MuonInFatJetCorrector.cxx``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_MuonInFatJetCorrector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Algorithm.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/Worker.h``
+
+- ``MuonSelectorTools/MuonSelectionTool.h``
+
+- ``iostream``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/MuonInFatJetCorrector.h`` (:ref:`file_xAODAnaHelpers_MuonInFatJetCorrector.h`)
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+- ``xAODTruth/TruthParticleContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_MuonInFatJetCorrector_8cxx_1af5dd74bb24cc9eae708a8eb26983409b`
+

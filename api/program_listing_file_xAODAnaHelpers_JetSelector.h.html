@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File JetSelector.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File JetSelector.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_JetSelector.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-jetselector-h">
+<span id="program-listing-file-xaodanahelpers-jetselector-h"></span><h1>Program Listing for File JetSelector.h<a class="headerlink" href="#program-listing-for-file-jetselector-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_JetSelector.h.html#file-xaodanahelpers-jetselector-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/JetSelector.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_JetSelector_H</span>
+<span class="cp">#define xAODAnaHelpers_JetSelector_H</span>
+
+<span class="c1">// EDM include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/Jet.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetContainer.h&quot;</span>
+
+<span class="c1">// ROOT include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TH1D.h&quot;</span>
+
+<span class="c1">// algorithm wrapper</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/Algorithm.h&quot;</span>
+
+<span class="c1">// external tools include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgTools/AnaToolHandle.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ParticleJetTools/JetPileupLabelingTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetMomentTools/JetVertexNNTagger.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetAnalysisInterfaces/IJvtEfficiencyTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATCore/IAsgSelectionTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetInterface/IJetModifier.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;FTagAnalysisInterfaces/IBTaggingSelectionTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TriggerMatchingTool/IMatchingTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TriggerMatchingTool/IMatchScoringTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TrigDecisionTool/TrigDecisionTool.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">JetSelector</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// put your configuration variables here as public variables.</span>
+<span class="w">  </span><span class="c1">// that way they can be set directly from CINT and python.</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_useCutFlow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// configuration variables</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_truthJetContainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;AntiKt4TruthJets&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_inputAlgo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputAlgo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_writeSystToMetadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_jetScaleType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_decor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;passSel&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_decorateSelectedObjects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_nToProcess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_cleanJets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cleanEvtLeadJets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_cleanEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_markCleanEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_jetScale4Selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Final&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doMCCleaning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_mcCleaningCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.4</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_pass_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_pass_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_pT_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_pT_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_ET_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_ET_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_eta_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_eta_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_detEta_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_detEta_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_mass_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_mass_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_rapidity_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_rapidity_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e8</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_truthLabel</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">  </span><span class="n">m_useHadronConeExcl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doJVF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_pt_max_JVF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">50e3</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_eta_max_JVF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.4</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_JVFCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doTruthJetTagging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_noJVTVeto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_dofJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_dofJVTVeto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_pt_max_JVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">60e3</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_eta_max_JVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.4</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_jvtUsedBefore</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_haveTruthJets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_getJVTSF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_JVTCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-1.0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_WorkingPointJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;FixedEffPt&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_SFFileJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// empty string means to apply dummy SFs</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputSystNamesJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;JetJvtEfficiency_JVTSyst&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_recalculateJvtScores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w">         </span><span class="n">m_systValJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_systNameJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_WorkingPointfJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Loose&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_SFFilefJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// empty string means to apply dummy SFs</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputSystNamesfJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;JetJvtEfficiency_fJVTSyst&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w">         </span><span class="n">m_systValfJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_systNamefJVT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fjvtUsedBefore</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">          </span><span class="n">m_doJetTimingCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w">         </span><span class="n">m_jetTiming_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">  </span><span class="n">m_doBTagCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_corrFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;xAODBTaggingEfficiency/cutprofiles_22072015.root&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_jetAuthor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;AntiKt4EMPFlowJets&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DL1r&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_70&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_readFromBTaggingObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// for BTaggingSelectionTool -- doubles are needed or will crash</span>
+<span class="w">  </span><span class="c1">// for the b-tagging tool - these are the b-tagging groups minimums</span>
+<span class="w">  </span><span class="c1">// users making tighter cuts can use the selector&#39;s parameters to keep</span>
+<span class="w">  </span><span class="c1">// things consistent</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">m_b_eta_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.5</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">m_b_pt_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">20e3</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// HLT Btag quality</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doHLTBTagCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_HLTBTagTaggerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DL1r&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">m_HLTBTagCutValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-0.4434</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">  </span><span class="n">m_requireHLTVtx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">  </span><span class="n">m_requireNoHLTVtx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">              </span><span class="n">m_passAuxDecorKeys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">              </span><span class="n">m_failAuxDecorKeys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/* trigger matching */</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">    </span><span class="n">m_singleJetTrigChains</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">    </span><span class="n">m_diJetTrigChains</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_removeDuplicates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_count_events_with_duplicates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numEvent</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numObject</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numEventPass</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_weightNumEventPass</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numObjectPass</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_pvLocation</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_isEMjet</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_isLCjet</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// cutflow</span>
+<span class="w">  </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_cutflowHist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">  </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_cutflowHistW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_cutflow_bin</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_passKeys</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_failKeys</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/* object-level cutflow */</span>
+
+<span class="w">  </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_jet_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_all</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_cleaning_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_ptmax_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_ptmin_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_etmax_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_etmin_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_eta_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_jvt_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_timing_cut</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w">   </span><span class="n">m_jet_cutflow_btag_cut</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systListJVT</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systListfJVT</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w">            </span><span class="n">m_singleJetTrigChainsList</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w">            </span><span class="n">m_diJetTrigChainsList</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">JetPileupLabelingTool</span><span class="o">&gt;</span><span class="w">  </span><span class="n">m_jetPileupLabelingTool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">JetPileupTag</span><span class="o">::</span><span class="n">JetVertexNNTagger</span><span class="o">&gt;</span><span class="w">  </span><span class="n">m_jetNNJvtMomentTool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IAsgSelectionTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_jetNNJvtSelectionTool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IJvtEfficiencyTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_jetNNJvtEfficiencyTool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IAsgSelectionTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_jetfJvtSelectionTool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IJvtEfficiencyTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_jetfJvtEfficiencyTool</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IBTaggingSelectionTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">{</span><span class="s">&quot;BTaggingSelectionTool&quot;</span><span class="p">};</span>
+
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">IMatchingTool</span><span class="o">&gt;</span><span class="w">    </span><span class="n">m_trigJetMatchTool_handle</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">TrigDecisionTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">{</span><span class="s">&quot;Trig::TrigDecisionTool/TrigDecisionTool&quot;</span><span class="p">};</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">IMatchScoringTool</span><span class="o">&gt;</span><span class="w">  </span><span class="n">m_scoreTool</span><span class="p">{</span><span class="s">&quot;Trig::DRScoringTool/DRScoringTool&quot;</span><span class="p">};</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doTrigMatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputJVTPassed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;JetJVT_Passed&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputfJVTPassed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;JetfJVT_Passed&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// variables that don&#39;t get filled at submission time should be</span>
+<span class="w">  </span><span class="c1">// protected from being send from the submission node to the worker</span>
+<span class="w">  </span><span class="c1">// node (done by the //!)</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="c1">// Tree *myTree; //!</span>
+<span class="w">  </span><span class="c1">// TH1 *myHist; //!</span>
+
+
+
+<span class="w">  </span><span class="c1">// this is a standard constructor</span>
+<span class="w">  </span><span class="n">JetSelector</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// these are the functions inherited from Algorithm</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">fileExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histInitialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">firstFile</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">postExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">finalize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histFinalize</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// these are the functions not inherited from Algorithm</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">executeSelection</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inJets</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">outContainerName</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">isNominal</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// added functions not from Algorithm</span>
+<span class="w">  </span><span class="c1">// why does this need to be virtual?</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">PassCuts</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="w">  </span><span class="n">ClassDef</span><span class="p">(</span><span class="n">JetSelector</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

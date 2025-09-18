@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File IsoCloseByCorr.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File IsoCloseByCorr.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_IsoCloseByCorr.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-isoclosebycorr-cxx">
+<span id="program-listing-file-root-isoclosebycorr-cxx"></span><h1>Program Listing for File IsoCloseByCorr.cxx<a class="headerlink" href="#program-listing-for-file-isoclosebycorr-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_IsoCloseByCorr.cxx.html#file-root-isoclosebycorr-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/IsoCloseByCorr.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/******************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * Interface to Isolation Close-by-Correction tool to correct variables used in the evaluation of</span>
+<span class="cm"> * isolation working points for the presence of leptons close-by to the object of interest.</span>
+<span class="cm"> * More information on the twiki:</span>
+<span class="cm"> * https://twiki.cern.ch/twiki/bin/view/AtlasProtected/IsolationOverlapRemoval</span>
+<span class="cm"> *</span>
+<span class="cm"> * G. Frattari (guglielmo.frattari@SPAMNOT_CERN.CH), S. Addepalli (sagara17@SPAMNOT_CERN.CH)</span>
+<span class="cm"> *</span>
+<span class="cm"> ******************************************/</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="c1">// EL include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="c1">// EDM include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/ElectronContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/Electron.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/PhotonContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/Photon.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMuon/MuonContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMuon/Muon.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AthContainers/ConstDataVector.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODCore/ShallowCopy.h&quot;</span>
+
+<span class="c1">// package include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/IsoCloseByCorr.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperClasses.h&quot;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">ToolName</span><span class="p">;</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">IsoCloseByCorr</span><span class="p">)</span>
+
+
+<span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;IsoCloseByCorr&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you put code that sets up the job on the submission object</span>
+<span class="w">  </span><span class="c1">// so that it is ready to work with your algorithm, e.g. you can</span>
+<span class="w">  </span><span class="c1">// request the D3PDReader service or add output files.  Any code you</span>
+<span class="w">  </span><span class="c1">// put here could instead also go into the submission script.  The</span>
+<span class="w">  </span><span class="c1">// sole advantage of putting it here is that it gets automatically</span>
+<span class="w">  </span><span class="c1">// activated/deactivated when you add/remove the algorithm from your</span>
+<span class="w">  </span><span class="c1">// job, which may or may not be of value to you.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;IsoCloseByCorr&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done at the very</span>
+<span class="w">  </span><span class="c1">// beginning on each worker node, e.g. create histograms and output</span>
+<span class="w">  </span><span class="c1">// trees.  This method gets called before any input files are</span>
+<span class="w">  </span><span class="c1">// connected.</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done exactly once for every</span>
+<span class="w">  </span><span class="c1">// single file, e.g. collect a list of all lumi-blocks processed</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="cm">/*firstFile*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything you need to do when we change input files,</span>
+<span class="w">  </span><span class="c1">// e.g. resetting branch addresses on trees.  If you are using</span>
+<span class="w">  </span><span class="c1">// D3PDReader or a similar service this method is not needed.</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that you need to do after the first input</span>
+<span class="w">  </span><span class="c1">// file has been connected and before the first event is processed,</span>
+<span class="w">  </span><span class="c1">// e.g. create additional histograms based on which variables are</span>
+<span class="w">  </span><span class="c1">// available in the input files.  You can also create all of your</span>
+<span class="w">  </span><span class="c1">// histograms and trees in here, but be aware that this method</span>
+<span class="w">  </span><span class="c1">// doesn&#39;t get called if no events are processed.  So any objects</span>
+<span class="w">  </span><span class="c1">// you create here won&#39;t be available in the output if you have no</span>
+<span class="w">  </span><span class="c1">// input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Initializing IsoCloseByCorr Interface... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">//Add a track selection tool to superseed the default in the isolation close-by-correction tool</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot; Initialising InDet::InDetTrackSelectionTool...&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trackSelectionTool_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TrackParticleSelectionTool&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">checkToolStore</span><span class="o">&lt;</span><span class="n">InDet</span><span class="o">::</span><span class="n">InDetTrackSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_trackSelectionTool_name</span><span class="p">));</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">TrackSelToolInstanceExists</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">ToolStore</span><span class="o">::</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">InDet</span><span class="o">::</span><span class="n">InDetTrackSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_trackSelectionTool_name</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trackSelection_tool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">InDet</span><span class="o">::</span><span class="n">InDetTrackSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;InDet::InDetTrackSelectionTool/&quot;</span><span class="o">+</span><span class="n">m_trackSelectionTool_name</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trackSelection_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;minPt&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">500.</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trackSelection_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;CutLevel&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Loose&quot;</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_trackSelection_tool</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">m_trackSelection_tool</span><span class="p">.</span><span class="n">isInitialized</span><span class="p">());</span>
+
+
+<span class="w">  </span><span class="c1">//Initialize isolation tool to be input to close-by-correction tool</span>
+<span class="w">  </span><span class="n">m_IsoSelToolCloseBy_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;IsoSelToolCloseBy&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot; Initialising CP::IsolationSelectionTool...&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">checkToolStore</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_IsoSelToolCloseBy_name</span><span class="p">));</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsoSelToolInstanceExists</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">ToolStore</span><span class="o">::</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_IsoSelToolCloseBy_name</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_IsoSelCloseBy_tool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;CP::IsolationSelectionTool/&quot;</span><span class="o">+</span><span class="n">m_IsoSelToolCloseBy_name</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoSelCloseBy_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;ElectronWP&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">m_el_iso_WP</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoSelCloseBy_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;MuonWP&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">m_mu_iso_WP</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoSelCloseBy_tool</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">m_IsoSelCloseBy_tool</span><span class="p">.</span><span class="n">isInitialized</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">//Initialize the close-by-correction tool</span>
+<span class="w">  </span><span class="n">m_IsoCloseByCorr_tool_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;IsoCloseByCorrTool&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot; Initialising CP::IsolationCloseByCorrectionTool...&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">checkToolStore</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationCloseByCorrectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_IsoCloseByCorr_tool_name</span><span class="p">));</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsoCloseByCorrToolInstanceExists</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">ToolStore</span><span class="o">::</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationCloseByCorrectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_IsoCloseByCorr_tool_name</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_IsoCloseByCorr_tool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationCloseByCorrectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;CP::IsolationCloseByCorrectionTool/&quot;</span><span class="o">+</span><span class="n">m_IsoCloseByCorr_tool_name</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoCloseByCorr_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;IsolationSelectionTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_IsoSelToolCloseBy_name</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoCloseByCorr_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;TrackSelectionTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_trackSelectionTool_name</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoCloseByCorr_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;BackupPrefix&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Vanilla&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoCloseByCorr_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;IsolationSelectionDecorator&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CleanedUpIsolation&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoCloseByCorr_tool</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;CaloCorrectionModel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationCloseByCorrectionTool</span><span class="o">::</span><span class="n">UseAveragedDecorators</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsoCloseByCorr_tool</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">m_IsoCloseByCorr_tool</span><span class="p">.</span><span class="n">isInitialized</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done on every single</span>
+<span class="w">  </span><span class="c1">// events, e.g. read input variables, apply cuts, and fill</span>
+<span class="w">  </span><span class="c1">// histograms and trees.  This is where most of your actual analysis</span>
+<span class="w">  </span><span class="c1">// code will go.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Applying IsoCloseByCorrectionTool... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// get the collections from TEvent or TStore</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inElectrons</span><span class="w"> </span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inMuons</span><span class="w">         </span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inPhotons</span><span class="w">     </span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inElectrons</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName_Electrons</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inMuons</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName_Muons</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_doPhotons</span><span class="p">){</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inPhotons</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName_Photons</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_IsoCloseByCorr_tool</span><span class="o">-&gt;</span><span class="n">getCloseByIsoCorrection</span><span class="p">(</span><span class="n">Gaudi</span><span class="o">::</span><span class="n">Hive</span><span class="o">::</span><span class="n">currentContext</span><span class="p">(),</span>
+<span class="w">                                                    </span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">*</span><span class="p">)</span><span class="n">inElectrons</span><span class="p">,</span>
+<span class="w">                                                    </span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*</span><span class="p">)</span><span class="n">inMuons</span><span class="p">,</span>
+<span class="w">                                                    </span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*</span><span class="p">)</span><span class="n">inPhotons</span><span class="p">).</span><span class="n">code</span><span class="p">()</span><span class="w">  </span><span class="o">==</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">CorrectionCode</span><span class="o">::</span><span class="n">Error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;CloseByIsoCorrection returns Error code&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done after the main event</span>
+<span class="w">  </span><span class="c1">// processing.  This is typically very rare, particularly in user</span>
+<span class="w">  </span><span class="c1">// code.  It is mainly used in implementing the NTupleSvc.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling postExecute&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">finalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of initialize(), meaning it gets</span>
+<span class="w">  </span><span class="c1">// called after the last event has been processed on the worker node</span>
+<span class="w">  </span><span class="c1">// and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// initialize() before they are written to disk.  This is actually</span>
+<span class="w">  </span><span class="c1">// fairly rare, since this happens separately for each worker node.</span>
+<span class="w">  </span><span class="c1">// Most of the time you want to do your post-processing on the</span>
+<span class="w">  </span><span class="c1">// submission node after all your histogram outputs have been</span>
+<span class="w">  </span><span class="c1">// merged.  This is different from histFinalize() in that it only</span>
+<span class="w">  </span><span class="c1">// gets called on worker nodes that processed input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Deleting tool instances...&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">IsoCloseByCorr</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of histInitialize(), meaning it</span>
+<span class="w">  </span><span class="c1">// gets called after the last event has been processed on the worker</span>
+<span class="w">  </span><span class="c1">// node and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// histInitialize() before they are written to disk.  This is</span>
+<span class="w">  </span><span class="c1">// actually fairly rare, since this happens separately for each</span>
+<span class="w">  </span><span class="c1">// worker node.  Most of the time you want to do your</span>
+<span class="w">  </span><span class="c1">// post-processing on the submission node after all your histogram</span>
+<span class="w">  </span><span class="c1">// outputs have been merged.  This is different from finalize() in</span>
+<span class="w">  </span><span class="c1">// that it gets called on all worker nodes regardless of whether</span>
+<span class="w">  </span><span class="c1">// they processed input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histFinalize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

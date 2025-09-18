@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Function HelperFunctions::retrieve(T *&amp;, std::string, xAOD::TEvent *, xAOD::TStore *, MsgStream&amp;) &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Template Function HelperFunctions::retrieve(T *&amp;, std::string, xAOD::TEvent *, xAOD::TStore *)" href="function_HelperFunctions_8h_1a6225f38edb7c6e24883f02a9af321fc0.html" />
+    <link rel="prev" title="Function HelperFunctions::replaceString" href="function_HelperFunctions_8h_1a992cda5144a7e52104bb5318516b34db.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Doxygen API</a> &raquo;</li>
+        
+      <li>Template Function HelperFunctions::retrieve(T *&amp;, std::string, xAOD::TEvent *, xAOD::TStore *, MsgStream&amp;)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/function_HelperFunctions_8h_1aed76887c1f4b8f894729c8e6ba0c0f8d.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-function-helperfunctions-retrieve-t-std-string-xaod-tevent-xaod-tstore-msgstream">
+<span id="exhale-function-helperfunctions-8h-1aed76887c1f4b8f894729c8e6ba0c0f8d"></span><h1>Template Function HelperFunctions::retrieve(T *&amp;, std::string, xAOD::TEvent *, xAOD::TStore *, MsgStream&amp;)<a class="headerlink" href="#template-function-helperfunctions-retrieve-t-std-string-xaod-tevent-xaod-tstore-msgstream" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_xAODAnaHelpers_HelperFunctions.h.html#file-xaodanahelpers-helperfunctions-h"><span class="std std-ref">File HelperFunctions.h</span></a></p></li>
+</ul>
+<div class="section" id="function-documentation">
+<h2>Function Documentation<a class="headerlink" href="#function-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN15HelperFunctions8retrieveE10StatusCodeRP1TNSt6stringEPN4xAOD6TEventEPN4xAOD6TStoreER9MsgStream">
+<span id="_CPPv3I0EN15HelperFunctions8retrieveERP1TNSt6stringEPN4xAOD6TEventEPN4xAOD6TStoreER9MsgStream"></span><span id="_CPPv2I0EN15HelperFunctions8retrieveERP1TNSt6stringEPN4xAOD6TEventEPN4xAOD6TStoreER9MsgStream"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="HelperFunctions_8h_1aed76887c1f4b8f894729c8e6ba0c0f8d"></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../HelperFunctions.html#_CPPv415HelperFunctions" title="HelperFunctions"><span class="n"><span class="pre">HelperFunctions</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">retrieve</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../HelperFunctions.html#_CPPv4I0EN15HelperFunctions8retrieveE10StatusCodeRP1TNSt6stringEPN4xAOD6TEventEPN4xAOD6TStoreER9MsgStream" title="HelperFunctions::retrieve::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">cont</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span>, <span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TEvent</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">event</span></span>, <span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TStore</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span>, <span class="n"><span class="pre">MsgStream</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">msg</span></span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Retrieve an arbitrary object from TStore / TEvent. </p>
+<p><p><p>This tries to make your life simple by providing a one-stop container retrieval shop for all types.</p>
+<p>Example Usage:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="w">  </span><span class="nf">jets</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="c1">// look for &quot;AntiKt10LCTopoJets&quot; in both TEvent and TStore</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AntiKt10LCTopoJets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="c1">// look for &quot;AntiKt10LCTopoJets&quot; in only TStore</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AntiKt10LCTopoJets&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="c1">// look for &quot;AntiKt10LCTopoJets&quot; in only TEvent, enable verbose output</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AntiKt10LCTopoJets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Checking Order:</p>
+<ul class="simple">
+<li><p>start by checking TStore</p>
+<ul>
+<li><p>check if store contains ‘xAOD::JetContainer’ named ‘name’</p>
+<ul>
+<li><p>attempt to retrieve from store</p></li>
+<li><p>return if failure</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>next check TEvent</p>
+<ul>
+<li><p>check if event contains ‘xAOD::JetContainer’ named ‘name’</p>
+<ul>
+<li><p>attempt to retrieve from event</p></li>
+<li><p>return if failure</p></li>
+</ul>
+</li>
+<li><p>return FAILURE</p></li>
+</ul>
+</li>
+<li><p>return SUCCESS (should never reach this last line)</p></li>
+</ul>
+</p>
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cont</strong> – pass in a pointer to the object to store the retrieved container in </p></li>
+<li><p><strong>name</strong> – the name of the object to look up </p></li>
+<li><p><strong>event</strong> – the TEvent, usually wk()-&gt;xaodEvent(). Set to 0 to not search TEvent. </p></li>
+<li><p><strong>store</strong> – the TStore, usually wk()-&gt;xaodStore(). Set to 0 to not search TStore. </p></li>
+<li><p><strong>msg</strong> – the MsgStream object with appropriate level for debugging</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="function_HelperFunctions_8h_1a6225f38edb7c6e24883f02a9af321fc0.html" class="btn btn-neutral float-right" title="Template Function HelperFunctions::retrieve(T *&amp;, std::string, xAOD::TEvent *, xAOD::TStore *)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="function_HelperFunctions_8h_1a992cda5144a7e52104bb5318516b34db.html" class="btn btn-neutral float-left" title="Function HelperFunctions::replaceString" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

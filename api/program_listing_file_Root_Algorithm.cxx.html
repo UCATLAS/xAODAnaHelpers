@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File Algorithm.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File Algorithm.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_Algorithm.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-algorithm-cxx">
+<span id="program-listing-file-root-algorithm-cxx"></span><h1>Program Listing for File Algorithm.cxx<a class="headerlink" href="#program-listing-for-file-algorithm-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_Algorithm.cxx.html#file-root-algorithm-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/Algorithm.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/Algorithm.h&gt;</span>
+
+<span class="c1">// RCU include for throwing an exception+message</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;RootCoreUtils/ThrowMsg.h&gt;</span>
+
+<span class="c1">//  for isMC()</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/HelperFunctions.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEventInfo/EventInfo.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;boost/algorithm/string.hpp&gt;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">m_instanceRegistry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="p">)</span>
+
+<span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">Algorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">className</span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">m_className</span><span class="p">(</span><span class="n">className</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::~</span><span class="n">Algorithm</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">(){</span>
+<span class="w">    </span><span class="c1">// register an instance of the the class</span>
+<span class="w">    </span><span class="n">registerInstance</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// set the name this way as duplicate names are handled automatically</span>
+<span class="w">    </span><span class="n">m_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// names will be BasicEventSelection.baseEventSel for example</span>
+<span class="w">    </span><span class="n">msg</span><span class="p">().</span><span class="n">setName</span><span class="p">(</span><span class="n">m_className</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_name</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// deprecating m_debug, but this is around for backwards compatibility</span>
+<span class="w">    </span><span class="n">m_debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msgLvl</span><span class="p">(</span><span class="n">MSG</span><span class="o">::</span><span class="n">DEBUG</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// deprecating m_verbose, but this is around for backwards compatibility</span>
+<span class="w">    </span><span class="n">m_verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msgLvl</span><span class="p">(</span><span class="n">MSG</span><span class="o">::</span><span class="n">VERBOSE</span><span class="p">);</span>
+
+
+<span class="w">    </span><span class="c1">//Backwards compatibility</span>
+<span class="w">    </span><span class="n">m_forceFastSim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_forceFastSim</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_setAFII</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_setAF3</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//Return a failure if there&#39;s contradictory flags (2 or more are true)</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_forceData</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="n">m_forceFastSim</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_forceFullSim</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">m_forceFastSim</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_forceFullSim</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Multiple input-type flags are set, be sure only one of m_forceData(&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_forceData</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;), m_forceFastSim(&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_forceFastSim</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;), and m_forceFullSim(&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_forceFullSim</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;) are true.&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">unregisterInstance</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">parseSystValVector</span><span class="p">(){</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">m_systValVectorString</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">systVal</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="w"> </span><span class="n">ss</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">systVal</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_systValVector</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">systVal</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ss</span><span class="p">.</span><span class="n">peek</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">ss</span><span class="p">.</span><span class="n">ignore</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">isMC</span><span class="p">(){</span>
+
+<span class="w">    </span><span class="c1">// If decision is established, return the decision</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_isMC</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_isMC</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_isMC</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// If overriding decision by boolean flags</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_forceData</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isMC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">m_isMC</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_forceFullSim</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_forceFastSim</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isMC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">m_isMC</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">ei</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// couldn&#39;t retrieve it</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">ei</span><span class="p">,</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()).</span><span class="n">isSuccess</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">RCU_THROW_MSG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Could not retrieve eventInfo container (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="o">+</span><span class="s">&quot;) for isMC() check.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">eventType</span><span class="p">(</span><span class="s">&quot;eventTypeBitmask&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">eventType</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="o">*</span><span class="n">ei</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">RCU_THROW_MSG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;eventType is not available for isMC() check.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// reached here, return True or False since we have all we need</span>
+<span class="w">    </span><span class="n">m_isMC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">eventType</span><span class="p">(</span><span class="o">*</span><span class="n">ei</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">IS_SIMULATION</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_isMC</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">isFastSim</span><span class="p">(){</span>
+
+<span class="w">    </span><span class="c1">// If decision is established, return the decision</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_isFastSim</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_isFastSim</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_isFastSim</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// If overriding decision by boolean flags</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_forceData</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_forceFullSim</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isFastSim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">m_isFastSim</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_forceFastSim</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isFastSim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">m_isFastSim</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">SimulationFlavour</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">FileMetaData</span><span class="o">*</span><span class="w"> </span><span class="n">fmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">retrieveMetaInput</span><span class="p">(</span><span class="n">fmd</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FileMetaData&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">fmd</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">FileMetaData</span><span class="o">::</span><span class="n">simFlavour</span><span class="p">,</span><span class="w"> </span><span class="n">SimulationFlavour</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">boost</span><span class="o">::</span><span class="n">to_upper</span><span class="p">(</span><span class="n">SimulationFlavour</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_isFastSim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SimulationFlavour</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;ATLFAST&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_isFastSim</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">isAF3</span><span class="p">(){</span>
+
+<span class="w">    </span><span class="c1">// If already set return</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_isAF3</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_isAF3</span><span class="o">==</span><span class="mi">1</span><span class="p">){</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">m_isAF3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// If full sim, return empty string (call function first to make sure Force options are considered)</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">isFaS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isFastSim</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isFaS</span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isAF3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">m_isAF3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_setAF3</span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isAF3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">m_isAF3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">SimulationFlavour</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">FileMetaData</span><span class="o">*</span><span class="w"> </span><span class="n">fmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">retrieveMetaInput</span><span class="p">(</span><span class="n">fmd</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FileMetaData&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">){</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Cannot retreve File Metadata to find simulation flavour&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">fmd</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">FileMetaData</span><span class="o">::</span><span class="n">simFlavour</span><span class="p">,</span><span class="w"> </span><span class="n">SimulationFlavour</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">boost</span><span class="o">::</span><span class="n">to_upper</span><span class="p">(</span><span class="n">SimulationFlavour</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">SimulationFlavour</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;ATLFASTII&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isAF3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">SimulationFlavour</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;ATLFAST3&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_isAF3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Unexpected Simulation type: &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">SimulationFlavour</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_isAF3</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">isPHYS</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">TTree</span><span class="o">*</span><span class="w"> </span><span class="n">metaData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">TTree</span><span class="o">*&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">inputFile</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;MetaData&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">metaData</span><span class="p">){</span>
+<span class="w">      </span><span class="n">metaData</span><span class="o">-&gt;</span><span class="n">LoadTree</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">metaData</span><span class="o">-&gt;</span><span class="n">GetBranch</span><span class="p">(</span><span class="s">&quot;StreamDAOD_PHYS&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">metaData</span><span class="o">-&gt;</span><span class="n">GetBranch</span><span class="p">(</span><span class="s">&quot;StreamDAOD_LLP1&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">metaData</span><span class="o">-&gt;</span><span class="n">GetBranch</span><span class="p">(</span><span class="s">&quot;StreamDAOD_PHYSLITE&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;MetaData tree missing from input file!&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">registerInstance</span><span class="p">(){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_registered</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_instanceRegistry</span><span class="p">[</span><span class="n">m_className</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_registered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">numInstances</span><span class="p">(){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_instanceRegistry</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">m_className</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">m_instanceRegistry</span><span class="p">.</span><span class="n">end</span><span class="p">()){</span>
+<span class="w">        </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;numInstances: we seem to have recorded zero instances of &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_className</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;. This should not happen.&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_instanceRegistry</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">m_className</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">unregisterInstance</span><span class="p">(){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_instanceRegistry</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">m_className</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">m_instanceRegistry</span><span class="p">.</span><span class="n">end</span><span class="p">()){</span>
+<span class="w">        </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;unregisterInstance: we seem to have recorded zero instances of &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_className</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;. This should not happen.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">m_instanceRegistry</span><span class="p">[</span><span class="n">m_className</span><span class="p">]</span><span class="o">--</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

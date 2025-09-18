@@ -1,0 +1,52 @@
+
+.. _file_xAODAnaHelpers_DebugTool.h:
+
+File DebugTool.h
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/DebugTool.h``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_DebugTool.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_DebugTool.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classDebugTool`
+

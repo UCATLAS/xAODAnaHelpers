@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File MuonHists.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File MuonHists.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_MuonHists.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-muonhists-cxx">
+<span id="program-listing-file-root-muonhists-cxx"></span><h1>Program Listing for File MuonHists.cxx<a class="headerlink" href="#program-listing-for-file-muonhists-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_MuonHists.cxx.html#file-root-muonhists-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/MuonHists.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/********************************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * Muon Histogramming</span>
+<span class="cm"> *</span>
+<span class="cm"> * J. Alison (john.alison@cern.ch)</span>
+<span class="cm"> *</span>
+<span class="cm"> *******************************************************/</span>
+
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/MuonHists.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="n">ANA_MSG_SOURCE</span><span class="p">(</span><span class="n">msgMuonHists</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MuonHists&quot;</span><span class="p">)</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span>
+
+<span class="n">MuonHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">MuonHists</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">titlePrefix</span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">IParticleHists</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">titlePrefix</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_infoSwitch</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">MuonInfoSwitch</span><span class="p">(</span><span class="n">m_detailStr</span><span class="p">))</span>
+<span class="p">{</span><span class="w"> </span><span class="p">}</span>
+
+<span class="n">MuonHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="o">~</span><span class="n">MuonHists</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">)</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">MuonHists</span><span class="o">::</span><span class="n">initialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgMuonHists</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">initialize</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">// Isolation</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_isolation</span><span class="p">){</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">isol</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_isolWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isol</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">m_isIsolated</span><span class="p">[</span><span class="n">isol</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isIsolated_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">isol</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isIsolated_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">isol</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">m_ptcone20</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptcone20&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;ptcone20&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone30</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptcone30&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;ptcone30&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone40</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptcone40&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;ptcone40&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone20</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptvarcone20&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;ptvarcone20&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone30</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptvarcone30&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;ptvarcone30&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone40</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptvarcone40&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;ptvarcone40&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone20</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone20&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone20&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone30</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone30&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone30&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone40</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone40&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone40&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_ptcone20_rel</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptcone20_rel&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;ptcone20_rel&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone30_rel</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptcone30_rel&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;ptcone30_rel&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone40_rel</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptcone40_rel&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;ptcone40_rel&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone20_rel</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptvarcone20_rel&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;ptvarcone20_rel&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone30_rel</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptvarcone30_rel&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;ptvarcone30_rel&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone40_rel</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ptvarcone40_rel&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;ptvarcone40_rel&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone20_rel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone20_rel&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone20_rel&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone30_rel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone30_rel&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone30_rel&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone40_rel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone40_rel&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;topoetcone40_rel&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// quality</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_quality</span><span class="p">){</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">quality</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_recoWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">quality</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">m_quality</span><span class="p">[</span><span class="n">quality</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;is&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">quality</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;is&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">quality</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">MuonHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Muon</span><span class="o">*</span><span class="w"> </span><span class="n">muon</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">execute</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">muon</span><span class="p">),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">MuonHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgMuonHists</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">));</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;MuonHists: in execute &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Muon</span><span class="o">*</span><span class="w"> </span><span class="n">muon</span><span class="o">=</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Muon</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">particle</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">muon</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Cannot convert IParticle to Muon&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_isolation</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">accIsol</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">isol</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_isolWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isol</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">isol</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;NONE&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">isolWP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;isIsolated_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">isol</span><span class="p">;</span>
+<span class="w">        </span><span class="n">accIsol</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">isol</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">isolWP</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">accIsol</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">isol</span><span class="p">).</span><span class="n">isAvailable</span><span class="p">(</span><span class="o">*</span><span class="n">muon</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">m_isIsolated</span><span class="p">[</span><span class="n">isol</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">accIsol</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">isol</span><span class="p">)(</span><span class="o">*</span><span class="n">muon</span><span class="p">),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">m_isIsolated</span><span class="p">[</span><span class="n">isol</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">m_ptcone20</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptcone20</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone30</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptcone30</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone40</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptcone40</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone20</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptvarcone20</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone30</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptvarcone30</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone40</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptvarcone40</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone20</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">topoetcone20</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone30</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">topoetcone30</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone40</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">topoetcone40</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">muonPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_ptcone20_rel</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptcone20</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone30_rel</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptcone30</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone40_rel</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptcone40</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone20_rel</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptvarcone20</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone30_rel</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptvarcone30</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone40_rel</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">ptvarcone40</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone20_rel</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">topoetcone20</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone30_rel</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">topoetcone30</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone40_rel</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isolation</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Iso</span><span class="o">::</span><span class="n">topoetcone40</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">muonPt</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_quality</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">accQuality</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">quality</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_recoWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">quality</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">accQuality</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">quality</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">quality</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">accQuality</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">quality</span><span class="p">).</span><span class="n">isAvailable</span><span class="p">(</span><span class="o">*</span><span class="n">muon</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">m_quality</span><span class="p">[</span><span class="n">quality</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">accQuality</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">quality</span><span class="p">)(</span><span class="o">*</span><span class="n">muon</span><span class="p">),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">m_quality</span><span class="p">[</span><span class="n">quality</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">MuonHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Muon</span><span class="o">*</span><span class="w"> </span><span class="n">muon</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">execute</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Particle</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">muon</span><span class="p">),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">MuonHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Particle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="cm">/*eventInfo*/</span><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgMuonHists</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">));</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;MuonHists: in execute &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Muon</span><span class="o">*</span><span class="w"> </span><span class="n">muon</span><span class="o">=</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Muon</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">particle</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">muon</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Cannot convert IParticle to Muon&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_isolation</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">isol</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_isolWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isol</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">m_isIsolated</span><span class="p">[</span><span class="n">isol</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">isIsolated</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">isol</span><span class="p">),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">m_ptcone20</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptcone20</span><span class="w">      </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone30</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptcone30</span><span class="w">      </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone40</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptcone40</span><span class="w">      </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone20</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptvarcone20</span><span class="w">   </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone30</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptvarcone30</span><span class="w">   </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone40</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptvarcone40</span><span class="w">   </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone20</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">topoetcone20</span><span class="w">  </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone30</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">topoetcone30</span><span class="w">  </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone40</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">topoetcone40</span><span class="w">  </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">muonPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">.</span><span class="n">Pt</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_ptcone20_rel</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptcone20</span><span class="o">/</span><span class="n">muonPt</span><span class="w">        </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone30_rel</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptcone30</span><span class="o">/</span><span class="n">muonPt</span><span class="w">        </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptcone40_rel</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptcone40</span><span class="o">/</span><span class="n">muonPt</span><span class="w">        </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone20_rel</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptvarcone20</span><span class="w"> </span><span class="o">/</span><span class="n">muonPt</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone30_rel</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptvarcone30</span><span class="w"> </span><span class="o">/</span><span class="n">muonPt</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ptvarcone40_rel</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">ptvarcone40</span><span class="w"> </span><span class="o">/</span><span class="n">muonPt</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone20_rel</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">topoetcone20</span><span class="o">/</span><span class="n">muonPt</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone30_rel</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">topoetcone30</span><span class="o">/</span><span class="n">muonPt</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_topoetcone40_rel</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">topoetcone40</span><span class="o">/</span><span class="n">muonPt</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_quality</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">quality</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_recoWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">quality</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">m_quality</span><span class="p">[</span><span class="n">quality</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">muon</span><span class="o">-&gt;</span><span class="n">quality</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">quality</span><span class="p">),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

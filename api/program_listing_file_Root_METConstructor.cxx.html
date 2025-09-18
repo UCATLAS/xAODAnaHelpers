@@ -1,0 +1,858 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File METConstructor.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File METConstructor.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_METConstructor.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-metconstructor-cxx">
+<span id="program-listing-file-root-metconstructor-cxx"></span><h1>Program Listing for File METConstructor.cxx<a class="headerlink" href="#program-listing-for-file-metconstructor-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_METConstructor.cxx.html#file-root-metconstructor-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/METConstructor.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/METConstructor.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;METUtilities/CutsMETMaker.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;METUtilities/METHelpers.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicVariation.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEventInfo/EventInfo.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/PhotonContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/ElectronContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMuon/MuonContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODTau/TauJetContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetContainer.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODCore/ShallowCopy.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingETContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingETAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingETComposition.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingETAssociationMap.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperClasses.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TEnv.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TSystem.h&quot;</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">METConstructor</span><span class="p">)</span>
+
+
+<span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;METConstructor&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you put code that sets up the job on the submission object</span>
+<span class="w">  </span><span class="c1">// so that it is ready to work with your algorithm, e.g. you can</span>
+<span class="w">  </span><span class="c1">// request the D3PDReader service or add output files.  Any code you</span>
+<span class="w">  </span><span class="c1">// put here could instead also go into the submission script.  The</span>
+<span class="w">  </span><span class="c1">// sole advantage of putting it here is that it gets automatically</span>
+<span class="w">  </span><span class="c1">// activated/deactivated when you add/remove the algorithm from your</span>
+<span class="w">  </span><span class="c1">// job, which may or may not be of value to you.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;METConstructor&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">   </span><span class="c1">// to validate and check:</span>
+<span class="w">   </span><span class="c1">//enable status code failures</span>
+<span class="w">   </span><span class="c1">//CP::CorrectionCode::enableFailure();</span>
+<span class="w">   </span><span class="c1">//CP::SystematicCode::enableFailure();</span>
+<span class="w">   </span><span class="c1">//StatusCode::enableFailure();// do not decomment this, maybe an unchecked status code gives a crash...</span>
+
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done at the very</span>
+<span class="w">  </span><span class="c1">// beginning on each worker node, e.g. create histograms and output</span>
+<span class="w">  </span><span class="c1">// trees.  This method gets called before any input files are</span>
+<span class="w">  </span><span class="c1">// connected.</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done exactly once for every</span>
+<span class="w">  </span><span class="c1">// single file, e.g. collect a list of all lumi-blocks processed</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="cm">/*firstFile*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything you need to do when we change input files,</span>
+<span class="w">  </span><span class="c1">// e.g. resetting branch addresses on trees.  If you are using</span>
+<span class="w">  </span><span class="c1">// D3PDReader or a similar service this method is not needed.</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that you need to do after the first input</span>
+<span class="w">  </span><span class="c1">// file has been connected and before the first event is processed,</span>
+<span class="w">  </span><span class="c1">// e.g. create additional histograms based on which variables are</span>
+<span class="w">  </span><span class="c1">// available in the input files.  You can also create all of your</span>
+<span class="w">  </span><span class="c1">// histograms and trees in here, but be aware that this method</span>
+<span class="w">  </span><span class="c1">// doesn&#39;t get called if no events are processed.  So any objects</span>
+<span class="w">  </span><span class="c1">// you create here won&#39;t be available in the output if you have no</span>
+<span class="w">  </span><span class="c1">// input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Initializing METConstructor Interface...&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Is MC? &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">isMC</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_dofJVTCut</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_metmaker_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;JetRejectionDec&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_fJVTdecorName</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_doPFlow</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_metmaker_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;DoPFlow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_METWorkingPoint</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_metmaker_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;JetSelection&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_METWorkingPoint</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_metmaker_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">m_systConfigPrefix</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_metSyst_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;ConfigPrefix&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_systConfigPrefix</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">m_systConfigSoftTrkFile</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_metSyst_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;ConfigSoftTrkFile&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_systConfigSoftTrkFile</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_metSyst_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_metSyst_handle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">m_tauSelTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_tauSelTool_handle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_calculateSignificance</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;TreatPUJets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_significanceTreatPUJets</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;SoftTermReso&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_significanceSoftTermReso</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// For AFII samples</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">isFastSim</span><span class="p">()</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Setting simulation flavour to AFII&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;IsAFII&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;METConstructor Interface &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; succesfully initialized!&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//use the helper function getlistofsystematics:</span>
+
+<span class="w">  </span><span class="c1">// run syst</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_runNominal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_systName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//  m_systName is set by default to m_systName= &quot;All&quot;, do not change it</span>
+<span class="w">    </span><span class="c1">// get the syst from met syst tool</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="n">recSyst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSyst_handle</span><span class="o">-&gt;</span><span class="n">recommendedSystematics</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_sysList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getListofSystematics</span><span class="p">(</span><span class="w"> </span><span class="n">recSyst</span><span class="p">,</span><span class="w"> </span><span class="n">m_systName</span><span class="p">,</span><span class="w"> </span><span class="n">m_systVal</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//run nominal</span>
+<span class="w">    </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">());</span><span class="w"> </span><span class="c1">// add empty systematic (Nominal case)</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="s">&quot;Will be using METSystematicsTool systematic:&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">syst_it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_sysList</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s"> &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">syst_it</span><span class="p">.</span><span class="n">name</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_numEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">//just as a check</span>
+
+<span class="w">  </span><span class="c1">// Write output sys names</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_writeSystToMetadata</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">fileMD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getOutputFile</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;metadata&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">writeSystematicsListHist</span><span class="p">(</span><span class="n">m_sysList</span><span class="p">,</span><span class="w"> </span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">fileMD</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="c1">// Here you do everything that needs to be done on every single</span>
+<span class="w">   </span><span class="c1">// events, e.g. read input variables, apply cuts, and fill</span>
+<span class="w">   </span><span class="c1">// histograms and trees.  This is where most of your actual analysis</span>
+<span class="w">   </span><span class="c1">// code will go.</span>
+
+<span class="w">   </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Performing MET reconstruction...&quot;</span><span class="p">);</span>
+
+<span class="w">   </span><span class="n">m_numEvent</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="p">;</span>
+<span class="w">   </span><span class="c1">//ANA_MSG_DEBUG(&quot;number of processed events now is : &quot;&lt;&lt; m_numEvent);</span>
+
+<span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="nf">eventInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">   </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">coreMet</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">   </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">coreMet</span><span class="p">,</span><span class="w"> </span><span class="n">m_coreName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETAssociationMap</span><span class="o">*</span><span class="w"> </span><span class="n">metMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">   </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">metMap</span><span class="p">,</span><span class="w"> </span><span class="n">m_mapName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+<span class="w">   </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETAssociationHelper</span><span class="w"> </span><span class="nf">metHelper</span><span class="p">(</span><span class="n">metMap</span><span class="p">);</span>
+
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;::</span><span class="n">const_iterator</span><span class="w"> </span><span class="n">sysListItr</span><span class="p">;</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">vecOutContainerNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">   </span><span class="c1">//</span>
+<span class="w">   </span><span class="c1">// get vector of string giving the Systematic names:</span>
+<span class="w">   </span><span class="c1">//</span>
+<span class="w">   </span><span class="c1">// load each object systematic. This is done at the execution level</span>
+<span class="w">   </span><span class="c1">// as systematic containers have to exist. To avoid adding several</span>
+<span class="w">   </span><span class="c1">// times the same systematic a check has to be performed on sysList</span>
+<span class="w">   </span><span class="c1">//</span>
+
+<span class="w">   </span><span class="c1">//add the syst for jets</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">sysJetsNames</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_runNominal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_jetSystematics</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">sysJetsNames</span><span class="p">,</span><span class="w"> </span><span class="n">m_jetSystematics</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">sysJetsNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">m_sysList</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">));</span>
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;jet syst added is = &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="c1">//add the syst for electrons</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">sysElectronsNames</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_runNominal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_eleSystematics</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">sysElectronsNames</span><span class="p">,</span><span class="w"> </span><span class="n">m_eleSystematics</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">sysElectronsNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">m_sysList</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">));</span>
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;ele syst added is = &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="c1">//add the syst for muons</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">sysMuonsNames</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_runNominal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_muonSystematics</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">sysMuonsNames</span><span class="p">,</span><span class="w"> </span><span class="n">m_muonSystematics</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">sysMuonsNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">m_sysList</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">));</span>
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;muon syst added is = &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="c1">//add the syst for tau</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">sysTausNames</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_runNominal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_tauSystematics</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">sysTausNames</span><span class="p">,</span><span class="w"> </span><span class="n">m_tauSystematics</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">sysTausNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">m_sysList</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">));</span>
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;tau syst added is = &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="c1">//add the syst for photons</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">sysPhotonsNames</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_runNominal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_phoSystematics</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">sysPhotonsNames</span><span class="p">,</span><span class="w"> </span><span class="n">m_phoSystematics</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">sysPhotonsNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">m_sysList</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="p">(</span><span class="n">systName</span><span class="p">));</span>
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;photon syst added is = &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="c1">// now start the loop over systematics</span>
+<span class="w">   </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">sysListItr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">sysListItr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_sysList</span><span class="p">.</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">sysListItr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// loop over systematics</span>
+
+<span class="w">      </span><span class="c1">//this is kind of annoying, but applySystematicVariation only takes a SystematicSet, but *sysListItr is a SystematicVariation.</span>
+<span class="w">      </span><span class="c1">//We use the SystematicSet constructor which just takes a SystematicVariation</span>
+<span class="w">      </span><span class="c1">//CP::SystematicSet systSet({systName});</span>
+<span class="w">      </span><span class="c1">//tell the tool that we are using this SystematicSet (of one SystematicVariation for now)</span>
+<span class="w">      </span><span class="c1">//after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied</span>
+<span class="w">      </span><span class="c1">//assert(    m_metSyst_handle-&gt;applySystematicVariation(sysList) );</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="c1">// info from https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/MET/METUtilities/trunk/util/example_METMaker_METSystematicsTool.cxx</span>
+
+<span class="w">      </span><span class="c1">// just for convenience, to retrieve the containers</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">sysListItr</span><span class="p">).</span><span class="n">name</span><span class="p">();</span>
+
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; loop over systematic = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">vecOutContainerNames</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">// Reset all the met map associations</span>
+<span class="w">      </span><span class="n">metHelper</span><span class="p">.</span><span class="n">resetObjSelectionFlags</span><span class="p">();</span>
+
+<span class="w">      </span><span class="c1">//create a met container, one for each syst</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">newMet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">metAuxCont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETAuxContainer</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">      </span><span class="n">newMet</span><span class="o">-&gt;</span><span class="n">setStore</span><span class="p">(</span><span class="n">metAuxCont</span><span class="p">.</span><span class="n">get</span><span class="p">());</span>
+
+<span class="w">      </span><span class="c1">// now retrieve the object containers and build the met</span>
+<span class="w">      </span><span class="c1">// if the syst varied container exists take it, otherwise take the nominal one</span>
+
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_inputElectrons</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">eleCont</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">         </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sysElectronsNames</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="o">*</span><span class="n">sysElectronsNames</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysElectronsNames</span><span class="p">),</span><span class="w"> </span><span class="n">systName</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysElectronsNames</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;doing electron systematics&quot;</span><span class="p">);</span>
+<span class="w">           </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">systName</span><span class="p">;</span>
+<span class="w">         </span><span class="p">}</span>
+
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputElectrons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputElectrons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eleCont</span><span class="p">,</span><span class="w"> </span><span class="n">m_inputElectrons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+<span class="w">           </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;retrieving ele container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputElectrons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to be added to the MET&quot;</span><span class="p">);</span>
+<span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputElectrons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; not available upstream - skipping systematics&quot;</span><span class="p">);</span>
+<span class="w">           </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">         </span><span class="p">}</span>
+
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;rebuilding MET term: RefEle&quot;</span><span class="p">);</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_doElectronCuts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">metElectrons</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+<span class="w">           </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">eleCont</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">CutsMETMaker</span><span class="o">::</span><span class="n">accept</span><span class="p">(</span><span class="n">el</span><span class="p">))</span><span class="w"> </span><span class="n">metElectrons</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">el</span><span class="p">);</span>
+<span class="w">           </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;RefEle&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Electron</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">metElectrons</span><span class="p">.</span><span class="n">asDataVector</span><span class="p">(),</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+<span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;RefEle&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Electron</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">eleCont</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+<span class="w">         </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="c1">// close &quot;if( m_inputElectrons.Length() &gt; 0 )&quot;</span>
+
+
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_inputPhotons</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">phoCont</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">         </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sysPhotonsNames</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="o">*</span><span class="n">sysPhotonsNames</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysPhotonsNames</span><span class="p">),</span><span class="w"> </span><span class="n">systName</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysPhotonsNames</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;doing photon systematics&quot;</span><span class="p">);</span>
+<span class="w">           </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">systName</span><span class="p">;</span>
+<span class="w">         </span><span class="p">}</span>
+
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputPhotons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputPhotons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">phoCont</span><span class="p">,</span><span class="w"> </span><span class="n">m_inputPhotons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+<span class="w">           </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;retrieving ph container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputPhotons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to be added to the MET&quot;</span><span class="p">);</span>
+<span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputPhotons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; not available upstream - skipping systematics&quot;</span><span class="p">);</span>
+<span class="w">           </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">         </span><span class="p">}</span>
+
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;rebuilding MET term: RefGamma&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_doPhotonCuts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">metPhotons</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ph</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">phoCont</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">          </span><span class="kt">bool</span><span class="w"> </span><span class="n">testPID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">          </span><span class="n">ph</span><span class="o">-&gt;</span><span class="n">passSelection</span><span class="p">(</span><span class="n">testPID</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Tight&quot;</span><span class="p">);</span>
+<span class="w">          </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">testPID</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">          </span><span class="c1">//ANA_MSG_VERBOSE(&quot;Photon author = &quot; &lt;&lt; ph-&gt;author() &lt;&lt; &quot; test &quot; &lt;&lt; (ph-&gt;author()&amp;20));</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">ph</span><span class="o">-&gt;</span><span class="n">author</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">20</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ph</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">25e3</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">          </span><span class="kt">float</span><span class="w"> </span><span class="n">feta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="n">ph</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">());</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">feta</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">2.37</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="mf">1.37</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">feta</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">feta</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1.52</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">          </span><span class="n">metPhotons</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">ph</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;RefGamma&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Photon</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">metPhotons</span><span class="p">.</span><span class="n">asDataVector</span><span class="p">(),</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;RefGamma&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Photon</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">phoCont</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+
+
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_inputTaus</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">tauCont</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sysTausNames</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="o">*</span><span class="n">sysTausNames</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysTausNames</span><span class="p">),</span><span class="w"> </span><span class="n">systName</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysTausNames</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;doing tau systematics&quot;</span><span class="p">);</span>
+<span class="w">          </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">systName</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputTaus</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputTaus</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">tauCont</span><span class="p">,</span><span class="w"> </span><span class="n">m_inputTaus</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+<span class="w">          </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;retrieving tau container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputTaus</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to be added to the MET&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputTaus</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; not available upstream - skipping systematics&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;rebuilding MET term: RefTau&quot;</span><span class="p">);</span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_doTauCuts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">metTaus</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+<span class="w">         </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tau</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">tauCont</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">           </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tau</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">20e3</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">           </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fabs</span><span class="p">(</span><span class="n">tau</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">())</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">2.37</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">           </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">m_tauSelTool_handle</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span><span class="n">tau</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">           </span><span class="n">metTaus</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">tau</span><span class="p">);</span>
+<span class="w">         </span><span class="p">}</span>
+<span class="w">         </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;RefTau&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Tau</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">metTaus</span><span class="p">.</span><span class="n">asDataVector</span><span class="p">(),</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+<span class="w">       </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;RefTau&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Tau</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">tauCont</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+
+
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_inputMuons</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">muonCont</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sysMuonsNames</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="o">*</span><span class="n">sysMuonsNames</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysMuonsNames</span><span class="p">),</span><span class="w"> </span><span class="n">systName</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysMuonsNames</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;doing muon systematics&quot;</span><span class="p">);</span>
+<span class="w">          </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">systName</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputMuons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputMuons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">muonCont</span><span class="p">,</span><span class="w"> </span><span class="n">m_inputMuons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+<span class="w">          </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;retrieving muon container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputMuons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to be added to the MET&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputMuons</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; not available upstream - skipping systematics&quot;</span><span class="p">);</span>
+<span class="w">          </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;rebuilding MET term: Muons&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_doMuonCuts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">metMuons</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span>
+<span class="w">          </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">muonCont</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">CutsMETMaker</span><span class="o">::</span><span class="n">accept</span><span class="p">(</span><span class="n">mu</span><span class="p">))</span><span class="w"> </span><span class="n">metMuons</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">mu</span><span class="p">);</span>
+<span class="w">          </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;Muons&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Muon</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">metMuons</span><span class="p">.</span><span class="n">asDataVector</span><span class="p">(),</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildMET</span><span class="p">(</span><span class="s">&quot;Muons&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Type</span><span class="o">::</span><span class="n">Muon</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">muonCont</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+
+
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_inputJets</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Jets are required for MET calculation.&quot;</span><span class="p">);</span>
+<span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">jetCont</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">     </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sysJetsNames</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="o">*</span><span class="n">sysJetsNames</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysJetsNames</span><span class="p">),</span><span class="w"> </span><span class="n">systName</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">(</span><span class="o">*</span><span class="n">sysJetsNames</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;doing jet systematics&quot;</span><span class="p">);</span>
+<span class="w">       </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">systName</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputJets</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inputJets</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">jetCont</span><span class="p">,</span><span class="w"> </span><span class="n">m_inputJets</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+<span class="w">       </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;retrieving jet container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputJets</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to be added to the MET&quot;</span><span class="p">);</span>
+<span class="w">     </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inputJets</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; not available upstream - skipping systematics&quot;</span><span class="p">);</span>
+<span class="w">       </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="c1">// the jet term and soft term(s) are built simultaneously using METMaker::rebuildJetMET(...) or METMaker::rebuildTrackMET(...)</span>
+<span class="w">     </span><span class="c1">// to build MET using a calorimeter or track based jet term, respectively.</span>
+<span class="w">     </span><span class="c1">// pass to rebuildJetMET calibrated jets (full container)</span>
+<span class="w">     </span><span class="c1">//</span>
+
+<span class="w">     </span><span class="c1">// NOTE: you have to set m_doJVTCut correctly when running!</span>
+
+<span class="w">     </span><span class="c1">// By default: rebuild MET using jets without soft cluster terms (just TST, no CST)</span>
+<span class="w">     </span><span class="c1">// You can configure to add Cluster Soft Term (only affects the &quot;use Jets&quot; option)</span>
+<span class="w">     </span><span class="c1">//         or to rebuild MET using the Tracks in Calorimeter Jets which doesn&#39;t make sense to have CST</span>
+<span class="w">     </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_rebuildUsingTracksInJets</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_addSoftClusterTerms</span><span class="w"> </span><span class="p">){</span>
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;rebuilding MET term: RefJet + SoftClus + PVSoftTrk&quot;</span><span class="p">);</span>
+<span class="w">         </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildJetMET</span><span class="p">(</span><span class="s">&quot;RefJet&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SoftClus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PVSoftTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">jetCont</span><span class="p">,</span><span class="w"> </span><span class="n">coreMet</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">,</span><span class="w"> </span><span class="n">m_doJVTCut</span><span class="p">));</span>
+<span class="w">       </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;rebuilding MET term: RefJet + PVSoftTrk&quot;</span><span class="p">);</span>
+<span class="w">         </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildJetMET</span><span class="p">(</span><span class="s">&quot;RefJet&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PVSoftTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">jetCont</span><span class="p">,</span><span class="w"> </span><span class="n">coreMet</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">,</span><span class="w"> </span><span class="n">m_doJVTCut</span><span class="p">));</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;rebuilding MET term: RefJetTrk&quot;</span><span class="p">);</span>
+<span class="w">       </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metmaker_handle</span><span class="o">-&gt;</span><span class="n">rebuildTrackMET</span><span class="p">(</span><span class="s">&quot;RefJetTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PVSoftTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">jetCont</span><span class="p">,</span><span class="w"> </span><span class="n">coreMet</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">,</span><span class="w"> </span><span class="n">m_doJVTCut</span><span class="p">));</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="c1">//now tell the m_metSyst_handle that we are using this SystematicSet (of one SystematicVariation for now)</span>
+<span class="w">     </span><span class="c1">//after this call, when we use applyCorrection, the given met term will be adjusted with this systematic applied</span>
+<span class="w">     </span><span class="c1">// assert(   m_metSyst_handle-&gt;applySystematicVariation(systSet) );</span>
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isMC</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="nf">systSet</span><span class="p">({</span><span class="n">systName</span><span class="p">});</span><span class="w"> </span><span class="c1">// to pass from SystematicVariation to SystematicSet</span>
+<span class="w">       </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_metSyst_handle</span><span class="o">-&gt;</span><span class="n">applySystematicVariation</span><span class="p">(</span><span class="n">systSet</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;not able to applySystematicVariation &quot;</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_rebuildUsingTracksInJets</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_addSoftClusterTerms</span><span class="p">){</span>
+<span class="w">       </span><span class="c1">//get the soft cluster term, and applyCorrection</span>
+<span class="w">       </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingET</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">softClusMet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">newMet</span><span class="p">)[</span><span class="s">&quot;SoftClus&quot;</span><span class="p">];</span>
+<span class="w">       </span><span class="c1">//assert( softClusMet != 0); //check we retrieved the clust term</span>
+<span class="w">       </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">isMC</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_metSyst_handle</span><span class="o">-&gt;</span><span class="n">applyCorrection</span><span class="p">(</span><span class="o">*</span><span class="n">softClusMet</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">CorrectionCode</span><span class="o">::</span><span class="n">Ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Could not apply correction to soft clus met !!!! &quot;</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">       </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Soft cluster met term met : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">softClusMet</span><span class="o">-&gt;</span><span class="n">met</span><span class="p">());</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="c1">//get the track soft term, and applyCorrection</span>
+<span class="w">     </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingET</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">softTrkMet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">newMet</span><span class="p">)[</span><span class="s">&quot;PVSoftTrk&quot;</span><span class="p">];</span>
+<span class="w">     </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">isMC</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_metSyst_handle</span><span class="o">-&gt;</span><span class="n">applyCorrection</span><span class="p">(</span><span class="o">*</span><span class="n">softTrkMet</span><span class="p">,</span><span class="w"> </span><span class="n">metHelper</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">CorrectionCode</span><span class="o">::</span><span class="n">Ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Could not apply correction to soft track met !!!! &quot;</span><span class="p">);</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">     </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;track met soft term : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">softTrkMet</span><span class="o">-&gt;</span><span class="n">met</span><span class="p">());</span>
+
+<span class="w">     </span><span class="c1">//only for track jets</span>
+<span class="w">     </span><span class="cm">/*xAOD::MissingET * jetMet = (*newMet)[&quot;RefJet&quot;];</span>
+<span class="cm">       if( (*jetMet)-&gt;applyCorrection(iSysSet) != CP::CorrectionCode::Ok) {</span>
+<span class="cm">       ANA_MSG_ERROR( &quot;Could not apply correction to jet met !!!! &quot;);</span>
+<span class="cm">       };</span>
+<span class="cm">       ANA_MSG_DEBUG(&quot;Jet met term met &quot; &lt;&lt; jetMet-&gt;met());*/</span>
+
+<span class="w">     </span><span class="c1">// build met:</span>
+
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">met</span><span class="o">::</span><span class="n">buildMETSum</span><span class="p">(</span><span class="s">&quot;FinalClus&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MissingETBase</span><span class="o">::</span><span class="n">Types</span><span class="o">::</span><span class="n">bitmask_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MissingETBase</span><span class="o">::</span><span class="n">Source</span><span class="o">::</span><span class="n">Signal</span><span class="o">::</span><span class="n">LCTopo</span><span class="p">)</span><span class="w"> </span><span class="p">));</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">met</span><span class="o">::</span><span class="n">buildMETSum</span><span class="p">(</span><span class="s">&quot;FinalTrk&quot;</span><span class="p">,</span><span class="w">  </span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MissingETBase</span><span class="o">::</span><span class="n">Types</span><span class="o">::</span><span class="n">bitmask_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MissingETBase</span><span class="o">::</span><span class="n">Source</span><span class="o">::</span><span class="n">Signal</span><span class="o">::</span><span class="n">Track</span><span class="p">)</span><span class="w"> </span><span class="p">));</span>
+
+<span class="w">     </span><span class="c1">// Calculate MET significance if enabled</span>
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_calculateSignificance</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">totalMETNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;FinalTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FinalClus&quot;</span><span class="p">};</span>
+
+<span class="w">       </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">name</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">totalMETNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="c1">// Calculate MET significance</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_rebuildUsingTracksInJets</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">varianceMET</span><span class="p">(</span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">averageInteractionsPerCrossing</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;RefJet&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PVSoftTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">varianceMET</span><span class="p">(</span><span class="n">newMet</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">averageInteractionsPerCrossing</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;RefJetTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PVSoftTrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">         </span><span class="p">}</span>
+
+<span class="w">         </span><span class="c1">// Decorate MET object with results</span>
+<span class="w">         </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingET</span><span class="w"> </span><span class="o">*</span><span class="n">met</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">newMet</span><span class="o">-&gt;</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="p">));</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">met</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">           </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Cannot find MET object with name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">);</span>
+<span class="w">         </span><span class="p">}</span>
+
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;METOverSqrtSumET&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetMETOverSqrtSumET</span><span class="p">();</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;METOverSqrtHT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetMETOverSqrtHT</span><span class="p">();</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Significance&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetSignificance</span><span class="p">();</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;SigDirectional&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetSigDirectional</span><span class="p">();</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Rho&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetRho</span><span class="p">();</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;VarL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetVarL</span><span class="p">();</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;VarT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetVarT</span><span class="p">();</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;JetVarL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarL</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;JetVarT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarT</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;SoftVarL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarL</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;SoftVarT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarT</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;EleVarL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarL</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;EleVarT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarT</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;MuonVarL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarL</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;MuonVarT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarT</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;PhotonVarL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarL</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;PhotonVarT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarT</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;TauVarL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarL</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+<span class="w">         </span><span class="n">met</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;TauVarT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_metSignificance_handle</span><span class="o">-&gt;</span><span class="n">GetTermVarT</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+<span class="w">       </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+
+<span class="w">     </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; FinalClus met, for syst &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">newMet</span><span class="o">-&gt;</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;FinalClus&quot;</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">met</span><span class="p">());</span>
+<span class="w">     </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; FinalTrk met, for syst &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">newMet</span><span class="o">-&gt;</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;FinalTrk&quot;</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">met</span><span class="p">());</span>
+<span class="w">     </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;storing met container :  &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">m_outputContainer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">systName</span><span class="p">));</span>
+<span class="w">     </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;storing  Aux met container :  &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">m_outputContainer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;Aux.&quot;</span><span class="p">));</span>
+
+<span class="w">     </span><span class="c1">// Store MET</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">newMet</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">m_outputContainer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">systName</span><span class="p">)</span><span class="w"> </span><span class="p">));</span>
+<span class="w">     </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">metAuxCont</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">m_outputContainer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;Aux.&quot;</span><span class="p">)));</span>
+
+<span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="c1">//end loop over systematics</span>
+
+<span class="w">   </span><span class="c1">// might have already been stored by another execution of this algo</span>
+<span class="w">   </span><span class="c1">// or by a previous iteration of the same</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">m_outputAlgoSystNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">vecOutContainerNames</span><span class="p">),</span><span class="w"> </span><span class="n">m_outputAlgoSystNames</span><span class="p">));</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">msgLvl</span><span class="p">(</span><span class="n">MSG</span><span class="o">::</span><span class="n">VERBOSE</span><span class="p">))</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">print</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done after the main event</span>
+<span class="w">  </span><span class="c1">// processing.  This is typically very rare, particularly in user</span>
+<span class="w">  </span><span class="c1">// code.  It is mainly used in implementing the NTupleSvc.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling postExecute&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="o">::</span><span class="n">finalize</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of initialize(), meaning it gets</span>
+<span class="w">  </span><span class="c1">// called after the last event has been processed on the worker node</span>
+<span class="w">  </span><span class="c1">// and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// initialize() before they are written to disk.  This is actually</span>
+<span class="w">  </span><span class="c1">// fairly rare, since this happens separately for each worker node.</span>
+<span class="w">  </span><span class="c1">// Most of the time you want to do your post-processing on the</span>
+<span class="w">  </span><span class="c1">// submission node after all your histogram outputs have been</span>
+<span class="w">  </span><span class="c1">// merged.  This is different from histFinalize() in that it only</span>
+<span class="w">  </span><span class="c1">// gets called on worker nodes that processed input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Deleting tool instances...&quot;</span><span class="p">);</span>
+
+<span class="c1">//  if (m_metmaker_handle) {</span>
+<span class="c1">//    delete m_metmaker_handle;</span>
+<span class="c1">//    m_metmaker_handle = 0;</span>
+<span class="c1">//  }</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">METConstructor</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of histInitialize(), meaning it</span>
+<span class="w">  </span><span class="c1">// gets called after the last event has been processed on the worker</span>
+<span class="w">  </span><span class="c1">// node and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// histInitialize() before they are written to disk.  This is</span>
+<span class="w">  </span><span class="c1">// actually fairly rare, since this happens separately for each</span>
+<span class="w">  </span><span class="c1">// worker node.  Most of the time you want to do your</span>
+<span class="w">  </span><span class="c1">// post-processing on the submission node after all your histogram</span>
+<span class="w">  </span><span class="c1">// outputs have been merged.  This is different from finalize() in</span>
+<span class="w">  </span><span class="c1">// that it gets called on all worker nodes regardless of whether</span>
+<span class="w">  </span><span class="c1">// they processed input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histFinalize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+.. _exhale_struct_structxAH_1_1OnlineBeamSpotTool_1_1LBData:
+
+Struct OnlineBeamSpotTool::LBData
+=================================
+
+- Defined in :ref:`file_xAODAnaHelpers_OnlineBeamSpotTool.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_class_classxAH_1_1OnlineBeamSpotTool`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: xAH::OnlineBeamSpotTool::LBData
+   :members:
+   :protected-members:
+   :undoc-members:

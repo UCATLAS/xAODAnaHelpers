@@ -1,0 +1,1022 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File BJetEfficiencyCorrector.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File BJetEfficiencyCorrector.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_BJetEfficiencyCorrector.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-bjetefficiencycorrector-cxx">
+<span id="program-listing-file-root-bjetefficiencycorrector-cxx"></span><h1>Program Listing for File BJetEfficiencyCorrector.cxx<a class="headerlink" href="#program-listing-for-file-bjetefficiencycorrector-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_BJetEfficiencyCorrector.cxx.html#file-root-bjetefficiencycorrector-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/BJetEfficiencyCorrector.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/**************************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * Interface to CP BJet Efficiency Correction Tool.</span>
+<span class="cm"> *</span>
+<span class="cm"> * John Alison (john.alison@cern.ch)</span>
+<span class="cm"> * Gabriel Facini (gabriel.facini@cern.ch)</span>
+<span class="cm"> *</span>
+<span class="cm"> *</span>
+<span class="cm"> **************************************************/</span>
+
+<span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="c1">// EL include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SampleHandler/MetaFields.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PathResolver/PathResolver.h&quot;</span>
+
+<span class="c1">//EDM</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetAuxContainer.h&quot;</span>
+
+<span class="c1">// package include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperClasses.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/BJetEfficiencyCorrector.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;AsgMessaging/MessageCheck.h&gt;</span>
+
+<span class="c1">// tools</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODBTaggingEfficiency/BTaggingSelectionTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODBTaggingEfficiency/BTaggingEfficiencyTool.h&quot;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">ToolName</span><span class="p">;</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">BJetEfficiencyCorrector</span><span class="p">)</span>
+
+
+<span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;BJetEfficiencyCorrector&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;BJetEfficiencyCorrector&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+
+<span class="w">  </span><span class="n">m_corrFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PathResolverFindCalibFile</span><span class="p">(</span><span class="n">m_corrFileName</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="cm">/*firstFile*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Initializing BJetEfficiencyCorrector Interface... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Number of events in file: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">getEntries</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// several lists of systematics could be configured</span>
+<span class="w">  </span><span class="c1">// this is the case when MET sys should be added</span>
+<span class="w">  </span><span class="c1">// to the OR ones</span>
+
+<span class="w">  </span><span class="c1">// parse and split by comma</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">m_inputAlgo</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_inputAlgoList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_decorSF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_decor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_SF&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_decorWeight</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">m_decor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_Weight&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_decorQuantile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_decor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_Quantile&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">opOK</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span><span class="n">taggerOK</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_useContinuous</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// not calibrated yet</span>
+<span class="w">  </span><span class="c1">// https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTagCalib2017</span>
+<span class="w">  </span><span class="c1">// https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/BTaggingBenchmarksRelease21</span>
+
+<span class="w">  </span><span class="c1">// All working points are calibrated (but not all taggers, see next check)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_60&quot;</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;GN2v01&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">opOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_65&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;GN2v01&quot;</span><span class="p">){</span>
+<span class="w">        </span><span class="n">opOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_70&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">opOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_77&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">opOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_85&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">opOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;FixedCutBEff_90&quot;</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;GN2v01&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">opOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_operatingPt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Continuous&quot;</span><span class="w">     </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">opOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_useContinuous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; Using continuous b-tagging&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// No official calibrations in rel22 yet</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;DL1r&quot;</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">taggerOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;DL1dv00&quot;</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">taggerOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;DL1dv01&quot;</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">taggerOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;GN120220509&quot;</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">taggerOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;GN2v00LegacyWP&quot;</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">taggerOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;GN2v00NewAliasWP&quot;</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">taggerOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;GN2v01&quot;</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">taggerOK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">opOK</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">taggerOK</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Requested tagger/operating point is not known to xAH. Arrow v Indian? &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// make unique name</span>
+<span class="w">  </span><span class="n">m_decor</span><span class="w">               </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_decorSF</span><span class="w">             </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_outputSystName</span><span class="w">      </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_decorWeight</span><span class="w">         </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_decorQuantile</span><span class="w">       </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_useContinuous</span><span class="p">){</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Decision Decoration Name     : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_decor</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Scale Factor Decoration Name : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_decorSF</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Weight Decoration Name: &quot;</span><span class="w">        </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_decorWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Quantile Decoration Name: &quot;</span><span class="w">      </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_decorQuantile</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Scale Factor Decoration Name : &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_decorSF</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// now take this name and convert it to the cut value for the CDI file</span>
+<span class="w">  </span><span class="c1">// if using the fixed efficiency points</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_operatingPtCDI</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="n">m_operatingPtCDI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_operatingPt</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="s">&quot;Using Standard OperatingPoint for CDI BTag Efficiency of &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_operatingPtCDI</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_runAllSyst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">m_systName</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;All&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;InputContainer is empty!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">isMC</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Attempting to run BTagging Jet Scale Factors on data.  Turning off scale factors.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_tagDecisionOnly</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;BTagging scale factors have been manually disabled. This is not recommended!&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// initialize the BJetSelectionTool</span>
+<span class="w">  </span><span class="c1">// A few which are not configurable as of yet....</span>
+<span class="w">  </span><span class="c1">// is there a reason to have this configurable here??...I think no (GF to self)</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;FlvTagCutDefinitionsFileName&quot;</span><span class="p">,</span><span class="n">m_corrFileName</span><span class="p">.</span><span class="n">c_str</span><span class="p">()));</span>
+<span class="w">  </span><span class="c1">// configurable parameters</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;TaggerName&quot;</span><span class="p">,</span><span class="w">          </span><span class="n">m_taggerName</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;OperatingPoint&quot;</span><span class="p">,</span><span class="w">      </span><span class="n">m_operatingPt</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;JetAuthor&quot;</span><span class="p">,</span><span class="w">           </span><span class="n">m_jetAuthor</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;MinPt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_minPt</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;ErrorOnTagWeightFailure&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_errorOnTagWeightFailure</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;readFromBTaggingObject&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_readFromBTaggingObject</span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;OutputLevel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">().</span><span class="n">level</span><span class="p">()</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//  Configure the BJetEfficiencyCorrectionTool</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="c1">// initialize the BJetEfficiencyCorrectionTool</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;TaggerName&quot;</span><span class="p">,</span><span class="w">          </span><span class="n">m_taggerName</span><span class="w">         </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;SystematicsStrategy&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_systematicsStrategy</span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;OperatingPoint&quot;</span><span class="p">,</span><span class="w">      </span><span class="n">m_operatingPtCDI</span><span class="w">     </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;JetAuthor&quot;</span><span class="p">,</span><span class="w">           </span><span class="n">m_jetAuthor</span><span class="w">          </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;MinPt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_minPt</span><span class="w">            </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;ScaleFactorFileName&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_corrFileName</span><span class="w">       </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;UseDevelopmentFile&quot;</span><span class="p">,</span><span class="w">  </span><span class="n">m_useDevelopmentFile</span><span class="w"> </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;ConeFlavourLabel&quot;</span><span class="p">,</span><span class="w">    </span><span class="n">m_coneFlavourLabel</span><span class="w">   </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;readFromBTaggingObject&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_readFromBTaggingObject</span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;OutputLevel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">().</span><span class="n">level</span><span class="p">()</span><span class="w"> </span><span class="p">));</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_EfficiencyCalibration</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">calibration</span><span class="o">=</span><span class="n">m_EfficiencyCalibration</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_EfficiencyCalibration</span><span class="o">==</span><span class="s">&quot;auto&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">gridName</span><span class="o">=</span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">metaData</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">castString</span><span class="p">(</span><span class="n">SH</span><span class="o">::</span><span class="n">MetaFields</span><span class="o">::</span><span class="n">gridName</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">ShowerType</span><span class="w"> </span><span class="n">sampleShowerType</span><span class="o">=</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">Unknown</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">gridName</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+<span class="w">          </span><span class="p">{</span><span class="w"> </span><span class="c1">// Do not trust sample name on the grid, in case there are multiple samples per job</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">gridName</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">sampleName</span><span class="p">;</span>
+<span class="w">        </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="n">sampleName</span><span class="p">,</span><span class="sc">&#39;,&#39;</span><span class="p">))</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">ShowerType</span><span class="w"> </span><span class="n">mySampleShowerType</span><span class="o">=</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getMCShowerType</span><span class="p">(</span><span class="n">sampleName</span><span class="p">,</span><span class="n">m_taggerName</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">mySampleShowerType</span><span class="o">!=</span><span class="n">sampleShowerType</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sampleShowerType</span><span class="o">!=</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">Unknown</span><span class="p">)</span>
+<span class="w">              </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Cannot have different shower types per grid task.&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">sampleShowerType</span><span class="o">=</span><span class="n">mySampleShowerType</span><span class="p">;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="c1">// Use sample name when running locally</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">        </span><span class="n">gridName</span><span class="o">=</span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">metaData</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">castString</span><span class="p">(</span><span class="n">SH</span><span class="o">::</span><span class="n">MetaFields</span><span class="o">::</span><span class="n">sampleName</span><span class="p">);</span>
+<span class="w">        </span><span class="n">sampleShowerType</span><span class="o">=</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getMCShowerType</span><span class="p">(</span><span class="n">gridName</span><span class="p">,</span><span class="n">m_taggerName</span><span class="p">);</span>
+<span class="w">          </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">m_taggerName</span><span class="o">==</span><span class="s">&quot;DL1dv01&quot;</span><span class="p">){</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">m_isRun3</span><span class="p">){</span>
+<span class="w">                </span><span class="k">switch</span><span class="p">(</span><span class="n">sampleShowerType</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Pythia8</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;601229&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Herwig7p2</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;601414&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa2212</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;700660&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">                        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_allowCalibrationFallback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                          </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, falling back to &#39;default&#39;.&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">;</span>
+<span class="w">                          </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                        </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                          </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">                           </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">                </span><span class="k">switch</span><span class="p">(</span><span class="n">sampleShowerType</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Pythia8</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;410470&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Herwig7p1</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;411233&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Herwig7p2</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;600666&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa221</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;410250&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa2210</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;700122&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa2212</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;700660&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">AmcPy8</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;410464&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">AmcH7</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;412116&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">                        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_allowCalibrationFallback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                          </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, falling back to &#39;default&#39;.&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">;</span>
+<span class="w">                          </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                        </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                          </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">                          </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">m_taggerName</span><span class="o">==</span><span class="s">&quot;GN2v01&quot;</span><span class="p">){</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">m_isRun3</span><span class="p">){</span>
+<span class="w">                </span><span class="k">switch</span><span class="p">(</span><span class="n">sampleShowerType</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Pythia8</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Herwig7p2</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;601414&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa2214</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;700808&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa_Unknown</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Unknown Sherpa version MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, falling back to MC-MC SFs for Sherpa 2.2.11-2.2.16.&quot;</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!&quot;</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;700808&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">                        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_allowCalibrationFallback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                          </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, falling back to &#39;default&#39;.&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">;</span>
+<span class="w">                          </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                        </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                          </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">);</span>
+<span class="w">                          </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">                           </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">                </span><span class="k">switch</span><span class="p">(</span><span class="n">sampleShowerType</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Pythia8</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Herwig7p1</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;411233&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Herwig7p2</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;600666&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa2214</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;700660&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">HelperFunctions</span><span class="o">::</span><span class="no">Sherpa_Unknown</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Unknown Sherpa version MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, falling back to MC-MC SFs for Sherpa 2.2.11-2.2.16.&quot;</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!&quot;</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;700660&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">                      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_allowCalibrationFallback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, falling back to &#39;default&#39;.&quot;</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Please double-check if this is appropriate for your sample, otherwise you have specify the MC-to-MC calibration manually!&quot;</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                      </span><span class="p">}</span>
+<span class="w">                      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for sample &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">gridName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">);</span>
+<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                     </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_allowCalibrationFallback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for tagger &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, only GN2v01 and DL1dv01 are supported. Falling back to &#39;default&#39;.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Please double-check if this is appropriate for your sample and tagger, otherwise you have specify the MC-to-MC calibration manually!&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="n">calibration</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Cannot determine MC shower type for tagger &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">makeMCIndexMap</span><span class="p">(</span><span class="n">m_EfficiencyCalibration</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;EfficiencyBCalibrations&quot;</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">calibration</span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;EfficiencyCCalibrations&quot;</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">calibration</span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;EfficiencyTCalibrations&quot;</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">calibration</span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;EfficiencyLightCalibrations&quot;</span><span class="p">,</span><span class="w">  </span><span class="n">calibration</span><span class="p">));</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;EigenvectorReductionB&quot;</span><span class="w">        </span><span class="p">,</span><span class="w">  </span><span class="n">m_EigenvectorReductionB</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;EigenvectorReductionC&quot;</span><span class="w">        </span><span class="p">,</span><span class="w">  </span><span class="n">m_EigenvectorReductionC</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;EigenvectorReductionLight&quot;</span><span class="w">    </span><span class="p">,</span><span class="w">  </span><span class="n">m_EigenvectorReductionLight</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Input operating point is not calibrated - no SFs will be obtained&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Print out</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_systName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;-----------------------------------------------------&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicVariation</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">allowed_variations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">listSystematics</span><span class="p">();</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Allowed systematics variations for tool &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="p">.</span><span class="n">typeAndName</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;:&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">allowed_variations</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">setw</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">left</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">var</span><span class="p">.</span><span class="n">first</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;:&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">flv</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">var</span><span class="p">.</span><span class="n">second</span><span class="p">)</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">flv</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;-----------------------------------------------------&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="c1">// Get a list of affecting systematics</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_getScaleFactors</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="n">affectSysts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">affectingSystematics</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Convert into a simple list</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">affectSystList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">make_systematics_vector</span><span class="p">(</span><span class="n">affectSysts</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_systName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">syst_it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">affectSystList</span><span class="w"> </span><span class="p">){</span>
+<span class="w">        </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; tool can be affected by systematic: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">syst_it</span><span class="p">.</span><span class="n">name</span><span class="p">());</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_systName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span>
+<span class="w">      </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="s">&quot; Running w/ nominal configuration!&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Get a list of recommended systematics</span>
+<span class="w">    </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="w"> </span><span class="n">recSyst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">recommendedSystematics</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_systList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getListofSystematics</span><span class="p">(</span><span class="w"> </span><span class="n">recSyst</span><span class="p">,</span><span class="w"> </span><span class="n">m_systName</span><span class="p">,</span><span class="w"> </span><span class="n">m_systVal</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_runAllSyst</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="s">&quot; Running w/ All systematics&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Write output sys names</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_writeSystToMetadata</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">fileMD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getOutputFile</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;metadata&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">writeSystematicsListHist</span><span class="p">(</span><span class="n">m_systList</span><span class="p">,</span><span class="w"> </span><span class="n">m_outputSystName</span><span class="p">,</span><span class="w"> </span><span class="n">fileMD</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Get DSID to Generator map (if needed)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_setMapIndex</span><span class="p">){</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Fill DSID-&gt;Generator map&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// open input file</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">file</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PathResolverFindCalibFile</span><span class="p">(</span><span class="n">m_DSIDtoGenerator_filename</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//file.open(gSystem-&gt;ExpandPathName(m_DSIDtoGenerator_filename.c_str()));</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="n">fn</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">good</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Can&#39;t open file &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_DSIDtoGenerator_filename</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// process file</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">eof</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// read line</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">lineString</span><span class="p">;</span>
+<span class="w">      </span><span class="n">getline</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">lineString</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// store in map</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="nf">line</span><span class="p">(</span><span class="n">lineString</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">dsid</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">gen</span><span class="p">;</span>
+<span class="w">      </span><span class="n">line</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dsid</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">gen</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_DSIDtoGenerator</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="n">dsid</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Skipping duplicated DSID for line &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">lineString</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">        </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">m_DSIDtoGenerator</span><span class="p">[</span><span class="n">dsid</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gen</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;BJetEfficiencyCorrector Interface succesfully initialized!&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Applying BJetEfficiencyCorrector for &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_taggerName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; tagger... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// retrieve event</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="nf">eventInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s"> eventNumber: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventNumber</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// if m_inputAlgo == &quot;&quot; --&gt; input comes from xAOD, or just running one collection,</span>
+<span class="w">  </span><span class="c1">// then get the one collection and be done with it</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">systNames_ptr</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_inputAlgo</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">systNames_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">m_inputAlgo</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">systNames</span><span class="p">{</span><span class="s">&quot;&quot;</span><span class="p">};</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">systNames_ptr</span><span class="p">)</span><span class="w"> </span><span class="n">systNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">systNames_ptr</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// loop over systematic sets available</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">systNames</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">doNominal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">systName</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// input jets</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inJets</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// some systematics might have rejected the event</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="o">+</span><span class="n">systName</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Check the existence of the container</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inJets</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="o">+</span><span class="n">systName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">executeEfficiencyCorrection</span><span class="p">(</span><span class="w"> </span><span class="n">inJets</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">doNominal</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Leave Efficency Selection... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">executeEfficiencyCorrection</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inJets</span><span class="p">,</span>
+<span class="w">                                      </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">,</span>
+<span class="w">                                      </span><span class="kt">bool</span><span class="w"> </span><span class="n">doNominal</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Applying BJet Cuts and Efficiency Correction (when applicable...) &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dec_isBTag</span><span class="p">(</span><span class="w"> </span><span class="n">m_decor</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dec_sfBTag</span><span class="p">(</span><span class="w"> </span><span class="n">m_decorSF</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dec_isBTagOR</span><span class="p">(</span><span class="w"> </span><span class="n">m_decor</span><span class="o">+</span><span class="s">&quot;OR&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// for continuous b-tagging only</span>
+<span class="w">  </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dec_Weight</span><span class="p">(</span><span class="w"> </span><span class="n">m_decorWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">dec_Quantile</span><span class="p">(</span><span class="w"> </span><span class="n">m_decorQuantile</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// run the btagging decision or get weight and quantile if running continuous</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">inJets</span><span class="p">)){</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">jet_itr</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">())</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">2.5</span><span class="p">){</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_useContinuous</span><span class="p">){</span>
+<span class="w">        </span><span class="n">dec_isBTag</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="n">dec_isBTagOR</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span><span class="k">else</span><span class="p">{</span>
+<span class="w">        </span><span class="n">dec_Quantile</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">m_useContinuous</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_alwaysGetTagWeight</span><span class="p">)</span><span class="w"> </span><span class="n">dec_Weight</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_useContinuous</span><span class="p">){</span>
+<span class="w">      </span><span class="c1">// get tagging decision</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; Getting tagging decision &quot;</span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">// Add decorator for decision</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">        </span><span class="n">dec_isBTag</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="k">else</span>
+<span class="w">        </span><span class="n">dec_isBTag</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// Add pT-dependent b-tag decision decorator (intended for use in OR)</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">m_orBJetPtUpperThres</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_orBJetPtUpperThres</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">jet_itr</span><span class="p">).</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.</span><span class="p">)</span><span class="w"> </span><span class="c1">// passes pT criteria</span>
+<span class="w">          </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">        </span><span class="n">dec_isBTagOR</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="k">else</span>
+<span class="w">        </span><span class="n">dec_isBTagOR</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; Getting Quantile&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">quantile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="o">-&gt;</span><span class="n">getQuantile</span><span class="p">(</span><span class="o">*</span><span class="n">jet_itr</span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;quantile: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">quantile</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">dec_Quantile</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantile</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_useContinuous</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">m_alwaysGetTagWeight</span><span class="p">){</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; Getting TaggerWeight&quot;</span><span class="p">);</span>
+
+<span class="w">      </span><span class="kt">double</span><span class="w"> </span><span class="n">tagWeight</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetSelectTool_handle</span><span class="o">-&gt;</span><span class="n">getTaggerWeight</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="p">,</span><span class="w"> </span><span class="n">tagWeight</span><span class="p">)</span><span class="o">!=</span><span class="n">CP</span><span class="o">::</span><span class="n">CorrectionCode</span><span class="o">::</span><span class="n">Ok</span><span class="w"> </span><span class="p">){</span>
+<span class="w">        </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot; Error retrieving b-tagger weight &quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;tagWeight: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tagWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">        </span><span class="n">dec_Weight</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="p">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">tagWeight</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// get the scale factors for all jets</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_getScaleFactors</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="c1">// loop over available systematics</span>
+<span class="w">      </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">syst_it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_systList</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">//  If not nominal input jet collection, dont calculate systematics</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">doNominal</span><span class="w"> </span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">syst_it</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="c1">// if not nominal btag decision</span>
+<span class="w">          </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Not running B-tag systematics when doing JES systematics&quot;</span><span class="p">);</span>
+<span class="w">          </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// configure tool with syst variation</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">applySystematicVariation</span><span class="p">(</span><span class="n">syst_it</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Failed to configure BJetEfficiencyCorrections for systematic &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">syst_it</span><span class="p">.</span><span class="n">name</span><span class="p">());</span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Successfully configured BJetEfficiencyCorrections for systematic: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">syst_it</span><span class="p">.</span><span class="n">name</span><span class="p">());</span>
+
+<span class="w">          </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">inJets</span><span class="p">))</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">              </span><span class="k">if</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">jet_itr</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">())</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">2.5</span><span class="p">){</span>
+<span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">dec_sfBTag</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">))</span>
+<span class="w">                    </span><span class="n">dec_sfBTag</span><span class="w">     </span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">({</span><span class="mf">1.</span><span class="p">});</span>
+<span class="w">                </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">              </span><span class="k">if</span><span class="p">(</span><span class="n">m_setMapIndex</span><span class="p">){</span><span class="w"> </span><span class="c1">// select an efficiency map for use in MC/MC and inefficiency scale factors, based on user specified selection of efficiency maps</span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">FlavLabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getFlavorLabel</span><span class="p">(</span><span class="o">*</span><span class="n">jet_itr</span><span class="p">);</span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">DSID</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">mcChannelNumber</span><span class="p">();</span>
+<span class="w">                </span><span class="k">auto</span><span class="w"> </span><span class="n">MCindex</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">getMCIndex</span><span class="p">(</span><span class="n">DSID</span><span class="p">);</span>
+<span class="w">                </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">setMapIndex</span><span class="p">(</span><span class="n">FlavLabel</span><span class="p">,</span><span class="n">MCindex</span><span class="p">));</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">          </span><span class="c1">// get the scale factor</span>
+<span class="w">          </span><span class="kt">float</span><span class="w"> </span><span class="n">SF</span><span class="p">(</span><span class="mf">-1.0</span><span class="p">);</span>
+<span class="w">          </span><span class="n">CP</span><span class="o">::</span><span class="n">CorrectionCode</span><span class="w"> </span><span class="n">BJetEffCode</span><span class="p">;</span>
+<span class="w">          </span><span class="c1">// if passes cut take the efficiency scale factor</span>
+<span class="w">          </span><span class="c1">// if failed cut take the inefficiency scale factor</span>
+<span class="w">          </span><span class="c1">// for continuous take efficiency, as inefficiency should not be used</span>
+<span class="w">          </span><span class="k">if</span><span class="p">(</span><span class="n">m_useContinuous</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="n">BJetEffCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">getScaleFactor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="p">,</span><span class="w"> </span><span class="n">SF</span><span class="w"> </span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">          </span><span class="k">else</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">dec_isBTag</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">            </span><span class="n">BJetEffCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">getScaleFactor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="p">,</span><span class="w"> </span><span class="n">SF</span><span class="w"> </span><span class="p">);</span>
+<span class="w">          </span><span class="k">else</span>
+<span class="w">            </span><span class="n">BJetEffCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_BJetEffSFTool_handle</span><span class="o">-&gt;</span><span class="n">getInefficiencyScaleFactor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="p">,</span><span class="w"> </span><span class="n">SF</span><span class="w"> </span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BJetEffCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">CorrectionCode</span><span class="o">::</span><span class="n">Error</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Error in getEfficiencyScaleFactor&quot;</span><span class="p">);</span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">          </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BJetEffCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">CorrectionCode</span><span class="o">::</span><span class="n">OutOfValidityRange</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Jet is out of validity range&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">          </span><span class="c1">// Save it to the vector</span>
+<span class="w">          </span><span class="k">if</span><span class="p">(</span><span class="w">                   </span><span class="o">!</span><span class="n">dec_sfBTag</span><span class="w">     </span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">))</span>
+<span class="w">        </span><span class="n">dec_sfBTag</span><span class="w">     </span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">();</span>
+
+
+<span class="w">          </span><span class="n">dec_sfBTag</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">).</span><span class="n">push_back</span><span class="p">(</span><span class="n">SF</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">inJets</span><span class="p">))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="w">                   </span><span class="o">!</span><span class="n">dec_sfBTag</span><span class="w">     </span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">))</span>
+<span class="w">        </span><span class="n">dec_sfBTag</span><span class="w">     </span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">jet_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">({</span><span class="mf">1.</span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Store list of available systematics</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">doNominal</span><span class="p">){</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">sysVariationNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_getScaleFactors</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">syst_it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_systList</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sysVariationNames</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">syst_it</span><span class="p">.</span><span class="n">name</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">sysVariationNames</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Size is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sysVariationNames</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">());</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">sysName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">sysVariationNames</span><span class="p">)</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="n">sysName</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">sysVariationNames</span><span class="p">),</span><span class="w"> </span><span class="n">m_outputSystName</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling postExecute&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">finalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histFinalize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">makeMCIndexMap</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">effCalib</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling makeMCIndexMap()&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Interprete m_EfficiencyCalibration string to identify the corresponding indexes</span>
+<span class="w">  </span><span class="kt">char</span><span class="w"> </span><span class="n">delim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;;&#39;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">samples</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">effCalib</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">item</span><span class="p">;</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">samples</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Find index for Pythia8, Sherpa 2.2, Herwig7 and aMC@NLO+Pythia8</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">samples</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;410470&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Pythia8&quot;</span><span class="p">]</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;700122&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Sherpa2210&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;410250&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Sherpa22&quot;</span><span class="p">]</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;600666&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Herwig721&quot;</span><span class="p">]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;410558&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Herwig7&quot;</span><span class="p">]</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;410464&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;aMC@NLO&quot;</span><span class="p">]</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">getMCIndex</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">dsid</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling getMCIndex&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_DSIDtoGenerator</span><span class="p">[</span><span class="n">dsid</span><span class="p">];</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_EfficiencyCalibration</span><span class="o">==</span><span class="s">&quot;auto&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// there is only one index when m_EfficiencyCalibration == &#39;auto&#39;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Pythia 8</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Pythia8_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Pythia8B_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;MGPy8EG_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;MadGraphPythia8_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;MadGraphPythia8EvtGen_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;PowhegPythia8EvtGen_CT10_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;PowhegPythia8EvtGen_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Pythia8EvtGen_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Pythia8EG_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;PwPy8EG_CT10_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;PowhegPythia8_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;PowhegPythia8EG_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;PhPy8EG_CT10_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Py8EG_&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Py8&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Pythia8&quot;</span><span class="p">];</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Sherpa 2.2.10</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Sh_2210&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Sherpa2210&quot;</span><span class="p">];</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Sherpa 2.2.11</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Sh_2211&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Sherpa2210&quot;</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// MC-MC SFs from Sherpa 2.2.10 is the best we can use for Sherpa 2.2.11 (for now)</span>
+
+<span class="w">    </span><span class="c1">// Sherpa 2.2</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Sh_22&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Sherpa_NNPDF30NNLO&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Sherpa_221_NNPDF30NNLO&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Sherpa22&quot;</span><span class="p">];</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Herwig 7.2.1</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Herwig721&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="p">){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Herwig721&quot;</span><span class="p">];</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Herwig 7</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Herwig&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="p">){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;Herwig&quot;</span><span class="p">];</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// aMC@NLO+Pythia8</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;aMC@NLO+Pythia8&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="p">){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_MCIndexes</span><span class="p">[</span><span class="s">&quot;aMC@NLO&quot;</span><span class="p">];</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// for all other samples, use the default map (pythia8).</span>
+<span class="w">    </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;MC index not recognized, using default (0).&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">BJetEfficiencyCorrector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">getFlavorLabel</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="w"> </span><span class="o">&amp;</span><span class="n">jet</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">label</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jet</span><span class="p">.</span><span class="n">getAttribute</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;HadronConeExclTruthLabelID&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">status</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-5</span><span class="p">)){</span><span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-4</span><span class="p">)){</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-15</span><span class="p">)){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;T&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Light&quot;</span><span class="p">;}</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;HadronConeExclTruthLabelID was not found, using Light as jet flavour for retrieving b-tagging SF.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Light&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

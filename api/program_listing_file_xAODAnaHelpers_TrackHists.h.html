@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File TrackHists.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File TrackHists.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_TrackHists.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-trackhists-h">
+<span id="program-listing-file-xaodanahelpers-trackhists-h"></span><h1>Program Listing for File TrackHists.h<a class="headerlink" href="#program-listing-for-file-trackhists-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_TrackHists.h.html#file-xaodanahelpers-trackhists-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/TrackHists.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_TrackHists_H</span>
+<span class="cp">#define xAODAnaHelpers_TrackHists_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HistogramManager.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODTracking/TrackParticleContainer.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODTracking/Vertex.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODEventInfo/EventInfo.h&gt;</span>
+
+<span class="n">ANA_MSG_HEADER</span><span class="p">(</span><span class="n">msgTrackHists</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TrackHists</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">HistogramManager</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="n">TrackHists</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="o">~</span><span class="n">TrackHists</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="p">();</span>
+<span class="w">    </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="n">tracks</span><span class="p">,</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="w"> </span><span class="o">*</span><span class="n">pvx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">track</span><span class="p">,</span><span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="w"> </span><span class="o">*</span><span class="n">pvx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">HistogramManager</span><span class="o">::</span><span class="n">book</span><span class="p">;</span><span class="w"> </span><span class="c1">// make other overloaded versions of book() to show up in subclass</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">HistogramManager</span><span class="o">::</span><span class="n">execute</span><span class="p">;</span><span class="w"> </span><span class="c1">// overload</span>
+
+<span class="w">  </span><span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// bools to control which histograms are filled</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fill2D</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fillIPDetails</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fillHitCounts</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fillChi2Details</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fillTPErrors</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fillDebugging</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_fillVsLumi</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// Histograms</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_n</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_n_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Pt</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Pt_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_P</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_P_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Eta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Phi</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0_s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0_ss</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_chi2Prob</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_charge</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0Err</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0Sig</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0Err</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0Sig</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0sinT</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0sinT_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0SigsinT</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_chi2Prob_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_chi2Prob_s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_chi2Prob_ss</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_chi2ndof</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_chi2ndof_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nSi</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nSiAndDead</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nSiDead</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nSCT</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nPix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nPixHoles</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nPixDead</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nTRT</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// TH1F* m_trk_nTRTHoles; //!</span>
+<span class="w">    </span><span class="c1">// TH1F* m_trk_nTRTDead; //!</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_nBL</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_phiErr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_thetaErr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_qOpErr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_mc_prob</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_mc_barcode</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_mc_barcode_s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_eta_vl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_vl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_raw_m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_vz</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_atlas_m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0_vl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_pt_ss</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_phiManyBins</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">     </span><span class="n">m_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_raw_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_atlas_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_vz_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_pvz_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_pv_valid_vs_lBlock</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_bsX_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_bsY_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TProfile</span><span class="o">*</span><span class="w"> </span><span class="n">m_bsZ_vs_lBlock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">    </span><span class="n">m_bsX</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">    </span><span class="n">m_bsY</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1F</span><span class="o">*</span><span class="w">    </span><span class="n">m_bsZ</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Eta_vs_trk_P</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Eta_vs_trk_P_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Phi_vs_trk_P</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Phi_vs_trk_P_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_Eta_vs_trk_Phi</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0_vs_trk_P</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_d0_vs_trk_P_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_vs_trk_P</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0_vs_trk_P_l</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0sinT_vs_trk_P</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH2F</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_z0sinT_vs_trk_P_l</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

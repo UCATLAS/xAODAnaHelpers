@@ -1,0 +1,50 @@
+
+.. _program_listing_file_xAODAnaHelpers_DebugTool.h:
+
+Program Listing for File DebugTool.h
+====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_DebugTool.h>` (``xAODAnaHelpers/DebugTool.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_DebugTool_H
+   #define xAODAnaHelpers_DebugTool_H
+   
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   class DebugTool : public xAH::Algorithm
+   {
+     // put your configuration variables here as public variables.
+     // that way they can be set directly from CINT and python.
+   public:
+   
+     // configuration variables
+   
+     bool m_printStore = false;
+   
+   public:
+   
+     // this is a standard constructor
+     DebugTool ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(DebugTool, 1);
+   };
+   
+   #endif

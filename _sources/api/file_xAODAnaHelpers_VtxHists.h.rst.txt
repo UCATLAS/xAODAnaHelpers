@@ -1,0 +1,51 @@
+
+.. _file_xAODAnaHelpers_VtxHists.h:
+
+File VtxHists.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/VtxHists.h``)
+------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_VtxHists.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/HistogramManager.h`` (:ref:`file_xAODAnaHelpers_HistogramManager.h`)
+
+- ``xAODTracking/TrackParticle.h``
+
+- ``xAODTracking/TrackParticleContainer.h``
+
+- ``xAODTracking/Vertex.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_VtxHists.cxx`
+
+
+

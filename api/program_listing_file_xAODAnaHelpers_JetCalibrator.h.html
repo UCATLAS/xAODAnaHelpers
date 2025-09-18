@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File JetCalibrator.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File JetCalibrator.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_JetCalibrator.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-jetcalibrator-h">
+<span id="program-listing-file-xaodanahelpers-jetcalibrator-h"></span><h1>Program Listing for File JetCalibrator.h<a class="headerlink" href="#program-listing-for-file-jetcalibrator-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_JetCalibrator.h.html#file-xaodanahelpers-jetcalibrator-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/JetCalibrator.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/********************************************************</span>
+<span class="cm"> * JetCalibrator:</span>
+<span class="cm"> *</span>
+<span class="cm"> * This class handles jet calibration and systematics</span>
+<span class="cm"> *</span>
+<span class="cm"> * Jeff Dandoy (jeff.dandoy@cern.ch)</span>
+<span class="cm"> *</span>
+<span class="cm"> ********************************************************/</span>
+
+<span class="cp">#ifndef xAODAnaHelpers_JetCalibrator_H</span>
+<span class="cp">#define xAODAnaHelpers_JetCalibrator_H</span>
+
+<span class="c1">// CP interface includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicRegistry.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicSet.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicVariation.h&quot;</span>
+
+<span class="c1">// external tools include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgTools/AnaToolHandle.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetCalibTools/IJetCalibrationTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetCPInterfaces/ICPJetUncertaintiesTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetInterface/IJetSelector.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetCPInterfaces/IJetTileCorrectionTool.h&quot;</span>
+<span class="c1">// #include &quot;ParticleJetTools/JetTruthLabelingTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODCore/ShallowCopy.h&quot;</span>
+
+<span class="c1">// algorithm wrapper</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/Algorithm.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">JetCalibrator</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_jetAlgo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputAlgo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_writeSystToMetadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">        </span><span class="n">m_recalibrateHLTJets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_HLTVertexContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;HLT_IDVertex_FS&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_HLTAvgMuDecor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;EventInfo.AvgMu&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_EvtInfoHLTNPVDecor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_calibGSCDepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_calibConfigDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_calibConfigData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_calibConfigFullSim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_calibConfigAFII</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;JES_MC16Recommendation_AFII_EMTopo_April2018_rel21.config&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_calibSequence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_uncertConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_uncertMCType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_overrideCalibArea</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_overrideUncertCalibArea</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_overrideAnalysisFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_overrideUncertPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_forceInsitu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_forceSmear</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_jetCalibToolsDEV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_addGhostMuonsToJets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doCleaning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_jetCleanCutLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;LooseBad&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_saveAllCleanDecisions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_jetCleanUgly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">    </span><span class="n">m_sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">    </span><span class="n">m_cleanParent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">    </span><span class="n">m_applyFatJetPreSel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_useLargeRTruthLabelingTool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_truthLabelName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;R10TruthLabel_R21Consolidated&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_isTruthJetCol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_useTRUTH3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_truthParticleContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TruthParticles&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_truthBosonContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TruthBosonsWithDecayParticles&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_truthTopQuarkContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TruthTopQuarkWithDecayParticles&quot;</span><span class="p">;</span>
+
+<span class="c1">// systematics</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doJetTileCorr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_pseudoData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_mcAndPseudoData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_runSysts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numEvent</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numObject</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_calibConfig</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systList</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// tools</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IJetCalibrationTool</span><span class="o">&gt;</span><span class="w">        </span><span class="n">m_JetCalibrationTool_handle</span><span class="w">   </span><span class="p">{</span><span class="s">&quot;JetCalibrationTool&quot;</span><span class="w">   </span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">ICPJetUncertaintiesTool</span><span class="o">&gt;</span><span class="w">    </span><span class="n">m_JetUncertaintiesTool_handle</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;JetUncertaintiesTool&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">ICPJetUncertaintiesTool</span><span class="o">&gt;</span><span class="w">    </span><span class="n">m_pseudodataJERTool_handle</span><span class="w">    </span><span class="p">{</span><span class="s">&quot;PseudodataJERTool&quot;</span><span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IJetSelector</span><span class="o">&gt;</span><span class="w">               </span><span class="n">m_JetCleaningTool_handle</span><span class="w">      </span><span class="p">{</span><span class="s">&quot;JetCleaningTool&quot;</span><span class="w">      </span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="w">  </span><span class="c1">// asg::AnaToolHandle&lt;CP::IJetTileCorrectionTool&gt; m_JetTileCorrectionTool_handle{&quot;JetTileCorrectionTool&quot;, this}; //!</span>
+<span class="w">  </span><span class="c1">// asg::AnaToolHandle&lt;JetTruthLabelingTool&gt;       m_JetTruthLabelingTool_handle {&quot;JetTruthLabelingTool&quot; , this}; //!</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IJetSelector</span><span class="o">&gt;&gt;</span><span class="w">  </span><span class="n">m_AllJetCleaningTool_handles</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w">  </span><span class="n">m_decisionNames</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Helper functions</span>
+<span class="w">  </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">executeSystematic</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&amp;</span><span class="w"> </span><span class="n">thisSyst</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inJets</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ShallowAuxContainer</span><span class="o">*&gt;&amp;</span><span class="w"> </span><span class="n">calibJetsSC</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">vecOutContainerNames</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">isPDCopy</span><span class="p">);</span>
+<span class="w">  </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initializeUncertaintiesTool</span><span class="p">(</span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">ICPJetUncertaintiesTool</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">uncToolHandle</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">isData</span><span class="p">);</span>
+
+<span class="k">public</span><span class="o">:</span>
+
+<span class="w">  </span><span class="c1">// this is a standard constructor</span>
+<span class="w">  </span><span class="n">JetCalibrator</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// these are the functions inherited from Algorithm</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">fileExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histInitialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">firstFile</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">postExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">finalize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histFinalize</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="w">  </span><span class="n">ClassDef</span><span class="p">(</span><span class="n">JetCalibrator</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

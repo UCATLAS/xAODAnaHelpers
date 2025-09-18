@@ -1,0 +1,208 @@
+
+.. _program_listing_file_xAODAnaHelpers_ElectronSelector.h:
+
+Program Listing for File ElectronSelector.h
+===========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_ElectronSelector.h>` (``xAODAnaHelpers/ElectronSelector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef xAODAnaHelpers_ElectronSelector_H
+   #define xAODAnaHelpers_ElectronSelector_H
+   
+   // EDM include(s):
+   #include "xAODEgamma/ElectronContainer.h"
+   #include "xAODTracking/Vertex.h"
+   #include "EgammaAnalysisInterfaces/IAsgDeadHVCellRemovalTool.h"
+   
+   // package include(s):
+   #include "xAODAnaHelpers/ParticlePIDManager.h"
+   
+   // ROOT include(s):
+   #include "TH1D.h"
+   
+   // external tools include(s):
+   #include "AsgTools/AnaToolHandle.h"
+   #include "IsolationSelection/IIsolationSelectionTool.h"
+   #include "TrigDecisionTool/TrigDecisionTool.h"
+   #include "TriggerMatchingTool/IMatchingTool.h"
+   #include "TriggerMatchingTool/IMatchScoringTool.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   // forward-declare for now until IsolationSelectionTool interface is updated
+   namespace CP {
+     class IsolationSelectionTool;
+   }
+   
+   class ElectronSelector : public xAH::Algorithm
+   {
+   public:
+   
+     bool m_useCutFlow = true;
+   
+     /* configuration variables */
+   
+     std::string    m_inContainerName = "";
+     std::string    m_outContainerName = "";
+   
+   // systematics
+     std::string    m_inputAlgoSystNames = "";
+     std::string    m_outputAlgoSystNames = "ElectronSelector_Syst";
+   
+     bool           m_decorateSelectedObjects = true;
+     bool           m_createSelectedContainer = false;
+     int            m_nToProcess = -1;
+     int            m_pass_min = -1;
+     int            m_pass_max = -1;
+     float          m_pT_max = 1e8;
+     float          m_pT_min = 1e8;
+   
+     float          m_eta_max = 1e8;
+   
+     bool           m_vetoCrack = true;
+   
+     float          m_d0_max = 1e8;
+   
+     float          m_d0sig_max = 1e8;
+   
+     float          m_z0sintheta_max = 1e8;
+   
+     bool           m_doAuthorCut = true;
+     bool           m_doOQCut = true;
+     bool m_applyDeadHVCellVeto = false;
+   
+   
+     bool           m_readIDFlagsFromDerivation = false;
+   
+     bool          m_doModifiedEleId = false;
+   
+   
+     bool           m_doLHPID = true;
+     bool           m_doLHPIDcut = false;
+     std::string    m_LHOperatingPoint = "Loose";
+   
+   
+     bool           m_doCutBasedPID = false;
+     bool           m_doCutBasedPIDcut = false;
+     std::string    m_CutBasedOperatingPoint = "Loose";
+   
+   /* isolation */
+     std::string    m_MinIsoWPCut = "";
+     std::string    m_IsoWPList = "FCLoose,FCTight,Gradient,FCHighPtCaloOnly";
+     std::string    m_CaloIsoEff = "0.1*x+90";
+     std::string    m_TrackIsoEff = "98";
+     std::string    m_CaloBasedIsoType = "topoetcone20";
+     std::string    m_TrackBasedIsoType = "ptvarcone20";
+   
+   /* trigger matching */
+     std::string    m_singleElTrigChains = "";
+     std::string    m_diElTrigChains = "";
+     double         m_minDeltaR = 0.07;
+   
+     bool           m_merged_electrons = false;
+     std::string    m_trigInputPrefix = "";
+   
+     std::string    m_isoDecSuffix = "";
+   
+   
+   private:
+   
+     bool           m_doBLTrackQualityCut;
+   
+     std::string    m_outAuxContainerName;
+   
+     int m_numEvent;           
+     int m_numObject;          
+     int m_numEventPass;       
+     int m_weightNumEventPass; 
+     int m_numObjectPass;      
+   
+   /* event-level cutflow */
+   
+     TH1D* m_cutflowHist = nullptr;      
+     TH1D* m_cutflowHistW = nullptr;     
+     int   m_cutflow_bin;      
+     bool  m_isUsedBefore = false;     
+   
+     /* object-level cutflow */
+   
+     TH1D* m_el_cutflowHist_1 = nullptr;            
+     TH1D* m_el_cutflowHist_2 = nullptr;            
+   
+     int   m_el_cutflow_all;              
+     int   m_el_cutflow_author_cut;       
+     int   m_el_cutflow_OQ_cut;           
+     int   m_el_cutflow_deadHVCell_cut;   
+     int   m_el_cutflow_ptmax_cut;        
+     int   m_el_cutflow_ptmin_cut;        
+     int   m_el_cutflow_eta_cut;          
+     int   m_el_cutflow_z0sintheta_cut;   
+     int   m_el_cutflow_d0_cut;           
+     int   m_el_cutflow_d0sig_cut;        
+     int   m_el_cutflow_BL_cut;           
+     int   m_el_cutflow_PID_cut;          
+     int   m_el_cutflow_iso_cut;          
+   
+     std::vector<std::string> m_IsoKeys;  
+   
+   
+   
+     /* tools */
+   
+     asg::AnaToolHandle<CP::IIsolationSelectionTool> m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; 
+     // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
+     CP::IsolationSelectionTool*                     m_isolationSelectionTool{nullptr};                                                                 
+     asg::AnaToolHandle<Trig::TrigDecisionTool>      m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; 
+     asg::AnaToolHandle<Trig::IMatchingTool>         m_trigElectronMatchTool_handle; 
+     asg::AnaToolHandle<Trig::IMatchScoringTool>     m_scoreTool                    {"Trig::DRScoringTool/DRScoringTool"                             }; 
+   
+     bool m_doTrigMatch = true;
+   
+     /* PID manager(s) */
+     ElectronLHPIDManager*                    m_el_LH_PIDManager = nullptr;        
+     ElectronCutBasedPIDManager*              m_el_CutBased_PIDManager = nullptr;  
+   
+     asg::AnaToolHandle<IAsgDeadHVCellRemovalTool> m_deadHVTool; 
+   
+     /* other private members */
+   
+     std::vector<std::string>            m_singleElTrigChainsList;  
+     std::vector<std::string>            m_diElTrigChainsList;      
+   
+   public:
+   
+     /* this is a standard constructor */
+   
+     ElectronSelector ();
+   
+     ~ElectronSelector();
+   
+     /* these are the functions inherited from Algorithm */
+   
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     /* added functions not from Algorithm */
+   
+     bool executeSelection( const xAOD::ElectronContainer* inElectrons, float mcEvtWeight, bool countPass,
+                            ConstDataVector<xAOD::ElectronContainer>* selectedElectrons );
+     virtual int passCuts( const xAOD::Electron* electron, const xAOD::Vertex *primaryVertex );
+   
+     /* this is needed to distribute the algorithm to the workers */
+     ClassDef(ElectronSelector, 1);
+   };
+   
+   #endif

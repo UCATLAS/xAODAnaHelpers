@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installing &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="xAH_run.py" href="UsingUs.html" />
+    <link rel="prev" title="Introduction" href="Intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-the-source">Getting the Source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#checking-out-a-specific-tag">Checking out a specific tag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#compiling">Compiling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cmake-based-21-2-x">CMake-based (21.2.X)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Installing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installing">
+<h1>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="getting-the-source">
+<h2>Getting the Source<a class="headerlink" href="#getting-the-source" title="Permalink to this headline">¶</a></h2>
+<p>Start in a work directory</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>workdir<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$_</span>
+</pre></div>
+</div>
+<p>Then clone the source</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/UCATLAS/xAODAnaHelpers
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://help.github.com/articles/generating-ssh-keys/">If you have ssh-keys set up</a>, then you can clone over SSH instead of HTTPS:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:UCATLAS/xAODAnaHelpers
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<p>At this point, you have the FULL state of the code. You can run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">log</span></code> to view the recent changes (no more ChangeLog!).</p>
+<div class="section" id="checking-out-a-specific-tag">
+<h3>Checking out a specific tag<a class="headerlink" href="#checking-out-a-specific-tag" title="Permalink to this headline">¶</a></h3>
+<p>You can run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">tag</span></code> to view all current tags. You can checkout a specific tag (in a detached head state):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>xAODAnaHelpers
+git<span class="w"> </span>checkout<span class="w"> </span>tags/XX-YY-ZZ
+<span class="nb">cd</span><span class="w"> </span>../
+</pre></div>
+</div>
+<p>or you can use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>xAODAnaHelpers
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>XX-YY-ZZ<span class="w"> </span>tags/XX-YY-ZZ
+<span class="nb">cd</span><span class="w"> </span>../
+</pre></div>
+</div>
+<p>which switches you from main to a branch of the given version.</p>
+</div>
+</div>
+<div class="section" id="compiling">
+<h2>Compiling<a class="headerlink" href="#compiling" title="Permalink to this headline">¶</a></h2>
+<p>For all sets of instructions below, make sure you run <code class="docutils literal notranslate"><span class="pre">setupATLAS</span></code> first.</p>
+<div class="section" id="cmake-based-21-2-x">
+<h3>CMake-based (21.2.X)<a class="headerlink" href="#cmake-based-21-2-x" title="Permalink to this headline">¶</a></h3>
+<p>This step requires a little extra work, but compiles significantly faster. First, inside the <code class="docutils literal notranslate"><span class="pre">workdir</span></code> directory, we’ll create a build and source directory. The source directory will contain all packages we build in CMake:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="n">build</span>
+</pre></div>
+</div>
+<p>Then we’ll set up a release inside the source:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="n">src</span>
+<span class="n">asetup</span><span class="w"> </span><span class="p">(</span><span class="n">RELEASE</span><span class="p">),</span><span class="n">here</span>
+</pre></div>
+</div>
+<p>This also sets up a <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file in this top-level directory that searches for all packages you’ve checked out inside it. At this point, clone/checkout all packages you need such as xAODAnaHelpers:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="o">&lt;</span><span class="n">url</span><span class="o">&gt;/</span><span class="n">UCATLAS</span><span class="o">/</span><span class="n">xAODAnaHelpers</span><span class="p">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Next, you will need to change to your build directory that builds all your checked-out packages which is separate from your source code:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">build</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is inside the <code class="docutils literal notranslate"><span class="pre">workdir</span></code>, so you will have <code class="docutils literal notranslate"><span class="pre">workdir/src/xAODAnaHelpers</span></code> and <code class="docutils literal notranslate"><span class="pre">workdir/build</span></code> as paths, for example.</p>
+</div>
+<p>and then run cmake to generate our makefiles, then compile:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>../src
+make
+<span class="nb">cd</span><span class="w"> </span>../
+</pre></div>
+</div>
+<p>The last thing you need to do is get your environment set up correctly, so you will need to source <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> (from the top-level directory):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>build/*/setup.sh
+</pre></div>
+</div>
+<p>Environment variables like <code class="docutils literal notranslate"><span class="pre">${AnalysisBase_PLATFORM}</span></code> (or <code class="docutils literal notranslate"><span class="pre">${AnalysisTop_PLATFORM}</span></code>) seem to contain the correct variable which represents the architecture of the system, e.g. <code class="docutils literal notranslate"><span class="pre">x86_64-slc6-gcc49-opt</span></code>.</p>
+</div>
+</div>
+<div class="section" id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
+<p>Assuming you have <a class="reference external" href="https://www.docker.com/)">docker</a>, you can always grab the latest image for a given release (e.g. 21.2.4) like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ucatlas/xah:21.2.4-latest
+docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>ucatlas/xah:21.2.4-latest<span class="w"> </span>bash
+</pre></div>
+</div>
+<p>which puts you into the docker image and xAH is precompiled and the environment is set up so you can:</p>
+<ul class="simple">
+<li><p>compile your package on top of xAH [using cmake, make]</p></li>
+<li><p>run vanilla <code class="docutils literal notranslate"><span class="pre">`xAH_run.py`</span></code> with a config on some ROOT files</p></li>
+</ul>
+<p>For example, if you want to have the docker image have access to ROOT files locally on your computer, you can “mount” a folder in it like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>/path/to/data/files:/home/atlas/data<span class="w"> </span>ucatlas/xah:21.2.4-latest<span class="w"> </span>bash
+</pre></div>
+</div>
+<p>and /home/atlas/data inside the docker file will map to /path/to/data/files on your computer (host).</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="UsingUs.html" class="btn btn-neutral float-right" title="xAH_run.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

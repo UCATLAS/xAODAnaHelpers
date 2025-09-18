@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File ClusterHists.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File ClusterHists.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_ClusterHists.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-clusterhists-cxx">
+<span id="program-listing-file-root-clusterhists-cxx"></span><h1>Program Listing for File ClusterHists.cxx<a class="headerlink" href="#program-listing-for-file-clusterhists-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_ClusterHists.cxx.html#file-root-clusterhists-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/ClusterHists.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/ClusterHists.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;math.h&gt;</span>
+
+<span class="n">ANA_MSG_SOURCE</span><span class="p">(</span><span class="n">msgClusterHists</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ClusterHists&quot;</span><span class="p">)</span>
+
+<span class="n">ClusterHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">ClusterHists</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">HistogramManager</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">detailStr</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">ClusterHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="o">~</span><span class="n">ClusterHists</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">ClusterHists</span><span class="o">::</span><span class="n">initialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// These plots are always made</span>
+<span class="w">  </span><span class="n">m_ccl_n</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster multiplicity&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_e</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;e&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster e [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_eta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster #eta&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_phi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster #phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">(),</span><span class="w"> </span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">// 2D plots</span>
+<span class="w">  </span><span class="n">m_ccl_eta_vs_phi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eta_vs_phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster #phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">(),</span><span class="w"> </span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;cluster #eta&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_e_vs_eta</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;e_vs_eta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster #eta&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster e [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_e_vs_phi</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;e_vs_phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cluster #phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">(),</span><span class="w"> </span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;cluster e [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// if worker is passed to the class add histograms to the output</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">ClusterHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloClusterContainer</span><span class="o">*</span><span class="w"> </span><span class="n">ccls</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgClusterHists</span><span class="p">;</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloClusterContainer</span><span class="o">::</span><span class="n">const_iterator</span><span class="w"> </span><span class="n">ccl_itr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ccls</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloClusterContainer</span><span class="o">::</span><span class="n">const_iterator</span><span class="w"> </span><span class="n">ccl_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ccls</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">ccl_itr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">ccl_end</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">ccl_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">ccl_itr</span><span class="p">),</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_ccl_n</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">ccls</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">ClusterHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloCluster</span><span class="o">*</span><span class="w"> </span><span class="n">ccl</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">//basic</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">cclE</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">ccl</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">cclEta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ccl</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">cclPhi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ccl</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">m_ccl_e</span><span class="w">          </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">cclE</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_eta</span><span class="w">        </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">cclEta</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_phi</span><span class="w">        </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">cclPhi</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// 2D plots</span>
+<span class="w">  </span><span class="n">m_ccl_eta_vs_phi</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">cclPhi</span><span class="p">,</span><span class="w"> </span><span class="n">cclEta</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_e_vs_eta</span><span class="w">   </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">cclEta</span><span class="p">,</span><span class="w"> </span><span class="n">cclE</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_ccl_e_vs_phi</span><span class="w">   </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">cclPhi</span><span class="p">,</span><span class="w"> </span><span class="n">cclE</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File TrigMatcher.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File TrigMatcher.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_TrigMatcher.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-trigmatcher-cxx">
+<span id="program-listing-file-root-trigmatcher-cxx"></span><h1>Program Listing for File TrigMatcher.cxx<a class="headerlink" href="#program-listing-for-file-trigmatcher-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_TrigMatcher.cxx.html#file-root-trigmatcher-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/TrigMatcher.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/********************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * Interface to CP trigger matching tool(s).</span>
+<span class="cm"> *</span>
+<span class="cm"> *******************************************/</span>
+
+<span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;typeinfo&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="c1">// EL include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="c1">// EDM include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODEventInfo/EventInfo.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/HelperFunctions.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/TrigMatcher.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TriggerMatchingTool/MatchFromCompositeTool.h&quot;</span>
+
+<span class="c1">// ROOT include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;TFile.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;TObjArray.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;TObjString.h&gt;</span>
+
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">TrigMatcher</span><span class="p">)</span>
+
+<span class="n">TrigMatcher</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">TrigMatcher</span><span class="w"> </span><span class="p">()</span>
+<span class="o">:</span><span class="w"> </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;TrigMatcher&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">TrigMatcher</span><span class="o">::~</span><span class="n">TrigMatcher</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrigMatcher</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you put code that sets up the job on the submission object</span>
+<span class="w">  </span><span class="c1">// so that it is ready to work with your algorithm, e.g. you can</span>
+<span class="w">  </span><span class="c1">// request the D3PDReader service or add output files.  Any code you</span>
+<span class="w">  </span><span class="c1">// put here could instead also go into the submission script.  The</span>
+<span class="w">  </span><span class="c1">// sole advantage of putting it here is that it gets automatically</span>
+<span class="w">  </span><span class="c1">// activated/deactivated when you add/remove the algorithm from your</span>
+<span class="w">  </span><span class="c1">// job, which may or may not be of value to you.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TrigMatcher&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrigMatcher</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Initializing TrigMatcher Interface... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">// Standard containers</span>
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// Configuration</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;InputContainer is empty!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">isPHYS</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Grab the TrigDecTool from the ToolStore</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">isUserConfigured</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">ANA_MSG_FATAL</span><span class="p">(</span><span class="s">&quot;A configured &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">typeAndName</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; must have been previously created! Are you creating one in xAH::BasicEventSelection?&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// ***************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Initialise Trig::TrigMatchingTool</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// ***************************************</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_trigChains</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">trig</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">m_trigChains</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">trig</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_trigChainsList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">trig</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_scoreTool</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">//  everything went fine, let&#39;s initialise the tool!</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">isPHYS</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_trigMatchTool_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">IMatchingTool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Trig::MatchingTool/MatchingTool&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigMatchTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TrigDecisionTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="w"> </span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigMatchTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;ScoringTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_scoreTool</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// For DAOD_PHYS samples</span>
+<span class="w">    </span><span class="n">m_trigMatchTool_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">IMatchingTool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Trig::MatchFromCompositeTool/MatchFromCompositeTool&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigMatchTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// **********************************************************************************************</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TrigMatcher Interface succesfully initialized!&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrigMatcher</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done on every single</span>
+<span class="w">  </span><span class="c1">// events, e.g. read input variables, apply cuts, and fill</span>
+<span class="w">  </span><span class="c1">// histograms and trees.  This is where most of your actual analysis</span>
+<span class="w">  </span><span class="c1">// code will go.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Applying trigger matching... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inParticles</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// if input comes from xAOD, or just running one collection,</span>
+<span class="w">  </span><span class="c1">// then get the one collection and be done with it</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_systNames</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="c1">// this will be the collection processed - no matter what!!</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inParticles</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">executeMatching</span><span class="p">(</span><span class="w"> </span><span class="n">inParticles</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// get the list of systematics to run over</span>
+
+<span class="w">    </span><span class="c1">// get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&gt;*</span><span class="w"> </span><span class="n">systNames</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">systNames</span><span class="p">,</span><span class="w"> </span><span class="n">m_systNames</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// loop over systematic sets</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">systNames</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot; syst name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  input container name:  &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="o">+</span><span class="n">systName</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inParticles</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">systName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">executeMatching</span><span class="p">(</span><span class="w"> </span><span class="n">inParticles</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">TrigMatcher</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">executeMatching</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inParticles</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">isTrigMatchedDecor</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;trigMatched&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">particle</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">inParticles</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Trigger matching an object&quot;</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">isTrigMatchedDecor</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">particle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="n">isTrigMatchedDecor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">particle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="n">chain</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_trigChainsList</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t</span><span class="s"> checking trigger chain &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">chain</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">matched</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_trigMatchTool_handle</span><span class="o">-&gt;</span><span class="n">match</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="n">chain</span><span class="p">,</span><span class="w"> </span><span class="mf">0.07</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\t\t</span><span class="s"> result = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">matched</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">matched</span><span class="p">)</span><span class="w"> </span><span class="n">isTrigMatchedDecor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">particle</span><span class="w"> </span><span class="p">).</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">chain</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1af11e7a82f6bef2be5d7403daca2df17c:
+
+Template Function HelperFunctions::recordOutput
+===============================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::recordOutput(xAOD::TEvent *, xAOD::TStore *, std::string)

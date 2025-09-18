@@ -1,0 +1,517 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>\(\mu\) &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="\(\tau\)" href="TauEfficiencyCorrector.html" />
+    <link rel="prev" title="\(e\)" href="ElectronEfficiencyCorrector.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="BJetEfficiencyCorrector.html"><em>b</em>-jet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ElectronEfficiencyCorrector.html"><span class="math notranslate nohighlight">\(e\)</span></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><span class="math notranslate nohighlight">\(\mu\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="TauEfficiencyCorrector.html"><span class="math notranslate nohighlight">\(\tau\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Selectors.html">Selecting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Outputs.html">Producing Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Correctors.html">Efficiency Correcting</a> &raquo;</li>
+        
+      <li><span class="math notranslate nohighlight">\(\mu\)</span></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/MuonEfficiencyCorrector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mu">
+<h1><span class="math notranslate nohighlight">\(\mu\)</span><a class="headerlink" href="#mu" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv423MuonEfficiencyCorrector">
+<span id="_CPPv323MuonEfficiencyCorrector"></span><span id="_CPPv223MuonEfficiencyCorrector"></span><span id="MuonEfficiencyCorrector"></span><span class="target" id="classMuonEfficiencyCorrector"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MuonEfficiencyCorrector</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><a class="headerlink" href="#_CPPv423MuonEfficiencyCorrector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector23MuonEfficiencyCorrectorEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector23MuonEfficiencyCorrectorEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector23MuonEfficiencyCorrectorEv"></span><span id="MuonEfficiencyCorrector::MuonEfficiencyCorrector"></span><span class="target" id="classMuonEfficiencyCorrector_1a4f6db3f487ba400e6777e8cc0628d01a"></span><span class="sig-name descname"><span class="n"><span class="pre">MuonEfficiencyCorrector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector23MuonEfficiencyCorrectorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector8setupJobERN2EL3JobE">
+<span id="_CPPv3N23MuonEfficiencyCorrector8setupJobERN2EL3JobE"></span><span id="_CPPv2N23MuonEfficiencyCorrector8setupJobERN2EL3JobE"></span><span id="MuonEfficiencyCorrector::setupJob__EL::JobR"></span><span class="target" id="classMuonEfficiencyCorrector_1a167c2990109261b1c3f373842c16c313"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector8setupJobERN2EL3JobE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector11fileExecuteEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector11fileExecuteEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector11fileExecuteEv"></span><span id="MuonEfficiencyCorrector::fileExecute"></span><span class="target" id="classMuonEfficiencyCorrector_1ac8b96b9107de9facb943e9227081039f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector11fileExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14histInitializeEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector14histInitializeEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector14histInitializeEv"></span><span id="MuonEfficiencyCorrector::histInitialize"></span><span class="target" id="classMuonEfficiencyCorrector_1a11d5a748d7112ae0efe4c8905736f466"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14histInitializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector11changeInputEb">
+<span id="_CPPv3N23MuonEfficiencyCorrector11changeInputEb"></span><span id="_CPPv2N23MuonEfficiencyCorrector11changeInputEb"></span><span id="MuonEfficiencyCorrector::changeInput__b"></span><span class="target" id="classMuonEfficiencyCorrector_1a6199077d6af69c2d55ca71f67b67b787"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector11changeInputEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector10initializeEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector10initializeEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector10initializeEv"></span><span id="MuonEfficiencyCorrector::initialize"></span><span class="target" id="classMuonEfficiencyCorrector_1a7d5c7235431f312d068cff8e001bc935"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector10initializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector7executeEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector7executeEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector7executeEv"></span><span id="MuonEfficiencyCorrector::execute"></span><span class="target" id="classMuonEfficiencyCorrector_1ac8fbd12c8482f605046c561ad6fc6b0a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector7executeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector11postExecuteEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector11postExecuteEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector11postExecuteEv"></span><span id="MuonEfficiencyCorrector::postExecute"></span><span class="target" id="classMuonEfficiencyCorrector_1a83a64695ce55278c4431a33e5a1ad064"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector11postExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector8finalizeEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector8finalizeEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector8finalizeEv"></span><span id="MuonEfficiencyCorrector::finalize"></span><span class="target" id="classMuonEfficiencyCorrector_1a067e74cff58c70c0253b26dd738f6fbd"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector8finalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector12histFinalizeEv">
+<span id="_CPPv3N23MuonEfficiencyCorrector12histFinalizeEv"></span><span id="_CPPv2N23MuonEfficiencyCorrector12histFinalizeEv"></span><span id="MuonEfficiencyCorrector::histFinalize"></span><span class="target" id="classMuonEfficiencyCorrector_1a5549432f69f6c67c80bfb382460625d6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector12histFinalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector9executeSFEPKN4xAOD9EventInfoEPKN4xAOD13MuonContainerEbb">
+<span id="_CPPv3N23MuonEfficiencyCorrector9executeSFEPKN4xAOD9EventInfoEPKN4xAOD13MuonContainerEbb"></span><span id="_CPPv2N23MuonEfficiencyCorrector9executeSFEPKN4xAOD9EventInfoEPKN4xAOD13MuonContainerEbb"></span><span id="MuonEfficiencyCorrector::executeSF__xAOD::EventInfoCP.xAOD::MuonContainerCP.b.b"></span><span class="target" id="classMuonEfficiencyCorrector_1a207ca8f68479c5f193877cf11eecdd0f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">executeSF</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EventInfo</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventInfo</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">MuonContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">inputMuons</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">nominal</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">writeSystNames</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector9executeSFEPKN4xAOD9EventInfoEPKN4xAOD13MuonContainerEbb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector17m_inContainerNameE">
+<span id="_CPPv3N23MuonEfficiencyCorrector17m_inContainerNameE"></span><span id="_CPPv2N23MuonEfficiencyCorrector17m_inContainerNameE"></span><span id="MuonEfficiencyCorrector::m_inContainerName__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1aca08872318132b4b93cdd9a475c77e18"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector17m_inContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector22m_overrideCalibReleaseE">
+<span id="_CPPv3N23MuonEfficiencyCorrector22m_overrideCalibReleaseE"></span><span id="_CPPv2N23MuonEfficiencyCorrector22m_overrideCalibReleaseE"></span><span id="MuonEfficiencyCorrector::m_overrideCalibRelease__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1aa025ead034641e84d8ad04733c14b88b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_overrideCalibRelease</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector22m_overrideCalibReleaseE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Recommendations release (not recommended to change) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector18m_WorkingPointRecoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector18m_WorkingPointRecoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector18m_WorkingPointRecoE"></span><span id="MuonEfficiencyCorrector::m_WorkingPointReco__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a4d4e3a742f9a4aaa080a185c21adeae6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Loose&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector18m_WorkingPointRecoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector17m_WorkingPointIsoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector17m_WorkingPointIsoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector17m_WorkingPointIsoE"></span><span id="MuonEfficiencyCorrector::m_WorkingPointIso__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1ada6597aeb16c5270654e40ac3382984d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;LooseTrackOnly&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector17m_WorkingPointIsoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector13m_AllowZeroSFE">
+<span id="_CPPv3N23MuonEfficiencyCorrector13m_AllowZeroSFE"></span><span id="_CPPv2N23MuonEfficiencyCorrector13m_AllowZeroSFE"></span><span id="MuonEfficiencyCorrector::m_AllowZeroSF__b"></span><span class="target" id="classMuonEfficiencyCorrector_1a4f76bd7bfe67280e647a5ad8430e18fc"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_AllowZeroSF</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector13m_AllowZeroSFE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Use with caution!!! </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector12m_MuTrigLegsE">
+<span id="_CPPv3N23MuonEfficiencyCorrector12m_MuTrigLegsE"></span><span id="_CPPv2N23MuonEfficiencyCorrector12m_MuTrigLegsE"></span><span id="MuonEfficiencyCorrector::m_MuTrigLegs__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a0a1db9ed4159b66af05ac2ec08d938d2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_MuTrigLegs</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;HLT_mu26_imedium&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector12m_MuTrigLegsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>list of comma-separated single-mu trigger corrections. Individual legs of di-mu menus can be parsed </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector22m_usePerMuonTriggerSFsE">
+<span id="_CPPv3N23MuonEfficiencyCorrector22m_usePerMuonTriggerSFsE"></span><span id="_CPPv2N23MuonEfficiencyCorrector22m_usePerMuonTriggerSFsE"></span><span id="MuonEfficiencyCorrector::m_usePerMuonTriggerSFs__b"></span><span class="target" id="classMuonEfficiencyCorrector_1a0dffbba99898af51aa3e751c42ed8173"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_usePerMuonTriggerSFs</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector22m_usePerMuonTriggerSFsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get per-muon trigger SF (default: true) [if false it will take into account combinatorics using all muons from the input muon container]. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector18m_WorkingPointTTVAE">
+<span id="_CPPv3N23MuonEfficiencyCorrector18m_WorkingPointTTVAE"></span><span id="_CPPv2N23MuonEfficiencyCorrector18m_WorkingPointTTVAE"></span><span id="MuonEfficiencyCorrector::m_WorkingPointTTVA__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1abf6be157974ea43ffd4d4c7a2e36babf"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointTTVA</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;TTVA&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector18m_WorkingPointTTVAE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_inputSystNamesMuonsE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_inputSystNamesMuonsE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_inputSystNamesMuonsE"></span><span id="MuonEfficiencyCorrector::m_inputSystNamesMuons__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a03e199617526605c2e7e5ec45c321c28"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inputSystNamesMuons</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_inputSystNamesMuonsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The name of the vector containing the names of the systematically-varied muons-related containers from the upstream algorithm, which will be processed by this algorithm. </p>
+<p>Only muon calibration systematics or any other that create shallow copies of electron containers should be passed to this tool. It is advised to run this algorithm before running algorithms combining multiple calibration systematics (e.g. overlap removal). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_writeSystToMetadataE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_writeSystToMetadataE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_writeSystToMetadataE"></span><span id="MuonEfficiencyCorrector::m_writeSystToMetadata__b"></span><span class="target" id="classMuonEfficiencyCorrector_1a5121aea671584f020c282ed93f3ac586"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_writeSystToMetadata</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_writeSystToMetadataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write systematics names to metadata. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector13m_systValRecoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector13m_systValRecoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector13m_systValRecoE"></span><span id="MuonEfficiencyCorrector::m_systValReco__float"></span><span class="target" id="classMuonEfficiencyCorrector_1a5de283df941e0117036545e42e799e8f"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector13m_systValRecoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector12m_systValIsoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector12m_systValIsoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector12m_systValIsoE"></span><span id="MuonEfficiencyCorrector::m_systValIso__float"></span><span class="target" id="classMuonEfficiencyCorrector_1a7bea9e0832b2cf0a9c5314dc2daf4170"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector12m_systValIsoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector13m_systValTrigE">
+<span id="_CPPv3N23MuonEfficiencyCorrector13m_systValTrigE"></span><span id="_CPPv2N23MuonEfficiencyCorrector13m_systValTrigE"></span><span id="MuonEfficiencyCorrector::m_systValTrig__float"></span><span class="target" id="classMuonEfficiencyCorrector_1ab8655c1fafd0d97417dc586c99653541"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector13m_systValTrigE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector13m_systValTTVAE">
+<span id="_CPPv3N23MuonEfficiencyCorrector13m_systValTTVAE"></span><span id="_CPPv2N23MuonEfficiencyCorrector13m_systValTTVAE"></span><span id="MuonEfficiencyCorrector::m_systValTTVA__float"></span><span class="target" id="classMuonEfficiencyCorrector_1aeaa9dfdc839592cd78cd35526edcb375"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValTTVA</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector13m_systValTTVAE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14m_systNameRecoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector14m_systNameRecoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector14m_systNameRecoE"></span><span id="MuonEfficiencyCorrector::m_systNameReco__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1ac1194f121aa8c33d6e630818befbfd39"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14m_systNameRecoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector13m_systNameIsoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector13m_systNameIsoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector13m_systNameIsoE"></span><span id="MuonEfficiencyCorrector::m_systNameIso__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1af8efdab808bbe7f8730965133c0f70ff"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector13m_systNameIsoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14m_systNameTrigE">
+<span id="_CPPv3N23MuonEfficiencyCorrector14m_systNameTrigE"></span><span id="_CPPv2N23MuonEfficiencyCorrector14m_systNameTrigE"></span><span id="MuonEfficiencyCorrector::m_systNameTrig__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a571296ed6c0802edddd6deb620d92d17"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14m_systNameTrigE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14m_systNameTTVAE">
+<span id="_CPPv3N23MuonEfficiencyCorrector14m_systNameTTVAE"></span><span id="_CPPv2N23MuonEfficiencyCorrector14m_systNameTTVAE"></span><span id="MuonEfficiencyCorrector::m_systNameTTVA__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1aff03410aac1efd01588229f1b351c5d4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameTTVA</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14m_systNameTTVAE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_outputSystNamesRecoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_outputSystNamesRecoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_outputSystNamesRecoE"></span><span id="MuonEfficiencyCorrector::m_outputSystNamesReco__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a9cabaf34088a3b5718b7c67d665248de"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;MuonEfficiencyCorrector_RecoSyst&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_outputSystNamesRecoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector20m_outputSystNamesIsoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector20m_outputSystNamesIsoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector20m_outputSystNamesIsoE"></span><span id="MuonEfficiencyCorrector::m_outputSystNamesIso__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a9dec194fb2d6c4e8010350d92df5aa44"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;MuonEfficiencyCorrector_IsoSyst&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector20m_outputSystNamesIsoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_outputSystNamesTrigE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_outputSystNamesTrigE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_outputSystNamesTrigE"></span><span id="MuonEfficiencyCorrector::m_outputSystNamesTrig__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a3f3a43744412863cc72bfc87c6d45b51"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;MuonEfficiencyCorrector_TrigSyst&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_outputSystNamesTrigE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_outputSystNamesTTVAE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_outputSystNamesTTVAE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_outputSystNamesTTVAE"></span><span id="MuonEfficiencyCorrector::m_outputSystNamesTTVA__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1aa0797d9d95fe97e4e167b62473d2350e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesTTVA</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;MuonEfficiencyCorrector_TTVASyst&quot;</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_outputSystNamesTTVAE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector7m_doLRTE">
+<span id="_CPPv3N23MuonEfficiencyCorrector7m_doLRTE"></span><span id="_CPPv2N23MuonEfficiencyCorrector7m_doLRTE"></span><span id="MuonEfficiencyCorrector::m_doLRT__b"></span><span class="target" id="classMuonEfficiencyCorrector_1ad13f0e19c4e44db8531cce9cf43c4b98"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doLRT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector7m_doLRTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Turn on if using LRT muons. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector10m_numEventE">
+<span id="_CPPv3N23MuonEfficiencyCorrector10m_numEventE"></span><span id="_CPPv2N23MuonEfficiencyCorrector10m_numEventE"></span><span id="MuonEfficiencyCorrector::m_numEvent__i"></span><span class="target" id="classMuonEfficiencyCorrector_1a4245e3d4e187a0a3b03e732768dd370e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numEvent</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector10m_numEventE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector11m_numObjectE">
+<span id="_CPPv3N23MuonEfficiencyCorrector11m_numObjectE"></span><span id="_CPPv2N23MuonEfficiencyCorrector11m_numObjectE"></span><span id="MuonEfficiencyCorrector::m_numObject__i"></span><span class="target" id="classMuonEfficiencyCorrector_1a27c04de58edbde8304915f6765ddc5e2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numObject</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector11m_numObjectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14m_systListRecoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector14m_systListRecoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector14m_systListRecoE"></span><span id="MuonEfficiencyCorrector::m_systListReco__std::vector:CP::SystematicSet:"></span><span class="target" id="classMuonEfficiencyCorrector_1a2304efa4416a12bf4a5ac1f3f1a3db4f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystematicSet</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systListReco</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14m_systListRecoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector13m_systListIsoE">
+<span id="_CPPv3N23MuonEfficiencyCorrector13m_systListIsoE"></span><span id="_CPPv2N23MuonEfficiencyCorrector13m_systListIsoE"></span><span id="MuonEfficiencyCorrector::m_systListIso__std::vector:CP::SystematicSet:"></span><span class="target" id="classMuonEfficiencyCorrector_1ae13c089118b03c376ef8ce5539200a42"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystematicSet</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systListIso</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector13m_systListIsoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14m_systListTrigE">
+<span id="_CPPv3N23MuonEfficiencyCorrector14m_systListTrigE"></span><span id="_CPPv2N23MuonEfficiencyCorrector14m_systListTrigE"></span><span id="MuonEfficiencyCorrector::m_systListTrig__std::vector:CP::SystematicSet:"></span><span class="target" id="classMuonEfficiencyCorrector_1a93f2b55b40e455d0aa51cb8f50505a8a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystematicSet</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systListTrig</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14m_systListTrigE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14m_systListTTVAE">
+<span id="_CPPv3N23MuonEfficiencyCorrector14m_systListTTVAE"></span><span id="_CPPv2N23MuonEfficiencyCorrector14m_systListTTVAE"></span><span id="MuonEfficiencyCorrector::m_systListTTVA__std::vector:CP::SystematicSet:"></span><span class="target" id="classMuonEfficiencyCorrector_1af759ba86561e828d28d6026c49bf49ab"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystematicSet</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systListTTVA</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14m_systListTTVAE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector25m_outputSystNamesTrigBaseE">
+<span id="_CPPv3N23MuonEfficiencyCorrector25m_outputSystNamesTrigBaseE"></span><span id="_CPPv2N23MuonEfficiencyCorrector25m_outputSystNamesTrigBaseE"></span><span id="MuonEfficiencyCorrector::m_outputSystNamesTrigBase__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a85e07e8a280ca73beb97716634356405"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesTrigBase</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector25m_outputSystNamesTrigBaseE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector20m_pileup_tool_handleE">
+<span id="_CPPv3N23MuonEfficiencyCorrector20m_pileup_tool_handleE"></span><span id="_CPPv2N23MuonEfficiencyCorrector20m_pileup_tool_handleE"></span><span id="MuonEfficiencyCorrector::m_pileup_tool_handle__asg::AnaToolHandle:CP::IPileupReweightingTool:"></span><span class="target" id="classMuonEfficiencyCorrector_1a88f475160933799dbc5843eb29a95b62"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IPileupReweightingTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pileup_tool_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;CP::PileupReweightingTool/Pileup&quot;</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector20m_pileup_tool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector15m_muRecoSF_toolE">
+<span id="_CPPv3N23MuonEfficiencyCorrector15m_muRecoSF_toolE"></span><span id="_CPPv2N23MuonEfficiencyCorrector15m_muRecoSF_toolE"></span><span id="MuonEfficiencyCorrector::m_muRecoSF_tool__asg::AnaToolHandle:CP::IMuonEfficiencyScaleFactors:"></span><span class="target" id="classMuonEfficiencyCorrector_1a50e883addd214af3486411da070c6bc9"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IMuonEfficiencyScaleFactors</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muRecoSF_tool</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector15m_muRecoSF_toolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_recoEffSF_tool_nameE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_recoEffSF_tool_nameE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_recoEffSF_tool_nameE"></span><span id="MuonEfficiencyCorrector::m_recoEffSF_tool_name__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a0b17f33743b577b06cd70eb8772ead88"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_recoEffSF_tool_name</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_recoEffSF_tool_nameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector14m_muIsoSF_toolE">
+<span id="_CPPv3N23MuonEfficiencyCorrector14m_muIsoSF_toolE"></span><span id="_CPPv2N23MuonEfficiencyCorrector14m_muIsoSF_toolE"></span><span id="MuonEfficiencyCorrector::m_muIsoSF_tool__asg::AnaToolHandle:CP::IMuonEfficiencyScaleFactors:"></span><span class="target" id="classMuonEfficiencyCorrector_1ae2eddc1a86c182ed96d312cda05e3f4d"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IMuonEfficiencyScaleFactors</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muIsoSF_tool</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector14m_muIsoSF_toolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector20m_isoEffSF_tool_nameE">
+<span id="_CPPv3N23MuonEfficiencyCorrector20m_isoEffSF_tool_nameE"></span><span id="_CPPv2N23MuonEfficiencyCorrector20m_isoEffSF_tool_nameE"></span><span id="MuonEfficiencyCorrector::m_isoEffSF_tool_name__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a5162cdaedc696f585ac8612bb70b4811"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isoEffSF_tool_name</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector20m_isoEffSF_tool_nameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector15m_muTrigSF_toolE">
+<span id="_CPPv3N23MuonEfficiencyCorrector15m_muTrigSF_toolE"></span><span id="_CPPv2N23MuonEfficiencyCorrector15m_muTrigSF_toolE"></span><span id="MuonEfficiencyCorrector::m_muTrigSF_tool__asg::AnaToolHandle:CP::IMuonTriggerScaleFactors:"></span><span class="target" id="classMuonEfficiencyCorrector_1af725b1ab82461c4e668018e89580370e"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IMuonTriggerScaleFactors</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muTrigSF_tool</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector15m_muTrigSF_toolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_trigEffSF_tool_nameE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_trigEffSF_tool_nameE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_trigEffSF_tool_nameE"></span><span id="MuonEfficiencyCorrector::m_trigEffSF_tool_name__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a8b352a5ba5f0842a51755b3a516ea109"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigEffSF_tool_name</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_trigEffSF_tool_nameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector15m_muTTVASF_toolE">
+<span id="_CPPv3N23MuonEfficiencyCorrector15m_muTTVASF_toolE"></span><span id="_CPPv2N23MuonEfficiencyCorrector15m_muTTVASF_toolE"></span><span id="MuonEfficiencyCorrector::m_muTTVASF_tool__asg::AnaToolHandle:CP::IMuonEfficiencyScaleFactors:"></span><span class="target" id="classMuonEfficiencyCorrector_1a2d350458baa84f03eb835e5789fc613e"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IMuonEfficiencyScaleFactors</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muTTVASF_tool</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector15m_muTTVASF_toolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector21m_TTVAEffSF_tool_nameE">
+<span id="_CPPv3N23MuonEfficiencyCorrector21m_TTVAEffSF_tool_nameE"></span><span id="_CPPv2N23MuonEfficiencyCorrector21m_TTVAEffSF_tool_nameE"></span><span id="MuonEfficiencyCorrector::m_TTVAEffSF_tool_name__ss"></span><span class="target" id="classMuonEfficiencyCorrector_1a626bd273ba4883d62f5a7d75dbb1ea60"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_TTVAEffSF_tool_name</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector21m_TTVAEffSF_tool_nameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N23MuonEfficiencyCorrector20m_SingleMuTriggerMapE">
+<span id="_CPPv3N23MuonEfficiencyCorrector20m_SingleMuTriggerMapE"></span><span id="_CPPv2N23MuonEfficiencyCorrector20m_SingleMuTriggerMapE"></span><span id="MuonEfficiencyCorrector::m_SingleMuTriggerMap__std::map:ss.ss:"></span><span class="target" id="classMuonEfficiencyCorrector_1a4780d59a46e365fa1325abb48b77026f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_SingleMuTriggerMap</span></span></span><a class="headerlink" href="#_CPPv4N23MuonEfficiencyCorrector20m_SingleMuTriggerMapE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TauEfficiencyCorrector.html" class="btn btn-neutral float-right" title="\(\tau\)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ElectronEfficiencyCorrector.html" class="btn btn-neutral float-left" title="\(e\)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

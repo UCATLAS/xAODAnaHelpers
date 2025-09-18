@@ -1,0 +1,909 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Event &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Overlap Removal" href="OverlapRemover.html" />
+    <link rel="prev" title="Selecting Objects" href="Selectors.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Selectors.html">Selecting Objects</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="OverlapRemover.html">Overlap Removal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ElectronSelector.html"><span class="math notranslate nohighlight">\(e\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="JetSelector.html"><span class="math notranslate nohighlight">\(j\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="MuonSelector.html"><span class="math notranslate nohighlight">\(\mu\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="PhotonSelector.html"><span class="math notranslate nohighlight">\(\gamma\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="TauSelector.html"><span class="math notranslate nohighlight">\(\tau\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="TrackSelector.html">Tracks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TruthSelector.html">Truth</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Outputs.html">Producing Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Selectors.html">Selecting Objects</a> &raquo;</li>
+        
+      <li>Event</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/BasicEventSelection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="event">
+<h1>Event<a class="headerlink" href="#event" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv419BasicEventSelection">
+<span id="_CPPv319BasicEventSelection"></span><span id="_CPPv219BasicEventSelection"></span><span id="BasicEventSelection"></span><span class="target" id="classBasicEventSelection"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BasicEventSelection</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><a class="headerlink" href="#_CPPv419BasicEventSelection" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>This algorithm performs the very basic event selection. This should be the first algo in the algo chain. It can create weighted and unweighted cutflow objects to be picked up downstream by other xAH algos, and your own. The selection applied in data only is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>GRL (can be turned off)</p></li>
+<li><p>LAr Error</p></li>
+<li><p>Tile Error</p></li>
+<li><p>Core Flag</p></li>
+</ul>
+</div></blockquote>
+<p>In both data and simulation (MC), the following cuts are applied</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the highest sum <span class="math notranslate nohighlight">\(p_{T}^2\)</span> primary vertex has 2 or more tracks (see <a class="reference internal" href="#_CPPv4N19BasicEventSelection23m_applyPrimaryVertexCutE" title="BasicEventSelection::m_applyPrimaryVertexCut"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_applyPrimaryVertexCut</span></code></a>)</p></li>
+<li><p>trigger requirements (see <a class="reference internal" href="#_CPPv4N19BasicEventSelection17m_applyTriggerCutE" title="BasicEventSelection::m_applyTriggerCut"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_applyTriggerCut</span></code></a>)</p></li>
+</ul>
+</div></blockquote>
+<p>For derivations, the metadata can be accessed and added to the cutflow for normalization. The parameters to control the trigger are described in this header file. If one wants to write out some of the trigger information into a tree using <a class="reference internal" href="HelpTreeBase.html#_CPPv412HelpTreeBase" title="HelpTreeBase"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">HelpTreeBase</span></code></a>, flags must be set here.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For MC only, the pileup reweight can also be applied.</p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19BasicEventSelectionEv">
+<span id="_CPPv3N19BasicEventSelection19BasicEventSelectionEv"></span><span id="_CPPv2N19BasicEventSelection19BasicEventSelectionEv"></span><span id="BasicEventSelection::BasicEventSelection"></span><span class="target" id="classBasicEventSelection_1a105648b6930097f9999956e84c9af903"></span><span class="sig-name descname"><span class="n"><span class="pre">BasicEventSelection</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19BasicEventSelectionEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection8setupJobERN2EL3JobE">
+<span id="_CPPv3N19BasicEventSelection8setupJobERN2EL3JobE"></span><span id="_CPPv2N19BasicEventSelection8setupJobERN2EL3JobE"></span><span id="BasicEventSelection::setupJob__EL::JobR"></span><span class="target" id="classBasicEventSelection_1a7980714cb54a09db2cb34e3b0c8dfe54"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection8setupJobERN2EL3JobE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection11fileExecuteEv">
+<span id="_CPPv3N19BasicEventSelection11fileExecuteEv"></span><span id="_CPPv2N19BasicEventSelection11fileExecuteEv"></span><span id="BasicEventSelection::fileExecute"></span><span class="target" id="classBasicEventSelection_1a1f843b43ba775d6f6837d09911fa93e9"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection11fileExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14histInitializeEv">
+<span id="_CPPv3N19BasicEventSelection14histInitializeEv"></span><span id="_CPPv2N19BasicEventSelection14histInitializeEv"></span><span id="BasicEventSelection::histInitialize"></span><span class="target" id="classBasicEventSelection_1a396bcec495f0931be97ae326aaa0d2b0"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14histInitializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection11changeInputEb">
+<span id="_CPPv3N19BasicEventSelection11changeInputEb"></span><span id="_CPPv2N19BasicEventSelection11changeInputEb"></span><span id="BasicEventSelection::changeInput__b"></span><span class="target" id="classBasicEventSelection_1a7ec4e6d5217b52a6f6d955d440f5149c"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection11changeInputEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection10initializeEv">
+<span id="_CPPv3N19BasicEventSelection10initializeEv"></span><span id="_CPPv2N19BasicEventSelection10initializeEv"></span><span id="BasicEventSelection::initialize"></span><span class="target" id="classBasicEventSelection_1a1c43c84fa231c66c47bd6a5706efe252"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection10initializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection7executeEv">
+<span id="_CPPv3N19BasicEventSelection7executeEv"></span><span id="_CPPv2N19BasicEventSelection7executeEv"></span><span id="BasicEventSelection::execute"></span><span class="target" id="classBasicEventSelection_1ab2eccd9f30ffc0a95d55a61b308f3e85"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection7executeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection11postExecuteEv">
+<span id="_CPPv3N19BasicEventSelection11postExecuteEv"></span><span id="_CPPv2N19BasicEventSelection11postExecuteEv"></span><span id="BasicEventSelection::postExecute"></span><span class="target" id="classBasicEventSelection_1a9ee33f34e394cc15425450a33cd1be2c"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection11postExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection8finalizeEv">
+<span id="_CPPv3N19BasicEventSelection8finalizeEv"></span><span id="_CPPv2N19BasicEventSelection8finalizeEv"></span><span id="BasicEventSelection::finalize"></span><span class="target" id="classBasicEventSelection_1a5dea36033a37de211824b0bb3ff7f67f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection8finalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection12histFinalizeEv">
+<span id="_CPPv3N19BasicEventSelection12histFinalizeEv"></span><span id="_CPPv2N19BasicEventSelection12histFinalizeEv"></span><span id="BasicEventSelection::histFinalize"></span><span class="target" id="classBasicEventSelection_1a3a346f60837487aa958b562328e102de"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection12histFinalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection11m_isTLADataE">
+<span id="_CPPv3N19BasicEventSelection11m_isTLADataE"></span><span id="_CPPv2N19BasicEventSelection11m_isTLADataE"></span><span id="BasicEventSelection::m_isTLAData__b"></span><span class="target" id="classBasicEventSelection_1ac2c4afc090e37cf2e780e99d5f136ac5"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isTLAData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection11m_isTLADataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Flag to determine when running on TLA data for different handling of TDT. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection16m_truthLevelOnlyE">
+<span id="_CPPv3N19BasicEventSelection16m_truthLevelOnlyE"></span><span id="_CPPv2N19BasicEventSelection16m_truthLevelOnlyE"></span><span id="BasicEventSelection::m_truthLevelOnly__b"></span><span class="target" id="classBasicEventSelection_1a9206f30fe0871a9dac0516f2c5472f3f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthLevelOnly</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection16m_truthLevelOnlyE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Protection when running on truth xAOD. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection9m_setAFIIE">
+<span id="_CPPv3N19BasicEventSelection9m_setAFIIE"></span><span id="_CPPv2N19BasicEventSelection9m_setAFIIE"></span><span id="BasicEventSelection::m_setAFII__b"></span><span class="target" id="classBasicEventSelection_1ae7ce38dd5415669caae44f218b1ad741"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_setAFII</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection9m_setAFIIE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SimulationFlavour will be determined from the sample MetaData, unless AFII or FS is explicitely requested with the following flags.</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection8m_setAF3E">
+<span id="_CPPv3N19BasicEventSelection8m_setAF3E"></span><span id="_CPPv2N19BasicEventSelection8m_setAF3E"></span><span id="BasicEventSelection::m_setAF3__b"></span><span class="target" id="classBasicEventSelection_1a40d87697586f45d155a44582558300e3"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_setAF3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection8m_setAF3E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection7m_setFSE">
+<span id="_CPPv3N19BasicEventSelection7m_setFSE"></span><span id="_CPPv2N19BasicEventSelection7m_setFSE"></span><span id="BasicEventSelection::m_setFS__b"></span><span class="target" id="classBasicEventSelection_1ae9a07b6d3fcf4e39aa15c8877d68090a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_setFS</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection7m_setFSE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_applyGRLCutE">
+<span id="_CPPv3N19BasicEventSelection13m_applyGRLCutE"></span><span id="_CPPv2N19BasicEventSelection13m_applyGRLCutE"></span><span id="BasicEventSelection::m_applyGRLCut__b"></span><span class="target" id="classBasicEventSelection_1a9b61827f38f926981d904144b9c21e13"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyGRLCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_applyGRLCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply GRL selection. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection8m_GRLxmlE">
+<span id="_CPPv3N19BasicEventSelection8m_GRLxmlE"></span><span id="_CPPv2N19BasicEventSelection8m_GRLxmlE"></span><span id="BasicEventSelection::m_GRLxml__ss"></span><span class="target" id="classBasicEventSelection_1a5541abb08f3029f28629e9c3f300660d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_GRLxml</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection8m_GRLxmlE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Path to GRL XML file. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection16m_GRLExcludeListE">
+<span id="_CPPv3N19BasicEventSelection16m_GRLExcludeListE"></span><span id="_CPPv2N19BasicEventSelection16m_GRLExcludeListE"></span><span id="BasicEventSelection::m_GRLExcludeList__ss"></span><span class="target" id="classBasicEventSelection_1a2e2e21ef87cbcb971e795ccebf10c422"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_GRLExcludeList</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection16m_GRLExcludeListE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Run numbers to skip in GRL. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_cleanPowhegE">
+<span id="_CPPv3N19BasicEventSelection13m_cleanPowhegE"></span><span id="_CPPv2N19BasicEventSelection13m_cleanPowhegE"></span><span id="BasicEventSelection::m_cleanPowheg__b"></span><span class="target" id="classBasicEventSelection_1a2165fa182e77a6822279195223433667"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanPowheg</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_cleanPowhegE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clean Powheg huge weight. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection18m_reweightSherpa22E">
+<span id="_CPPv3N19BasicEventSelection18m_reweightSherpa22E"></span><span id="_CPPv2N19BasicEventSelection18m_reweightSherpa22E"></span><span id="BasicEventSelection::m_reweightSherpa22__b"></span><span class="target" id="classBasicEventSelection_1a6340517b1503f5a88024bd094758c978"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_reweightSherpa22</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection18m_reweightSherpa22E" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reweight Sherpa 2.2 Samples. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection17m_doPUreweightingE">
+<span id="_CPPv3N19BasicEventSelection17m_doPUreweightingE"></span><span id="_CPPv2N19BasicEventSelection17m_doPUreweightingE"></span><span id="BasicEventSelection::m_doPUreweighting__b"></span><span class="target" id="classBasicEventSelection_1a5bb3195ca373ffa77315233d24277010"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doPUreweighting</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection17m_doPUreweightingE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reweight pile-up profile <span class="math notranslate nohighlight">\(\mu\)</span></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_doPUreweightingSysE">
+<span id="_CPPv3N19BasicEventSelection20m_doPUreweightingSysE"></span><span id="_CPPv2N19BasicEventSelection20m_doPUreweightingSysE"></span><span id="BasicEventSelection::m_doPUreweightingSys__b"></span><span class="target" id="classBasicEventSelection_1a81e581e66ceeeb17a54e1b248d507791"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doPUreweightingSys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_doPUreweightingSysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_lumiCalcFileNamesE">
+<span id="_CPPv3N19BasicEventSelection19m_lumiCalcFileNamesE"></span><span id="_CPPv2N19BasicEventSelection19m_lumiCalcFileNamesE"></span><span id="BasicEventSelection::m_lumiCalcFileNames__ss"></span><span class="target" id="classBasicEventSelection_1addfa36021f58c377da541885e766efee"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_lumiCalcFileNames</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_lumiCalcFileNamesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Comma separated list of filenames. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_PRWFileNamesE">
+<span id="_CPPv3N19BasicEventSelection14m_PRWFileNamesE"></span><span id="_CPPv2N19BasicEventSelection14m_PRWFileNamesE"></span><span id="BasicEventSelection::m_PRWFileNames__ss"></span><span class="target" id="classBasicEventSelection_1ab892d7287caf10eba055d63e0d53a554"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_PRWFileNames</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_PRWFileNamesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Comma separated list of filenames. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection15m_autoconfigPRWE">
+<span id="_CPPv3N19BasicEventSelection15m_autoconfigPRWE"></span><span id="_CPPv2N19BasicEventSelection15m_autoconfigPRWE"></span><span id="BasicEventSelection::m_autoconfigPRW__b"></span><span class="target" id="classBasicEventSelection_1aa3ba30b89fc2084355b4b99216c1068a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_autoconfigPRW</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection15m_autoconfigPRWE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Automatically configure PRW using config files from SUSYTools instead of using m_PRWFileNames. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_useCommonPRWFilesE">
+<span id="_CPPv3N19BasicEventSelection19m_useCommonPRWFilesE"></span><span id="_CPPv2N19BasicEventSelection19m_useCommonPRWFilesE"></span><span id="BasicEventSelection::m_useCommonPRWFiles__b"></span><span class="target" id="classBasicEventSelection_1ad1cc9ff2c0fe376bfce223c3a6425163"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useCommonPRWFiles</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_useCommonPRWFilesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Configure PRW using common files instead of DSID-specific files. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_prwActualMu2016FileE">
+<span id="_CPPv3N19BasicEventSelection21m_prwActualMu2016FileE"></span><span id="_CPPv2N19BasicEventSelection21m_prwActualMu2016FileE"></span><span id="BasicEventSelection::m_prwActualMu2016File__ss"></span><span class="target" id="classBasicEventSelection_1a882c5542447c68862523d3ae17f8947d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_prwActualMu2016File</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_prwActualMu2016FileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>actualMu configuration file for the MC16a campaign (2015/2016). Added to the PRW tool when using PRW autoconfiguration. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_prwActualMu2017FileE">
+<span id="_CPPv3N19BasicEventSelection21m_prwActualMu2017FileE"></span><span id="_CPPv2N19BasicEventSelection21m_prwActualMu2017FileE"></span><span id="BasicEventSelection::m_prwActualMu2017File__ss"></span><span class="target" id="classBasicEventSelection_1acfc602fa81860970ba3c55ba6d01f9ce"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_prwActualMu2017File</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_prwActualMu2017FileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>actualMu configuration file for the MC16d campaign (2017). Added to the PRW tool when using PRW autoconfiguration. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_prwActualMu2018FileE">
+<span id="_CPPv3N19BasicEventSelection21m_prwActualMu2018FileE"></span><span id="_CPPv2N19BasicEventSelection21m_prwActualMu2018FileE"></span><span id="BasicEventSelection::m_prwActualMu2018File__ss"></span><span class="target" id="classBasicEventSelection_1a2eadd9e0faf90b671967988fafb9be01"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_prwActualMu2018File</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_prwActualMu2018FileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>actualMu configuration file for the MC16e campaign (2018). Added to the PRW tool when using PRW autoconfiguration. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_prwActualMu2022FileE">
+<span id="_CPPv3N19BasicEventSelection21m_prwActualMu2022FileE"></span><span id="_CPPv2N19BasicEventSelection21m_prwActualMu2022FileE"></span><span id="BasicEventSelection::m_prwActualMu2022File__ss"></span><span class="target" id="classBasicEventSelection_1af6dde4904311e892a35cdd270d0a7782"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_prwActualMu2022File</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_prwActualMu2022FileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>actualMu configuration file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_prwActualMu2023FileE">
+<span id="_CPPv3N19BasicEventSelection21m_prwActualMu2023FileE"></span><span id="_CPPv2N19BasicEventSelection21m_prwActualMu2023FileE"></span><span id="BasicEventSelection::m_prwActualMu2023File__ss"></span><span class="target" id="classBasicEventSelection_1a6ab29d68afe51a20f8a1bc512a8c1c5c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_prwActualMu2023File</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_prwActualMu2023FileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>actualMu configuration file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_prwActualMu2024FileE">
+<span id="_CPPv3N19BasicEventSelection21m_prwActualMu2024FileE"></span><span id="_CPPv2N19BasicEventSelection21m_prwActualMu2024FileE"></span><span id="BasicEventSelection::m_prwActualMu2024File__ss"></span><span class="target" id="classBasicEventSelection_1a4b45e665388edfa57f9ce64ba0a7bec2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_prwActualMu2024File</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_prwActualMu2024FileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>actualMu configuration file for the MC23e campaign (2024). Added to the PRW tool when using PRW autoconfiguration. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_commonPRWFileMC20aE">
+<span id="_CPPv3N19BasicEventSelection20m_commonPRWFileMC20aE"></span><span id="_CPPv2N19BasicEventSelection20m_commonPRWFileMC20aE"></span><span id="BasicEventSelection::m_commonPRWFileMC20a__ss"></span><span class="target" id="classBasicEventSelection_1a8027bae2aa09c3415f87ad858e43056b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_commonPRWFileMC20a</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_commonPRWFileMC20aE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common PRW file for the MC20a campaign (2015/16). Added to the PRW tool when using PRW autoconfiguration with common PRW files option. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_commonPRWFileMC20dE">
+<span id="_CPPv3N19BasicEventSelection20m_commonPRWFileMC20dE"></span><span id="_CPPv2N19BasicEventSelection20m_commonPRWFileMC20dE"></span><span id="BasicEventSelection::m_commonPRWFileMC20d__ss"></span><span class="target" id="classBasicEventSelection_1aa0275e060a82eab3462b1666ea0a9c86"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_commonPRWFileMC20d</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PileupReweighting/mc20_common/mc20d.300000.physlite.prw.v1.root&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_commonPRWFileMC20dE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common PRW file for the MC20d campaign (2017). Added to the PRW tool when using PRW autoconfiguration with common PRW files option. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_commonPRWFileMC20eE">
+<span id="_CPPv3N19BasicEventSelection20m_commonPRWFileMC20eE"></span><span id="_CPPv2N19BasicEventSelection20m_commonPRWFileMC20eE"></span><span id="BasicEventSelection::m_commonPRWFileMC20e__ss"></span><span class="target" id="classBasicEventSelection_1ac9381dc20407eb56924cc06205fcba24"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_commonPRWFileMC20e</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PileupReweighting/mc20_common/mc20e.310000.physlite.prw.v1.root&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_commonPRWFileMC20eE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common PRW file for the MC20e campaign (2018). Added to the PRW tool when using PRW autoconfiguration with common PRW files option. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_commonPRWFileMC23aE">
+<span id="_CPPv3N19BasicEventSelection20m_commonPRWFileMC23aE"></span><span id="_CPPv2N19BasicEventSelection20m_commonPRWFileMC23aE"></span><span id="BasicEventSelection::m_commonPRWFileMC23a__ss"></span><span class="target" id="classBasicEventSelection_1a3d3ebc4b752b8a3aae9f456315c61878"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_commonPRWFileMC23a</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PileupReweighting/mc23_common/mc23a.410000.physlite.prw.v2.root&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_commonPRWFileMC23aE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common PRW file for the MC23a campaign (2022). Added to the PRW tool when using PRW autoconfiguration with common PRW files option. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_commonPRWFileMC23cE">
+<span id="_CPPv3N19BasicEventSelection20m_commonPRWFileMC23cE"></span><span id="_CPPv2N19BasicEventSelection20m_commonPRWFileMC23cE"></span><span id="BasicEventSelection::m_commonPRWFileMC23c__ss"></span><span class="target" id="classBasicEventSelection_1af8b2fb9c4cc8267cd1f1750c03f5d31f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_commonPRWFileMC23c</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PileupReweighting/mc23_common/mc23c.450000.physlite.prw.v1.root&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_commonPRWFileMC23cE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common PRW file for the MC23c campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_commonPRWFileMC23dE">
+<span id="_CPPv3N19BasicEventSelection20m_commonPRWFileMC23dE"></span><span id="_CPPv2N19BasicEventSelection20m_commonPRWFileMC23dE"></span><span id="BasicEventSelection::m_commonPRWFileMC23d__ss"></span><span class="target" id="classBasicEventSelection_1a86611ace33f0aed8d5770b1ecb88b934"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_commonPRWFileMC23d</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PileupReweighting/mc23_common/mc23d.450000.physlite.prw.v1.root&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_commonPRWFileMC23dE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common PRW file for the MC23d campaign (2023). Added to the PRW tool when using PRW autoconfiguration with common PRW files option. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_commonPRWFileMC23eE">
+<span id="_CPPv3N19BasicEventSelection20m_commonPRWFileMC23eE"></span><span id="_CPPv2N19BasicEventSelection20m_commonPRWFileMC23eE"></span><span id="BasicEventSelection::m_commonPRWFileMC23e__ss"></span><span class="target" id="classBasicEventSelection_1a03993a115a778222dd1c405cd83f84a2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_commonPRWFileMC23e</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;PileupReweighting/mc23_common/mc23e.470000.physlite.prw.v1.root&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_commonPRWFileMC23eE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common PRW file for the MC23e campaign (2024). Added to the PRW tool when using PRW autoconfiguration with common PRW files option. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection12m_mcCampaignE">
+<span id="_CPPv3N19BasicEventSelection12m_mcCampaignE"></span><span id="_CPPv2N19BasicEventSelection12m_mcCampaignE"></span><span id="BasicEventSelection::m_mcCampaign__ss"></span><span class="target" id="classBasicEventSelection_1a007a7edfcf45c6101646f8bdc657938f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_mcCampaign</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection12m_mcCampaignE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>mc16(acd) to bypass the automatic campaign determination from AMI, several campaigns can be separated by a comma. Only used
+when m_autoconfigPRW is true</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_periodConfigE">
+<span id="_CPPv3N19BasicEventSelection14m_periodConfigE"></span><span id="_CPPv2N19BasicEventSelection14m_periodConfigE"></span><span id="BasicEventSelection::m_periodConfig__ss"></span><span class="target" id="classBasicEventSelection_1a26c35c7dfc1803be2f91ad8588df6553"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_periodConfig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;auto&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_periodConfigE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Use Period Configuration or auto. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_checkStreamsE">
+<span id="_CPPv3N19BasicEventSelection14m_checkStreamsE"></span><span id="_CPPv2N19BasicEventSelection14m_checkStreamsE"></span><span id="BasicEventSelection::m_checkStreams__b"></span><span class="target" id="classBasicEventSelection_1af5e7864e48a540217e3bab4d3fcecae8"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_checkStreams</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_checkStreamsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Print streamTags (only in debug mode) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_actualMuMinE">
+<span id="_CPPv3N19BasicEventSelection13m_actualMuMinE"></span><span id="_CPPv2N19BasicEventSelection13m_actualMuMinE"></span><span id="BasicEventSelection::m_actualMuMin__i"></span><span class="target" id="classBasicEventSelection_1afcb737e2f87342b7c7ef9d4bed6b0c79"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_actualMuMin</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_actualMuMinE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The minimum threshold for <code class="docutils literal notranslate"><span class="pre">EventInfo::actualInteractionsPerCrossing()</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_actualMuMaxE">
+<span id="_CPPv3N19BasicEventSelection13m_actualMuMaxE"></span><span id="_CPPv2N19BasicEventSelection13m_actualMuMaxE"></span><span id="BasicEventSelection::m_actualMuMax__i"></span><span class="target" id="classBasicEventSelection_1a6e10a42cb0a44541189b92d07ab1dd43"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_actualMuMax</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_actualMuMaxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The maximum threshold for <code class="docutils literal notranslate"><span class="pre">EventInfo::actualInteractionsPerCrossing()</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_calcBCIDInfoE">
+<span id="_CPPv3N19BasicEventSelection14m_calcBCIDInfoE"></span><span id="_CPPv2N19BasicEventSelection14m_calcBCIDInfoE"></span><span id="BasicEventSelection::m_calcBCIDInfo__b"></span><span class="target" id="classBasicEventSelection_1ae5eabd61e3ef5100a65cc878cc89dd93"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_calcBCIDInfo</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_calcBCIDInfoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculate distance to nearest empty and unpaired BCIDs. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection23m_applyPrimaryVertexCutE">
+<span id="_CPPv3N19BasicEventSelection23m_applyPrimaryVertexCutE"></span><span id="_CPPv2N19BasicEventSelection23m_applyPrimaryVertexCutE"></span><span id="BasicEventSelection::m_applyPrimaryVertexCut__b"></span><span class="target" id="classBasicEventSelection_1a3fea05e107b5c4bf54fa856fda71f520"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyPrimaryVertexCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection23m_applyPrimaryVertexCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Enable to apply a primary vertex cut. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection10m_PVNTrackE">
+<span id="_CPPv3N19BasicEventSelection10m_PVNTrackE"></span><span id="_CPPv2N19BasicEventSelection10m_PVNTrackE"></span><span id="BasicEventSelection::m_PVNTrack__i"></span><span class="target" id="classBasicEventSelection_1a50e0e736077995e90360603208f61a01"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_PVNTrack</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection10m_PVNTrackE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Minimum number of tracks from <strong>the</strong> primary vertex (Harmonized Cut) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection23m_applyEventCleaningCutE">
+<span id="_CPPv3N19BasicEventSelection23m_applyEventCleaningCutE"></span><span id="_CPPv2N19BasicEventSelection23m_applyEventCleaningCutE"></span><span id="BasicEventSelection::m_applyEventCleaningCut__b"></span><span class="target" id="classBasicEventSelection_1a82af38a4cb8915d1dfa1178c3e33dc59"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyEventCleaningCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection23m_applyEventCleaningCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_applyCoreFlagsCutE">
+<span id="_CPPv3N19BasicEventSelection19m_applyCoreFlagsCutE"></span><span id="_CPPv2N19BasicEventSelection19m_applyCoreFlagsCutE"></span><span id="BasicEventSelection::m_applyCoreFlagsCut__b"></span><span class="target" id="classBasicEventSelection_1a3d8cfbc01a1e755a82cec958f1da6608"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyCoreFlagsCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_applyCoreFlagsCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection27m_applyJetCleaningEventFlagE">
+<span id="_CPPv3N19BasicEventSelection27m_applyJetCleaningEventFlagE"></span><span id="_CPPv2N19BasicEventSelection27m_applyJetCleaningEventFlagE"></span><span id="BasicEventSelection::m_applyJetCleaningEventFlag__b"></span><span class="target" id="classBasicEventSelection_1ab6b2b4ad56d27d6453e76d4906bedf1f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyJetCleaningEventFlag</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection27m_applyJetCleaningEventFlagE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>recommended way to clean all jets, but especially collections other than EMTopo … equivalent to “loose” jet-by-jet cleaning! </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection22m_applyIsBadBatmanFlagE">
+<span id="_CPPv3N19BasicEventSelection22m_applyIsBadBatmanFlagE"></span><span id="_CPPv2N19BasicEventSelection22m_applyIsBadBatmanFlagE"></span><span id="BasicEventSelection::m_applyIsBadBatmanFlag__b"></span><span class="target" id="classBasicEventSelection_1abc7c82ea604213d29d54d4d071f7daad"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyIsBadBatmanFlag</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection22m_applyIsBadBatmanFlagE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>should only ever be used in 2015 and 2016 data, for analyses which may be of interest for analyses where fake MET can be an issue </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection17m_printBranchListE">
+<span id="_CPPv3N19BasicEventSelection17m_printBranchListE"></span><span id="_CPPv2N19BasicEventSelection17m_printBranchListE"></span><span id="BasicEventSelection::m_printBranchList__b"></span><span class="target" id="classBasicEventSelection_1a0f749d808d5178a6e1848ad6b4303cda"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_printBranchList</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection17m_printBranchListE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection18m_triggerSelectionE">
+<span id="_CPPv3N19BasicEventSelection18m_triggerSelectionE"></span><span id="_CPPv2N19BasicEventSelection18m_triggerSelectionE"></span><span id="BasicEventSelection::m_triggerSelection__ss"></span><span class="target" id="classBasicEventSelection_1aabd2f574e6802c8c0e89ac26736eb922"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_triggerSelection</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection18m_triggerSelectionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>RegEx expression to choose triggers to consider to be cut on with <a class="reference internal" href="#_CPPv4N19BasicEventSelection17m_applyTriggerCutE" title="BasicEventSelection::m_applyTriggerCut"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_applyTriggerCut</span></code></a></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection23m_extraTriggerSelectionE">
+<span id="_CPPv3N19BasicEventSelection23m_extraTriggerSelectionE"></span><span id="_CPPv2N19BasicEventSelection23m_extraTriggerSelectionE"></span><span id="BasicEventSelection::m_extraTriggerSelection__ss"></span><span class="target" id="classBasicEventSelection_1ac9ca9f49d2bbdac4403ca2693d632a1a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_extraTriggerSelection</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection23m_extraTriggerSelectionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Decisions of triggers which are saved but not cut on. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection17m_applyTriggerCutE">
+<span id="_CPPv3N19BasicEventSelection17m_applyTriggerCutE"></span><span id="_CPPv2N19BasicEventSelection17m_applyTriggerCutE"></span><span id="BasicEventSelection::m_applyTriggerCut__b"></span><span class="target" id="classBasicEventSelection_1a1ece3f28d2eb421f23feb0150481a759"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyTriggerCut</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection17m_applyTriggerCutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Skip events in which the trigger string <a class="reference internal" href="#_CPPv4N19BasicEventSelection18m_triggerSelectionE" title="BasicEventSelection::m_triggerSelection"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_triggerSelection</span></code></a> does not fire</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_storeTrigDecisionsE">
+<span id="_CPPv3N19BasicEventSelection20m_storeTrigDecisionsE"></span><span id="_CPPv2N19BasicEventSelection20m_storeTrigDecisionsE"></span><span id="BasicEventSelection::m_storeTrigDecisions__b"></span><span class="target" id="classBasicEventSelection_1aac9ff93438d664d8dec312b2ea717c71"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_storeTrigDecisions</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_storeTrigDecisionsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Save string of fired triggers matching <a class="reference internal" href="#_CPPv4N19BasicEventSelection18m_triggerSelectionE" title="BasicEventSelection::m_triggerSelection"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_triggerSelection</span></code></a></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_storePassL1E">
+<span id="_CPPv3N19BasicEventSelection13m_storePassL1E"></span><span id="_CPPv2N19BasicEventSelection13m_storePassL1E"></span><span id="BasicEventSelection::m_storePassL1__b"></span><span class="target" id="classBasicEventSelection_1afd1670da5c84029729828e5c57b85d82"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_storePassL1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_storePassL1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Save if any L1 trigger fired, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;L1_.*&quot;</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_storePassHLTE">
+<span id="_CPPv3N19BasicEventSelection14m_storePassHLTE"></span><span id="_CPPv2N19BasicEventSelection14m_storePassHLTE"></span><span id="BasicEventSelection::m_storePassHLT__b"></span><span class="target" id="classBasicEventSelection_1acfa57d8101d24c7ece214ebbcc803b15"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_storePassHLT</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_storePassHLTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Save if any HLT trigger fired, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;HLT_.*&quot;</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection15m_storeTrigKeysE">
+<span id="_CPPv3N19BasicEventSelection15m_storeTrigKeysE"></span><span id="_CPPv2N19BasicEventSelection15m_storeTrigKeysE"></span><span id="BasicEventSelection::m_storeTrigKeys__b"></span><span class="target" id="classBasicEventSelection_1a34a39e6d93f0f591125d7b39c3d30e94"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_storeTrigKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection15m_storeTrigKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Save master, L1, and HLT key. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_storePrescaleWeightE">
+<span id="_CPPv3N19BasicEventSelection21m_storePrescaleWeightE"></span><span id="_CPPv2N19BasicEventSelection21m_storePrescaleWeightE"></span><span id="BasicEventSelection::m_storePrescaleWeight__b"></span><span class="target" id="classBasicEventSelection_1a29da04776f6ed8d7357eeb912baccb79"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_storePrescaleWeight</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_storePrescaleWeightE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Save the trigger prescale weight. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection16m_derivationNameE">
+<span id="_CPPv3N19BasicEventSelection16m_derivationNameE"></span><span id="_CPPv2N19BasicEventSelection16m_derivationNameE"></span><span id="BasicEventSelection::m_derivationName__ss"></span><span class="target" id="classBasicEventSelection_1a51d53f630bad93654e178fdcd53e1ea2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_derivationName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection16m_derivationNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The name of the derivation (use this as an override) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_useMetaDataE">
+<span id="_CPPv3N19BasicEventSelection13m_useMetaDataE"></span><span id="_CPPv2N19BasicEventSelection13m_useMetaDataE"></span><span id="BasicEventSelection::m_useMetaData__b"></span><span class="target" id="classBasicEventSelection_1a33025734fc8bcc7b2884746880c5302e"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useMetaData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_useMetaDataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieve and save information on DAOD selection. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_metaDataStreamNameE">
+<span id="_CPPv3N19BasicEventSelection20m_metaDataStreamNameE"></span><span id="_CPPv2N19BasicEventSelection20m_metaDataStreamNameE"></span><span id="BasicEventSelection::m_metaDataStreamName__ss"></span><span class="target" id="classBasicEventSelection_1a346731ab5f422774ce8aa521755d6f67"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_metaDataStreamName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;metadata&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_metaDataStreamNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection22m_duplicatesStreamNameE">
+<span id="_CPPv3N19BasicEventSelection22m_duplicatesStreamNameE"></span><span id="_CPPv2N19BasicEventSelection22m_duplicatesStreamNameE"></span><span id="BasicEventSelection::m_duplicatesStreamName__ss"></span><span class="target" id="classBasicEventSelection_1aac1b6baadf5ecd412749bd7304613f57"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_duplicatesStreamName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;duplicates_tree&quot;</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection22m_duplicatesStreamNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_checkDuplicatesDataE">
+<span id="_CPPv3N19BasicEventSelection21m_checkDuplicatesDataE"></span><span id="_CPPv2N19BasicEventSelection21m_checkDuplicatesDataE"></span><span id="BasicEventSelection::m_checkDuplicatesData__b"></span><span class="target" id="classBasicEventSelection_1a431be2ff46e8ab835eb6e08d636fbe37"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_checkDuplicatesData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_checkDuplicatesDataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check for duplicated events in data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_checkDuplicatesMCE">
+<span id="_CPPv3N19BasicEventSelection19m_checkDuplicatesMCE"></span><span id="_CPPv2N19BasicEventSelection19m_checkDuplicatesMCE"></span><span id="BasicEventSelection::m_checkDuplicatesMC__b"></span><span class="target" id="classBasicEventSelection_1ace98244dacd7633e42e058cef0e1aa86"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_checkDuplicatesMC</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_checkDuplicatesMCE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check for duplicated events in MC </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_doRunByRunCutflowsE">
+<span id="_CPPv3N19BasicEventSelection20m_doRunByRunCutflowsE"></span><span id="_CPPv2N19BasicEventSelection20m_doRunByRunCutflowsE"></span><span id="BasicEventSelection::m_doRunByRunCutflows__b"></span><span class="target" id="classBasicEventSelection_1a3639e58a76392e4d27f9c0937c8c0319"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doRunByRunCutflows</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_doRunByRunCutflowsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-functions">Private Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection25autoconfigurePileupRWToolEv">
+<span id="_CPPv3N19BasicEventSelection25autoconfigurePileupRWToolEv"></span><span id="_CPPv2N19BasicEventSelection25autoconfigurePileupRWToolEv"></span><span id="BasicEventSelection::autoconfigurePileupRWTool"></span><span class="target" id="classBasicEventSelection_1a05c7d05fbc7712b5f8fa987e7946532a"></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">autoconfigurePileupRWTool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N19BasicEventSelection25autoconfigurePileupRWToolEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Automatically add the required PRW config file for the DSID being processed to the PRW tool. </p>
+<p>helper functions <p>The PRW config files stored by SUSYTools are added to the m_pileup_tool_handle. If the m_mcCampaign is
+not set, the campaign is determined automatically. If it is set, then all of the campaings listed
+in the setting are added.</p>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection16m_RunNr_VS_EvtNrE">
+<span id="_CPPv3N19BasicEventSelection16m_RunNr_VS_EvtNrE"></span><span id="_CPPv2N19BasicEventSelection16m_RunNr_VS_EvtNrE"></span><span id="BasicEventSelection::m_RunNr_VS_EvtNr__std::set:std::pair:i.Long64_t::"></span><span class="target" id="classBasicEventSelection_1ac0c75527861575cfdc8934e1d4a93077"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">set</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">Long64_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_RunNr_VS_EvtNr</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection16m_RunNr_VS_EvtNrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection23m_triggerUnprescaleListE">
+<span id="_CPPv3N19BasicEventSelection23m_triggerUnprescaleListE"></span><span id="_CPPv2N19BasicEventSelection23m_triggerUnprescaleListE"></span><span id="BasicEventSelection::m_triggerUnprescaleList__std::vector:ss:"></span><span class="target" id="classBasicEventSelection_1ae5c3de5ad8ec124e1c9435dc27218f5d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_triggerUnprescaleList</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection23m_triggerUnprescaleListE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection27m_extraTriggerSelectionListE">
+<span id="_CPPv3N19BasicEventSelection27m_extraTriggerSelectionListE"></span><span id="_CPPv2N19BasicEventSelection27m_extraTriggerSelectionListE"></span><span id="BasicEventSelection::m_extraTriggerSelectionList__std::vector:ss:"></span><span class="target" id="classBasicEventSelection_1a1b4a46b8538ae9dcbab16ce28374b2b8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_extraTriggerSelectionList</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection27m_extraTriggerSelectionListE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection12m_grl_handleE">
+<span id="_CPPv3N19BasicEventSelection12m_grl_handleE"></span><span id="_CPPv2N19BasicEventSelection12m_grl_handleE"></span><span id="BasicEventSelection::m_grl_handle__asg::AnaToolHandle:IGoodRunsListSelectionTool:"></span><span class="target" id="classBasicEventSelection_1aff400c030fd72f6e87a2a9a676f2ea87"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">IGoodRunsListSelectionTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_grl_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;GoodRunsListSelectionTool&quot;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">this</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection12m_grl_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_pileup_tool_handleE">
+<span id="_CPPv3N19BasicEventSelection20m_pileup_tool_handleE"></span><span id="_CPPv2N19BasicEventSelection20m_pileup_tool_handleE"></span><span id="BasicEventSelection::m_pileup_tool_handle__asg::AnaToolHandle:CP::IPileupReweightingTool:"></span><span class="target" id="classBasicEventSelection_1a7b3e03ec17711ff5a8110f3646debf59"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IPileupReweightingTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pileup_tool_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;CP::PileupReweightingTool/Pileup&quot;</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_pileup_tool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_trigConfTool_handleE">
+<span id="_CPPv3N19BasicEventSelection21m_trigConfTool_handleE"></span><span id="_CPPv2N19BasicEventSelection21m_trigConfTool_handleE"></span><span id="BasicEventSelection::m_trigConfTool_handle__asg::AnaToolHandle:TrigConf::ITrigConfigTool:"></span><span class="target" id="classBasicEventSelection_1aee0750dfc1f80c6aa3ffee3f09fec841"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TrigConf</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ITrigConfigTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigConfTool_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;TrigConf::xAODConfigTool/xAODConfigTool&quot;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">this</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_trigConfTool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_trigDecTool_handleE">
+<span id="_CPPv3N19BasicEventSelection20m_trigDecTool_handleE"></span><span id="_CPPv2N19BasicEventSelection20m_trigDecTool_handleE"></span><span id="BasicEventSelection::m_trigDecTool_handle__asg::AnaToolHandle:Trig::TrigDecisionTool:"></span><span class="target" id="classBasicEventSelection_1a1955bc3350c9319156ea4969c1df74ad"></span><span class="n"><span class="pre">asg</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">AnaToolHandle</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">Trig</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TrigDecisionTool</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigDecTool_handle</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="s"><span class="pre">&quot;Trig::TrigDecisionTool/TrigDecisionTool&quot;</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_trigDecTool_handleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_eventCounterE">
+<span id="_CPPv3N19BasicEventSelection14m_eventCounterE"></span><span id="_CPPv2N19BasicEventSelection14m_eventCounterE"></span><span id="BasicEventSelection::m_eventCounter__i"></span><span class="target" id="classBasicEventSelection_1a72d4f6906f3a5931eac127a2da869c68"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_eventCounter</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_eventCounterE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection10m_histSumWE">
+<span id="_CPPv3N19BasicEventSelection10m_histSumWE"></span><span id="_CPPv2N19BasicEventSelection10m_histSumWE"></span><span id="BasicEventSelection::m_histSumW__TH1DP"></span><span class="target" id="classBasicEventSelection_1aa50a99422cea7f902e57cf13c9bc4ed9"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_histSumW</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection10m_histSumWE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection16m_histEventCountE">
+<span id="_CPPv3N19BasicEventSelection16m_histEventCountE"></span><span id="_CPPv2N19BasicEventSelection16m_histEventCountE"></span><span id="BasicEventSelection::m_histEventCount__TH1DP"></span><span class="target" id="classBasicEventSelection_1a3525cca6000b549ae1b7d039a0a0beb1"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_histEventCount</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection16m_histEventCountE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_MD_initialNeventsE">
+<span id="_CPPv3N19BasicEventSelection19m_MD_initialNeventsE"></span><span id="_CPPv2N19BasicEventSelection19m_MD_initialNeventsE"></span><span id="BasicEventSelection::m_MD_initialNevents__uint64_t"></span><span class="target" id="classBasicEventSelection_1ab417a3d1b1c1c7a052f64e969805374a"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_MD_initialNevents</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_MD_initialNeventsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection17m_MD_finalNeventsE">
+<span id="_CPPv3N19BasicEventSelection17m_MD_finalNeventsE"></span><span id="_CPPv2N19BasicEventSelection17m_MD_finalNeventsE"></span><span id="BasicEventSelection::m_MD_finalNevents__uint64_t"></span><span class="target" id="classBasicEventSelection_1a1c84bcbb4dbaddbf489b8e6da7e0a14e"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_MD_finalNevents</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection17m_MD_finalNeventsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection16m_MD_initialSumWE">
+<span id="_CPPv3N19BasicEventSelection16m_MD_initialSumWE"></span><span id="_CPPv2N19BasicEventSelection16m_MD_initialSumWE"></span><span id="BasicEventSelection::m_MD_initialSumW__double"></span><span class="target" id="classBasicEventSelection_1a1eae049f30be5fb5be73885a6896a99b"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_MD_initialSumW</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection16m_MD_initialSumWE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_MD_finalSumWE">
+<span id="_CPPv3N19BasicEventSelection14m_MD_finalSumWE"></span><span id="_CPPv2N19BasicEventSelection14m_MD_finalSumWE"></span><span id="BasicEventSelection::m_MD_finalSumW__double"></span><span class="target" id="classBasicEventSelection_1a6fdb3fc334eb6e64d396cf6f371a933c"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_MD_finalSumW</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_MD_finalSumWE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection23m_MD_initialSumWSquaredE">
+<span id="_CPPv3N19BasicEventSelection23m_MD_initialSumWSquaredE"></span><span id="_CPPv2N19BasicEventSelection23m_MD_initialSumWSquaredE"></span><span id="BasicEventSelection::m_MD_initialSumWSquared__double"></span><span class="target" id="classBasicEventSelection_1af3709209ab767e71617581af24c8e2a2"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_MD_initialSumWSquared</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection23m_MD_initialSumWSquaredE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_MD_finalSumWSquaredE">
+<span id="_CPPv3N19BasicEventSelection21m_MD_finalSumWSquaredE"></span><span id="_CPPv2N19BasicEventSelection21m_MD_finalSumWSquaredE"></span><span id="BasicEventSelection::m_MD_finalSumWSquared__double"></span><span class="target" id="classBasicEventSelection_1a7f8aa6ef46290e2641fc618b129f05de"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_MD_finalSumWSquared</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_MD_finalSumWSquaredE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_mcCampaignMDE">
+<span id="_CPPv3N19BasicEventSelection14m_mcCampaignMDE"></span><span id="_CPPv2N19BasicEventSelection14m_mcCampaignMDE"></span><span id="BasicEventSelection::m_mcCampaignMD__ss"></span><span class="target" id="classBasicEventSelection_1af7f8800dd70152a6451912348ee1aa5a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_mcCampaignMD</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_mcCampaignMDE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_cutflowHistE">
+<span id="_CPPv3N19BasicEventSelection13m_cutflowHistE"></span><span id="_CPPv2N19BasicEventSelection13m_cutflowHistE"></span><span id="BasicEventSelection::m_cutflowHist__TH1DP"></span><span class="target" id="classBasicEventSelection_1a6a0c7c6393bf51cf7d99d605943c4446"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflowHist</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_cutflowHistE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_cutflowHistWE">
+<span id="_CPPv3N19BasicEventSelection14m_cutflowHistWE"></span><span id="_CPPv2N19BasicEventSelection14m_cutflowHistWE"></span><span id="BasicEventSelection::m_cutflowHistW__TH1DP"></span><span class="target" id="classBasicEventSelection_1a9e6e79383d77f16fc1591b3e37094ed2"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflowHistW</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_cutflowHistWE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_cutflow_allE">
+<span id="_CPPv3N19BasicEventSelection13m_cutflow_allE"></span><span id="_CPPv2N19BasicEventSelection13m_cutflow_allE"></span><span id="BasicEventSelection::m_cutflow_all__i"></span><span class="target" id="classBasicEventSelection_1af9acc982aa5b3db8001046791b8de6e4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_all</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_cutflow_allE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_cutflow_initE">
+<span id="_CPPv3N19BasicEventSelection14m_cutflow_initE"></span><span id="_CPPv2N19BasicEventSelection14m_cutflow_initE"></span><span id="BasicEventSelection::m_cutflow_init__i"></span><span class="target" id="classBasicEventSelection_1a19975bff755aea30fd09075187d2d7da"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_init</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_cutflow_initE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_cutflow_duplicatesE">
+<span id="_CPPv3N19BasicEventSelection20m_cutflow_duplicatesE"></span><span id="_CPPv2N19BasicEventSelection20m_cutflow_duplicatesE"></span><span id="BasicEventSelection::m_cutflow_duplicates__i"></span><span class="target" id="classBasicEventSelection_1ada3beb039d4f91f574d1587f0df5399d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_duplicates</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_cutflow_duplicatesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_cutflow_grlE">
+<span id="_CPPv3N19BasicEventSelection13m_cutflow_grlE"></span><span id="_CPPv2N19BasicEventSelection13m_cutflow_grlE"></span><span id="BasicEventSelection::m_cutflow_grl__i"></span><span class="target" id="classBasicEventSelection_1a16690c64f4fc368d966845c4fae78396"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_grl</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_cutflow_grlE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_cutflow_larE">
+<span id="_CPPv3N19BasicEventSelection13m_cutflow_larE"></span><span id="_CPPv2N19BasicEventSelection13m_cutflow_larE"></span><span id="BasicEventSelection::m_cutflow_lar__i"></span><span class="target" id="classBasicEventSelection_1a0ab569b918860a57f2c262f60db39dff"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_lar</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_cutflow_larE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_cutflow_tileE">
+<span id="_CPPv3N19BasicEventSelection14m_cutflow_tileE"></span><span id="_CPPv2N19BasicEventSelection14m_cutflow_tileE"></span><span id="BasicEventSelection::m_cutflow_tile__i"></span><span class="target" id="classBasicEventSelection_1a1734f56898654734f0477325dac588f7"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_tile</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_cutflow_tileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_cutflow_SCTE">
+<span id="_CPPv3N19BasicEventSelection13m_cutflow_SCTE"></span><span id="_CPPv2N19BasicEventSelection13m_cutflow_SCTE"></span><span id="BasicEventSelection::m_cutflow_SCT__i"></span><span class="target" id="classBasicEventSelection_1ab41ddb9c04907143b5171bea64308fd2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_SCT</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_cutflow_SCTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection14m_cutflow_coreE">
+<span id="_CPPv3N19BasicEventSelection14m_cutflow_coreE"></span><span id="_CPPv2N19BasicEventSelection14m_cutflow_coreE"></span><span id="BasicEventSelection::m_cutflow_core__i"></span><span class="target" id="classBasicEventSelection_1ac260794ed73912ffdeb0474b1f478f92"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_core</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection14m_cutflow_coreE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_cutflow_jetcleaningE">
+<span id="_CPPv3N19BasicEventSelection21m_cutflow_jetcleaningE"></span><span id="_CPPv2N19BasicEventSelection21m_cutflow_jetcleaningE"></span><span id="BasicEventSelection::m_cutflow_jetcleaning__i"></span><span class="target" id="classBasicEventSelection_1ae7802e89fda0971b031ec634786290b2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_jetcleaning</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_cutflow_jetcleaningE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_cutflow_isbadbatmanE">
+<span id="_CPPv3N19BasicEventSelection21m_cutflow_isbadbatmanE"></span><span id="_CPPv2N19BasicEventSelection21m_cutflow_isbadbatmanE"></span><span id="BasicEventSelection::m_cutflow_isbadbatman__i"></span><span class="target" id="classBasicEventSelection_1affe7999190d90c08166ad2b522dd426d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_isbadbatman</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_cutflow_isbadbatmanE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection13m_cutflow_npvE">
+<span id="_CPPv3N19BasicEventSelection13m_cutflow_npvE"></span><span id="_CPPv2N19BasicEventSelection13m_cutflow_npvE"></span><span id="BasicEventSelection::m_cutflow_npv__i"></span><span class="target" id="classBasicEventSelection_1a8a81e66d43ba6c3cf060e60cb4776c5e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_npv</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection13m_cutflow_npvE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection17m_cutflow_triggerE">
+<span id="_CPPv3N19BasicEventSelection17m_cutflow_triggerE"></span><span id="_CPPv2N19BasicEventSelection17m_cutflow_triggerE"></span><span id="BasicEventSelection::m_cutflow_trigger__i"></span><span class="target" id="classBasicEventSelection_1a6364f2fdda9314420205524d0025fa4c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cutflow_trigger</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection17m_cutflow_triggerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_runByrun_beforeCutsE">
+<span id="_CPPv3N19BasicEventSelection21m_runByrun_beforeCutsE"></span><span id="_CPPv2N19BasicEventSelection21m_runByrun_beforeCutsE"></span><span id="BasicEventSelection::m_runByrun_beforeCuts__TH1DP"></span><span class="target" id="classBasicEventSelection_1a1d18c24d4da73f6a5b262b8a1edee537"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_runByrun_beforeCuts</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_runByrun_beforeCutsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection20m_runByrun_afterCutsE">
+<span id="_CPPv3N19BasicEventSelection20m_runByrun_afterCutsE"></span><span id="_CPPv2N19BasicEventSelection20m_runByrun_afterCutsE"></span><span id="BasicEventSelection::m_runByrun_afterCuts__TH1DP"></span><span class="target" id="classBasicEventSelection_1a0c59bc1a67cd26ac757bc9faf1fded10"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_runByrun_afterCuts</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection20m_runByrun_afterCutsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection18m_el_cutflowHist_1E">
+<span id="_CPPv3N19BasicEventSelection18m_el_cutflowHist_1E"></span><span id="_CPPv2N19BasicEventSelection18m_el_cutflowHist_1E"></span><span id="BasicEventSelection::m_el_cutflowHist_1__TH1DP"></span><span class="target" id="classBasicEventSelection_1a40dfce733b42020b372ea1d11f8109ff"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_el_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection18m_el_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection18m_el_cutflowHist_2E">
+<span id="_CPPv3N19BasicEventSelection18m_el_cutflowHist_2E"></span><span id="_CPPv2N19BasicEventSelection18m_el_cutflowHist_2E"></span><span id="BasicEventSelection::m_el_cutflowHist_2__TH1DP"></span><span class="target" id="classBasicEventSelection_1aedb4fa60ef3ba11d0bb64887be16f6aa"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_el_cutflowHist_2</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection18m_el_cutflowHist_2E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection18m_mu_cutflowHist_1E">
+<span id="_CPPv3N19BasicEventSelection18m_mu_cutflowHist_1E"></span><span id="_CPPv2N19BasicEventSelection18m_mu_cutflowHist_1E"></span><span id="BasicEventSelection::m_mu_cutflowHist_1__TH1DP"></span><span class="target" id="classBasicEventSelection_1a2b3115d48907fbbe2be0da872c598f1b"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_mu_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection18m_mu_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection18m_mu_cutflowHist_2E">
+<span id="_CPPv3N19BasicEventSelection18m_mu_cutflowHist_2E"></span><span id="_CPPv2N19BasicEventSelection18m_mu_cutflowHist_2E"></span><span id="BasicEventSelection::m_mu_cutflowHist_2__TH1DP"></span><span class="target" id="classBasicEventSelection_1a0adaeeb4a401e19586b9e32b6d652330"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_mu_cutflowHist_2</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection18m_mu_cutflowHist_2E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection18m_ph_cutflowHist_1E">
+<span id="_CPPv3N19BasicEventSelection18m_ph_cutflowHist_1E"></span><span id="_CPPv2N19BasicEventSelection18m_ph_cutflowHist_1E"></span><span id="BasicEventSelection::m_ph_cutflowHist_1__TH1DP"></span><span class="target" id="classBasicEventSelection_1a2d42ecd41e0caddc66aea6e8e8398453"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_ph_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection18m_ph_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_tau_cutflowHist_1E">
+<span id="_CPPv3N19BasicEventSelection19m_tau_cutflowHist_1E"></span><span id="_CPPv2N19BasicEventSelection19m_tau_cutflowHist_1E"></span><span id="BasicEventSelection::m_tau_cutflowHist_1__TH1DP"></span><span class="target" id="classBasicEventSelection_1a781832e199360752e316d789eaeb2b49"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_tau_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_tau_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_tau_cutflowHist_2E">
+<span id="_CPPv3N19BasicEventSelection19m_tau_cutflowHist_2E"></span><span id="_CPPv2N19BasicEventSelection19m_tau_cutflowHist_2E"></span><span id="BasicEventSelection::m_tau_cutflowHist_2__TH1DP"></span><span class="target" id="classBasicEventSelection_1abac776bf8fbb2ac591a6879e2a93a4ae"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_tau_cutflowHist_2</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_tau_cutflowHist_2E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_jet_cutflowHist_1E">
+<span id="_CPPv3N19BasicEventSelection19m_jet_cutflowHist_1E"></span><span id="_CPPv2N19BasicEventSelection19m_jet_cutflowHist_1E"></span><span id="BasicEventSelection::m_jet_cutflowHist_1__TH1DP"></span><span class="target" id="classBasicEventSelection_1a26ec47366a3c03f74c1c167446e9ae63"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_jet_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_jet_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection19m_trk_cutflowHist_1E">
+<span id="_CPPv3N19BasicEventSelection19m_trk_cutflowHist_1E"></span><span id="_CPPv2N19BasicEventSelection19m_trk_cutflowHist_1E"></span><span id="BasicEventSelection::m_trk_cutflowHist_1__TH1DP"></span><span class="target" id="classBasicEventSelection_1a28c76fb9add991435a13ef87bbbc38db"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_trk_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection19m_trk_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection21m_truth_cutflowHist_1E">
+<span id="_CPPv3N19BasicEventSelection21m_truth_cutflowHist_1E"></span><span id="_CPPv2N19BasicEventSelection21m_truth_cutflowHist_1E"></span><span id="BasicEventSelection::m_truth_cutflowHist_1__TH1DP"></span><span class="target" id="classBasicEventSelection_1a91d2b3c9ec1f8d0ff9d2c24513274207"></span><span class="n"><span class="pre">TH1D</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_truth_cutflowHist_1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection21m_truth_cutflowHist_1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection16m_duplicatesTreeE">
+<span id="_CPPv3N19BasicEventSelection16m_duplicatesTreeE"></span><span id="_CPPv2N19BasicEventSelection16m_duplicatesTreeE"></span><span id="BasicEventSelection::m_duplicatesTree__TTreeP"></span><span class="target" id="classBasicEventSelection_1ab411dd013f260e85083408061815f385"></span><span class="n"><span class="pre">TTree</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_duplicatesTree</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection16m_duplicatesTreeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>TTree for duplicates bookeeping </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection15m_duplRunNumberE">
+<span id="_CPPv3N19BasicEventSelection15m_duplRunNumberE"></span><span id="_CPPv2N19BasicEventSelection15m_duplRunNumberE"></span><span id="BasicEventSelection::m_duplRunNumber__i"></span><span class="target" id="classBasicEventSelection_1a052908233a04670969c79828d659e239"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_duplRunNumber</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection15m_duplRunNumberE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N19BasicEventSelection17m_duplEventNumberE">
+<span id="_CPPv3N19BasicEventSelection17m_duplEventNumberE"></span><span id="_CPPv2N19BasicEventSelection17m_duplEventNumberE"></span><span id="BasicEventSelection::m_duplEventNumber__l-i"></span><span class="target" id="classBasicEventSelection_1a7e15499f9cb5629934507e6eb86bcf05"></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_duplEventNumber</span></span></span><a class="headerlink" href="#_CPPv4N19BasicEventSelection17m_duplEventNumberE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="OverlapRemover.html" class="btn btn-neutral float-right" title="Overlap Removal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Selectors.html" class="btn btn-neutral float-left" title="Selecting Objects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

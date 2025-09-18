@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File BasicEventSelection.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File BasicEventSelection.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_BasicEventSelection.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-basiceventselection-h">
+<span id="program-listing-file-xaodanahelpers-basiceventselection-h"></span><h1>Program Listing for File BasicEventSelection.h<a class="headerlink" href="#program-listing-for-file-basiceventselection-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_BasicEventSelection.h.html#file-xaodanahelpers-basiceventselection-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/BasicEventSelection.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_BasicEventSelection_H</span>
+<span class="cp">#define xAODAnaHelpers_BasicEventSelection_H</span>
+
+<span class="c1">// ROOT include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TH1D.h&quot;</span>
+
+<span class="c1">// algorithm wrapper</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/Algorithm.h&quot;</span>
+
+<span class="c1">// external tools include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgTools/AnaToolHandle.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgAnalysisInterfaces/IGoodRunsListSelectionTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgAnalysisInterfaces/IPileupReweightingTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TrigConfInterfaces/ITrigConfigTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TrigDecisionTool/TrigDecisionTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/IWeightTool.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BasicEventSelection</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+
+<span class="w">  </span><span class="c1">// Dijet+ISR TLA specific options</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_isTLAData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Sample type settings</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_truthLevelOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_setAFII</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_setAF3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_setFS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// GRL</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_applyGRLCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_GRLxml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_GRLExcludeList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_cleanPowheg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w">  </span><span class="n">m_reweightSherpa22</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">//PU Reweighting</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doPUreweighting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doPUreweightingSys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_lumiCalcFileNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_PRWFileNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_autoconfigPRW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_useCommonPRWFiles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_prwActualMu2016File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_prwActualMu2017File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_prwActualMu2018File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_prwActualMu2022File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_prwActualMu2023File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_prwActualMu2024File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_commonPRWFileMC20a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_commonPRWFileMC20d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PileupReweighting/mc20_common/mc20d.300000.physlite.prw.v1.root&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_commonPRWFileMC20e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PileupReweighting/mc20_common/mc20e.310000.physlite.prw.v1.root&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_commonPRWFileMC23a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PileupReweighting/mc23_common/mc23a.410000.physlite.prw.v2.root&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_commonPRWFileMC23c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PileupReweighting/mc23_common/mc23c.450000.physlite.prw.v1.root&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_commonPRWFileMC23d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PileupReweighting/mc23_common/mc23d.450000.physlite.prw.v1.root&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_commonPRWFileMC23e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PileupReweighting/mc23_common/mc23e.470000.physlite.prw.v1.root&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_mcCampaign</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_periodConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;auto&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_checkStreams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_actualMuMin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"> </span><span class="c1">// Default to off</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_actualMuMax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"> </span><span class="c1">// Default to off</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_calcBCIDInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Primary Vertex</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_applyPrimaryVertexCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_PVNTrack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Event Cleaning</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_applyEventCleaningCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_applyCoreFlagsCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Jet Cleaning</span>
+<span class="w">    </span><span class="c1">// Jet Cleaning (see also https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017)</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_applyJetCleaningEventFlag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_applyIsBadBatmanFlag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Print Branch List</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_printBranchList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Trigger</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_triggerSelection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_extraTriggerSelection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_applyTriggerCut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_storeTrigDecisions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_storePassL1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_storePassHLT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_storeTrigKeys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_storePrescaleWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Metadata</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_derivationName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_useMetaData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cm">/* Output Stream Names */</span>
+
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">        The following public variables allow for rerouting of the</span>
+<span class="cm">        metadata and cutflow histograms to non-default output</span>
+<span class="cm">        streams. E.g. can combine all outputs into a single stream</span>
+<span class="cm">    */</span>
+
+<span class="w">    </span><span class="c1">// output stream names</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_metaDataStreamName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;metadata&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_duplicatesStreamName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;duplicates_tree&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_checkDuplicatesData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_checkDuplicatesMC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// determines whether to add additional debugging histograms on data</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_doRunByRunCutflows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">private</span><span class="o">:</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">Long64_t</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_RunNr_VS_EvtNr</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// trigger unprescale chains</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_triggerUnprescaleList</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// decisions of triggers which are saved but not cut on, converted into a list</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_extraTriggerSelectionList</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// tools</span>
+<span class="w">    </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IGoodRunsListSelectionTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_grl_handle</span><span class="w">                  </span><span class="p">{</span><span class="s">&quot;GoodRunsListSelectionTool&quot;</span><span class="w">                                      </span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="w">    </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IPileupReweightingTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pileup_tool_handle</span><span class="w">          </span><span class="p">{</span><span class="s">&quot;CP::PileupReweightingTool/Pileup&quot;</span><span class="w">                                            </span><span class="p">};</span>
+<span class="w">    </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">TrigConf</span><span class="o">::</span><span class="n">ITrigConfigTool</span><span class="o">&gt;</span><span class="w">  </span><span class="n">m_trigConfTool_handle</span><span class="w">         </span><span class="p">{</span><span class="s">&quot;TrigConf::xAODConfigTool/xAODConfigTool&quot;</span><span class="w">                        </span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="w">    </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">TrigDecisionTool</span><span class="o">&gt;</span><span class="w">     </span><span class="n">m_trigDecTool_handle</span><span class="w">          </span><span class="p">{</span><span class="s">&quot;Trig::TrigDecisionTool/TrigDecisionTool&quot;</span><span class="w">                                     </span><span class="p">};</span>
+<span class="w">    </span><span class="c1">//asg::AnaToolHandle&lt;IWeightTool&gt;                m_reweightSherpa22_tool_handle{&quot;PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool&quot;, this}; //!</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_eventCounter</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// sumW</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_histSumW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// read from MetaData</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_histEventCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">m_MD_initialNevents</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">m_MD_finalNevents</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">m_MD_initialSumW</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">m_MD_finalSumW</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">m_MD_initialSumWSquared</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">m_MD_finalSumWSquared</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_mcCampaignMD</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// cutflow</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_cutflowHist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_cutflowHistW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_all</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_init</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_duplicates</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_grl</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_lar</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_tile</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_SCT</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_core</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_jetcleaning</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_isbadbatman</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_npv</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_cutflow_trigger</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// extra run-by-run event count cutflow</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_runByrun_beforeCuts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_runByrun_afterCuts</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// object cutflow</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_el_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_el_cutflowHist_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_mu_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_mu_cutflowHist_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_tau_cutflowHist_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_jet_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_trk_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TH1D</span><span class="o">*</span><span class="w"> </span><span class="n">m_truth_cutflowHist_1</span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">TTree</span><span class="o">*</span><span class="w">   </span><span class="n">m_duplicatesTree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">m_duplRunNumber</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">m_duplEventNumber</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// variables that don&#39;t get filled at submission time should be</span>
+<span class="w">    </span><span class="c1">// protected from being send from the submission node to the worker</span>
+<span class="w">    </span><span class="c1">// node (done by the //!)</span>
+
+<span class="w">    </span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">autoconfigurePileupRWTool</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// Tree *myTree; //!</span>
+<span class="w">    </span><span class="c1">// TH1 *myHist; //!</span>
+<span class="w">    </span><span class="c1">//</span>
+
+<span class="w">    </span><span class="c1">// this is a standard constructor</span>
+<span class="w">    </span><span class="n">BasicEventSelection</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// these are the functions inherited from Algorithm</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">fileExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histInitialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">firstFile</span><span class="p">);</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">postExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">finalize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histFinalize</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="w">    </span><span class="n">ClassDef</span><span class="p">(</span><span class="n">BasicEventSelection</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

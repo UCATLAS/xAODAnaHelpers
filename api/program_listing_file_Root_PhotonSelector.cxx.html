@@ -1,0 +1,850 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File PhotonSelector.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File PhotonSelector.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_PhotonSelector.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-photonselector-cxx">
+<span id="program-listing-file-root-photonselector-cxx"></span><h1>Program Listing for File PhotonSelector.cxx<a class="headerlink" href="#program-listing-for-file-photonselector-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_PhotonSelector.cxx.html#file-root-photonselector-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/PhotonSelector.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/********************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * Interface to CP Photon selection tool(s).</span>
+<span class="cm"> *</span>
+<span class="cm"> *******************************************/</span>
+
+<span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;typeinfo&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="c1">// EL include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="c1">// EDM include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODEventInfo/EventInfo.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/HelperFunctions.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/PhotonSelector.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODEgamma/EgammaDefs.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODEgamma/EgammaxAODHelpers.h&gt;</span>
+
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;IsolationSelection/IsolationSelectionTool.h&gt;</span>
+
+<span class="c1">// ROOT include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;TFile.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;TObjArray.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;TObjString.h&gt;</span>
+
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">PhotonSelector</span><span class="p">)</span>
+
+<span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;PhotonSelector&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">PhotonSelector</span><span class="o">::~</span><span class="n">PhotonSelector</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you put code that sets up the job on the submission object</span>
+<span class="w">  </span><span class="c1">// so that it is ready to work with your algorithm, e.g. you can</span>
+<span class="w">  </span><span class="c1">// request the D3PDReader service or add output files.  Any code you</span>
+<span class="w">  </span><span class="c1">// put here could instead also go into the submission script.  The</span>
+<span class="w">  </span><span class="c1">// sole advantage of putting it here is that it gets automatically</span>
+<span class="w">  </span><span class="c1">// activated/deactivated when you add/remove the algorithm from your</span>
+<span class="w">  </span><span class="c1">// job, which may or may not be of value to you.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;PhotonSelector&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done at the very</span>
+<span class="w">  </span><span class="c1">// beginning on each worker node, e.g. create histograms and output</span>
+<span class="w">  </span><span class="c1">// trees.  This method gets called before any input files are</span>
+<span class="w">  </span><span class="c1">// connected.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histInitialize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done exactly once for every</span>
+<span class="w">  </span><span class="c1">// single file, e.g. collect a list of all lumi-blocks processed</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling fileExecute&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="cm">/*firstFile*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything you need to do when we change input files,</span>
+<span class="w">  </span><span class="c1">// e.g. resetting branch addresses on trees.  If you are using</span>
+<span class="w">  </span><span class="c1">// D3PDReader or a similar service this method is not needed.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling changeInput&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that you need to do after the first input</span>
+<span class="w">  </span><span class="c1">// file has been connected and before the first event is processed,</span>
+<span class="w">  </span><span class="c1">// e.g. create additional histograms based on which variables are</span>
+<span class="w">  </span><span class="c1">// available in the input files.  You can also create all of your</span>
+<span class="w">  </span><span class="c1">// histograms and trees in here, but be aware that this method</span>
+<span class="w">  </span><span class="c1">// doesn&#39;t get called if no events are processed.  So any objects</span>
+<span class="w">  </span><span class="c1">// you create here won&#39;t be available in the output if you have no</span>
+<span class="w">  </span><span class="c1">// input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Initializing PhotonSelector Interface... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Let&#39;s see if the algorithm has been already used before:</span>
+<span class="w">  </span><span class="c1">// if yes, will write object cutflow in a different histogram!</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// This is the case when the selector algorithm is used for</span>
+<span class="w">  </span><span class="c1">// preselecting objects, and then again for the final selection</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Algorithm name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; - of type &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_className</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_useCutFlow</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="c1">// retrieve the file in which the cutflow hists are stored</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getOutputFile</span><span class="w"> </span><span class="p">(</span><span class="n">m_cutFlowStreamName</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// retrieve the event cutflows</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">m_cutflowHist</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow_weighted&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflow_bin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_cutflowHist</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="n">m_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="n">m_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+
+<span class="w">    </span><span class="c1">// retrieve the object cutflow</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">m_ph_cutflowHist_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TH1D</span><span class="o">*</span><span class="p">)</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;cutflow_photons_1&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_ph_cutflow_all</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;all&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_author_cut</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;author_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_OQ_cut</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;OQ_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_PID_cut</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;PID_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_deadHVCell_cut</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;deadHVCell_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_ptmax_cut</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;ptmax_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_ptmin_cut</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;ptmin_cut&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_eta_cut</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;eta_cut&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// including crack veto, if applied</span>
+<span class="w">    </span><span class="n">m_ph_cutflow_iso_cut</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">GetXaxis</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">FindBin</span><span class="p">(</span><span class="s">&quot;iso_cut&quot;</span><span class="p">);</span>
+
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Number of events in file: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">getEntries</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_outAuxContainerName</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;Aux.&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// the period is very important!</span>
+
+<span class="w">  </span><span class="c1">// Parse input isolation WP list, split by comma, and put into a vector for later use</span>
+<span class="w">  </span><span class="c1">// Make sure it&#39;s not empty!</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="nf">ss</span><span class="p">(</span><span class="n">m_IsoWPList</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_IsoKeys</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;InputContainer is empty!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="n">m_numEvent</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numObject</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numEventPass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_weightNumEventPass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_numObjectPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// *************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Initialise CP::IsolationSelectionTool</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// *************************************</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">isoToolName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_name</span><span class="o">+</span><span class="s">&quot;_PhotonIso&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">ToolStore</span><span class="o">::</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">isoToolName</span><span class="p">.</span><span class="n">c_str</span><span class="p">())</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_IsolationSelectionTool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">ToolStore</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationSelectionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">isoToolName</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_IsolationSelectionTool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">IsolationSelectionTool</span><span class="p">(</span><span class="n">isoToolName</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Adding isolation WP &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_IsoKeys</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to IsolationSelectionTool&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsolationSelectionTool</span><span class="o">-&gt;</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;PhotonWP&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_IsoKeys</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)).</span><span class="n">c_str</span><span class="p">()));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsolationSelectionTool</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">WP_itr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">next</span><span class="p">(</span><span class="n">m_IsoKeys</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span><span class="w"> </span><span class="n">WP_itr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_IsoKeys</span><span class="p">.</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">WP_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Adding extra isolation WP &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">*</span><span class="n">WP_itr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to IsolationSelectionTool&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_IsolationSelectionTool</span><span class="o">-&gt;</span><span class="n">addPhotonWP</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">WP_itr</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// **********************************************************************************************</span>
+
+<span class="w">  </span><span class="c1">// Set up the dead HV Removal Tool</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_applyDeadHVCellVeto</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_deadHVTool</span><span class="p">.</span><span class="n">setTypeAndName</span><span class="p">(</span><span class="s">&quot;AsgDeadHVCellRemovalTool/deadHVTool&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_deadHVTool</span><span class="p">.</span><span class="n">retrieve</span><span class="p">().</span><span class="n">isFailure</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Failed to retrieve DeadHVTool, aborting&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_WARNING</span><span class="p">(</span><span class="s">&quot;Not applying veto of dead HV cells on photons although it&#39;s recommended - please double check!&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;PhotonSelector Interface succesfully initialized!&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done on every single</span>
+<span class="w">  </span><span class="c1">// events, e.g. read input variables, apply cuts, and fill</span>
+<span class="w">  </span><span class="c1">// histograms and trees.  This is where most of your actual analysis</span>
+<span class="w">  </span><span class="c1">// code will go.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Applying Photon Selection... &quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="nf">eventInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">m_eventInfoContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// MC event weight</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="nf">mcEvtWeight</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">mcEvtWeightAcc</span><span class="p">(</span><span class="s">&quot;mcEventWeight&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">mcEvtWeightAcc</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;mcEventWeight is not available as decoration! Aborting&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">mcEvtWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mcEvtWeightAcc</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_numEvent</span><span class="o">++</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">eventPass</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">countPass</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span><span class="w"> </span><span class="c1">// for cutflow: count for the 1st collection in the syst container - could be better as should only count for the nominal</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inPhotons</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// if input comes from xAOD, or just running one collection,</span>
+<span class="w">  </span><span class="c1">// then get the one collection and be done with it</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_inputAlgoSystNames</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="c1">// this will be the collection processed - no matter what!!</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inPhotons</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// create output container (if requested)</span>
+<span class="w">    </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// find the selected photons, and return if event passes object selection</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">eventPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executeSelection</span><span class="p">(</span><span class="n">inPhotons</span><span class="p">,</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">,</span><span class="w"> </span><span class="n">countPass</span><span class="p">,</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventPass</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// add ConstDataVector to TStore</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">        </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="p">,</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="w"> </span><span class="p">));</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// if the event does not pass the selection, CDV won&#39;t be ever recorded to TStore, so we have to delete it!</span>
+<span class="w">        </span><span class="k">delete</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="p">;</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// get the list of systematics to run over</span>
+
+<span class="w">    </span><span class="c1">// get vector of string giving the syst names of the upstream algo from TStore (rememeber: 1st element is a blank string: nominal case!)</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&gt;*</span><span class="w"> </span><span class="n">systNames</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">systNames</span><span class="p">,</span><span class="w"> </span><span class="n">m_inputAlgoSystNames</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// prepare a vector of the names of CDV containers for usage by downstream algos</span>
+<span class="w">    </span><span class="c1">// must be a pointer to be recorded in TStore</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">vecOutContainerNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot; input list of syst size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">systNames</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// loop over systematic sets</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">eventPassThisSyst</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">systNames</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot; syst name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  input container name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="o">+</span><span class="n">systName</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">inPhotons</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">systName</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">      </span><span class="c1">// create output container (if requested) - one for each systematic</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">SG</span><span class="o">::</span><span class="n">VIEW_ELEMENTS</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// find the selected photons, and return if event passes object selection</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="n">eventPassThisSyst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executeSelection</span><span class="p">(</span><span class="w"> </span><span class="n">inPhotons</span><span class="p">,</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">,</span><span class="w"> </span><span class="n">countPass</span><span class="p">,</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">countPass</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">countPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// only count objects/events for 1st syst collection in iteration (i.e., nominal)</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventPassThisSyst</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// save the string of syst set under question if event is passing the selection</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">vecOutContainerNames</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// if for at least one syst set the event passes selection, this will remain true!</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="n">eventPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventPass</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">eventPassThisSyst</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot; syst name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  output container name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="o">+</span><span class="n">systName</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventPassThisSyst</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="c1">// add ConstDataVector to TStore</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">          </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="p">,</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="o">+</span><span class="n">systName</span><span class="w"> </span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="c1">// if the event does not pass the selection for this syst, CDV won&#39;t be ever recorded to TStore, so we have to delete it!</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">          </span><span class="k">delete</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="p">;</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; output list of syst size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vecOutContainerNames</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// record in TStore the list of systematics names that should be considered down stream</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">vecOutContainerNames</span><span class="p">),</span><span class="w"> </span><span class="n">m_outputAlgoSystNames</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// look what we have in TStore</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">msgLvl</span><span class="p">(</span><span class="n">MSG</span><span class="o">::</span><span class="n">VERBOSE</span><span class="p">))</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">print</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">eventPass</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">skipEvent</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">executeSelection</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inPhotons</span><span class="p">,</span>
+<span class="w">                      </span><span class="kt">float</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">countPass</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">ConstDataVector</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">selectedPhotons</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">nPass</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">nObj</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Decorator</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">passSelDecor</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;passSel&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ph_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">inPhotons</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// duplicated of basic loop</span>
+
+<span class="w">    </span><span class="c1">// if only looking at a subset of photons make sure all are decorated</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_nToProcess</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nObj</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">m_nToProcess</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_decorateSelectedObjects</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">passSelDecor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">ph_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">nObj</span><span class="o">++</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">passSel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">passCuts</span><span class="p">(</span><span class="w"> </span><span class="n">ph_itr</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_decorateSelectedObjects</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">passSelDecor</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">ph_itr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">passSel</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">passSel</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">nPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_createSelectedContainer</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">selectedPhotons</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">ph_itr</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// for cutflow: make sure to count passed objects only once (i.e., this flag will be true only for nominal)</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">countPass</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_numObject</span><span class="w">     </span><span class="o">+=</span><span class="w"> </span><span class="n">nObj</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numObjectPass</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">nPass</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// apply event selection based on minimal/maximal requirements on the number of objects per event passing cuts</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pass_min</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nPass</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_pass_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pass_max</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">nPass</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pass_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// for cutflow: make sure to count passed events only once (i.e., this flag will be true only for nominal)</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">countPass</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_numEventPass</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_weightNumEventPass</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">mcEvtWeight</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">passCuts</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Photon</span><span class="o">*</span><span class="w"> </span><span class="n">photon</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">et</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// all the eta cuts are done using the measurement of the cluster position with the 2nd layer cluster,</span>
+<span class="w">  </span><span class="c1">// as for Egamma CP  recommendation</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">eta</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">caloCluster</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">caloCluster</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">etaBE</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">-999.0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// photon ID key name set</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">photonIDKeyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PhotonID_&quot;</span><span class="o">+</span><span class="n">m_photonIdCut</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w">  </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">isAvailable</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">photonIDKeyName</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">))</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="p">(</span><span class="n">m_photonIdCut</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;None&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Please call PhotonCalibrator before calling PhotonSelector, or check the quality requirement (should be either of Tight/Medium/Loose) [&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">photonIDKeyName</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_all</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// author cut</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_doAuthorCut</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">author</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EgammaParameters</span><span class="o">::</span><span class="n">AuthorPhoton</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">author</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EgammaParameters</span><span class="o">::</span><span class="n">AuthorAmbiguous</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed author kinematic cut.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_author_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Object Quality cut</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_doOQCut</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_readOQFromDerivation</span><span class="p">){</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">photon</span><span class="p">).</span><span class="n">isGoodOQ</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EgammaParameters</span><span class="o">::</span><span class="n">BADCLUSPHOTON</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="k">else</span><span class="p">{</span>
+<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">oq</span><span class="o">=</span><span class="w"> </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">auxdata</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;OQ&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">reta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">showerShapeValue</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EgammaParameters</span><span class="o">::</span><span class="n">Reta</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">f1</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">showerShapeValue</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EgammaParameters</span><span class="o">::</span><span class="n">f1</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">oq</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1073741824</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="w"> </span><span class="o">||</span>
+<span class="w">       </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">oq</span><span class="o">&amp;</span><span class="mi">134217728</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">reta</span><span class="w"> </span><span class="o">&gt;</span><span class="mf">0.98</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">f1</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.4</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">oq</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">67108864</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Electron failed Object Quality cut.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_OQ_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// ID cut</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_photonIdCut</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;None&quot;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// it crashes in case the &quot;PhotonID_X&quot; is not stored on purpose</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">photonIDKeyName</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed ID cut.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_PID_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Dead HV Cell veto (affects only 2016 data)</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_applyDeadHVCellVeto</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_deadHVTool</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span><span class="n">photon</span><span class="p">)</span><span class="w"> </span><span class="p">){</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed dead HV cell veto.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_deadHVCell_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// pT max cut</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pT_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">et</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pT_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed pT max cut.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_ptmax_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// pT min cut</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_pT_min</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">et</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_pT_min</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed pT min cut.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_ptmin_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// eta cuts</span>
+<span class="w">  </span><span class="c1">//</span>
+
+<span class="w">  </span><span class="c1">// |eta| max cut</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_eta_max</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mf">1e8</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_eta_max</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed |eta| max cut.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// |eta| crack veto</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_vetoCrack</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="w"> </span><span class="n">eta</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1.37</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="w"> </span><span class="n">eta</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1.52</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed |eta| crack veto cut.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_eta_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// *********************************************************************************************************************************************************************</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// isolation cut</span>
+<span class="w">  </span><span class="c1">//</span>
+
+<span class="w">  </span><span class="c1">// Get the &quot;list&quot; of input WPs with the accept() decision from the tool</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">accept_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_IsolationSelectionTool</span><span class="o">-&gt;</span><span class="n">accept</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">photon</span><span class="w"> </span><span class="p">);</span>
+
+
+<span class="w">  </span><span class="c1">// Decorate w/ decision for all input WPs</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">base_decor</span><span class="p">(</span><span class="s">&quot;isIsolated&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">WP_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_IsoKeys</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">decorWP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_decor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">WP_itr</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Decorate photon with &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">decorWP</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; - accept() ? &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">accept_list</span><span class="p">.</span><span class="n">getCutResult</span><span class="p">(</span><span class="w"> </span><span class="n">WP_itr</span><span class="p">.</span><span class="n">c_str</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">photon</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">decorWP</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">accept_list</span><span class="p">.</span><span class="n">getCutResult</span><span class="p">(</span><span class="w"> </span><span class="n">WP_itr</span><span class="p">.</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Apply the cut if needed</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_MinIsoWPCut</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">accept_list</span><span class="p">.</span><span class="n">getCutResult</span><span class="p">(</span><span class="w"> </span><span class="n">m_MinIsoWPCut</span><span class="p">.</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Photon failed isolation cut &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_MinIsoWPCut</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_useCutFlow</span><span class="p">)</span><span class="w"> </span><span class="n">m_ph_cutflowHist_1</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">m_ph_cutflow_iso_cut</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// Here you do everything that needs to be done after the main event</span>
+<span class="w">  </span><span class="c1">// processing.  This is typically very rare, particularly in user</span>
+<span class="w">  </span><span class="c1">// code.  It is mainly used in implementing the NTupleSvc.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling postExecute&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">finalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of initialize(), meaning it gets</span>
+<span class="w">  </span><span class="c1">// called after the last event has been processed on the worker node</span>
+<span class="w">  </span><span class="c1">// and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// initialize() before they are written to disk.  This is actually</span>
+<span class="w">  </span><span class="c1">// fairly rare, since this happens separately for each worker node.</span>
+<span class="w">  </span><span class="c1">// Most of the time you want to do your post-processing on the</span>
+<span class="w">  </span><span class="c1">// submission node after all your histogram outputs have been</span>
+<span class="w">  </span><span class="c1">// merged.  This is different from histFinalize() in that it only</span>
+<span class="w">  </span><span class="c1">// gets called on worker nodes that processed input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Deleting tool instances...&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_useCutFlow</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Filling cutflow&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHist</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">SetBinContent</span><span class="p">(</span><span class="w"> </span><span class="n">m_cutflow_bin</span><span class="p">,</span><span class="w"> </span><span class="n">m_numEventPass</span><span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_cutflowHistW</span><span class="o">-&gt;</span><span class="n">SetBinContent</span><span class="p">(</span><span class="w"> </span><span class="n">m_cutflow_bin</span><span class="p">,</span><span class="w"> </span><span class="n">m_weightNumEventPass</span><span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Cutflow filled&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_IsolationSelectionTool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_IsolationSelectionTool</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_IsolationSelectionTool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Isolation Tool deleted&quot;</span><span class="p">);</span>
+
+<span class="cm">/*</span>
+<span class="cm">  if (m_match_Tool) {</span>
+<span class="cm">    delete m_match_Tool;</span>
+<span class="cm">    m_match_Tool = nullptr;</span>
+<span class="cm">  }</span>
+<span class="cm">*/</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Matching Tool deleted&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Finalization done.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">PhotonSelector</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// This method is the mirror image of histInitialize(), meaning it</span>
+<span class="w">  </span><span class="c1">// gets called after the last event has been processed on the worker</span>
+<span class="w">  </span><span class="c1">// node and allows you to finish up any objects you created in</span>
+<span class="w">  </span><span class="c1">// histInitialize() before they are written to disk.  This is</span>
+<span class="w">  </span><span class="c1">// actually fairly rare, since this happens separately for each</span>
+<span class="w">  </span><span class="c1">// worker node.  Most of the time you want to do your</span>
+<span class="w">  </span><span class="c1">// post-processing on the submission node after all your histogram</span>
+<span class="w">  </span><span class="c1">// outputs have been merged.  This is different from finalize() in</span>
+<span class="w">  </span><span class="c1">// that it gets called on all worker nodes regardless of whether</span>
+<span class="w">  </span><span class="c1">// they processed input events.</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histFinalize&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

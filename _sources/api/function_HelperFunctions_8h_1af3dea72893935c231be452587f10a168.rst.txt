@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1af3dea72893935c231be452587f10a168:
+
+Function HelperFunctions::has_exact
+===================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::has_exact(const std::string, const std::string)

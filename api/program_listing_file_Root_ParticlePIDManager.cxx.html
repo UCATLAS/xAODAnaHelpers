@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File ParticlePIDManager.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File ParticlePIDManager.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_ParticlePIDManager.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-particlepidmanager-cxx">
+<span id="program-listing-file-root-particlepidmanager-cxx"></span><h1>Program Listing for File ParticlePIDManager.cxx<a class="headerlink" href="#program-listing-for-file-particlepidmanager-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_ParticlePIDManager.cxx.html#file-root-particlepidmanager-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/ParticlePIDManager.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/ParticlePIDManager.h&quot;</span>
+
+<span class="n">ANA_MSG_SOURCE</span><span class="p">(</span><span class="n">msgPIDManager</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PIDManager&quot;</span><span class="p">)</span>
+
+<span class="n">ElectronLHPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">ElectronLHPIDManager</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">WP</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_VeryLoose</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_Loose</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_LooseBL</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_Medium</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_Tight</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_VeryLooseLLP</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_LooseLLP</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_MediumLLP</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronLikelihoodTool_TightLLP</span><span class="p">(</span><span class="k">nullptr</span><span class="p">)</span>
+
+<span class="p">{</span>
+<span class="w">      </span><span class="n">m_selectedWP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WP</span><span class="p">;</span>
+<span class="w">      </span><span class="n">m_debug</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">debug</span><span class="p">;</span>
+
+<span class="w">      </span><span class="cm">/*  fill the multimap with WPs and corresponding tools */</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">veryloose</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;VeryLoose&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLoose</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">loose</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Loose&quot;</span><span class="p">),</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_Loose</span><span class="w">     </span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">loosebl</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;LooseBL&quot;</span><span class="p">),</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_LooseBL</span><span class="w">     </span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">medium</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Medium&quot;</span><span class="p">),</span><span class="w">    </span><span class="n">m_asgElectronLikelihoodTool_Medium</span><span class="w">    </span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">tight</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Tight&quot;</span><span class="p">),</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_Tight</span><span class="w">     </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">verylooseLLP</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;VeryLooseLLP&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLooseLLP</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">looseLLP</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;LooseLLP&quot;</span><span class="p">),</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_LooseLLP</span><span class="w">     </span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">mediumLLP</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;MediumLLP&quot;</span><span class="p">),</span><span class="w">    </span><span class="n">m_asgElectronLikelihoodTool_MediumLLP</span><span class="w">    </span><span class="p">);</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">tightLLP</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;TightLLP&quot;</span><span class="p">),</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_TightLLP</span><span class="w">     </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">veryloose</span><span class="p">);</span><span class="w">   </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;VeryLoose&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loose</span><span class="p">);</span><span class="w">       </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;Loose&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loosebl</span><span class="p">);</span><span class="w">     </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;LooseBL&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">medium</span><span class="p">);</span><span class="w">      </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;Medium&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tight</span><span class="p">);</span><span class="w">       </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;Tight&quot;</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">verylooseLLP</span><span class="p">);</span><span class="w">   </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;VeryLooseNoPix&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">looseLLP</span><span class="p">);</span><span class="w">       </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;LooseNoPix&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">mediumLLP</span><span class="p">);</span><span class="w">      </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;MediumNoPix&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tightLLP</span><span class="p">);</span><span class="w">       </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;TightNoPix&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ElectronLHPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w">  </span><span class="o">~</span><span class="n">ElectronLHPIDManager</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLoose</span><span class="w"> </span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLoose</span><span class="p">;</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLoose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_Loose</span><span class="w"> </span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_Loose</span><span class="p">;</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_Loose</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_LooseBL</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_LooseBL</span><span class="p">;</span><span class="w">   </span><span class="n">m_asgElectronLikelihoodTool_LooseBL</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_Medium</span><span class="w"> </span><span class="p">)</span><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_Medium</span><span class="p">;</span><span class="w">    </span><span class="n">m_asgElectronLikelihoodTool_Medium</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_Tight</span><span class="w"> </span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_Tight</span><span class="p">;</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_Tight</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLooseLLP</span><span class="w"> </span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLooseLLP</span><span class="p">;</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_VeryLooseLLP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_LooseLLP</span><span class="w"> </span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_LooseLLP</span><span class="p">;</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_LooseLLP</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_MediumLLP</span><span class="w"> </span><span class="p">)</span><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_MediumLLP</span><span class="p">;</span><span class="w">    </span><span class="n">m_asgElectronLikelihoodTool_MediumLLP</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_TightLLP</span><span class="w"> </span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronLikelihoodTool_TightLLP</span><span class="p">;</span><span class="w">     </span><span class="n">m_asgElectronLikelihoodTool_TightLLP</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">ElectronLHPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupWPs</span><span class="p">(</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">configTools</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">selector_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgPIDManager</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">selectedWP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_selectedWP</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_selectedWP</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;NoPix&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="n">selectedWP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_selectedWP</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_selectedWP</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="mi">-5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;LLP&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">EnumParser</span><span class="o">&lt;</span><span class="n">LikeEnum</span><span class="o">::</span><span class="n">Menu</span><span class="o">&gt;</span><span class="w"> </span><span class="n">selectedWP_parser</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">selectedWP_enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">selectedWP_parser</span><span class="p">.</span><span class="n">parseEnum</span><span class="p">(</span><span class="n">selectedWP</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/* By converting the string to the corresponding LikeEnum, we can exploit the ordering of the enum itself</span>
+<span class="cm">  / ( see ElectronPhotonID/ElectronPhotonSelectorTools/trunk/ElectronPhotonSelectorTools/TElectronLikelihoodTool.h for definition)</span>
+<span class="cm">  / to initialise ONLY the tools with WP tighter (or equal) the selected one.</span>
+<span class="cm">  / The selected WP will be used to cut loose electrons in the selector, the tighter WPs to decorate!</span>
+<span class="cm">  Beware, this doesn&#39;t work if you are using LLP WPs since they are not ordered in the enum.</span>
+<span class="cm">  */</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">configTools</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">m_allWPTools</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="cm">/* instantiate tools (do it for all) */</span>
+
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">WP</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">tool_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">selector_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">WP</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;setupWPs()&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Initializing AsgElectronLikelihoodTool w/ name: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tool_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="k">new</span><span class="w"> </span><span class="n">AsgElectronLikelihoodTool</span><span class="p">(</span><span class="w"> </span><span class="n">tool_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">EnumParser</span><span class="o">&lt;</span><span class="n">LikeEnum</span><span class="o">::</span><span class="n">Menu</span><span class="o">&gt;</span><span class="w">  </span><span class="n">WP_parser</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">WP_enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">WP_parser</span><span class="p">.</span><span class="n">parseEnum</span><span class="p">(</span><span class="n">WP</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="cm">/* if this WP is looser than user&#39;s WP, skip to next. Don&#39;t do this if using LLP WPs. */</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">WP_enum</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">selectedWP_enum</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">selectedWP</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;LLP&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">      </span><span class="cm">/* configure and initialise only tools with (WP &gt;= selectedWP) */</span>
+<span class="w">      </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">().</span><span class="n">setLevel</span><span class="p">(</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">INFO</span><span class="p">);</span><span class="w"> </span><span class="cm">/* ERROR, VERBOSE, DEBUG, INFO */</span>
+
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">WPParseString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WP</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;LHElectron&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">WP</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;LLP&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="n">WPParseString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WP</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">WP</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="mi">-3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;LHElectron_LLP&quot;</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;WorkingPoint&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">WPParseString</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">());</span>
+
+<span class="w">      </span><span class="cm">/* copy map element into container of valid WPs for later usage */</span>
+<span class="w">      </span><span class="n">m_validWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">m_allWPAuxDecors</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">EnumParser</span><span class="o">&lt;</span><span class="n">LikeEnum</span><span class="o">::</span><span class="n">Menu</span><span class="o">&gt;</span><span class="w">  </span><span class="n">WP_parser</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">WPParseString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;NoPix&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="n">WPParseString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="mi">-5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;LLP&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">WP_enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">WP_parser</span><span class="p">.</span><span class="n">parseEnum</span><span class="p">(</span><span class="n">WPParseString</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="cm">/* if this WP is looser than user&#39;s WP, skip to next. Don&#39;t do this if using LLP WPs. */</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">WP_enum</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">selectedWP_enum</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">selectedWP</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;LLP&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">      </span><span class="cm">/* copy map element into container of valid WPs for later usage */</span>
+<span class="w">      </span><span class="n">m_validWPs</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="cm">/* set default values for decorations (do it for all WPs) */</span>
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">ElectronLHPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setDecorations</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Electron</span><span class="o">*</span><span class="w"> </span><span class="n">electron</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">m_allWPTools</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">defaultDecorWP</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="s">&quot;LH&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">        </span><span class="n">electron</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">defaultDecorWP</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">ElectronLHPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">getSelectedWP</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">WP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_selectedWP</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">WP</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="n">ElectronCutBasedPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">ElectronCutBasedPIDManager</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">WP</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">m_asgElectronIsEMSelector_Loose</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronIsEMSelector_Medium</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_asgElectronIsEMSelector_Tight</span><span class="p">(</span><span class="k">nullptr</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">m_selectedWP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WP</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_debug</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">debug</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/*  fill the multimap with WPs and corresponding tools. Use an ordered index to reflect the tightness order (0: loosest WP, ...) */</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronIsEMSelector</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">loose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Loose&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Loose</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">loose</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;Loose&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronIsEMSelector</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">medium</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Medium&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Medium</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">medium</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;Medium&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">AsgElectronIsEMSelector</span><span class="o">*</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">tight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Tight&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Tight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_allWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">tight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_allWPAuxDecors</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;Tight&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ElectronCutBasedPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w">  </span><span class="o">~</span><span class="n">ElectronCutBasedPIDManager</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Loose</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Loose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w">  </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Loose</span><span class="p">;</span><span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Medium</span><span class="w"> </span><span class="p">)</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Medium</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Medium</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Tight</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Tight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w">  </span><span class="k">delete</span><span class="w"> </span><span class="n">m_asgElectronIsEMSelector_Tight</span><span class="p">;</span><span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">ElectronCutBasedPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupWPs</span><span class="p">(</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">configTools</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">selector_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgPIDManager</span><span class="p">;</span>
+<span class="w">  </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">EnumParser</span><span class="o">&lt;</span><span class="n">egammaPID</span><span class="o">::</span><span class="n">egammaIDQuality</span><span class="o">&gt;</span><span class="w"> </span><span class="n">selectedWP_parser</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">selectedWP_enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">selectedWP_parser</span><span class="p">.</span><span class="n">parseEnum</span><span class="p">(</span><span class="n">m_selectedWP</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/* By converting the string to the corresponding egammaPID, we can exploit the ordering of the enum itself</span>
+<span class="cm">  / ( see ElectronPhotonID/ElectronPhotonSelectorTools/trunk/ElectronPhotonSelectorTools/TElectronIsEMSelector.h for definition)</span>
+<span class="cm">  / to initialise ONLY the tools with WP tighter (or equal) the selected one.</span>
+<span class="cm">  / The selected WP will be used to cut loose electrons in the selector, the tighter WPs to decorate!</span>
+<span class="cm">  /</span>
+<span class="cm">  / egammaPID enums :http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Reconstruction/egamma/egammaEvent/egammaEvent/egammaPIDdefs.h</span>
+<span class="cm">  */</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">configTools</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">m_allWPTools</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">WP</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">      </span><span class="cm">/* instantiate tools (do it for all) */</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">tool_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WP</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">selector_name</span><span class="p">;</span>
+<span class="w">      </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="k">new</span><span class="w"> </span><span class="n">AsgElectronIsEMSelector</span><span class="p">(</span><span class="w"> </span><span class="n">tool_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">EnumParser</span><span class="o">&lt;</span><span class="n">egammaPID</span><span class="o">::</span><span class="n">egammaIDQuality</span><span class="o">&gt;</span><span class="w">  </span><span class="n">itWP_parser</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">itWP_enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">itWP_parser</span><span class="p">.</span><span class="n">parseEnum</span><span class="p">(</span><span class="n">WP</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="cm">/* if this WP is looser than user&#39;s WP, skip to next */</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">itWP_enum</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">selectedWP_enum</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">      </span><span class="cm">/* configure and initialise only tools with (WP &gt;= selectedWP) */</span>
+
+<span class="w">      </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">().</span><span class="n">setLevel</span><span class="p">(</span><span class="w"> </span><span class="n">MSG</span><span class="o">::</span><span class="n">INFO</span><span class="p">);</span><span class="w"> </span><span class="cm">/* ERROR, VERBOSE, DEBUG, INFO */</span>
+
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;WorkingPoint&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">WP</span><span class="o">+</span><span class="s">&quot;Electron&quot;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">());</span>
+
+<span class="w">      </span><span class="cm">/* copy map element into container of valid tools for later usage */</span>
+<span class="w">      </span><span class="n">m_validWPTools</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">m_allWPAuxDecors</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">EnumParser</span><span class="o">&lt;</span><span class="n">egammaPID</span><span class="o">::</span><span class="n">egammaIDQuality</span><span class="o">&gt;</span><span class="w">  </span><span class="n">itWP_parser</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">itWP_enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">itWP_parser</span><span class="p">.</span><span class="n">parseEnum</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="cm">/* if this WP is looser than user&#39;s WP, skip to next */</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">itWP_enum</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">selectedWP_enum</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">      </span><span class="cm">/* copy map element into container of valid WPs for later usage */</span>
+<span class="w">      </span><span class="n">m_validWPs</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* set default values for decorations (do it for all WPs) */</span>
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">ElectronCutBasedPIDManager</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setDecorations</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Electron</span><span class="o">*</span><span class="w"> </span><span class="n">electron</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">m_allWPTools</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">defaultDecorWP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;IsEM&quot;</span><span class="o">+</span><span class="n">it</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">    </span><span class="n">electron</span><span class="o">-&gt;</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">defaultDecorWP</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

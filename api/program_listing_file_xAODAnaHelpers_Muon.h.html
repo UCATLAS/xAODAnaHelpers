@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File Muon.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File Muon.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_Muon.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-muon-h">
+<span id="program-listing-file-xaodanahelpers-muon-h"></span><h1>Program Listing for File Muon.h<a class="headerlink" href="#program-listing-for-file-muon-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_Muon.h.html#file-xaodanahelpers-muon-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/Muon.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_Muon_H</span>
+<span class="cp">#define xAODAnaHelpers_Muon_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/Particle.h&quot;</span>
+
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">Muon</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Particle</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+
+<span class="w">    </span><span class="c1">//Muon() {};</span>
+<span class="w">    </span><span class="c1">//virtual ~Muon() { };</span>
+
+<span class="w">    </span><span class="c1">// kinematics</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">charge</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// trigger</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">               </span><span class="n">isTrigMatched</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">  </span><span class="n">isTrigMatchedToChain</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">listTrigChains</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// isolation</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">isIsolated</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptcone20</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptcone30</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptcone40</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptvarcone20</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptvarcone30</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptvarcone40</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">topoetcone20</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">topoetcone30</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">topoetcone40</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">neflowisol20</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptcone20_Nonprompt_All_MaxWeightTTVA_pt500</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptcone20_Nonprompt_All_MaxWeightTTVA_pt1000</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">topoetcone20_CloseByCorr</span><span class="w">                                  </span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">neflowisol20_CloseByCorr</span><span class="w">                                  </span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt500_CloseByCorr</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ptvarcone30_Nonprompt_All_MaxWeightTTVA_pt1000_CloseByCorr</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// quality</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">quality</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// scale factors w/ sys</span>
+<span class="w">    </span><span class="c1">// per object</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">RecoEff_SF</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">IsoEff_SF</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">TrigEff_SF</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">TrigMCEff</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="n">TTVAEff_SF</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// track parameters</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkd0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkd0sig</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkz0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkz0sintheta</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkphi0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trktheta</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkcharge</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkqOverP</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// track hit content</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknSiHits</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknPixHits</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknPixHoles</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknSCTHits</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknSCTHoles</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknTRTHits</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknTRTHoles</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknBLayerHits</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">trknInnermostPixLayHits</span><span class="p">;</span><span class="w"> </span><span class="c1">// not available in DC14</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">trkPixdEdX</span><span class="p">;</span><span class="w">            </span><span class="c1">// not available in DC14</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w">         </span><span class="n">EnergyLoss</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w">         </span><span class="n">EnergyLossSigma</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">energyLossType</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w">         </span><span class="n">MeasEnergyLoss</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w">         </span><span class="n">MeasEnergyLossSigma</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w">         </span><span class="n">ParamEnergyLoss</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w">         </span><span class="n">ParamEnergyLossSigmaMinus</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w">         </span><span class="n">ParamEnergyLossSigmaPlus</span><span class="p">;</span>
+
+
+<span class="w">    </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="nf">vec_eLoss</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">{</span>
+
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">theta_muon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p4</span><span class="p">.</span><span class="n">Theta</span><span class="p">();</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">phi_muon</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">p4</span><span class="p">.</span><span class="n">Phi</span><span class="p">();</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">elossX</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">EnergyLoss</span><span class="o">/</span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">theta_muon</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">phi_muon</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">elossY</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">EnergyLoss</span><span class="o">/</span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">theta_muon</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">phi_muon</span><span class="p">);</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">elossZ</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">EnergyLoss</span><span class="o">/</span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">theta_muon</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">muonELoss</span><span class="p">(</span><span class="n">elossX</span><span class="p">,</span><span class="n">elossY</span><span class="p">,</span><span class="n">elossZ</span><span class="p">,</span><span class="n">EnergyLoss</span><span class="o">/</span><span class="mi">1000</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">muonELoss</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// prompt lepton</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_DL1mu</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_DRlj</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_LepJetPtFrac</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_PtFrac</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_PtRel</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">PromptLeptonInput_TrackJetNTrack</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_ip2</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_ip3</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonInput_rnnip</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">PromptLeptonInput_sv1_jf_ntrkv</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonIso</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">PromptLeptonVeto</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">isLRT</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">passIDcuts</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// passSel</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">passSel</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// passOR</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">passOR</span><span class="p">;</span>
+
+<span class="w">  </span><span class="p">};</span>
+
+<span class="p">}</span><span class="c1">//xAH</span>
+<span class="cp">#endif </span><span class="c1">// xAODAnaHelpers_Particle_H</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

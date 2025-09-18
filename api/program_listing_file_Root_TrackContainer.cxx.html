@@ -1,0 +1,603 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File TrackContainer.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File TrackContainer.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_TrackContainer.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-trackcontainer-cxx">
+<span id="program-listing-file-root-trackcontainer-cxx"></span><h1>Program Listing for File TrackContainer.cxx<a class="headerlink" href="#program-listing-for-file-trackcontainer-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_TrackContainer.cxx.html#file-root-trackcontainer-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/TrackContainer.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/TrackContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/HelperFunctions.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODTracking/TrackParticle.h&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="p">;</span>
+
+<span class="n">TrackContainer</span><span class="o">::</span><span class="n">TrackContainer</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">units</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ParticleContainer</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">detailStr</span><span class="p">,</span><span class="n">units</span><span class="p">,</span><span class="nb">true</span><span class="p">)</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_fitpars</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_chiSquared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_d0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_definingParametersCovMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_expectInnermostPixelLayerHit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_expectNextToInnermostPixelLayerHit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberDoF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_numbers</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_numberOfInnermostPixelLayerHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfNextToInnermostPixelLayerHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPhiHoleLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPhiLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPixelDeadSensors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPixelHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPixelHoles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPixelSharedHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPrecisionHoleLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfPrecisionLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfSCTDeadSensors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfSCTHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfSCTHoles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfSCTSharedHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfTRTHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_numberOfTRTOutliers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_phi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_qOverP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_theta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_vertex</span><span class="p">){</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">      m_vertexLink = new std::vector&lt;Int_t &gt;;</span>
+<span class="cm">      m_vertexLink_persIndex = new std::vector&lt;UInt_t &gt;;</span>
+<span class="cm">      m_vertexLink_persKey = new std::vector&lt;UInt_t &gt;;</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">m_vz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_z0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">TrackContainer</span><span class="o">::~</span><span class="n">TrackContainer</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; Deleting TrackContainer &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_fitpars</span><span class="p">){</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_chiSquared</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_d0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_definingParametersCovMatrix</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_expectInnermostPixelLayerHit</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_expectNextToInnermostPixelLayerHit</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberDoF</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_numbers</span><span class="p">){</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfInnermostPixelLayerHits</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfNextToInnermostPixelLayerHits</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPhiHoleLayers</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPhiLayers</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPixelDeadSensors</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPixelHits</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPixelHoles</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPixelSharedHits</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPrecisionHoleLayers</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfPrecisionLayers</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfSCTDeadSensors</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfSCTHits</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfSCTHoles</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfSCTSharedHits</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfTRTHits</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_numberOfTRTOutliers</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">delete</span><span class="w"> </span><span class="n">m_phi</span><span class="p">;</span>
+<span class="w">  </span><span class="k">delete</span><span class="w"> </span><span class="n">m_qOverP</span><span class="p">;</span>
+<span class="w">  </span><span class="k">delete</span><span class="w"> </span><span class="n">m_theta</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_vertex</span><span class="p">){</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">      delete m_vertexLink;</span>
+<span class="cm">      delete m_vertexLink_persIndex;</span>
+<span class="cm">      delete m_vertexLink_persKey;</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_vz</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_z0</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TrackContainer</span><span class="o">::</span><span class="n">setTree</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">setTree</span><span class="p">(</span><span class="n">tree</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_fitpars</span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;chiSquared&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_chiSquared</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;d0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_d0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;definingParametersCovMatrix&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_definingParametersCovMatrix</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;expectInnermostPixelLayerHit&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_expectInnermostPixelLayerHit</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;expectNextToInnermostPixelLayerHit&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_expectNextToInnermostPixelLayerHit</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberDoF&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberDoF</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_numbers</span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfInnermostPixelLayerHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfInnermostPixelLayerHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfNextToInnermostPixelLayerHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfNextToInnermostPixelLayerHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPhiHoleLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPhiHoleLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPhiLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPhiLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelDeadSensors&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPixelDeadSensors</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPixelHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelHoles&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPixelHoles</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelSharedHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPixelSharedHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPrecisionHoleLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPrecisionHoleLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPrecisionLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfPrecisionLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTDeadSensors&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfSCTDeadSensors</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfSCTHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTHoles&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfSCTHoles</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTSharedHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfSCTSharedHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfTRTHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfTRTHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfTRTOutliers&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_numberOfTRTOutliers</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_phi</span><span class="p">);</span>
+<span class="w">  </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;qOverP&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_qOverP</span><span class="p">);</span>
+<span class="w">  </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;theta&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_theta</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_vertex</span><span class="p">){</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">      connectBranch&lt;Int_t&gt;(tree, &quot;vertexLink&quot;, &amp;m_vertexLink);</span>
+<span class="cm">      connectBranch&lt;UInt_t&gt;(tree, &quot;vertexLink_persIndex&quot;, &amp;m_vertexLink_persIndex);</span>
+<span class="cm">      connectBranch&lt;UInt_t&gt;(tree, &quot;vertexLink_persKey&quot;, &amp;m_vertexLink_persKey);</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;vz&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_vz</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_z0</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TrackContainer</span><span class="o">::</span><span class="n">updateParticle</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">TrackPart</span><span class="o">&amp;</span><span class="w"> </span><span class="n">track</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;in TrackContainer::updateParticle&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">updateParticle</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">track</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_fitpars</span><span class="p">){</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">chiSquared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_chiSquared</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">d0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_d0</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">definingParametersCovMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_definingParametersCovMatrix</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">expectInnermostPixelLayerHit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_expectInnermostPixelLayerHit</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">expectNextToInnermostPixelLayerHit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_expectNextToInnermostPixelLayerHit</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_numbers</span><span class="p">){</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberDoF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberDoF</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfInnermostPixelLayerHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfInnermostPixelLayerHits</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfNextToInnermostPixelLayerHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfNextToInnermostPixelLayerHits</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPhiHoleLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPhiHoleLayers</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPhiLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPhiLayers</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPixelDeadSensors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPixelDeadSensors</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPixelHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPixelHits</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPixelHoles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPixelHoles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPixelSharedHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPixelSharedHits</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPrecisionHoleLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPrecisionHoleLayers</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfPrecisionLayers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfPrecisionLayers</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfSCTDeadSensors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfSCTDeadSensors</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfSCTHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfSCTHits</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfSCTHoles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfSCTHoles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfSCTSharedHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfSCTSharedHits</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfTRTHits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfTRTHits</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">numberOfTRTOutliers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_numberOfTRTOutliers</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">track</span><span class="p">.</span><span class="n">phi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_phi</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="n">track</span><span class="p">.</span><span class="n">qOverP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_qOverP</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="n">track</span><span class="p">.</span><span class="n">theta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_theta</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_vertex</span><span class="p">){</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">      track.vertexLink = m_vertexLink-&gt;at(idx);</span>
+<span class="cm">      track.vertexLink_persIndex = m_vertexLink_persIndex-&gt;at(idx);</span>
+<span class="cm">      track.vertexLink_persKey = m_vertexLink_persKey-&gt;at(idx);</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">vz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_vz</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="n">z0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_z0</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;leaving TrackContainer::updateParticle&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TrackContainer</span><span class="o">::</span><span class="n">setBranches</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">setBranches</span><span class="p">(</span><span class="n">tree</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_fitpars</span><span class="p">){</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;chiSquared&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_chiSquared</span><span class="p">);</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;d0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_d0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;definingParametersCovMatrix&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_definingParametersCovMatrix</span><span class="p">);</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;expectInnermostPixelLayerHit&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_expectInnermostPixelLayerHit</span><span class="p">);</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;expectNextToInnermostPixelLayerHit&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_expectNextToInnermostPixelLayerHit</span><span class="p">);</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberDoF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberDoF</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_numbers</span><span class="p">){</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfInnermostPixelLayerHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfInnermostPixelLayerHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfNextToInnermostPixelLayerHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfNextToInnermostPixelLayerHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPhiHoleLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPhiHoleLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPhiLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPhiLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelDeadSensors&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelDeadSensors</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelHoles&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelHoles</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPixelSharedHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelSharedHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPrecisionHoleLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPrecisionHoleLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfPrecisionLayers&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPrecisionLayers</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTDeadSensors&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTDeadSensors</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTHoles&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTHoles</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfSCTSharedHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTSharedHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfTRTHits&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfTRTHits</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;numberOfTRTOutliers&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfTRTOutliers</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_phi</span><span class="p">);</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;qOverP&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_qOverP</span><span class="p">);</span>
+<span class="w">  </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;theta&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_theta</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_vertex</span><span class="p">){</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">      setBranch&lt;Int_t&gt;(tree, &quot;vertexLink&quot;, m_vertexLink);</span>
+<span class="cm">      setBranch&lt;UInt_t&gt;(tree, &quot;vertexLink_persIndex&quot;, m_vertexLink_persIndex);</span>
+<span class="cm">      setBranch&lt;UInt_t&gt;(tree, &quot;vertexLink_persKey&quot;, m_vertexLink_persKey);</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;vz&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_vz</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_z0</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TrackContainer</span><span class="o">::</span><span class="n">clear</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_fitpars</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_chiSquared</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_d0</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_definingParametersCovMatrix</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_expectInnermostPixelLayerHit</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_expectNextToInnermostPixelLayerHit</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberDoF</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_numbers</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_numberOfInnermostPixelLayerHits</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfNextToInnermostPixelLayerHits</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPhiHoleLayers</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPhiLayers</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPixelDeadSensors</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPixelHits</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPixelHoles</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPixelSharedHits</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPrecisionHoleLayers</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfPrecisionLayers</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfSCTDeadSensors</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfSCTHits</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfSCTHoles</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfSCTSharedHits</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfTRTHits</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_numberOfTRTOutliers</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_phi</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_qOverP</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_theta</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_vertex</span><span class="p">){</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">      m_vertexLink-&gt;clear();</span>
+<span class="cm">      m_vertexLink_persIndex-&gt;clear();</span>
+<span class="cm">      m_vertexLink_persKey-&gt;clear();</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">m_vz</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_z0</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TrackContainer</span><span class="o">::</span><span class="n">FillTrack</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">track</span><span class="w"> </span><span class="p">){</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">FillTrack</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TrackContainer</span><span class="o">::</span><span class="n">FillTrack</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="w"> </span><span class="p">){</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;In Fill Track&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">FillParticle</span><span class="p">(</span><span class="n">particle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">track</span><span class="o">=</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">particle</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Got TrackParticle&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_fitpars</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Filling fitpars&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">m_chiSquared</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">track</span><span class="o">-&gt;</span><span class="n">chiSquared</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_d0</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">track</span><span class="o">-&gt;</span><span class="n">d0</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_numberDoF</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">track</span><span class="o">-&gt;</span><span class="n">numberDoF</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//m_definingParametersCovMatrix -&gt;push_back(track-&gt;definingParametersCovMatrix() ); // fix this too</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">expectInnermostPixelLayerHit</span><span class="p">(</span><span class="s">&quot;expectInnermostPixelLayerHit&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">expectInnermostPixelLayerHit</span><span class="p">,</span><span class="w"> </span><span class="n">m_expectInnermostPixelLayerHit</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">expectNextToInnermostPixelLayerHit</span><span class="p">(</span><span class="s">&quot;expectNextToInnermostPixelLayerHit&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">expectNextToInnermostPixelLayerHit</span><span class="p">,</span><span class="w"> </span><span class="n">m_expectNextToInnermostPixelLayerHit</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_numbers</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Filling numbers&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfInnermostPixelLayerHits</span><span class="p">(</span><span class="s">&quot;numberOfInnermostPixelLayerHits&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfInnermostPixelLayerHits</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfInnermostPixelLayerHits</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfNextToInnermostPixelLayerHits</span><span class="p">(</span><span class="s">&quot;numberOfNextToInnermostPixelLayerHits&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfNextToInnermostPixelLayerHits</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfNextToInnermostPixelLayerHits</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPhiHoleLayers</span><span class="p">(</span><span class="s">&quot;numberOfPhiHoleLayers&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPhiHoleLayers</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPhiHoleLayers</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPhiLayers</span><span class="p">(</span><span class="s">&quot;numberOfPhiLayers&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPhiLayers</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPhiLayers</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPixelDeadSensors</span><span class="p">(</span><span class="s">&quot;numberOfPixelDeadSensors&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPixelDeadSensors</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelDeadSensors</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPixelHits</span><span class="p">(</span><span class="s">&quot;numberOfPixelHits&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPixelHits</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelHits</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPixelHoles</span><span class="p">(</span><span class="s">&quot;numberOfPixelHoles&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPixelHoles</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelHoles</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPixelSharedHits</span><span class="p">(</span><span class="s">&quot;numberOfPixelSharedHits&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPixelSharedHits</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPixelSharedHits</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPrecisionHoleLayers</span><span class="p">(</span><span class="s">&quot;numberOfPrecisionHoleLayers&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPrecisionHoleLayers</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPrecisionHoleLayers</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfPrecisionLayers</span><span class="p">(</span><span class="s">&quot;numberOfPrecisionLayers&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfPrecisionLayers</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfPrecisionLayers</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfSCTDeadSensors</span><span class="p">(</span><span class="s">&quot;numberOfSCTDeadSensors&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfSCTDeadSensors</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTDeadSensors</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfSCTHits</span><span class="p">(</span><span class="s">&quot;numberOfSCTHits&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfSCTHits</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTHits</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfSCTHoles</span><span class="p">(</span><span class="s">&quot;numberOfSCTHoles&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfSCTHoles</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTHoles</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfSCTSharedHits</span><span class="p">(</span><span class="s">&quot;numberOfSCTSharedHits&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfSCTSharedHits</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfSCTSharedHits</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfTRTHits</span><span class="p">(</span><span class="s">&quot;numberOfTRTHits&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfTRTHits</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfTRTHits</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numberOfTRTOutliers</span><span class="p">(</span><span class="s">&quot;numberOfTRTOutliers&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="w"> </span><span class="n">numberOfTRTOutliers</span><span class="p">,</span><span class="w"> </span><span class="n">m_numberOfTRTOutliers</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_phi</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">track</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_qOverP</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">track</span><span class="o">-&gt;</span><span class="n">qOverP</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_theta</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">track</span><span class="o">-&gt;</span><span class="n">theta</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_vertex</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Filling vertex&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//static SG::AuxElement::ConstAccessor&lt;int&gt; vertexLink(&quot;vertexLink&quot;);</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">      m_vertexLink-&gt;push_back(vertexLink(*track) );</span>
+<span class="cm">      //m_vertexLink_persIndex-&gt;push_back(track-&gt;vertexLink.m_persIndex() );</span>
+<span class="cm">      //m_vertexLink_persKey-&gt;push_back(track-&gt;vertexLink.m_persKey() );</span>
+<span class="cm">      m_vertexLink_persIndex-&gt;push_back( -999 );</span>
+<span class="cm">      m_vertexLink_persKey-&gt;push_back( -999 );</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">m_vz</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">track</span><span class="o">-&gt;</span><span class="n">vz</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_z0</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">track</span><span class="o">-&gt;</span><span class="n">z0</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Leave Fill Track&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

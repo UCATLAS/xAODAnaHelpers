@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>\(e\) &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="\(j\)" href="JetCalibrator.html" />
+    <link rel="prev" title="Calibrating Objects" href="Calibrators.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><span class="math notranslate nohighlight">\(e\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="JetCalibrator.html"><span class="math notranslate nohighlight">\(j\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="MuonCalibrator.html"><span class="math notranslate nohighlight">\(\mu\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="TauCalibrator.html"><span class="math notranslate nohighlight">\(\tau\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="PhotonCalibrator.html"><span class="math notranslate nohighlight">\(\gamma\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Selectors.html">Selecting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Outputs.html">Producing Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Calibrators.html">Calibrating Objects</a> &raquo;</li>
+        
+      <li><span class="math notranslate nohighlight">\(e\)</span></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ElectronCalibrator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="e">
+<h1><span class="math notranslate nohighlight">\(e\)</span><a class="headerlink" href="#e" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv418ElectronCalibrator">
+<span id="_CPPv318ElectronCalibrator"></span><span id="_CPPv218ElectronCalibrator"></span><span id="ElectronCalibrator"></span><span class="target" id="classElectronCalibrator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ElectronCalibrator</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><a class="headerlink" href="#_CPPv418ElectronCalibrator" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p>This is the algorithm class used to calibrate electrons.</p>
+<p>In a nutshell, this algorithm performs the following actions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>retrieves an <code class="docutils literal notranslate"><span class="pre">xAOD::ElectronContainer</span></code> from either <code class="docutils literal notranslate"><span class="pre">TEvent</span></code> or <code class="docutils literal notranslate"><span class="pre">TStore</span></code></p></li>
+<li><p>makes a shallow copy container and fills it with energy-and-direction calibrated electrons using the <code class="docutils literal notranslate"><span class="pre">EgammaCalibrationAndSmearingTool</span></code> in <a class="reference external" href="ToolsUsed.html">Tools Used</a></p></li>
+<li><p>saves the shallow copy container to <code class="docutils literal notranslate"><span class="pre">TStore</span></code> from where it can be retrieved by algorithms downstream via name lookup</p></li>
+</ul>
+</div></blockquote>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator18ElectronCalibratorEv">
+<span id="_CPPv3N18ElectronCalibrator18ElectronCalibratorEv"></span><span id="_CPPv2N18ElectronCalibrator18ElectronCalibratorEv"></span><span id="ElectronCalibrator::ElectronCalibrator"></span><span class="target" id="classElectronCalibrator_1a686ee61d23f5f4928b12c8f0d71bf7c5"></span><span class="sig-name descname"><span class="n"><span class="pre">ElectronCalibrator</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator18ElectronCalibratorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator8setupJobERN2EL3JobE">
+<span id="_CPPv3N18ElectronCalibrator8setupJobERN2EL3JobE"></span><span id="_CPPv2N18ElectronCalibrator8setupJobERN2EL3JobE"></span><span id="ElectronCalibrator::setupJob__EL::JobR"></span><span class="target" id="classElectronCalibrator_1a227d45a69f047360a5e37c1025dd808a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator8setupJobERN2EL3JobE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator11fileExecuteEv">
+<span id="_CPPv3N18ElectronCalibrator11fileExecuteEv"></span><span id="_CPPv2N18ElectronCalibrator11fileExecuteEv"></span><span id="ElectronCalibrator::fileExecute"></span><span class="target" id="classElectronCalibrator_1a08039a770aad6adce5cc575dacfa34d6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator11fileExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator14histInitializeEv">
+<span id="_CPPv3N18ElectronCalibrator14histInitializeEv"></span><span id="_CPPv2N18ElectronCalibrator14histInitializeEv"></span><span id="ElectronCalibrator::histInitialize"></span><span class="target" id="classElectronCalibrator_1ad5d4d7862507893b102cef7c11132782"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator14histInitializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator11changeInputEb">
+<span id="_CPPv3N18ElectronCalibrator11changeInputEb"></span><span id="_CPPv2N18ElectronCalibrator11changeInputEb"></span><span id="ElectronCalibrator::changeInput__b"></span><span class="target" id="classElectronCalibrator_1a82c76a5ae04d98c599577e859720d3d8"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator11changeInputEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator10initializeEv">
+<span id="_CPPv3N18ElectronCalibrator10initializeEv"></span><span id="_CPPv2N18ElectronCalibrator10initializeEv"></span><span id="ElectronCalibrator::initialize"></span><span class="target" id="classElectronCalibrator_1a694476166a99f6633f38609ede972143"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator10initializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator7executeEv">
+<span id="_CPPv3N18ElectronCalibrator7executeEv"></span><span id="_CPPv2N18ElectronCalibrator7executeEv"></span><span id="ElectronCalibrator::execute"></span><span class="target" id="classElectronCalibrator_1af73917cf04ca3b1c08d48552b44e0e60"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator7executeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator11postExecuteEv">
+<span id="_CPPv3N18ElectronCalibrator11postExecuteEv"></span><span id="_CPPv2N18ElectronCalibrator11postExecuteEv"></span><span id="ElectronCalibrator::postExecute"></span><span class="target" id="classElectronCalibrator_1ae37b6ef481eb693e82ce99568a9b6f25"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator11postExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator8finalizeEv">
+<span id="_CPPv3N18ElectronCalibrator8finalizeEv"></span><span id="_CPPv2N18ElectronCalibrator8finalizeEv"></span><span id="ElectronCalibrator::finalize"></span><span class="target" id="classElectronCalibrator_1aaf56a99cc29dcd1bbc2341ac39f68b21"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator8finalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator12histFinalizeEv">
+<span id="_CPPv3N18ElectronCalibrator12histFinalizeEv"></span><span id="_CPPv2N18ElectronCalibrator12histFinalizeEv"></span><span id="ElectronCalibrator::histFinalize"></span><span class="target" id="classElectronCalibrator_1aa1b303e6fa72c0937ff1e32aad129665"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator12histFinalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator17m_inContainerNameE">
+<span id="_CPPv3N18ElectronCalibrator17m_inContainerNameE"></span><span id="_CPPv2N18ElectronCalibrator17m_inContainerNameE"></span><span id="ElectronCalibrator::m_inContainerName__ss"></span><span class="target" id="classElectronCalibrator_1a6fe08180bc1718cc5085edf7e8c65df5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator17m_inContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The name of the input container for this algorithm to read from <code class="docutils literal notranslate"><span class="pre">TEvent</span></code> or <code class="docutils literal notranslate"><span class="pre">TStore</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator18m_outContainerNameE">
+<span id="_CPPv3N18ElectronCalibrator18m_outContainerNameE"></span><span id="_CPPv2N18ElectronCalibrator18m_outContainerNameE"></span><span id="ElectronCalibrator::m_outContainerName__ss"></span><span class="target" id="classElectronCalibrator_1aabcf15ed73c3d2f534550743d14774a4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator18m_outContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The name of the nominal output container written by the algorithm to <code class="docutils literal notranslate"><span class="pre">TStore</span></code></p>
+<p>If the algorithm applies systematic variations, for each shallow copy saved to <code class="docutils literal notranslate"><span class="pre">TStore</span></code>, the systematic name will be appended to this. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator6m_sortE">
+<span id="_CPPv3N18ElectronCalibrator6m_sortE"></span><span id="_CPPv2N18ElectronCalibrator6m_sortE"></span><span id="ElectronCalibrator::m_sort__b"></span><span class="target" id="classElectronCalibrator_1a34bf5749a9a697bbf4fa4be295d319f4"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sort</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator6m_sortE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sort the processed container elements by transverse momentum. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator20m_inputAlgoSystNamesE">
+<span id="_CPPv3N18ElectronCalibrator20m_inputAlgoSystNamesE"></span><span id="_CPPv2N18ElectronCalibrator20m_inputAlgoSystNamesE"></span><span id="ElectronCalibrator::m_inputAlgoSystNames__ss"></span><span class="target" id="classElectronCalibrator_1ae89b99abc9cf2671a04dd139ff54e9f6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inputAlgoSystNames</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator20m_inputAlgoSystNamesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The name of the vector containing the names of the systematically-varied containers from the upstream algorithm, which will be processed by this algorithm. </p>
+<p>This vector is retrieved from the <code class="docutils literal notranslate"><span class="pre">TStore</span></code>. If left blank, it means there is no upstream algorithm which applies systematics. This is the case when processing straight from the original <code class="docutils literal notranslate"><span class="pre">xAOD</span></code> or <code class="docutils literal notranslate"><span class="pre">DxAOD</span></code>. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator21m_outputAlgoSystNamesE">
+<span id="_CPPv3N18ElectronCalibrator21m_outputAlgoSystNamesE"></span><span id="_CPPv2N18ElectronCalibrator21m_outputAlgoSystNamesE"></span><span id="ElectronCalibrator::m_outputAlgoSystNames__ss"></span><span class="target" id="classElectronCalibrator_1a7e8c42385bb7cd2415357349432a63dd"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputAlgoSystNames</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;ElectronCalibrator_Syst&quot;</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator21m_outputAlgoSystNamesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The name of the vector containing the names of the systematically-varied containers created by by this algorithm. </p>
+<p>If <a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9Algorithm10m_systNameE" title="xAH::Algorithm::m_systName"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">m_systName</span></code></a> is empty, the vector will contain only an empty string. When running on systematics, this is the string a downstream algorithm needs to process electrons.</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator21m_writeSystToMetadataE">
+<span id="_CPPv3N18ElectronCalibrator21m_writeSystToMetadataE"></span><span id="_CPPv2N18ElectronCalibrator21m_writeSystToMetadataE"></span><span id="ElectronCalibrator::m_writeSystToMetadata__b"></span><span class="target" id="classElectronCalibrator_1a1f23daab72b469489e13f9cb3d684f65"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_writeSystToMetadata</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator21m_writeSystToMetadataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write systematics names to metadata. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator9m_esModelE">
+<span id="_CPPv3N18ElectronCalibrator9m_esModelE"></span><span id="_CPPv2N18ElectronCalibrator9m_esModelE"></span><span id="ElectronCalibrator::m_esModel__ss"></span><span class="target" id="classElectronCalibrator_1a548c76ec9afa4e5c378e3df8a4292a15"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_esModel</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator9m_esModelE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator20m_decorrelationModelE">
+<span id="_CPPv3N18ElectronCalibrator20m_decorrelationModelE"></span><span id="_CPPv2N18ElectronCalibrator20m_decorrelationModelE"></span><span id="ElectronCalibrator::m_decorrelationModel__ss"></span><span class="target" id="classElectronCalibrator_1a492bfcd1c3669dd89e631b9e1bd9638a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_decorrelationModel</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator20m_decorrelationModelE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator26m_applyIsolationCorrectionE">
+<span id="_CPPv3N18ElectronCalibrator26m_applyIsolationCorrectionE"></span><span id="_CPPv2N18ElectronCalibrator26m_applyIsolationCorrectionE"></span><span id="ElectronCalibrator::m_applyIsolationCorrection__b"></span><span class="target" id="classElectronCalibrator_1a4f0620eefa22acbdf74aff67538ccc3a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyIsolationCorrection</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator26m_applyIsolationCorrectionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply isolation correction, not needed by default. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator10m_numEventE">
+<span id="_CPPv3N18ElectronCalibrator10m_numEventE"></span><span id="_CPPv2N18ElectronCalibrator10m_numEventE"></span><span id="ElectronCalibrator::m_numEvent__i"></span><span class="target" id="classElectronCalibrator_1aa297049c774f5ef26d813bc2864a3a1a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numEvent</span></span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator10m_numEventE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator11m_numObjectE">
+<span id="_CPPv3N18ElectronCalibrator11m_numObjectE"></span><span id="_CPPv2N18ElectronCalibrator11m_numObjectE"></span><span id="ElectronCalibrator::m_numObject__i"></span><span class="target" id="classElectronCalibrator_1ae5b0c2283a15fcf9c9e3e09b127cf4ff"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_numObject</span></span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator11m_numObjectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator21m_outAuxContainerNameE">
+<span id="_CPPv3N18ElectronCalibrator21m_outAuxContainerNameE"></span><span id="_CPPv2N18ElectronCalibrator21m_outAuxContainerNameE"></span><span id="ElectronCalibrator::m_outAuxContainerName__ss"></span><span class="target" id="classElectronCalibrator_1a1a1ba5e37abd75fda05ff53166d4f422"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outAuxContainerName</span></span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator21m_outAuxContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator20m_outSCContainerNameE">
+<span id="_CPPv3N18ElectronCalibrator20m_outSCContainerNameE"></span><span id="_CPPv2N18ElectronCalibrator20m_outSCContainerNameE"></span><span id="ElectronCalibrator::m_outSCContainerName__ss"></span><span class="target" id="classElectronCalibrator_1a03edaa99e6849bd0a72eb8437b0859c4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outSCContainerName</span></span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator20m_outSCContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator23m_outSCAuxContainerNameE">
+<span id="_CPPv3N18ElectronCalibrator23m_outSCAuxContainerNameE"></span><span id="_CPPv2N18ElectronCalibrator23m_outSCAuxContainerNameE"></span><span id="ElectronCalibrator::m_outSCAuxContainerName__ss"></span><span class="target" id="classElectronCalibrator_1a00d20ed56ce0aa659c956dc2ee0a23f2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outSCAuxContainerName</span></span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator23m_outSCAuxContainerNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator10m_systListE">
+<span id="_CPPv3N18ElectronCalibrator10m_systListE"></span><span id="_CPPv2N18ElectronCalibrator10m_systListE"></span><span id="ElectronCalibrator::m_systList__std::vector:CP::SystematicSet:"></span><span class="target" id="classElectronCalibrator_1a90de19c1faa17c4392ebc136695e30bb"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystematicSet</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systList</span></span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator10m_systListE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator34m_EgammaCalibrationAndSmearingToolE">
+<span id="_CPPv3N18ElectronCalibrator34m_EgammaCalibrationAndSmearingToolE"></span><span id="_CPPv2N18ElectronCalibrator34m_EgammaCalibrationAndSmearingToolE"></span><span id="ElectronCalibrator::m_EgammaCalibrationAndSmearingTool__CP::EgammaCalibrationAndSmearingToolP"></span><span class="target" id="classElectronCalibrator_1a1c075db00cc8678eea02ce4953887212"></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EgammaCalibrationAndSmearingTool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_EgammaCalibrationAndSmearingTool</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator34m_EgammaCalibrationAndSmearingToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N18ElectronCalibrator25m_IsolationCorrectionToolE">
+<span id="_CPPv3N18ElectronCalibrator25m_IsolationCorrectionToolE"></span><span id="_CPPv2N18ElectronCalibrator25m_IsolationCorrectionToolE"></span><span id="ElectronCalibrator::m_IsolationCorrectionTool__CP::IsolationCorrectionToolP"></span><span class="target" id="classElectronCalibrator_1ad68d57e7856451166948313aeb84d742"></span><span class="n"><span class="pre">CP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">IsolationCorrectionTool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_IsolationCorrectionTool</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N18ElectronCalibrator25m_IsolationCorrectionToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>apply leakage correction to calo based isolation variables for electrons </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="JetCalibrator.html" class="btn btn-neutral float-right" title="\(j\)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Calibrators.html" class="btn btn-neutral float-left" title="Calibrating Objects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class ElectronEfficiencyCorrector &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class ElectronHistsAlgo" href="classElectronHistsAlgo.html" />
+    <link rel="prev" title="Class ElectronCutBasedPIDManager" href="classElectronCutBasedPIDManager.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Doxygen API</a> &raquo;</li>
+        
+      <li>Class ElectronEfficiencyCorrector</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classElectronEfficiencyCorrector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-electronefficiencycorrector">
+<span id="exhale-class-classelectronefficiencycorrector"></span><h1>Class ElectronEfficiencyCorrector<a class="headerlink" href="#class-electronefficiencycorrector" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_xAODAnaHelpers_ElectronEfficiencyCorrector.h.html#file-xaodanahelpers-electronefficiencycorrector-h"><span class="std std-ref">File ElectronEfficiencyCorrector.h</span></a></p></li>
+</ul>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">xAH::Algorithm</span></code> (<a class="reference internal" href="classxAH_1_1Algorithm.html#exhale-class-classxah-1-1algorithm"><span class="std std-ref">Class Algorithm</span></a>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv427ElectronEfficiencyCorrector">
+<span id="_CPPv327ElectronEfficiencyCorrector"></span><span id="_CPPv227ElectronEfficiencyCorrector"></span><span id="ElectronEfficiencyCorrector"></span><span class="target" id="classElectronEfficiencyCorrector"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ElectronEfficiencyCorrector</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><br /></dt>
+<dd><p><p>This is the algorithm class that applies generic corrections to electrons. At the moment, only data/MC efficiency correction is included (electron trigger SF and others will follow…).</p>
+<p>In a nutshell, this algorithm performs the following actions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>retrieves an <code class="docutils literal notranslate"><span class="pre">xAOD::ElectronContainer</span></code> from either <code class="docutils literal notranslate"><span class="pre">TEvent</span></code> or <code class="docutils literal notranslate"><span class="pre">TStore</span></code></p></li>
+<li><p>adds a scale factor (SF) decoration for each electron in the input container calculated via the <code class="docutils literal notranslate"><span class="pre">AsgElectronEfficiencyCorrectionTool</span></code> in <a class="reference external" href="ToolsUsed.html">Tools Used</a></p></li>
+<li><p>the nominal SF and all the systematically-varied ones are saved as a <code class="docutils literal notranslate"><span class="pre">vector&lt;double&gt;</span></code> decoration for each electron</p></li>
+</ul>
+</div></blockquote>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Bear in mind that this algorithm must be called after <a class="reference internal" href="../ElectronSelector.html#_CPPv416ElectronSelector" title="ElectronSelector"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">ElectronSelector</span></code></a>. In fact, the configuration file(s) being used must have the same working point as the one chosen in the selector.</p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector27ElectronEfficiencyCorrectorEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector27ElectronEfficiencyCorrectorEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector27ElectronEfficiencyCorrectorEv"></span><span id="ElectronEfficiencyCorrector::ElectronEfficiencyCorrector"></span><span class="target" id="classElectronEfficiencyCorrector_1a49c85bd32cd79e721957316c64ceb63b"></span><span class="sig-name descname"><span class="n"><span class="pre">ElectronEfficiencyCorrector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector8setupJobERN2EL3JobE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector8setupJobERN2EL3JobE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector8setupJobERN2EL3JobE"></span><span id="ElectronEfficiencyCorrector::setupJob__EL::JobR"></span><span class="target" id="classElectronEfficiencyCorrector_1a9d71eebc2bf3af3d730fc2365ac8eacb"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector11fileExecuteEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector11fileExecuteEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector11fileExecuteEv"></span><span id="ElectronEfficiencyCorrector::fileExecute"></span><span class="target" id="classElectronEfficiencyCorrector_1a89d8d7f8abf11458fb72faa334af82a1"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector14histInitializeEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector14histInitializeEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector14histInitializeEv"></span><span id="ElectronEfficiencyCorrector::histInitialize"></span><span class="target" id="classElectronEfficiencyCorrector_1a2dd01e1537c3c92f405a8346ac13edc8"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector11changeInputEb">
+<span id="_CPPv3N27ElectronEfficiencyCorrector11changeInputEb"></span><span id="_CPPv2N27ElectronEfficiencyCorrector11changeInputEb"></span><span id="ElectronEfficiencyCorrector::changeInput__b"></span><span class="target" id="classElectronEfficiencyCorrector_1abd6543a797cc36a8b75ea7f96b6a62ac"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector10initializeEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector10initializeEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector10initializeEv"></span><span id="ElectronEfficiencyCorrector::initialize"></span><span class="target" id="classElectronEfficiencyCorrector_1aa505eae65294a10f778ee9b7576704a1"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector7executeEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector7executeEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector7executeEv"></span><span id="ElectronEfficiencyCorrector::execute"></span><span class="target" id="classElectronEfficiencyCorrector_1a9cb061a3c4acb5b2a77e8a7bfb01cbe8"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector11postExecuteEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector11postExecuteEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector11postExecuteEv"></span><span id="ElectronEfficiencyCorrector::postExecute"></span><span class="target" id="classElectronEfficiencyCorrector_1aa93ae567901a1a199f3e8bf0f8250686"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector8finalizeEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector8finalizeEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector8finalizeEv"></span><span id="ElectronEfficiencyCorrector::finalize"></span><span class="target" id="classElectronEfficiencyCorrector_1ad31bb7f6a80d6ed3a9830f8de7d1d18e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector12histFinalizeEv">
+<span id="_CPPv3N27ElectronEfficiencyCorrector12histFinalizeEv"></span><span id="_CPPv2N27ElectronEfficiencyCorrector12histFinalizeEv"></span><span id="ElectronEfficiencyCorrector::histFinalize"></span><span class="target" id="classElectronEfficiencyCorrector_1aea7b4ef7b9615c6de31ddc9b2fec85bb"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector9executeSFEPKN4xAOD17ElectronContainerEbb">
+<span id="_CPPv3N27ElectronEfficiencyCorrector9executeSFEPKN4xAOD17ElectronContainerEbb"></span><span id="_CPPv2N27ElectronEfficiencyCorrector9executeSFEPKN4xAOD17ElectronContainerEbb"></span><span id="ElectronEfficiencyCorrector::executeSF__xAOD::ElectronContainerCP.b.b"></span><span class="target" id="classElectronEfficiencyCorrector_1a0e3fa43c6a3d7ca74e259c9487771bf0"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">executeSF</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ElectronContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">inputElectrons</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">nominal</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">writeSystNames</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector17m_inContainerNameE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector17m_inContainerNameE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector17m_inContainerNameE"></span><span id="ElectronEfficiencyCorrector::m_inContainerName__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a7c028cb116dd71ce1924d508197e0a0d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>The name of the input container for this algorithm to read from <code class="docutils literal notranslate"><span class="pre">TEvent</span></code> or <code class="docutils literal notranslate"><span class="pre">TStore</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector25m_inputSystNamesElectronsE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector25m_inputSystNamesElectronsE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector25m_inputSystNamesElectronsE"></span><span id="ElectronEfficiencyCorrector::m_inputSystNamesElectrons__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a9649b6109527509cfcd36bc9f9653944"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inputSystNamesElectrons</span></span></span><br /></dt>
+<dd><p>The name of the vector containing the names of the systematically-varied electrons-related containers from the upstream algorithm, which will be processed by this algorithm. </p>
+<p>Only electron calibration systematics or any other that create shallow copies of electron containers should be passed to this tool. It is advised to run this algorithm before running algorithms combining multiple calibration systematics (e.g. overlap removal). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector21m_writeSystToMetadataE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector21m_writeSystToMetadataE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector21m_writeSystToMetadataE"></span><span id="ElectronEfficiencyCorrector::m_writeSystToMetadata__b"></span><span class="target" id="classElectronEfficiencyCorrector_1a9dd21c1c4a39d96d6dbeb479623b24c8"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_writeSystToMetadata</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Write systematics names to metadata. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector12m_systValPIDE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector12m_systValPIDE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector12m_systValPIDE"></span><span id="ElectronEfficiencyCorrector::m_systValPID__float"></span><span class="target" id="classElectronEfficiencyCorrector_1afd185f7f358a2b1153133a48188f0091"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValPID</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector12m_systValIsoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector12m_systValIsoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector12m_systValIsoE"></span><span id="ElectronEfficiencyCorrector::m_systValIso__float"></span><span class="target" id="classElectronEfficiencyCorrector_1a5eca72d9fc4dbc1b71f94554956b46ea"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector13m_systValRecoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector13m_systValRecoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector13m_systValRecoE"></span><span id="ElectronEfficiencyCorrector::m_systValReco__float"></span><span class="target" id="classElectronEfficiencyCorrector_1a2dee650907da7fe2ccb8d6a376e8fb60"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector13m_systValTrigE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector13m_systValTrigE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector13m_systValTrigE"></span><span id="ElectronEfficiencyCorrector::m_systValTrig__float"></span><span class="target" id="classElectronEfficiencyCorrector_1ae86db195666daf961417c44f9c7e5330"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systValTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector13m_systNamePIDE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector13m_systNamePIDE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector13m_systNamePIDE"></span><span id="ElectronEfficiencyCorrector::m_systNamePID__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a4d828fd879e7a8883c193cf5bbbc56f2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNamePID</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector13m_systNameIsoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector13m_systNameIsoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector13m_systNameIsoE"></span><span id="ElectronEfficiencyCorrector::m_systNameIso__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a36f5ed7a6243607655da5c98f04b270b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector14m_systNameRecoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector14m_systNameRecoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector14m_systNameRecoE"></span><span id="ElectronEfficiencyCorrector::m_systNameReco__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a481790077f1de4079533caa3212dca70"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector14m_systNameTrigE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector14m_systNameTrigE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector14m_systNameTrigE"></span><span id="ElectronEfficiencyCorrector::m_systNameTrig__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1ac2aed82032c33d2e952411cc09be19f5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_systNameTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector20m_outputSystNamesPIDE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector20m_outputSystNamesPIDE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector20m_outputSystNamesPIDE"></span><span id="ElectronEfficiencyCorrector::m_outputSystNamesPID__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1ada0554503536c6df57e3ea217b5482c8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesPID</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;EleEffCorr_PIDSyst&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector20m_outputSystNamesIsoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector20m_outputSystNamesIsoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector20m_outputSystNamesIsoE"></span><span id="ElectronEfficiencyCorrector::m_outputSystNamesIso__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1aa508a3a211130d25626a13ee8c50dfb5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;EleEffCorr_IsoSyst&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector21m_outputSystNamesRecoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector21m_outputSystNamesRecoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector21m_outputSystNamesRecoE"></span><span id="ElectronEfficiencyCorrector::m_outputSystNamesReco__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a41ca24ca1c637c2624025ea15bef17a9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;EleEffCorr_RecoSyst&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector21m_outputSystNamesTrigE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector21m_outputSystNamesTrigE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector21m_outputSystNamesTrigE"></span><span id="ElectronEfficiencyCorrector::m_outputSystNamesTrig__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a7f7152e1b6741135f209eec695f3d57e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputSystNamesTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;EleEffCorr_TrigSyst&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector18m_correlationModelE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector18m_correlationModelE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector18m_correlationModelE"></span><span id="ElectronEfficiencyCorrector::m_correlationModel__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a64a3b1fd6cb38d5d02afc3dad648558e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_correlationModel</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;FULL&quot;</span></span><br /></dt>
+<dd><p>Systematic correlation model. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector17m_WorkingPointPIDE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector17m_WorkingPointPIDE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector17m_WorkingPointPIDE"></span><span id="ElectronEfficiencyCorrector::m_WorkingPointPID__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a97b08eff712a98b4a2f6dd5610a13c9d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointPID</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>PID working point (LooseBLayer, Medium, Tight) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector17m_WorkingPointIsoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector17m_WorkingPointIsoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector17m_WorkingPointIsoE"></span><span id="ElectronEfficiencyCorrector::m_WorkingPointIso__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a17316294fb37eb6b89acb03d51fc2917"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointIso</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Isolation working point. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector18m_WorkingPointRecoE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector18m_WorkingPointRecoE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector18m_WorkingPointRecoE"></span><span id="ElectronEfficiencyCorrector::m_WorkingPointReco__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a8b66ac0985fdb273cace4bf51a3e1c28"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointReco</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Reconstruction working point (Reconstruction only) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector18m_WorkingPointTrigE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector18m_WorkingPointTrigE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector18m_WorkingPointTrigE"></span><span id="ElectronEfficiencyCorrector::m_WorkingPointTrig__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a0c52f0518fa02b4330af37b870253263"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_WorkingPointTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Trigger working point. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector26m_usePerElectronTriggerSFsE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector26m_usePerElectronTriggerSFsE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector26m_usePerElectronTriggerSFsE"></span><span id="ElectronEfficiencyCorrector::m_usePerElectronTriggerSFs__b"></span><span class="target" id="classElectronEfficiencyCorrector_1aeb395264e15fb542aa625a0cb327ab12"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_usePerElectronTriggerSFs</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector21m_overrideMapFilePathE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector21m_overrideMapFilePathE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector21m_overrideMapFilePathE"></span><span id="ElectronEfficiencyCorrector::m_overrideMapFilePath__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1af6b269577c55dea40f83e1d5a35cea14"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_overrideMapFilePath</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Override corrections map file (not recommended) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N27ElectronEfficiencyCorrector25m_overrideMapFilePathTrigE">
+<span id="_CPPv3N27ElectronEfficiencyCorrector25m_overrideMapFilePathTrigE"></span><span id="_CPPv2N27ElectronEfficiencyCorrector25m_overrideMapFilePathTrigE"></span><span id="ElectronEfficiencyCorrector::m_overrideMapFilePathTrig__ss"></span><span class="target" id="classElectronEfficiencyCorrector_1a8c97cebc3f5d15c5be07c5acd5cea3d2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_overrideMapFilePathTrig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Override corrections map file for trigger (needed as Run2 R22 Trigger SF use R21 values) </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classElectronHistsAlgo.html" class="btn btn-neutral float-right" title="Class ElectronHistsAlgo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classElectronCutBasedPIDManager.html" class="btn btn-neutral float-left" title="Class ElectronCutBasedPIDManager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

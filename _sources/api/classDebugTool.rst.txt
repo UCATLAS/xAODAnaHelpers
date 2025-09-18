@@ -1,0 +1,25 @@
+.. _exhale_class_classDebugTool:
+
+Class DebugTool
+===============
+
+- Defined in :ref:`file_xAODAnaHelpers_DebugTool.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: DebugTool
+   :members:
+   :protected-members:
+   :undoc-members:

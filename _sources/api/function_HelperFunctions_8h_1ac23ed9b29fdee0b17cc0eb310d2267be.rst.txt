@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1ac23ed9b29fdee0b17cc0eb310d2267be:
+
+Function HelperFunctions::countPrimaryVertices
+==============================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::countPrimaryVertices(const xAOD::VertexContainer *, int)

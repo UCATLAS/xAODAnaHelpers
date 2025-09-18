@@ -1,0 +1,555 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File MinixAOD.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File MinixAOD.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_MinixAOD.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-minixaod-cxx">
+<span id="program-listing-file-root-minixaod-cxx"></span><h1>Program Listing for File MinixAOD.cxx<a class="headerlink" href="#program-listing-for-file-minixaod-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_MinixAOD.cxx.html#file-root-minixaod-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/MinixAOD.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;typeinfo&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="c1">// EL include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+<span class="c1">// output stream</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;EventLoop/OutputStream.h&quot;</span>
+
+<span class="c1">// EDM include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODCore/AuxContainerBase.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODBase/IParticleContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODCore/ShallowCopy.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/ElectronContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/ElectronAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/Jet.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingETContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingETAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMissingET/MissingET.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMuon/MuonContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMuon/MuonAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODMuon/Muon.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/PhotonContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/PhotonAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEgamma/Photon.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODTau/TauJetContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODTau/TauJetAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODTau/TauJet.h&quot;</span>
+
+<span class="c1">// package include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/MinixAOD.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperClasses.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">MinixAOD</span><span class="p">)</span>
+
+<span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="w">    </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;MinixAOD&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;MinixAOD&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+
+<span class="w">  </span><span class="c1">// only create the output xaod if requested</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_createOutputFile</span><span class="p">){</span>
+<span class="w">    </span><span class="n">EL</span><span class="o">::</span><span class="n">OutputStream</span><span class="w"> </span><span class="n">out_xAOD</span><span class="w"> </span><span class="p">(</span><span class="n">m_outputFileName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xAOD&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">outputAdd</span><span class="w"> </span><span class="p">(</span><span class="n">out_xAOD</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">firstFile</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Update CutBookkeeper</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_copyCutBookkeeper</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Retrieve the input container:</span>
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CutBookkeeperContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">inputCBKContainer</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">retrieveMetaInput</span><span class="p">(</span><span class="n">inputCBKContainer</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CutBookkeepers&quot;</span><span class="p">));</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">firstFile</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Create an output container</span>
+<span class="w">      </span><span class="n">m_outputCBKContainer</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CutBookkeeperContainer</span><span class="p">();</span>
+<span class="w">      </span><span class="n">m_outputCBKContainer_aux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CutBookkeeperAuxContainer</span><span class="p">();</span>
+<span class="w">      </span><span class="n">m_outputCBKContainer</span><span class="o">-&gt;</span><span class="n">setStore</span><span class="p">(</span><span class="w"> </span><span class="n">m_outputCBKContainer_aux</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">// Create an empty incomplete output container</span>
+<span class="w">      </span><span class="n">m_outputInCBKContainer</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CutBookkeeperContainer</span><span class="p">();</span>
+<span class="w">      </span><span class="n">m_outputInCBKContainer_aux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CutBookkeeperAuxContainer</span><span class="p">();</span>
+<span class="w">      </span><span class="n">m_outputInCBKContainer</span><span class="o">-&gt;</span><span class="n">setStore</span><span class="p">(</span><span class="w"> </span><span class="n">m_outputInCBKContainer_aux</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">// Create our cutbookkeeper</span>
+<span class="w">      </span><span class="n">m_outputCBK</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CutBookkeeper</span><span class="p">();</span>
+<span class="w">      </span><span class="n">m_outputCBK</span><span class="o">-&gt;</span><span class="n">setName</span><span class="p">(</span><span class="s">&quot;MinixAODKernel&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_outputCBK</span><span class="o">-&gt;</span><span class="n">setCycle</span><span class="p">(</span><span class="n">inputCBKContainer</span><span class="o">-&gt;</span><span class="n">maxCycle</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// Merge</span>
+<span class="w">      </span><span class="n">m_outputCBKContainer</span><span class="o">-&gt;</span><span class="n">merge</span><span class="p">(</span><span class="n">inputCBKContainer</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Calling initialize&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">  </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// always do this, obviously</span>
+<span class="w">  </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">file_xAOD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getOutputFile</span><span class="p">(</span><span class="n">m_outputFileName</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">writeTo</span><span class="p">(</span><span class="n">file_xAOD</span><span class="p">));</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_copyFileMetaData</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_fileMetaDataTool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAODMaker</span><span class="o">::</span><span class="n">FileMetaDataTool</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_fileMetaDataTool</span><span class="o">-&gt;</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;OutputLevel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">().</span><span class="n">level</span><span class="p">()</span><span class="w"> </span><span class="p">));</span>
+
+
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_fileMetaDataTool</span><span class="o">-&gt;</span><span class="n">initialize</span><span class="p">());</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;FileMetaDataTool initialized...&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_copyTriggerInfo</span><span class="p">){</span>
+<span class="w">    </span><span class="c1">// m_trigMetaDataTool = new xAODMaker::TriggerMenuMetaDataTool();</span>
+
+<span class="w">    </span><span class="c1">// ANA_CHECK( m_trigMetaDataTool-&gt;setProperty(&quot;OutputLevel&quot;, msg().level() ));</span>
+
+<span class="w">    </span><span class="c1">// ANA_CHECK( m_trigMetaDataTool-&gt;initialize());</span>
+<span class="w">    </span><span class="c1">// ANA_MSG_DEBUG(&quot;TriggerMenuMetaDataTool initialized...&quot;);</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Adding xTrigDecision and TrigConfKeys to the list of keys copied from the input file.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_simpleCopyKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&quot;xTrigDecision&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_simpleCopyKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&quot;TrigConfKeys&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// parse and split by comma</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">token</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="n">ss</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// A B C D ... Z -&gt; {A, B, C, D, ..., Z}</span>
+<span class="w">  </span><span class="n">ss</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"> </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="n">m_simpleCopyKeys</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">))</span>
+<span class="w">    </span><span class="n">m_simpleCopyKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// A B C D ... Z -&gt; {A, B, C, D, ..., Z}</span>
+<span class="w">  </span><span class="n">ss</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"> </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="n">m_storeCopyKeys</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">))</span>
+<span class="w">    </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// A1|A2 B1|B2 C1|C2 ... Z1|Z2 -&gt; {(A1, A2), (B1, B2), ..., (Z1, Z2)}</span>
+<span class="w">  </span><span class="n">ss</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"> </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="n">m_shallowCopyKeys</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">)){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">token</span><span class="p">.</span><span class="n">find_first_of</span><span class="p">(</span><span class="sc">&#39;|&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_shallowCopyKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">token</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">),</span><span class="w"> </span><span class="n">token</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">)));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// A1|A2 B1|B2 C1|C2 ... Z1|Z2 -&gt; {(A1, A2), (B1, B2), ..., (Z1, Z2)}</span>
+<span class="w">  </span><span class="n">ss</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"> </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="n">m_deepCopyKeys</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">)){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">token</span><span class="p">.</span><span class="n">find_first_of</span><span class="p">(</span><span class="sc">&#39;|&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_deepCopyKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">token</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">),</span><span class="w"> </span><span class="n">token</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">)));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// A1|A2 B1|B2 C1|C2 ... Z1|Z2 -&gt; {(A1, A2), (B1, B2), ..., (Z1, Z2)}</span>
+<span class="w">  </span><span class="n">ss</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"> </span><span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="n">m_vectorCopyKeys</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="p">)){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">token</span><span class="p">.</span><span class="n">find_first_of</span><span class="p">(</span><span class="sc">&#39;|&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_vectorCopyKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">token</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">),</span><span class="w"> </span><span class="n">token</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">)));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;MinixAOD Interface succesfully initialized!&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_MSG_VERBOSE</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Dumping objects...&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="nf">eventInfo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EventInfo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">())</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Fill cutbookkeeper</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_copyCutBookkeeper</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="nf">eventWeight</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventType</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">IS_SIMULATION</span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">mcEventWeight</span><span class="p">();</span>
+
+<span class="w">      </span><span class="n">m_outputCBK</span><span class="o">-&gt;</span><span class="n">addNAcceptedEvents</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_outputCBK</span><span class="o">-&gt;</span><span class="n">addSumOfEventWeights</span><span class="p">(</span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_outputCBK</span><span class="o">-&gt;</span><span class="n">addSumOfEventWeightsSquared</span><span class="p">(</span><span class="n">eventWeight</span><span class="o">*</span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Copy code</span>
+
+<span class="w">  </span><span class="c1">// simple copy is easiest - it&#39;s in the input, copy over, no need for types</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">key</span><span class="o">:</span><span class="w"> </span><span class="n">m_simpleCopyKeys_vec</span><span class="p">){</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">copy</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Copying &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; from input file&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// we need to make deep copies</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">keypair</span><span class="o">:</span><span class="w"> </span><span class="n">m_deepCopyKeys_vec</span><span class="p">){</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">in_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keypair</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">out_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keypair</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">cont</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">in_key</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">*</span><span class="w"> </span><span class="n">t_cont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">makeDeepCopy</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronAuxContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Electron</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">out_key</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">t_cont</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">t_cont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">makeDeepCopy</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetAuxContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">out_key</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">t_cont</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="o">*</span><span class="w"> </span><span class="n">t_cont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">makeDeepCopy</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETAuxContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingET</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">out_key</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">t_cont</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*</span><span class="w"> </span><span class="n">t_cont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">makeDeepCopy</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonAuxContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Muon</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">out_key</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">t_cont</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*</span><span class="w"> </span><span class="n">t_cont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">makeDeepCopy</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonAuxContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Photon</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">out_key</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">t_cont</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="o">*</span><span class="w"> </span><span class="n">t_cont</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">makeDeepCopy</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetAuxContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">out_key</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">t_cont</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Could not identify what container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">in_key</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; corresponds to for deep-copying.&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">out_key</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Deep-Copied &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">in_key</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">out_key</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to record to output file&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// shallow IO handling (if no parent, assume deep copy)</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">keypair</span><span class="o">:</span><span class="w"> </span><span class="n">m_shallowCopyKeys_vec</span><span class="p">){</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keypair</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keypair</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// only add the parent if it doesn&#39;t exist</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">parent</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">parent</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Copying &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">parent</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot; as well as it&#39;s parent &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">parent</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// vector handling (if no parent, assume deep copy)</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">keypair</span><span class="o">:</span><span class="w"> </span><span class="n">m_vectorCopyKeys_vec</span><span class="p">){</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">vectorName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keypair</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keypair</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;*</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span><span class="w"> </span><span class="n">vectorName</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">    </span><span class="c1">// only add the parent if it doesn&#39;t exist</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">parent</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">parent</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="s">&quot;The following containers are being copied over:&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">key</span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">vector</span><span class="p">){</span>
+<span class="w">      </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">parent</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;... along with their parent &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">parent</span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// remove duplicates from m_copyFromStoreToEventKeys_vec</span>
+<span class="w">  </span><span class="c1">// - see http://stackoverflow.com/a/1041939/1532974</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// all we need to do is retrieve it and figure out what type it is to record it and we&#39;re done</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">key</span><span class="o">:</span><span class="w"> </span><span class="n">m_copyFromStoreToEventKeys_vec</span><span class="p">){</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="nf">cont</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">()));</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">recordOutput</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">ElectronAuxContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">recordOutput</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetAuxContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">recordOutput</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MissingETAuxContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">recordOutput</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonAuxContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">recordOutput</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">PhotonAuxContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cont</span><span class="p">)){</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">recordOutput</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetContainer</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJetAuxContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_event</span><span class="p">,</span><span class="w"> </span><span class="n">m_store</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="s">&quot;Could not identify what container &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; corresponds to for copying from TStore to TEvent.&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Copied &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; and it&#39;s auxiliary container from TStore to TEvent&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">fill</span><span class="p">();</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Finished dumping objects...&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">finalize</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Save cutbookkeeper</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_copyCutBookkeeper</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">recordMeta</span><span class="p">(</span><span class="n">m_outputCBKContainer</span><span class="w">      </span><span class="p">,</span><span class="s">&quot;CutBookkeepers&quot;</span><span class="p">)</span><span class="w">              </span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">recordMeta</span><span class="p">(</span><span class="n">m_outputCBKContainer_aux</span><span class="w">  </span><span class="p">,</span><span class="s">&quot;CutBookkeepersAux.&quot;</span><span class="p">)</span><span class="w">          </span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">recordMeta</span><span class="p">(</span><span class="n">m_outputInCBKContainer</span><span class="w">    </span><span class="p">,</span><span class="s">&quot;IncompleteCutBookkeepers&quot;</span><span class="p">)</span><span class="w">    </span><span class="p">);</span>
+<span class="w">      </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">recordMeta</span><span class="p">(</span><span class="n">m_outputInCBKContainer_aux</span><span class="p">,</span><span class="s">&quot;IncompleteCutBookkeepersAux.&quot;</span><span class="p">));</span>
+
+<span class="w">      </span><span class="n">m_outputCBKContainer</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">m_outputCBK</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Close file</span>
+<span class="w">  </span><span class="n">TFile</span><span class="w"> </span><span class="o">*</span><span class="n">file_xAOD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getOutputFile</span><span class="p">(</span><span class="n">m_outputFileName</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_event</span><span class="o">-&gt;</span><span class="n">finishWritingTo</span><span class="p">(</span><span class="n">file_xAOD</span><span class="p">));</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_fileMetaDataTool</span><span class="p">)</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_fileMetaDataTool</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// if(m_trigMetaDataTool) delete m_trigMetaDataTool;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MinixAOD</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

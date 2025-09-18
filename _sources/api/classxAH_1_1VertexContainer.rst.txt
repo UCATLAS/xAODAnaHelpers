@@ -1,0 +1,16 @@
+.. _exhale_class_classxAH_1_1VertexContainer:
+
+Class VertexContainer
+=====================
+
+- Defined in :ref:`file_xAODAnaHelpers_VertexContainer.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::VertexContainer
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,39 @@
+
+.. _file_Root_IParticleHists.cxx:
+
+File IParticleHists.cxx
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/IParticleHists.cxx``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_IParticleHists.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``sstream``
+
+- ``xAODAnaHelpers/IParticleHists.h`` (:ref:`file_xAODAnaHelpers_IParticleHists.h`)
+
+
+
+
+

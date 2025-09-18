@@ -1,0 +1,479 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File Jet.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File Jet.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_Jet.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-jet-cxx">
+<span id="program-listing-file-root-jet-cxx"></span><h1>Program Listing for File Jet.cxx<a class="headerlink" href="#program-listing-for-file-jet-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_Jet.cxx.html#file-root-jet-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/Jet.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/Jet.h&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">Jet::is_btag</span><span class="p">(</span><span class="n">BTaggerOP</span><span class="w"> </span><span class="n">op</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1r_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1r_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1r_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1r_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1r_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv00_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv00_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv00_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv00_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv00_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv01_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv01_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv01_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv01_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_DL1dv01_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN120220509_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN120220509_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN120220509_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN120220509_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN120220509_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00LegacyWP_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00LegacyWP_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00LegacyWP_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00LegacyWP_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00NewAliasWP_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00NewAliasWP_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00NewAliasWP_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v00NewAliasWP_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_65</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v01_FixedCutBEff_65</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v01_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v01_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v01_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_90</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v01_FixedCutBEff_90</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">is_GN2v01_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">Jet</span><span class="o">::</span><span class="n">SF_btag</span><span class="p">(</span><span class="n">BTaggerOP</span><span class="w"> </span><span class="n">op</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1r_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1r_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1r_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1r_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1r_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1r_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv00_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv00_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv00_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv00_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv00_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv00_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv01_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv01_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv01_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv01_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">DL1dv01_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_DL1dv01_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN120220509_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN120220509_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN120220509_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN120220509_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN120220509_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN120220509_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00LegacyWP_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00LegacyWP_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00LegacyWP_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00LegacyWP_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00LegacyWP_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_60</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00NewAliasWP_FixedCutBEff_60</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00NewAliasWP_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00NewAliasWP_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v00NewAliasWP_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v00NewAliasWP_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_65</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v01_FixedCutBEff_65</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_70</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v01_FixedCutBEff_70</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_77</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v01_FixedCutBEff_77</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_85</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v01_FixedCutBEff_85</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_FixedCutBEff_90</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v01_FixedCutBEff_90</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">Jet</span><span class="o">::</span><span class="no">BTaggerOP</span><span class="o">::</span><span class="no">GN2v01_Continuous</span><span class="p">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">SF_GN2v01_Continuous</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dummySF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">1.</span><span class="p">};</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">dummySF</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">Jet</span><span class="o">::</span><span class="n">muonInJetCorrection</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*</span><span class="w"> </span><span class="n">muons</span><span class="p">){</span>
+
+<span class="w">  </span><span class="n">TLorentzVector</span><span class="o">&amp;</span><span class="w"> </span><span class="n">jetVec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p4</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">minDr</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">Muon</span><span class="o">*</span><span class="w"> </span><span class="n">minDr_muon</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">iMuon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iMuon</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">muons</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">iMuon</span><span class="p">){</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Muon</span><span class="o">*</span><span class="w"> </span><span class="n">thisMuon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="n">muons</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iMuon</span><span class="p">));</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="o">&amp;</span><span class="w"> </span><span class="n">muonVec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thisMuon</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">muonVec</span><span class="p">.</span><span class="n">Pt</span><span class="p">()</span><span class="w">  </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w">                       </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">thisMuon</span><span class="o">-&gt;</span><span class="n">quality</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;Medium&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">thisMuon</span><span class="o">-&gt;</span><span class="n">quality</span><span class="p">.</span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">thisMuon</span><span class="o">-&gt;</span><span class="n">quality</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;Medium&quot;</span><span class="p">)))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">thisDr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jetVec</span><span class="p">.</span><span class="n">DeltaR</span><span class="p">(</span><span class="n">muonVec</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">thisDr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">minDr</span><span class="p">){</span>
+<span class="w">      </span><span class="n">minDr</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">thisDr</span><span class="p">;</span>
+<span class="w">      </span><span class="n">minDr_muon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thisMuon</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">minDr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.4</span><span class="p">){</span>
+<span class="w">    </span><span class="n">matchedMuon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minDr_muon</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="o">&amp;</span><span class="w"> </span><span class="n">matchedMuonVec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minDr_muon</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">;</span>
+<span class="w">    </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">muon_elossVec</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">minDr_muon</span><span class="o">-&gt;</span><span class="n">vec_eLoss</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">JetNoMuon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">p4</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">muon_elossVec</span><span class="p">);</span>
+<span class="w">    </span><span class="n">TLorentzVector</span><span class="w"> </span><span class="n">newVec</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">JetNoMuon</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">matchedMuonVec</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">p4</span><span class="p">.</span><span class="n">SetPtEtaPhiE</span><span class="p">(</span><span class="n">newVec</span><span class="p">.</span><span class="n">Pt</span><span class="w"> </span><span class="p">(),</span>
+<span class="w">            </span><span class="n">newVec</span><span class="p">.</span><span class="n">Eta</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">newVec</span><span class="p">.</span><span class="n">Phi</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">newVec</span><span class="p">.</span><span class="n">E</span><span class="w">  </span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

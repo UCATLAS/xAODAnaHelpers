@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File TauContainer.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File TauContainer.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_TauContainer.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-taucontainer-cxx">
+<span id="program-listing-file-root-taucontainer-cxx"></span><h1>Program Listing for File TauContainer.cxx<a class="headerlink" href="#program-listing-for-file-taucontainer-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_TauContainer.cxx.html#file-root-taucontainer-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/TauContainer.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/TauContainer.h&quot;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
+
+<span class="n">TauContainer</span><span class="o">::</span><span class="n">TauContainer</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">units</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mc</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">storeSystSFs</span><span class="p">)</span>
+<span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="n">ParticleContainer</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">storeSystSFs</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// trigger</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigger</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_isTrigMatched</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">     </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">               </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isTrigMatchedToChain</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">     </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w">      </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_listTrigChains</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">     </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w">       </span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_kinematic</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_ntrk</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_charge</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// might need to delete these</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_JetID</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigVeryLoose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigLoose</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigMedium</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigTight</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">m_JetRNNScore</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_JetRNNScoreSigTrans</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_EleVeto</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_isEleRNNLoose</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isEleRNNMedium</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isEleRNNTight</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">m_EleRNNScore</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_passEleOLR</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_xahTauJetMatching</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_tau_matchedJetWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_matchedJetJvt</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">   </span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trackAll</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_tau_tracks_pt</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_eta</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_phi</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">m_tau_tracks_isCore</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isWide</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_failTrackFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_passTrkSel</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClCharged</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClIso</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClConv</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClFake</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// scale factors w/ sys</span>
+<span class="w">  </span><span class="c1">// per object</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_effSF</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">m_TauEff_SF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_TauTrigEff_SF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="n">TauContainer</span><span class="o">::~</span><span class="n">TauContainer</span><span class="p">()</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// trigger</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigger</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isTrigMatched</span><span class="w">         </span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isTrigMatchedToChain</span><span class="w">  </span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_listTrigChains</span><span class="w">        </span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_kinematic</span><span class="p">){</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_ntrk</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_charge</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// scale factors w/ sys</span>
+<span class="w">  </span><span class="c1">// per object</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_effSF</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_TauEff_SF</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_TauTrigEff_SF</span><span class="p">;</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// might need to delete these</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_JetID</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isJetRNNSigVeryLoose</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isJetRNNSigLoose</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isJetRNNSigMedium</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isJetRNNSigTight</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_JetRNNScore</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_JetRNNScoreSigTrans</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_EleVeto</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isEleRNNLoose</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isEleRNNMedium</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_isEleRNNTight</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_EleRNNScore</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_passEleOLR</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_xahTauJetMatching</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_matchedJetWidth</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_matchedJetJvt</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trackAll</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_pt</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_eta</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_phi</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_isCore</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_isWide</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_failTrackFilter</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_passTrkSel</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_isClCharged</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_isClIso</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_isClConv</span><span class="p">;</span>
+<span class="w">    </span><span class="k">delete</span><span class="w"> </span><span class="n">m_tau_tracks_isClFake</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TauContainer</span><span class="o">::</span><span class="n">setTree</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Connect branches</span>
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">setTree</span><span class="p">(</span><span class="n">tree</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigger</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">         </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isTrigMatched&quot;</span><span class="p">,</span><span class="w">        </span><span class="o">&amp;</span><span class="n">m_isTrigMatched</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isTrigMatchedToChain&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_isTrigMatchedToChain</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="w">      </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;listTrigChains&quot;</span><span class="p">,</span><span class="w">       </span><span class="o">&amp;</span><span class="n">m_listTrigChains</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ntrk&quot;</span><span class="p">,</span><span class="w">       </span><span class="o">&amp;</span><span class="n">m_ntrk</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;charge&quot;</span><span class="p">,</span><span class="w">     </span><span class="o">&amp;</span><span class="n">m_charge</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_effSF</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_tauEffWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_TauEff_SF_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">taueff</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_TauEff_SF_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">taueff</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_TauTrigEff_SF_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">trig</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_TauTrigEff_SF_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">trig</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauTrigEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// might need to delete these</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_JetID</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isJetRNNSigVeryLoose&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_isJetRNNSigVeryLoose</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isJetRNNSigLoose&quot;</span><span class="p">,</span><span class="w">       </span><span class="o">&amp;</span><span class="n">m_isJetRNNSigLoose</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isJetRNNSigMedium&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_isJetRNNSigMedium</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isJetRNNSigTight&quot;</span><span class="p">,</span><span class="w">       </span><span class="o">&amp;</span><span class="n">m_isJetRNNSigTight</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;JetRNNScore&quot;</span><span class="p">,</span><span class="w">         </span><span class="o">&amp;</span><span class="n">m_JetRNNScore</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;JetRNNScoreSigTrans&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_JetRNNScoreSigTrans</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_EleVeto</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isEleRNNLoose&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_isEleRNNLoose</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isEleRNNMedium&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_isEleRNNMedium</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isEleRNNTight&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_isEleRNNTight</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EleRNNScore&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_EleRNNScore</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">    </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;passEleOLR&quot;</span><span class="p">,</span><span class="w">     </span><span class="o">&amp;</span><span class="n">m_passEleOLR</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_xahTauJetMatching</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;matchedJetWidth&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_tau_matchedJetWidth</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;matchedJetJvt&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_tau_matchedJetJvt</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trackAll</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_pt&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_pt&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_pt</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_eta&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_eta&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_eta</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_phi&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_phi&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_phi</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isCore&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isCore&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isCore</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isWide&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isWide&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isWide</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_failTrackFilter&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_failTrackFilter&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_failTrackFilter</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_passTrkSel&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_passTrkSel&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_passTrkSel</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClCharged&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClCharged&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClCharged</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClIso&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClIso&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClIso</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClConv&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClConv&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClConv</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchStatus</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClFake&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">SetBranchAddress</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClFake&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClFake</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TauContainer</span><span class="o">::</span><span class="n">updateParticle</span><span class="p">(</span><span class="n">uint</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">Tau</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tau</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">updateParticle</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">tau</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// trigger</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigger</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isTrigMatched</span><span class="w">         </span><span class="o">=</span><span class="w">     </span><span class="n">m_isTrigMatched</span><span class="w">         </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isTrigMatchedToChain</span><span class="w">  </span><span class="o">=</span><span class="w">     </span><span class="n">m_isTrigMatchedToChain</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">listTrigChains</span><span class="w">        </span><span class="o">=</span><span class="w">     </span><span class="n">m_listTrigChains</span><span class="w">        </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">ntrk</span><span class="w">    </span><span class="o">=</span><span class="w">     </span><span class="n">m_ntrk</span><span class="w">    </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">charge</span><span class="w">  </span><span class="o">=</span><span class="w">     </span><span class="n">m_charge</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// scale factors w/ sys</span>
+<span class="w">  </span><span class="c1">// per object</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_effSF</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_tauEffWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tau</span><span class="p">.</span><span class="n">TauEff_SF</span><span class="p">[</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">].</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tau</span><span class="p">.</span><span class="n">TauTrigEff_SF</span><span class="p">[</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauTrigEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">].</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">//  might need to delete these</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_JetID</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isJetRNNSigVeryLoose</span><span class="w">   </span><span class="o">=</span><span class="w">   </span><span class="n">m_isJetRNNSigVeryLoose</span><span class="w">   </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isJetRNNSigLoose</span><span class="w">       </span><span class="o">=</span><span class="w">   </span><span class="n">m_isJetRNNSigLoose</span><span class="w">       </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isJetRNNSigMedium</span><span class="w">      </span><span class="o">=</span><span class="w">   </span><span class="n">m_isJetRNNSigMedium</span><span class="w">      </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isJetRNNSigTight</span><span class="w">       </span><span class="o">=</span><span class="w">   </span><span class="n">m_isJetRNNSigTight</span><span class="w">       </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">JetRNNScore</span><span class="w">         </span><span class="o">=</span><span class="w">   </span><span class="n">m_JetRNNScore</span><span class="w">         </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">JetRNNScoreSigTrans</span><span class="w"> </span><span class="o">=</span><span class="w">   </span><span class="n">m_JetRNNScoreSigTrans</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_EleVeto</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isEleRNNLoose</span><span class="w">   </span><span class="o">=</span><span class="w">  </span><span class="n">m_isEleRNNLoose</span><span class="w">   </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isEleRNNMedium</span><span class="w">  </span><span class="o">=</span><span class="w">  </span><span class="n">m_isEleRNNMedium</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">isEleRNNTight</span><span class="w">   </span><span class="o">=</span><span class="w">  </span><span class="n">m_isEleRNNTight</span><span class="w">   </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">EleRNNScore</span><span class="w">     </span><span class="o">=</span><span class="w">  </span><span class="n">m_EleRNNScore</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">passEleOLR</span><span class="w">      </span><span class="o">=</span><span class="w">  </span><span class="n">m_passEleOLR</span><span class="w">      </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_xahTauJetMatching</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">matchedJetWidth</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_matchedJetWidth</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">matchedJetJvt</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_matchedJetJvt</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trackAll</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_pt</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_pt</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_eta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_eta</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_phi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_phi</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_isCore</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_isCore</span><span class="w">           </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_isWide</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_isWide</span><span class="w">           </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_failTrackFilter</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_failTrackFilter</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_passTrkSel</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_passTrkSel</span><span class="w">       </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_isClCharged</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_isClCharged</span><span class="w">      </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_isClIso</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_isClIso</span><span class="w">          </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_isClConv</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_isClConv</span><span class="w">         </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tau</span><span class="p">.</span><span class="n">tracks_isClFake</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">m_tau_tracks_isClFake</span><span class="w">         </span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TauContainer</span><span class="o">::</span><span class="n">setBranches</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">setBranches</span><span class="p">(</span><span class="n">tree</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigger</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="c1">// this is true if there&#39;s a match for at least one trigger chain</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isTrigMatched&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isTrigMatched</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// a vector of trigger match decision for each tau trigger chain</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isTrigMatchedToChain&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isTrigMatchedToChain</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// a vector of strings for each tau trigger chain - 1:1 correspondence w/ vector above</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;listTrigChains&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_listTrigChains</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;ntrk&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_ntrk</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;charge&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_charge</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_effSF</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_tauEffWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_TauEff_SF_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">taueff</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_TauTrigEff_SF_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">trig</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauTrigEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// might need to delete these</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_JetID</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isJetRNNSigVeryLoose&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigVeryLoose</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isJetRNNSigLoose&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigLoose</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isJetRNNSigMedium&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigMedium</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isJetRNNSigTight&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigTight</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;JetRNNScore&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_JetRNNScore</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;JetRNNScoreSigTrans&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_JetRNNScoreSigTrans</span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_EleVeto</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isEleRNNLoose&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isEleRNNLoose</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isEleRNNMedium&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isEleRNNMedium</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;isEleRNNTight&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_isEleRNNTight</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;EleRNNScore&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_EleRNNScore</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s">&quot;passEleOLR&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_passEleOLR</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_xahTauJetMatching</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;matchedJetWidth&quot;</span><span class="p">,</span><span class="w">    </span><span class="n">m_tau_matchedJetWidth</span><span class="p">);</span>
+<span class="w">    </span><span class="n">setBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">  </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;matchedJetJvt&quot;</span><span class="p">,</span><span class="w">    </span><span class="n">m_tau_matchedJetJvt</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trackAll</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_pt&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_pt</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_eta&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_eta</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_phi&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_phi</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isCore&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isCore</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isWide&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isWide</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_failTrackFilter&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_failTrackFilter</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_passTrkSel&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_passTrkSel</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClCharged&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClCharged</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClIso&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClIso</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClConv&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClConv</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">m_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;_tracks_isClFake&quot;</span><span class="p">).</span><span class="n">c_str</span><span class="p">()</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_tau_tracks_isClFake</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TauContainer</span><span class="o">::</span><span class="n">clear</span><span class="p">()</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigger</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_isTrigMatched</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isTrigMatchedToChain</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_listTrigChains</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_ntrk</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_charge</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_effSF</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_tauEffWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">].</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">(</span><span class="o">*</span><span class="n">m_TauTrigEff_SF</span><span class="p">)[</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">].</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// might need to delete these</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_JetID</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigVeryLoose</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigLoose</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigMedium</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isJetRNNSigTight</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">m_JetRNNScore</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_JetRNNScoreSigTrans</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_EleVeto</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_isEleRNNLoose</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isEleRNNMedium</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_isEleRNNTight</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">m_EleRNNScore</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_passEleOLR</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_xahTauJetMatching</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_tau_matchedJetWidth</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_matchedJetJvt</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trackAll</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_tau_tracks_pt</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_eta</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_phi</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">m_tau_tracks_isCore</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isWide</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_failTrackFilter</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_passTrkSel</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClCharged</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClIso</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClConv</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_tau_tracks_isClFake</span><span class="o">-&gt;</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TauContainer</span><span class="o">::</span><span class="n">FillTau</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">*</span><span class="w"> </span><span class="n">tau</span><span class="w"> </span><span class="p">){</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">FillTau</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TauContainer</span><span class="o">::</span><span class="n">FillTau</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="w"> </span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="n">ParticleContainer</span><span class="o">::</span><span class="n">FillParticle</span><span class="p">(</span><span class="n">particle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">*</span><span class="w"> </span><span class="n">tau</span><span class="o">=</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">particle</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigger</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="c1">// retrieve map&lt;string,char&gt; w/ &lt;chain,isMatched&gt;</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">isTrigMatchedMapTauAcc</span><span class="p">(</span><span class="s">&quot;isTrigMatchedMapTau&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">matches</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">isTrigMatchedMapTauAcc</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">tau</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// loop over map and fill branches</span>
+<span class="w">      </span><span class="c1">//</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="n">it</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">isTrigMatchedMapTauAcc</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">tau</span><span class="w"> </span><span class="p">))</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">matches</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">second</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_listTrigChains</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">matches</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_listTrigChains</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="s">&quot;NONE&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">m_isTrigMatchedToChain</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">matches</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// if at least one match among the chains is found, say this tau is trigger matched</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">matches</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">matches</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">matches</span><span class="p">.</span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_isTrigMatched</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_isTrigMatched</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">m_charge</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">tau</span><span class="o">-&gt;</span><span class="n">charge</span><span class="p">()</span><span class="w">  </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_ntrk</span><span class="w">  </span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">tau</span><span class="o">-&gt;</span><span class="n">nTracks</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_effSF</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">junkSF</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">-1.0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">accTauEffSF</span><span class="p">;</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">accTauTrigSF</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_tauEffWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">tauEffSF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TauEff_SF_syst_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">taueff</span><span class="p">;</span>
+<span class="w">      </span><span class="n">accTauEffSF</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">tauEffSF</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">safeSFVecFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">accTauEffSF</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_TauEff_SF</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="w"> </span><span class="n">taueff</span><span class="w"> </span><span class="p">),</span><span class="w"> </span><span class="n">junkSF</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trigWPs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">trigEffSF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TauEff_SF_syst_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">trig</span><span class="p">;</span>
+<span class="w">      </span><span class="n">accTauTrigSF</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">trigEffSF</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">safeSFVecFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="w"> </span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">accTauTrigSF</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_TauTrigEff_SF</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="w"> </span><span class="n">trig</span><span class="w"> </span><span class="p">),</span><span class="w"> </span><span class="n">junkSF</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// might need to delete these</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_JetID</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">isJetRNNSigVeryLooseAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;isJetRNNSigVeryLoose&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">isJetRNNSigVeryLooseAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigVeryLoose</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">isJetRNNSigLooseAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;isJetRNNSigLoose&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">isJetRNNSigLooseAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigLoose</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">isJetRNNSigMediumAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;isJetRNNSigMedium&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">isJetRNNSigMediumAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigMedium</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">isJetRNNSigTightAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;isJetRNNSigTight&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">isJetRNNSigTightAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_isJetRNNSigTight</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">JetRNNScoreAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;JetRNNScore&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">JetRNNScoreAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_JetRNNScore</span><span class="p">,</span><span class="w"> </span><span class="mf">-999.</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">JetRNNScoreSigTransAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;JetRNNScoreSigTrans&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">JetRNNScoreSigTransAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_JetRNNScoreSigTrans</span><span class="p">,</span><span class="w"> </span><span class="mf">-999.</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_EleVeto</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">isEleRNNLooseAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;isEleRNNLoose&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">isEleRNNLooseAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_isEleRNNLoose</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">isEleRNNMediumAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;isEleRNNMedium&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">isEleRNNMediumAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_isEleRNNMedium</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">isEleRNNTightAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;isEleRNNTight&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">isEleRNNTightAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_isEleRNNTight</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">EleRNNScoreAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;EleRNNScore&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">EleRNNScoreAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_EleRNNScore</span><span class="p">,</span><span class="w"> </span><span class="mf">-999.</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">passEleOLRAcc</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;passEleOLR&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">passEleOLRAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_passEleOLR</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_xahTauJetMatching</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">jetWidthAcc</span><span class="p">(</span><span class="s">&quot;JetWidth&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">jetWidthAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_matchedJetWidth</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.</span><span class="p">);</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">jetJvtAcc</span><span class="p">(</span><span class="s">&quot;JetJvt&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">jetJvtAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_matchedJetJvt</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_trackAll</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackPtAcc</span><span class="p">(</span><span class="s">&quot;trackPt&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackPtAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_pt</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackEtaAcc</span><span class="p">(</span><span class="s">&quot;trackEta&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackEtaAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_eta</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackPhiAcc</span><span class="p">(</span><span class="s">&quot;trackPhi&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackPhiAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_phi</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// track classification</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackIsCoreAcc</span><span class="p">(</span><span class="s">&quot;trackIsCore&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackIsCoreAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_isCore</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackIsWideAcc</span><span class="p">(</span><span class="s">&quot;trackIsWide&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackIsWideAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_isWide</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackFailTrackFilterAcc</span><span class="p">(</span><span class="s">&quot;trackFailTrackFilter&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackFailTrackFilterAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_failTrackFilter</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackPassTrkSelAcc</span><span class="p">(</span><span class="s">&quot;trackPassTrkSel&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackPassTrkSelAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_passTrkSel</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackIsClChargedAcc</span><span class="p">(</span><span class="s">&quot;trackIsClCharged&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackIsClChargedAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_isClCharged</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackIsClIsoAcc</span><span class="p">(</span><span class="s">&quot;trackIsClIso&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackIsClIsoAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_isClIso</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackIsClConvAcc</span><span class="p">(</span><span class="s">&quot;trackIsClConv&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackIsClConvAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_isClConv</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">   </span><span class="o">&gt;</span><span class="w">   </span><span class="n">tauTrackIsClFakeAcc</span><span class="p">(</span><span class="s">&quot;trackIsClFake&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">safeVecFill</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TauJet</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">tauTrackIsClFakeAcc</span><span class="p">,</span><span class="w"> </span><span class="n">m_tau_tracks_isClFake</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

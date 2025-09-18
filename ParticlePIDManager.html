@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Particle PID Manager &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="xAH::Algorithm" href="xAHAlgorithm.html" />
+    <link rel="prev" title="MET Constructor" href="METConstructor.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Selectors.html">Selecting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Outputs.html">Producing Outputs</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Utilities.html">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="DebugTool.html">Debug Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="HelperClasses.html">Helper Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="HelperFunctions.html">Helper Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="METConstructor.html">MET Constructor</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Particle PID Manager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#electron-lh-pid-manager">Electron LH PID Manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#electron-cut-based-pid-manager">Electron Cut-Based PID Manager</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xAHAlgorithm.html">xAH::Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MessagePrinterAlgo.html">MessagePrinterAlgo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Utilities.html">Utilities</a> &raquo;</li>
+        
+      <li>Particle PID Manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ParticlePIDManager.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="particle-pid-manager">
+<h1>Particle PID Manager<a class="headerlink" href="#particle-pid-manager" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="electron-lh-pid-manager">
+<h2>Electron LH PID Manager<a class="headerlink" href="#electron-lh-pid-manager" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenclass: Cannot find class “ElectronLHPIDManager” in doxygen xml output for project “xAH” from directory: ./doxygen/xml</p>
+</div>
+</div>
+<div class="section" id="electron-cut-based-pid-manager">
+<h2>Electron Cut-Based PID Manager<a class="headerlink" href="#electron-cut-based-pid-manager" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv426ElectronCutBasedPIDManager">
+<span id="_CPPv326ElectronCutBasedPIDManager"></span><span id="_CPPv226ElectronCutBasedPIDManager"></span><span id="ElectronCutBasedPIDManager"></span><span class="target" id="classElectronCutBasedPIDManager"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ElectronCutBasedPIDManager</span></span></span><a class="headerlink" href="#_CPPv426ElectronCutBasedPIDManager" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerEv">
+<span id="_CPPv3N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerEv"></span><span id="_CPPv2N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerEv"></span><span id="ElectronCutBasedPIDManager::ElectronCutBasedPIDManager"></span><span class="target" id="classElectronCutBasedPIDManager_1a56972fd9967c1a70e55bbe81a13b27ee"></span><span class="sig-name descname"><span class="n"><span class="pre">ElectronCutBasedPIDManager</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerENSt6stringEb">
+<span id="_CPPv3N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerENSt6stringEb"></span><span id="_CPPv2N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerENSt6stringEb"></span><span id="ElectronCutBasedPIDManager::ElectronCutBasedPIDManager__ss.b"></span><span class="target" id="classElectronCutBasedPIDManager_1a15f7e73be1986bb16cc7257d32cd9fa7"></span><span class="sig-name descname"><span class="n"><span class="pre">ElectronCutBasedPIDManager</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">WP</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">debug</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager26ElectronCutBasedPIDManagerENSt6stringEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManagerD0Ev">
+<span id="_CPPv3N26ElectronCutBasedPIDManagerD0Ev"></span><span id="_CPPv2N26ElectronCutBasedPIDManagerD0Ev"></span><span id="ElectronCutBasedPIDManager::~ElectronCutBasedPIDManager"></span><span class="target" id="classElectronCutBasedPIDManager_1aa3ca01fe142f4c8944ed65051cab3023"></span><span class="sig-name descname"><span class="n"><span class="pre">~ElectronCutBasedPIDManager</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManagerD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager8setupWPsEbNSt6stringE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager8setupWPsEbNSt6stringE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager8setupWPsEbNSt6stringE"></span><span id="ElectronCutBasedPIDManager::setupWPs__b.ss"></span><span class="target" id="classElectronCutBasedPIDManager_1a7facad629a380e0bca091e79e58f5d56"></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupWPs</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">configTools</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">selector_name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager8setupWPsEbNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager14setDecorationsEPKN4xAOD8ElectronE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager14setDecorationsEPKN4xAOD8ElectronE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager14setDecorationsEPKN4xAOD8ElectronE"></span><span id="ElectronCutBasedPIDManager::setDecorations__xAOD::ElectronCP"></span><span class="target" id="classElectronCutBasedPIDManager_1ac61ade001fb0496c15c2c2cf8edcb6c3"></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setDecorations</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Electron</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">electron</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager14setDecorationsEPKN4xAOD8ElectronE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager13getSelectedWPEv">
+<span id="_CPPv3N26ElectronCutBasedPIDManager13getSelectedWPEv"></span><span id="_CPPv2N26ElectronCutBasedPIDManager13getSelectedWPEv"></span><span id="ElectronCutBasedPIDManager::getSelectedWP"></span><span class="target" id="classElectronCutBasedPIDManager_1ab4c80aa32472a51361c83ad65069402b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getSelectedWP</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager13getSelectedWPEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager13getAllWPToolsEv">
+<span id="_CPPv3N26ElectronCutBasedPIDManager13getAllWPToolsEv"></span><span id="_CPPv2N26ElectronCutBasedPIDManager13getAllWPToolsEv"></span><span id="ElectronCutBasedPIDManager::getAllWPTools"></span><span class="target" id="classElectronCutBasedPIDManager_1a7bcfacd85e6e98ca77992ee683284522"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">multimap</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">AsgElectronIsEMSelector</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAllWPTools</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager13getAllWPToolsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager15getValidWPToolsEv">
+<span id="_CPPv3N26ElectronCutBasedPIDManager15getValidWPToolsEv"></span><span id="_CPPv2N26ElectronCutBasedPIDManager15getValidWPToolsEv"></span><span id="ElectronCutBasedPIDManager::getValidWPTools"></span><span class="target" id="classElectronCutBasedPIDManager_1aea8c9b22aa8e0ee17088ac27a54eaa32"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">multimap</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">AsgElectronIsEMSelector</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getValidWPTools</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager15getValidWPToolsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager9getAllWPsEv">
+<span id="_CPPv3N26ElectronCutBasedPIDManager9getAllWPsEv"></span><span id="_CPPv2N26ElectronCutBasedPIDManager9getAllWPsEv"></span><span id="ElectronCutBasedPIDManager::getAllWPs"></span><span class="target" id="classElectronCutBasedPIDManager_1a06c2e588ca0184acc8a088cdc5adae49"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">set</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAllWPs</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager9getAllWPsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager11getValidWPsEv">
+<span id="_CPPv3N26ElectronCutBasedPIDManager11getValidWPsEv"></span><span id="_CPPv2N26ElectronCutBasedPIDManager11getValidWPsEv"></span><span id="ElectronCutBasedPIDManager::getValidWPs"></span><span class="target" id="classElectronCutBasedPIDManager_1a4086668f0e2251344ebf290ab7ef8cef"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">set</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getValidWPs</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager11getValidWPsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager12m_selectedWPE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager12m_selectedWPE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager12m_selectedWPE"></span><span id="ElectronCutBasedPIDManager::m_selectedWP__ss"></span><span class="target" id="classElectronCutBasedPIDManager_1a7427013dd9c00bdbb47d59faf46a92c7"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_selectedWP</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager12m_selectedWPE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager7m_debugE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager7m_debugE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager7m_debugE"></span><span id="ElectronCutBasedPIDManager::m_debug__b"></span><span class="target" id="classElectronCutBasedPIDManager_1ab7cf2709a0df850c24b3f0526fb72e17"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_debug</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager7m_debugE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager12m_allWPToolsE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager12m_allWPToolsE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager12m_allWPToolsE"></span><span id="ElectronCutBasedPIDManager::m_allWPTools__std::multimap:ss.AsgElectronIsEMSelectorP:"></span><span class="target" id="classElectronCutBasedPIDManager_1aa61debdfe64cf5fb2e81113b0355db0e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">multimap</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">AsgElectronIsEMSelector</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_allWPTools</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager12m_allWPToolsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager14m_validWPToolsE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager14m_validWPToolsE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager14m_validWPToolsE"></span><span id="ElectronCutBasedPIDManager::m_validWPTools__std::multimap:ss.AsgElectronIsEMSelectorP:"></span><span class="target" id="classElectronCutBasedPIDManager_1ab84f6bea2af303d2cb91cae7134c1997"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">multimap</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">AsgElectronIsEMSelector</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_validWPTools</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager14m_validWPToolsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager16m_allWPAuxDecorsE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager16m_allWPAuxDecorsE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager16m_allWPAuxDecorsE"></span><span id="ElectronCutBasedPIDManager::m_allWPAuxDecors__std::set:ss:"></span><span class="target" id="classElectronCutBasedPIDManager_1a1fa55703880c3af07195175615f3bafd"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">set</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_allWPAuxDecors</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager16m_allWPAuxDecorsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager10m_validWPsE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager10m_validWPsE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager10m_validWPsE"></span><span id="ElectronCutBasedPIDManager::m_validWPs__std::set:ss:"></span><span class="target" id="classElectronCutBasedPIDManager_1aa078906d7a53fac6bf785937e879bb29"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">set</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_validWPs</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager10m_validWPsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_LooseE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_LooseE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_LooseE"></span><span id="ElectronCutBasedPIDManager::m_asgElectronIsEMSelector_Loose__AsgElectronIsEMSelectorP"></span><span class="target" id="classElectronCutBasedPIDManager_1afc7c568ab87854db521918bb51e38b4a"></span><span class="n"><span class="pre">AsgElectronIsEMSelector</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_asgElectronIsEMSelector_Loose</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_LooseE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager32m_asgElectronIsEMSelector_MediumE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager32m_asgElectronIsEMSelector_MediumE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager32m_asgElectronIsEMSelector_MediumE"></span><span id="ElectronCutBasedPIDManager::m_asgElectronIsEMSelector_Medium__AsgElectronIsEMSelectorP"></span><span class="target" id="classElectronCutBasedPIDManager_1a28729bcab9fd8ecec62f7ce5d40a9db1"></span><span class="n"><span class="pre">AsgElectronIsEMSelector</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_asgElectronIsEMSelector_Medium</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager32m_asgElectronIsEMSelector_MediumE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_TightE">
+<span id="_CPPv3N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_TightE"></span><span id="_CPPv2N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_TightE"></span><span id="ElectronCutBasedPIDManager::m_asgElectronIsEMSelector_Tight__AsgElectronIsEMSelectorP"></span><span class="target" id="classElectronCutBasedPIDManager_1a57db07cc0143624d9618469ff74c909c"></span><span class="n"><span class="pre">AsgElectronIsEMSelector</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_asgElectronIsEMSelector_Tight</span></span></span><a class="headerlink" href="#_CPPv4N26ElectronCutBasedPIDManager31m_asgElectronIsEMSelector_TightE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="xAHAlgorithm.html" class="btn btn-neutral float-right" title="xAH::Algorithm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="METConstructor.html" class="btn btn-neutral float-left" title="MET Constructor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

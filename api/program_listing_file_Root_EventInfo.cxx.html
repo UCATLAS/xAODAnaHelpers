@@ -1,0 +1,675 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File EventInfo.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File EventInfo.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_EventInfo.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-eventinfo-cxx">
+<span id="program-listing-file-root-eventinfo-cxx"></span><h1>Program Listing for File EventInfo.cxx<a class="headerlink" href="#program-listing-for-file-eventinfo-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_EventInfo.cxx.html#file-root-eventinfo-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/EventInfo.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/EventInfo.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/HelperFunctions.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODTruth/TruthEventContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEventShape/EventShape.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODCaloEvent/CaloClusterContainer.h&quot;</span>
+
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">xAH</span><span class="p">;</span>
+
+<span class="n">EventInfo</span><span class="o">::</span><span class="n">EventInfo</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">units</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mc</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">storeSyst</span><span class="p">)</span>
+<span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">(</span><span class="n">detailStr</span><span class="p">),</span><span class="w"> </span><span class="n">m_mc</span><span class="p">(</span><span class="n">mc</span><span class="p">),</span><span class="w"> </span><span class="n">m_debug</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span><span class="w"> </span><span class="n">m_storeSyst</span><span class="p">(</span><span class="n">storeSyst</span><span class="p">),</span><span class="w"> </span><span class="n">m_units</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">EventInfo</span><span class="o">::~</span><span class="n">EventInfo</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; Deleting EventInfo &quot;</span><span class="w">  </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">EventInfo</span><span class="o">::</span><span class="n">setTree</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_noDataInfo</span><span class="p">){</span><span class="w"> </span><span class="c1">// saved always (unless specifically requiring not to)</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">     </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;runNumber&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_runNumber</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="n">Long64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eventNumber&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_eventNumber</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">     </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;lumiBlock&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_lumiBlock</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;coreFlags&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_coreFlags</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">     </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bcid&quot;</span><span class="p">,</span><span class="w">                       </span><span class="o">&amp;</span><span class="n">m_bcid</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_mc</span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">     </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mcEventNumber&quot;</span><span class="p">,</span><span class="w">              </span><span class="o">&amp;</span><span class="n">m_mcEventNumber</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">     </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mcChannelNumber&quot;</span><span class="p">,</span><span class="w">            </span><span class="o">&amp;</span><span class="n">m_mcChannelNumber</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="w">   </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mcEventWeight&quot;</span><span class="p">,</span><span class="w">              </span><span class="o">&amp;</span><span class="n">m_mcEventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_weightsSys</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mcEventWeights&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_mcEventWeights</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_bcidInfo</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_mc</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">     </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DistEmptyBCID&quot;</span><span class="p">,</span><span class="w">               </span><span class="o">&amp;</span><span class="n">m_DistEmptyBCID</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">     </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DistLastUnpairedBCID&quot;</span><span class="p">,</span><span class="w">        </span><span class="o">&amp;</span><span class="n">m_DistLastUnpairedBCID</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">     </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DistNextUnpairedBCID&quot;</span><span class="p">,</span><span class="w">        </span><span class="o">&amp;</span><span class="n">m_DistNextUnpairedBCID</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_eventCleaning</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;timeStamp&quot;</span><span class="p">,</span><span class="w">                  </span><span class="o">&amp;</span><span class="n">m_timeStamp</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;timeStampNSOffset&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_timeStampNSOffset</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">bool</span><span class="w">    </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TileError&quot;</span><span class="p">,</span><span class="w">                  </span><span class="o">&amp;</span><span class="n">m_TileError</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">bool</span><span class="w">    </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SCTError&quot;</span><span class="p">,</span><span class="w">                   </span><span class="o">&amp;</span><span class="n">m_SCTError</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">bool</span><span class="w">    </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LArError&quot;</span><span class="p">,</span><span class="w">                   </span><span class="o">&amp;</span><span class="n">m_LArError</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TileFlags&quot;</span><span class="p">,</span><span class="w">                  </span><span class="o">&amp;</span><span class="n">m_TileFlags</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SCTFlags&quot;</span><span class="p">,</span><span class="w">                   </span><span class="o">&amp;</span><span class="n">m_SCTFlags</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LArFlags&quot;</span><span class="p">,</span><span class="w">                   </span><span class="o">&amp;</span><span class="n">m_LArFlags</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">bool</span><span class="w">    </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eventClean_LooseBad&quot;</span><span class="p">,</span><span class="w">        </span><span class="o">&amp;</span><span class="n">m_eventClean_LooseBad</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">bool</span><span class="w">    </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eventClean_TightBad&quot;</span><span class="p">,</span><span class="w">        </span><span class="o">&amp;</span><span class="n">m_eventClean_TightBad</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_pileup</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NPV&quot;</span><span class="p">,</span><span class="w">                              </span><span class="o">&amp;</span><span class="n">m_npv</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;actualInteractionsPerCrossing&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_actualMu</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;averageInteractionsPerCrossing&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_averageMu</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;weight_pileup&quot;</span><span class="p">,</span><span class="w">                    </span><span class="o">&amp;</span><span class="n">m_weight_pileup</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedAverageMu&quot;</span><span class="p">,</span><span class="w">               </span><span class="o">&amp;</span><span class="n">m_correctedAvgMu</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedAndScaledAverageMu&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_correctedAndScaledAvgMu</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedActualMu&quot;</span><span class="p">,</span><span class="w">                </span><span class="o">&amp;</span><span class="n">m_correctedMu</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedAndScaledActualMu&quot;</span><span class="p">,</span><span class="w">       </span><span class="o">&amp;</span><span class="n">m_correctedAndScaledMu</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_pileupsys</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;weight_pileup_up&quot;</span><span class="p">,</span><span class="w">               </span><span class="o">&amp;</span><span class="n">m_weight_pileup_up</span><span class="p">);</span>
+<span class="w">      </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;weight_pileup_down&quot;</span><span class="p">,</span><span class="w">             </span><span class="o">&amp;</span><span class="n">m_weight_pileup_down</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_mc</span><span class="p">){</span>
+<span class="w">      </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rand_run_nr&quot;</span><span class="p">,</span><span class="w">                </span><span class="o">&amp;</span><span class="n">m_rand_run_nr</span><span class="p">);</span>
+<span class="w">      </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rand_lumiblock_nr&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_rand_lumiblock_nr</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeEM</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rhoEM&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_rhoEM</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeEMPFLOW</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rhoEMPFLOW&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_rhoEMPFLOW</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeLC</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rhoLC&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_rhoLC</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// truth</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_truth</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pdgId1&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_pdgId1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pdgId2&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_pdgId2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pdfId1&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_pdfId1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">int</span><span class="w">  </span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pdfId2&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_pdfId2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;x1&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_x1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;x2&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_x2</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//connectBranch&lt;float&gt;(tree, &quot;scale&quot;,   &amp;m_scale);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;q&quot;</span><span class="p">,</span><span class="w">       </span><span class="o">&amp;</span><span class="n">m_q</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//connectBranch&lt;float&gt;(tree, &quot;pdf1&quot;,    &amp;m_pdf1);</span>
+<span class="w">    </span><span class="c1">//connectBranch&lt;float&gt;(tree, &quot;pdf2&quot;,    &amp;m_pdf2);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xf1&quot;</span><span class="p">,</span><span class="w">     </span><span class="o">&amp;</span><span class="n">m_xf1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xf2&quot;</span><span class="p">,</span><span class="w">     </span><span class="o">&amp;</span><span class="n">m_xf2</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// CaloCluster</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_caloClus</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;*</span><span class="w">  </span><span class="n">m_caloCluster_pt_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_pt</span><span class="p">;</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;caloCluster&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pt&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_caloCluster_pt_addr</span><span class="w">  </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;*</span><span class="w">  </span><span class="n">m_caloCluster_eta_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_eta</span><span class="p">;</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;caloCluster&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eta&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_eta_addr</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;*</span><span class="w">  </span><span class="n">m_caloCluster_phi_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_phi</span><span class="p">;</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;caloCluster&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_phi_addr</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;*</span><span class="w">  </span><span class="n">m_caloCluster_e_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_e</span><span class="p">;</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;caloCluster&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;e&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_caloCluster_e_addr</span><span class="w">   </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_beamspotweight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">connectBranch</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;beamSpotWeight&quot;</span><span class="p">,</span><span class="w">                    </span><span class="o">&amp;</span><span class="n">m_beamspotweight</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">EventInfo</span><span class="o">::</span><span class="n">setBranches</span><span class="p">(</span><span class="n">TTree</span><span class="w"> </span><span class="o">*</span><span class="n">tree</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_noDataInfo</span><span class="p">){</span><span class="w"> </span><span class="c1">// saved always (unless specifically requiring not to)</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;runNumber&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_runNumber</span><span class="p">,</span><span class="w">      </span><span class="s">&quot;runNumber/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;eventNumber&quot;</span><span class="p">,</span><span class="w">        </span><span class="o">&amp;</span><span class="n">m_eventNumber</span><span class="p">,</span><span class="w">    </span><span class="s">&quot;eventNumber/L&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;lumiBlock&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_lumiBlock</span><span class="p">,</span><span class="w">      </span><span class="s">&quot;lumiBlock/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;coreFlags&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_coreFlags</span><span class="p">,</span><span class="w">      </span><span class="s">&quot;coreFlags/i&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;bcid&quot;</span><span class="p">,</span><span class="w">               </span><span class="o">&amp;</span><span class="n">m_bcid</span><span class="p">,</span><span class="w">           </span><span class="s">&quot;bcid/I&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;mcEventNumber&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_mcEventNumber</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;mcEventNumber/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;mcChannelNumber&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_mcChannelNumber</span><span class="p">,</span><span class="s">&quot;mcChannelNumber/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;mcEventWeight&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_mcEventWeight</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;mcEventWeight/F&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_weightsSys</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;mcEventWeights&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_mcEventWeights</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_bcidInfo</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_mc</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;DistEmptyBCID&quot;</span><span class="p">,</span><span class="w">             </span><span class="o">&amp;</span><span class="n">m_DistEmptyBCID</span><span class="p">,</span><span class="w">        </span><span class="s">&quot;DistEmptyBCID/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;DistLastUnpairedBCID&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_DistLastUnpairedBCID</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DistLastUnpairedBCID/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;DistNextUnpairedBCID&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_DistNextUnpairedBCID</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DistNextUnpairedBCID/I&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_eventCleaning</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;timeStamp&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_timeStamp</span><span class="p">,</span><span class="w">          </span><span class="s">&quot;timeStamp/i&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;timeStampNSOffset&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_timeStampNSOffset</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;timeStampNSOffset/i&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;TileError&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_TileError</span><span class="p">,</span><span class="w">          </span><span class="s">&quot;TileError/O&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;SCTError&quot;</span><span class="p">,</span><span class="w">           </span><span class="o">&amp;</span><span class="n">m_SCTError</span><span class="p">,</span><span class="w">           </span><span class="s">&quot;SCTError/O&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;LArError&quot;</span><span class="p">,</span><span class="w">           </span><span class="o">&amp;</span><span class="n">m_LArError</span><span class="p">,</span><span class="w">           </span><span class="s">&quot;LArError/O&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;TileFlags&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_TileFlags</span><span class="p">,</span><span class="w">          </span><span class="s">&quot;TileFlags/i&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;SCTFlags&quot;</span><span class="p">,</span><span class="w">           </span><span class="o">&amp;</span><span class="n">m_SCTFlags</span><span class="p">,</span><span class="w">           </span><span class="s">&quot;SCTFlags/i&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;LArFlags&quot;</span><span class="p">,</span><span class="w">           </span><span class="o">&amp;</span><span class="n">m_LArFlags</span><span class="p">,</span><span class="w">           </span><span class="s">&quot;LArFlags/i&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;eventClean_LooseBad&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">m_eventClean_LooseBad</span><span class="p">,</span><span class="s">&quot;eventClean_LooseBad/O&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;eventClean_TightBad&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">m_eventClean_TightBad</span><span class="p">,</span><span class="s">&quot;eventClean_TightBad/O&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_pileup</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;NPV&quot;</span><span class="p">,</span><span class="w">                </span><span class="o">&amp;</span><span class="n">m_npv</span><span class="p">,</span><span class="w">            </span><span class="s">&quot;NPV/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;actualInteractionsPerCrossing&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_actualMu</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;actualInteractionsPerCrossing/F&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;averageInteractionsPerCrossing&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_averageMu</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;averageInteractionsPerCrossing/F&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;weight_pileup&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_weight_pileup</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;weight_pileup/F&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;correctedAverageMu&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_correctedAvgMu</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedAverageMu/F&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;correctedAndScaledAverageMu&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_correctedAndScaledAvgMu</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedAndScaledAverageMu/F&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;correctedActualMu&quot;</span><span class="p">,</span><span class="w">           </span><span class="o">&amp;</span><span class="n">m_correctedMu</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedActualMu/F&quot;</span><span class="w">     </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;correctedAndScaledActualMu&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_correctedAndScaledMu</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;correctedAndScaledActualMu/F&quot;</span><span class="w">     </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_pileupsys</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;weight_pileup_up&quot;</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">m_weight_pileup_up</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;weight_pileup_up/F&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;weight_pileup_down&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">m_weight_pileup_down</span><span class="p">,</span><span class="s">&quot;weight_pileup_down/F&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_mc</span><span class="p">){</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;rand_run_nr&quot;</span><span class="w">      </span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_rand_run_nr</span><span class="w">      </span><span class="p">,</span><span class="s">&quot;rand_run_nr/I&quot;</span><span class="w">      </span><span class="p">);</span>
+<span class="w">      </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;rand_lumiblock_nr&quot;</span><span class="p">,</span><span class="w">          </span><span class="o">&amp;</span><span class="n">m_rand_lumiblock_nr</span><span class="p">,</span><span class="s">&quot;rand_lumiblock_nr/I&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeEM</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;rhoEM&quot;</span><span class="p">,</span><span class="w">                </span><span class="o">&amp;</span><span class="n">m_rhoEM</span><span class="p">,</span><span class="w">            </span><span class="s">&quot;rhoEM/D&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeEMPFLOW</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;rhoEMPFLOW&quot;</span><span class="p">,</span><span class="w">           </span><span class="o">&amp;</span><span class="n">m_rhoEMPFLOW</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;rhoEMPFLOW/D&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeLC</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;rhoLC&quot;</span><span class="p">,</span><span class="w">                </span><span class="o">&amp;</span><span class="n">m_rhoLC</span><span class="p">,</span><span class="w">            </span><span class="s">&quot;rhoLC/D&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_truth</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;pdgId1&quot;</span><span class="p">,</span><span class="w">            </span><span class="o">&amp;</span><span class="n">m_pdgId1</span><span class="p">,</span><span class="w">        </span><span class="s">&quot;pdgId1/I&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;pdgId2&quot;</span><span class="p">,</span><span class="w">            </span><span class="o">&amp;</span><span class="n">m_pdgId2</span><span class="p">,</span><span class="w">        </span><span class="s">&quot;pdgId2/I&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;pdfId1&quot;</span><span class="p">,</span><span class="w">            </span><span class="o">&amp;</span><span class="n">m_pdfId1</span><span class="p">,</span><span class="w">        </span><span class="s">&quot;pdfId1/I&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;pdfId2&quot;</span><span class="p">,</span><span class="w">            </span><span class="o">&amp;</span><span class="n">m_pdfId2</span><span class="p">,</span><span class="w">        </span><span class="s">&quot;pdfId2/I&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;x1&quot;</span><span class="p">,</span><span class="w">                </span><span class="o">&amp;</span><span class="n">m_x1</span><span class="p">,</span><span class="w">            </span><span class="s">&quot;x1/F&quot;</span><span class="w">  </span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;x2&quot;</span><span class="p">,</span><span class="w">                </span><span class="o">&amp;</span><span class="n">m_x2</span><span class="p">,</span><span class="w">            </span><span class="s">&quot;x2/F&quot;</span><span class="w">  </span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//tree-&gt;Branch(&quot;scale&quot;,             &amp;m_scale,         &quot;scale/F&quot;);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;q&quot;</span><span class="p">,</span><span class="w">                 </span><span class="o">&amp;</span><span class="n">m_q</span><span class="p">,</span><span class="w">             </span><span class="s">&quot;q/F&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//tree-&gt;Branch(&quot;pdf1&quot;,              &amp;m_pdf1,          &quot;pdf1/F&quot;);</span>
+<span class="w">    </span><span class="c1">//tree-&gt;Branch(&quot;pdf2&quot;,              &amp;m_pdf2,          &quot;pdf2/F&quot;);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;xf1&quot;</span><span class="p">,</span><span class="w">               </span><span class="o">&amp;</span><span class="n">m_xf1</span><span class="p">,</span><span class="w">           </span><span class="s">&quot;xf1/F&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;xf2&quot;</span><span class="p">,</span><span class="w">               </span><span class="o">&amp;</span><span class="n">m_xf2</span><span class="p">,</span><span class="w">           </span><span class="s">&quot;xf2/F&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_caloClus</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;caloCluster_pt&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">m_caloCluster_pt</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;caloCluster_phi&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_phi</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;caloCluster_eta&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_caloCluster_eta</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;caloCluster_e&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_caloCluster_e</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_beamspotweight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tree</span><span class="o">-&gt;</span><span class="n">Branch</span><span class="p">(</span><span class="s">&quot;beamSpotWeight&quot;</span><span class="p">,</span><span class="w">   </span><span class="o">&amp;</span><span class="n">m_beamspotweight</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">EventInfo</span><span class="o">::</span><span class="n">clear</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">m_runNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_eventNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_mcEventNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_mcChannelNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_bcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_lumiBlock</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_coreFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">//eventCleaning</span>
+<span class="w">  </span><span class="n">m_LArError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_TileError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_SCTError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_LArFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_TileFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_SCTFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_eventClean_LooseBad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_eventClean_TightBad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_mcEventWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_DistEmptyBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_DistLastUnpairedBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_DistNextUnpairedBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_weight_pileup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_weight_pileup_down</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_weight_pileup_up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_timeStamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_timeStampNSOffset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// pileup</span>
+<span class="w">  </span><span class="n">m_npv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_actualMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_averageMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// shapeEM</span>
+<span class="w">  </span><span class="n">m_rhoEM</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// shapeEMPFLOW</span>
+<span class="w">  </span><span class="n">m_rhoEMPFLOW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// shapeLC</span>
+<span class="w">  </span><span class="n">m_rhoLC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// truth</span>
+<span class="w">  </span><span class="n">m_pdgId1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_pdgId2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_pdfId1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_pdfId2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_x1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">  </span><span class="n">m_xf1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_xf2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">//m_scale = m_q = m_pdf1 = m_pdf2 = -999;</span>
+
+<span class="w">  </span><span class="c1">// mcEventWeights</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_weightsSys</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_mcEventWeights</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// CaloCluster</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_caloClus</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_caloCluster_pt</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_caloCluster_eta</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_caloCluster_phi</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_caloCluster_e</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_beamspotweight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_beamspotweight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">EventInfo</span><span class="o">::</span><span class="n">FillEvent</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TEvent</span><span class="o">*</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">VertexContainer</span><span class="o">*</span><span class="w"> </span><span class="n">vertices</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_noDataInfo</span><span class="p">){</span><span class="w"> </span><span class="c1">// saved always (unless specifically requiring not to)</span>
+<span class="w">    </span><span class="n">m_runNumber</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">runNumber</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_eventNumber</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventNumber</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_lumiBlock</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">lumiBlock</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_coreFlags</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventFlags</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">Core</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_bcid</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">bcid</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_mcEventNumber</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">mcEventNumber</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_mcChannelNumber</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">mcChannelNumber</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_mcEventWeight</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">mcEventWeight</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_weightsSys</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_storeSyst</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">m_mcEventWeights</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">mcEventWeights</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">m_mcEventWeights</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">{</span><span class="n">m_mcEventWeight</span><span class="p">};</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_bcidInfo</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">m_mc</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DistEmptyBCID</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;DistEmptyBCID&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">DistEmptyBCID</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">m_DistEmptyBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DistEmptyBCID</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">     </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_DistEmptyBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DistLastUnpairedBCID</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;DistLastUnpairedBCID&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">DistLastUnpairedBCID</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">m_DistLastUnpairedBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DistLastUnpairedBCID</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">     </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_DistLastUnpairedBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DistNextUnpairedBCID</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;DistNextUnpairedBCID&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">DistNextUnpairedBCID</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">m_DistNextUnpairedBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DistNextUnpairedBCID</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">     </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_DistNextUnpairedBCID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_eventCleaning</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">errorState</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">LAr</span><span class="p">)</span><span class="o">==</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">Error</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_LArError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="n">m_LArError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_LArFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventFlags</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">LAr</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">errorState</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">Tile</span><span class="p">)</span><span class="o">==</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">Error</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_TileError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="n">m_TileError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_TileFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventFlags</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">Tile</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">errorState</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">SCT</span><span class="p">)</span><span class="o">==</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">Error</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_SCTError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="n">m_SCTError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_SCTFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">eventFlags</span><span class="p">(</span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">::</span><span class="n">SCT</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_timeStamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">timeStamp</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_timeStampNSOffset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">timeStampNSOffset</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">acc_DFCommonJets_eventClean_LooseBad</span><span class="p">(</span><span class="s">&quot;DFCommonJets_eventClean_LooseBad&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">acc_DFCommonJets_eventClean_LooseBad</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">))</span>
+<span class="w">      </span><span class="n">m_eventClean_LooseBad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acc_DFCommonJets_eventClean_LooseBad</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">acc_DFCommonJets_eventClean_TightBad</span><span class="p">(</span><span class="s">&quot;DFCommonJets_eventClean_TightBad&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">acc_DFCommonJets_eventClean_TightBad</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">))</span>
+<span class="w">      </span><span class="n">m_eventClean_TightBad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acc_DFCommonJets_eventClean_TightBad</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_pileup</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">m_npv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span><span class="w"> </span><span class="n">m_npv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">countPrimaryVertices</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_actualMu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">actualInteractionsPerCrossing</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_averageMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">averageInteractionsPerCrossing</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="n">correctedAvgMu</span><span class="p">(</span><span class="s">&quot;corrected_averageInteractionsPerCrossing&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="n">correctedAndScaledAvgMu</span><span class="p">(</span><span class="s">&quot;correctedScaled_averageInteractionsPerCrossing&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="n">correctedMu</span><span class="p">(</span><span class="s">&quot;corrected_actualInteractionsPerCrossing&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w">  </span><span class="n">correctedAndScaledMu</span><span class="p">(</span><span class="s">&quot;correctedScaled_actualInteractionsPerCrossing&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">correctedAvgMu</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedAvgMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">correctedAvgMu</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w">   </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedAvgMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-1.0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">correctedAndScaledAvgMu</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedAndScaledAvgMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">correctedAndScaledAvgMu</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w">   </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedAndScaledAvgMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-1.0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">correctedMu</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">correctedMu</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w">   </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-1.0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">correctedAndScaledMu</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">   </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedAndScaledMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">correctedAndScaledMu</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w">   </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">m_correctedAndScaledMu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-1.0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">weight_pileup</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;PileupWeight&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rand_run_nr</span><span class="p">(</span><span class="s">&quot;RandomRunNumber&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">rand_lumiblock_nr</span><span class="p">(</span><span class="s">&quot;RandomLumiBlockNumber&quot;</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">weight_pileup</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="n">m_weight_pileup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weight_pileup</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">     </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_weight_pileup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">rand_run_nr</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">m_rand_run_nr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand_run_nr</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_rand_run_nr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">900000</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">rand_lumiblock_nr</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_rand_lumiblock_nr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand_lumiblock_nr</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_rand_lumiblock_nr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">weight_pileup_up</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;PileupWeight_UP&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">ConstAccessor</span><span class="o">&lt;</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">weight_pileup_down</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;PileupWeight_DOWN&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">weight_pileup_up</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">m_weight_pileup_up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weight_pileup_up</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);}</span><span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_weight_pileup_up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">weight_pileup_down</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">){</span><span class="w"> </span><span class="n">m_weight_pileup_down</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weight_pileup_down</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">eventInfo</span><span class="w"> </span><span class="p">);}</span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_weight_pileup_down</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeLC</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventShape</span><span class="o">*</span><span class="w"> </span><span class="nf">evtShape</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="w"> </span><span class="n">evtShape</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Kt4LCTopoOriginEventShape&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">evtShape</span><span class="o">-&gt;</span><span class="n">getDensity</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventShape</span><span class="o">::</span><span class="n">Density</span><span class="p">,</span><span class="w"> </span><span class="n">m_rhoLC</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;FillEvent()&quot;</span><span class="p">,</span><span class="s">&quot;Could not retrieve xAOD::EventShape::Density from xAOD::EventShape&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_rhoLC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeEM</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventShape</span><span class="o">*</span><span class="w"> </span><span class="nf">evtShape</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="w"> </span><span class="n">evtShape</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Kt4EMTopoOriginEventShape&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">evtShape</span><span class="o">-&gt;</span><span class="n">getDensity</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventShape</span><span class="o">::</span><span class="n">Density</span><span class="p">,</span><span class="w"> </span><span class="n">m_rhoEM</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;FillEvent()&quot;</span><span class="p">,</span><span class="s">&quot;Could not retrieve xAOD::EventShape::Density from xAOD::EventShape&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_rhoEM</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_shapeEMPFLOW</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventShape</span><span class="o">*</span><span class="w"> </span><span class="nf">evtShape</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="w"> </span><span class="n">evtShape</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Kt4EMPFlowEventShape&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">evtShape</span><span class="o">-&gt;</span><span class="n">getDensity</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventShape</span><span class="o">::</span><span class="n">Density</span><span class="p">,</span><span class="w"> </span><span class="n">m_rhoEMPFLOW</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;FillEvent()&quot;</span><span class="p">,</span><span class="s">&quot;Could not retrieve xAOD::EventShape::Density from xAOD::EventShape&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_rhoEMPFLOW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-999</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_caloClus</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloClusterContainer</span><span class="o">*</span><span class="w"> </span><span class="n">caloClusters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="w"> </span><span class="n">caloClusters</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CaloCalTopoClusters&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// save the clusters at the EM scale</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">clus</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">caloClusters</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">clus</span><span class="o">-&gt;</span><span class="n">pt</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloCluster</span><span class="o">::</span><span class="n">State</span><span class="o">::</span><span class="n">UNCALIBRATED</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2000</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// 2 GeV cut</span>
+<span class="w">      </span><span class="n">m_caloCluster_pt</span><span class="p">.</span><span class="w"> </span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">clus</span><span class="o">-&gt;</span><span class="n">pt</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloCluster</span><span class="o">::</span><span class="n">State</span><span class="o">::</span><span class="n">UNCALIBRATED</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">m_units</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_caloCluster_eta</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">clus</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloCluster</span><span class="o">::</span><span class="n">State</span><span class="o">::</span><span class="n">UNCALIBRATED</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_caloCluster_phi</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">clus</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloCluster</span><span class="o">::</span><span class="n">State</span><span class="o">::</span><span class="n">UNCALIBRATED</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_caloCluster_e</span><span class="p">.</span><span class="w">  </span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">clus</span><span class="o">-&gt;</span><span class="n">e</span><span class="w">  </span><span class="p">(</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">CaloCluster</span><span class="o">::</span><span class="n">State</span><span class="o">::</span><span class="n">UNCALIBRATED</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">m_units</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_truth</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m_mc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//MC Truth</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEventContainer</span><span class="o">*</span><span class="w"> </span><span class="n">truthE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">retrieve</span><span class="p">(</span><span class="w"> </span><span class="n">truthE</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TruthEvents&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">truthE</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">*</span><span class="w"> </span><span class="n">truthEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">truthE</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_pdgId1</span><span class="p">,</span><span class="w">   </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">PDGID1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_pdgId2</span><span class="p">,</span><span class="w">   </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">PDGID2</span><span class="p">);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_pdfId1</span><span class="p">,</span><span class="w">   </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">PDFID1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_pdfId2</span><span class="p">,</span><span class="w">   </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">PDFID2</span><span class="p">);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_x1</span><span class="p">,</span><span class="w">       </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">X1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_x2</span><span class="p">,</span><span class="w">       </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">X2</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">//truthEvent-&gt;pdfInfoParameter(m_scale,    xAOD::TruthEvent::SCALE);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_q</span><span class="p">,</span><span class="w">        </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">Q</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">//truthEvent-&gt;pdfInfoParameter(m_pdf1,     xAOD::TruthEvent::PDF1);</span>
+<span class="w">      </span><span class="c1">//truthEvent-&gt;pdfInfoParameter(m_pdf2,     xAOD::TruthEvent::PDF2);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_xf1</span><span class="p">,</span><span class="w">      </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">XF1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">truthEvent</span><span class="o">-&gt;</span><span class="n">pdfInfoParameter</span><span class="p">(</span><span class="n">m_xf2</span><span class="p">,</span><span class="w">      </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TruthEvent</span><span class="o">::</span><span class="n">XF2</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">.</span><span class="n">m_beamspotweight</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_beamspotweight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eventInfo</span><span class="o">-&gt;</span><span class="n">beamSpotWeight</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

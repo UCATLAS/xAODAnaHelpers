@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File MuonEfficiencyCorrector.h &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File MuonEfficiencyCorrector.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_xAODAnaHelpers_MuonEfficiencyCorrector.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-muonefficiencycorrector-h">
+<span id="program-listing-file-xaodanahelpers-muonefficiencycorrector-h"></span><h1>Program Listing for File MuonEfficiencyCorrector.h<a class="headerlink" href="#program-listing-for-file-muonefficiencycorrector-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_xAODAnaHelpers_MuonEfficiencyCorrector.h.html#file-xaodanahelpers-muonefficiencycorrector-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers/MuonEfficiencyCorrector.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef xAODAnaHelpers_MuonEfficiencyCorrector_H</span>
+<span class="cp">#define xAODAnaHelpers_MuonEfficiencyCorrector_H</span>
+
+<span class="c1">// CP interface includes</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicRegistry.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicSet.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicsUtil.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/SystematicVariation.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PATInterfaces/ISystematicsTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MuonAnalysisInterfaces/IMuonEfficiencyScaleFactors.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MuonAnalysisInterfaces/IMuonTriggerScaleFactors.h&quot;</span>
+
+<span class="c1">// external tools include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgTools/AnaToolHandle.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PileupReweighting/PileupReweightingTool.h&quot;</span>
+
+<span class="c1">// algorithm wrapper</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/Algorithm.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">CP</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">MuonEfficiencyScaleFactors</span><span class="p">;</span>
+<span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">MuonTriggerScaleFactors</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MuonEfficiencyCorrector</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// put your configuration variables here as public variables.</span>
+<span class="w">  </span><span class="c1">// that way they can be set directly from CINT and python.</span>
+
+<span class="k">public</span><span class="o">:</span>
+
+<span class="w">  </span><span class="c1">// configuration variables</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_inContainerName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_overrideCalibRelease</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Reco efficiency SF</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_WorkingPointReco</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Loose&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Iso efficiency SF</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_WorkingPointIso</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;LooseTrackOnly&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">          </span><span class="n">m_AllowZeroSF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_MuTrigLegs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;HLT_mu26_imedium&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w">          </span><span class="n">m_usePerMuonTriggerSFs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// TTVA efficiency SF</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_WorkingPointTTVA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TTVA&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// systematics</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_inputSystNamesMuons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">          </span><span class="n">m_writeSystToMetadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w">         </span><span class="n">m_systValReco</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w">         </span><span class="n">m_systValIso</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w">         </span><span class="n">m_systValTrig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w">         </span><span class="n">m_systValTTVA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_systNameReco</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_systNameIso</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_systNameTrig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_systNameTTVA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_outputSystNamesReco</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MuonEfficiencyCorrector_RecoSyst&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_outputSystNamesIso</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MuonEfficiencyCorrector_IsoSyst&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_outputSystNamesTrig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MuonEfficiencyCorrector_TrigSyst&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w">   </span><span class="n">m_outputSystNamesTTVA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MuonEfficiencyCorrector_TTVASyst&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w">          </span><span class="n">m_doLRT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numEvent</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">m_numObject</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// To include the nominal in the Recp/Iso/Trig/TTVA efficiency SFs output, use &quot;All&quot;, or include &quot;Nominal&quot; in the list</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systListReco</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systListIso</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systListTrig</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">SystematicSet</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_systListTTVA</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_outputSystNamesTrigBase</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// tools</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IPileupReweightingTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pileup_tool_handle</span><span class="p">{</span><span class="s">&quot;CP::PileupReweightingTool/Pileup&quot;</span><span class="p">};</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IMuonEfficiencyScaleFactors</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_muRecoSF_tool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_recoEffSF_tool_name</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IMuonEfficiencyScaleFactors</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_muIsoSF_tool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_isoEffSF_tool_name</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IMuonTriggerScaleFactors</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_muTrigSF_tool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_trigEffSF_tool_name</span><span class="p">;</span>
+<span class="w">  </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">CP</span><span class="o">::</span><span class="n">IMuonEfficiencyScaleFactors</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_muTTVASF_tool</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_TTVAEffSF_tool_name</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_SingleMuTriggerMap</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// variables that don&#39;t get filled at submission time should be</span>
+<span class="w">  </span><span class="c1">// protected from being send from the submission node to the worker</span>
+<span class="w">  </span><span class="c1">// node (done by the //!)</span>
+
+<span class="k">public</span><span class="o">:</span>
+
+<span class="w">  </span><span class="c1">// Tree *myTree; //!</span>
+<span class="w">  </span><span class="c1">// TH1 *myHist;  //!</span>
+
+<span class="w">  </span><span class="c1">// this is a standard constructor</span>
+<span class="w">  </span><span class="n">MuonEfficiencyCorrector</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// these are the functions inherited from Algorithm</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">fileExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histInitialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">firstFile</span><span class="p">);</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">initialize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">execute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">postExecute</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">finalize</span><span class="w"> </span><span class="p">();</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">histFinalize</span><span class="w"> </span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// these are the functions not inherited from Algorithm</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="nf">executeSF</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">MuonContainer</span><span class="o">*</span><span class="w"> </span><span class="n">inputMuons</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">nominal</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">writeSystNames</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="w">  </span><span class="n">ClassDef</span><span class="p">(</span><span class="n">MuonEfficiencyCorrector</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

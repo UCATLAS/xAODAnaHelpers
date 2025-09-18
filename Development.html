@@ -1,0 +1,695 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Development &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How to Document Code" href="HowToDocumentation.html" />
+    <link rel="prev" title="Algorithms" href="Algorithms.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HowToDocumentation.html">How to Document Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Issues.html">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-workflow">Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-user">New User</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trusted-dev-user">Trusted Dev User</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#helpful-suggestions">Helpful Suggestions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#updating-changes">Updating changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changing-author-info">Changing Author Info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#renaming-lots-of-tags">Renaming lots of tags</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tagging-and-releasing-on-svn">Tagging and releasing on svn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#skimming-new-test-files">Skimming new test files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#files-with-trigger-data">Files with trigger data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decorations">Decorations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tstring-versus-std-string">TString versus std::string</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-new-xah-algorithm">Creating a new xAH::Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-and-initializing-tools">Adding and Initializing Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#check-if-a-tool-exists-and-reuse-it-trig-trigdecisiontool">Check if a tool exists and reuse it (Trig::TrigDecisionTool)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Development</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Development.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Never push to main. Always create a new branch for changes, rebase your branch with main <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span> <span class="pre">--rebase</span> <span class="pre">origin</span> <span class="pre">main</span></code> and use the branch for creating a pull-request to merge with main. This keeps main mergeable for everyone for all development.</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HowToDocumentation.html">How to Document Code</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HowToDocumentation.html#setting-it-up-locally">Setting it up Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HowToDocumentation.html#generate-docs-locally">Generate Docs Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HowToDocumentation.html#documenting-code">Documenting Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HowToDocumentation.html#for-everything-else">For everything else…</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Issues.html">Common Issues</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Issues.html#missing-metadata-information">Missing Metadata Information</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="development-workflow">
+<h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Permalink to this headline">¶</a></h2>
+<p>Changes should be tested properly ( “it compiles” is not sufficient ). We use the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">rebase</span></code> workflow.</p>
+<div class="section" id="new-user">
+<h3>New User<a class="headerlink" href="#new-user" title="Permalink to this headline">¶</a></h3>
+<p>This is for users who do not have write access to <code class="docutils literal notranslate"><span class="pre">UCATLAS/xAODAnaHelpers</span></code> to make branches. Instead, they fork and write their changes to their own repository and submit pull-requests.</p>
+<ul>
+<li><p>For <em>very</em> new users, you may want to setup SSH key access to your personal repository. To do this, follow the instructions at <a class="reference external" href="https://help.github.com/articles/generating-ssh-keys/">Generating SSH keys</a>. So you go here: <a class="reference external" href="https://github.com/UCATLAS/xAODAnaHelpers/">https://github.com/UCATLAS/xAODAnaHelpers/</a> and just click the ‘Fork’ at top right. This forks a copy into your account (<code class="docutils literal notranslate"><span class="pre">yourAccount/xAODAnaHelpers</span></code>). Next, clone it. Set the upstream:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:yourAccount/xAODAnaHelpers
+cd xAODAnaHelpers
+git remote add upstream git@github.com:UCATLAS/xAODAnaHelpers
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Note: If you do not have an ssh-key set up, you may want to use the HTTPS version of the above URL:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git remote add upstream https://github.com/UCATLAS/xAODAnaHelpers
+</pre></div>
+</div>
+<p>Next, make your changes for the feature/bug/fix:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>vim Root/JetSelector.cxx
+vim Root/HelpTreeBase.cxx
+git status # make sure you changed the files you want to change
+git diff # make sure the changes are what you want
+</pre></div>
+</div>
+<p>Then go ahead and commit your changes:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git add Root/JetSelector.cxx
+git commit -m &quot;Update with new jet calibration recommendations&quot;
+git add Root/HelpTreeBase.cxx
+git commit -m &quot;make sure that the tree dumps the systematics for new calibrations&quot;
+</pre></div>
+</div>
+<p>When you are ready to submit a pull-request, do the following first:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git fetch upstream
+git rebase upstream/main
+</pre></div>
+</div>
+<p>to make sure your code is up to date with the <a class="reference external" href="https://github.com/UCATLAS/xAODAnaHelpers">upstream repository</a>.</p>
+<p>You may want to rebase all of your changes into a single commit if you wish, and that can be done via:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git rebase -i HEAD~N
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of commits to rebase. Then you just follow the instructions. Take care not to rebase through commits that are already on main of the upstream repo. Then submit a pull-request! See <a class="reference external" href="https://help.github.com/articles/creating-a-pull-request/">https://help.github.com/articles/creating-a-pull-request/</a> for information on this.</p>
+<p>After the pull-request has been merged, you can bring yourself up to date with:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git fetch upstream
+git rebase upstream/main
+</pre></div>
+</div>
+</div>
+<div class="section" id="trusted-dev-user">
+<h3>Trusted Dev User<a class="headerlink" href="#trusted-dev-user" title="Permalink to this headline">¶</a></h3>
+<p>In this case, you have write access to this repository. Any new feature you wish to add will need to be in a new branch:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git checkout -b feature/newFeature
+</pre></div>
+</div>
+<p>and then make your commits… then maybe rebase all commits into a few good ones:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git rebase -i HEAD~N
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of commits to rebase. And then rebase with main to make sure your branch is as up-to-date as possible when making the pull-request:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git pull --rebase origin main
+</pre></div>
+</div>
+<p>and push your commits to the remote (setting upstream):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git push -u origin feature/newFeature
+</pre></div>
+</div>
+<p>and then submit a pull request by going to <a class="reference external" href="https://github.com/UCATLAS/xAODAnaHelpers">xAODAnaHelpers</a>, finding your branch, and making a pull request (usually shiny green buttons).  When it’s been merged, you can run:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git checkout main
+git pull --rebase origin main
+git remote prune origin
+</pre></div>
+</div>
+<p>to delete your local copy of the branch after bringing your local copy up to date.</p>
+</div>
+</div>
+<div class="section" id="helpful-suggestions">
+<h2>Helpful Suggestions<a class="headerlink" href="#helpful-suggestions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="updating-changes">
+<h3>Updating changes<a class="headerlink" href="#updating-changes" title="Permalink to this headline">¶</a></h3>
+<p>If you’re on branch <code class="docutils literal notranslate"><span class="pre">myBranch</span></code> and you have commits that you want to
+push to the remote <code class="docutils literal notranslate"><span class="pre">origin</span></code> - the first thing you should do is always
+update so you’re current:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git pull --rebase
+</pre></div>
+</div>
+<p>will do it all. If you want more control, use:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git fetch
+git rebase origin/main
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git fetch origin
+git rebase origin/main myBranch
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">fetch</span></code> will fetch from <code class="docutils literal notranslate"><span class="pre">origin</span></code> (see <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">remote</span> <span class="pre">-v</span></code> for what that’s defined as) by default, but you can explicitly provide a different remote repository.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">rebase</span> <span class="pre">origin/main</span></code> will rebase the current branch you are on.  You can specify another branch if you want.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="changing-author-info">
+<h3>Changing Author Info<a class="headerlink" href="#changing-author-info" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="https://help.github.com/articles/changing-author-info/">https://help.github.com/articles/changing-author-info/</a> for more information.</p>
+</div>
+<div class="section" id="renaming-lots-of-tags">
+<h3>Renaming lots of tags<a class="headerlink" href="#renaming-lots-of-tags" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>tag<span class="w"> </span>-l<span class="w"> </span><span class="s2">&quot;xAODAnaHelpers*&quot;</span><span class="w"> </span><span class="p">|</span>
+cut<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">2</span>-4<span class="w"> </span><span class="p">|</span>
+<span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>ref
+<span class="k">do</span>
+<span class="w">  </span>git<span class="w"> </span>tag<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ref</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;xAODAnaHelpers-</span><span class="nv">$ref</span><span class="s2">&quot;</span>
+<span class="w">  </span>git<span class="w"> </span>tag<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;xAODAnaHelpers-</span><span class="nv">$ref</span><span class="s2">&quot;</span>
+<span class="w">  </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span><span class="s2">&quot;:refs/tags/xAODAnaHelpers-</span><span class="nv">$ref</span><span class="s2">&quot;</span>
+<span class="w">  </span>git<span class="w"> </span>push<span class="w"> </span>--tags
+<span class="k">done</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tagging-and-releasing-on-svn">
+<h3>Tagging and releasing on svn<a class="headerlink" href="#tagging-and-releasing-on-svn" title="Permalink to this headline">¶</a></h3>
+<p>Only a few people should be doing this. Encourage folks to checkout tags
+using git. Here are my general steps:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:UCATLAS/xAODAnaHelpers xAHGIT
+svn co svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UChicago/xAODAnaHelpers/trunk xAODAnaHelpers
+mv xAHGIT/.git xAODAnaHelpers/.git
+rm -rf xAHGIT
+cd xAODAnaHelpers
+</pre></div>
+</div>
+<p>At this point, I need to reset all changes locally (these are due to svn):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git reset HEAD --hard
+</pre></div>
+</div>
+<p>and then I can look at the changes with:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git status
+</pre></div>
+</div>
+<p>If I’m happy with things on the <code class="docutils literal notranslate"><span class="pre">git</span></code> side, I move over to svn side with:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>svn status
+</pre></div>
+</div>
+<p>and make sure any new files to add <code class="docutils literal notranslate"><span class="pre">svn</span> <span class="pre">add</span> <span class="pre">newFile</span></code> and remove <code class="docutils literal notranslate"><span class="pre">svn</span> <span class="pre">del</span> <span class="pre">oldFile</span></code> are dealt with. Then I can commit to trunk:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>svn commit -m &quot;Release a tag for xAH&quot;
+</pre></div>
+</div>
+<p>then I can copy trunk to my new tag <code class="docutils literal notranslate"><span class="pre">xx-yy-zz</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>svn copy svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UChicago/xAODAnaHelpers/trunk svn+ssh://svn.cern.ch/reps/atlasinst/Institutes/UChicago/xAODAnaHelpers/tags/xAODAnaHelpers-XX-YY-ZZ
+</pre></div>
+</div>
+<p>and I should be good to go.</p>
+</div>
+<div class="section" id="skimming-new-test-files">
+<h3>Skimming new test files<a class="headerlink" href="#skimming-new-test-files" title="Permalink to this headline">¶</a></h3>
+<p>In order to skim some new test files, I use athena:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>asetup 20.1.4.7,here
+</pre></div>
+</div>
+<p>with the following python file executed via <code class="docutils literal notranslate"><span class="pre">athena.py</span> <span class="pre">skimming.py</span></code> on an <code class="docutils literal notranslate"><span class="pre">input.root</span></code> file</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">AthenaCommon.AppMgr</span> <span class="kn">import</span> <span class="n">ServiceMgr</span> <span class="k">as</span> <span class="n">svcMgr</span>
+<span class="kn">import</span> <span class="nn">AthenaPoolCnvSvc.ReadAthenaPool</span>
+
+<span class="n">svcMgr</span><span class="o">.</span><span class="n">EventSelector</span><span class="o">.</span><span class="n">InputCollections</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;input.root&#39;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">GaudiSequencer.PyComps</span> <span class="kn">import</span> <span class="n">PyEvtFilter</span>
+<span class="n">filterseq</span> <span class="o">=</span> <span class="n">CfgMgr</span><span class="o">.</span><span class="n">AthSequencer</span><span class="p">(</span><span class="s2">&quot;AthFilterSeq&quot;</span><span class="p">)</span>
+<span class="c1">#filterseq += PyEvtFilter(&quot;MyFilter&quot;,evt_list=[18559067]) #will execute main sequence only for these eventnumbers</span>
+
+<span class="c1"># Create a POOL output file with the StoreGate contents:</span>
+<span class="kn">from</span> <span class="nn">OutputStreamAthenaPool.MultipleStreamManager</span> <span class="kn">import</span> <span class="n">MSMgr</span>
+<span class="n">xaodStream</span> <span class="o">=</span> <span class="n">MSMgr</span><span class="o">.</span><span class="n">NewPoolRootStream</span><span class="p">(</span> <span class="s2">&quot;StreamXAOD&quot;</span><span class="p">,</span> <span class="s2">&quot;xAOD.root&quot;</span> <span class="p">)</span>
+
+<span class="n">DetDescrVersion</span> <span class="o">=</span> <span class="s1">&#39;ATLAS-R2-2015-03-01-00&#39;</span>
+<span class="n">include</span><span class="p">(</span><span class="s2">&quot;RecExCond/AllDet_detDescr.py&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set up its contents:</span>
+<span class="c1">#xaodStream.AcceptAlgs([&quot;MyFilter&quot;])</span>
+<span class="n">xaodStream</span><span class="o">.</span><span class="n">GetEventStream</span><span class="p">()</span><span class="o">.</span><span class="n">TakeItemsFromInput</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1">#needed to have xAOD readable outside athena (but I thought this is not needed any more?)</span>
+<span class="c1">#theApp.CreateSvc += [ &quot;xAODMaker::EventFormatSvc&quot; ]</span>
+<span class="n">xaodStream</span><span class="o">.</span><span class="n">AddMetaDataItem</span><span class="p">([</span><span class="s2">&quot;EventBookkeeperCollection#*&quot;</span><span class="p">])</span>
+<span class="c1">#xaodStream.AddMetaDataItem([&quot;xAOD::EventFormat#EventFormat&quot;])</span>
+
+<span class="n">theApp</span><span class="o">.</span><span class="n">EvtMax</span><span class="o">=</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>which will skim 5 events. I’ve found that sometimes it will not work because of the wrong geometry information specified, eg:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GeoModelSvc         ERROR *** *** Geometry configured through jobOptions does not match TagInfo tags! *** ***
+GeoModelSvc          INFO ** Job Option configuration:
+GeoModelSvc          INFO * ATLAS tag: ATLAS-R2-2015-01-01-00
+...
+GeoModelSvc          INFO ** TAG INFO configuration:
+GeoModelSvc          INFO * ATLAS tag: ATLAS-R2-2015-03-01-00
+</pre></div>
+</div>
+<p>and I just have to change the line in the above python file:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DetDescrVersion = &#39;ATLAS-R2-2015-03-01-00&#39;
+</pre></div>
+</div>
+<p>to match the correct geometry. Ask <a class="reference external" href="https://github.com/kratsg">Giordon Stark</a> for more information if you’re stuck.</p>
+</div>
+<div class="section" id="files-with-trigger-data">
+<h3>Files with trigger data<a class="headerlink" href="#files-with-trigger-data" title="Permalink to this headline">¶</a></h3>
+<p>On tier3, we have MC:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/atlas/uct3/data/users/fizisist/xAOD/mc15_13TeV.361023.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ3W.merge.AOD.e3668_s2576_s2132_r6630_r6264/AOD.05403652._000001.pool.root.1
+</pre></div>
+</div>
+<p>13 TeV data:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/atlas/uct3/data/users/fizisist/xAOD/data15_comm.00265573.physics_L1Calo.merge.AOD.x331_m1423/data15_comm.00265573.physics_L1Calo.merge.AOD.x331_m1423._lb0179-lb0183._0001.1
+</pre></div>
+</div>
+<p>which are useful for testing using:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test_multiAlgo submitDir /atlas/uct3/data/users/fizisist/xAOD &lt;sample&gt; &lt;root file&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="decorations">
+<h3>Decorations<a class="headerlink" href="#decorations" title="Permalink to this headline">¶</a></h3>
+<p>As a follow-up on the discussions in yesterday’s meeting, xAOD decorations can be assigned and read more efficiently defining an decorators/accessors, since auxdata requires a string-comparison search for the correct branch on every call, whereas the static accessor finds this once and then no longer has the overhead.</p>
+<p>You can define a decorator <code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">SG::AuxElement::Decorator&lt;char&gt;</span> <span class="pre">dec_baseline(&quot;baseline&quot;);</span></code> which then can be used like <code class="docutils literal notranslate"><span class="pre">dec_baseline(input)</span> <span class="pre">=</span> <span class="pre">isbaseline;</span></code> and then in your code you can replace:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">input</span><span class="p">.</span><span class="n">auxdecor</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;baseline&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>by:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dec_baseline</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>These are the relevant lines of code inside SUSYObjDef _xAOD:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/Root/SUSYObjDef_xAOD.cxx#L17">https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/Root/SUSYObjDef_xAOD.cxx#L17</a></p></li>
+<li><p><a class="reference external" href="https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/Root/SUSYObjDef_xAOD.cxx#L595">https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/Root/SUSYObjDef_xAOD.cxx#L595</a></p></li>
+</ul>
+<p>In SUSYToolsTester there is also an example of an AuxElement::Accessor like this:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">SG</span><span class="o">::</span><span class="n">AuxElement</span><span class="o">::</span><span class="n">Accessor</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">acc_truthType</span><span class="p">(</span><span class="s">&quot;truthType&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">acc_truthType</span><span class="p">.</span><span class="n">isAvailable</span><span class="p">(</span><span class="o">*</span><span class="n">trackParticle</span><span class="p">)</span><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="n">muonTruthType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acc_truthType</span><span class="p">(</span><span class="o">*</span><span class="n">trackParticle</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>in:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/util/SUSYToolsTester.cxx#L428">https://svnweb.cern.ch/trac/atlasoff/browser/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-14/util/SUSYToolsTester.cxx#L428</a></p></li>
+</ul>
+<p>Note that the difference between accessors and decorators is that accessors are for auxdata branches in general but will not let you modify a const object, whereas Decorators permit adding information to const collections.</p>
+</div>
+<div class="section" id="tstring-versus-std-string">
+<h3>TString versus std::string<a class="headerlink" href="#tstring-versus-std-string" title="Permalink to this headline">¶</a></h3>
+<p>I’ve noticed that TString slows us down a little bit, so try to use std::string where possible. Code changes and equivalencies look like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">IsNull</span><span class="p">()</span>
+<span class="n">m_inContainerName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span>
+
+<span class="n">m_event</span><span class="o">-&gt;</span><span class="n">retrieve</span><span class="p">(</span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">Data</span><span class="p">());</span>
+<span class="n">m_event</span><span class="o">-&gt;</span><span class="n">retrieve</span><span class="p">(</span><span class="n">jets</span><span class="p">,</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">);</span>
+
+<span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">Data</span><span class="p">());</span>
+<span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="n">m_inContainerName</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-a-new-xah-algorithm">
+<h3>Creating a new xAH::Algorithm<a class="headerlink" href="#creating-a-new-xah-algorithm" title="Permalink to this headline">¶</a></h3>
+<p>If you are planning to write an <a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">xAH::Algorithm</span></code></a>, there are two requirements you must abide by to fit within the xAODAnaHelpers ecosystem.</p>
+<ol class="arabic">
+<li><p>Only allow empty constructors, no parameters or arguments passed in.</p></li>
+<li><p>Constructors must initialize an <a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">xAH::Algorithm</span></code></a> instance passing in the name of itself:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">ExampleClass</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">ExampleClass</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;ExampleClass&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The first requirement is necessary to make sure streamable code (such as EventLoop) can handle and set up your algorithms correctly when submitting jobs. The second requirement is currently necessary for xAODAnaHelpers to keep track of the number of instances of a given class that has been created. This is a registry book-keeping operation that allows users to write smarter algorithms, the kind that know how many instances of itself have been created!</p>
+</div>
+<div class="section" id="adding-and-initializing-tools">
+<h3>Adding and Initializing Tools<a class="headerlink" href="#adding-and-initializing-tools" title="Permalink to this headline">¶</a></h3>
+<p>This is albeit a litle bit trickier for anyone new to how Athena tools work. First, I’ll provide header and source code blocks showing an example for a tool, and then I will explain the concepts.</p>
+<p><strong>Header File</strong>:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// external tools include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgTools/AnaToolHandle.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetCalibTools/IJetCalibrationTool.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">JetCalibrator</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">//...</span>
+
+<span class="w">  </span><span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// tools</span>
+<span class="w">    </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IJetCalibrationTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_JetCalibrationTool_handle</span><span class="p">{</span><span class="s">&quot;JetCalibrationTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span><span class="c1">//!</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Source File</strong>:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// tools</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;JetCalibTools/JetCalibrationTool.h&quot;</span>
+
+<span class="c1">//...</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">JetCalibrator</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">//...</span>
+
+<span class="w">  </span><span class="c1">// initialize jet calibration tool</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_JetCalibrationTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;JetCollection&quot;</span><span class="p">,</span><span class="n">m_jetAlgo</span><span class="p">));</span>
+<span class="w">  </span><span class="c1">//... other setProperty() calls and other logic can be in here for tool configuration</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_JetCalibrationTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;OutputLevel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">().</span><span class="n">level</span><span class="p">()));</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_JetCalibrationTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_JetCalibrationTool_handle</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">JetCalibrator</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="w">  </span><span class="n">m_JetCalibrationTool_handle</span><span class="o">-&gt;</span><span class="n">apply</span><span class="p">(</span><span class="o">*</span><span class="n">jet</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="p">}</span>
+
+<span class="c1">//...</span>
+</pre></div>
+</div>
+<p><strong>Header Discussion</strong></p>
+<p>First, let’s talk about the header file. You need to include the header file for the tool handles <code class="docutils literal notranslate"><span class="pre">AsgTools/AnaToolHandle.h</span></code>. As this is a templated method, you really don’t to try and forward-declare this or you’re gonna have a bad time. Next, you’ll want to include the header file for the tool’s interface class, e.g. <code class="docutils literal notranslate"><span class="pre">JetCalibTools/IJetCalibrationTool.h</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To find the correct header file for a tool’s interface, look in the header file for the tool itself, e.g. <code class="docutils literal notranslate"><span class="pre">JetCalibTools/JetCalibrationTool.h</span></code>, and cross-check by looking at the classes the tool inherits from. For example, <code class="docutils literal notranslate"><span class="pre">JetTileCorrectionTool</span></code> has the <code class="docutils literal notranslate"><span class="pre">IJetTileCorrectionTool</span></code> interface class because in its header file:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JetTileCorrectionTool</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">virtual</span><span class="w"> </span><span class="n">IJetTileCorrectionTool</span><span class="p">,</span>
+<span class="w">                              </span><span class="k">public</span><span class="w"> </span><span class="n">asg</span><span class="o">::</span><span class="n">AsgMetadataTool</span>
+</pre></div>
+</div>
+</div>
+<p>You might wonder why we don’t just include the tool’s header file in our header file. One choice is that the interface header file is smaller and easier to compile quickly. This is roughly equivalent to forward-declaring our tool, where we only include the header file for our tool in the source and put a <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">ClassName;</span></code> in the header.</p>
+<p>Lastly for the header, we make the tool handle a private member of our class. Make sure that this gets constructed with a type only by specifying the tool itself, e.g. <code class="docutils literal notranslate"><span class="pre">JetCalibrationTool</span></code>. By adding the <code class="docutils literal notranslate"><span class="pre">this</span></code> parameter, we make sure that the tool handle is indeed made as a private tool for the given algorithm.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We will prefer the suffix <code class="docutils literal notranslate"><span class="pre">_handle</span></code> to refer to the fact that the variable is a tool handle in xAODAnaHelpers.</p>
+</div>
+<p><strong>Source Discussion</strong></p>
+<p>Next, looking at the source code… we include the header file for our tool. Although this may not always be needed, it is good practice to help others figure out where the tool is. As of writing this documentation, the interface and the tool may be defined in different packages! Moving on, we will want to put tool initializations in <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> as this will only get called on files that have events. Files without events will not create a tool, conserving memory and processing power.</p>
+<p>If you need to use/retrieve a tool created in another class, you will need to have the same name in both places for the ToolHandle to find it, and you need to make sure the tool isn’t made private (do’t use <code class="docutils literal notranslate"><span class="pre">this</span></code> for the second parameter for initializatiton).</p>
+<p>If you don’t set a name for the tool, only a type, the default name is the type. For example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IJetCalibrationTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">test_handle</span><span class="p">{</span><span class="s">&quot;JetCalibrationTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">};</span>
+<span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="n">test_handle</span><span class="p">.</span><span class="n">name</span><span class="p">());</span><span class="w"> </span><span class="c1">// will output &quot;JetCalibrationTool&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In ASG Software, tools created through AnaToolHandle can be found in the ToolStore via preprending <code class="docutils literal notranslate"><span class="pre">ToolSvc.</span></code> to the name of the tool:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">asg</span><span class="o">::</span><span class="n">ToolStore</span><span class="o">::</span><span class="n">contains</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">TrigDecisionTool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;ToolSvc.&quot;</span><span class="o">+</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">name</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>This is a slight gotcha that will trip up people. Because of this, xAODAnaHelpers prefers the convention of using <code class="code docutils literal notranslate"><span class="pre">isUserConfigured()</span></code> instead as this doesn’t need the additional <code class="docutils literal notranslate"><span class="pre">ToolSvc.</span></code> prepended to the tool name to look it up!</p>
+</div>
+<p>If it has <code class="code docutils literal notranslate"><span class="pre">isUserConfigured()==0</span></code> (e.g. “not configured before”: a tool with that type and name has not been created), then let’s go ahead and configure it with <code class="docutils literal notranslate"><span class="pre">setProperty()</span></code>!  One thing you should <strong>always</strong> do is set the output level of the tool <code class="docutils literal notranslate"><span class="pre">OutputLevel</span></code>. It is usually best to set it to the same output level that the algorithm is configured to <code class="docutils literal notranslate"><span class="pre">msg().level()</span></code> and is probably the safest prescription.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For setting properties or managing tools through the tool handle, you access functions through the dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>) operator. For using the tool, you access functions through the arrow (<code class="docutils literal notranslate"><span class="pre">-&gt;</span></code>) operator.</p>
+</div>
+<p>If a tool handle has been configured previously, but not initialized (such as using a tool handle of the same type and name as a previously created tool handle), then all <code class="code docutils literal notranslate"><span class="pre">setProperty()</span></code> calls will be further ignored. I can demonstrate this with a neat code example:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// set up the players</span>
+<span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IJetCalibrationTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">alice</span><span class="p">{</span><span class="s">&quot;JetCalibrationTool/MyName&quot;</span><span class="p">};</span>
+<span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">IJetCalibrationTool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bob</span><span class="w">  </span><span class="p">{</span><span class="s">&quot;JetCalibrationTool/MyName&quot;</span><span class="p">};</span>
+
+<span class="c1">// set configurations on the first handle</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">alice</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;p1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">v1</span><span class="p">));</span><span class="w"> </span><span class="c1">// will set the underlying tool MyName-&gt;p1 = v1</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">alice</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;p2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">v2</span><span class="p">));</span><span class="w"> </span><span class="c1">// will set the underlying tool MyName-&gt;p2 = v2</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">alice</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span><span class="w"> </span><span class="c1">// creates the tool MyName</span>
+
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">bob</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;p1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">v9</span><span class="p">));</span><span class="w"> </span><span class="c1">// will be ignored as bob.isUserConfigured() == 1 [alice owns the tool]</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">bob</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;p3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">v3</span><span class="p">));</span><span class="w"> </span><span class="c1">// will be ignored as bob.isUserConfigured() == 1 [alice owns the tool]</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">bob</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span><span class="w"> </span><span class="c1">// retrieves the existing tool MyName</span>
+</pre></div>
+</div>
+<p>AnaToolHandle will also not let us change the configuration of a previously initialized tool (one which <code class="code docutils literal notranslate"><span class="pre">handle.retrieve()</span></code> has been called on). In this case, the tool has been <code class="code docutils literal notranslate"><span class="pre">initialized</span></code>. Continuing the code example from before, if you were annoyed that the <code class="code docutils literal notranslate"><span class="pre">setProperty()</span></code> calls were ignored, you might try setting it again on <code class="docutils literal notranslate"><span class="pre">alice</span></code>:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="n">alice</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s">&quot;p3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">v3</span><span class="p">));</span><span class="w"> </span><span class="c1">// will crash as alice.isInitialized() == 1 [alice already created its tool]</span>
+</pre></div>
+</div>
+<p>Finally, we <code class="code docutils literal notranslate"><span class="pre">retrieve()</span></code> (<code class="code docutils literal notranslate"><span class="pre">initialize()</span></code>) the tool of the given type and name from the tool store. <code class="code docutils literal notranslate"><span class="pre">retreive()</span></code> and <code class="code docutils literal notranslate"><span class="pre">initialize()</span></code> are synonyms and will almost always create a new tool. The only two exceptions are if the user configured the tool (<code class="code docutils literal notranslate"><span class="pre">isUserConfigured()==1</span></code>) or if another ToolHandle created the tool as a public tool and holds on to it. But that’s it, the memory will be managed for you and you do not need to delete it or do anything else but use it in your code!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Did you get a bus error, segfault, or abort in the code because of the tools? If so, it is most likely due to a typo in the tool’s header file. Please identify which tool causes the error and file an issue so we can inform the tool developers that their tool needs to be fixed. In the meantime, this can be fixed using a macro:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">ASG_MAKE_ANA_TOOL</span><span class="p">(</span><span class="n">m_JVT_tool_handle</span><span class="p">,</span><span class="w"> </span><span class="n">CP</span><span class="o">::</span><span class="n">JetJvtEfficiency</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>An example of a reported issue for the above tool is here: <a class="reference external" href="https://its.cern.ch/jira/browse/ATLASG-1214">https://its.cern.ch/jira/browse/ATLASG-1214</a>.</p>
+</div>
+</div>
+<div class="section" id="check-if-a-tool-exists-and-reuse-it-trig-trigdecisiontool">
+<h3>Check if a tool exists and reuse it (Trig::TrigDecisionTool)<a class="headerlink" href="#check-if-a-tool-exists-and-reuse-it-trig-trigdecisiontool" title="Permalink to this headline">¶</a></h3>
+<p>The TrigDecisionTool is a special case that needs attention. This tool is unique in that the templaed methods require us to use the tool as its own interface. It is also a singleton which means it will complain heavily if it detects more than one instance of itself. How do we deal with this in xAODAnaHelpers?</p>
+<p><strong>Header File</strong>:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// external tools include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;AsgTools/AnaToolHandle.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TrigDecisionTool/TrigDecisionTool.h&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyAlgorithm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="cm">/** @brief trigDecTool name for configurability if name is not default.  If empty, use the default name. If not empty, change the name. */</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_trigDecTool_name</span><span class="p">{</span><span class="s">&quot;&quot;</span><span class="p">};</span>
+
+<span class="w">  </span><span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="cm">/** @brief Trigger decision tool.</span>
+
+<span class="cm">    If you need to use a TDT that was previously created before this algorithm with a different name, set the name in m_trigDecTool_name.</span>
+<span class="cm">    */</span>
+<span class="w">    </span><span class="n">asg</span><span class="o">::</span><span class="n">AnaToolHandle</span><span class="o">&lt;</span><span class="n">Trig</span><span class="o">::</span><span class="n">TrigDecisionTool</span><span class="o">&gt;</span><span class="w">     </span><span class="n">m_trigDecTool_handle</span><span class="p">{</span><span class="s">&quot;Trig::TrigDecisionTool&quot;</span><span class="p">};</span><span class="w">                         </span><span class="c1">//!</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Source File</strong>:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">MyAlgorithm</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="p">(){</span>
+
+<span class="w">  </span><span class="c1">// Grab the TrigDecTool from the ToolStore</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">isUserConfigured</span><span class="p">()){</span>
+<span class="w">    </span><span class="n">ANA_MSG_FATAL</span><span class="p">(</span><span class="s">&quot;A configured &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">typeAndName</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; must have been previously created! Double-check the name of the tool.&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="w">  </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">);</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The above is an example of how one designs an algorithm that requires the TrigDecisionTool and will crash if it cannot find it. It also prints the name of the tool it is using to make it much easier for a user to debug. By convention in xAODAnaHelpers, <code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">BasicEventSelection::m_trigDecTool_name</span></code> will default to <code class="code docutils literal notranslate"><span class="pre">&quot;xAH::TrigDecTool&quot;</span></code>. All algorithms follow this default if they need the trigger decision tool. If there is an external algorithm that creates it and you want xAODAnaHelpers to pick it up instead of creating one, this can be done by setting <code class="code docutils literal notranslate"><span class="pre">m_trigDecTool_name</span></code> to a non-empty value and you’re good to go. For example, <a class="reference internal" href="BasicEventSelection.html#_CPPv419BasicEventSelection" title="BasicEventSelection"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">BasicEventSelection</span></code></a> will create a trigger decision tool if it does not exist:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;ConfigTool&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_trigConfTool_handle</span><span class="w"> </span><span class="p">));</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;TrigDecisionKey&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xTrigDecision&quot;</span><span class="w"> </span><span class="p">));</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;OutputLevel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">().</span><span class="n">level</span><span class="p">()</span><span class="w"> </span><span class="p">));</span>
+<span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">retrieve</span><span class="p">());</span>
+<span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="s">&quot;Retrieved tool: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>so that if such a tool already was created before <code class="docutils literal notranslate"><span class="pre">BasicEventSelection</span></code> tries to create it, it will retrieve it (and the <code class="code docutils literal notranslate"><span class="pre">setProperty()</span></code> calls will be ignored). If it has not been created/configured before, it will configure and then create the tool. No extra logic needed on the users’ part.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="HowToDocumentation.html" class="btn btn-neutral float-right" title="How to Document Code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Algorithms.html" class="btn btn-neutral float-left" title="Algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

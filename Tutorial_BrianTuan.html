@@ -1,0 +1,685 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Brian Tuan’s Tutorial &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="xAH FAQ" href="FAQs.html" />
+    <link rel="prev" title="Community" href="Community.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="Community.html">Community</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="Community.html#tutorials">Tutorials</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">(outdated) Brian Tuan's Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-and-data">Code and Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-of-xaodanahelpers-algorithms">Configuration of xAODAnaHelpers Algorithms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plotting">Plotting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tips-tricks">Tips &amp; Tricks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Community.html#email-list">Email List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Community.html#who-uses-us">Who uses us?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="Community.html">Community</a> &raquo;</li>
+        
+      <li>Brian Tuan’s Tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Tutorial_BrianTuan.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="brian-tuan-s-tutorial">
+<h1>Brian Tuan’s Tutorial<a class="headerlink" href="#brian-tuan-s-tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial will introduce a new user to analysis of xAOD’s on Tier 3 using the RootCore framework. We will first produce a slimmed tree from Monte Carlo on the GRID, then we will retrieve the file to the local disk and produce a weighted histogram of pT from the slimmed tree. The <a class="reference external" href="http://faxbox.usatlas.org/user/btuan/Tutorial-00-00-02.zip">full source code of the tutorial is here</a>, for those looking to get a quick start.</p>
+</div>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>First, connect to the UC Tier 3 server with X-11 window forwarding
+enabled (so that you may use ROOT interactively later):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ssh -Y btuan@uct3.uchicago.edu
+</pre></div>
+</div>
+<p>Make sure that the following lines are in your ~/.bash_profile file, which is a script that runs each time you log into the shell. These lines set up the ATLAS software environment where RootCore, among other tools, is located and depends upon:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Setup ATLAS Environment
+export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+alias setupATLAS=&#39;source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh&#39;
+export ALRB_localConfigDir=$HOME/localConfig
+source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
+</pre></div>
+</div>
+<p>Now, setup the RootCore environment and build it. We will use 2.3.21, which, at time of writing is the latest supported release by xAODAnaHelpers. You’ll need to perform this step each time you login to the shell:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd ~/work
+rcSetup Base,2.3.21
+</pre></div>
+</div>
+<p>To see other available versions of RootCore, type:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>rcSetup -r
+</pre></div>
+</div>
+<p>Make a work directory and checkout the xAODAnaHelpers package. This package contains a few useful tools for any analysis: e.g. event selection, jet cleaning, jet calibration etc. After checking out all the packages, return to the directory that has the “RootCore” folder – probably your home directory – and recompile, just to double check that everything works. This may take a while, be patient.</p>
+<p>In general, always check to make sure that your code compiles properly after any changes with <code class="docutils literal notranslate"><span class="pre">rc</span> <span class="pre">compile</span></code>. Any time package dependencies are updated, be sure to run <code class="docutils literal notranslate"><span class="pre">rc</span> <span class="pre">find_packages</span></code> as well. In addition, if compilation for one of your packages fails, and all code errors seem to be fixed, but RootCore still refuses to compile your package, try running <code class="docutils literal notranslate"><span class="pre">rc</span> <span class="pre">clean</span></code> then <code class="docutils literal notranslate"><span class="pre">rc</span> <span class="pre">find_packages</span> <span class="pre">&amp;&amp;</span> <span class="pre">rc</span> <span class="pre">compile</span></code>. This will clean out all of the old files that may have been improperly compiled.</p>
+<p>It is good practice to repeat this procedure any time you change versions of any packages, RootCore included (though recompiling everything will of course take a while):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mkdir work &amp;&amp; cd work
+git clone https://github.com/UCATLAS/xAODAnaHelpers.git
+python xAODAnaHelpers/scripts/checkoutASGtags.py 2.3.21
+rc find_packages &amp;&amp; rc compile
+</pre></div>
+</div>
+<p>RootCore comes with a script that allows us to easily create a skeleton for your analysis. Do so:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>. $ROOTCOREDIR/scripts/make_skeleton.sh Tutorial
+</pre></div>
+</div>
+<p>Make a directory called run. This is where your script will be located:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd work/Tutorial &amp;&amp; mkdir run &amp;&amp; cd run
+touch makeSlimmedTree.cxx
+</pre></div>
+</div>
+</div>
+<div class="section" id="code-and-data">
+<h2>Code and Data<a class="headerlink" href="#code-and-data" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>setConfig and getConfig are eliminated as <code class="docutils literal notranslate"><span class="pre">ROOT::TEnv</span></code> support is now deprecated.</p>
+</div>
+<p>Place the following code in your <strong>``makeSlimmedTree.cxx``</strong>. Skim through it to familiarize yourself with the sequence of the analysis:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">makeSlimmedTree</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">submitDir</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">//===========================================</span>
+<span class="w">    </span><span class="c1">// FOR ROOT6 WE DO NOT PUT THIS LINE</span>
+<span class="w">    </span><span class="c1">// (ROOT6 uses Cling instead of CINT)</span>
+<span class="w">    </span><span class="c1">// Load the libraries for all packages</span>
+<span class="w">    </span><span class="c1">// gROOT-&gt;Macro(&quot;$ROOTCOREDIR/scripts/load_packages.C&quot;);</span>
+<span class="w">    </span><span class="c1">// Instead on command line do:</span>
+<span class="w">    </span><span class="c1">// &gt; root -l -b -q &#39;$ROOTCOREDIR/scripts/load_packages.C&#39; &#39;makeSlimmedTree.cxx (&quot;submitDir&quot;)&#39;</span>
+<span class="w">    </span><span class="c1">// The above works for ROOT6 and ROOT5</span>
+<span class="w">    </span><span class="c1">//==========================================</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">f_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w">    </span><span class="c1">// decide if we use the GRID to run our analysis. default false.</span>
+
+<span class="w">    </span><span class="c1">// Set up the job for xAOD access:</span>
+<span class="w">    </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">().</span><span class="n">ignore</span><span class="p">();</span>
+
+
+<span class="w">    </span><span class="cm">/*#####################################################</span>
+<span class="cm">    ############# SampleHandler Configuation ##############</span>
+<span class="cm">    #####################################################*/</span>
+
+<span class="w">    </span><span class="c1">// create a new sample handler to describe the data files we use.</span>
+<span class="w">    </span><span class="n">SH</span><span class="o">::</span><span class="n">SampleHandler</span><span class="w"> </span><span class="n">sh</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Use only one of the following three methods to scan for files with SampleHandler</span>
+
+<span class="w">    </span><span class="c1">// (1) use SampleHandler with DQ2 to obtain the desired dataset</span>
+<span class="w">    </span><span class="c1">// SH::scanDQ2 (sh, &quot;data15_13TeV.00267638.physics_Main.merge.AOD.r6818_p2358/&quot;);</span>
+
+<span class="w">    </span><span class="c1">// (2) use SampleHandler with a dataset list to obtain the desired dataset</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">inputFilePath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gSystem</span><span class="o">-&gt;</span><span class="n">ExpandPathName</span><span class="p">(</span><span class="s">&quot;$ROOTCOREBIN/data/Tutorial/inDSShort.txt&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">SH</span><span class="o">::</span><span class="n">readFileList</span><span class="w"> </span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sample&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">inputFilePath</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// (3) use SampleHandler to scan all of the subdirectories of a directory for particular MC single file:</span>
+<span class="w">    </span><span class="c1">// const char* inputFilePath = gSystem-&gt;ExpandPathName (&quot;/export/t3data3/fizisist/&quot;);</span>
+<span class="w">    </span><span class="c1">// SH::DiskListLocal list (inputFilePath);</span>
+<span class="w">    </span><span class="c1">// SH::scanDir(sh, list);</span>
+
+<span class="w">    </span><span class="c1">// set the name of the tree in our files. in the xAOD the TTree containing the EDM containers is &quot;CollectionTree&quot;</span>
+<span class="w">    </span><span class="n">sh</span><span class="p">.</span><span class="n">setMetaString</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;nc_tree&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CollectionTree&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">sh</span><span class="p">.</span><span class="n">setMetaString</span><span class="p">(</span><span class="s">&quot;nc_grid_filter&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="p">);</span><span class="w">    </span><span class="c1">//Data files on grid to not end in .root</span>
+
+<span class="w">    </span><span class="c1">// print out the samples we found</span>
+<span class="w">    </span><span class="n">sh</span><span class="p">.</span><span class="n">print</span><span class="w"> </span><span class="p">();</span>
+
+
+<span class="w">    </span><span class="cm">/*#####################################################</span>
+<span class="cm">    ################## Job Configuration ##################</span>
+<span class="cm">    #####################################################*/</span>
+
+<span class="w">    </span><span class="c1">// this is the basic description of our job</span>
+<span class="w">    </span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="w"> </span><span class="n">job</span><span class="p">;</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">sampleHandler</span><span class="w"> </span><span class="p">(</span><span class="n">sh</span><span class="p">);</span><span class="w"> </span><span class="c1">// use SampleHandler in this job</span>
+
+<span class="w">    </span><span class="c1">// job.options()-&gt;setDouble (EL::Job::optMaxEvents, 5000); // for testing purposes, limit to run over the first 500 events only!</span>
+
+<span class="w">    </span><span class="c1">// To automatically delete submitDir</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">options</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setDouble</span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">::</span><span class="n">optRemoveSubmitDir</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// For Trigger</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">options</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setString</span><span class="p">(</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">::</span><span class="n">optXaodAccessMode</span><span class="p">,</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">::</span><span class="n">optXaodAccessMode_branch</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Use TTreeCache to precache data files to speed up analysis</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">options</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setDouble</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">::</span><span class="n">optCacheSize</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">);</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">options</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setDouble</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">::</span><span class="n">optCacheLearnEntries</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span>
+
+
+<span class="w"> </span><span class="cm">/*#####################################################</span>
+<span class="cm">    ############### Output Configuration #################</span>
+<span class="cm">    #####################################################*/</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">outputName</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">userName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;btuan&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// if running on GRID, make sure no two runs have the same output name. tag as necessary</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">outputTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;.v1/&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">f_grid</span><span class="p">)</span><span class="w"> </span><span class="c1">// follow GRID naming conventions</span>
+<span class="w">        </span><span class="n">outputName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;user.&quot;</span><span class="o">+</span><span class="n">userName</span><span class="o">+</span><span class="s">&quot;.%in:name[1]%.%in:name[2]%.%in:name[3]%&quot;</span><span class="o">+</span><span class="n">outputTag</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="n">outputName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;%in:name%&quot;</span><span class="o">+</span><span class="n">outputTag</span><span class="p">;</span>
+
+
+<span class="w">    </span><span class="cm">/*#####################################################</span>
+<span class="cm">    ############## Algorithm Configuration ################</span>
+<span class="cm">    #####################################################*/</span>
+
+<span class="w">    </span><span class="c1">// basic event selection : GRL, event cleaning, NPV</span>
+<span class="w">    </span><span class="n">BasicEventSelection</span><span class="o">*</span><span class="w"> </span><span class="n">baseEventSel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BasicEventSelection</span><span class="p">();</span>
+<span class="w">    </span><span class="n">baseEventSel</span><span class="o">-&gt;</span><span class="n">setName</span><span class="p">(</span><span class="s">&quot;baseEventSel&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">setConfig</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;$ROOTCOREBIN/data/Tutorial/baseEventSel.config&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// jet calibrator</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">systName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;None&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">systVal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">JetCalibrator</span><span class="o">*</span><span class="w"> </span><span class="n">jetCalib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JetCalibrator</span><span class="p">();</span>
+<span class="w">    </span><span class="n">jetCalib</span><span class="o">-&gt;</span><span class="n">setName</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;jetCalib&quot;</span><span class="w"> </span><span class="p">)</span><span class="o">-&gt;</span><span class="n">setConfig</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;$ROOTCOREBIN/data/Tutorial/jetCalib_AntiKt4EMTopo.config&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">setSyst</span><span class="p">(</span><span class="w"> </span><span class="n">systName</span><span class="p">,</span><span class="w"> </span><span class="n">systVal</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// jet selector</span>
+<span class="w">    </span><span class="n">JetSelector</span><span class="o">*</span><span class="w"> </span><span class="n">jetSelect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JetSelector</span><span class="p">();</span>
+<span class="w">    </span><span class="n">jetSelect</span><span class="o">-&gt;</span><span class="n">setName</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;jetSelect&quot;</span><span class="w"> </span><span class="p">)</span><span class="o">-&gt;</span><span class="n">setConfig</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;$ROOTCOREBIN/data/Tutorial/jetSelect.config&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// tree output</span>
+<span class="w">    </span><span class="n">TreeAlgo</span><span class="o">*</span><span class="w"> </span><span class="n">outTree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TreeAlgo</span><span class="p">();</span>
+<span class="w">    </span><span class="n">outTree</span><span class="o">-&gt;</span><span class="n">setName</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;outTree&quot;</span><span class="w"> </span><span class="p">)</span><span class="o">-&gt;</span><span class="n">setConfig</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;$ROOTCOREBIN/data/Tutorial/outTree.config&quot;</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// add algorithms to analysis</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">algsAdd</span><span class="w"> </span><span class="p">(</span><span class="n">baseEventSel</span><span class="p">);</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">algsAdd</span><span class="w"> </span><span class="p">(</span><span class="n">jetCalib</span><span class="p">);</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">algsAdd</span><span class="w"> </span><span class="p">(</span><span class="n">jetSelect</span><span class="p">);</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">algsAdd</span><span class="w"> </span><span class="p">(</span><span class="n">outTree</span><span class="p">);</span>
+
+
+<span class="w">    </span><span class="cm">/*#####################################################</span>
+<span class="cm">    ################$ Initialize Driver #####$$$###########</span>
+<span class="cm">    #####################################################*/</span>
+
+<span class="w">    </span><span class="c1">// here, we choose which driver to use with the boolean set earlier</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">f_grid</span><span class="p">){</span><span class="w"> </span><span class="c1">// run using the GRID driver</span>
+<span class="w">        </span><span class="n">EL</span><span class="o">::</span><span class="n">PrunDriver</span><span class="w"> </span><span class="n">driver</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">driver</span><span class="p">.</span><span class="n">options</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setString</span><span class="p">(</span><span class="s">&quot;nc_outputSampleName&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">outputName</span><span class="p">);</span>
+<span class="w">        </span><span class="n">driver</span><span class="p">.</span><span class="n">options</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setDouble</span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">::</span><span class="n">optGridNFilesPerJob</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// driver.options()-&gt;setDouble(EL::Job::optGridMemory, 10240); //10 GB</span>
+
+<span class="w">        </span><span class="n">driver</span><span class="p">.</span><span class="n">submitOnly</span><span class="p">(</span><span class="n">job</span><span class="p">,</span><span class="w"> </span><span class="n">submitDir</span><span class="p">);</span><span class="w"> </span><span class="c1">// submitOnly runs job without opening monitoring loop</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// run using a direct driver</span>
+<span class="w">        </span><span class="n">EL</span><span class="o">::</span><span class="n">DirectDriver</span><span class="w"> </span><span class="n">driver</span><span class="p">;</span>
+<span class="w">        </span><span class="n">driver</span><span class="p">.</span><span class="n">options</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setString</span><span class="p">(</span><span class="s">&quot;nc_outputSampleName&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">outputName</span><span class="p">);</span>
+<span class="w">        </span><span class="n">driver</span><span class="p">.</span><span class="n">submit</span><span class="w"> </span><span class="p">(</span><span class="n">job</span><span class="p">,</span><span class="w"> </span><span class="n">submitDir</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Update the package dependencies on the line <strong>``PACKAGE_DEP``</strong> in <code class="docutils literal notranslate"><span class="pre">cmt/Makefile.RootCore</span></code> to include xAODAnaHelpers:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>PACKAGE_DEP = xAODAnaHelpers
+</pre></div>
+</div>
+<p>Later on, in more driven analyses, you may find yourself adding the EventLoop and EventLoopGrid packages to the dependencies. The xAODAnaHelpers package takes care of all of the event looping for you in this case, so the only dependency is upon that package.</p>
+<p>Since we use the DQ2 SampleHandler to obtain the datasets, you will need to set up a valid VOMS proxy (which you will need anyways to submit the job to the grid) and a DQ2 client if you want to run the job locally.  You can also use the XRootD protocol with FAX to obtain the samples. The code for this is commented out in the <strong>``makeSlimmedTree.cxx``</strong> code.  The gist of this is the following (on the command line):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>voms-proxy-init -voms altas
+localSetupFAX
+fax-get-gLFNs data15_13TeV.00267638.physics_Main.merge.AOD.r6818_p2358 &gt; inDS.txt
+localSetupPandaClient
+</pre></div>
+</div>
+<p>Make a directory <strong>``Tutorial/data``</strong>. This will be where we put all of the data and configuration files for our package, and for xAODAnaHelpers. Once you run find_packages and compile with RootCore, you will be able to refer to this data directory with the <strong>``$ROOTCOREBIN``</strong> path variable, which is particularly useful when you have to generalize your code to run on batch machines, grid, etc:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mkdir ~/work/Tutorial/data/
+mv inDS.txt ~/work/Tutorial/data/
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuration-of-xaodanahelpers-algorithms">
+<h2>Configuration of xAODAnaHelpers Algorithms<a class="headerlink" href="#configuration-of-xaodanahelpers-algorithms" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned earlier, xAODAnaHelpers provides a series of algorithms that are chained in sequence to provide the desired output. The input and output containers for each of the algorithms in sequence are configured by .config files – one for each algorithm. Create the following configuration files (as set in the ROOT macro in the run directory) in the data directory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>touch ~/work/Tutorial/data/baseEventSel.config
+touch ~/work/Tutorial/data/jetCalib_AntiKt4EMTopo.config
+touch ~/work/Tutorial/data/jetSelect.config
+touch ~/work/Tutorial/data/outTree.config
+</pre></div>
+</div>
+<p>Each of these configuration files will set the options for a separate part of the analysis. Include the following in each file. At present, there is no centralized documentation for all of xAODAnaHelpers – there is some on the GitHub wiki – but to view the availability of configuration options for each xAODAnaHelpers algorithm, view the header file and source code.</p>
+<p>baseEventSel.config:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Debug                     False
+ApplyGRL                  False
+GRL                       $ROOTCOREBIN/data/Tutorial/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml
+DoPileupReweighting       False
+VertexContainer           PrimaryVertices
+NTrackForPrimaryVertex    2
+TruthLevelOnly            False
+#Trigger                   L1_RD0_FILLED
+#Trigger                   L1_.*
+#Trigger                   L1_MBTS_1_1
+#Trigger                   .*
+Trigger                   .*_MBTS_1_1|.*_RD0_FILLED|L1_J[0-9]*|HLT_j[0-9]*|HLT_noalg_j[0-9]*|L1_XE[0-9]*|HLT_XE[0-9]*|HLT_noalg_XE[0-9]*
+StoreTrigDecision         True
+CutOnTrigger              False
+StorePassAny              True
+StorePassL1               True
+StorePassHLT              True
+StoreTrigKeys             True
+UseMetaData               False
+## last option must be followed by a new line ##
+</pre></div>
+</div>
+<p>jetCalib_AntiKt4EMTopo.config:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Debug             False
+InputContainer    AntiKt4EMTopoJets
+JetAlgorithm      AntiKt4EMTopo
+#
+SaveAllCleanDecisions True
+#
+OutputContainer   Jets_Calib
+OutputAlgo        Jets_Calib_Algo
+configNameAFII    JES_Full2012dataset_AFII_January2014.config
+configNameFullSim JES_MC15Prerecommendation_April2015.config
+configNameData    JES_MC15Prerecommendation_April2015.config
+#configNameData    JES_Full2012dataset_May2014.config
+CalibSequence     JetArea_Residual_Origin_EtaJES_GSC
+#
+## last option must be followed by a new line ##
+</pre></div>
+</div>
+<p>jetSelect.config:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Debug                   False
+InputContainer          Jets_Calib
+InputAlgo               Jets_Calib_Algo
+OutputContainer         SignalJets
+OutputAlgo              SignalJets_Algo
+DecorateSelectedObjects False
+CreateSelectedContainer True
+# save multiple cleaning decisions instead of applying the cleaning
+CleanJets               False
+#
+pTMin                   20e3
+PassMin                 1
+Sort                    True
+UseCutFlow              True
+# pT cut is &gt; JVF recommended pT cut - to be added ... or JVT?
+DoJVF                                     False
+pTMaxJVF                        50e3
+etaMaxJVF                       2.4
+JVFCut                                  0.5
+## last option must be followed by a new line ##
+</pre></div>
+</div>
+<p>outTree.config:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Debug                               False
+EventDetailStr              &quot;pileup&quot;
+TrigDetailStr               True
+JetDetailStr                &quot;kinematic substructure rapidity energy scales truth LeadingJets&quot;
+#JetDetailStr               &quot;kinematic&quot;
+JetContainerName    SignalJets
+SameHistsOutDir             False
+## last option must be followed by a new line ##
+</pre></div>
+</div>
+<p>Almost there! All that’s left to do is copy the requisite files into the locations specified by our makeSlimmedTrees.cxx script.</p>
+<p>The atlasstyle package is located here. Download and unzip the package, then place it in the run/ directory. Full support for <a class="reference external" href="https://twiki.cern.ch/twiki/pub/AtlasProtected/PubComTemplates/atlasstyle-00-03-05.tar.gz">ATLAS Style</a> will be incorporated soon.</p>
+<p>Copy the desired GRL to the data/ folder. The Good Runs List is used to specify which events will be kept and which events will be discarded, based on LHC and ATLAS operations (e.g. bad luminosity block, etc.). The minutiae are located <a class="reference external" href="https://twiki.cern.ch/twiki/bin/view/AtlasProtected/GoodRunListsForAnalysisRun2">here</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Always use the most updated GRL, and use the same GRL for your luminosity calculations as you do your event selections.  This tutorial uses the following <a class="reference external" href="https://atlasdqm.web.cern.ch/atlasdqm/grlgen/All_Good/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml">GRL</a>.</p>
+</div>
+</div>
+<div class="section" id="plotting">
+<h2>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline">¶</a></h2>
+<p>Here is a “quick and dirty” plotting macro to be placed in the <strong>``run/``</strong> folder for a plot. An example better integrating AtlasStyle is in the works and should be updated soon:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm">    * Plotter.cxx -- simple plotter for slimmed trees</span>
+<span class="cm">    *</span>
+<span class="cm">    * @author   Brian Tuan</span>
+<span class="cm">    * @contact  brian.tuan@cern.ch</span>
+<span class="cm">    * @date     21 July 2015</span>
+<span class="cm">    *</span>
+<span class="cm">    * Run on the command line by:</span>
+<span class="cm">    *   root -l &#39;$ROOTCOREDIR/scripts/load_packages.C&#39; &#39;$ROOTCOREBIN/data/Tutorial/atlasstyle/AtlasStyle.C&#39; &#39;Plotter.cxx( filePath )&#39;</span>
+<span class="cm">    *           If no argument indicated, Plotter will default to $PWD/submitDir/data-tree/sample.root</span>
+<span class="cm">    **/</span>
+
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;atlasstyle/AtlasUtils.h&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;atlasstyle/AtlasLabels.h&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;atlasstyle/AtlasStyle.h&quot;</span>
+
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;atlasstyle/AtlasUtils.C&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;atlasstyle/AtlasLabels.C&quot;</span>
+
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TCanvas.h&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TFile.h&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TROOT.h&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TH1F.h&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TRandom.h&quot;</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TGraphErrors.h&quot;</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">Plotter</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">filePath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;submitDir/data-tree/sample.root&quot;</span><span class="p">){</span>
+
+<span class="w">        </span><span class="n">SetAtlasStyle</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// TFile* f_input = new TFile(filePath.c_str(), &quot;READ&quot;, &quot;file&quot;, 1);</span>
+<span class="w">        </span><span class="n">TFile</span><span class="o">*</span><span class="w"> </span><span class="n">f_input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TFile</span><span class="p">(</span><span class="s">&quot;/afs/cern.ch/user/b/btuan/work/Tutorial/run/submitDir/data-tree/sample.root&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;READ&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;file&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">f_input</span><span class="w"> </span><span class="p">){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;File not found! Exiting...&quot;</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">TTree</span><span class="o">*</span><span class="w"> </span><span class="n">t_tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TTree</span><span class="o">*</span><span class="p">)</span><span class="n">f_input</span><span class="o">-&gt;</span><span class="n">Get</span><span class="p">(</span><span class="s">&quot;outTree&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// argument must be exact name of tree</span>
+
+<span class="w">        </span><span class="c1">// Create a TTreeReader named &quot;MyTree&quot; from the given TDirectory.</span>
+<span class="w">        </span><span class="c1">// The TTreeReader gives access to the TTree to the TTreeReaderValue and</span>
+<span class="w">        </span><span class="c1">// TTreeReaderArray objects. It knows the current entry number and knows</span>
+<span class="w">        </span><span class="c1">// how to iterate through the TTree.</span>
+<span class="w">        </span><span class="n">TTreeReader</span><span class="w"> </span><span class="n">reader</span><span class="p">(</span><span class="s">&quot;outTree&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">f_input</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Read a single float value in each tree entry:</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">evNum</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eventNumber&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">weight</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mcEventWeight&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// weight defaults to 1 if data</span>
+
+<span class="w">        </span><span class="c1">// Read a vector from in each of the tree entries:</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">jetPt</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jet_pt&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">jetEMPt</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jet_emScalePt&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">jetPUPt</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jet_pileupScalePt&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">jetPhi</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jet_phi&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">jetEta</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jet_eta&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">TTreeReaderValue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">jetWidth</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jet_Width&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Now iterate through the TTree entries and fill a histogram.</span>
+<span class="w">        </span><span class="n">TH1F</span><span class="o">*</span><span class="w"> </span><span class="n">h_jetPt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TH1F</span><span class="p">(</span><span class="s">&quot;h_jetPt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pt&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mf">0.</span><span class="p">,</span><span class="w"> </span><span class="mf">250.</span><span class="p">);</span>
+<span class="w">        </span><span class="n">h_jetPt</span><span class="o">-&gt;</span><span class="n">SetTitle</span><span class="p">(</span><span class="s">&quot;AntiKt4 Pt&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">h_jetPt</span><span class="o">-&gt;</span><span class="n">SetXTitle</span><span class="p">(</span><span class="s">&quot;Pt (GeV)&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">h_jetPt</span><span class="o">-&gt;</span><span class="n">SetYTitle</span><span class="p">(</span><span class="s">&quot;nEvents&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">while</span><span class="p">(</span><span class="w"> </span><span class="n">reader</span><span class="p">.</span><span class="n">Next</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// dummy iterator just to keep count!</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetEntryStatus</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">TTreeReader</span><span class="o">::</span><span class="n">kEntryValid</span><span class="w"> </span><span class="p">){</span>
+<span class="w">                </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetEntryStatus</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">TTreeReader</span><span class="o">::</span><span class="no">kEntryValid</span><span class="p">:</span>
+<span class="w">                        </span><span class="c1">// All good! Nothing to worry about.</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">TTreeReader</span><span class="o">::</span><span class="no">kEntryNotLoaded</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: TTreeReader has not loaded any data yet!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">TTreeReader</span><span class="o">::</span><span class="no">kEntryNoTree</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: TTreeReader cannot find a tree named </span><span class="se">\&quot;</span><span class="s">outTree</span><span class="se">\&quot;</span><span class="s">!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">TTreeReader</span><span class="o">::</span><span class="no">kEntryNotFound</span><span class="p">:</span>
+<span class="w">                        </span><span class="c1">// Can&#39;t really happen as TTreeReader::Next() knows when to stop.</span>
+<span class="w">                        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: The entry number doe not exist</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">TTreeReader</span><span class="o">::</span><span class="no">kEntryChainSetupError</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: TTreeReader cannot access a chain element, e.g. file without the tree</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">TTreeReader</span><span class="o">::</span><span class="no">kEntryChainFileError</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: TTreeReader cannot open a chain element, e.g. missing file</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">case</span><span class="w"> </span><span class="no">TTreeReader</span><span class="o">::</span><span class="no">kEntryDictionaryError</span><span class="p">:</span>
+<span class="w">                        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: TTreeReader cannot find the dictionary for some data</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">            </span><span class="c1">// Access the jetPt as an array, whether the TTree stores this as</span>
+<span class="w">            </span><span class="c1">// a std::vector, std::list, TClonesArray or Jet* C-style array, with</span>
+<span class="w">            </span><span class="c1">// fixed or variable array size.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">jetPt</span><span class="p">).</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">jetPt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="c1">//at least two jets, leading jet &gt; 100 GeV</span>
+<span class="w">                </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">            </span><span class="c1">// Access the array of taus.</span>
+<span class="w">            </span><span class="kt">float</span><span class="w"> </span><span class="n">currentWeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">weight</span><span class="p">;</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iJets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">nJets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">jetPt</span><span class="p">).</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">iJets</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">nJets</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iJets</span><span class="p">)</span>
+<span class="w">                </span><span class="n">h_jetPt</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">jetPt</span><span class="p">)[</span><span class="n">iJets</span><span class="p">]</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">currentWeight</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+
+<span class="w">        </span><span class="n">TCanvas</span><span class="o">*</span><span class="w"> </span><span class="n">c1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TCanvas</span><span class="p">(</span><span class="s">&quot;c1&quot;</span><span class="p">,</span><span class="s">&quot;AntiKt4EMTopoJets pT&quot;</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">600</span><span class="p">,</span><span class="mi">600</span><span class="p">);</span>
+<span class="w">        </span><span class="n">TPad</span><span class="o">*</span><span class="w"> </span><span class="n">thePad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">TPad</span><span class="o">*</span><span class="p">)</span><span class="n">c1</span><span class="o">-&gt;</span><span class="n">cd</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">myText</span><span class="p">(</span><span class="w">       </span><span class="mf">0.3</span><span class="p">,</span><span class="w">  </span><span class="mf">0.85</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;#sqrt{s}= 14 TeV&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">myText</span><span class="p">(</span><span class="w">       </span><span class="mf">0.57</span><span class="p">,</span><span class="w"> </span><span class="mf">0.85</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;|#eta_{jet}|&lt;0.5&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">myMarkerText</span><span class="p">(</span><span class="w"> </span><span class="mf">0.55</span><span class="p">,</span><span class="w"> </span><span class="mf">0.75</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Data 2009&quot;</span><span class="p">,</span><span class="mf">1.3</span><span class="p">);</span>
+<span class="w">        </span><span class="n">myBoxText</span><span class="p">(</span><span class="w">    </span><span class="mf">0.55</span><span class="p">,</span><span class="w"> </span><span class="mf">0.67</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NLO QCD&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">ATLASLabel</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="s">&quot;Preliminary&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">h_jetPt</span><span class="o">-&gt;</span><span class="n">Draw</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">c1</span><span class="o">-&gt;</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;Output.eps&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">c1</span><span class="o">-&gt;</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;Output.png&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">c1</span><span class="o">-&gt;</span><span class="n">Print</span><span class="p">(</span><span class="s">&quot;Output.pdf&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tips-tricks">
+<h2>Tips &amp; Tricks<a class="headerlink" href="#tips-tricks" title="Permalink to this headline">¶</a></h2>
+<p>Here are a few tips and tricks that should help you avoid most errors, and prove as good practice for any analysis with AnaHelpers.</p>
+<div class="section" id="maintaining-xaodanahelpers">
+<h3>Maintaining xAODAnaHelpers<a class="headerlink" href="#maintaining-xaodanahelpers" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>xAODAnaHelpers is now hosted on <a class="reference external" href="https://github.com/UCATLAS/xAODAnaHelpers">GitHub</a>! This means two things: first, there is a basic documentation available (<a class="reference internal" href="index.html#mainpage"><span class="std std-ref">xAODAnaHelpers</span></a>) as reference. The documentation is still in progress, but what’s already there should help you figure out what’s going on with the package. Second, the development page (<a class="reference internal" href="index.html#versions"><span class="std std-ref">Latest Version</span></a>) will contain information about the latest analysis base release that xAH has been tested to be compatible with.</p></li>
+<li><p>Should you find any errors with xAODAnaHelpers code – which should be a very rare occurrence, but programmers are still human – you can immediately report the issue to the entire xAH team in <a class="reference external" href="https://github.com/UCATLAS/xAODAnaHelpers/issues">GitHub issues</a>. Issues are tracked publicly, so you can stay posted about the resolution of your issue.</p></li>
+<li><p>Updating the framework should be as simple as calling <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span> <span class="pre">!https://github.com/xAODAnaHelpers</span></code> from within the <code class="docutils literal notranslate"><span class="pre">xAODAnaHelpers</span></code> directory. Then, to make sure all the latest Good Runs Lists (GRLs) and configuration information are updated as well, run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">xAODAnaHelpers/scripts/checkoutASGtags.py</span> <span class="pre">$ABver</span></code> where $ABver is the version of your analysis base release, in this case <code class="docutils literal notranslate"><span class="pre">2.3.21</span></code>. The following lines of code should accomplish the same result automatically:</p></li>
+</ul>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if [ -d $ROOTCOREBIN/../xAODAnaHelpers ]
+    then cd $ROOTCOREBIN/../ python xAODAnaHelpers/scripts/checkoutASGtags.py $(echo $ROOTCOREDIR \| sed &#39;s/\\/cvmfs\\/atlas\\.cern\\.ch\\/repo\\/sw\\/ASG\\/AnalysisBase\\/\\([0-9]\*[.][0-9]\*[.][0-9]\*\\).\*/\\1 /&#39;);
+fi
+</pre></div>
+</div>
+<p>This framework will automatically scale everything in to the GeV range for you, but the xAOD format lists all energies in MeV.</p>
+<p>Monitoring loop with pbook show() retry() kill() bigpanda / loadpackages:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">EL</span><span class="o">::</span><span class="n">Driver</span><span class="o">::</span><span class="n">wait</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Debug True gives a verbose mode.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="FAQs.html" class="btn btn-neutral float-right" title="xAH FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Community.html" class="btn btn-neutral float-left" title="Community" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

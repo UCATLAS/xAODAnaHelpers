@@ -1,0 +1,13 @@
+.. _exhale_function_PhotonSelector_8cxx_1a653c4d4eb2af01ded4b186f849fa405e:
+
+Function ClassImp(PhotonSelector)
+=================================
+
+- Defined in :ref:`file_Root_PhotonSelector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(PhotonSelector)

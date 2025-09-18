@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File IParticleHists.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File IParticleHists.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_IParticleHists.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-iparticlehists-cxx">
+<span id="program-listing-file-root-iparticlehists-cxx"></span><h1>Program Listing for File IParticleHists.cxx<a class="headerlink" href="#program-listing-for-file-iparticlehists-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_IParticleHists.cxx.html#file-root-iparticlehists-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/IParticleHists.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODAnaHelpers/IParticleHists.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+
+<span class="n">ANA_MSG_SOURCE</span><span class="p">(</span><span class="n">msgIParticleHists</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;IParticleHists&quot;</span><span class="p">)</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span>
+
+<span class="n">IParticleHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">IParticleHists</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">title</span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">HistogramManager</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">detailStr</span><span class="p">),</span>
+<span class="w">  </span><span class="n">m_infoSwitch</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">HelperClasses</span><span class="o">::</span><span class="n">IParticleInfoSwitch</span><span class="p">(</span><span class="n">m_detailStr</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">m_prefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">),</span><span class="n">m_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">m_debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">IParticleHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="o">~</span><span class="n">IParticleHists</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="p">)</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">initialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// These plots are always made</span>
+<span class="w">  </span><span class="n">m_Pt_l</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt_l&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">3000.</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt&quot;</span><span class="p">,</span><span class="w">       </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1000.</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt_m</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt_m&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mf">500.</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt_s</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt_s&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mf">200.</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Eta</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Eta&quot;</span><span class="p">,</span><span class="w">      </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; #eta&quot;</span><span class="p">,</span><span class="w">         </span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mf">-4.9</span><span class="p">,</span><span class="w"> </span><span class="mf">4.9</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Phi</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Phi&quot;</span><span class="p">,</span><span class="w">      </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Phi&quot;</span><span class="p">,</span><span class="w">         </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">(),</span><span class="w"> </span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_M</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Mass&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Mass [GeV]&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_E</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Energy&quot;</span><span class="p">,</span><span class="w">   </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Energy [GeV]&quot;</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">4000.</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Rapidity</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Rapidity&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Rapidity&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">-10</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;IParticleHists::initialize()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">  </span><span class="c1">// details of the particle kinematics</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">Info</span><span class="p">(</span><span class="s">&quot;IParticleHists::initialize()&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;adding kinematic plots&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Px</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Px&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Px [GeV]&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Py</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Py&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Py [GeV]&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Pz</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pz&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Pz [GeV]&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_Et</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Et&quot;</span><span class="p">,</span><span class="w">       </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; E_{T} [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">1000.</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Et_m</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Et_m&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; E_{T} [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mf">500.</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Et_s</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Et_s&quot;</span><span class="p">,</span><span class="w">     </span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; E_{T} [GeV]&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mf">100.</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// N leading jets</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_numLeading</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">){</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="n">pNum</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="n">pTitle</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iParticle</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iParticle</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_numLeading</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iParticle</span><span class="p">){</span>
+<span class="w">      </span><span class="n">pNum</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">iParticle</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">pTitle</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">iParticle</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="k">switch</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">      </span><span class="n">pTitle</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;^{st}&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span>
+<span class="w">      </span><span class="n">pTitle</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;^{nd}&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">2</span><span class="p">:</span>
+<span class="w">      </span><span class="n">pTitle</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;^{rd}&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">      </span><span class="n">pTitle</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;^{th}&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">      </span><span class="n">m_NPt_l</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt_l_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">       </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">3000.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPt</span><span class="w"> </span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">       </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">1000.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPt_m</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt_m_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">       </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">500.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPt_s</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Pt_s_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">       </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; p_{T} [GeV]&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">100.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NEta</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">      </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Eta_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">      </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; #eta&quot;</span><span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w">           </span><span class="mi">-4</span><span class="p">,</span><span class="w">           </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPhi</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">      </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Phi_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">      </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Phi&quot;</span><span class="w">         </span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">(),</span><span class="w"> </span><span class="n">TMath</span><span class="o">::</span><span class="n">Pi</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NM</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">        </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Mass_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">     </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Mass [GeV]&quot;</span><span class="w">  </span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">         </span><span class="mi">400</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NE</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">        </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Energy_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">   </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Energy [GeV]&quot;</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">4000.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NRapidity</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Rapidity_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w"> </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; Rapidity&quot;</span><span class="w">    </span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="w">          </span><span class="mi">-10</span><span class="p">,</span><span class="w">          </span><span class="mi">10</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_kinematic</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_NEt</span><span class="w"> </span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">        </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Et_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">         </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; E_{T} [GeV]&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">1000.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_NEt_m</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Et_m_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">       </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; E_{T} [GeV]&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">500.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_NEt_s</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="w">       </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">m_prefix</span><span class="o">+</span><span class="s">&quot;Et_s_&quot;</span><span class="o">+</span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">()),</span><span class="w">       </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">m_title</span><span class="o">+</span><span class="s">&quot; E_{T} [GeV]&quot;</span><span class="w"> </span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="w">            </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="mf">100.</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="n">pNum</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">pTitle</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span><span class="c1">//for iParticle</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticleContainer</span><span class="o">*</span><span class="w"> </span><span class="n">particles</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgIParticleHists</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">particle_itr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">particles</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="n">particle_itr</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_numLeading</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">numParticles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_numLeading</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iParticle</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iParticle</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">numParticles</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iParticle</span><span class="p">){</span>
+<span class="w">      </span><span class="n">m_NPt_l</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPt_m</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPt_s</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NEta</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">       </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">(),</span><span class="w">      </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NPhi</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">       </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">(),</span><span class="w">      </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NM</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">         </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">m</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NE</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">         </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="n">m_NRapidity</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">  </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">rapidity</span><span class="p">(),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_kinematic</span><span class="p">){</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">et</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">()</span><span class="o">/</span><span class="n">cosh</span><span class="p">(</span><span class="n">particles</span><span class="o">-&gt;</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">())</span><span class="o">/</span><span class="mf">1e3</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_NEt</span><span class="w">  </span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">et</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_NEt_m</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">et</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_NEt_s</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">iParticle</span><span class="p">)</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">et</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">IParticle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="cm">/*eventInfo*/</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;IParticleHists: in execute &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">//basic</span>
+<span class="w">  </span><span class="n">m_Pt_l</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt_m</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt_s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">pt</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Eta</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">(),</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Phi</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">(),</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_M</span><span class="o">-&gt;</span><span class="w">          </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">m</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">     </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_E</span><span class="o">-&gt;</span><span class="w">          </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">     </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Rapidity</span><span class="o">-&gt;</span><span class="w">   </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">rapidity</span><span class="p">(),</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// kinematic</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+
+<span class="w">    </span><span class="n">m_Px</span><span class="o">-&gt;</span><span class="w">  </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Px</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Py</span><span class="o">-&gt;</span><span class="w">  </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Py</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Pz</span><span class="o">-&gt;</span><span class="w">  </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Pz</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+
+<span class="w">    </span><span class="n">m_Et</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Et</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Et_m</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Et</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Et_s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Et</span><span class="p">()</span><span class="o">/</span><span class="mf">1e3</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="c1">// fillKinematic</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">IParticleHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Particle</span><span class="o">*</span><span class="w"> </span><span class="n">particle</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="cm">/*eventInfo*/</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">m_debug</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;IParticleHists: in execute &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TLorentzVector</span><span class="o">&amp;</span><span class="w"> </span><span class="n">partP4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">particle</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">//basic</span>
+<span class="w">  </span><span class="n">m_Pt_l</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Pt</span><span class="p">(),</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Pt</span><span class="p">(),</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt_m</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Pt</span><span class="p">(),</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Pt_s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Pt</span><span class="p">(),</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Eta</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Eta</span><span class="p">(),</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Phi</span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Phi</span><span class="p">(),</span><span class="w">       </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_M</span><span class="o">-&gt;</span><span class="w">          </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">M</span><span class="p">(),</span><span class="w">     </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_E</span><span class="o">-&gt;</span><span class="w">          </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">E</span><span class="p">(),</span><span class="w">     </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_Rapidity</span><span class="o">-&gt;</span><span class="w">   </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Rapidity</span><span class="p">(),</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// kinematic</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">m_infoSwitch</span><span class="o">-&gt;</span><span class="n">m_kinematic</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m_Px</span><span class="o">-&gt;</span><span class="w">  </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Px</span><span class="p">(),</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Py</span><span class="o">-&gt;</span><span class="w">  </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Py</span><span class="p">(),</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Pz</span><span class="o">-&gt;</span><span class="w">  </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Pz</span><span class="p">(),</span><span class="w">  </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_Et</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">        </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Et</span><span class="p">(),</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Et_m</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Et</span><span class="p">(),</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_Et_s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">      </span><span class="n">Fill</span><span class="p">(</span><span class="w"> </span><span class="n">partP4</span><span class="p">.</span><span class="n">Et</span><span class="p">(),</span><span class="w">    </span><span class="n">eventWeight</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="c1">// fillKinematic</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

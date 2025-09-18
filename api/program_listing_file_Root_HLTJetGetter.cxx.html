@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File HLTJetGetter.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File HLTJetGetter.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_HLTJetGetter.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-hltjetgetter-cxx">
+<span id="program-listing-file-root-hltjetgetter-cxx"></span><h1>Program Listing for File HLTJetGetter.cxx<a class="headerlink" href="#program-listing-for-file-hltjetgetter-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_HLTJetGetter.cxx.html#file-root-hltjetgetter-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/HLTJetGetter.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/******************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * This class gets HLT jets from the TDT and can be expanded to get other features</span>
+<span class="cm"> *</span>
+<span class="cm"> * Merlin Davies (merlin.davies@cern.ch)</span>
+<span class="cm"> * Caterina Doglioni (caterina.doglioni@cern.ch)</span>
+<span class="cm"> * John Alison (john.alison@cern.ch)</span>
+<span class="cm"> *</span>
+<span class="cm"> *</span>
+<span class="cm"> ******************************************/</span>
+
+<span class="c1">// c++ include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+
+<span class="c1">// EL include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Job.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/StatusCode.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EventLoop/Worker.h&gt;</span>
+
+<span class="c1">// EDM include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODEventInfo/EventInfo.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/JetAuxContainer.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODJet/Jet.h&quot;</span>
+
+<span class="c1">// package include(s):</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HLTJetGetter.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TrigConfxAOD/xAODConfigTool.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TrigDecisionTool/TrigDecisionTool.h&quot;</span>
+
+<span class="c1">// this is needed to distribute the algorithm to the workers</span>
+<span class="n">ClassImp</span><span class="p">(</span><span class="n">HLTJetGetter</span><span class="p">)</span>
+
+<span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">:</span>
+<span class="n">Algorithm</span><span class="p">(</span><span class="s">&quot;HLTJetGetter&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">setupJob</span><span class="w"> </span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">Job</span><span class="o">&amp;</span><span class="w"> </span><span class="n">job</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling setupJob&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">useXAOD</span><span class="w"> </span><span class="p">();</span>
+<span class="w">    </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;HLTJetGetter&quot;</span><span class="w"> </span><span class="p">).</span><span class="n">ignore</span><span class="p">();</span><span class="w"> </span><span class="c1">// call before opening first file</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histInitialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algInitialize</span><span class="p">());</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">fileExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">changeInput</span><span class="w"> </span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="cm">/*firstFile*/</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+
+
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Initializing HLTJetGetter Interface... &quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">m_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodEvent</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wk</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">xaodStore</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Grab the TrigDecTool from the ToolStore</span>
+<span class="w">    </span><span class="c1">//</span>
+
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">    if ( asg::ToolStore::contains&lt;Trig::TrigDecisionTool&gt;( &quot;TrigDecisionTool&quot; ) ) {</span>
+<span class="cm">        m_trigDecTool = asg::ToolStore::get&lt;Trig::TrigDecisionTool&gt;(&quot;TrigDecisionTool&quot;);</span>
+<span class="cm">    } else {</span>
+<span class="cm">        Info (&quot;Initialize()&quot;, &quot;the Trigger Decision Tool is not yet initialized...[%s]. Doing so now.&quot;, m_name.c_str());</span>
+<span class="cm">        m_ownTDTAndTCT = true;</span>
+
+<span class="cm">        m_trigConfTool = new TrigConf::xAODConfigTool( &quot;xAODConfigTool&quot; );</span>
+<span class="cm">        ANA_CHECK( m_trigConfTool-&gt;initialize());</span>
+<span class="cm">        ToolHandle&lt; TrigConf::ITrigConfigTool &gt; configHandle( m_trigConfTool );</span>
+
+<span class="cm">        m_trigDecTool = new Trig::TrigDecisionTool( &quot;TrigDecisionTool&quot; );</span>
+<span class="cm">        ANA_CHECK( m_trigDecTool-&gt;setProperty( &quot;ConfigTool&quot;, configHandle ));</span>
+<span class="cm">        ANA_CHECK( m_trigDecTool-&gt;setProperty( &quot;TrigDecisionKey&quot;, &quot;xTrigDecision&quot; ));</span>
+<span class="cm">        ANA_CHECK( m_trigDecTool-&gt;setProperty( &quot;OutputLevel&quot;, MSG::ERROR));</span>
+<span class="cm">        ANA_CHECK( m_trigDecTool-&gt;initialize());</span>
+<span class="cm">        ANA_MSG_INFO( &quot;Successfully configured Trig::TrigDecisionTool!&quot;);</span>
+<span class="cm">    }</span>
+<span class="cm">    */</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">isUserConfigured</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">ANA_MSG_FATAL</span><span class="p">(</span><span class="s">&quot;A configured &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">typeAndName</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; must have been previously created! Are you creating one in xAH::BasicEventSelection?&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// If there is no InputContainer we must stop</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ANA_MSG_ERROR</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;InputContainer is empty!&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">FAILURE</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">execute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Getting HLT jets... &quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Create the new container and its auxiliary store.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">*</span><span class="w">     </span><span class="n">hltJets</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="p">();</span>
+<span class="w">    </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetAuxContainer</span><span class="o">*</span><span class="w">  </span><span class="n">hltJetsAux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetAuxContainer</span><span class="p">();</span>
+<span class="w">    </span><span class="n">hltJets</span><span class="o">-&gt;</span><span class="n">setStore</span><span class="p">(</span><span class="w"> </span><span class="n">hltJetsAux</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="c1">//&lt; Connect the two</span>
+
+<span class="w">    </span><span class="c1">//Retrieving jets via trigger decision tool:</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Trig</span><span class="o">::</span><span class="n">ChainGroup</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">chainGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="o">-&gt;</span><span class="n">getChainGroup</span><span class="p">(</span><span class="n">m_triggerList</span><span class="p">);</span><span class="w"> </span><span class="c1">//Trigger list:</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">trigger_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chainGroup</span><span class="o">-&gt;</span><span class="n">getListOfTriggers</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">chainFeatures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chainGroup</span><span class="o">-&gt;</span><span class="n">features</span><span class="p">();</span><span class="w"> </span><span class="c1">//Gets features associated to chain defined above</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">JetFeatureContainers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chainFeatures</span><span class="p">.</span><span class="n">containerFeature</span><span class="o">&lt;</span><span class="n">xAOD</span><span class="o">::</span><span class="n">JetContainer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_inContainerName</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">hltJets</span><span class="p">,</span><span class="w">    </span><span class="n">m_outContainerName</span><span class="p">));</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">hltJetsAux</span><span class="p">,</span><span class="w"> </span><span class="n">m_outContainerName</span><span class="o">+</span><span class="s">&quot;Aux.&quot;</span><span class="p">));</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">fContainer</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">JetFeatureContainers</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">trigJet</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">*</span><span class="n">fContainer</span><span class="p">.</span><span class="n">cptr</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="w"> </span><span class="o">*</span><span class="n">Jet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="p">();</span>
+<span class="w">            </span><span class="o">*</span><span class="n">Jet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">trigJet</span><span class="p">;</span>
+<span class="w">            </span><span class="n">hltJets</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="w"> </span><span class="n">Jet</span><span class="w"> </span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="c1">//end trigJet loop</span>
+<span class="w">    </span><span class="p">}</span><span class="c1">//end feature container loop</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">msgLvl</span><span class="p">(</span><span class="n">MSG</span><span class="o">::</span><span class="n">VERBOSE</span><span class="p">))</span><span class="w"> </span><span class="n">m_store</span><span class="o">-&gt;</span><span class="n">print</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">postExecute</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_DEBUG</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling postExecute&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">finalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Deleting tool instances...&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// this is necessary because in most cases the pointer will be set to null</span>
+<span class="w">    </span><span class="c1">// after deletion in BasicEventSelection, but it will not propagate here</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_ownTDTAndTCT</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">//if ( m_trigDecTool_handle )  { delete m_trigDecTool_handle; m_trigDecTool_handle = nullptr;  }</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_trigDecTool_handle</span><span class="p">.</span><span class="n">isInitialized</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="n">m_trigDecTool_handle</span><span class="o">-&gt;</span><span class="n">finalize</span><span class="p">();</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_trigConfTool</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="k">delete</span><span class="w"> </span><span class="n">m_trigConfTool</span><span class="p">;</span><span class="w"> </span><span class="n">m_trigConfTool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="w"> </span><span class="n">HLTJetGetter</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">histFinalize</span><span class="w"> </span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ANA_MSG_INFO</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Calling histFinalize&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">xAH</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">::</span><span class="n">algFinalize</span><span class="p">());</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EL</span><span class="o">::</span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

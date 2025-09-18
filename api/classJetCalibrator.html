@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class JetCalibrator &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class JetHistsAlgo" href="classJetHistsAlgo.html" />
+    <link rel="prev" title="Class IsoCloseByCorr" href="classIsoCloseByCorr.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Doxygen API</a> &raquo;</li>
+        
+      <li>Class JetCalibrator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classJetCalibrator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-jetcalibrator">
+<span id="exhale-class-classjetcalibrator"></span><h1>Class JetCalibrator<a class="headerlink" href="#class-jetcalibrator" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_xAODAnaHelpers_JetCalibrator.h.html#file-xaodanahelpers-jetcalibrator-h"><span class="std std-ref">File JetCalibrator.h</span></a></p></li>
+</ul>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">xAH::Algorithm</span></code> (<a class="reference internal" href="classxAH_1_1Algorithm.html#exhale-class-classxah-1-1algorithm"><span class="std std-ref">Class Algorithm</span></a>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv413JetCalibrator">
+<span id="_CPPv313JetCalibrator"></span><span id="_CPPv213JetCalibrator"></span><span id="JetCalibrator"></span><span class="target" id="classJetCalibrator"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JetCalibrator</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><br /></dt>
+<dd><p><p>A wrapper to a few JetETMiss packages. By setting the configuration parameters detailed in the header documentation, one can:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>calibrate a given jet collection</p></li>
+<li><p>apply systematic variations for JES</p></li>
+<li><p>apply systematic variations for JER</p></li>
+<li><p>decorate the jet with the decision of the Jet Cleaning tool</p></li>
+</ul>
+</div></blockquote>
+<p>When considering systematics, a new <code class="docutils literal notranslate"><span class="pre">xAOD::JetCollection</span></code> is created for each systematic variation. The names are then saved in a vector for downstream algorithms to use.</p>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator13JetCalibratorEv">
+<span id="_CPPv3N13JetCalibrator13JetCalibratorEv"></span><span id="_CPPv2N13JetCalibrator13JetCalibratorEv"></span><span id="JetCalibrator::JetCalibrator"></span><span class="target" id="classJetCalibrator_1a129ae37652ee3e01441a84634de3ac3f"></span><span class="sig-name descname"><span class="n"><span class="pre">JetCalibrator</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator8setupJobERN2EL3JobE">
+<span id="_CPPv3N13JetCalibrator8setupJobERN2EL3JobE"></span><span id="_CPPv2N13JetCalibrator8setupJobERN2EL3JobE"></span><span id="JetCalibrator::setupJob__EL::JobR"></span><span class="target" id="classJetCalibrator_1ae9913a77b94b0e30056b5795d691b651"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator11fileExecuteEv">
+<span id="_CPPv3N13JetCalibrator11fileExecuteEv"></span><span id="_CPPv2N13JetCalibrator11fileExecuteEv"></span><span id="JetCalibrator::fileExecute"></span><span class="target" id="classJetCalibrator_1a37e1e725c7f6a1e8e6147eeef03f7ff5"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator14histInitializeEv">
+<span id="_CPPv3N13JetCalibrator14histInitializeEv"></span><span id="_CPPv2N13JetCalibrator14histInitializeEv"></span><span id="JetCalibrator::histInitialize"></span><span class="target" id="classJetCalibrator_1ae9599bac711ae0825fd77aa76750f8c3"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator11changeInputEb">
+<span id="_CPPv3N13JetCalibrator11changeInputEb"></span><span id="_CPPv2N13JetCalibrator11changeInputEb"></span><span id="JetCalibrator::changeInput__b"></span><span class="target" id="classJetCalibrator_1a4ea70779a42dbb59761a042532ebaa65"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator10initializeEv">
+<span id="_CPPv3N13JetCalibrator10initializeEv"></span><span id="_CPPv2N13JetCalibrator10initializeEv"></span><span id="JetCalibrator::initialize"></span><span class="target" id="classJetCalibrator_1a9a006d56a06a979675e6a2caf506f366"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator7executeEv">
+<span id="_CPPv3N13JetCalibrator7executeEv"></span><span id="_CPPv2N13JetCalibrator7executeEv"></span><span id="JetCalibrator::execute"></span><span class="target" id="classJetCalibrator_1a29dc8b7566b38747d0ee9f4c88e6e93c"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator11postExecuteEv">
+<span id="_CPPv3N13JetCalibrator11postExecuteEv"></span><span id="_CPPv2N13JetCalibrator11postExecuteEv"></span><span id="JetCalibrator::postExecute"></span><span class="target" id="classJetCalibrator_1ad974b5964e56d7384811a50099ede87e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator8finalizeEv">
+<span id="_CPPv3N13JetCalibrator8finalizeEv"></span><span id="_CPPv2N13JetCalibrator8finalizeEv"></span><span id="JetCalibrator::finalize"></span><span class="target" id="classJetCalibrator_1ab8c2a5c9dcdcdb5ed75d0307e32b7598"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator12histFinalizeEv">
+<span id="_CPPv3N13JetCalibrator12histFinalizeEv"></span><span id="_CPPv2N13JetCalibrator12histFinalizeEv"></span><span id="JetCalibrator::histFinalize"></span><span class="target" id="classJetCalibrator_1aec3924724931d3339f6c06528d096ee1"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator17m_inContainerNameE">
+<span id="_CPPv3N13JetCalibrator17m_inContainerNameE"></span><span id="_CPPv2N13JetCalibrator17m_inContainerNameE"></span><span id="JetCalibrator::m_inContainerName__ss"></span><span class="target" id="classJetCalibrator_1ab4d314eeba99b6b53d45c9b545a87ca9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_inContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>The name of the input container for this algorithm to read from <code class="docutils literal notranslate"><span class="pre">TEvent</span></code> or <code class="docutils literal notranslate"><span class="pre">TStore</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator18m_outContainerNameE">
+<span id="_CPPv3N13JetCalibrator18m_outContainerNameE"></span><span id="_CPPv2N13JetCalibrator18m_outContainerNameE"></span><span id="JetCalibrator::m_outContainerName__ss"></span><span class="target" id="classJetCalibrator_1aa0e36c85ca06dc7b0eebf79aacd29aaf"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>The name of the nominal output container written by the algorithm to <code class="docutils literal notranslate"><span class="pre">TStore</span></code></p>
+<p>If the algorithm applies systematic variations, for each shallow copy saved to <code class="docutils literal notranslate"><span class="pre">TStore</span></code>, the systematic name will be appended to this. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator9m_jetAlgoE">
+<span id="_CPPv3N13JetCalibrator9m_jetAlgoE"></span><span id="_CPPv2N13JetCalibrator9m_jetAlgoE"></span><span id="JetCalibrator::m_jetAlgo__ss"></span><span class="target" id="classJetCalibrator_1abfa43150cc8eb9accbb3b21f1b74f6dc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetAlgo</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>set to <code class="docutils literal notranslate"><span class="pre">AntiKt4EMTopo</span></code> for <code class="docutils literal notranslate"><span class="pre">AntiKt4EMTopoJets</span></code></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator12m_outputAlgoE">
+<span id="_CPPv3N13JetCalibrator12m_outputAlgoE"></span><span id="_CPPv2N13JetCalibrator12m_outputAlgoE"></span><span id="JetCalibrator::m_outputAlgo__ss"></span><span class="target" id="classJetCalibrator_1a85ac93506230e0fae4180d638c72989e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputAlgo</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>name of vector holding names of jet systematics given by the JetEtmiss Tools </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator21m_writeSystToMetadataE">
+<span id="_CPPv3N13JetCalibrator21m_writeSystToMetadataE"></span><span id="_CPPv2N13JetCalibrator21m_writeSystToMetadataE"></span><span id="JetCalibrator::m_writeSystToMetadata__b"></span><span class="target" id="classJetCalibrator_1acc894c21e4f077e48ee659354f8ea5f4"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_writeSystToMetadata</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Write systematics names to metadata. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator20m_recalibrateHLTJetsE">
+<span id="_CPPv3N13JetCalibrator20m_recalibrateHLTJetsE"></span><span id="_CPPv2N13JetCalibrator20m_recalibrateHLTJetsE"></span><span id="JetCalibrator::m_recalibrateHLTJets__b"></span><span class="target" id="classJetCalibrator_1a53af679c5eb91cd12b3d9d195da7ec0c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_recalibrateHLTJets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>whether to run HLT jet re-calibration </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator24m_HLTVertexContainerNameE">
+<span id="_CPPv3N13JetCalibrator24m_HLTVertexContainerNameE"></span><span id="_CPPv2N13JetCalibrator24m_HLTVertexContainerNameE"></span><span id="JetCalibrator::m_HLTVertexContainerName__ss"></span><span class="target" id="classJetCalibrator_1a11c25febcfe8138b5d01c9a272a86752"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_HLTVertexContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;HLT_IDVertex_FS&quot;</span></span><br /></dt>
+<dd><p>vertex container name to use for HLT jet re-calibration </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator15m_HLTAvgMuDecorE">
+<span id="_CPPv3N13JetCalibrator15m_HLTAvgMuDecorE"></span><span id="_CPPv2N13JetCalibrator15m_HLTAvgMuDecorE"></span><span id="JetCalibrator::m_HLTAvgMuDecor__ss"></span><span class="target" id="classJetCalibrator_1a8c5a26e9914a46d8067052cf649a13c2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_HLTAvgMuDecor</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;EventInfo.AvgMu&quot;</span></span><br /></dt>
+<dd><p>HLT average mu decoration on EventInfo after formatting. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator20m_EvtInfoHLTNPVDecorE">
+<span id="_CPPv3N13JetCalibrator20m_EvtInfoHLTNPVDecorE"></span><span id="_CPPv2N13JetCalibrator20m_EvtInfoHLTNPVDecorE"></span><span id="JetCalibrator::m_EvtInfoHLTNPVDecor__ss"></span><span class="target" id="classJetCalibrator_1a7318df6ac7d603489630ae310eb724b5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_EvtInfoHLTNPVDecor</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>location of the HLT NPV on EventInfo object (e.g. EventInfo.NPV) this defaults to an empty string and is only configured in JetCalibrationTool when a non-empty string is provided </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator15m_calibGSCDepthE">
+<span id="_CPPv3N13JetCalibrator15m_calibGSCDepthE"></span><span id="_CPPv2N13JetCalibrator15m_calibGSCDepthE"></span><span id="JetCalibrator::m_calibGSCDepth__ss"></span><span class="target" id="classJetCalibrator_1ac016a80473f8b6aa2deb50cac4534213"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_calibGSCDepth</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>GSCDepth property to override GSCDepth in config file when set to a non-empty string and GSC is in the calibration sequence. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator16m_calibConfigDirE">
+<span id="_CPPv3N13JetCalibrator16m_calibConfigDirE"></span><span id="_CPPv2N13JetCalibrator16m_calibConfigDirE"></span><span id="JetCalibrator::m_calibConfigDir__ss"></span><span class="target" id="classJetCalibrator_1a4990ba5e94bc28ea2a3fe347ba974666"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_calibConfigDir</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>config for JetCalibrationTool ConfigDir, set it to override tool defaults </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator17m_calibConfigDataE">
+<span id="_CPPv3N13JetCalibrator17m_calibConfigDataE"></span><span id="_CPPv2N13JetCalibrator17m_calibConfigDataE"></span><span id="JetCalibrator::m_calibConfigData__ss"></span><span class="target" id="classJetCalibrator_1a7e8079bbba3d853f7efd6d290bd69c46"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_calibConfigData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config&quot;</span></span><br /></dt>
+<dd><p>config for JetCalibrationTool for Data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator20m_calibConfigFullSimE">
+<span id="_CPPv3N13JetCalibrator20m_calibConfigFullSimE"></span><span id="_CPPv2N13JetCalibrator20m_calibConfigFullSimE"></span><span id="JetCalibrator::m_calibConfigFullSim__ss"></span><span class="target" id="classJetCalibrator_1a9f9015cfb80015988950893c314b214b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_calibConfigFullSim</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config&quot;</span></span><br /></dt>
+<dd><p>config for JetCalibrationTool for Full Sim MC </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator17m_calibConfigAFIIE">
+<span id="_CPPv3N13JetCalibrator17m_calibConfigAFIIE"></span><span id="_CPPv2N13JetCalibrator17m_calibConfigAFIIE"></span><span id="JetCalibrator::m_calibConfigAFII__ss"></span><span class="target" id="classJetCalibrator_1ab166e9687ad45157de9e1bccf9c95937"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_calibConfigAFII</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;JES_MC16Recommendation_AFII_EMTopo_April2018_rel21.config&quot;</span></span><br /></dt>
+<dd><p>config for JetCalibrationTool for AFII MC </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator15m_calibSequenceE">
+<span id="_CPPv3N13JetCalibrator15m_calibSequenceE"></span><span id="_CPPv2N13JetCalibrator15m_calibSequenceE"></span><span id="JetCalibrator::m_calibSequence__ss"></span><span class="target" id="classJetCalibrator_1a6082b7902df4e0a2a688d007f564a301"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_calibSequence</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>List of calibration steps. Auto-configured to the Jet/Etmiss recommendation if left blank. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator14m_uncertConfigE">
+<span id="_CPPv3N13JetCalibrator14m_uncertConfigE"></span><span id="_CPPv2N13JetCalibrator14m_uncertConfigE"></span><span id="JetCalibrator::m_uncertConfig__ss"></span><span class="target" id="classJetCalibrator_1a4acf6909655dd7e669299d05953740e7"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_uncertConfig</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>config for Jet Uncertainty Tool </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator14m_uncertMCTypeE">
+<span id="_CPPv3N13JetCalibrator14m_uncertMCTypeE"></span><span id="_CPPv2N13JetCalibrator14m_uncertMCTypeE"></span><span id="JetCalibrator::m_uncertMCType__ss"></span><span class="target" id="classJetCalibrator_1a92f272f1abe560580e2dc1c8543d0839"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_uncertMCType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>MC type for Jet Uncertainty Tool (need to be set for FullSim) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator19m_overrideCalibAreaE">
+<span id="_CPPv3N13JetCalibrator19m_overrideCalibAreaE"></span><span id="_CPPv2N13JetCalibrator19m_overrideCalibAreaE"></span><span id="JetCalibrator::m_overrideCalibArea__ss"></span><span class="target" id="classJetCalibrator_1abf07ef6e56f6500431c92a14156ed292"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_overrideCalibArea</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Override CalibArea tag (default recommended) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator25m_overrideUncertCalibAreaE">
+<span id="_CPPv3N13JetCalibrator25m_overrideUncertCalibAreaE"></span><span id="_CPPv2N13JetCalibrator25m_overrideUncertCalibAreaE"></span><span id="JetCalibrator::m_overrideUncertCalibArea__ss"></span><span class="target" id="classJetCalibrator_1aa2bc5c19a38ae63fe94ca52d4256b0e1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_overrideUncertCalibArea</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Override uncertainties CalibArea tag (default recommended) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator22m_overrideAnalysisFileE">
+<span id="_CPPv3N13JetCalibrator22m_overrideAnalysisFileE"></span><span id="_CPPv2N13JetCalibrator22m_overrideAnalysisFileE"></span><span id="JetCalibrator::m_overrideAnalysisFile__ss"></span><span class="target" id="classJetCalibrator_1afb426e9f002b77d418105fd8727e6a9f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_overrideAnalysisFile</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Set analysis-specific jet flavour composition file for JetUncertainties (default: unknown comp.) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator20m_overrideUncertPathE">
+<span id="_CPPv3N13JetCalibrator20m_overrideUncertPathE"></span><span id="_CPPv2N13JetCalibrator20m_overrideUncertPathE"></span><span id="JetCalibrator::m_overrideUncertPath__ss"></span><span class="target" id="classJetCalibrator_1ad0c303e1e5b8f1d983b2a5cdb91fe7fd"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_overrideUncertPath</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd><p>Override uncertainties path (not recommended) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator13m_forceInsituE">
+<span id="_CPPv3N13JetCalibrator13m_forceInsituE"></span><span id="_CPPv2N13JetCalibrator13m_forceInsituE"></span><span id="JetCalibrator::m_forceInsitu__b"></span><span class="target" id="classJetCalibrator_1a180e9811ee11470005a466d7fd8090e6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_forceInsitu</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>when running data “_Insitu” is appended to calibration sequence </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator12m_forceSmearE">
+<span id="_CPPv3N13JetCalibrator12m_forceSmearE"></span><span id="_CPPv2N13JetCalibrator12m_forceSmearE"></span><span id="JetCalibrator::m_forceSmear__b"></span><span class="target" id="classJetCalibrator_1acc333c827b55de745fd2ad0182588f01"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_forceSmear</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>when running FullSim “_Smear” is appended to calibration sequence </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator18m_jetCalibToolsDEVE">
+<span id="_CPPv3N13JetCalibrator18m_jetCalibToolsDEVE"></span><span id="_CPPv2N13JetCalibrator18m_jetCalibToolsDEVE"></span><span id="JetCalibrator::m_jetCalibToolsDEV__b"></span><span class="target" id="classJetCalibrator_1a46b973cdb149b685721748f7586f2e03"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetCalibToolsDEV</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>when using DEV mode of JetCalibTools </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator21m_addGhostMuonsToJetsE">
+<span id="_CPPv3N13JetCalibrator21m_addGhostMuonsToJetsE"></span><span id="_CPPv2N13JetCalibrator21m_addGhostMuonsToJetsE"></span><span id="JetCalibrator::m_addGhostMuonsToJets__b"></span><span class="target" id="classJetCalibrator_1a895dd385f8c3079994184f8ca0099555"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_addGhostMuonsToJets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Run muon-to-jet ghost association (recommended for MET) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator12m_doCleaningE">
+<span id="_CPPv3N13JetCalibrator12m_doCleaningE"></span><span id="_CPPv2N13JetCalibrator12m_doCleaningE"></span><span id="JetCalibrator::m_doCleaning__b"></span><span class="target" id="classJetCalibrator_1afcfa6da484f94044a93cde50f24127ee"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doCleaning</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd><p>enable to apply jet cleaning decoration </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator18m_jetCleanCutLevelE">
+<span id="_CPPv3N13JetCalibrator18m_jetCleanCutLevelE"></span><span id="_CPPv2N13JetCalibrator18m_jetCleanCutLevelE"></span><span id="JetCalibrator::m_jetCleanCutLevel__ss"></span><span class="target" id="classJetCalibrator_1af8d07fd81f06576ff319090889628f89"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetCleanCutLevel</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;LooseBad&quot;</span></span><br /></dt>
+<dd><p>Cut Level. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator23m_saveAllCleanDecisionsE">
+<span id="_CPPv3N13JetCalibrator23m_saveAllCleanDecisionsE"></span><span id="_CPPv2N13JetCalibrator23m_saveAllCleanDecisionsE"></span><span id="JetCalibrator::m_saveAllCleanDecisions__b"></span><span class="target" id="classJetCalibrator_1a869f9dcbc0ed7f31da8e2b4991546885"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_saveAllCleanDecisions</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Save all cleaning decisions as decorators. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator14m_jetCleanUglyE">
+<span id="_CPPv3N13JetCalibrator14m_jetCleanUglyE"></span><span id="_CPPv2N13JetCalibrator14m_jetCleanUglyE"></span><span id="JetCalibrator::m_jetCleanUgly__b"></span><span class="target" id="classJetCalibrator_1a0370376d1add918bf306192fe7b43747"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetCleanUgly</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Do Ugly cleaning ( i.e. TileGap 3 ) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator6m_sortE">
+<span id="_CPPv3N13JetCalibrator6m_sortE"></span><span id="_CPPv2N13JetCalibrator6m_sortE"></span><span id="JetCalibrator::m_sort__b"></span><span class="target" id="classJetCalibrator_1a124bec4445b2d772ccda716f968f4063"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sort</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd><p>Sort the processed container elements by transverse momentum. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator13m_cleanParentE">
+<span id="_CPPv3N13JetCalibrator13m_cleanParentE"></span><span id="_CPPv2N13JetCalibrator13m_cleanParentE"></span><span id="JetCalibrator::m_cleanParent__b"></span><span class="target" id="classJetCalibrator_1a79d575af7c7e005e83be987c6523ff50"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_cleanParent</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Apply jet cleaning to parent jet. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator19m_applyFatJetPreSelE">
+<span id="_CPPv3N13JetCalibrator19m_applyFatJetPreSelE"></span><span id="_CPPv2N13JetCalibrator19m_applyFatJetPreSelE"></span><span id="JetCalibrator::m_applyFatJetPreSel__b"></span><span class="target" id="classJetCalibrator_1a8b729e4ab999327b588c07bea355b728"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_applyFatJetPreSel</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator28m_useLargeRTruthLabelingToolE">
+<span id="_CPPv3N13JetCalibrator28m_useLargeRTruthLabelingToolE"></span><span id="_CPPv2N13JetCalibrator28m_useLargeRTruthLabelingToolE"></span><span id="JetCalibrator::m_useLargeRTruthLabelingTool__b"></span><span class="target" id="classJetCalibrator_1aadd226600b56ad0d279c5c09837c7492"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useLargeRTruthLabelingTool</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd><p>Use large-R jet truth labeling tool (needed for systematics) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator16m_truthLabelNameE">
+<span id="_CPPv3N13JetCalibrator16m_truthLabelNameE"></span><span id="_CPPv2N13JetCalibrator16m_truthLabelNameE"></span><span id="JetCalibrator::m_truthLabelName__ss"></span><span class="target" id="classJetCalibrator_1ae4276a61d783ded14a212607b7bde683"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthLabelName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;R10TruthLabel_R21Consolidated&quot;</span></span><br /></dt>
+<dd><p>Name of the large-R jet truth labeling definition. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator15m_isTruthJetColE">
+<span id="_CPPv3N13JetCalibrator15m_isTruthJetColE"></span><span id="_CPPv2N13JetCalibrator15m_isTruthJetColE"></span><span id="JetCalibrator::m_isTruthJetCol__b"></span><span class="target" id="classJetCalibrator_1a2fd7dcb3c725ac77862fba294da3e8fd"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_isTruthJetCol</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Flag to indicate if using a truth jet collection. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator11m_useTRUTH3E">
+<span id="_CPPv3N13JetCalibrator11m_useTRUTH3E"></span><span id="_CPPv2N13JetCalibrator11m_useTRUTH3E"></span><span id="JetCalibrator::m_useTRUTH3__b"></span><span class="target" id="classJetCalibrator_1afec047a04ba95c60d0f57a36a3ebc462"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_useTRUTH3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd><p>Flag to indicate if input xAOD uses TRUTH3 style containers. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator28m_truthParticleContainerNameE">
+<span id="_CPPv3N13JetCalibrator28m_truthParticleContainerNameE"></span><span id="_CPPv2N13JetCalibrator28m_truthParticleContainerNameE"></span><span id="JetCalibrator::m_truthParticleContainerName__ss"></span><span class="target" id="classJetCalibrator_1a6de4f4e61236e7bcd6f78f5eec3e1aa3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthParticleContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;TruthParticles&quot;</span></span><br /></dt>
+<dd><p>Name of the truth particle container if not using TRUTH3 containers. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator25m_truthBosonContainerNameE">
+<span id="_CPPv3N13JetCalibrator25m_truthBosonContainerNameE"></span><span id="_CPPv2N13JetCalibrator25m_truthBosonContainerNameE"></span><span id="JetCalibrator::m_truthBosonContainerName__ss"></span><span class="target" id="classJetCalibrator_1a821233794394e377303eea54b3d102ad"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthBosonContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;TruthBosonsWithDecayParticles&quot;</span></span><br /></dt>
+<dd><p>Name of the truth boson container if using TRUTH3 containers. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator28m_truthTopQuarkContainerNameE">
+<span id="_CPPv3N13JetCalibrator28m_truthTopQuarkContainerNameE"></span><span id="_CPPv2N13JetCalibrator28m_truthTopQuarkContainerNameE"></span><span id="JetCalibrator::m_truthTopQuarkContainerName__ss"></span><span class="target" id="classJetCalibrator_1a34bdfe9b1c1e2576369d64febc13e7cf"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthTopQuarkContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;TruthTopQuarkWithDecayParticles&quot;</span></span><br /></dt>
+<dd><p>Name of the truth top quark container if using TRUTH3 containers. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator15m_doJetTileCorrE">
+<span id="_CPPv3N13JetCalibrator15m_doJetTileCorrE"></span><span id="_CPPv2N13JetCalibrator15m_doJetTileCorrE"></span><span id="JetCalibrator::m_doJetTileCorr__b"></span><span class="target" id="classJetCalibrator_1a458806f3ff60a1633e72c0acf8b7b096"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_doJetTileCorr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>jet tile correction </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator12m_pseudoDataE">
+<span id="_CPPv3N13JetCalibrator12m_pseudoDataE"></span><span id="_CPPv2N13JetCalibrator12m_pseudoDataE"></span><span id="JetCalibrator::m_pseudoData__b"></span><span class="target" id="classJetCalibrator_1a216cb59bb7557f57faa1a15efaa376f9"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_pseudoData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>needed in case want to treat MC as pseudoData for JER uncertainty propagation </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13JetCalibrator17m_mcAndPseudoDataE">
+<span id="_CPPv3N13JetCalibrator17m_mcAndPseudoDataE"></span><span id="_CPPv2N13JetCalibrator17m_mcAndPseudoDataE"></span><span id="JetCalibrator::m_mcAndPseudoData__b"></span><span class="target" id="classJetCalibrator_1ab898a9d74247012cc212319d645eaaf7"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_mcAndPseudoData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd><p>Treat MC as usual, then run the JER uncertainties on it a second time treating it as pseudodata. Overrides m_pseudodata if true. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classJetHistsAlgo.html" class="btn btn-neutral float-right" title="Class JetHistsAlgo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classIsoCloseByCorr.html" class="btn btn-neutral float-left" title="Class IsoCloseByCorr" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

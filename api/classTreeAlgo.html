@@ -1,0 +1,692 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class TreeAlgo &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class TrigMatcher" href="classTrigMatcher.html" />
+    <link rel="prev" title="Class TrackSelector" href="classTrackSelector.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Doxygen API</a> &raquo;</li>
+        
+      <li>Class TreeAlgo</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classTreeAlgo.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-treealgo">
+<span id="exhale-class-classtreealgo"></span><h1>Class TreeAlgo<a class="headerlink" href="#class-treealgo" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_xAODAnaHelpers_TreeAlgo.h.html#file-xaodanahelpers-treealgo-h"><span class="std std-ref">File TreeAlgo.h</span></a></p></li>
+</ul>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">xAH::Algorithm</span></code> (<a class="reference internal" href="classxAH_1_1Algorithm.html#exhale-class-classxah-1-1algorithm"><span class="std std-ref">Class Algorithm</span></a>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv48TreeAlgo">
+<span id="_CPPv38TreeAlgo"></span><span id="_CPPv28TreeAlgo"></span><span id="TreeAlgo"></span><span class="target" id="classTreeAlgo"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TreeAlgo</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo8TreeAlgoEv">
+<span id="_CPPv3N8TreeAlgo8TreeAlgoEv"></span><span id="_CPPv2N8TreeAlgo8TreeAlgoEv"></span><span id="TreeAlgo::TreeAlgo"></span><span class="target" id="classTreeAlgo_1a41617f066c2e2d760e89b60e007b0573"></span><span class="sig-name descname"><span class="n"><span class="pre">TreeAlgo</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo8setupJobERN2EL3JobE">
+<span id="_CPPv3N8TreeAlgo8setupJobERN2EL3JobE"></span><span id="_CPPv2N8TreeAlgo8setupJobERN2EL3JobE"></span><span id="TreeAlgo::setupJob__EL::JobR"></span><span class="target" id="classTreeAlgo_1ae1e2a2de7ea0fa25f77de1f8e7ebf689"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo11fileExecuteEv">
+<span id="_CPPv3N8TreeAlgo11fileExecuteEv"></span><span id="_CPPv2N8TreeAlgo11fileExecuteEv"></span><span id="TreeAlgo::fileExecute"></span><span class="target" id="classTreeAlgo_1a1069f349fc15bb358d8aa4d5dac0074b"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo14histInitializeEv">
+<span id="_CPPv3N8TreeAlgo14histInitializeEv"></span><span id="_CPPv2N8TreeAlgo14histInitializeEv"></span><span id="TreeAlgo::histInitialize"></span><span class="target" id="classTreeAlgo_1adde23cb1c3486a80f7edcb32f31e74ab"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo11changeInputEb">
+<span id="_CPPv3N8TreeAlgo11changeInputEb"></span><span id="_CPPv2N8TreeAlgo11changeInputEb"></span><span id="TreeAlgo::changeInput__b"></span><span class="target" id="classTreeAlgo_1ac6cc884213f5eeb892d8ebc55970809e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo10initializeEv">
+<span id="_CPPv3N8TreeAlgo10initializeEv"></span><span id="_CPPv2N8TreeAlgo10initializeEv"></span><span id="TreeAlgo::initialize"></span><span class="target" id="classTreeAlgo_1ae58948006f1467769553daa6c075d951"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo7executeEv">
+<span id="_CPPv3N8TreeAlgo7executeEv"></span><span id="_CPPv2N8TreeAlgo7executeEv"></span><span id="TreeAlgo::execute"></span><span class="target" id="classTreeAlgo_1aba56893d50195dddb21e1496cdae0041"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo11postExecuteEv">
+<span id="_CPPv3N8TreeAlgo11postExecuteEv"></span><span id="_CPPv2N8TreeAlgo11postExecuteEv"></span><span id="TreeAlgo::postExecute"></span><span class="target" id="classTreeAlgo_1aa8e12f984e3c473e0e46c5ebb9d420dd"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo8finalizeEv">
+<span id="_CPPv3N8TreeAlgo8finalizeEv"></span><span id="_CPPv2N8TreeAlgo8finalizeEv"></span><span id="TreeAlgo::finalize"></span><span class="target" id="classTreeAlgo_1ac434f9f5b43904b39cd0ea61915bf8b8"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo12histFinalizeEv">
+<span id="_CPPv3N8TreeAlgo12histFinalizeEv"></span><span id="_CPPv2N8TreeAlgo12histFinalizeEv"></span><span id="TreeAlgo::histFinalize"></span><span class="target" id="classTreeAlgo_1aa515114b546de28810dbcbff50eed240"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo10createTreeEPN4xAOD6TEventEP5TTreeP5TFileKfbPN4xAOD6TStoreE">
+<span id="_CPPv3N8TreeAlgo10createTreeEPN4xAOD6TEventEP5TTreeP5TFileKfbPN4xAOD6TStoreE"></span><span id="_CPPv2N8TreeAlgo10createTreeEPN4xAOD6TEventEP5TTreeP5TFileKfbPN4xAOD6TStoreE"></span><span id="TreeAlgo::createTree__xAOD::TEventP.TTreeP.TFileP.floatC.b.xAOD::TStoreP"></span><span class="target" id="classTreeAlgo_1aabe4edf15121069d80da96f1acdc12ce"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="../HelpTreeBase.html#_CPPv412HelpTreeBase" title="HelpTreeBase"><span class="n"><span class="pre">HelpTreeBase</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">createTree</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TEvent</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">event</span></span>, <span class="n"><span class="pre">TTree</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tree</span></span>, <span class="n"><span class="pre">TFile</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">file</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">units</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">debug</span></span>, <span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">TStore</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo12m_outHistDirE">
+<span id="_CPPv3N8TreeAlgo12m_outHistDirE"></span><span id="_CPPv2N8TreeAlgo12m_outHistDirE"></span><span id="TreeAlgo::m_outHistDir__b"></span><span class="target" id="classTreeAlgo_1a88a47044b748374e57862107133213d8"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outHistDir</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo16m_treeStreamNameE">
+<span id="_CPPv3N8TreeAlgo16m_treeStreamNameE"></span><span id="_CPPv2N8TreeAlgo16m_treeStreamNameE"></span><span id="TreeAlgo::m_treeStreamName__ss"></span><span class="target" id="classTreeAlgo_1a7508a217a00b9e4311c8943cd4bf097e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_treeStreamName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;tree&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo14m_evtDetailStrE">
+<span id="_CPPv3N8TreeAlgo14m_evtDetailStrE"></span><span id="_CPPv2N8TreeAlgo14m_evtDetailStrE"></span><span id="TreeAlgo::m_evtDetailStr__ss"></span><span class="target" id="classTreeAlgo_1aee653c0f2d4e5a65f1165b4c1954b667"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_evtDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo15m_trigDetailStrE">
+<span id="_CPPv3N8TreeAlgo15m_trigDetailStrE"></span><span id="_CPPv2N8TreeAlgo15m_trigDetailStrE"></span><span id="TreeAlgo::m_trigDetailStr__ss"></span><span class="target" id="classTreeAlgo_1ac7abc245c63caecd48619abf565784f1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo13m_muDetailStrE">
+<span id="_CPPv3N8TreeAlgo13m_muDetailStrE"></span><span id="_CPPv2N8TreeAlgo13m_muDetailStrE"></span><span id="TreeAlgo::m_muDetailStr__ss"></span><span class="target" id="classTreeAlgo_1ad7aa8c1ee8e59845fe6e90af0787b20c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo13m_elDetailStrE">
+<span id="_CPPv3N8TreeAlgo13m_elDetailStrE"></span><span id="_CPPv2N8TreeAlgo13m_elDetailStrE"></span><span id="TreeAlgo::m_elDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a276a91ee5d9fa99ccc01992e679fdf7a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_elDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo14m_jetDetailStrE">
+<span id="_CPPv3N8TreeAlgo14m_jetDetailStrE"></span><span id="_CPPv2N8TreeAlgo14m_jetDetailStrE"></span><span id="TreeAlgo::m_jetDetailStr__ss"></span><span class="target" id="classTreeAlgo_1abeb16c39bacbe3a709006c17da27c535"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_trigJetDetailStrE">
+<span id="_CPPv3N8TreeAlgo18m_trigJetDetailStrE"></span><span id="_CPPv2N8TreeAlgo18m_trigJetDetailStrE"></span><span id="TreeAlgo::m_trigJetDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a149865e7f13b90b2fe90a9db6085ba23"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigJetDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo19m_truthJetDetailStrE">
+<span id="_CPPv3N8TreeAlgo19m_truthJetDetailStrE"></span><span id="_CPPv2N8TreeAlgo19m_truthJetDetailStrE"></span><span id="TreeAlgo::m_truthJetDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a4c45c7d8f64b619dfe6b8afb49c8ee3d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthJetDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_fatJetDetailStrE">
+<span id="_CPPv3N8TreeAlgo17m_fatJetDetailStrE"></span><span id="_CPPv2N8TreeAlgo17m_fatJetDetailStrE"></span><span id="TreeAlgo::m_fatJetDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a5f6e06cc9685995fb974edd1f477f0d2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fatJetDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo22m_truthFatJetDetailStrE">
+<span id="_CPPv3N8TreeAlgo22m_truthFatJetDetailStrE"></span><span id="_CPPv2N8TreeAlgo22m_truthFatJetDetailStrE"></span><span id="TreeAlgo::m_truthFatJetDetailStr__ss"></span><span class="target" id="classTreeAlgo_1acad94ebd5b9cbd4c3a7846c81f2203f4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthFatJetDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo14m_tauDetailStrE">
+<span id="_CPPv3N8TreeAlgo14m_tauDetailStrE"></span><span id="_CPPv2N8TreeAlgo14m_tauDetailStrE"></span><span id="TreeAlgo::m_tauDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a537b8252e98919d40c4958641a5266d0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_tauDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo14m_METDetailStrE">
+<span id="_CPPv3N8TreeAlgo14m_METDetailStrE"></span><span id="_CPPv2N8TreeAlgo14m_METDetailStrE"></span><span id="TreeAlgo::m_METDetailStr__ss"></span><span class="target" id="classTreeAlgo_1ab7cc1cfce886287633e9eb6a2ee0dd7d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_METDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo23m_METReferenceDetailStrE">
+<span id="_CPPv3N8TreeAlgo23m_METReferenceDetailStrE"></span><span id="_CPPv2N8TreeAlgo23m_METReferenceDetailStrE"></span><span id="TreeAlgo::m_METReferenceDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a119467dcc43d4d7be2be32906b02a36a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_METReferenceDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_photonDetailStrE">
+<span id="_CPPv3N8TreeAlgo17m_photonDetailStrE"></span><span id="_CPPv2N8TreeAlgo17m_photonDetailStrE"></span><span id="TreeAlgo::m_photonDetailStr__ss"></span><span class="target" id="classTreeAlgo_1ad866432808698f8008f5c2dcc0631871"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_photonDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_clusterDetailStrE">
+<span id="_CPPv3N8TreeAlgo18m_clusterDetailStrE"></span><span id="_CPPv2N8TreeAlgo18m_clusterDetailStrE"></span><span id="TreeAlgo::m_clusterDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a0198116a3afc7e4c0c885a5764de7b60"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_clusterDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo25m_truthParticlesDetailStrE">
+<span id="_CPPv3N8TreeAlgo25m_truthParticlesDetailStrE"></span><span id="_CPPv2N8TreeAlgo25m_truthParticlesDetailStrE"></span><span id="TreeAlgo::m_truthParticlesDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a45def8cddd996be57332f72bfabb619e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthParticlesDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo25m_trackParticlesDetailStrE">
+<span id="_CPPv3N8TreeAlgo25m_trackParticlesDetailStrE"></span><span id="_CPPv2N8TreeAlgo25m_trackParticlesDetailStrE"></span><span id="TreeAlgo::m_trackParticlesDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a9820018692c74f407cef36733a7af2e9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trackParticlesDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_vertexDetailStrE">
+<span id="_CPPv3N8TreeAlgo17m_vertexDetailStrE"></span><span id="_CPPv2N8TreeAlgo17m_vertexDetailStrE"></span><span id="TreeAlgo::m_vertexDetailStr__ss"></span><span class="target" id="classTreeAlgo_1a10af829918aa3cd8083ee9ff2c758ba1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vertexDetailStr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_evtContainerNameE">
+<span id="_CPPv3N8TreeAlgo18m_evtContainerNameE"></span><span id="_CPPv2N8TreeAlgo18m_evtContainerNameE"></span><span id="TreeAlgo::m_evtContainerName__ss"></span><span class="target" id="classTreeAlgo_1a1818d4653a6ba7bc4ca498dcf34f2dde"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_evtContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_muContainerNameE">
+<span id="_CPPv3N8TreeAlgo17m_muContainerNameE"></span><span id="_CPPv2N8TreeAlgo17m_muContainerNameE"></span><span id="TreeAlgo::m_muContainerName__ss"></span><span class="target" id="classTreeAlgo_1a1cd33a9eedc79f7cd6f1f1d9505273d6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_elContainerNameE">
+<span id="_CPPv3N8TreeAlgo17m_elContainerNameE"></span><span id="_CPPv2N8TreeAlgo17m_elContainerNameE"></span><span id="TreeAlgo::m_elContainerName__ss"></span><span class="target" id="classTreeAlgo_1aba5d0a70a19fd3573a3507e1d6ced93d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_elContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_jetContainerNameE">
+<span id="_CPPv3N8TreeAlgo18m_jetContainerNameE"></span><span id="_CPPv2N8TreeAlgo18m_jetContainerNameE"></span><span id="TreeAlgo::m_jetContainerName__ss"></span><span class="target" id="classTreeAlgo_1ab9ab872d630a15105b80aadb81a36fab"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo15m_jetBranchNameE">
+<span id="_CPPv3N8TreeAlgo15m_jetBranchNameE"></span><span id="_CPPv2N8TreeAlgo15m_jetBranchNameE"></span><span id="TreeAlgo::m_jetBranchName__ss"></span><span class="target" id="classTreeAlgo_1a3b4332dc7ca98d336ab70ec9b10a6783"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;jet&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo23m_truthJetContainerNameE">
+<span id="_CPPv3N8TreeAlgo23m_truthJetContainerNameE"></span><span id="_CPPv2N8TreeAlgo23m_truthJetContainerNameE"></span><span id="TreeAlgo::m_truthJetContainerName__ss"></span><span class="target" id="classTreeAlgo_1a9b2b893be2a6201bb37fdceb8fce9b87"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthJetContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo20m_truthJetBranchNameE">
+<span id="_CPPv3N8TreeAlgo20m_truthJetBranchNameE"></span><span id="_CPPv2N8TreeAlgo20m_truthJetBranchNameE"></span><span id="TreeAlgo::m_truthJetBranchName__ss"></span><span class="target" id="classTreeAlgo_1a9a0853db98e05790827355f8676d43db"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthJetBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;truthJet&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo22m_trigJetContainerNameE">
+<span id="_CPPv3N8TreeAlgo22m_trigJetContainerNameE"></span><span id="_CPPv2N8TreeAlgo22m_trigJetContainerNameE"></span><span id="TreeAlgo::m_trigJetContainerName__ss"></span><span class="target" id="classTreeAlgo_1a8cf5b4e9554a1a162bd596b210d1871f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigJetContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo19m_trigJetBranchNameE">
+<span id="_CPPv3N8TreeAlgo19m_trigJetBranchNameE"></span><span id="_CPPv2N8TreeAlgo19m_trigJetBranchNameE"></span><span id="TreeAlgo::m_trigJetBranchName__ss"></span><span class="target" id="classTreeAlgo_1aff3f0264b676faf69b1b8d8f9417c6ff"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigJetBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;trigJet&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo21m_fatJetContainerNameE">
+<span id="_CPPv3N8TreeAlgo21m_fatJetContainerNameE"></span><span id="_CPPv2N8TreeAlgo21m_fatJetContainerNameE"></span><span id="TreeAlgo::m_fatJetContainerName__ss"></span><span class="target" id="classTreeAlgo_1abbf60ec05f9f63ba63d8de2eddc1168f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fatJetContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_fatJetBranchNameE">
+<span id="_CPPv3N8TreeAlgo18m_fatJetBranchNameE"></span><span id="_CPPv2N8TreeAlgo18m_fatJetBranchNameE"></span><span id="TreeAlgo::m_fatJetBranchName__ss"></span><span class="target" id="classTreeAlgo_1a22d91ff2dddc73b75341b52b4a925a25"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fatJetBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo26m_truthFatJetContainerNameE">
+<span id="_CPPv3N8TreeAlgo26m_truthFatJetContainerNameE"></span><span id="_CPPv2N8TreeAlgo26m_truthFatJetContainerNameE"></span><span id="TreeAlgo::m_truthFatJetContainerName__ss"></span><span class="target" id="classTreeAlgo_1af01fcfe8f7f6566d7229f00c1d48ec9f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthFatJetContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo23m_truthFatJetBranchNameE">
+<span id="_CPPv3N8TreeAlgo23m_truthFatJetBranchNameE"></span><span id="_CPPv2N8TreeAlgo23m_truthFatJetBranchNameE"></span><span id="TreeAlgo::m_truthFatJetBranchName__ss"></span><span class="target" id="classTreeAlgo_1a6d37d544f56694b96c714b3d9048ffed"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthFatJetBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;truth_fatjet&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_tauContainerNameE">
+<span id="_CPPv3N8TreeAlgo18m_tauContainerNameE"></span><span id="_CPPv2N8TreeAlgo18m_tauContainerNameE"></span><span id="TreeAlgo::m_tauContainerName__ss"></span><span class="target" id="classTreeAlgo_1a720de9dc5a947ef5582d3f033a82895f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_tauContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_METContainerNameE">
+<span id="_CPPv3N8TreeAlgo18m_METContainerNameE"></span><span id="_CPPv2N8TreeAlgo18m_METContainerNameE"></span><span id="TreeAlgo::m_METContainerName__ss"></span><span class="target" id="classTreeAlgo_1a7f38decf46049cdcb65d0fd9fba2d4c8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_METContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo27m_METReferenceContainerNameE">
+<span id="_CPPv3N8TreeAlgo27m_METReferenceContainerNameE"></span><span id="_CPPv2N8TreeAlgo27m_METReferenceContainerNameE"></span><span id="TreeAlgo::m_METReferenceContainerName__ss"></span><span class="target" id="classTreeAlgo_1ac37fd5aec9c61f8c0ca12ed9ce765609"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_METReferenceContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo21m_photonContainerNameE">
+<span id="_CPPv3N8TreeAlgo21m_photonContainerNameE"></span><span id="_CPPv2N8TreeAlgo21m_photonContainerNameE"></span><span id="TreeAlgo::m_photonContainerName__ss"></span><span class="target" id="classTreeAlgo_1ad21bcf33c923139826fb768515f10de8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_photonContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo22m_clusterContainerNameE">
+<span id="_CPPv3N8TreeAlgo22m_clusterContainerNameE"></span><span id="_CPPv2N8TreeAlgo22m_clusterContainerNameE"></span><span id="TreeAlgo::m_clusterContainerName__ss"></span><span class="target" id="classTreeAlgo_1abaf0e979d27df9457825dbeac8132326"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_clusterContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo19m_clusterBranchNameE">
+<span id="_CPPv3N8TreeAlgo19m_clusterBranchNameE"></span><span id="_CPPv2N8TreeAlgo19m_clusterBranchNameE"></span><span id="TreeAlgo::m_clusterBranchName__ss"></span><span class="target" id="classTreeAlgo_1ac4b2925597fa9f4c48e2e8720cef7b61"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_clusterBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;CaloCalTopoClusters&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo29m_truthParticlesContainerNameE">
+<span id="_CPPv3N8TreeAlgo29m_truthParticlesContainerNameE"></span><span id="_CPPv2N8TreeAlgo29m_truthParticlesContainerNameE"></span><span id="TreeAlgo::m_truthParticlesContainerName__ss"></span><span class="target" id="classTreeAlgo_1a3aba01f70199b0ec4f10481c0c150b5c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthParticlesContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo26m_truthParticlesBranchNameE">
+<span id="_CPPv3N8TreeAlgo26m_truthParticlesBranchNameE"></span><span id="_CPPv2N8TreeAlgo26m_truthParticlesBranchNameE"></span><span id="TreeAlgo::m_truthParticlesBranchName__ss"></span><span class="target" id="classTreeAlgo_1a8b8eb0d06b88860c5053864aad6aa0e4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthParticlesBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;xAH_truth&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo29m_trackParticlesContainerNameE">
+<span id="_CPPv3N8TreeAlgo29m_trackParticlesContainerNameE"></span><span id="_CPPv2N8TreeAlgo29m_trackParticlesContainerNameE"></span><span id="TreeAlgo::m_trackParticlesContainerName__ss"></span><span class="target" id="classTreeAlgo_1a921d32be4a1cda77082a401105e88541"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trackParticlesContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo20m_l1JetContainerNameE">
+<span id="_CPPv3N8TreeAlgo20m_l1JetContainerNameE"></span><span id="_CPPv2N8TreeAlgo20m_l1JetContainerNameE"></span><span id="TreeAlgo::m_l1JetContainerName__ss"></span><span class="target" id="classTreeAlgo_1a1c961fdfbd0756264f012d3c3be56dd0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_l1JetContainerName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_l1JetBranchNameE">
+<span id="_CPPv3N8TreeAlgo17m_l1JetBranchNameE"></span><span id="_CPPv2N8TreeAlgo17m_l1JetBranchNameE"></span><span id="TreeAlgo::m_l1JetBranchName__ss"></span><span class="target" id="classTreeAlgo_1abad73c9870ee816f1ce7444180907bdb"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_l1JetBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;L1Jet&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_vertexBranchNameE">
+<span id="_CPPv3N8TreeAlgo18m_vertexBranchNameE"></span><span id="_CPPv2N8TreeAlgo18m_vertexBranchNameE"></span><span id="TreeAlgo::m_vertexBranchName__ss"></span><span class="target" id="classTreeAlgo_1a69376cc911dfa9d199b4d0b42a624495"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vertexBranchName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;vertex&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo12m_sortL1JetsE">
+<span id="_CPPv3N8TreeAlgo12m_sortL1JetsE"></span><span id="_CPPv2N8TreeAlgo12m_sortL1JetsE"></span><span id="TreeAlgo::m_sortL1Jets__b"></span><span class="target" id="classTreeAlgo_1aa317a7edc711a415f110588a74b27573"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_sortL1Jets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo12m_retrievePVE">
+<span id="_CPPv3N8TreeAlgo12m_retrievePVE"></span><span id="_CPPv2N8TreeAlgo12m_retrievePVE"></span><span id="TreeAlgo::m_retrievePV__b"></span><span class="target" id="classTreeAlgo_1a933f3863901bfb19abe026e1f1d0b9fb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_retrievePV</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo12m_muSystsVecE">
+<span id="_CPPv3N8TreeAlgo12m_muSystsVecE"></span><span id="_CPPv2N8TreeAlgo12m_muSystsVecE"></span><span id="TreeAlgo::m_muSystsVec__ss"></span><span class="target" id="classTreeAlgo_1aa77a94978512608b554529ef8a5adf17"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_muSystsVec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo12m_elSystsVecE">
+<span id="_CPPv3N8TreeAlgo12m_elSystsVecE"></span><span id="_CPPv2N8TreeAlgo12m_elSystsVecE"></span><span id="TreeAlgo::m_elSystsVec__ss"></span><span class="target" id="classTreeAlgo_1a33fc21635c9531442bf3ef97868cdc16"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_elSystsVec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo13m_tauSystsVecE">
+<span id="_CPPv3N8TreeAlgo13m_tauSystsVecE"></span><span id="_CPPv2N8TreeAlgo13m_tauSystsVecE"></span><span id="TreeAlgo::m_tauSystsVec__ss"></span><span class="target" id="classTreeAlgo_1a6cf614485c9190c0e05a64022e7eba97"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_tauSystsVec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo13m_jetSystsVecE">
+<span id="_CPPv3N8TreeAlgo13m_jetSystsVecE"></span><span id="_CPPv2N8TreeAlgo13m_jetSystsVecE"></span><span id="TreeAlgo::m_jetSystsVec__ss"></span><span class="target" id="classTreeAlgo_1ab58879636d1091695b53b928e4177081"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetSystsVec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo16m_photonSystsVecE">
+<span id="_CPPv3N8TreeAlgo16m_photonSystsVecE"></span><span id="_CPPv2N8TreeAlgo16m_photonSystsVecE"></span><span id="TreeAlgo::m_photonSystsVec__ss"></span><span class="target" id="classTreeAlgo_1aaf9c6a95ccac26bc6c81b3b66841247c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_photonSystsVec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo16m_fatJetSystsVecE">
+<span id="_CPPv3N8TreeAlgo16m_fatJetSystsVecE"></span><span id="_CPPv2N8TreeAlgo16m_fatJetSystsVecE"></span><span id="TreeAlgo::m_fatJetSystsVec__ss"></span><span class="target" id="classTreeAlgo_1ae75484ccff1c39644edaf426e08c31b3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fatJetSystsVec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo13m_metSystsVecE">
+<span id="_CPPv3N8TreeAlgo13m_metSystsVecE"></span><span id="_CPPv2N8TreeAlgo13m_metSystsVecE"></span><span id="TreeAlgo::m_metSystsVec__ss"></span><span class="target" id="classTreeAlgo_1a17630b06715246158ce9a1c08ef22740"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_metSystsVec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo7m_unitsE">
+<span id="_CPPv3N8TreeAlgo7m_unitsE"></span><span id="_CPPv2N8TreeAlgo7m_unitsE"></span><span id="TreeAlgo::m_units__float"></span><span class="target" id="classTreeAlgo_1adf5f4cfe29d3caa7118c4b25192e4a37"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_units</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e3</span></span><br /></dt>
+<dd><p>unit conversion from MeV, default is GeV </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo11m_autoFlushE">
+<span id="_CPPv3N8TreeAlgo11m_autoFlushE"></span><span id="_CPPv2N8TreeAlgo11m_autoFlushE"></span><span id="TreeAlgo::m_autoFlush__i"></span><span class="target" id="classTreeAlgo_1a756de9a0b9247c866a3e744182b2fa30"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_autoFlush</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><br /></dt>
+<dd><p>Set to a large negative number, such as -1000000, to ensure that the tree flushes memory after a reasonable amount of time. Otherwise, jobs with a lot of systematics use too much memory. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-protected-attributes">Protected Attributes</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo12m_jetDetailsE">
+<span id="_CPPv3N8TreeAlgo12m_jetDetailsE"></span><span id="_CPPv2N8TreeAlgo12m_jetDetailsE"></span><span id="TreeAlgo::m_jetDetails__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1aeb06fe7205afd921654bf57bb087d43a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetDetails</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo16m_trigJetDetailsE">
+<span id="_CPPv3N8TreeAlgo16m_trigJetDetailsE"></span><span id="_CPPv2N8TreeAlgo16m_trigJetDetailsE"></span><span id="TreeAlgo::m_trigJetDetails__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1ad10e6311a674006ae77b8e4a4f70ba2b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigJetDetails</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo15m_fatJetDetailsE">
+<span id="_CPPv3N8TreeAlgo15m_fatJetDetailsE"></span><span id="_CPPv2N8TreeAlgo15m_fatJetDetailsE"></span><span id="TreeAlgo::m_fatJetDetails__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1acb41686edc6b3b482a4944100935ee94"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fatJetDetails</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo15m_jetContainersE">
+<span id="_CPPv3N8TreeAlgo15m_jetContainersE"></span><span id="_CPPv2N8TreeAlgo15m_jetContainersE"></span><span id="TreeAlgo::m_jetContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a3c1100a9f96ca130bdb86a4a001e5a9e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo20m_truthJetContainersE">
+<span id="_CPPv3N8TreeAlgo20m_truthJetContainersE"></span><span id="_CPPv2N8TreeAlgo20m_truthJetContainersE"></span><span id="TreeAlgo::m_truthJetContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1aed3d5b80297ceedf6f277f6290ea75e6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthJetContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo19m_trigJetContainersE">
+<span id="_CPPv3N8TreeAlgo19m_trigJetContainersE"></span><span id="_CPPv2N8TreeAlgo19m_trigJetContainersE"></span><span id="TreeAlgo::m_trigJetContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1ad687ad449df43d33751483d8ec64dbf3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigJetContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_fatJetContainersE">
+<span id="_CPPv3N8TreeAlgo18m_fatJetContainersE"></span><span id="_CPPv2N8TreeAlgo18m_fatJetContainersE"></span><span id="TreeAlgo::m_fatJetContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a172664a544f4831f0eb054ed45e9ec53"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fatJetContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_l1JetContainersE">
+<span id="_CPPv3N8TreeAlgo17m_l1JetContainersE"></span><span id="_CPPv2N8TreeAlgo17m_l1JetContainersE"></span><span id="TreeAlgo::m_l1JetContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1abedcd9b8cc317a1b7298d54828ed739c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_l1JetContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_vertexContainersE">
+<span id="_CPPv3N8TreeAlgo18m_vertexContainersE"></span><span id="_CPPv2N8TreeAlgo18m_vertexContainersE"></span><span id="TreeAlgo::m_vertexContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1af4770c30a2123ea66ee833f538d84ead"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vertexContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo26m_truthParticlesContainersE">
+<span id="_CPPv3N8TreeAlgo26m_truthParticlesContainersE"></span><span id="_CPPv2N8TreeAlgo26m_truthParticlesContainersE"></span><span id="TreeAlgo::m_truthParticlesContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a37d8149d99e892f4152a0a300ab556d3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthParticlesContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo13m_jetBranchesE">
+<span id="_CPPv3N8TreeAlgo13m_jetBranchesE"></span><span id="_CPPv2N8TreeAlgo13m_jetBranchesE"></span><span id="TreeAlgo::m_jetBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1adac6c25160036094aab91fec70cf2d28"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_jetBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo18m_truthJetBranchesE">
+<span id="_CPPv3N8TreeAlgo18m_truthJetBranchesE"></span><span id="_CPPv2N8TreeAlgo18m_truthJetBranchesE"></span><span id="TreeAlgo::m_truthJetBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a249fd19fe97059535d3f3665493742f0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthJetBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_trigJetBranchesE">
+<span id="_CPPv3N8TreeAlgo17m_trigJetBranchesE"></span><span id="_CPPv2N8TreeAlgo17m_trigJetBranchesE"></span><span id="TreeAlgo::m_trigJetBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a21154f7910d7ebbc231da77be3091d8b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trigJetBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo16m_fatJetBranchesE">
+<span id="_CPPv3N8TreeAlgo16m_fatJetBranchesE"></span><span id="_CPPv2N8TreeAlgo16m_fatJetBranchesE"></span><span id="TreeAlgo::m_fatJetBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a9709e156e6a752eac342dd48f4898feb"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_fatJetBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo15m_l1JetBranchesE">
+<span id="_CPPv3N8TreeAlgo15m_l1JetBranchesE"></span><span id="_CPPv2N8TreeAlgo15m_l1JetBranchesE"></span><span id="TreeAlgo::m_l1JetBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a73d19577786b000fab5ff35c7273323b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_l1JetBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo16m_vertexBranchesE">
+<span id="_CPPv3N8TreeAlgo16m_vertexBranchesE"></span><span id="_CPPv2N8TreeAlgo16m_vertexBranchesE"></span><span id="TreeAlgo::m_vertexBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1af356a20ea348840010d263cc4a57dd48"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vertexBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo24m_truthParticlesBranchesE">
+<span id="_CPPv3N8TreeAlgo24m_truthParticlesBranchesE"></span><span id="_CPPv2N8TreeAlgo24m_truthParticlesBranchesE"></span><span id="TreeAlgo::m_truthParticlesBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a2b3fd47cfab95998e00b2de436e7960f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_truthParticlesBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo16m_clusterDetailsE">
+<span id="_CPPv3N8TreeAlgo16m_clusterDetailsE"></span><span id="_CPPv2N8TreeAlgo16m_clusterDetailsE"></span><span id="TreeAlgo::m_clusterDetails__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a5d74d3a9d73f7088fd26d5d335490bef"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_clusterDetails</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo19m_clusterContainersE">
+<span id="_CPPv3N8TreeAlgo19m_clusterContainersE"></span><span id="_CPPv2N8TreeAlgo19m_clusterContainersE"></span><span id="TreeAlgo::m_clusterContainers__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a973ec613bc34cec981c028ffa4763482"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_clusterContainers</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo17m_clusterBranchesE">
+<span id="_CPPv3N8TreeAlgo17m_clusterBranchesE"></span><span id="_CPPv2N8TreeAlgo17m_clusterBranchesE"></span><span id="TreeAlgo::m_clusterBranches__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1aa33068c6bcc30e9913435b0c6b5fa783"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_clusterBranches</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo15m_vertexDetailsE">
+<span id="_CPPv3N8TreeAlgo15m_vertexDetailsE"></span><span id="_CPPv2N8TreeAlgo15m_vertexDetailsE"></span><span id="TreeAlgo::m_vertexDetails__std::vector:ss:"></span><span class="target" id="classTreeAlgo_1a2c686fe999385b175eba69259fdc6b88"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vertexDetails</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8TreeAlgo7m_treesE">
+<span id="_CPPv3N8TreeAlgo7m_treesE"></span><span id="_CPPv2N8TreeAlgo7m_treesE"></span><span id="TreeAlgo::m_trees__std::map:ss.HelpTreeBaseP:"></span><span class="target" id="classTreeAlgo_1aad57ab46d4af901ed08d2e0a0671d2a6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../HelpTreeBase.html#_CPPv412HelpTreeBase" title="HelpTreeBase"><span class="n"><span class="pre">HelpTreeBase</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_trees</span></span></span><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classTrigMatcher.html" class="btn btn-neutral float-right" title="Class TrigMatcher" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classTrackSelector.html" class="btn btn-neutral float-left" title="Class TrackSelector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

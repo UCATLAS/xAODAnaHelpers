@@ -1,0 +1,68 @@
+
+.. _file_Root_TrigMatcher.cxx:
+
+File TrigMatcher.cxx
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TrigMatcher.cxx``)
+-------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TrigMatcher.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``TFile.h``
+
+- ``TObjArray.h``
+
+- ``TObjString.h``
+
+- ``TriggerMatchingTool/MatchFromCompositeTool.h``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TrigMatcher.h`` (:ref:`file_xAODAnaHelpers_TrigMatcher.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TrigMatcher_8cxx_1a8a7b608011603a70af897e5855c88988`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_MessagePrinterAlgo_8cxx_1a1665a5dbd356db96f3d62259d30df73b:
+
+Function ClassImp(MessagePrinterAlgo)
+=====================================
+
+- Defined in :ref:`file_Root_MessagePrinterAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(MessagePrinterAlgo)

@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Mini-xAOD &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Utilities" href="Utilities.html" />
+    <link rel="prev" title="Tree Maker Algorithm" href="TreeAlgo.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="API.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Getters.html">Getting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Calibrators.html">Calibrating Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Correctors.html">Efficiency Correcting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Selectors.html">Selecting Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Histograms.html">Histograms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToolsUsed.html">Tools Used</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Outputs.html">Producing Outputs</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="Outputs.html#ttree-outputs">TTree Outputs</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="Outputs.html#xaod-outputs">xAOD Outputs</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Mini-xAOD</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="API.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="Outputs.html">Producing Outputs</a> &raquo;</li>
+        
+      <li>Mini-xAOD</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/MinixAOD.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mini-xaod">
+<h1>Mini-xAOD<a class="headerlink" href="#mini-xaod" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv48MinixAOD">
+<span id="_CPPv38MinixAOD"></span><span id="_CPPv28MinixAOD"></span><span id="MinixAOD"></span><span class="target" id="classMinixAOD"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MinixAOD</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">xAH</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="api/classxAH_1_1Algorithm.html#_CPPv4N3xAH9AlgorithmE" title="xAH::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><a class="headerlink" href="#_CPPv48MinixAOD" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Produce xAOD outputs. </p>
+<p><p>I can think up the following cases when a user is doing an EL Algorithm:</p>
+<blockquote>
+<div><p>input containers in TEvent (simple)
+deep-copied containers in TStore (deep-copy)
+shallow-copied containers in TStore (shallow)
+CDV containers in TStore (cdv)</p>
+</div></blockquote>
+<p>For the above use-cases, we might produce outputs like so:</p>
+<blockquote>
+<div><p>write the input container to the output. This uses <code class="docutils literal notranslate"><span class="pre">TEvent::copy()</span></code>.
+write the deep-copied containers to the output. This calls <code class="docutils literal notranslate"><span class="pre">TStore::retrieve()</span></code> and then <code class="docutils literal notranslate"><span class="pre">TEvent::record()</span></code>.
+two options when we have shallow-copies:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shallowIO=false</span></code>: write to the output as a deep-copy like in the previous option</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shallowIO=true</span></code>: write to the output as a shallow-copy, but make sure the original container is also written to the output</p></li>
+</ol>
+<p>make a deep-copy of the ConstDataVector and then move from <code class="docutils literal notranslate"><span class="pre">TStore</span></code> to <code class="docutils literal notranslate"><span class="pre">TEvent</span></code>. The problem is that we point to local memory that will not persist when making the CDV.</p>
+</div></blockquote>
+<p>The trickiest case is with shallow copies because those could be our systematics – and you might want to copy the original container, and only copy over systematics via true shallow copies to conserve memory and space.</p>
+</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Care must be taken when managing memory and using copies. You need to think about how copies point to each other and whether you can use shallow copies or deep copies or both.</p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD8MinixAODEv">
+<span id="_CPPv3N8MinixAOD8MinixAODEv"></span><span id="_CPPv2N8MinixAOD8MinixAODEv"></span><span id="MinixAOD::MinixAOD"></span><span class="target" id="classMinixAOD_1abcc2df03b160d0a2fb1fd9640c49d3cd"></span><span class="sig-name descname"><span class="n"><span class="pre">MinixAOD</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD8MinixAODEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD8setupJobERN2EL3JobE">
+<span id="_CPPv3N8MinixAOD8setupJobERN2EL3JobE"></span><span id="_CPPv2N8MinixAOD8setupJobERN2EL3JobE"></span><span id="MinixAOD::setupJob__EL::JobR"></span><span class="target" id="classMinixAOD_1ac64ce595743f41968dbc7062e6cd3171"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setupJob</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Job</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">job</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD8setupJobERN2EL3JobE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD11fileExecuteEv">
+<span id="_CPPv3N8MinixAOD11fileExecuteEv"></span><span id="_CPPv2N8MinixAOD11fileExecuteEv"></span><span id="MinixAOD::fileExecute"></span><span class="target" id="classMinixAOD_1adb142e65bf720c2cfa1524f51fda9235"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fileExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD11fileExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD14histInitializeEv">
+<span id="_CPPv3N8MinixAOD14histInitializeEv"></span><span id="_CPPv2N8MinixAOD14histInitializeEv"></span><span id="MinixAOD::histInitialize"></span><span class="target" id="classMinixAOD_1ac83595de210778ea7c78cae5513b26c5"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histInitialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD14histInitializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD11changeInputEb">
+<span id="_CPPv3N8MinixAOD11changeInputEb"></span><span id="_CPPv2N8MinixAOD11changeInputEb"></span><span id="MinixAOD::changeInput__b"></span><span class="target" id="classMinixAOD_1a9a13c4d9148d2269ed3d8e44dcbd6c7f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">changeInput</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">firstFile</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD11changeInputEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD10initializeEv">
+<span id="_CPPv3N8MinixAOD10initializeEv"></span><span id="_CPPv2N8MinixAOD10initializeEv"></span><span id="MinixAOD::initialize"></span><span class="target" id="classMinixAOD_1a95744899902ed8257d575b5dcc887b55"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD10initializeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD7executeEv">
+<span id="_CPPv3N8MinixAOD7executeEv"></span><span id="_CPPv2N8MinixAOD7executeEv"></span><span id="MinixAOD::execute"></span><span class="target" id="classMinixAOD_1a176fde5a6211e05bd03f02d84ca91043"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD7executeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD11postExecuteEv">
+<span id="_CPPv3N8MinixAOD11postExecuteEv"></span><span id="_CPPv2N8MinixAOD11postExecuteEv"></span><span id="MinixAOD::postExecute"></span><span class="target" id="classMinixAOD_1a4ac7c53c934e727b5a7cc1935322aa0c"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">postExecute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD11postExecuteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD8finalizeEv">
+<span id="_CPPv3N8MinixAOD8finalizeEv"></span><span id="_CPPv2N8MinixAOD8finalizeEv"></span><span id="MinixAOD::finalize"></span><span class="target" id="classMinixAOD_1a666691dfbc752f5a026e92065752cdab"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD8finalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD12histFinalizeEv">
+<span id="_CPPv3N8MinixAOD12histFinalizeEv"></span><span id="_CPPv2N8MinixAOD12histFinalizeEv"></span><span id="MinixAOD::histFinalize"></span><span class="target" id="classMinixAOD_1a0868f63cae0205e57101cc9af79ce8da"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">EL</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StatusCode</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">histFinalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8MinixAOD12histFinalizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD16m_outputFileNameE">
+<span id="_CPPv3N8MinixAOD16m_outputFileNameE"></span><span id="_CPPv2N8MinixAOD16m_outputFileNameE"></span><span id="MinixAOD::m_outputFileName__ss"></span><span class="target" id="classMinixAOD_1ad2885b854844fc33c032067f64ac43a0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_outputFileName</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;out_miniXAOD&quot;</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD16m_outputFileNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>name of the output file to use for xAOD dumping </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD18m_createOutputFileE">
+<span id="_CPPv3N8MinixAOD18m_createOutputFileE"></span><span id="_CPPv2N8MinixAOD18m_createOutputFileE"></span><span id="MinixAOD::m_createOutputFile__b"></span><span class="target" id="classMinixAOD_1a44b7771b5a2fc2127de9c9c2dd779138"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_createOutputFile</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD18m_createOutputFileE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>enable to create the output file for xAOD dumping </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD18m_copyFileMetaDataE">
+<span id="_CPPv3N8MinixAOD18m_copyFileMetaDataE"></span><span id="_CPPv2N8MinixAOD18m_copyFileMetaDataE"></span><span id="MinixAOD::m_copyFileMetaData__b"></span><span class="target" id="classMinixAOD_1ace41579198cf504d5f1e2f3090b91349"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_copyFileMetaData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD18m_copyFileMetaDataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>copy the file metadata over </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD17m_copyTriggerInfoE">
+<span id="_CPPv3N8MinixAOD17m_copyTriggerInfoE"></span><span id="_CPPv2N8MinixAOD17m_copyTriggerInfoE"></span><span id="MinixAOD::m_copyTriggerInfo__b"></span><span class="target" id="classMinixAOD_1a151023d989405266fc43a152dfe9815a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_copyTriggerInfo</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD17m_copyTriggerInfoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>copy the trigger containers and meta data over </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD19m_copyCutBookkeeperE">
+<span id="_CPPv3N8MinixAOD19m_copyCutBookkeeperE"></span><span id="_CPPv2N8MinixAOD19m_copyCutBookkeeperE"></span><span id="MinixAOD::m_copyCutBookkeeper__b"></span><span class="target" id="classMinixAOD_1af954601474b258efd2d51d972a1e065f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_copyCutBookkeeper</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD19m_copyCutBookkeeperE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>copy the cutbookkeeper data over </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD16m_simpleCopyKeysE">
+<span id="_CPPv3N8MinixAOD16m_simpleCopyKeysE"></span><span id="_CPPv2N8MinixAOD16m_simpleCopyKeysE"></span><span id="MinixAOD::m_simpleCopyKeys__ss"></span><span class="target" id="classMinixAOD_1aa2928afb9141808c411fad707e276859"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_simpleCopyKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD16m_simpleCopyKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>names of containers to copy from the input file </p>
+<p><p>Container names should be space-delimited:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;m_simpleCopyKeys&quot;</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;EventInfo AntiKt4EMTopoJets&quot;</span>
+</pre></div>
+</div>
+</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD15m_storeCopyKeysE">
+<span id="_CPPv3N8MinixAOD15m_storeCopyKeysE"></span><span id="_CPPv2N8MinixAOD15m_storeCopyKeysE"></span><span id="MinixAOD::m_storeCopyKeys__ss"></span><span class="target" id="classMinixAOD_1a7c8ca45ab607bc2c417f1b7dce2fb023"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_storeCopyKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD15m_storeCopyKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>names of containers in the TStore to copy over </p>
+<p><p>Container names should be space-delimited:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;m_storeCopyKeys&quot;</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;BrandNewJetContainer ReclusteredJets&quot;</span>
+</pre></div>
+</div>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This option is appropriate for deep-copied containers.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD17m_shallowCopyKeysE">
+<span id="_CPPv3N8MinixAOD17m_shallowCopyKeysE"></span><span id="_CPPv2N8MinixAOD17m_shallowCopyKeysE"></span><span id="MinixAOD::m_shallowCopyKeys__ss"></span><span class="target" id="classMinixAOD_1a8bcde2f45d0d3ba4a72e6f6203b64056"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_shallowCopyKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD17m_shallowCopyKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>names of containers that have been shallow-copied </p>
+<p><p>This option is a little different because shallow-copied containers have parent containers. However, there are two options depending on the <code class="docutils literal notranslate"><span class="pre">setShallowIO</span></code> option</p>
+<blockquote>
+<div><dl>
+<dt>True</dt><dd><p>If this is set to true, you will want to specify the parent container so that we copy it over as well (it is assumed that the parent container is in TStore or TEvent):</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;m_shallowCopyKeys&quot;</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;SCAntiKt4EMTopoJets|AntiKt4EMTopoJets SCMuons|Muons_Presel&quot;</span>
+</pre></div>
+</div>
+</dd>
+<dt>False</dt><dd><p>If this is set to false, you will not want to specify the parent container</p>
+<blockquote>
+<div><p>”m_shallowCopyKeys”: “SCAntiKt4EMTopoJets| SCMuons|”</p>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<p>Always specify your string in a space-delimited format where pairs are split up by <code class="docutils literal notranslate"><span class="pre">shallow</span> <span class="pre">container</span> <span class="pre">name|parent</span> <span class="pre">container</span> <span class="pre">name</span></code>.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This option is appropriate for shallow-copied containers.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please note that the <code class="docutils literal notranslate"><span class="pre">shallowIO</span></code> option is what determines how the memory is managed. If you run into issues with shallow-copied containers here, make sure you know whether this option was enabled or not before asking for help.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD14m_deepCopyKeysE">
+<span id="_CPPv3N8MinixAOD14m_deepCopyKeysE"></span><span id="_CPPv2N8MinixAOD14m_deepCopyKeysE"></span><span id="MinixAOD::m_deepCopyKeys__ss"></span><span class="target" id="classMinixAOD_1a20ef20edf3b9ca2132f9980cad5b093b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_deepCopyKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD14m_deepCopyKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>names of containers that have been shallow-copied </p>
+<p><p>Here, we will do the deep-copying for you, so that the containers can be correctly recorded into the output. Due to the way view-only containers work, we can’t figure out whether the memory points to a specific parent container we can copy, or to a non-persistable, local (stack) memory. The best option is to just deep-copy and allocate new memory instead:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;m_deepCopyKeys&quot;</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;AntiKt4EMTopoJets|DeepCopyAntiKt4Jets Muons|DeepCopyMuons&quot;</span>
+</pre></div>
+</div>
+<p>Always specify your string in a space-delimited format where pairs are split up by <code class="docutils literal notranslate"><span class="pre">input</span> <span class="pre">container</span> <span class="pre">name|output</span> <span class="pre">container</span> <span class="pre">name</span></code>.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This option is appropriate for view-only containers such as <code class="docutils literal notranslate"><span class="pre">ConstDataVector</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD16m_vectorCopyKeysE">
+<span id="_CPPv3N8MinixAOD16m_vectorCopyKeysE"></span><span id="_CPPv2N8MinixAOD16m_vectorCopyKeysE"></span><span id="MinixAOD::m_vectorCopyKeys__ss"></span><span class="target" id="classMinixAOD_1ab5527327125496d24be29beecb08e0a6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vectorCopyKeys</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD16m_vectorCopyKeysE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>names of vectors that have container names for its contents </p>
+<p><p>Here, we will do the copying for you by retrieving the vector of container names and copy each one over. See how <a class="reference internal" href="#_CPPv4N8MinixAOD17m_shallowCopyKeysE" title="MinixAOD::m_shallowCopyKeys"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">MinixAOD::m_shallowCopyKeys</span></code></a> works.</p>
+<p>Always specify your string in a space-delimited format where pairs are split up by <code class="docutils literal notranslate"><span class="pre">vector</span> <span class="pre">name|parent</span> <span class="pre">container</span> <span class="pre">name</span></code>.</p>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This option is appropriate for groups shallow-copied containers such as when you are dealing with systematics.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD20m_simpleCopyKeys_vecE">
+<span id="_CPPv3N8MinixAOD20m_simpleCopyKeys_vecE"></span><span id="_CPPv2N8MinixAOD20m_simpleCopyKeys_vecE"></span><span id="MinixAOD::m_simpleCopyKeys_vec__std::vector:ss:"></span><span class="target" id="classMinixAOD_1ab6354b1f8706a371e7722543ce162396"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_simpleCopyKeys_vec</span></span></span><a class="headerlink" href="#_CPPv4N8MinixAOD20m_simpleCopyKeys_vecE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A vector of containers that are in TEvent that just need to be written to the output. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD21m_shallowCopyKeys_vecE">
+<span id="_CPPv3N8MinixAOD21m_shallowCopyKeys_vecE"></span><span id="_CPPv2N8MinixAOD21m_shallowCopyKeys_vecE"></span><span id="MinixAOD::m_shallowCopyKeys_vec__std::vector:std::pair:ss.ss::"></span><span class="target" id="classMinixAOD_1aea8bff2e2dff280d8e09f3223e54dcd0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_shallowCopyKeys_vec</span></span></span><a class="headerlink" href="#_CPPv4N8MinixAOD21m_shallowCopyKeys_vecE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A vector of (container name, parent name) pairs for shallow-copied objects &amp;#8212; if parent is empty, deep-copy it. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD18m_deepCopyKeys_vecE">
+<span id="_CPPv3N8MinixAOD18m_deepCopyKeys_vecE"></span><span id="_CPPv2N8MinixAOD18m_deepCopyKeys_vecE"></span><span id="MinixAOD::m_deepCopyKeys_vec__std::vector:std::pair:ss.ss::"></span><span class="target" id="classMinixAOD_1ac5c0159d190ef0bd9be01d1c5253f449"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_deepCopyKeys_vec</span></span></span><a class="headerlink" href="#_CPPv4N8MinixAOD18m_deepCopyKeys_vecE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A vector of (in container, output container) that need to be deep-copied first before moving to TStore. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD20m_vectorCopyKeys_vecE">
+<span id="_CPPv3N8MinixAOD20m_vectorCopyKeys_vecE"></span><span id="_CPPv2N8MinixAOD20m_vectorCopyKeys_vecE"></span><span id="MinixAOD::m_vectorCopyKeys_vec__std::vector:std::pair:ss.ss::"></span><span class="target" id="classMinixAOD_1ab0013020a04102c7a70707906203ab7f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_vectorCopyKeys_vec</span></span></span><a class="headerlink" href="#_CPPv4N8MinixAOD20m_vectorCopyKeys_vecE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A vector of (name of vector of container names, parent name) pairs for shallow-copied objects (like systematics) &amp;#8212; if parent is empty, deep-copy it. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD30m_copyFromStoreToEventKeys_vecE">
+<span id="_CPPv3N8MinixAOD30m_copyFromStoreToEventKeys_vecE"></span><span id="_CPPv2N8MinixAOD30m_copyFromStoreToEventKeys_vecE"></span><span id="MinixAOD::m_copyFromStoreToEventKeys_vec__std::vector:ss:"></span><span class="target" id="classMinixAOD_1a7a60fc3df7eea04f9fbb314968a4ffcb"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_copyFromStoreToEventKeys_vec</span></span></span><a class="headerlink" href="#_CPPv4N8MinixAOD30m_copyFromStoreToEventKeys_vecE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A vector of containers (and aux-pairs) in TStore to record in TEvent. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD18m_fileMetaDataToolE">
+<span id="_CPPv3N8MinixAOD18m_fileMetaDataToolE"></span><span id="_CPPv2N8MinixAOD18m_fileMetaDataToolE"></span><span id="MinixAOD::m_fileMetaDataTool__xAODMaker::FileMetaDataToolP"></span><span class="target" id="classMinixAOD_1a0998e0168e1a7f719b96661238517f1d"></span><span class="n"><span class="pre">xAODMaker</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">FileMetaDataTool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_fileMetaDataTool</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD18m_fileMetaDataToolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pointer for the File MetaData Tool. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD20m_outputCBKContainerE">
+<span id="_CPPv3N8MinixAOD20m_outputCBKContainerE"></span><span id="_CPPv2N8MinixAOD20m_outputCBKContainerE"></span><span id="MinixAOD::m_outputCBKContainer__xAOD::CutBookkeeperContainerP"></span><span class="target" id="classMinixAOD_1aae5408f9c9e7ccf9b97097647933870c"></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutBookkeeperContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_outputCBKContainer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD20m_outputCBKContainerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pointer for the TriggerMenu MetaData Tool. </p>
+<p>Pointer for our CutBookkeeper </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD24m_outputCBKContainer_auxE">
+<span id="_CPPv3N8MinixAOD24m_outputCBKContainer_auxE"></span><span id="_CPPv2N8MinixAOD24m_outputCBKContainer_auxE"></span><span id="MinixAOD::m_outputCBKContainer_aux__xAOD::CutBookkeeperAuxContainerP"></span><span class="target" id="classMinixAOD_1aabfdefc7380b58dec9d460f6a010fc9f"></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutBookkeeperAuxContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_outputCBKContainer_aux</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD24m_outputCBKContainer_auxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD22m_outputInCBKContainerE">
+<span id="_CPPv3N8MinixAOD22m_outputInCBKContainerE"></span><span id="_CPPv2N8MinixAOD22m_outputInCBKContainerE"></span><span id="MinixAOD::m_outputInCBKContainer__xAOD::CutBookkeeperContainerP"></span><span class="target" id="classMinixAOD_1aaff531da08fd92821078708a450a0eb0"></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutBookkeeperContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_outputInCBKContainer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD22m_outputInCBKContainerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD26m_outputInCBKContainer_auxE">
+<span id="_CPPv3N8MinixAOD26m_outputInCBKContainer_auxE"></span><span id="_CPPv2N8MinixAOD26m_outputInCBKContainer_auxE"></span><span id="MinixAOD::m_outputInCBKContainer_aux__xAOD::CutBookkeeperAuxContainerP"></span><span class="target" id="classMinixAOD_1aec35ef497d130e4f497b2fc10311a9b7"></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutBookkeeperAuxContainer</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_outputInCBKContainer_aux</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD26m_outputInCBKContainer_auxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8MinixAOD11m_outputCBKE">
+<span id="_CPPv3N8MinixAOD11m_outputCBKE"></span><span id="_CPPv2N8MinixAOD11m_outputCBKE"></span><span id="MinixAOD::m_outputCBK__xAOD::CutBookkeeperP"></span><span class="target" id="classMinixAOD_1a305cfe3f6db8a28774f7b700b1b43bb5"></span><span class="n"><span class="pre">xAOD</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutBookkeeper</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">m_outputCBK</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N8MinixAOD11m_outputCBKE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Utilities.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TreeAlgo.html" class="btn btn-neutral float-left" title="Tree Maker Algorithm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

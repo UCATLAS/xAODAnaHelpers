@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1ab32fb263453e63a5184a50eaf04e4e03:
+
+Function HelperFunctions::writeSystematicsListHist
+==================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::writeSystematicsListHist(const std::vector<CP::SystematicSet>&, std::string, TFile *)

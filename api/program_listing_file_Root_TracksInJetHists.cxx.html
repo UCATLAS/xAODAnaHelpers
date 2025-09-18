@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File TracksInJetHists.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File TracksInJetHists.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_TracksInJetHists.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-tracksinjethists-cxx">
+<span id="program-listing-file-root-tracksinjethists-cxx"></span><h1>Program Listing for File TracksInJetHists.cxx<a class="headerlink" href="#program-listing-for-file-tracksinjethists-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_TracksInJetHists.cxx.html#file-root-tracksinjethists-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/TracksInJetHists.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/TracksInJetHists.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;math.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xAODTracking/TrackParticle.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+
+<span class="n">ANA_MSG_SOURCE</span><span class="p">(</span><span class="n">msgTracksInJetHists</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TracksInJetHists&quot;</span><span class="p">)</span>
+
+<span class="n">TracksInJetHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">TracksInJetHists</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">detailStr</span><span class="p">)</span><span class="w"> </span><span class="o">:</span>
+<span class="w">  </span><span class="n">HistogramManager</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">detailStr</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">TracksInJetHists</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="o">~</span><span class="n">TracksInJetHists</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">TracksInJetHists</span><span class="o">::</span><span class="n">initialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// TrackHists</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">m_trkPlots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TrackHists</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;IPDetails HitCounts TPErrors Chi2Details Debugging vsLumiBlock&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trkPlots</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">initialize</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  d0</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">m_trk_d0</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;d0_signed&quot;</span><span class="p">,</span><span class="w">          </span><span class="s">&quot;d0[mm] (signed)&quot;</span><span class="p">,</span><span class="w">   </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_d0Sig</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;d0Sig_signed&quot;</span><span class="p">,</span><span class="w">       </span><span class="s">&quot;d0Sig (signed)&quot;</span><span class="p">,</span><span class="w">   </span><span class="mi">240</span><span class="p">,</span><span class="w">   </span><span class="mf">-20.0</span><span class="p">,</span><span class="w"> </span><span class="mf">40.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_d0SigPDF</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;d0Sig_signed_pdf&quot;</span><span class="p">,</span><span class="w">   </span><span class="s">&quot;d0Sig (signed)&quot;</span><span class="p">,</span><span class="w">   </span><span class="mi">42</span><span class="p">,</span><span class="w">    </span><span class="mf">-21.0</span><span class="p">,</span><span class="w"> </span><span class="mf">21.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_z0sinTd0</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0sinTsigned_vs_d0signed&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="s">&quot;z0xsin0[mm](signed)&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">             </span><span class="s">&quot;d0[mm](signed);&quot;</span><span class="p">,</span><span class="w">     </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="p">);</span>
+
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  z0</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">m_trk_z0_signed</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0_signed&quot;</span><span class="w">   </span><span class="p">,</span><span class="w">     </span><span class="s">&quot;z0[mm] (signed)&quot;</span><span class="p">,</span><span class="w">               </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_z0sinT_signed</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0sinT_signed&quot;</span><span class="p">,</span><span class="w">    </span><span class="s">&quot;z0xsin(#theta)[mm] (signed)&quot;</span><span class="p">,</span><span class="w">   </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_z0Sig_signed</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0Sig_signed&quot;</span><span class="p">,</span><span class="w">     </span><span class="s">&quot;z0 significance (signed)&quot;</span><span class="p">,</span><span class="w">      </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-25.0</span><span class="p">,</span><span class="w"> </span><span class="mf">25.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_z0Sig_signed_pdf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0Sig_signed_pdf&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0 significance (signed)&quot;</span><span class="p">,</span><span class="w">       </span><span class="mi">42</span><span class="p">,</span><span class="w">  </span><span class="mf">-21.0</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_z0SigsinT_signed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0SigsinT_signed&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;z0 significance x sin(#theta)&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-25.0</span><span class="p">,</span><span class="w"> </span><span class="mf">25.0</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  wrt Jet</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">m_trk_jetdPhi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jetdPhi&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;jetdPhi&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_jetdEta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jetdEta&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;jetdEta&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_jetdR</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jetdR&quot;</span><span class="w"> </span><span class="p">,</span><span class="w">   </span><span class="s">&quot;jetdR&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">300</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_jetdR_l</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">book</span><span class="p">(</span><span class="n">m_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;jetdR_l&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;jetdR&quot;</span><span class="p">,</span><span class="w">    </span><span class="mi">300</span><span class="p">,</span><span class="w">  </span><span class="mf">-0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// if worker is passed to the class add histograms to the output</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="n">TracksInJetHists</span><span class="o">::</span><span class="n">record</span><span class="p">(</span><span class="n">EL</span><span class="o">::</span><span class="n">IWorker</span><span class="o">*</span><span class="w"> </span><span class="n">wk</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">HistogramManager</span><span class="o">::</span><span class="n">record</span><span class="p">(</span><span class="n">wk</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trkPlots</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">record</span><span class="p">(</span><span class="w"> </span><span class="n">wk</span><span class="w"> </span><span class="p">);</span>
+<span class="p">}</span>
+
+
+
+<span class="n">StatusCode</span><span class="w"> </span><span class="n">TracksInJetHists</span><span class="o">::</span><span class="n">execute</span><span class="p">(</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="p">,</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="w"> </span><span class="o">*</span><span class="n">pvx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">EventInfo</span><span class="o">*</span><span class="w"> </span><span class="n">eventInfo</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">msgTracksInJetHists</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">//  Fill track hists</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="n">ANA_CHECK</span><span class="p">(</span><span class="w"> </span><span class="n">m_trkPlots</span><span class="w">   </span><span class="o">-&gt;</span><span class="n">execute</span><span class="p">(</span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="n">pvx</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">,</span><span class="w"> </span><span class="n">eventInfo</span><span class="p">));</span>
+
+<span class="w">  </span><span class="c1">// d0</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">sign</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">getD0Sign</span><span class="p">(</span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="n">jet</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">d0_wrtPV</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">d0</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">signedD0</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="n">d0_wrtPV</span><span class="p">)</span><span class="o">*</span><span class="n">sign</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">d0Err_wrtPV</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">((</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">definingParametersCovMatrixVec</span><span class="p">().</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)));</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">d0Sig_wrtPV</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">d0Err_wrtPV</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">d0_wrtPV</span><span class="o">/</span><span class="n">d0Err_wrtPV</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">d0SigSigned</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">sign</span><span class="o">*</span><span class="n">fabs</span><span class="p">(</span><span class="n">d0Sig_wrtPV</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_d0</span><span class="w">       </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">signedD0</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_d0Sig</span><span class="w">    </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">d0SigSigned</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_d0SigPDF</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">d0SigSigned</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Signed Z0</span>
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">signZ0</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">getZ0Sign</span><span class="p">(</span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="n">jet</span><span class="p">,</span><span class="w"> </span><span class="n">pvx</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">z0</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">z0</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">vz</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getPrimaryVertexZ</span><span class="p">(</span><span class="n">pvx</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">z0_wrtPV_signed</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">fabs</span><span class="p">(</span><span class="n">z0</span><span class="p">)</span><span class="o">*</span><span class="n">signZ0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">z0Err</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">((</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">definingParametersCovMatrixVec</span><span class="p">().</span><span class="n">at</span><span class="p">(</span><span class="mi">2</span><span class="p">)));</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">sinT</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">theta</span><span class="p">());</span>
+
+<span class="w">  </span><span class="n">m_trk_z0_signed</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">z0_wrtPV_signed</span><span class="p">,</span><span class="w">         </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_z0sinT_signed</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">z0_wrtPV_signed</span><span class="o">*</span><span class="n">sinT</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">z0Err</span><span class="p">){</span>
+<span class="w">    </span><span class="n">m_trk_z0Sig_signed</span><span class="w">     </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">z0_wrtPV_signed</span><span class="o">/</span><span class="n">z0Err</span><span class="p">,</span><span class="w">         </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_trk_z0Sig_signed_pdf</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">z0_wrtPV_signed</span><span class="o">/</span><span class="n">z0Err</span><span class="p">,</span><span class="w">         </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_trk_z0SigsinT_signed</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">z0_wrtPV_signed</span><span class="o">/</span><span class="n">z0Err</span><span class="o">*</span><span class="n">sinT</span><span class="p">,</span><span class="w">    </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">m_trk_z0sinTd0</span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">z0_wrtPV_signed</span><span class="o">*</span><span class="n">sinT</span><span class="p">,</span><span class="w"> </span><span class="n">signedD0</span><span class="p">,</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">dEta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Eta</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">dPhi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">dPhi</span><span class="p">(</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">(),</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Phi</span><span class="p">());</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">dR</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">dPhi</span><span class="o">*</span><span class="n">dPhi</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dEta</span><span class="o">*</span><span class="n">dEta</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">//float dR = trk-&gt;p4().DeltaR(jet-&gt;p4());</span>
+
+<span class="w">  </span><span class="n">m_trk_jetdPhi</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">dPhi</span><span class="p">(</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">(),</span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">p4</span><span class="p">().</span><span class="n">Phi</span><span class="p">()),</span><span class="w"> </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_jetdEta</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">(),</span><span class="w">       </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_jetdR</span><span class="w">   </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">dR</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+<span class="w">  </span><span class="n">m_trk_jetdR_l</span><span class="w"> </span><span class="o">-&gt;</span><span class="n">Fill</span><span class="p">(</span><span class="n">dR</span><span class="p">,</span><span class="w">   </span><span class="n">eventWeight</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">StatusCode</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+
+<span class="kt">float</span><span class="w"> </span><span class="n">TracksInJetHists</span><span class="o">::</span><span class="n">getD0Sign</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="p">){</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">trk_phi</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">jet_phi</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">phi</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">prod</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">trk_phi</span><span class="p">)</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">jet_phi</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">trk_phi</span><span class="p">)</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">jet_phi</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">sign_prod</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">prod</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">d0_wrtPV</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">d0</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">sign_d0</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">d0_wrtPV</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">sign</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">sign_d0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sign_prod</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">sign</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">float</span><span class="w"> </span><span class="n">TracksInJetHists</span><span class="o">::</span><span class="n">getZ0Sign</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">TrackParticle</span><span class="o">*</span><span class="w"> </span><span class="n">trk</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Jet</span><span class="o">*</span><span class="w"> </span><span class="n">jet</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">xAOD</span><span class="o">::</span><span class="n">Vertex</span><span class="w"> </span><span class="o">*</span><span class="n">pvx</span><span class="p">){</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">trk_eta</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">jetEta</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">jet</span><span class="o">-&gt;</span><span class="n">eta</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">dEta</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">jetEta</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">trk_eta</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">trk_z0_wrtPV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">z0</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">trk</span><span class="o">-&gt;</span><span class="n">vz</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">HelperFunctions</span><span class="o">::</span><span class="n">getPrimaryVertexZ</span><span class="p">(</span><span class="n">pvx</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">signZ0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">trk_z0_wrtPV</span><span class="o">*</span><span class="n">dEta</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">-1.0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">signZ0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

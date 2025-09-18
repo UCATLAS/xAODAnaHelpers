@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File HLTJetRoIBuilder.cxx &mdash; xAODAnaHelpers 9618850 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xAODAnaHelpers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                9618850
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UsingUs.html">xAH_run.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">xAH FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../API.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Doxygen API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xAODAnaHelpers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File HLTJetRoIBuilder.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_Root_HLTJetRoIBuilder.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-hltjetroibuilder-cxx">
+<span id="program-listing-file-root-hltjetroibuilder-cxx"></span><h1>Program Listing for File HLTJetRoIBuilder.cxx<a class="headerlink" href="#program-listing-for-file-hltjetroibuilder-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_Root_HLTJetRoIBuilder.cxx.html#file-root-hltjetroibuilder-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Root/HLTJetRoIBuilder.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/******************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * This class builds HLT jets and thier associated objects</span>
+<span class="cm"> *</span>
+<span class="cm"> * John Alison (john.alison@cern.ch)</span>
+<span class="cm"> *</span>
+<span class="cm"> *</span>
+<span class="cm"> ******************************************/</span>
+
+<span class="c1">//#include &lt;iostream&gt;</span>
+<span class="c1">//#include &lt;vector&gt;</span>
+<span class="c1">//</span>
+<span class="c1">//#include &lt;EventLoop/Job.h&gt;</span>
+<span class="c1">//#include &lt;EventLoop/StatusCode.h&gt;</span>
+<span class="c1">//#include &lt;EventLoop/Worker.h&gt;</span>
+<span class="c1">//</span>
+<span class="c1">//#include &quot;xAODEventInfo/EventInfo.h&quot;</span>
+<span class="c1">//#include &quot;xAODJet/JetContainer.h&quot;</span>
+<span class="c1">//#include &quot;xAODJet/JetAuxContainer.h&quot;</span>
+<span class="c1">//#include &quot;xAODJet/Jet.h&quot;</span>
+<span class="c1">//#include &quot;xAODBase/IParticleHelpers.h&quot;</span>
+<span class="c1">//#include &quot;xAODBase/IParticleContainer.h&quot;</span>
+<span class="c1">//#include &quot;xAODBase/IParticle.h&quot;</span>
+<span class="c1">//#include &quot;AthContainers/ConstDataVector.h&quot;</span>
+<span class="c1">//#include &quot;AthContainers/DataVector.h&quot;</span>
+<span class="c1">//#include &quot;xAODCore/ShallowCopy.h&quot;</span>
+<span class="c1">//</span>
+<span class="c1">//#include &quot;xAODAnaHelpers/HelperFunctions.h&quot;</span>
+<span class="c1">//#include &quot;xAODAnaHelpers/HLTJetRoIBuilder.h&quot;</span>
+<span class="c1">//</span>
+<span class="c1">//#include &quot;TrigConfxAOD/xAODConfigTool.h&quot;</span>
+<span class="c1">//#include &quot;TrigDecisionTool/TrigDecisionTool.h&quot;</span>
+<span class="c1">//</span>
+<span class="c1">//ClassImp(HLTJetRoIBuilder)</span>
+<span class="c1">//</span>
+<span class="c1">//HLTJetRoIBuilder :: HLTJetRoIBuilder () :</span>
+<span class="c1">//  Algorithm(&quot;HLTJetRoIBuilder&quot;)</span>
+<span class="c1">//{</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: setupJob (EL::Job&amp; job)</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_MSG_DEBUG( &quot;Calling setupJob&quot;);</span>
+<span class="c1">//  job.useXAOD ();</span>
+<span class="c1">//  xAOD::Init( &quot;HLTJetRoIBuilder&quot; ).ignore(); // call before opening first file</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: histInitialize ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_CHECK( xAH::Algorithm::algInitialize());</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: fileExecute ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: changeInput (bool /*firstFile*/)</span>
+<span class="c1">//{</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: initialize ()</span>
+<span class="c1">//{</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_MSG_DEBUG( &quot;Initializing HLTJetRoIBuilder Interface... &quot;);</span>
+<span class="c1">//</span>
+<span class="c1">//  m_event = wk()-&gt;xaodEvent();</span>
+<span class="c1">//  m_store = wk()-&gt;xaodStore();</span>
+<span class="c1">//</span>
+<span class="c1">//  // Grab the TrigDecTool from the ToolStore</span>
+<span class="c1">//  if(!m_trigDecTool_handle.isUserConfigured()){</span>
+<span class="c1">//    ANA_MSG_FATAL(&quot;A configured &quot; &lt;&lt; m_trigDecTool_handle.typeAndName() &lt;&lt; &quot; must have been previously created! Are you creating one in xAH::BasicEventSelection?&quot; );</span>
+<span class="c1">//    return EL::StatusCode::FAILURE;</span>
+<span class="c1">//  }</span>
+<span class="c1">//  ANA_CHECK( m_trigDecTool_handle.retrieve());</span>
+<span class="c1">//  ANA_MSG_DEBUG(&quot;Retrieved tool: &quot; &lt;&lt; m_trigDecTool_handle);</span>
+<span class="c1">//</span>
+<span class="c1">//  if(m_trigItem.find(&quot;split&quot;) != std::string::npos){</span>
+<span class="c1">//    m_jetName = &quot;SplitJet&quot;;</span>
+<span class="c1">//    m_vtxName = &quot;xPrimVx&quot;;</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  if(m_trigItem.find(&quot;gsc&quot;) != std::string::npos){</span>
+<span class="c1">//    m_jetName = &quot;GSCJet&quot;;</span>
+<span class="c1">//    m_vtxName = &quot;xPrimVx&quot;;</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  if(m_trigItem.find(&quot;FTK&quot;) != std::string::npos){</span>
+<span class="c1">//    m_trkName = &quot;InDetTrigTrackingxAODCnv_Bjet_FTK&quot;;</span>
+<span class="c1">//    m_vtxName = &quot;&quot;;</span>
+<span class="c1">//    //m_vtxName = &quot;HLT_PrimVertexFTK&quot;;</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  if(m_trigItem.find(&quot;FTKRefit&quot;) != std::string::npos){</span>
+<span class="c1">//    m_trkName = &quot;InDetTrigTrackingxAODCnv_Bjet_FTKRefit&quot;;</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  if(m_trigItem.find(&quot;FTKVtx&quot;) != std::string::npos){</span>
+<span class="c1">//    m_trkName = &quot;InDetTrigTrackingxAODCnv_Bjet_IDTrig&quot;;</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_MSG_INFO(&quot;HLTJetRoIBuilder::Configured &quot; &lt;&lt; m_name &lt;&lt; &quot; with &quot;);</span>
+<span class="c1">//  ANA_MSG_INFO(&quot;\tm_trigItem: &quot; &lt;&lt; m_trigItem);</span>
+<span class="c1">//  ANA_MSG_INFO(&quot;\tm_trigItemVeto: &quot; &lt;&lt; m_trigItemVeto);</span>
+<span class="c1">//  ANA_MSG_INFO(&quot;\tm_trkName: &quot; &lt;&lt; m_trkName);</span>
+<span class="c1">//  ANA_MSG_INFO(&quot;\tm_vtxName: &quot; &lt;&lt; m_vtxName);</span>
+<span class="c1">//  ANA_MSG_INFO(&quot;\tm_jetName: &quot; &lt;&lt; m_jetName);</span>
+<span class="c1">//</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: execute ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_MSG_DEBUG( &quot;Doing HLT JEt ROI Building... &quot;);</span>
+<span class="c1">//</span>
+<span class="c1">//  if(m_doHLTBJet){</span>
+<span class="c1">//    return buildHLTBJets();</span>
+<span class="c1">//  }else if(m_doHLTJet){</span>
+<span class="c1">//    return buildHLTJets();</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//  if(msgLvl(MSG::VERBOSE)) m_store-&gt;print();</span>
+<span class="c1">//</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: buildHLTBJets ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot; &quot;  );</span>
+<span class="c1">//  auto triggerChainGroup = m_trigDecTool_handle-&gt;getChainGroup(m_trigItem);</span>
+<span class="c1">//</span>
+<span class="c1">//  std::vector&lt;std::string&gt; triggersUsed = triggerChainGroup-&gt;getListOfTriggers();</span>
+<span class="c1">//  std::vector&lt;std::string&gt; triggersAfterVeto;</span>
+<span class="c1">//  for(std::string trig : triggersUsed){</span>
+<span class="c1">//    if(trig.find(&quot;antimatchdr&quot;) != std::string::npos){</span>
+<span class="c1">//      continue;</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//    if((m_trigItemVeto != &quot;&quot;) &amp;&amp; (trig.find(m_trigItemVeto) != std::string::npos)){</span>
+<span class="c1">//      continue;</span>
+<span class="c1">//    }</span>
+<span class="c1">//    triggersAfterVeto.push_back(trig);</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  std::string m_trigItemAfterVeto = &quot;&quot;;</span>
+<span class="c1">//  bool firstItem = true;</span>
+<span class="c1">//  for(std::string trig : triggersAfterVeto){</span>
+<span class="c1">//    if(firstItem) m_trigItemAfterVeto += trig;</span>
+<span class="c1">//    else          m_trigItemAfterVeto += &quot;||&quot;+trig;</span>
+<span class="c1">//    firstItem = false;</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_MSG_VERBOSE(m_name &lt;&lt; &quot; &quot; &lt;&lt; m_trigItem &lt;&lt; &quot; matches&quot;);</span>
+<span class="c1">//  ANA_MSG_VERBOSE(m_trigItemAfterVeto);</span>
+<span class="c1">//  auto triggerChainGroupAfterVeto = m_trigDecTool_handle-&gt;getChainGroup(m_trigItemAfterVeto);</span>
+<span class="c1">//  std::vector&lt;std::string&gt; triggersUsedAfterVeto = triggerChainGroupAfterVeto-&gt;getListOfTriggers();</span>
+<span class="c1">//  for(std::string trig : triggersUsedAfterVeto){</span>
+<span class="c1">//    ANA_MSG_VERBOSE(&quot; \t &quot; &lt;&lt; trig);</span>
+<span class="c1">//    if(m_trigDecTool_handle-&gt;isPassed(trig))</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot; \t &quot; &lt;&lt; trig &lt;&lt; &quot; Passed &quot;  );</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//  //</span>
+<span class="c1">//  // Create the new container and its auxiliary store.</span>
+<span class="c1">//  //</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;Creating the new container &quot;);</span>
+<span class="c1">//  xAOD::JetContainer*     hltJets    = new xAOD::JetContainer();</span>
+<span class="c1">//  xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();</span>
+<span class="c1">//  hltJets-&gt;setStore( hltJetsAux ); //&lt; Connect the two</span>
+<span class="c1">//</span>
+<span class="c1">//  //</span>
+<span class="c1">//  //  For Adding Tracks to the Jet</span>
+<span class="c1">//  //</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;Making the decorators &quot;);</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;std::vector&lt;const xAOD::TrackParticle*&gt; &gt; m_track_decoration      (&quot;HLTBJetTracks&quot;);</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;const xAOD::Vertex*&gt;                 m_vtx_decoration        (&quot;HLTBJetTracks_vtx&quot;);</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;const xAOD::Vertex*&gt;                 m_vtx_decoration_bkg    (&quot;HLTBJetTracks_vtx_bkg&quot;);</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;char &gt;                               m_vtx_hadDummyPV        (&quot;hadDummyPV&quot;);</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;const xAOD::Vertex*&gt;                 m_offline_vtx_decoration(&quot;offline_vtx&quot;);</span>
+<span class="c1">//</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;float &gt;                              m_bs_online_vz       (&quot;bs_online_vz&quot;);</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;float &gt;                              m_bs_online_vy       (&quot;bs_online_vy&quot;);</span>
+<span class="c1">//  static xAOD::Jet::Decorator&lt;float &gt;                              m_bs_online_vx       (&quot;bs_online_vx&quot;);</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//  //</span>
+<span class="c1">//  // get primary vertex</span>
+<span class="c1">//  //</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;Getting the PV &quot;);</span>
+<span class="c1">//  const xAOD::VertexContainer *offline_vertices(nullptr);</span>
+<span class="c1">//  const xAOD::Vertex *offline_pvx(nullptr);</span>
+<span class="c1">//  ANA_CHECK( HelperFunctions::retrieve(offline_vertices, m_vertexContainerName, m_event, m_store, msg()) );</span>
+<span class="c1">//  offline_pvx = HelperFunctions::getPrimaryVertex(offline_vertices, msg());</span>
+<span class="c1">//</span>
+<span class="c1">//  //</span>
+<span class="c1">//  // get event info</span>
+<span class="c1">//  //</span>
+<span class="c1">//  const xAOD::EventInfo* eventInfo(nullptr);</span>
+<span class="c1">//  ANA_CHECK( HelperFunctions::retrieve(eventInfo, m_eventInfoContainerName, m_event, m_store, msg()) );</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//  //</span>
+<span class="c1">//  //  Make accessors/decorators</span>
+<span class="c1">//  //</span>
+<span class="c1">//  static SG::AuxElement::Decorator&lt; const xAOD::BTagging* &gt; hltBTagDecor( &quot;HLTBTag&quot; );</span>
+<span class="c1">//</span>
+<span class="c1">//  Trig::FeatureContainer fc = m_trigDecTool_handle-&gt;features(m_trigItemAfterVeto, TrigDefs::Physics );</span>
+<span class="c1">//  Trig::FeatureContainer::combination_const_iterator comb   (fc.getCombinations().begin());</span>
+<span class="c1">//  Trig::FeatureContainer::combination_const_iterator combEnd(fc.getCombinations().end());</span>
+<span class="c1">//  ANA_MSG_VERBOSE( m_name &lt;&lt; &quot; New Event --------------- &quot;);</span>
+<span class="c1">//  ANA_MSG_VERBOSE( &quot; Event Pass? &quot; &lt;&lt; m_trigDecTool_handle-&gt;isPassed(m_trigItemAfterVeto) );</span>
+<span class="c1">//  ANA_MSG_VERBOSE( &quot; comb size &quot; &lt;&lt; fc.getCombinations().size());</span>
+<span class="c1">//  for( ; comb!=combEnd ; ++comb) {</span>
+<span class="c1">//    std::vector&lt; Trig::Feature&lt;xAOD::JetContainer&gt; &gt;            jetCollections  = comb-&gt;containerFeature&lt;xAOD::JetContainer&gt;(m_jetName);</span>
+<span class="c1">//    std::vector&lt; Trig::Feature&lt;xAOD::BTaggingContainer&gt; &gt;       bjetCollections = comb-&gt;containerFeature&lt;xAOD::BTaggingContainer&gt;(&quot;HLTBjetFex&quot;);</span>
+<span class="c1">//    std::vector&lt; Trig::Feature&lt;xAOD::TrackParticleContainer&gt; &gt;  trkCollections;</span>
+<span class="c1">//    if(m_readHLTTracks) trkCollections = comb-&gt;containerFeature&lt;xAOD::TrackParticleContainer&gt;(m_trkName);</span>
+<span class="c1">//    //std::vector&lt; Trig::Feature&lt;xAOD::TrackParticleContainer&gt; &gt;  ftfCollections  = comb-&gt;containerFeature&lt;xAOD::TrackParticleContainer&gt;(&quot;InDetTrigTrackingxAODCnv_Bjet_FTF&quot;);</span>
+<span class="c1">//</span>
+<span class="c1">//    std::vector&lt;Trig::Feature&lt;xAOD::VertexContainer&gt; &gt; vtxCollections;</span>
+<span class="c1">//    std::vector&lt;Trig::Feature&lt;xAOD::VertexContainer&gt; &gt; backupVtxCollections;</span>
+<span class="c1">//    if(m_readHLTVtx){</span>
+<span class="c1">//      backupVtxCollections = comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(&quot;EFHistoPrmVtx&quot;);</span>
+<span class="c1">//</span>
+<span class="c1">//      if(m_vtxName.size()){</span>
+<span class="c1">//  vtxCollections = comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(m_vtxName);</span>
+<span class="c1">//      }else{</span>
+<span class="c1">//  vtxCollections = comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;();</span>
+<span class="c1">//      }</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; Test Size &quot;);</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tSplitJet: &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::JetContainer&gt;(&quot;SplitJet&quot;).size());</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tGSCJet: &quot;   &lt;&lt; comb-&gt;containerFeature&lt;xAOD::JetContainer&gt;(&quot;GSCJet&quot;)  .size());</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tEFJet:  &quot;   &lt;&lt; comb-&gt;containerFeature&lt;xAOD::JetContainer&gt;(&quot;EFJet&quot;)   .size());</span>
+<span class="c1">//    //</span>
+<span class="c1">//    //// FTK Vertex debugging</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; Test Size &quot; &lt;&lt; vtxCollections.size() &lt;&lt; &quot;  &#39;&quot; &lt;&lt; m_vtxName &lt;&lt; &quot;&#39;&quot;);</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; Test Size2 &quot; &lt;&lt; vtxCollections.size());</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tempty: &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;().size());</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tEFHistoPrmVtx: &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(&quot;EFHistoPrmVtx&quot;).size();</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \txPrimVx: &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(&quot;xPrimVx&quot;).size());</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tPrimVertexFTK &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(&quot;PrimVertexFTK&quot;).size());</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tPrimVertexFTKRaw &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(&quot;PrimVertexFTKRaw&quot;).size());</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tPrimVertexFTKRefit &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(&quot;PrimVertexFTKRefit&quot;).size();</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; \tHLT_PrimVertexFTK &quot; &lt;&lt; comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;(&quot;HLT_PrimVertexFTK&quot;).size());</span>
+<span class="c1">//</span>
+<span class="c1">//    //</span>
+<span class="c1">//    //    std::vector&lt;Trig::Feature&lt;xAOD::VertexContainer&gt; &gt; EvtxCollections = comb-&gt;containerFeature&lt;xAOD::VertexContainer&gt;();</span>
+<span class="c1">//    //    for ( unsigned ifeat=0 ; ifeat&lt;EvtxCollections.size() ; ifeat++ ) {</span>
+<span class="c1">//    //      ANA_MSG_INFO(EvtxCollections.at(ifeat).label());</span>
+<span class="c1">//    //      for( auto vtx_itr : *(EvtxCollections.at(ifeat).cptr()) ){</span>
+<span class="c1">//    //          ANA_MSG_INFO(vtx_itr-&gt;vertexType() &lt;&lt; &quot; &quot;);</span>
+<span class="c1">//    //      }</span>
+<span class="c1">//    //    }</span>
+<span class="c1">//</span>
+<span class="c1">//    bool isValid = true;</span>
+<span class="c1">//</span>
+<span class="c1">//    ANA_MSG_VERBOSE(&quot;ncontainers  &quot; &lt;&lt; bjetCollections.size());</span>
+<span class="c1">//</span>
+<span class="c1">//    if(jetCollections.size() != bjetCollections.size()){</span>
+<span class="c1">//      ANA_MSG_ERROR(&quot;Problem in container size: &quot; &lt;&lt; m_name &lt;&lt; &quot; jets: &quot;&lt;&lt; jetCollections.size() &lt;&lt; &quot; bjets: &quot;&lt;&lt; bjetCollections.size());</span>
+<span class="c1">//      isValid = false;</span>
+<span class="c1">//</span>
+<span class="c1">//      auto triggerChainGroupAfterVeto = m_trigDecTool_handle-&gt;getChainGroup(m_trigItemAfterVeto);</span>
+<span class="c1">//      std::vector&lt;std::string&gt; triggersUsedAfterVeto = triggerChainGroupAfterVeto-&gt;getListOfTriggers();</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;Passed Triggers &quot;);</span>
+<span class="c1">//      for(std::string trig : triggersUsedAfterVeto){</span>
+<span class="c1">//        auto trigChain = m_trigDecTool_handle-&gt;getChainGroup(trig);</span>
+<span class="c1">//        if(trigChain-&gt;isPassed()) ANA_MSG_VERBOSE(&quot; \t &quot; &lt;&lt; trig);</span>
+<span class="c1">//      }</span>
+<span class="c1">//</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//    if(m_readHLTTracks &amp;&amp; jetCollections.size() != trkCollections.size()){</span>
+<span class="c1">//      ANA_MSG_ERROR(&quot;Problem in container size: &quot; &lt;&lt; m_name &lt;&lt; &quot; jets: &quot;&lt;&lt; jetCollections.size() &lt;&lt; &quot; trks: &quot;&lt;&lt; trkCollections.size());</span>
+<span class="c1">//      ANA_MSG_ERROR(&quot; Jet Collection &quot; &lt;&lt; m_jetName &lt;&lt; &quot; Trk Collection:  &quot; &lt;&lt; m_trkName);</span>
+<span class="c1">//      isValid = false;</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//    //if(jetCollections.size() != ftfCollections.size()){</span>
+<span class="c1">//    //  ANA_MSG_ERROR(&quot;Problem in container size: &quot; &lt;&lt; m_name  &lt;&lt; &quot; jets: &quot;&lt;&lt; jetCollections.size() &lt;&lt; &quot; ftfs: &quot;&lt;&lt; ftfCollections.size());</span>
+<span class="c1">//    //  isValid = false;</span>
+<span class="c1">//    //}</span>
+<span class="c1">//</span>
+<span class="c1">//    if(m_readHLTVtx){</span>
+<span class="c1">//      if(vtxCollections.size() &lt; jetCollections.size()){</span>
+<span class="c1">//  ANA_MSG_ERROR(&quot;Problem in container size: &quot; &lt;&lt; m_name</span>
+<span class="c1">//                       &lt;&lt; &quot; jets: &quot;&lt;&lt; jetCollections.size() &lt;&lt; &quot; &quot; &lt;&lt; m_jetName</span>
+<span class="c1">//                       &lt;&lt; &quot; vtx: &quot;&lt;&lt; vtxCollections.size()  &lt;&lt; &quot; &quot; &lt;&lt; m_vtxName);</span>
+<span class="c1">//  for ( unsigned ifeat=0 ; ifeat&lt;vtxCollections.size() ; ifeat++ ) {</span>
+<span class="c1">//    ANA_MSG_INFO(&quot;Feture: &quot; &lt;&lt; ifeat);</span>
+<span class="c1">//    for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ){</span>
+<span class="c1">//      ANA_MSG_INFO(vtx_itr-&gt;vertexType());</span>
+<span class="c1">//    }</span>
+<span class="c1">//  }</span>
+<span class="c1">//  isValid = false;</span>
+<span class="c1">//      }</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//    if(!isValid) continue;</span>
+<span class="c1">//</span>
+<span class="c1">//    //Loop over jets until a jet with track size &gt; 0 is found</span>
+<span class="c1">//</span>
+<span class="c1">//    // Declare variables here as same bs for all jets</span>
+<span class="c1">//    float var_bs_online_vx = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSx);</span>
+<span class="c1">//    float var_bs_online_vy = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSy);</span>
+<span class="c1">//    float var_bs_online_vz = m_onlineBSTool.getOnlineBSInfo(eventInfo, xAH::OnlineBeamSpotTool::BSData::BSz);</span>
+<span class="c1">//</span>
+<span class="c1">//    ANA_MSG_VERBOSE(&quot; bs_online_vx &quot; &lt;&lt; var_bs_online_vx &lt;&lt; &quot; bs_online_vy &quot; &lt;&lt; var_bs_online_vy &lt;&lt; &quot; bs_online_vz &quot; &lt;&lt; var_bs_online_vz);</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot; is Valid &quot; &lt;&lt; jetCollections.size() &lt;&lt; &quot; &quot; &lt;&lt; vtxCollections.size());</span>
+<span class="c1">//    for ( unsigned ifeat=0 ; ifeat&lt;jetCollections.size() ; ifeat++ ) {</span>
+<span class="c1">//      const xAOD::Jet* hlt_jet = getTrigObject&lt;xAOD::Jet, xAOD::JetContainer&gt;(jetCollections.at(ifeat));</span>
+<span class="c1">//      if(!hlt_jet) continue;</span>
+<span class="c1">//</span>
+<span class="c1">//      bool passOverlap = true;</span>
+<span class="c1">//      for( const xAOD::Jet* previousJet : *hltJets){</span>
+<span class="c1">//  if(previousJet-&gt;p4().DeltaR(hlt_jet-&gt;p4()) &lt; 0.1){</span>
+<span class="c1">//    const xAOD::BTagging *p_btag_info = previousJet-&gt;auxdata&lt; const xAOD::BTagging* &gt;(&quot;HLTBTag&quot;);</span>
+<span class="c1">//    double p_mv2c10 = -99;</span>
+<span class="c1">//    p_btag_info-&gt;MVx_discriminant(&quot;MV2c10&quot;, p_mv2c10);</span>
+<span class="c1">//</span>
+<span class="c1">//    double this_mv2c10 = -99;</span>
+<span class="c1">//    const xAOD::BTagging* hlt_btag = getTrigObject&lt;xAOD::BTagging, xAOD::BTaggingContainer&gt;(bjetCollections.at(ifeat));</span>
+<span class="c1">//    if(hlt_btag){</span>
+<span class="c1">//      hlt_btag-&gt;MVx_discriminant(&quot;MV2c10&quot;, this_mv2c10);</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//    if(fabs(p_mv2c10 - this_mv2c10) &gt; 0.01){</span>
+<span class="c1">//      std::cout &lt;&lt; &quot;ERROR:: Previous mv2c10 &quot; &lt;&lt; p_mv2c10 &lt;&lt; &quot; this mv2c10 &quot;  &lt;&lt; this_mv2c10 &lt;&lt; std::endl;</span>
+<span class="c1">//      std::cout &lt;&lt; &quot;Previous Jet: pt: &quot; &lt;&lt; previousJet-&gt;pt() &lt;&lt; &quot; eta: &quot; &lt;&lt; previousJet-&gt;eta() &lt;&lt; &quot; phi: &quot; &lt;&lt; previousJet-&gt;phi() &lt;&lt; std::endl;;</span>
+<span class="c1">//      std::cout &lt;&lt; &quot;This Jet: pt: &quot; &lt;&lt; hlt_jet-&gt;pt() &lt;&lt; &quot; eta: &quot; &lt;&lt; hlt_jet-&gt;eta() &lt;&lt; &quot; phi: &quot; &lt;&lt; hlt_jet-&gt;phi() &lt;&lt; std::endl;;</span>
+<span class="c1">//    }</span>
+<span class="c1">//    passOverlap = false;</span>
+<span class="c1">//  }</span>
+<span class="c1">//      }</span>
+<span class="c1">//</span>
+<span class="c1">//      if(!passOverlap){</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot; Jet Failed overlap &quot; );</span>
+<span class="c1">//  continue;</span>
+<span class="c1">//      }</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;New Jet: pt: &quot; &lt;&lt; hlt_jet-&gt;pt() &lt;&lt; &quot; eta: &quot; &lt;&lt; hlt_jet-&gt;eta() &lt;&lt; &quot; phi: &quot; &lt;&lt; hlt_jet-&gt;phi());</span>
+<span class="c1">//</span>
+<span class="c1">//      const xAOD::BTagging* hlt_btag = getTrigObject&lt;xAOD::BTagging, xAOD::BTaggingContainer&gt;(bjetCollections.at(ifeat));</span>
+<span class="c1">//      if(!hlt_btag) continue;</span>
+<span class="c1">//</span>
+<span class="c1">//      const xAOD::TrackParticleContainer* hlt_tracks(nullptr);</span>
+<span class="c1">//      if(m_readHLTTracks){</span>
+<span class="c1">//  hlt_tracks = trkCollections.at(ifeat).cptr();</span>
+<span class="c1">//  if(!hlt_tracks) continue;</span>
+<span class="c1">//      }</span>
+<span class="c1">//</span>
+<span class="c1">//      xAOD::Jet* newHLTBJet = new xAOD::Jet();</span>
+<span class="c1">//      newHLTBJet-&gt;makePrivateStore( hlt_jet );</span>
+<span class="c1">//</span>
+<span class="c1">//      //</span>
+<span class="c1">//      // Add Link to BTagging Info</span>
+<span class="c1">//      //</span>
+<span class="c1">//      newHLTBJet-&gt;auxdecor&lt; const xAOD::BTagging* &gt;(&quot;HLTBTag&quot;) = hlt_btag;</span>
+<span class="c1">//</span>
+<span class="c1">//      //</span>
+<span class="c1">//      // Add Tracks to BJet</span>
+<span class="c1">//      //</span>
+<span class="c1">//      if(m_readHLTTracks){</span>
+<span class="c1">//</span>
+<span class="c1">//        std::vector&lt;const xAOD::TrackParticle*&gt; matchedTracks;</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;Trk Size&quot; &lt;&lt; hlt_tracks-&gt;size());</span>
+<span class="c1">//</span>
+<span class="c1">//  for(const xAOD::TrackParticle* thisHLTTrk: *hlt_tracks){</span>
+<span class="c1">//    ANA_MSG_VERBOSE(&quot;\tAdding  track &quot; &lt;&lt; thisHLTTrk-&gt;pt()   &lt;&lt; &quot; &quot; &lt;&lt; thisHLTTrk-&gt;eta()  &lt;&lt; &quot; &quot; &lt;&lt; thisHLTTrk-&gt;phi());</span>
+<span class="c1">//    matchedTracks.push_back(thisHLTTrk);</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  //</span>
+<span class="c1">//  // Adding online beamspot information from online track</span>
+<span class="c1">//  //</span>
+<span class="c1">//</span>
+<span class="c1">//  if(hlt_tracks-&gt;size()){</span>
+<span class="c1">//    ANA_MSG_VERBOSE(&quot;Found a hlt_tracks   &quot; &lt;&lt; hlt_tracks-&gt;at(0)-&gt;vx() &lt;&lt; &quot; &quot; &lt;&lt; hlt_tracks-&gt;at(0)-&gt;vy() &lt;&lt; &quot; &quot; &lt;&lt; hlt_tracks-&gt;at(0)-&gt;vz());</span>
+<span class="c1">//    ANA_MSG_VERBOSE(&quot;Compares to variable &quot; &lt;&lt; &quot; &quot; &lt;&lt; var_bs_online_vx &lt;&lt; &quot; &quot; &lt;&lt; var_bs_online_vy &lt;&lt; &quot; &quot; &lt;&lt; var_bs_online_vz);</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  m_bs_online_vx (*newHLTBJet) = var_bs_online_vx;</span>
+<span class="c1">//  m_bs_online_vy (*newHLTBJet) = var_bs_online_vy;</span>
+<span class="c1">//  m_bs_online_vz (*newHLTBJet) = var_bs_online_vz;</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;Adding tracks to jet &quot;);</span>
+<span class="c1">//  m_track_decoration(*newHLTBJet)         = matchedTracks;</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//      }</span>
+<span class="c1">//</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;Doing it for:        &quot; &lt;&lt; m_trigItem);</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;Check for m_jetName: &quot; &lt;&lt; m_jetName);</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;Check for m_vtxName: &quot; &lt;&lt; m_vtxName);</span>
+<span class="c1">//</span>
+<span class="c1">//      //</span>
+<span class="c1">//      // Check for dummy verticies</span>
+<span class="c1">//      //</span>
+<span class="c1">//      // hadDummyPV =&gt; class with three option</span>
+<span class="c1">//      //               0 - IDTrig  Found Vertex</span>
+<span class="c1">//      //               1 - EFHisto Found Vertex</span>
+<span class="c1">//      //               2 - No Vertex found</span>
+<span class="c1">//      if(m_readHLTVtx){</span>
+<span class="c1">//  if(!HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg())){</span>
+<span class="c1">//</span>
+<span class="c1">//    ANA_MSG_VERBOSE(&quot;HAVE  No Online Vtx!!! m_vtxName is  &quot; &lt;&lt; m_vtxName);</span>
+<span class="c1">//    for( auto vtx_itr : *(vtxCollections.at(ifeat).cptr()) ) ANA_MSG_VERBOSE(vtx_itr-&gt;vertexType());</span>
+<span class="c1">//</span>
+<span class="c1">//    //</span>
+<span class="c1">//    //  Try the HistoPrmVtx</span>
+<span class="c1">//    //</span>
+<span class="c1">//    if(backupVtxCollections.size()){</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;Have EFHistoPrmVtx.  &quot;);</span>
+<span class="c1">//      m_vtx_hadDummyPV  (*newHLTBJet)         = &#39;1&#39;;</span>
+<span class="c1">//      const xAOD::Vertex *backup_pvx = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;backup_pvx.  &quot; &lt;&lt; backup_pvx);</span>
+<span class="c1">//      m_vtx_decoration  (*newHLTBJet)         = backup_pvx;</span>
+<span class="c1">//      m_vtx_decoration_bkg(*newHLTBJet)       = backup_pvx;</span>
+<span class="c1">//    }else{</span>
+<span class="c1">//      ANA_MSG_INFO(&quot;No EFHistoPrmVtx....  &quot;);</span>
+<span class="c1">//      m_vtx_hadDummyPV  (*newHLTBJet)         = &#39;2&#39;;</span>
+<span class="c1">//      m_vtx_decoration  (*newHLTBJet)         = 0;</span>
+<span class="c1">//      m_vtx_decoration_bkg(*newHLTBJet)       = 0;</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//    //ANA_MSG_INFO(&quot;hadDummy and vtxType &quot; &lt;&lt; m_vtx_hadDummyPV (*newHLTBJet) &lt;&lt; &quot; &quot; &lt;&lt; m_vtxName);</span>
+<span class="c1">//</span>
+<span class="c1">//  }else{</span>
+<span class="c1">//</span>
+<span class="c1">//    m_vtx_decoration  (*newHLTBJet)         = HelperFunctions::getPrimaryVertex(vtxCollections.at(ifeat).cptr(), msg());</span>
+<span class="c1">//    m_vtx_hadDummyPV  (*newHLTBJet)         = &#39;0&#39;;</span>
+<span class="c1">//</span>
+<span class="c1">//    if(backupVtxCollections.size()){</span>
+<span class="c1">//      m_vtx_decoration_bkg(*newHLTBJet)     = HelperFunctions::getPrimaryVertex(backupVtxCollections.at(ifeat).cptr(), msg());</span>
+<span class="c1">//    }else{</span>
+<span class="c1">//      m_vtx_decoration_bkg(*newHLTBJet)     = 0;</span>
+<span class="c1">//    }</span>
+<span class="c1">//</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  m_offline_vtx_decoration (*newHLTBJet)  = offline_pvx;</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;hadDummy and vtxType&quot; &lt;&lt; m_vtx_hadDummyPV (*newHLTBJet) &lt;&lt; &quot; &quot; &lt;&lt; m_vtxName);</span>
+<span class="c1">//  //if(m_vtx_hadDummyPV (*newHLTBJet) != &#39;0&#39; ){</span>
+<span class="c1">//  //   ANA_MSG_INFO(&quot;hadDummy and vtxType and m_outContainerName  &quot; &lt;&lt; m_vtx_hadDummyPV (*newHLTBJet) &lt;&lt; &quot; &quot;</span>
+<span class="c1">//  //  &lt;&lt; m_vtxName &lt;&lt; &#39; &#39;&lt;&lt; m_outContainerName);</span>
+<span class="c1">//  //}</span>
+<span class="c1">//      } else{ //m_readHLTVtx</span>
+<span class="c1">//</span>
+<span class="c1">//  m_vtx_decoration  (*newHLTBJet)         = 0;</span>
+<span class="c1">//  m_vtx_hadDummyPV  (*newHLTBJet)         = &#39;0&#39;;</span>
+<span class="c1">//  m_vtx_decoration_bkg(*newHLTBJet)       = 0;</span>
+<span class="c1">//  m_offline_vtx_decoration (*newHLTBJet)  = 0;</span>
+<span class="c1">//      }</span>
+<span class="c1">//</span>
+<span class="c1">//      hltJets-&gt;push_back( newHLTBJet );</span>
+<span class="c1">//      ANA_MSG_VERBOSE(&quot;pushed back &quot;);</span>
+<span class="c1">//</span>
+<span class="c1">//    }//feature</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//  }// Combinations</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_CHECK( m_store-&gt;record( hltJets,    m_outContainerName));</span>
+<span class="c1">//  ANA_CHECK( m_store-&gt;record( hltJetsAux, m_outContainerName+&quot;Aux.&quot;));</span>
+<span class="c1">//</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: buildHLTJets ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;In buildHLTJets  &quot;);</span>
+<span class="c1">//  //</span>
+<span class="c1">//  // Create the new container and its auxiliary store.</span>
+<span class="c1">//  //</span>
+<span class="c1">//  xAOD::JetContainer*     hltJets    = new xAOD::JetContainer();</span>
+<span class="c1">//  xAOD::JetAuxContainer*  hltJetsAux = new xAOD::JetAuxContainer();</span>
+<span class="c1">//  hltJets-&gt;setStore( hltJetsAux ); //&lt; Connect the two</span>
+<span class="c1">//</span>
+<span class="c1">//  Trig::FeatureContainer fc = m_trigDecTool_handle-&gt;features(m_trigItem);</span>
+<span class="c1">//  auto jetFeatureContainers = fc.containerFeature&lt;xAOD::JetContainer&gt;();</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;ncontainers  &quot; &lt;&lt; jetFeatureContainers.size());</span>
+<span class="c1">//</span>
+<span class="c1">//  //DataModel_detail::const_iterator&lt;JetContainer &gt;::reference {aka const xAOD::Jet_v1*}</span>
+<span class="c1">//</span>
+<span class="c1">//  for(auto  jcont : jetFeatureContainers) {</span>
+<span class="c1">//    for (const xAOD::Jet*  hlt_jet : *jcont.cptr()) {</span>
+<span class="c1">//</span>
+<span class="c1">//      xAOD::Jet* newHLTJet = new xAOD::Jet();</span>
+<span class="c1">//      newHLTJet-&gt;makePrivateStore( hlt_jet );</span>
+<span class="c1">//</span>
+<span class="c1">//      hltJets-&gt;push_back( newHLTJet );</span>
+<span class="c1">//    }</span>
+<span class="c1">//  }</span>
+<span class="c1">//</span>
+<span class="c1">//  ANA_CHECK( m_store-&gt;record( hltJets,    m_outContainerName));</span>
+<span class="c1">//  ANA_CHECK( m_store-&gt;record( hltJetsAux, m_outContainerName+&quot;Aux.&quot;));</span>
+<span class="c1">//  ANA_MSG_VERBOSE(&quot;Left buildHLTJets  &quot;);</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: postExecute ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_MSG_DEBUG( &quot;Calling postExecute&quot;);</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: finalize ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_MSG_DEBUG( &quot;Deleting tool instances...&quot;);</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//</span>
+<span class="c1">//EL::StatusCode HLTJetRoIBuilder :: histFinalize ()</span>
+<span class="c1">//{</span>
+<span class="c1">//  ANA_MSG_DEBUG( &quot;Calling histFinalize&quot;);</span>
+<span class="c1">//  ANA_CHECK( xAH::Algorithm::algFinalize());</span>
+<span class="c1">//  return EL::StatusCode::SUCCESS;</span>
+<span class="c1">//}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, ATLAS Collaboration
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

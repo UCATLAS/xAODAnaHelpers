@@ -1,0 +1,72 @@
+
+.. _file_Root_PhotonSelector.cxx:
+
+File PhotonSelector.cxx
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/PhotonSelector.cxx``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_PhotonSelector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``IsolationSelection/IsolationSelectionTool.h``
+
+- ``TFile.h``
+
+- ``TObjArray.h``
+
+- ``TObjString.h``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/PhotonSelector.h`` (:ref:`file_xAODAnaHelpers_PhotonSelector.h`)
+
+- ``xAODEgamma/EgammaDefs.h``
+
+- ``xAODEgamma/EgammaxAODHelpers.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_PhotonSelector_8cxx_1a653c4d4eb2af01ded4b186f849fa405e`
+
