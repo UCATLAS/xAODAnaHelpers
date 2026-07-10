@@ -20,7 +20,7 @@ PyYAML==6.0
 requests==2.33.0
 six==1.13.0
 snowballstemmer==2.0.0
-soupsieve==1.9.5
+soupsieve==2.8.4
 Sphinx==4.5.0
 sphinx-argparse==0.2.5
 sphinx-rtd-theme==0.4.3
