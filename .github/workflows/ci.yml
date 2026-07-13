@@ -21,6 +21,8 @@ jobs:
         release_version:
           - 25.2.62
           - 25.2.63
+          - 25.2.64
+          - 25.2.65
 
     steps:
     - uses: actions/checkout@master
