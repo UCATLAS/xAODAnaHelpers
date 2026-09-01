@@ -715,6 +715,6 @@ EL::StatusCode TreeAlgo :: finalize () {
 
 EL::StatusCode TreeAlgo :: histFinalize () { return EL::StatusCode::SUCCESS; }
 
-HelpTreeBase* TreeAlgo :: createTree(xAOD::TEvent *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store) {
+HelpTreeBase* TreeAlgo :: createTree(xAOD::Event *event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store) {
     return new HelpTreeBase( event, tree, file, units, debug, store );
 }

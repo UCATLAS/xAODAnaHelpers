@@ -267,6 +267,7 @@ EL::StatusCode JetSelector :: initialize ()
     ATH_CHECK( m_jetNNJvtSelectionTool.setProperty("JetContainer", m_outContainerName) );
     ATH_CHECK( m_jetNNJvtSelectionTool.setProperty("WorkingPoint", m_WorkingPointJVT) );
     ATH_CHECK( m_jetNNJvtSelectionTool.setProperty("OutputLevel", msg().level()) );
+    ATH_CHECK( m_jetNNJvtSelectionTool.setProperty("JvtMomentName", "NNJvt") );
     ATH_CHECK( m_jetNNJvtSelectionTool.retrieve() );
     ANA_MSG_DEBUG("Retrieved tool: " << m_jetNNJvtSelectionTool);
 

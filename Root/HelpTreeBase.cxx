@@ -29,7 +29,7 @@ using std::vector;
 #pragma link C++ class vector<float>+;
 #endif
 
-HelpTreeBase::HelpTreeBase(xAOD::TEvent* event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store, std::string nominalTreeName):
+HelpTreeBase::HelpTreeBase(xAOD::Event* event, TTree* tree, TFile* file, const float units, bool debug, xAOD::TStore* store, std::string nominalTreeName):
   m_trigInfoSwitch(nullptr),
   m_trigConfTool(nullptr),
   m_trigDecTool(nullptr),
@@ -110,7 +110,7 @@ HelpTreeBase::~HelpTreeBase() {
 }
 
 
-HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent* event, xAOD::TStore* store, const float units, bool debug, std::string nominalTreeName):
+HelpTreeBase::HelpTreeBase(TTree* tree, TFile* file, xAOD::Event* event, xAOD::TStore* store, const float units, bool debug, std::string nominalTreeName):
   HelpTreeBase(event, tree, file, units, debug, store, nominalTreeName)
 {
   // use the other constructor for everything
@@ -143,7 +143,7 @@ void HelpTreeBase::AddEvent( const std::string& detailStr ) {
   this->AddEventUser(detailStr);
 }
 
-void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* /*event*/, const xAOD::VertexContainer* vertices ) {
+void HelpTreeBase::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::Event* /*event*/, const xAOD::VertexContainer* vertices ) {
 
   this->ClearEvent();
 

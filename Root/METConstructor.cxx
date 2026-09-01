@@ -116,6 +116,7 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
   //////////// IMETMaker ////////////////
+  ATH_CHECK( m_metmaker_handle.setProperty("JetContainer", "AntiKt4EMPFlowJets") );
   if ( m_dofJVTCut ) {
     ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", m_fJVTdecorName));
   }

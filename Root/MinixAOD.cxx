@@ -115,7 +115,7 @@ EL::StatusCode MinixAOD :: initialize ()
 
   // always do this, obviously
   TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
-  ANA_CHECK( m_event->writeTo(file_xAOD));
+  ANA_CHECK( m_event->writeTo(*file_xAOD));
 
   if(m_copyFileMetaData){
     m_fileMetaDataTool = new xAODMaker::FileMetaDataTool();
@@ -330,7 +330,7 @@ EL::StatusCode MinixAOD :: finalize () {
   //
   // Close file
   TFile *file_xAOD = wk()->getOutputFile(m_outputFileName);
-  ANA_CHECK( m_event->finishWritingTo(file_xAOD));
+  ANA_CHECK( m_event->finishWritingTo(*file_xAOD));
 
   if(m_fileMetaDataTool) delete m_fileMetaDataTool;
   // if(m_trigMetaDataTool) delete m_trigMetaDataTool;

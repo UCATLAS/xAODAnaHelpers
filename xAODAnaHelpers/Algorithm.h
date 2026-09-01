@@ -209,7 +209,7 @@ namespace xAH {
         std::string m_className = "Algorithm"; //!
 
         /** The TEvent object */
-        xAOD::TEvent* m_event = nullptr; //!
+        xAOD::Event* m_event = nullptr; //!
         /** The TStore object */
         xAOD::TStore* m_store = nullptr; //!
 
