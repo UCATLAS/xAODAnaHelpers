@@ -3319,9 +3319,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     float pu, pb, pc, ptau, score;
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<float>("DL1r" , "pu", pu);
-    myBTag->variable<float>("DL1r" , "pc", pc);
-    myBTag->variable<float>("DL1r" , "pb", pb);
+    std::string actualTagger = "DL1r";
+    SG::ConstAccessor<float> pbTaggerAcc_dl1r (actualTagger+"_pb");
+    SG::ConstAccessor<float> pcTaggerAcc_dl1r (actualTagger+"_pc");
+    SG::ConstAccessor<float> puTaggerAcc_dl1r (actualTagger+"_pu");
+    if (pbTaggerAcc_dl1r.isAvailable(*jet) && pcTaggerAcc_dl1r.isAvailable(*jet)
+        && puTaggerAcc_dl1r.isAvailable(*jet)) {
+      pb = pbTaggerAcc_dl1r(*jet);
+      pc = pcTaggerAcc_dl1r(*jet);
+      pu = puTaggerAcc_dl1r(*jet);
+    }
     //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
     score=log( pb / (0.018*pc+0.982*pu) );
     m_DL1r_pu->push_back(pu);
@@ -3330,9 +3337,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1r->push_back( score );
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<float>("DL1dv00" , "pu", pu);
-    myBTag->variable<float>("DL1dv00" , "pc", pc);
-    myBTag->variable<float>("DL1dv00" , "pb", pb);
+    actualTagger = "DL1dv00";
+    SG::ConstAccessor<float> pbTaggerAcc_dl1dv00 (actualTagger+"_pb");
+    SG::ConstAccessor<float> pcTaggerAcc_dl1dv00 (actualTagger+"_pc");
+    SG::ConstAccessor<float> puTaggerAcc_dl1dv00 (actualTagger+"_pu");
+    if (pbTaggerAcc_dl1dv00.isAvailable(*jet) && pcTaggerAcc_dl1dv00.isAvailable(*jet)
+        && puTaggerAcc_dl1dv00.isAvailable(*jet)) {
+      pb = pbTaggerAcc_dl1dv00(*jet);
+      pc = pcTaggerAcc_dl1dv00(*jet);
+      pu = puTaggerAcc_dl1dv00(*jet);
+    }
     //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
     score=log( pb / (0.018*pc+0.982*pu) );
     m_DL1dv00_pu->push_back(pu);
@@ -3340,9 +3354,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1dv00_pb->push_back(pb);
     m_DL1dv00->push_back( score );
     pu=0; pb=0; pc=0;
-    myBTag->variable<float>("DL1dv01" , "pu", pu);
-    myBTag->variable<float>("DL1dv01" , "pc", pc);
-    myBTag->variable<float>("DL1dv01" , "pb", pb);
+    actualTagger = "DL1dv01";
+    SG::ConstAccessor<float> pbTaggerAcc_dl1dv01 (actualTagger+"_pb");
+    SG::ConstAccessor<float> pcTaggerAcc_dl1dv01 (actualTagger+"_pc");
+    SG::ConstAccessor<float> puTaggerAcc_dl1dv01 (actualTagger+"_pu");
+    if (pbTaggerAcc_dl1dv01.isAvailable(*jet) && pcTaggerAcc_dl1dv01.isAvailable(*jet)
+        && puTaggerAcc_dl1dv01.isAvailable(*jet)) {
+      pb = pbTaggerAcc_dl1dv01(*jet);
+      pc = pcTaggerAcc_dl1dv01(*jet);
+      pu = puTaggerAcc_dl1dv01(*jet);
+    }
     //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
     score=log( pb / (0.018*pc+0.982*pu) );
     m_DL1dv01_pu->push_back(pu);
@@ -3351,9 +3372,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_DL1dv01->push_back( score );
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<float>("GN120220509" , "pu", pu);
-    myBTag->variable<float>("GN120220509" , "pc", pc);
-    myBTag->variable<float>("GN120220509" , "pb", pb);
+    actualTagger = "GN120220509";
+    SG::ConstAccessor<float> pbTaggerAcc_GN120220509 (actualTagger+"_pb");
+    SG::ConstAccessor<float> pcTaggerAcc_GN120220509 (actualTagger+"_pc");
+    SG::ConstAccessor<float> puTaggerAcc_GN120220509 (actualTagger+"_pu");
+    if (pbTaggerAcc_GN120220509.isAvailable(*jet) && pcTaggerAcc_GN120220509.isAvailable(*jet)
+        && puTaggerAcc_GN120220509.isAvailable(*jet)) {
+      pb = pbTaggerAcc_GN120220509(*jet);
+      pc = pcTaggerAcc_GN120220509(*jet);
+      pu = puTaggerAcc_GN120220509(*jet);
+    }
     //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
     score=log( pb / (0.05*pc+0.95*pu) ); // GN1 uses a different f_c value than DL1d which is 0.05
     m_GN1_pu->push_back(pu);
@@ -3362,9 +3390,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_GN1->push_back( score );
 
     pu=0; pb=0; pc=0;
-    myBTag->variable<float>("GN2v00LegacyWP" , "pu", pu);
-    myBTag->variable<float>("GN2v00LegacyWP" , "pc", pc);
-    myBTag->variable<float>("GN2v00LegacyWP" , "pb", pb);
+    actualTagger = "GN2v00LegacyWP";
+    SG::ConstAccessor<float> pbTaggerAcc_GN2v00LegacyWP (actualTagger+"_pb");
+    SG::ConstAccessor<float> pcTaggerAcc_GN2v00LegacyWP (actualTagger+"_pc");
+    SG::ConstAccessor<float> puTaggerAcc_GN2v00LegacyWP (actualTagger+"_pu");
+    if (pbTaggerAcc_GN2v00LegacyWP.isAvailable(*jet) && pcTaggerAcc_GN2v00LegacyWP.isAvailable(*jet)
+        && puTaggerAcc_GN2v00LegacyWP.isAvailable(*jet)) {
+      pb = pbTaggerAcc_GN2v00LegacyWP(*jet);
+      pc = pcTaggerAcc_GN2v00LegacyWP(*jet);
+      pu = puTaggerAcc_GN2v00LegacyWP(*jet);
+    }
     //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
     score=log( pb / (0.10*pc+0.90*pu) ); // GN2 uses a different f_c value than DL1d which is 0.01
     m_GN2v00LegacyWP_pu->push_back(pu);
@@ -3373,9 +3408,16 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_GN2v00LegacyWP->push_back( score );
     
     pu=0; pb=0; pc=0;
-    myBTag->variable<float>("GN2v00NewAliasWP" , "pu", pu);
-    myBTag->variable<float>("GN2v00NewAliasWP" , "pc", pc);
-    myBTag->variable<float>("GN2v00NewAliasWP" , "pb", pb);
+    actualTagger = "GN2v00NewAliasWP";
+    SG::ConstAccessor<float> pbTaggerAcc_GN2v00NewAliasWP (actualTagger+"_pb");
+    SG::ConstAccessor<float> pcTaggerAcc_GN2v00NewAliasWP (actualTagger+"_pc");
+    SG::ConstAccessor<float> puTaggerAcc_GN2v00NewAliasWP (actualTagger+"_pu");
+    if (pbTaggerAcc_GN2v00NewAliasWP.isAvailable(*jet) && pcTaggerAcc_GN2v00NewAliasWP.isAvailable(*jet)
+        && puTaggerAcc_GN2v00NewAliasWP.isAvailable(*jet)) {
+      pb = pbTaggerAcc_GN2v00NewAliasWP(*jet);
+      pc = pcTaggerAcc_GN2v00NewAliasWP(*jet);
+      pu = puTaggerAcc_GN2v00NewAliasWP(*jet);
+    }
     //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
     score=log( pb / (0.10*pc+0.90*pu) ); // GN2 uses a different f_c value than DL1d which is 0.01
     m_GN2v00NewAliasWP_pu->push_back(pu);
@@ -3384,10 +3426,18 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_GN2v00NewAliasWP->push_back( score );
 
     pu=0; pb=0; pc=0; ptau=0;
-    myBTag->variable<float>("GN2v01" , "pu", pu);
-    myBTag->variable<float>("GN2v01" , "pc", pc);
-    myBTag->variable<float>("GN2v01" , "pb", pb);
-    myBTag->variable<float>("GN2v01" , "ptau", ptau);
+    actualTagger = "GN2v01";
+    SG::ConstAccessor<float> pbTaggerAcc_GN2v01 (actualTagger+"_pb");
+    SG::ConstAccessor<float> pcTaggerAcc_GN2v01 (actualTagger+"_pc");
+    SG::ConstAccessor<float> puTaggerAcc_GN2v01 (actualTagger+"_pu");
+    SG::ConstAccessor<float> ptauTaggerAcc_GN2v01 (actualTagger+"_ptau");
+    if (pbTaggerAcc_GN2v01.isAvailable(*jet) && pcTaggerAcc_GN2v01.isAvailable(*jet)
+        && puTaggerAcc_GN2v01.isAvailable(*jet) && ptauTaggerAcc_GN2v01.isAvailable(*jet)) {
+      pb = pbTaggerAcc_GN2v01(*jet);
+      pc = pcTaggerAcc_GN2v01(*jet);
+      pu = puTaggerAcc_GN2v01(*jet);
+      ptau = ptauTaggerAcc_GN2v01(*jet);
+    }
     //FixMe: Retrieve the correct f_c value from the CDI file would be the best approach
     score=log( pb / (0.20*pc+0.01*ptau+0.79*pu) ); // GN2v01 uses a different f_c value than DL1dv01 which is 0.018
     m_GN2v01_pu->push_back(pu);
@@ -3395,7 +3445,6 @@ void JetContainer::FillJet( const xAOD::IParticle* particle, const xAOD::Vertex*
     m_GN2v01_pb->push_back(pb);
     m_GN2v01_ptau->push_back(ptau);
     m_GN2v01->push_back( score );
-
     if(m_infoSwitch.m_jetFitterDetails ) {
 
       static SG::AuxElement::ConstAccessor< int   > jf_nVTXAcc       ("JetFitter_nVTX");
