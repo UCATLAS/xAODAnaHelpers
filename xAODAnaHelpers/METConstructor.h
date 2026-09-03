@@ -75,6 +75,10 @@ public:
   bool m_significanceTreatPUJets = true;
   /// @brief Set soft term resolution
   double m_significanceSoftTermReso = 10.0;
+  /// @brief Set EGamma model
+  std::string m_significanceESModel = "";
+  /// @brief set muon calib mode
+  int m_significanceMuonCalibMode = -1;
 
   // used for systematics
   /// @brief set to false if you want to run met systematics
