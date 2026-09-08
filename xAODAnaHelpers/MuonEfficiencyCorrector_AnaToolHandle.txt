@@ -77,7 +77,7 @@ public:
 
 private:
 
-  xAOD::TEvent *m_event;  //!
+  xAOD::Event *m_event;  //!
   xAOD::TStore *m_store;  //!
 
   int m_numEvent;         //!

@@ -116,6 +116,7 @@ EL::StatusCode METConstructor :: initialize ()
   ANA_MSG_DEBUG( "Is MC? " << isMC() );
 
   //////////// IMETMaker ////////////////
+  ATH_CHECK( m_metmaker_handle.setProperty("JetContainer", "AntiKt4EMPFlowJets") );
   if ( m_dofJVTCut ) {
     ANA_CHECK(m_metmaker_handle.setProperty("JetRejectionDec", m_fJVTdecorName));
   }
@@ -145,6 +146,14 @@ EL::StatusCode METConstructor :: initialize ()
   if ( m_calculateSignificance ) {
     ANA_CHECK( m_metSignificance_handle.setProperty("TreatPUJets", m_significanceTreatPUJets) );
     ANA_CHECK( m_metSignificance_handle.setProperty("SoftTermReso", m_significanceSoftTermReso) );
+    ANA_CHECK( m_metSignificance_handle.setProperty("EgammaESModel", m_significanceESModel) );
+    ANA_CHECK( m_metSignificance_handle.setProperty("EgammaDecorrelationModel", "1NP_v1") );
+    // This is the only recommended set of jet resolutions for use with R22+ MET Significance until "Consolidated" recommendations are available
+    ANA_CHECK( m_metSignificance_handle.setProperty("JetCalibConfig", "JES_data2017_2016_2015_Recommendation_PFlow_Aug2018_rel21.config") );
+    ANA_CHECK( m_metSignificance_handle.setProperty("JetCalibSequence", "JetArea_Residual_EtaJES_GSC_Smear") );
+    ATH_CHECK( m_metSignificance_handle.setProperty("JetCalibArea", "00-04-81") );
+
+    ANA_CHECK( m_metSignificance_handle.setProperty("MuonCalibMode", m_significanceMuonCalibMode) );
 
     // For AFII samples
     if ( isFastSim() ){

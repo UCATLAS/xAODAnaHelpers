@@ -67,8 +67,8 @@ class HelpTreeBase {
 
 public:
 
-  HelpTreeBase(xAOD::TEvent *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr, std::string nominalTreeName = "nominal" );
-  HelpTreeBase(TTree* tree, TFile* file, xAOD::TEvent *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, std::string nominalTreeName = "nominal" );
+  HelpTreeBase(xAOD::Event *event, TTree* tree, TFile* file, const float units = 1e3, bool debug = false, xAOD::TStore* store = nullptr, std::string nominalTreeName = "nominal" );
+  HelpTreeBase(TTree* tree, TFile* file, xAOD::Event *event = nullptr, xAOD::TStore* store = nullptr, const float units = 1e3, bool debug = false, std::string nominalTreeName = "nominal" );
   virtual ~HelpTreeBase();
 
   void AddEvent         (const std::string& detailStr = "");
@@ -110,7 +110,7 @@ public:
    **/
   static std::string FatJetCollectionName(const std::string& fatjetName = "fatjet", const std::string& suffix = "");
 
-  xAOD::TEvent* m_event;
+  xAOD::Event* m_event;
   xAOD::TStore* m_store;
 
   /// @brief Name of vertex container
@@ -124,7 +124,7 @@ public:
   TrigConf::xAODConfigTool*    m_trigConfTool;
   Trig::TrigDecisionTool*      m_trigDecTool;
 
-  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event = nullptr, const xAOD::VertexContainer* vertices = nullptr );
+  void FillEvent( const xAOD::EventInfo* eventInfo, xAOD::Event* event = nullptr, const xAOD::VertexContainer* vertices = nullptr );
 
   void FillTrigger( const xAOD::EventInfo* eventInfo );
   void FillJetTrigger();

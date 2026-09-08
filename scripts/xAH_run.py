@@ -453,17 +453,6 @@ if __name__ == "__main__":
       job.options().setDouble(ROOT.EL.Job.optXAODPerfStats, 1)
       job.options().setDouble(ROOT.EL.Job.optPrintPerFileStats, 1)
 
-    # access mode branch
-    if args.access_mode == 'branch':
-      xAH_logger.info("\tusing branch access mode: ROOT.EL.Job.optXaodAccessMode_branch")
-      job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_branch )
-    elif args.access_mode == 'athena':
-      xAH_logger.info("\tusing branch access mode: ROOT.EL.Job.optXaodAccessMode_athena")
-      job.options().setString (ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_athena)
-    else:
-      xAH_logger.info("\tusing class access mode: ROOT.EL.Job.optXaodAccessMode_class")
-      job.options().setString( ROOT.EL.Job.optXaodAccessMode, ROOT.EL.Job.optXaodAccessMode_class )
-
     # formatted string
     algorithmConfiguration_string = []
 

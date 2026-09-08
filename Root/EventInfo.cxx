@@ -283,7 +283,7 @@ void EventInfo::clear()
   return;
 }
 
-void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::TEvent* event, const xAOD::VertexContainer* vertices) {
+void EventInfo::FillEvent( const xAOD::EventInfo* eventInfo, xAOD::Event* event, const xAOD::VertexContainer* vertices) {
 
   if (!m_infoSwitch.m_noDataInfo){ // saved always (unless specifically requiring not to)
     m_runNumber             = eventInfo->runNumber();

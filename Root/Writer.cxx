@@ -98,7 +98,7 @@ EL::StatusCode Writer :: initialize ()
 
   // output xAOD
   TFile * file = wk()->getOutputFile (m_outputLabel.Data());
-  ANA_CHECK( m_event->writeTo(file));
+  ANA_CHECK( m_event->writeTo(*file));
 
   //FIXME add this as well
 // Set which variables not to write out:
@@ -204,7 +204,7 @@ EL::StatusCode Writer :: finalize ()
 
   // finalize and close our output xAOD file ( and write MetaData tree )
   TFile * file = wk()->getOutputFile(m_outputLabel.Data());
-  ANA_CHECK( m_event->finishWritingTo( file ));
+  ANA_CHECK( m_event->finishWritingTo( *file ));
 
   return EL::StatusCode::SUCCESS;
 }
