@@ -1,0 +1,76 @@
+
+.. _file_Root_MuonCalibrator.cxx:
+
+File MuonCalibrator.cxx
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/MuonCalibrator.cxx``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_MuonCalibrator.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``AthContainers/DataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``PATInterfaces/CorrectionCode.h``
+
+- ``iostream``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/MuonCalibrator.h`` (:ref:`file_xAODAnaHelpers_MuonCalibrator.h`)
+
+- ``xAODBase/IParticle.h``
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODBase/IParticleHelpers.h``
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODMuon/Muon.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_MuonCalibrator_8cxx_1a13dece200c8655a874d7a183b495ff6f`
+

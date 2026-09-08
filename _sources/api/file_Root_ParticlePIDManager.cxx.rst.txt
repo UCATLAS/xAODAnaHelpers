@@ -1,0 +1,44 @@
+
+.. _file_Root_ParticlePIDManager.cxx:
+
+File ParticlePIDManager.cxx
+===========================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/ParticlePIDManager.cxx``)
+--------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_ParticlePIDManager.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/ParticlePIDManager.h`` (:ref:`file_xAODAnaHelpers_ParticlePIDManager.h`)
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_ParticlePIDManager_8cxx_1a6ac19811e9f535a6fa4979911da167f7`
+

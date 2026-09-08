@@ -1,0 +1,245 @@
+
+.. _program_listing_file_xAODAnaHelpers_JetSelector.h:
+
+Program Listing for File JetSelector.h
+======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_JetSelector.h>` (``xAODAnaHelpers/JetSelector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef xAODAnaHelpers_JetSelector_H
+   #define xAODAnaHelpers_JetSelector_H
+   
+   // EDM include(s):
+   #include "xAODJet/Jet.h"
+   #include "xAODJet/JetContainer.h"
+   
+   // ROOT include(s):
+   #include "TH1D.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   // external tools include(s):
+   #include "AsgTools/AnaToolHandle.h"
+   #include "ParticleJetTools/JetPileupLabelingTool.h"
+   #include "JetMomentTools/JetVertexNNTagger.h"
+   #include "JetAnalysisInterfaces/IJvtEfficiencyTool.h"
+   #include "PATCore/IAsgSelectionTool.h"
+   #include "JetInterface/IJetModifier.h"
+   #include "FTagAnalysisInterfaces/IBTaggingSelectionTool.h"
+   #include "TriggerMatchingTool/IMatchingTool.h"
+   #include "TriggerMatchingTool/IMatchScoringTool.h"
+   #include "TrigDecisionTool/TrigDecisionTool.h"
+   
+   class JetSelector : public xAH::Algorithm
+   {
+     // put your configuration variables here as public variables.
+     // that way they can be set directly from CINT and python.
+   public:
+     bool m_useCutFlow = true;
+   
+     // configuration variables
+     std::string m_inContainerName = "";
+     std::string m_outContainerName = "";
+     std::string m_truthJetContainer = "AntiKt4TruthJets";
+     std::string m_inputAlgo = "";
+     std::string m_outputAlgo = "";
+     bool        m_writeSystToMetadata = false;
+     std::string m_jetScaleType = "";
+     std::string m_decor = "passSel";
+     bool m_decorateSelectedObjects = true;
+     bool m_createSelectedContainer = false;
+     int m_nToProcess = -1;
+     bool m_cleanJets = true;
+     int m_cleanEvtLeadJets = -1;
+     bool m_cleanEvent = false;
+     bool m_markCleanEvent = false;
+     std::string m_jetScale4Selection = "Final";
+     bool m_doMCCleaning = false;
+     float m_mcCleaningCut = 1.4;
+     int m_pass_min = -1;
+     int m_pass_max = -1;
+     float m_pT_max = 1e8;
+     float m_pT_min = 1e8;
+     float m_ET_max = 1e8;
+     float m_ET_min = 1e8;
+     float m_eta_max = 1e8;
+     float m_eta_min = 1e8;
+     float m_detEta_max = 1e8;
+     float m_detEta_min = 1e8;
+     float m_mass_max = 1e8;
+     float m_mass_min = 1e8;
+     float m_rapidity_max = 1e8;
+     float m_rapidity_min = 1e8;
+     int   m_truthLabel =  -1;
+     bool  m_useHadronConeExcl = true;
+   
+     bool m_doJVF = false;
+     float m_pt_max_JVF = 50e3;
+     float m_eta_max_JVF = 2.4;
+     float m_JVFCut = 0.5;
+     bool m_doTruthJetTagging = true;
+     bool m_doJVT = false;
+     bool m_noJVTVeto = false;
+     bool m_dofJVT = false;
+     bool m_dofJVTVeto = true;
+     float m_pt_max_JVT = 60e3;
+     float m_eta_max_JVT = 2.4;
+     bool m_jvtUsedBefore=false;
+     bool m_haveTruthJets = true;
+     bool m_getJVTSF = true;
+   
+     float m_JVTCut = -1.0;
+   
+     std::string m_WorkingPointJVT = "FixedEffPt";
+   
+     std::string m_SFFileJVT = ""; // empty string means to apply dummy SFs
+     std::string m_outputSystNamesJVT = "JetJvtEfficiency_JVTSyst";
+     bool m_recalculateJvtScores = true;
+   
+     float         m_systValJVT = 0.0;
+     std::string   m_systNameJVT = "";
+   
+     std::string m_WorkingPointfJVT = "Loose";
+   
+     std::string m_SFFilefJVT = ""; // empty string means to apply dummy SFs
+   
+     std::string m_outputSystNamesfJVT = "JetJvtEfficiency_fJVTSyst";
+   
+     float         m_systValfJVT = 0.0;
+     std::string   m_systNamefJVT = "";
+     bool m_fjvtUsedBefore=false;
+   
+     bool          m_doJetTimingCut = false;
+     float         m_jetTiming_max = -1;
+   
+     bool  m_doBTagCut = false;
+     std::string m_corrFileName = "xAODBTaggingEfficiency/cutprofiles_22072015.root";
+     std::string m_jetAuthor = "AntiKt4EMPFlowJets";
+     std::string m_taggerName = "DL1r";
+     std::string m_operatingPt = "FixedCutBEff_70";
+     bool        m_readFromBTaggingObject = false;
+     // for BTaggingSelectionTool -- doubles are needed or will crash
+     // for the b-tagging tool - these are the b-tagging groups minimums
+     // users making tighter cuts can use the selector's parameters to keep
+     // things consistent
+     double m_b_eta_max = 2.5;
+     double m_b_pt_min = 20e3;
+   
+     // HLT Btag quality
+     bool m_doHLTBTagCut = false;
+     std::string m_HLTBTagTaggerName = "DL1r";
+     float m_HLTBTagCutValue = -0.4434;
+     bool  m_requireHLTVtx = false;
+     bool  m_requireNoHLTVtx = false;
+   
+     std::string              m_passAuxDecorKeys = "";
+     std::string              m_failAuxDecorKeys = "";
+   
+     /* trigger matching */
+     std::string    m_singleJetTrigChains = "";
+     std::string    m_diJetTrigChains = "";
+   
+     bool m_removeDuplicates = false;
+     int m_count_events_with_duplicates = 0;
+     bool m_sort = false;
+   
+   private:
+     int m_numEvent;         
+     int m_numObject;        
+     int m_numEventPass;     
+     int m_weightNumEventPass; 
+     int m_numObjectPass;    
+     int m_pvLocation;       
+   
+     bool m_isEMjet;                
+     bool m_isLCjet;                
+   
+     // cutflow
+     TH1D* m_cutflowHist = nullptr;          
+     TH1D* m_cutflowHistW = nullptr;         
+     int   m_cutflow_bin;          
+   
+     std::vector<std::string> m_passKeys;  
+     std::vector<std::string> m_failKeys;  
+   
+     /* object-level cutflow */
+   
+     TH1D* m_jet_cutflowHist_1 = nullptr;  
+   
+     int   m_jet_cutflow_all;           
+     int   m_jet_cutflow_cleaning_cut;  
+     int   m_jet_cutflow_ptmax_cut;     
+     int   m_jet_cutflow_ptmin_cut;     
+     int   m_jet_cutflow_etmax_cut;     
+     int   m_jet_cutflow_etmin_cut;     
+     int   m_jet_cutflow_eta_cut;       
+     int   m_jet_cutflow_jvt_cut;       
+     int   m_jet_cutflow_timing_cut;    
+     int   m_jet_cutflow_btag_cut;      
+   
+     std::vector<CP::SystematicSet> m_systListJVT; 
+     std::vector<CP::SystematicSet> m_systListfJVT; 
+   
+     std::vector<std::string>            m_singleJetTrigChainsList; 
+     std::vector<std::string>            m_diJetTrigChainsList;     
+   
+     asg::AnaToolHandle<JetPileupLabelingTool>  m_jetPileupLabelingTool;  
+     asg::AnaToolHandle<JetPileupTag::JetVertexNNTagger>  m_jetNNJvtMomentTool;  
+     asg::AnaToolHandle<IAsgSelectionTool> m_jetNNJvtSelectionTool;  
+     asg::AnaToolHandle<CP::IJvtEfficiencyTool> m_jetNNJvtEfficiencyTool;  
+     asg::AnaToolHandle<IAsgSelectionTool> m_jetfJvtSelectionTool;  
+     asg::AnaToolHandle<CP::IJvtEfficiencyTool> m_jetfJvtEfficiencyTool;  
+   
+     asg::AnaToolHandle<IBTaggingSelectionTool> m_BJetSelectTool_handle{"BTaggingSelectionTool"};  
+   
+     asg::AnaToolHandle<Trig::IMatchingTool>    m_trigJetMatchTool_handle; 
+     asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecTool_handle{"Trig::TrigDecisionTool/TrigDecisionTool"}; 
+     asg::AnaToolHandle<Trig::IMatchScoringTool>  m_scoreTool{"Trig::DRScoringTool/DRScoringTool"}; 
+   
+     bool m_doTrigMatch = true; 
+   
+     std::string m_outputJVTPassed = "JetJVT_Passed"; 
+     std::string m_outputfJVTPassed = "JetfJVT_Passed"; 
+   
+     // variables that don't get filled at submission time should be
+     // protected from being send from the submission node to the worker
+     // node (done by the //!)
+   public:
+     // Tree *myTree; //!
+     // TH1 *myHist; //!
+   
+   
+   
+     // this is a standard constructor
+     JetSelector ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // these are the functions not inherited from Algorithm
+     virtual bool executeSelection( const xAOD::JetContainer* inJets, float mcEvtWeight, bool count, std::string outContainerName, bool isNominal );
+   
+     // added functions not from Algorithm
+     // why does this need to be virtual?
+     virtual int PassCuts( const xAOD::Jet* jet );
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(JetSelector, 1);
+   
+   };
+   
+   #endif

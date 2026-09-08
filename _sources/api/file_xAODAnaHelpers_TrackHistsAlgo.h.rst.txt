@@ -1,0 +1,54 @@
+
+.. _file_xAODAnaHelpers_TrackHistsAlgo.h:
+
+File TrackHistsAlgo.h
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TrackHistsAlgo.h``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TrackHistsAlgo.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODAnaHelpers/TrackHists.h`` (:ref:`file_xAODAnaHelpers_TrackHists.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_TrackHistsAlgo.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTrackHistsAlgo`
+

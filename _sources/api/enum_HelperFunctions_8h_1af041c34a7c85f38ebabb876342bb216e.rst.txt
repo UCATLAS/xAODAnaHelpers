@@ -1,0 +1,13 @@
+.. _exhale_enum_HelperFunctions_8h_1af041c34a7c85f38ebabb876342bb216e:
+
+Enum ShowerType
+===============
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: HelperFunctions::ShowerType

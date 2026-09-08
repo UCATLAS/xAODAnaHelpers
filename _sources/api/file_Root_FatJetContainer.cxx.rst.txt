@@ -1,0 +1,43 @@
+
+.. _file_Root_FatJetContainer.cxx:
+
+File FatJetContainer.cxx
+========================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/FatJetContainer.cxx``)
+-----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_FatJetContainer.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``iostream``
+
+- ``xAODAnaHelpers/FatJetContainer.h`` (:ref:`file_xAODAnaHelpers_FatJetContainer.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODTruth/TruthEventContainer.h``
+
+
+
+
+

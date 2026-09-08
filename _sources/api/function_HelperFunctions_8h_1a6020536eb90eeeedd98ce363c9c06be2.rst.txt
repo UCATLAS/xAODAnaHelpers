@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a6020536eb90eeeedd98ce363c9c06be2:
+
+Template Function HelperFunctions::type_name
+============================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::type_name(bool)

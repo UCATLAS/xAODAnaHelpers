@@ -1,0 +1,25 @@
+.. _exhale_class_classElectronEfficiencyCorrector:
+
+Class ElectronEfficiencyCorrector
+=================================
+
+- Defined in :ref:`file_xAODAnaHelpers_ElectronEfficiencyCorrector.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: ElectronEfficiencyCorrector
+   :members:
+   :protected-members:
+   :undoc-members:

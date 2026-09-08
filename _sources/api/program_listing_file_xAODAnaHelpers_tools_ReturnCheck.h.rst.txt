@@ -1,0 +1,23 @@
+
+.. _program_listing_file_xAODAnaHelpers_tools_ReturnCheck.h:
+
+Program Listing for File ReturnCheck.h
+======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_tools_ReturnCheck.h>` (``xAODAnaHelpers/tools/ReturnCheck.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #warning Please use instead ANA_CHECK in AsgMessaging/MessageCheck.h
+   
+   #include "AsgMessaging/MessageCheck.h"
+   
+   #ifndef xAODAnaHelpers_TOOLS_RETURNCHECK_H
+   #define xAODAnaHelpers_TOOLS_RETURNCHECK_H
+   
+   #define RETURN_CHECK( CONTEXT, EXP, INFO )  ANA_CHECK(EXP)
+   #define EL_RETURN_CHECK( CONTEXT, EXP )     ANA_CHECK(EXP)
+   
+   #endif // xAODAnaHelpers_TOOLS_RETURNCHECK_H

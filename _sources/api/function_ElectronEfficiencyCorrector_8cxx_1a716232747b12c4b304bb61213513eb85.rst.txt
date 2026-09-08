@@ -1,0 +1,13 @@
+.. _exhale_function_ElectronEfficiencyCorrector_8cxx_1a716232747b12c4b304bb61213513eb85:
+
+Function ClassImp(ElectronEfficiencyCorrector)
+==============================================
+
+- Defined in :ref:`file_Root_ElectronEfficiencyCorrector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(ElectronEfficiencyCorrector)

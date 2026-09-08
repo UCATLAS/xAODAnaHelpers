@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a325eebda668a8961986946daa7608444:
+
+Template Function HelperFunctions::__attribute__
+================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::__attribute__((deprecated("retrieve<T>(..., bool) is deprecated. See https://github.com/UCATLAS/xAODAnaHelpers/pull/882")))

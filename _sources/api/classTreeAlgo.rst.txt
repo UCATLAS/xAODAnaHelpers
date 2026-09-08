@@ -1,0 +1,25 @@
+.. _exhale_class_classTreeAlgo:
+
+Class TreeAlgo
+==============
+
+- Defined in :ref:`file_xAODAnaHelpers_TreeAlgo.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: TreeAlgo
+   :members:
+   :protected-members:
+   :undoc-members:

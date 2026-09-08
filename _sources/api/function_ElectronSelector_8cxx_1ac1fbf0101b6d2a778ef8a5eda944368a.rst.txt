@@ -1,0 +1,13 @@
+.. _exhale_function_ElectronSelector_8cxx_1ac1fbf0101b6d2a778ef8a5eda944368a:
+
+Function ClassImp(ElectronSelector)
+===================================
+
+- Defined in :ref:`file_Root_ElectronSelector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(ElectronSelector)

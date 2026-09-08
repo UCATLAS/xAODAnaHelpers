@@ -1,0 +1,91 @@
+
+.. _file_xAODAnaHelpers_ParticleContainer.h:
+
+File ParticleContainer.h
+========================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/ParticleContainer.h``)
+---------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_ParticleContainer.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TLorentzVector.h``
+
+- ``TTree.h``
+
+- ``string``
+
+- ``vector``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/Particle.h`` (:ref:`file_xAODAnaHelpers_Particle.h`)
+
+- ``xAODBase/IParticle.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_ClusterContainer.h`
+
+- :ref:`file_xAODAnaHelpers_ElectronContainer.h`
+
+- :ref:`file_xAODAnaHelpers_FatJetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_IParticleHists.h`
+
+- :ref:`file_xAODAnaHelpers_JetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_L1JetContainer.h`
+
+- :ref:`file_xAODAnaHelpers_MuonContainer.h`
+
+- :ref:`file_xAODAnaHelpers_PhotonContainer.h`
+
+- :ref:`file_xAODAnaHelpers_TauContainer.h`
+
+- :ref:`file_xAODAnaHelpers_TrackContainer.h`
+
+- :ref:`file_xAODAnaHelpers_TruthContainer.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1ParticleContainer`
+

@@ -1,0 +1,29 @@
+.. _exhale_class_classHelperClasses_1_1InfoSwitch:
+
+Class InfoSwitch
+================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperClasses.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Types
+*************
+
+- ``public HelperClasses::EventInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1EventInfoSwitch`)
+- ``public HelperClasses::IParticleInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1IParticleInfoSwitch`)
+- ``public HelperClasses::METInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1METInfoSwitch`)
+- ``public HelperClasses::TrackInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1TrackInfoSwitch`)
+- ``public HelperClasses::TriggerInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1TriggerInfoSwitch`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: HelperClasses::InfoSwitch
+   :members:
+   :protected-members:
+   :undoc-members:

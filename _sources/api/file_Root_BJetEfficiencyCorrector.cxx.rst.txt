@@ -1,0 +1,68 @@
+
+.. _file_Root_BJetEfficiencyCorrector.cxx:
+
+File BJetEfficiencyCorrector.cxx
+================================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/BJetEfficiencyCorrector.cxx``)
+-------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_BJetEfficiencyCorrector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgMessaging/MessageCheck.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``PathResolver/PathResolver.h``
+
+- ``SampleHandler/MetaFields.h``
+
+- ``iostream``
+
+- ``xAODAnaHelpers/BJetEfficiencyCorrector.h`` (:ref:`file_xAODAnaHelpers_BJetEfficiencyCorrector.h`)
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODBTaggingEfficiency/BTaggingEfficiencyTool.h``
+
+- ``xAODBTaggingEfficiency/BTaggingSelectionTool.h``
+
+- ``xAODJet/JetAuxContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_BJetEfficiencyCorrector_8cxx_1a17b45618826ac7ee94402f7618e23e5b`
+

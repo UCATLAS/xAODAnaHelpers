@@ -1,0 +1,13 @@
+.. _exhale_function_TrackHistsAlgo_8cxx_1a29f02c4a6e8acb161bb935030bead2d9:
+
+Function ClassImp(TrackHistsAlgo)
+=================================
+
+- Defined in :ref:`file_Root_TrackHistsAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(TrackHistsAlgo)

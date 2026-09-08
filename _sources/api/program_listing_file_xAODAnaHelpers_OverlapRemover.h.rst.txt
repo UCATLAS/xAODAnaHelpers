@@ -1,0 +1,168 @@
+
+.. _program_listing_file_xAODAnaHelpers_OverlapRemover.h:
+
+Program Listing for File OverlapRemover.h
+=========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_OverlapRemover.h>` (``xAODAnaHelpers/OverlapRemover.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef XAODANAHELPERS_OVERLAPREMOVER_H
+   #define XAODANAHELPERS_OVERLAPREMOVER_H
+   
+   // EDM include(s):
+   #include "xAODBase/IParticleHelpers.h"
+   #include "xAODBase/IParticleContainer.h"
+   #include "xAODEgamma/ElectronContainer.h"
+   #include "xAODMuon/MuonContainer.h"
+   #include "xAODJet/JetContainer.h"
+   #include "xAODEgamma/PhotonContainer.h"
+   #include "xAODTau/TauJetContainer.h"
+   
+   // external tools include(s):
+   #include "AssociationUtils/OverlapRemovalInit.h"
+   #include "AssociationUtils/OverlapRemovalTool.h"
+   #include "AssociationUtils/ToolBox.h"
+   
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   // ROOT include(s):
+   #include "TH1D.h"
+   
+   class OverlapRemover : public xAH::Algorithm
+   {
+     // put your configuration variables here as public variables.
+     // that way they can be set directly from CINT and python.
+    public:
+   
+     // configuration variables
+   
+     bool m_useCutFlow = true;
+   
+     bool     m_decorateSelectedObjects;
+     std::string m_decor = "passOR";
+     bool     m_createSelectedContainers;
+     bool     m_useSelected = false;
+     std::string m_bTagWP = "";
+     bool m_linkOverlapObjects = true;
+     bool m_useBoostedLeptons = false;
+     bool m_doEleEleOR = false;
+     bool m_applyRelPt = false;
+     bool m_lepFavWP = false;
+   
+     std::string  m_outputAlgoSystNames = "ORAlgo_Syst";
+   
+     std::string  m_inContainerName_Electrons = "";
+     std::string  m_outContainerName_Electrons = "";
+     std::string  m_inputAlgoElectrons = "";
+   
+     // Muons
+     std::string  m_inContainerName_Muons = "";
+     std::string  m_outContainerName_Muons = "";
+     std::string  m_inputAlgoMuons = "";
+     // Jets
+     std::string  m_inContainerName_Jets = "";
+     std::string  m_outContainerName_Jets = "";
+     std::string  m_inputAlgoJets = "";
+     // Photons
+     std::string  m_inContainerName_Photons = "";
+     std::string  m_outContainerName_Photons = "";
+     std::string  m_inputAlgoPhotons = "";
+     // Taus
+     std::string  m_inContainerName_Taus = "";
+     std::string  m_outContainerName_Taus = "";
+     std::string  m_inputAlgoTaus = "";
+   
+    protected:
+   
+     int m_numEvent;           
+     int m_numObject;          
+     int m_numEventPass;       
+     int m_weightNumEventPass; 
+     int m_numObjectPass;      
+   
+     bool m_useElectrons = false;
+     bool m_useMuons = false;
+     bool m_usePhotons = false;
+     bool m_useTaus = false;
+   
+     std::string  m_outAuxContainerName_Electrons;
+     std::string  m_outAuxContainerName_Muons;
+     std::string  m_outAuxContainerName_Jets;
+     std::string  m_outAuxContainerName_Photons;
+     std::string  m_outAuxContainerName_Taus;
+   
+     ORUtils::ToolBox m_ORToolbox;        
+   
+     enum SystType {
+       NOMINAL = 0,
+       ELSYST  = 1,
+       MUSYST  = 2,
+       JETSYST = 3,
+       PHSYST  = 4,
+       TAUSYST = 5,
+     };
+   
+     // object-level cutflow
+   
+     TH1D* m_el_cutflowHist_1 = nullptr;    
+     TH1D* m_mu_cutflowHist_1 = nullptr;    
+     TH1D* m_jet_cutflowHist_1 = nullptr;   
+     TH1D* m_ph_cutflowHist_1 = nullptr;    
+     TH1D* m_tau_cutflowHist_1 = nullptr;   
+   
+     int m_el_cutflow_OR_cut;     
+     int m_mu_cutflow_OR_cut;     
+     int m_jet_cutflow_OR_cut;    
+     int m_ph_cutflow_OR_cut;     
+     int m_tau_cutflow_OR_cut;    
+   
+     // variables that don't get filled at submission time should be
+     // protected from being send from the submission node to the worker
+     // node (done by the //!)
+   
+   public:
+   
+     // this is a standard constructor
+     OverlapRemover ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // these are the functions not inherited from Algorithm
+     virtual EL::StatusCode fillObjectCutflow (const xAOD::IParticleContainer* objCont,
+                           const std::string& overlapFlag = "passOR",
+                           const std::string& selectFlag = "passSel");
+   
+     virtual EL::StatusCode executeOR( const xAOD::ElectronContainer* inElectrons,
+                       const xAOD::MuonContainer* inMuons,
+                       const xAOD::JetContainer* inJets,
+                       const xAOD::PhotonContainer* inPhotons,
+                       const xAOD::TauJetContainer* inTaus,
+                       SystType syst_type = NOMINAL,
+                       std::vector<std::string>* sysVec = nullptr,
+               std::vector<std::string>* sysVecOut = nullptr);
+   
+     EL::StatusCode setCutFlowHist();
+     EL::StatusCode setCounters();
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(OverlapRemover, 1);
+   
+   };
+   
+   #endif

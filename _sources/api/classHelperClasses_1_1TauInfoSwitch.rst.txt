@@ -1,0 +1,25 @@
+.. _exhale_class_classHelperClasses_1_1TauInfoSwitch:
+
+Class TauInfoSwitch
+===================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperClasses.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public HelperClasses::IParticleInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1IParticleInfoSwitch`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: HelperClasses::TauInfoSwitch
+   :members:
+   :protected-members:
+   :undoc-members:

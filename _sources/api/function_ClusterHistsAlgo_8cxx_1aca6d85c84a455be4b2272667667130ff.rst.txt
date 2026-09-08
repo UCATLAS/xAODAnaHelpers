@@ -1,0 +1,13 @@
+.. _exhale_function_ClusterHistsAlgo_8cxx_1aca6d85c84a455be4b2272667667130ff:
+
+Function ClassImp(ClusterHistsAlgo)
+===================================
+
+- Defined in :ref:`file_Root_ClusterHistsAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(ClusterHistsAlgo)

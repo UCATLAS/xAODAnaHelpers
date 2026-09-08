@@ -1,0 +1,13 @@
+.. _exhale_function_PhotonCalibrator_8cxx_1ade738d7e400a0ba378f2a2a1e67fcd52:
+
+Function ClassImp(PhotonCalibrator)
+===================================
+
+- Defined in :ref:`file_Root_PhotonCalibrator.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(PhotonCalibrator)

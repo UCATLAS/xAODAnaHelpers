@@ -1,0 +1,13 @@
+.. _exhale_variable_HelperFunctions_8h_1af9dd71747d843c1473aebb6c1203b685:
+
+Variable HelperFunctions::store
+===============================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: HelperFunctions::store

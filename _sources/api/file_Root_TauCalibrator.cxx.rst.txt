@@ -1,0 +1,78 @@
+
+.. _file_Root_TauCalibrator.cxx:
+
+File TauCalibrator.cxx
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TauCalibrator.cxx``)
+---------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TauCalibrator.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``AthContainers/DataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``PATInterfaces/CorrectionCode.h``
+
+- ``iostream``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TauCalibrator.h`` (:ref:`file_xAODAnaHelpers_TauCalibrator.h`)
+
+- ``xAODBase/IParticle.h``
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODBase/IParticleHelpers.h``
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODTau/TauJet.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+- ``xAODTau/TauxAODHelpers.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TauCalibrator_8cxx_1adb8d48bcef2d1a69b7b3e9bda4684d1c`
+

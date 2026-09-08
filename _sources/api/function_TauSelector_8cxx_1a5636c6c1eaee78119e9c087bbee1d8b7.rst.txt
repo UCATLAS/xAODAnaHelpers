@@ -1,0 +1,13 @@
+.. _exhale_function_TauSelector_8cxx_1a5636c6c1eaee78119e9c087bbee1d8b7:
+
+Function ClassImp(TauSelector)
+==============================
+
+- Defined in :ref:`file_Root_TauSelector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(TauSelector)
