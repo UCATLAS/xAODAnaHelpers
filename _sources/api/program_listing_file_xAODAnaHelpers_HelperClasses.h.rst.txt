@@ -1,0 +1,354 @@
+
+.. _program_listing_file_xAODAnaHelpers_HelperClasses.h:
+
+Program Listing for File HelperClasses.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_HelperClasses.h>` (``xAODAnaHelpers/HelperClasses.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_HELPERCLASSES_H
+   #define xAODAnaHelpers_HELPERCLASSES_H
+   
+   #include <map>
+   #include <iostream>
+   #include <sstream>
+   
+   #include "TString.h"
+   
+   /* stuff below is for templating getContainer */
+   #include <RootCoreUtils/ThrowMsg.h>
+   #include <AthContainers/ConstDataVector.h>
+   
+   #include <xAODRootAccess/TEvent.h>
+   #include <xAODRootAccess/TStore.h>
+   
+   #include <xAODEventInfo/EventInfo.h>
+   
+   namespace HelperClasses {
+   
+     enum class ContainerType {
+         UNKNOWN      = 0,
+         CONSTDV      = 1,
+         CONSTCONT    = 2,
+     };
+   
+     enum class ToolName {
+         MUONSELECTOR,
+         ELECTRONSELECTOR,
+         PHOTONSELECTOR,
+         JETSELECTOR,
+         BJETSELECTOR,
+         CALIBRATOR,
+         CORRECTOR,
+         SELECTOR,
+         DEFAULT
+     };
+   
+     template <typename T>
+     class EnumParser
+     {
+        std::multimap <std::string, T> enumMap;
+      public:
+        EnumParser();
+   
+        T parseEnum(const std::string &value)
+        {
+           typename std::multimap <std::string, T>::const_iterator iValue = enumMap.find(value);
+           if (iValue == enumMap.end()){
+               std::cerr << "Could not find input string in enum!" << std::endl;
+           }
+           return iValue->second;
+        }
+     };
+   
+   
+     class InfoSwitch {
+     protected:
+       const std::string m_configStr;
+       std::set<std::string> m_configDetails;
+     public:
+       InfoSwitch(const std::string configStr) : m_configStr(configStr) {
+           // parse and split by space
+           std::string token;
+           std::istringstream ss(m_configStr);
+           while ( std::getline(ss, token, ' ') )
+               m_configDetails.insert(token);
+       };
+       bool has_exact(const std::string flag) { return m_configDetails.find(flag) != m_configDetails.end(); };
+       bool has_match(const std::string flag) { return m_configStr.find(flag) != std::string::npos; };
+       std::string get_working_point(const std::string flag);
+       std::vector<std::string> get_working_points(const std::string flag);
+     };
+   
+     class EventInfoSwitch : public InfoSwitch {
+     public:
+       bool m_noDataInfo;
+       bool m_eventCleaning;
+       bool m_bcidInfo;
+       bool m_pileup;
+       bool m_pileupsys;
+       bool m_shapeEM;
+       bool m_shapeEMPFLOW;
+       bool m_shapeLC;
+       bool m_truth;
+       bool m_caloClus;
+       bool m_weightsSys;
+       bool m_beamspotweight;
+       EventInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+     protected:
+       void initialize();
+     };
+   
+     class TriggerInfoSwitch : public InfoSwitch {
+     public:
+       bool m_basic;
+       bool m_menuKeys;
+       bool m_passTriggers;
+       bool m_passTrigBits;
+       bool m_prescales;
+       bool m_prescalesLumi;
+       TriggerInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+     protected:
+       void initialize();
+     };
+   
+     class IParticleInfoSwitch : public InfoSwitch {
+     public:
+       bool m_noMultiplicity;
+       bool m_kinematic;
+       int  m_numLeading;
+       bool m_useTheS;
+       IParticleInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); }
+       virtual ~IParticleInfoSwitch() {}
+     protected:
+       virtual void initialize();
+     };
+   
+     class MuonInfoSwitch : public IParticleInfoSwitch {
+     public:
+       bool m_trigger;
+       bool m_isolation;
+       bool m_isolationKinematics;
+       bool m_quality;
+       bool m_trackparams;
+       bool m_trackhitcont;
+       bool m_effSF;
+       bool m_energyLoss;
+       bool m_promptlepton;
+   
+       std::vector< std::string > m_recoWPs;
+       std::vector< std::string > m_isolWPs;
+       std::vector< std::string > m_trigWPs;
+   
+       bool m_passSel;
+       bool m_passOR;
+   
+       bool m_doLRT;
+       bool m_closeByCorr;
+   
+       bool m_recoEff_sysNames;
+       bool m_isoEff_sysNames;
+       bool m_trigEff_sysNames;
+       bool m_ttvaEff_sysNames;
+   
+   
+       MuonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+       virtual ~MuonInfoSwitch() {}
+     protected:
+       virtual void initialize();
+     };
+   
+     class ElectronInfoSwitch : public IParticleInfoSwitch {
+     public:
+       bool m_trigger;
+       bool m_isolation;
+       bool m_isolationKinematics;
+       bool m_quality;
+       bool m_PID;
+       bool m_recoparams;
+       bool m_trackparams;
+       bool m_trackhitcont;
+       bool m_effSF;
+       bool m_promptlepton;
+       std::vector< std::string > m_PIDWPs;
+       std::vector< std::string > m_PIDSFWPs;
+       std::vector< std::string > m_isolWPs;
+       std::vector< std::string > m_trigWPs;
+       bool m_passSel;
+       bool m_passOR;
+       bool m_doLRT;
+       bool m_closeByCorr;
+       ElectronInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+       virtual ~ElectronInfoSwitch() {}
+     protected:
+       virtual void initialize();
+     };
+   
+     class PhotonInfoSwitch : public IParticleInfoSwitch {
+     public:
+       bool m_isolation;
+       bool m_PID;
+       bool m_purity;
+       bool m_effSF;
+       bool m_trigger;
+       std::vector<std::string> m_isoCones;
+       PhotonInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
+       virtual ~PhotonInfoSwitch() {}
+     protected:
+       virtual void initialize();
+     };
+   
+     class ClusterInfoSwitch : public IParticleInfoSwitch {
+     public:
+       ClusterInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); }
+       virtual ~ClusterInfoSwitch() {}
+     protected:
+       virtual void initialize();
+     };
+   
+     class JetInfoSwitch : public IParticleInfoSwitch {
+     public:
+       bool m_trigger;
+       bool m_substructure;
+       bool m_ntrimsubjets;
+       bool m_bosonCount;
+       bool m_VTags;
+       bool m_rapidity;
+       bool m_clean;
+       bool m_cleanLight;
+       bool m_cleanLLP;
+       bool m_cleanTrig;
+       bool m_timing;
+       bool m_energy;
+       bool m_energyLight;
+       bool m_scales;
+       bool m_constscaleEta;
+       bool m_detectorEta;
+       bool m_resolution;
+       bool m_truth;
+       bool m_truthDetails;
+       bool m_layer;
+       bool m_trackPV;
+       bool m_trackAll;
+       bool m_fJvt;
+       bool m_chargedPFOPV;
+       bool m_jvt;
+       bool m_NNJvt;
+       bool m_allTrack;
+       bool m_allTrackDetail;
+       bool m_allTrackPVSel;
+       bool m_constituent;
+       bool m_constituentAll;
+       bool m_flavorTag;
+       bool m_flavorTagHLT;
+       bool m_flavorTagTLA;
+       bool m_btag_jettrk;
+       bool m_jetFitterDetails;
+       bool m_svDetails;
+       bool m_ipDetails;
+       bool m_tracksInJet;
+       bool m_hltVtxComp;
+       bool m_onlineBS;
+       bool m_onlineBSTool;
+       bool m_charge;
+       bool m_passSel;
+       bool m_passOR;
+       bool m_etaPhiMap;
+       bool m_vsLumiBlock;
+       bool m_vsActualMu;
+       bool m_lumiB_runN;
+       bool m_byEta;
+       bool m_byAverageMu;
+       bool m_area;
+       bool m_JVC;
+       bool m_muonCorrection;
+       std::string              m_trackName;
+       std::vector<std::string> m_trackJetNames;
+       std::string              m_sfJVTName;
+       std::string              m_sffJVTName;
+       std::map<std::string,std::vector<std::pair<std::string,uint>>> m_jetBTag;
+       std::vector<std::string> m_jetBTagCts;
+       JetInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+       virtual ~JetInfoSwitch() {}
+     protected:
+       virtual void initialize();
+     };
+   
+     class TruthInfoSwitch : public IParticleInfoSwitch {
+     public:
+       bool m_type;
+       bool m_bVtx;
+       bool m_parents;
+       bool m_children;
+       bool m_dressed;
+       bool m_origin;
+       bool m_particleType;
+       bool m_pdgIdOnly;
+       TruthInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+     protected:
+       void initialize();
+     };
+   
+     class TrackInfoSwitch : public InfoSwitch {
+     public:
+       bool m_noMultiplicity;
+       bool m_kinematic;
+       bool m_fitpars;
+       bool m_numbers;
+       bool m_vertex;
+       bool m_useTheS;
+     TrackInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+     protected:
+       void initialize();
+     };
+   
+     class TauInfoSwitch : public IParticleInfoSwitch {
+     public:
+       bool m_trigger;
+       bool m_JetID;
+       bool m_EleVeto;
+       bool m_xahTauJetMatching;
+       bool m_trackAll;
+       bool m_trackparams;
+       bool m_trackhitcont;
+       bool m_effSF;
+   
+       std::vector< std::string > m_tauEffWPs;
+       std::vector< std::string > m_trigWPs;
+   
+       TauInfoSwitch(const std::string configStr) : IParticleInfoSwitch(configStr) { initialize(); };
+       virtual ~TauInfoSwitch() { }
+     protected:
+       virtual void initialize();
+     };
+   
+     class METInfoSwitch : public InfoSwitch {
+     public:
+       bool m_metClus;
+       bool m_metTrk;
+       bool m_sigClus;
+       bool m_sigTrk;
+       bool m_sigResolutionClus;
+       bool m_sigResolutionTrk;
+       bool m_refEle;
+       bool m_refGamma;
+       bool m_refTau;
+       bool m_refMuons;
+       bool m_refJet;
+       bool m_refJetTrk;
+       bool m_softClus;
+       bool m_softTrk;
+       bool m_noExtra; // adds only what it is being asked (false by default)
+       METInfoSwitch(const std::string configStr) : InfoSwitch(configStr) { initialize(); };
+     protected:
+       void initialize();
+     };
+   
+   } // close namespace HelperClasses
+   
+   
+   # endif

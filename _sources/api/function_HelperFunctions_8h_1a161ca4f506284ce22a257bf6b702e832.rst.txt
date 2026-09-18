@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a161ca4f506284ce22a257bf6b702e832:
+
+Template Function HelperFunctions::makeDeepCopy
+===============================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::makeDeepCopy(xAOD::TStore *, std::string, const T1 *)

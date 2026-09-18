@@ -1,0 +1,180 @@
+
+.. _program_listing_file_xAODAnaHelpers_MuonSelector.h:
+
+Program Listing for File MuonSelector.h
+=======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_MuonSelector.h>` (``xAODAnaHelpers/MuonSelector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef xAODAnaHelpers_MuonSelector_H
+   #define xAODAnaHelpers_MuonSelector_H
+   
+   // EDM include(s):
+   #include "xAODMuon/MuonContainer.h"
+   #include "xAODTracking/Vertex.h"
+   
+   // ROOT include(s):
+   #include "TH1D.h"
+   
+   // external tools include(s):
+   #include "AsgTools/AnaToolHandle.h"
+   #include "IsolationSelection/IIsolationSelectionTool.h"
+   #include "MuonAnalysisInterfaces/IMuonSelectionTool.h"
+   #include "TriggerMatchingTool/IMatchingTool.h"
+   #include "TriggerMatchingTool/IMatchScoringTool.h"
+   #include "TrigDecisionTool/TrigDecisionTool.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   // forward-declare for now until IsolationSelectionTool interface is updated
+   namespace CP {
+     class IsolationSelectionTool;
+   }
+   
+   class MuonSelector : public xAH::Algorithm
+   {
+     // put your configuration variables here as public variables.
+     // that way they can be set directly from CINT and python.
+   
+   public:
+   
+     // cutflow
+     bool m_useCutFlow = true;
+   
+     // configuration variables
+     std::string    m_inContainerName = "";
+     std::string    m_outContainerName = "";
+     std::string    m_outAuxContainerName;
+     std::string    m_inputAlgoSystNames = "";
+     std::string    m_outputAlgoSystNames = "MuonSelector_Syst";
+     bool           m_decorateSelectedObjects = true;
+     bool           m_createSelectedContainer = false;
+     int            m_nToProcess = -1;
+     int            m_pass_min = -1;
+     int            m_pass_max = -1;
+     float          m_pT_max = 1e8;
+     float          m_pT_min = 1e8;
+     bool          m_pT_NaNcheck = false;
+     std::string    m_muonQualityStr = "Medium";
+     bool           m_isRun3Geo = false;
+     //std::string    m_muonType;
+     float          m_eta_max = 1e8;
+     float          m_d0_max = 1e8;
+     float          m_d0sig_max = 1e8;
+     float          m_z0sintheta_max = 1e8;
+   
+     bool           m_removeCosmicMuon = false;
+     bool           m_removeEventBadMuon = true;
+   
+     // isolation
+     bool           m_doIsolation = true;
+     std::string    m_MinIsoWPCut = "";
+     std::string    m_IsoWPList = "FCTightTrackOnly_FixedRad,FCLoose_FixedRad,FCTight_FixedRad,FixedCutPflowTight,FixedCutPflowLoose";
+     std::string    m_CaloIsoEff = "0.1*x+90";
+     std::string    m_TrackIsoEff = "98";
+     std::string    m_CaloBasedIsoType = "topoetcone20";
+     std::string    m_TrackBasedIsoType = "ptvarcone30";
+   
+     /* trigger matching */
+     std::string    m_singleMuTrigChains = "";
+     std::string    m_diMuTrigChains = "";
+     double         m_minDeltaR = 0.1;
+     bool           m_merged_muons = false;
+     std::string    m_trigInputPrefix = "";
+   
+     bool           m_doLRT = false;
+   
+     std::string m_isoDecSuffix = "";
+   
+   private:
+   
+     int            m_muonQuality; 
+   
+     int m_numEvent;           
+     int m_numObject;          
+     int m_numEventPass;       
+     int m_weightNumEventPass; 
+     int m_numObjectPass;      
+   
+     // cutflow
+     TH1D* m_cutflowHist = nullptr;      
+     TH1D* m_cutflowHistW = nullptr;     
+     int   m_cutflow_bin;      
+   
+     bool  m_isUsedBefore = false;     
+   
+     // object cutflow
+     TH1D* m_mu_cutflowHist_1 = nullptr;                 
+     TH1D* m_mu_cutflowHist_2 = nullptr;                 
+   
+     int   m_mu_cutflow_all;           
+     int   m_mu_cutflow_eta_and_quaility_cut;  
+     int   m_mu_cutflow_ptmax_cut;         
+     int   m_mu_cutflow_ptmin_cut;         
+     int   m_mu_cutflow_ptnan_check;       
+     int   m_mu_cutflow_type_cut;          
+     int   m_mu_cutflow_z0sintheta_cut;        
+     int   m_mu_cutflow_d0_cut;            
+     int   m_mu_cutflow_d0sig_cut;         
+     int   m_mu_cutflow_iso_cut;           
+     int   m_mu_cutflow_cosmic_cut;            
+   
+     std::vector<std::string> m_IsoKeys;       
+   
+     /* other private members */
+   
+     std::vector<std::string>            m_singleMuTrigChainsList; 
+     std::vector<std::string>            m_diMuTrigChainsList;     
+   
+     // tools
+     asg::AnaToolHandle<CP::IIsolationSelectionTool>  m_isolationSelectionTool_handle{"CP::IsolationSelectionTool/IsolationSelectionTool", this}; 
+     // this only exists because the interface needs to be updated, complain on pathelp, remove forward declaration for this when fixed
+     CP::IsolationSelectionTool*                      m_isolationSelectionTool{nullptr}; 
+     asg::AnaToolHandle<CP::IMuonSelectionTool>       m_muonSelectionTool_handle     {"CP::MuonSelectionTool/MuonSelectionTool"          , this}; 
+     asg::AnaToolHandle<Trig::IMatchingTool>          m_trigMuonMatchTool_handle; 
+     asg::AnaToolHandle<Trig::TrigDecisionTool>       m_trigDecTool_handle           {"Trig::TrigDecisionTool/TrigDecisionTool"                       }; 
+     asg::AnaToolHandle<Trig::IMatchScoringTool>      m_scoreTool                    {"Trig::DRScoringTool/DRScoringTool"                             }; 
+   
+     bool m_doTrigMatch = true; 
+   
+     // variables that don't get filled at submission time should be
+     // protected from being send from the submission node to the worker
+     // node (done by the //!)
+   
+   public:
+     // Tree *myTree; //!
+     // TH1 *myHist; //!
+   
+     // this is a standard constructor
+     MuonSelector ();
+   
+     ~MuonSelector();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // added functions not from Algorithm
+     bool executeSelection( const xAOD::MuonContainer* inMuons, float mcEvtWeight, bool countPass,
+                            ConstDataVector<xAOD::MuonContainer>* selectedMuons );
+     virtual int passCuts( const xAOD::Muon* muon, const xAOD::Vertex *primaryVertex );
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(MuonSelector, 1);
+   
+   };
+   
+   #endif

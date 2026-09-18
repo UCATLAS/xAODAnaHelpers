@@ -1,0 +1,90 @@
+
+.. _file_xAODAnaHelpers_MuonEfficiencyCorrector.h:
+
+File MuonEfficiencyCorrector.h
+==============================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+Interface to the tools of the MuonEfficiencyCorrections package. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/MuonEfficiencyCorrector.h``)
+---------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_MuonEfficiencyCorrector.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Marco Milesi marco.milesi@cern.ch 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``MuonAnalysisInterfaces/IMuonEfficiencyScaleFactors.h``
+
+- ``MuonAnalysisInterfaces/IMuonTriggerScaleFactors.h``
+
+- ``PATInterfaces/ISystematicsTool.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicSet.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``PATInterfaces/SystematicsUtil.h``
+
+- ``PileupReweighting/PileupReweightingTool.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_MuonEfficiencyCorrector.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_CP`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classMuonEfficiencyCorrector`
+

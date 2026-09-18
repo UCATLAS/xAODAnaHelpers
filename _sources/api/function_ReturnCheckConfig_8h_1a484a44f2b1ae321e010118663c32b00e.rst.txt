@@ -1,0 +1,13 @@
+.. _exhale_function_ReturnCheckConfig_8h_1a484a44f2b1ae321e010118663c32b00e:
+
+Function ANA_MSG_ERROR
+======================
+
+- Defined in :ref:`file_xAODAnaHelpers_tools_ReturnCheckConfig.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ANA_MSG_ERROR("Could not find the " "configuration file:"<<CONFIG.)

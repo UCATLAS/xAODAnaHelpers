@@ -1,0 +1,55 @@
+
+.. _namespace_HelperClasses:
+
+Namespace HelperClasses
+=======================
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classHelperClasses_1_1ClusterInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1ElectronInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1EnumParser`
+
+- :ref:`exhale_class_classHelperClasses_1_1EventInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1InfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1IParticleInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1JetInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1METInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1MuonInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1PhotonInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TauInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TrackInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TriggerInfoSwitch`
+
+- :ref:`exhale_class_classHelperClasses_1_1TruthInfoSwitch`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_HelperClasses_8h_1ae759666962f41b8b383e887f415d41bf`
+
+- :ref:`exhale_enum_HelperClasses_8h_1a85a25b6b5010e93ba473724e97c97baf`

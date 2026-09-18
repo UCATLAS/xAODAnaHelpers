@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a38808edafa2a87dd71a95ce044b26c8a:
+
+Function HelperFunctions::passPrimaryVertexSelection
+====================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::passPrimaryVertexSelection(const xAOD::VertexContainer *, int)

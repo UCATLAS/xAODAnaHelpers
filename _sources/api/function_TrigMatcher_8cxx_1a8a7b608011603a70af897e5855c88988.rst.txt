@@ -1,0 +1,13 @@
+.. _exhale_function_TrigMatcher_8cxx_1a8a7b608011603a70af897e5855c88988:
+
+Function ClassImp(TrigMatcher)
+==============================
+
+- Defined in :ref:`file_Root_TrigMatcher.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(TrigMatcher)

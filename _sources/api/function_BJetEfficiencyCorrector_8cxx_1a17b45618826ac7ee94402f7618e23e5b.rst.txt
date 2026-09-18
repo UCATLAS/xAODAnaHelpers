@@ -1,0 +1,13 @@
+.. _exhale_function_BJetEfficiencyCorrector_8cxx_1a17b45618826ac7ee94402f7618e23e5b:
+
+Function ClassImp(BJetEfficiencyCorrector)
+==========================================
+
+- Defined in :ref:`file_Root_BJetEfficiencyCorrector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(BJetEfficiencyCorrector)

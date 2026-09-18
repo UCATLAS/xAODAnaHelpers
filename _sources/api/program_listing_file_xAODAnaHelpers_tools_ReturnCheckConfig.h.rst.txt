@@ -1,0 +1,35 @@
+
+.. _program_listing_file_xAODAnaHelpers_tools_ReturnCheckConfig.h:
+
+Program Listing for File ReturnCheckConfig.h
+============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_tools_ReturnCheckConfig.h>` (``xAODAnaHelpers/tools/ReturnCheckConfig.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #warning Please use instead ANA_CHECK in AsgMessaging/MessageCheck.h
+   
+   #ifndef xAODAnaHelpers_TOOLS_RETURNCHECKCONFIG_H
+   #define xAODAnaHelpers_TOOLS_RETURNCHECKCONFIG_H
+   
+   #include "AsgMessaging/MessageCheck.h
+   
+   #define RETURN_CHECK_CONFIG( CONTEXT, CONFIG )                             \
+        do {                                                                    \
+                /* check if file exists                                              \
+                          https://root.cern.ch/root/roottalk/roottalk02/5332.html */          \
+                FileStat_t fStats;                                                   \
+                int fSuccess = gSystem->GetPathInfo(CONFIG.c_str(), fStats);         \
+                if(fSuccess != 0){                                                   \
+                          ANA_MSG_ERROR( "Could not find the "                       \
+                                              "configuration file:" << CONFIG.c_str());      \
+                          return EL::StatusCode::FAILURE;                                    \
+                        } else {                                                             \
+                                  ANA_MSG_INFO( "Found configuration file: " << CONFIG.c_str());  \
+                                }                                                                    \
+             } while( false )
+   
+   #endif // xAODAnaHelpers_TOOLS_RETURNCHECKCONFIG_H

@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1ae904f33e494d27475518d8b493882401:
+
+Function HelperFunctions::SplitString
+=====================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::SplitString(TString&, const char)

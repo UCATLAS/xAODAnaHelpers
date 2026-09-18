@@ -1,0 +1,22 @@
+.. _exhale_struct_structxAH_1_1JetContainer_1_1btagOpPoint:
+
+Struct JetContainer::btagOpPoint
+================================
+
+- Defined in :ref:`file_xAODAnaHelpers_JetContainer.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_class_classxAH_1_1JetContainer`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: xAH::JetContainer::btagOpPoint
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,25 @@
+.. _exhale_class_classMETConstructor:
+
+Class METConstructor
+====================
+
+- Defined in :ref:`file_xAODAnaHelpers_METConstructor.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: METConstructor
+   :members:
+   :protected-members:
+   :undoc-members:

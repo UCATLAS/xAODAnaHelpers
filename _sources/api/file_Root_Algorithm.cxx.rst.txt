@@ -1,0 +1,52 @@
+
+.. _file_Root_Algorithm.cxx:
+
+File Algorithm.cxx
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/Algorithm.cxx``)
+-----------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_Algorithm.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``RootCoreUtils/ThrowMsg.h``
+
+- ``boost/algorithm/string.hpp``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Algorithm_8cxx_1a7a6596e680792d05df015b697f1e79f4`
+

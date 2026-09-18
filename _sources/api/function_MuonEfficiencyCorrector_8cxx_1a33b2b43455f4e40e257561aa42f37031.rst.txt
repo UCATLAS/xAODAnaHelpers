@@ -1,0 +1,13 @@
+.. _exhale_function_MuonEfficiencyCorrector_8cxx_1a33b2b43455f4e40e257561aa42f37031:
+
+Function ClassImp(MuonEfficiencyCorrector)
+==========================================
+
+- Defined in :ref:`file_Root_MuonEfficiencyCorrector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(MuonEfficiencyCorrector)

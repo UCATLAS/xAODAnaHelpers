@@ -1,0 +1,13 @@
+.. _exhale_function_ElectronHistsAlgo_8cxx_1aa33d1a917e641b09b54971c342270aa4:
+
+Function ClassImp(ElectronHistsAlgo)
+====================================
+
+- Defined in :ref:`file_Root_ElectronHistsAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(ElectronHistsAlgo)

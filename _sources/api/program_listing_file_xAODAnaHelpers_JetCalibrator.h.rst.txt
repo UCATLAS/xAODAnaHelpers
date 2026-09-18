@@ -1,0 +1,150 @@
+
+.. _program_listing_file_xAODAnaHelpers_JetCalibrator.h:
+
+Program Listing for File JetCalibrator.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_JetCalibrator.h>` (``xAODAnaHelpers/JetCalibrator.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   /********************************************************
+    * JetCalibrator:
+    *
+    * This class handles jet calibration and systematics
+    *
+    * Jeff Dandoy (jeff.dandoy@cern.ch)
+    *
+    ********************************************************/
+   
+   #ifndef xAODAnaHelpers_JetCalibrator_H
+   #define xAODAnaHelpers_JetCalibrator_H
+   
+   // CP interface includes
+   #include "PATInterfaces/SystematicRegistry.h"
+   #include "PATInterfaces/SystematicSet.h"
+   #include "PATInterfaces/SystematicVariation.h"
+   
+   // external tools include(s):
+   #include "AsgTools/AnaToolHandle.h"
+   #include "JetCalibTools/IJetCalibrationTool.h"
+   #include "JetCPInterfaces/ICPJetUncertaintiesTool.h"
+   #include "JetInterface/IJetSelector.h"
+   #include "JetCPInterfaces/IJetTileCorrectionTool.h"
+   // #include "ParticleJetTools/JetTruthLabelingTool.h"
+   #include "xAODCore/ShallowCopy.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   class JetCalibrator : public xAH::Algorithm
+   {
+   public:
+     std::string m_inContainerName = "";
+     std::string m_outContainerName = "";
+   
+     std::string m_jetAlgo = "";
+     std::string m_outputAlgo = "";
+     bool        m_writeSystToMetadata = false;
+   
+   
+     bool        m_recalibrateHLTJets = false;
+     std::string m_HLTVertexContainerName = "HLT_IDVertex_FS";
+     std::string m_HLTAvgMuDecor = "EventInfo.AvgMu";
+     std::string m_EvtInfoHLTNPVDecor = "";
+   
+     std::string m_calibGSCDepth = "";
+   
+     std::string m_calibConfigDir = "";
+     std::string m_calibConfigData = "JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config";
+     std::string m_calibConfigFullSim = "JES_data2017_2016_2015_Recommendation_Aug2018_rel21.config";
+     std::string m_calibConfigAFII = "JES_MC16Recommendation_AFII_EMTopo_April2018_rel21.config";
+     std::string m_calibSequence = "";
+     std::string m_uncertConfig = "";
+     std::string m_uncertMCType = "";
+     std::string m_overrideCalibArea = "";
+     std::string m_overrideUncertCalibArea = "";
+     std::string m_overrideAnalysisFile = "";
+     std::string m_overrideUncertPath = "";
+   
+     bool m_forceInsitu = false;
+     bool m_forceSmear = false;
+     bool m_jetCalibToolsDEV = false;
+   
+     bool m_addGhostMuonsToJets = false;
+   
+     bool m_doCleaning = true;
+     std::string m_jetCleanCutLevel = "LooseBad";
+     bool m_saveAllCleanDecisions = false;
+     bool m_jetCleanUgly = false;
+   
+     bool    m_sort = true;
+     bool    m_cleanParent = false;
+     bool    m_applyFatJetPreSel = false;
+   
+     bool m_useLargeRTruthLabelingTool = true;
+     std::string m_truthLabelName = "R10TruthLabel_R21Consolidated";
+     bool m_isTruthJetCol = false;
+     bool m_useTRUTH3 = true;
+     std::string m_truthParticleContainerName = "TruthParticles";
+     std::string m_truthBosonContainerName = "TruthBosonsWithDecayParticles";
+     std::string m_truthTopQuarkContainerName = "TruthTopQuarkWithDecayParticles";
+   
+   // systematics
+     bool m_doJetTileCorr = false;
+   
+     bool m_pseudoData = false;
+   
+     bool m_mcAndPseudoData = false;
+   
+   private:
+     bool m_runSysts = false; 
+   
+     int m_numEvent;         
+     int m_numObject;        
+   
+     std::string m_calibConfig; 
+   
+     std::vector<CP::SystematicSet> m_systList; 
+   
+     // tools
+     asg::AnaToolHandle<IJetCalibrationTool>        m_JetCalibrationTool_handle   {"JetCalibrationTool"   , this}; 
+     asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_JetUncertaintiesTool_handle {"JetUncertaintiesTool" , this}; 
+     asg::AnaToolHandle<ICPJetUncertaintiesTool>    m_pseudodataJERTool_handle    {"PseudodataJERTool"    , this}; 
+     asg::AnaToolHandle<IJetSelector>               m_JetCleaningTool_handle      {"JetCleaningTool"      , this}; 
+     // asg::AnaToolHandle<CP::IJetTileCorrectionTool> m_JetTileCorrectionTool_handle{"JetTileCorrectionTool", this}; //!
+     // asg::AnaToolHandle<JetTruthLabelingTool>       m_JetTruthLabelingTool_handle {"JetTruthLabelingTool" , this}; //!
+   
+     std::vector<asg::AnaToolHandle<IJetSelector>>  m_AllJetCleaningTool_handles; 
+     std::vector<std::string>  m_decisionNames;    
+   
+     // Helper functions
+     EL::StatusCode executeSystematic(const CP::SystematicSet& thisSyst, const xAOD::JetContainer* inJets,
+                                      std::pair<xAOD::JetContainer*, xAOD::ShallowAuxContainer*>& calibJetsSC,
+                                      std::vector<std::string>& vecOutContainerNames, bool isPDCopy);
+     EL::StatusCode initializeUncertaintiesTool(asg::AnaToolHandle<ICPJetUncertaintiesTool>& uncToolHandle, bool isData);
+   
+   public:
+   
+     // this is a standard constructor
+     JetCalibrator ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(JetCalibrator, 1);
+   
+   };
+   
+   #endif

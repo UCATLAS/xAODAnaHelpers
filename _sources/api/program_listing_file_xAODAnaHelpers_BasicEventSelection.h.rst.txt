@@ -1,0 +1,235 @@
+
+.. _program_listing_file_xAODAnaHelpers_BasicEventSelection.h:
+
+Program Listing for File BasicEventSelection.h
+==============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_BasicEventSelection.h>` (``xAODAnaHelpers/BasicEventSelection.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef xAODAnaHelpers_BasicEventSelection_H
+   #define xAODAnaHelpers_BasicEventSelection_H
+   
+   // ROOT include(s):
+   #include "TH1D.h"
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   // external tools include(s):
+   #include "AsgTools/AnaToolHandle.h"
+   #include "AsgAnalysisInterfaces/IGoodRunsListSelectionTool.h"
+   #include "AsgAnalysisInterfaces/IPileupReweightingTool.h"
+   #include "TrigConfInterfaces/ITrigConfigTool.h"
+   #include "TrigDecisionTool/TrigDecisionTool.h"
+   #include "PATInterfaces/IWeightTool.h"
+   
+   class BasicEventSelection : public xAH::Algorithm
+   {
+     public:
+   
+     // Dijet+ISR TLA specific options
+       bool m_isTLAData = false;
+   
+     // Sample type settings
+       bool m_truthLevelOnly = false;
+   
+       bool m_setAFII = false;
+       bool m_setAF3 = false;
+       bool m_setFS = false;
+   
+     // GRL
+       bool m_applyGRLCut = false;
+       std::string m_GRLxml = "";
+       std::string m_GRLExcludeList = "";
+   
+       bool m_cleanPowheg = false;
+   
+       bool  m_reweightSherpa22 = false;
+   
+     //PU Reweighting
+       bool m_doPUreweighting = false;
+       bool m_doPUreweightingSys = false;
+   
+       std::string m_lumiCalcFileNames = "";
+       std::string m_PRWFileNames = "";
+       bool m_autoconfigPRW = false;
+       bool m_useCommonPRWFiles = false;
+       std::string m_prwActualMu2016File = "";
+       std::string m_prwActualMu2017File = "";
+       std::string m_prwActualMu2018File = "";
+       std::string m_prwActualMu2022File = "";
+       std::string m_prwActualMu2023File = "";
+       std::string m_prwActualMu2024File = "";
+       std::string m_commonPRWFileMC20a = "PileupReweighting/mc20_common/mc20a.284500.physlite.prw.v1.root";
+       std::string m_commonPRWFileMC20d = "PileupReweighting/mc20_common/mc20d.300000.physlite.prw.v1.root";
+       std::string m_commonPRWFileMC20e = "PileupReweighting/mc20_common/mc20e.310000.physlite.prw.v1.root";
+       std::string m_commonPRWFileMC23a = "PileupReweighting/mc23_common/mc23a.410000.physlite.prw.v2.root";
+       std::string m_commonPRWFileMC23c = "PileupReweighting/mc23_common/mc23c.450000.physlite.prw.v1.root";
+       std::string m_commonPRWFileMC23d = "PileupReweighting/mc23_common/mc23d.450000.physlite.prw.v1.root";
+       std::string m_commonPRWFileMC23e = "PileupReweighting/mc23_common/mc23e.470000.physlite.prw.v1.root";
+       std::string m_mcCampaign;
+       std::string m_periodConfig = "auto";
+   
+       bool m_checkStreams = false;
+   
+       int m_actualMuMin = -1; // Default to off
+       int m_actualMuMax = -1; // Default to off
+   
+       bool m_calcBCIDInfo = false;
+   
+       // Primary Vertex
+       bool m_applyPrimaryVertexCut = false;
+       int m_PVNTrack = 2;
+   
+       // Event Cleaning
+       bool m_applyEventCleaningCut = false;
+       bool m_applyCoreFlagsCut = false;
+   
+       // Jet Cleaning
+       // Jet Cleaning (see also https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/HowToCleanJets2017)
+       bool m_applyJetCleaningEventFlag = false;
+       bool m_applyIsBadBatmanFlag = false;
+   
+       // Print Branch List
+       bool m_printBranchList = false;
+   
+     // Trigger
+       std::string m_triggerSelection = "";
+   
+       std::string m_extraTriggerSelection = "";
+   
+       bool m_applyTriggerCut = false;
+   
+       bool m_storeTrigDecisions = false;
+   
+       bool m_storePassL1 = false;
+   
+       bool m_storePassHLT = false;
+   
+       bool m_storeTrigKeys = false;
+   
+       bool m_storePrescaleWeight = true;
+   
+     // Metadata
+       std::string m_derivationName = "";
+       bool m_useMetaData = true;
+   
+       /* Output Stream Names */
+   
+       /*
+           The following public variables allow for rerouting of the
+           metadata and cutflow histograms to non-default output
+           streams. E.g. can combine all outputs into a single stream
+       */
+   
+       // output stream names
+       std::string m_metaDataStreamName = "metadata";
+       std::string m_duplicatesStreamName = "duplicates_tree";
+   
+       bool m_checkDuplicatesData = false;
+       bool m_checkDuplicatesMC = false;
+   
+       // determines whether to add additional debugging histograms on data
+       bool m_doRunByRunCutflows = false;
+   
+     private:
+   
+       std::set<std::pair<int, Long64_t> > m_RunNr_VS_EvtNr; 
+       // trigger unprescale chains
+       std::vector<std::string> m_triggerUnprescaleList; 
+       // decisions of triggers which are saved but not cut on, converted into a list
+       std::vector<std::string> m_extraTriggerSelectionList; 
+   
+       // tools
+       asg::AnaToolHandle<IGoodRunsListSelectionTool> m_grl_handle                  {"GoodRunsListSelectionTool"                                      , this}; 
+       asg::AnaToolHandle<CP::IPileupReweightingTool> m_pileup_tool_handle          {"CP::PileupReweightingTool/Pileup"                                            }; 
+       asg::AnaToolHandle<TrigConf::ITrigConfigTool>  m_trigConfTool_handle         {"TrigConf::xAODConfigTool/xAODConfigTool"                        , this}; 
+       asg::AnaToolHandle<Trig::TrigDecisionTool>     m_trigDecTool_handle          {"Trig::TrigDecisionTool/TrigDecisionTool"                                     }; 
+       //asg::AnaToolHandle<IWeightTool>                m_reweightSherpa22_tool_handle{"PMGTools::PMGSherpa22VJetsWeightTool/PMGSherpa22VJetsWeightTool", this}; //!
+   
+       int m_eventCounter;     
+   
+       // sumW
+       TH1D* m_histSumW = nullptr;     
+   
+       // read from MetaData
+       TH1D* m_histEventCount = nullptr;          
+       uint64_t m_MD_initialNevents;    
+       uint64_t m_MD_finalNevents;      
+       double m_MD_initialSumW;         
+       double m_MD_finalSumW;       
+       double m_MD_initialSumWSquared;  
+       double m_MD_finalSumWSquared;    
+       std::string m_mcCampaignMD; 
+   
+       // cutflow
+       TH1D* m_cutflowHist = nullptr;      
+       TH1D* m_cutflowHistW = nullptr;     
+       int m_cutflow_all;        
+       int m_cutflow_init;       
+       int m_cutflow_duplicates; 
+       int m_cutflow_grl;        
+       int m_cutflow_lar;        
+       int m_cutflow_tile;       
+       int m_cutflow_SCT;        
+       int m_cutflow_core;       
+       int m_cutflow_jetcleaning; 
+       int m_cutflow_isbadbatman; 
+       int m_cutflow_npv;        
+       int m_cutflow_trigger;    
+   
+       // extra run-by-run event count cutflow
+       TH1D* m_runByrun_beforeCuts = nullptr; 
+       TH1D* m_runByrun_afterCuts  = nullptr; 
+   
+       // object cutflow
+       TH1D* m_el_cutflowHist_1 = nullptr;    
+       TH1D* m_el_cutflowHist_2 = nullptr;    
+       TH1D* m_mu_cutflowHist_1 = nullptr;    
+       TH1D* m_mu_cutflowHist_2 = nullptr;    
+       TH1D* m_ph_cutflowHist_1 = nullptr;    
+       TH1D* m_tau_cutflowHist_1 = nullptr;   
+       TH1D* m_tau_cutflowHist_2 = nullptr;   
+       TH1D* m_jet_cutflowHist_1 = nullptr;   
+       TH1D* m_trk_cutflowHist_1 = nullptr;   
+       TH1D* m_truth_cutflowHist_1= nullptr; 
+   
+       TTree*   m_duplicatesTree = nullptr;  
+       int      m_duplRunNumber;
+       long int m_duplEventNumber;
+   
+       // variables that don't get filled at submission time should be
+       // protected from being send from the submission node to the worker
+       // node (done by the //!)
+   
+       StatusCode autoconfigurePileupRWTool();
+   
+     public:
+       // Tree *myTree; //!
+       // TH1 *myHist; //!
+       //
+   
+       // this is a standard constructor
+       BasicEventSelection ();
+   
+       // these are the functions inherited from Algorithm
+       virtual EL::StatusCode setupJob (EL::Job& job);
+       virtual EL::StatusCode fileExecute ();
+       virtual EL::StatusCode histInitialize ();
+       virtual EL::StatusCode changeInput (bool firstFile);
+       virtual EL::StatusCode initialize ();
+       virtual EL::StatusCode execute ();
+       virtual EL::StatusCode postExecute ();
+       virtual EL::StatusCode finalize ();
+       virtual EL::StatusCode histFinalize ();
+   
+       // this is needed to distribute the algorithm to the workers
+       ClassDef(BasicEventSelection, 1);
+   };
+   
+   #endif

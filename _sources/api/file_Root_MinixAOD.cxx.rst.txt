@@ -1,0 +1,102 @@
+
+.. _file_Root_MinixAOD.cxx:
+
+File MinixAOD.cxx
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/MinixAOD.cxx``)
+----------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_MinixAOD.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/OutputStream.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/MinixAOD.h`` (:ref:`file_xAODAnaHelpers_MinixAOD.h`)
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODCore/AuxContainerBase.h``
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEgamma/ElectronAuxContainer.h``
+
+- ``xAODEgamma/ElectronContainer.h``
+
+- ``xAODEgamma/Photon.h``
+
+- ``xAODEgamma/PhotonAuxContainer.h``
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODJet/Jet.h``
+
+- ``xAODJet/JetAuxContainer.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODMissingET/MissingET.h``
+
+- ``xAODMissingET/MissingETAuxContainer.h``
+
+- ``xAODMissingET/MissingETContainer.h``
+
+- ``xAODMuon/Muon.h``
+
+- ``xAODMuon/MuonAuxContainer.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+- ``xAODTau/TauJet.h``
+
+- ``xAODTau/TauJetAuxContainer.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_MinixAOD_8cxx_1abe75f73c5e4c8bb16a8f01378cdc2463`
+

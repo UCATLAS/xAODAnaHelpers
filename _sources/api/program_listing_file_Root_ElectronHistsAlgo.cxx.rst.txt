@@ -1,0 +1,44 @@
+
+.. _program_listing_file_Root_ElectronHistsAlgo.cxx:
+
+Program Listing for File ElectronHistsAlgo.cxx
+==============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_Root_ElectronHistsAlgo.cxx>` (``Root/ElectronHistsAlgo.cxx``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include <EventLoop/Job.h>
+   #include <EventLoop/StatusCode.h>
+   #include <EventLoop/Worker.h>
+   
+   #include <xAODEgamma/ElectronContainer.h>
+   
+   #include <xAODAnaHelpers/ElectronHistsAlgo.h>
+   #include <xAODAnaHelpers/ElectronHists.h>
+   #include <xAODAnaHelpers/HelperFunctions.h>
+   
+   // this is needed to distribute the algorithm to the workers
+   ClassImp(ElectronHistsAlgo)
+   
+   ElectronHistsAlgo :: ElectronHistsAlgo () :
+   IParticleHistsAlgo("ElectronHistsAlgo")
+   { }
+   
+   EL::StatusCode ElectronHistsAlgo :: setupJob (EL::Job& job)
+   {
+     job.useXAOD();
+     xAOD::Init("ElectronHistsAlgo").ignore();
+   
+     return EL::StatusCode::SUCCESS;
+   }
+   
+   EL::StatusCode ElectronHistsAlgo::AddHists( std::string name ) {
+     return IParticleHistsAlgo::AddHists<ElectronHists>(name);
+   }
+   
+   EL::StatusCode ElectronHistsAlgo :: execute () {
+     return IParticleHistsAlgo::execute<ElectronHists, xAOD::ElectronContainer>();
+   }

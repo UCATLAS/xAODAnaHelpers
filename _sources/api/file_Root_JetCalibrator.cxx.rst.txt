@@ -1,0 +1,82 @@
+
+.. _file_Root_JetCalibrator.cxx:
+
+File JetCalibrator.cxx
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/JetCalibrator.cxx``)
+---------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_JetCalibrator.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``AthContainers/DataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``JetCalibTools/JetCalibrationTool.h``
+
+- ``JetSelectorTools/JetCleaningTool.h``
+
+- ``JetUncertainties/JetUncertaintiesTool.h``
+
+- ``METUtilities/METHelpers.h``
+
+- ``TSystem.h``
+
+- ``iostream``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/JetCalibrator.h`` (:ref:`file_xAODAnaHelpers_JetCalibrator.h`)
+
+- ``xAODBase/IParticle.h``
+
+- ``xAODBase/IParticleContainer.h``
+
+- ``xAODBase/IParticleHelpers.h``
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODJet/Jet.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_JetCalibrator_8cxx_1a2724af182e18e099448fffe36fd030f7`
+

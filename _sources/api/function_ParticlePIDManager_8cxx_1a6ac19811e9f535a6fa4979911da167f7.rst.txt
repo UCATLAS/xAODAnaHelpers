@@ -1,0 +1,13 @@
+.. _exhale_function_ParticlePIDManager_8cxx_1a6ac19811e9f535a6fa4979911da167f7:
+
+Function ANA_MSG_SOURCE(msgPIDManager, "PIDManager")
+====================================================
+
+- Defined in :ref:`file_Root_ParticlePIDManager.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ANA_MSG_SOURCE(msgPIDManager, "PIDManager")

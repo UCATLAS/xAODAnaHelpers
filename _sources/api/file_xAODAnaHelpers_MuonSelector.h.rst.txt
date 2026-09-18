@@ -1,0 +1,90 @@
+
+.. _file_xAODAnaHelpers_MuonSelector.h:
+
+File MuonSelector.h
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+Interface to the tools of the MuonSelectorTools package. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/MuonSelector.h``)
+----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_MuonSelector.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Marco Milesi marco.milesi@cern.ch 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``IsolationSelection/IIsolationSelectionTool.h``
+
+- ``MuonAnalysisInterfaces/IMuonSelectionTool.h``
+
+- ``TH1D.h``
+
+- ``TrigDecisionTool/TrigDecisionTool.h``
+
+- ``TriggerMatchingTool/IMatchScoringTool.h``
+
+- ``TriggerMatchingTool/IMatchingTool.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODMuon/MuonContainer.h``
+
+- ``xAODTracking/Vertex.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_MuonSelector.cxx`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_CP`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classMuonSelector`
+

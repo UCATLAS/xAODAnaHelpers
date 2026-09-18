@@ -1,0 +1,37 @@
+
+.. _file_Root_Jet.cxx:
+
+File Jet.cxx
+============
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/Jet.cxx``)
+-----------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_Jet.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/Jet.h`` (:ref:`file_xAODAnaHelpers_Jet.h`)
+
+
+
+
+

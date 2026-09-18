@@ -1,0 +1,26 @@
+.. _exhale_class_classxAH_1_1OnlineBeamSpotTool:
+
+Class OnlineBeamSpotTool
+========================
+
+- Defined in :ref:`file_xAODAnaHelpers_OnlineBeamSpotTool.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structxAH_1_1OnlineBeamSpotTool_1_1LBData`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::OnlineBeamSpotTool
+   :members:
+   :protected-members:
+   :undoc-members:

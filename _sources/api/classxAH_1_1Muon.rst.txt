@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1Muon:
+
+Class Muon
+==========
+
+- Defined in :ref:`file_xAODAnaHelpers_Muon.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Particle`` (:ref:`exhale_class_classxAH_1_1Particle`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::Muon
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_variable_HelperFunctions_8h_1a9ee150bbe000ee4871d5d87a24e2e8c2:
+
+Variable HelperFunctions::event
+===============================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: HelperFunctions::event
