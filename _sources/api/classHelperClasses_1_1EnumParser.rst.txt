@@ -1,0 +1,16 @@
+.. _exhale_class_classHelperClasses_1_1EnumParser:
+
+Template Class EnumParser
+=========================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperClasses.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: HelperClasses::EnumParser
+   :members:
+   :protected-members:
+   :undoc-members:

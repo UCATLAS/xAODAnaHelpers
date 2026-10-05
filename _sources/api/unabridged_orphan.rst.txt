@@ -1,0 +1,792 @@
+:orphan:
+
+
+Full API
+========
+
+Directories
+***********
+
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_Root.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_xAODAnaHelpers.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_xAODAnaHelpers_tools.rst
+
+Files
+*****
+
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_Algorithm.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Algorithm.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_BasicEventSelection.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_BasicEventSelection.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_BJetEfficiencyCorrector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_BJetEfficiencyCorrector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Cluster.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ClusterContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ClusterContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ClusterHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ClusterHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ClusterHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ClusterHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_DebugTool.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_DebugTool.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Electron.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ElectronCalibrator.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ElectronCalibrator.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ElectronContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ElectronContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ElectronEfficiencyCorrector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ElectronEfficiencyCorrector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ElectronHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ElectronHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ElectronHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ElectronHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ElectronSelector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ElectronSelector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_EventInfo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_EventInfo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_FatJet.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_FatJetContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_FatJetContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_HelperClasses.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_HelperClasses.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_HelperFunctions.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_HelperFunctions.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_HelpTreeBase.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_HelpTreeBase.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_HistogramManager.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_HistogramManager.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_HLTJetGetter.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_HLTJetGetter.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_HLTJetRoIBuilder.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_HLTJetRoIBuilder.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_IParticleHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_IParticleHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_IParticleHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_IParticleHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_IsoCloseByCorr.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_IsoCloseByCorr.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_Jet.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Jet.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_JetCalibrator.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_JetCalibrator.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_JetContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_JetContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_JetHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_JetHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_JetHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_JetHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_JetSelector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_JetSelector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_L1JetContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_L1JetContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_LinkDef.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MessagePrinterAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MessagePrinterAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_METConstructor.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_METConstructor.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MetContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MetContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MetHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MetHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MetHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MetHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MinixAOD.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MinixAOD.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Muon.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MuonCalibrator.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MuonCalibrator.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MuonContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MuonContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MuonEfficiencyCorrector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MuonEfficiencyCorrector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MuonHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MuonHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MuonHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MuonHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MuonInFatJetCorrector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MuonInFatJetCorrector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_MuonSelector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_MuonSelector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_OnlineBeamSpotTool.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_OnlineBeamSpotTool.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_OverlapRemover.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_OverlapRemover.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Particle.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ParticleContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_ParticlePIDManager.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_ParticlePIDManager.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Photon.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_PhotonCalibrator.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_PhotonCalibrator.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_PhotonContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_PhotonContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_PhotonHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_PhotonHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_PhotonHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_PhotonHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_PhotonSelector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_PhotonSelector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_tools_ReturnCheck.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_tools_ReturnCheckConfig.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Tau.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TauCalibrator.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TauCalibrator.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TauContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TauContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TauEfficiencyCorrector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TauEfficiencyCorrector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TauJetMatching.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TauJetMatching.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TauSelector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TauSelector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TrackContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TrackContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TrackHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TrackHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TrackHistsAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TrackHistsAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TrackPart.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TrackSelector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TrackSelector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TracksInJetHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TracksInJetHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TreeAlgo.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TreeAlgo.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TrigMatcher.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TrigMatcher.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TruthContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TruthContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TruthPart.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_TruthSelector.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_TruthSelector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_VertexContainer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_VertexContainer.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_VtxHists.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_VtxHists.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_Root_Writer.cxx.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_xAODAnaHelpers_Writer.h.rst
+
+Pages
+*****
+
+
+.. toctree::
+   :maxdepth: 5
+
+   page_bug.rst

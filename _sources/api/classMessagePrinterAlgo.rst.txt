@@ -1,0 +1,25 @@
+.. _exhale_class_classMessagePrinterAlgo:
+
+Class MessagePrinterAlgo
+========================
+
+- Defined in :ref:`file_xAODAnaHelpers_MessagePrinterAlgo.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: MessagePrinterAlgo
+   :members:
+   :protected-members:
+   :undoc-members:

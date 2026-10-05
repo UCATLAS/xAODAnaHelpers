@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a5df23cc3d031c8bd0fb11c52222c2971:
+
+Template Function HelperFunctions::connectBranch
+================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::connectBranch(std::string, TTree *, const std::string&, std::vector<T_BR> **)

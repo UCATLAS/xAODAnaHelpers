@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1MuonContainer:
+
+Class MuonContainer
+===================
+
+- Defined in :ref:`file_xAODAnaHelpers_MuonContainer.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::ParticleContainer< Muon, HelperClasses::MuonInfoSwitch >`` (:ref:`exhale_class_classxAH_1_1ParticleContainer`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::MuonContainer
+   :members:
+   :protected-members:
+   :undoc-members:

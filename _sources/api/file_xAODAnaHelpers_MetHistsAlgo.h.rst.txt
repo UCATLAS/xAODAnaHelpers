@@ -1,0 +1,54 @@
+
+.. _file_xAODAnaHelpers_MetHistsAlgo.h:
+
+File MetHistsAlgo.h
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/MetHistsAlgo.h``)
+----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_MetHistsAlgo.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODAnaHelpers/MetHists.h`` (:ref:`file_xAODAnaHelpers_MetHists.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_MetHistsAlgo.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classMetHistsAlgo`
+

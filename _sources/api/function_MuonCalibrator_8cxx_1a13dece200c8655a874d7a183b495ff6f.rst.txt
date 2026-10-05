@@ -1,0 +1,13 @@
+.. _exhale_function_MuonCalibrator_8cxx_1a13dece200c8655a874d7a183b495ff6f:
+
+Function ClassImp(MuonCalibrator)
+=================================
+
+- Defined in :ref:`file_Root_MuonCalibrator.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(MuonCalibrator)

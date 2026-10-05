@@ -1,0 +1,32 @@
+
+.. _program_listing_file_xAODAnaHelpers_Particle.h:
+
+Program Listing for File Particle.h
+===================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_Particle.h>` (``xAODAnaHelpers/Particle.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_Particle_H
+   #define xAODAnaHelpers_Particle_H
+   
+   #include <TLorentzVector.h>
+   
+   namespace xAH {
+     
+     class Particle
+     {
+       
+     public:
+   
+       //Particle() {};
+       virtual ~Particle() {}
+   
+       TLorentzVector p4;
+     };
+   
+   }//xAH
+   #endif // xAODAnaHelpers_Particle_H

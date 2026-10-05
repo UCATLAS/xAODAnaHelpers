@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1acd29a66702c5e2aeb4ed9db6a3011aab:
+
+Template Function HelperFunctions::remove_duplicates
+====================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::remove_duplicates(std::vector<T>&)

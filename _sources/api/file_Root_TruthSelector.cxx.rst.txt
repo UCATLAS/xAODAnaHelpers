@@ -1,0 +1,78 @@
+
+.. _file_Root_TruthSelector.cxx:
+
+File TruthSelector.cxx
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TruthSelector.cxx``)
+---------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TruthSelector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``TFile.h``
+
+- ``TObjArray.h``
+
+- ``TObjString.h``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TruthSelector.h`` (:ref:`file_xAODAnaHelpers_TruthSelector.h`)
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODTruth/TruthParticleContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TruthSelector_8cxx_1aa8894ec4ae59f40b5d46e0b26a0af3d0`
+

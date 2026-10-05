@@ -1,0 +1,25 @@
+.. _exhale_class_classTrackSelector:
+
+Class TrackSelector
+===================
+
+- Defined in :ref:`file_xAODAnaHelpers_TrackSelector.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: TrackSelector
+   :members:
+   :protected-members:
+   :undoc-members:

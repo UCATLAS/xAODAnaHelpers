@@ -1,0 +1,60 @@
+
+.. _file_Root_Writer.cxx:
+
+File Writer.cxx
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/Writer.cxx``)
+--------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_Writer.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/OutputStream.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/Writer.h`` (:ref:`file_xAODAnaHelpers_Writer.h`)
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODJet/JetAuxContainer.h``
+
+- ``xAODJet/JetContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Writer_8cxx_1a45a9ad85b14f0a12e4ea6c78c32fcabc`
+

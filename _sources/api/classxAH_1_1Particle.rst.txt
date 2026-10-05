@@ -1,0 +1,33 @@
+.. _exhale_class_classxAH_1_1Particle:
+
+Class Particle
+==============
+
+- Defined in :ref:`file_xAODAnaHelpers_Particle.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Types
+*************
+
+- ``public xAH::Cluster`` (:ref:`exhale_class_classxAH_1_1Cluster`)
+- ``public xAH::Electron`` (:ref:`exhale_class_classxAH_1_1Electron`)
+- ``public xAH::FatJet`` (:ref:`exhale_class_classxAH_1_1FatJet`)
+- ``public xAH::Jet`` (:ref:`exhale_class_classxAH_1_1Jet`)
+- ``public xAH::Muon`` (:ref:`exhale_class_classxAH_1_1Muon`)
+- ``public xAH::Photon`` (:ref:`exhale_class_classxAH_1_1Photon`)
+- ``public xAH::Tau`` (:ref:`exhale_class_classxAH_1_1Tau`)
+- ``public xAH::TrackPart`` (:ref:`exhale_class_classxAH_1_1TrackPart`)
+- ``public xAH::TruthPart`` (:ref:`exhale_class_classxAH_1_1TruthPart`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::Particle
+   :members:
+   :protected-members:
+   :undoc-members:

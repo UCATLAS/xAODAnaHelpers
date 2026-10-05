@@ -1,0 +1,74 @@
+
+.. _file_Root_IsoCloseByCorr.cxx:
+
+File IsoCloseByCorr.cxx
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/IsoCloseByCorr.cxx``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_IsoCloseByCorr.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``iostream``
+
+- ``sstream``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/IsoCloseByCorr.h`` (:ref:`file_xAODAnaHelpers_IsoCloseByCorr.h`)
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEgamma/Electron.h``
+
+- ``xAODEgamma/ElectronContainer.h``
+
+- ``xAODEgamma/Photon.h``
+
+- ``xAODEgamma/PhotonContainer.h``
+
+- ``xAODMuon/Muon.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_IsoCloseByCorr_8cxx_1ae6d723364bfb69bd354543840c27f065`
+

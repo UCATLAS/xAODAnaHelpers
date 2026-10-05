@@ -1,0 +1,87 @@
+
+.. _program_listing_file_xAODAnaHelpers_MinixAOD.h:
+
+Program Listing for File MinixAOD.h
+===================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_MinixAOD.h>` (``xAODAnaHelpers/MinixAOD.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_MinixAOD_H
+   #define xAODAnaHelpers_MinixAOD_H
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   //MetaData
+   #include <xAODMetaDataCnv/FileMetaDataTool.h>
+   // #include <xAODTriggerCnv/TriggerMenuMetaDataTool.h>
+   
+   #include <xAODCutFlow/CutBookkeeper.h>
+   #include <xAODCutFlow/CutBookkeeperContainer.h>
+   #include <xAODCutFlow/CutBookkeeperAuxContainer.h>
+   
+   class MinixAOD : public xAH::Algorithm
+   {
+   public:
+     std::string m_outputFileName = "out_miniXAOD";
+   
+     bool m_createOutputFile = true;
+   
+     bool m_copyFileMetaData = false;
+   
+     bool m_copyTriggerInfo = false;
+   
+     bool m_copyCutBookkeeper = false;
+   
+     std::string m_simpleCopyKeys = "";
+   
+     std::string m_storeCopyKeys = "";
+   
+     std::string m_shallowCopyKeys = "";
+   
+     std::string m_deepCopyKeys = "";
+   
+     std::string m_vectorCopyKeys = "";
+   
+   private:
+     std::vector<std::string> m_simpleCopyKeys_vec; 
+     std::vector<std::pair<std::string, std::string>> m_shallowCopyKeys_vec; 
+     std::vector<std::pair<std::string, std::string>> m_deepCopyKeys_vec; 
+     std::vector<std::pair<std::string, std::string>> m_vectorCopyKeys_vec; 
+   
+     std::vector<std::string> m_copyFromStoreToEventKeys_vec; 
+   
+     xAODMaker::FileMetaDataTool          *m_fileMetaDataTool = nullptr;    
+     // xAODMaker::TriggerMenuMetaDataTool   *m_trigMetaDataTool = nullptr; //!
+   
+     xAOD::CutBookkeeperContainer    *m_outputCBKContainer = nullptr;       
+     xAOD::CutBookkeeperAuxContainer *m_outputCBKContainer_aux = nullptr;   
+     xAOD::CutBookkeeperContainer    *m_outputInCBKContainer = nullptr;     
+     xAOD::CutBookkeeperAuxContainer *m_outputInCBKContainer_aux = nullptr; 
+     xAOD::CutBookkeeper             *m_outputCBK = nullptr;                
+   
+   public:
+     // this is a standard constructor
+     MinixAOD ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(MinixAOD, 1);
+   
+   };
+   
+   #endif

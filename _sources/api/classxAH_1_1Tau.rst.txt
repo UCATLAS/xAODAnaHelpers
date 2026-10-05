@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1Tau:
+
+Class Tau
+=========
+
+- Defined in :ref:`file_xAODAnaHelpers_Tau.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Particle`` (:ref:`exhale_class_classxAH_1_1Particle`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::Tau
+   :members:
+   :protected-members:
+   :undoc-members:

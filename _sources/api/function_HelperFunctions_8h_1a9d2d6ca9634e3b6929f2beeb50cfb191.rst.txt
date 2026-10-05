@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a9d2d6ca9634e3b6929f2beeb50cfb191:
+
+Function HelperFunctions::isAvailableMetaData
+=============================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::isAvailableMetaData(TTree *)

@@ -1,0 +1,25 @@
+.. _exhale_class_classTauCalibrator:
+
+Class TauCalibrator
+===================
+
+- Defined in :ref:`file_xAODAnaHelpers_TauCalibrator.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::Algorithm`` (:ref:`exhale_class_classxAH_1_1Algorithm`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: TauCalibrator
+   :members:
+   :protected-members:
+   :undoc-members:

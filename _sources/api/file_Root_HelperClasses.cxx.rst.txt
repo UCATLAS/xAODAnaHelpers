@@ -1,0 +1,56 @@
+
+.. _file_Root_HelperClasses.cxx:
+
+File HelperClasses.cxx
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/HelperClasses.cxx``)
+---------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_HelperClasses.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``ElectronPhotonSelectorTools/AsgElectronLikelihoodTool.h``
+
+- ``ElectronPhotonSelectorTools/LikelihoodEnums.h``
+
+- ``ElectronPhotonSelectorTools/egammaPIDdefs.h``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODMuon/Muon.h``
+
+- ``xAODPrimitives/IsolationType.h``
+
+- ``xAODTau/TauDefs.h``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_HelperClasses`
+

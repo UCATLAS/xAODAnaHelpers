@@ -1,0 +1,99 @@
+
+.. _program_listing_file_xAODAnaHelpers_TauCalibrator.h:
+
+Program Listing for File TauCalibrator.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_xAODAnaHelpers_TauCalibrator.h>` (``xAODAnaHelpers/TauCalibrator.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef xAODAnaHelpers_TauCalibrator_H
+   #define xAODAnaHelpers_TauCalibrator_H
+   
+   // algorithm wrapper
+   #include "xAODAnaHelpers/Algorithm.h"
+   
+   // external tools include(s):
+   #include "AsgTools/AnaToolHandle.h"
+   #include "TauAnalysisTools/ITauSmearingTool.h"
+   
+   class TauCalibrator : public xAH::Algorithm
+   {
+     // put your configuration variables here as public variables.
+     // that way they can be set directly from CINT and python.
+   public:
+   
+     // configuration variables
+     std::string m_inContainerName = "";
+     std::string m_outContainerName = "";
+   
+     std::string m_RecommendationTag = "";
+     
+     //  apply a compatibility check between calo TES and MVA TES. For taus that do not pass the test calo based TES is used. Not recommended for 2022-prerec tag.
+     bool m_applyMVATESQualityCheck = false;
+     // For 2022-prerec, toggle between smearing/uncertainties calculated from PowhegPythia or Sherpa
+     std::string m_generator = "";
+     std::string m_campaign = "";
+     bool m_setAFII = false;
+     bool m_setAF3 = false;
+   
+     bool m_skipTruthMatchCheck = false;
+   
+     // sort after calibration
+     bool    m_sort = true;
+   
+     // systematics
+     std::string m_inputAlgoSystNames = "";
+     // this is the name of the vector of names of the systematically varied containers produced by THIS algo (these will be the m_inputAlgoSystNames of the algo downstream)
+     std::string m_outputAlgoSystNames = "TauCalibrator_Syst";
+     bool        m_writeSystToMetadata = false;
+   
+   private:
+     int m_numEvent;         
+     int m_numObject;        
+   
+     std::string m_outAuxContainerName;
+     std::string m_outSCContainerName;
+     std::string m_outSCAuxContainerName;
+   
+     std::vector<CP::SystematicSet> m_systList; 
+   
+     // tools
+     asg::AnaToolHandle<TauAnalysisTools::ITauSmearingTool> m_tauSmearingTool_handle{"TauAnalysisTools::TauSmearingTool/TauSmearingTool",     this}; 
+   
+     // variables that don't get filled at submission time should be
+     // protected from being send from the submission node to the worker
+     // node (done by the //!)
+   
+   public:
+     // Tree *myTree; //!
+     // TH1 *myHist; //!
+   
+     // this is a standard constructor
+     TauCalibrator ();
+   
+     // these are the functions inherited from Algorithm
+     virtual EL::StatusCode setupJob (EL::Job& job);
+     virtual EL::StatusCode fileExecute ();
+     virtual EL::StatusCode histInitialize ();
+     virtual EL::StatusCode changeInput (bool firstFile);
+     virtual EL::StatusCode initialize ();
+     virtual EL::StatusCode execute ();
+     virtual EL::StatusCode postExecute ();
+     virtual EL::StatusCode finalize ();
+     virtual EL::StatusCode histFinalize ();
+   
+     // this is needed to distribute the algorithm to the workers
+     ClassDef(TauCalibrator, 1);
+   
+   };
+   
+   #endif
+   
+   
+   
+   
+   

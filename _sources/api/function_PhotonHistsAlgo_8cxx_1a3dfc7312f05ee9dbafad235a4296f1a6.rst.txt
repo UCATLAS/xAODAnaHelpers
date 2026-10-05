@@ -1,0 +1,13 @@
+.. _exhale_function_PhotonHistsAlgo_8cxx_1a3dfc7312f05ee9dbafad235a4296f1a6:
+
+Function ClassImp(PhotonHistsAlgo)
+==================================
+
+- Defined in :ref:`file_Root_PhotonHistsAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(PhotonHistsAlgo)

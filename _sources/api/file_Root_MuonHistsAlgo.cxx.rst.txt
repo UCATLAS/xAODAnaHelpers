@@ -1,0 +1,56 @@
+
+.. _file_Root_MuonHistsAlgo.cxx:
+
+File MuonHistsAlgo.cxx
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/MuonHistsAlgo.cxx``)
+---------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_MuonHistsAlgo.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/MuonHists.h`` (:ref:`file_xAODAnaHelpers_MuonHists.h`)
+
+- ``xAODAnaHelpers/MuonHistsAlgo.h`` (:ref:`file_xAODAnaHelpers_MuonHistsAlgo.h`)
+
+- ``xAODMuon/MuonContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_MuonHistsAlgo_8cxx_1a15edba4751e97eba23c64a5e88c1d686`
+

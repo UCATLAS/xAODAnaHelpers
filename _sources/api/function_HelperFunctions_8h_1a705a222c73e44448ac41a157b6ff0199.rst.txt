@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a705a222c73e44448ac41a157b6ff0199:
+
+Template Function HelperFunctions::isAvailable(std::string, xAOD::Event \*, xAOD::TStore \*, MsgStream&)
+========================================================================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::isAvailable(std::string, xAOD::Event *, xAOD::TStore *, MsgStream&)

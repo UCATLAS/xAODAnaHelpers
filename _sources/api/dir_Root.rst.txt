@@ -1,0 +1,85 @@
+.. _dir_Root:
+
+
+Directory Root
+==============
+
+
+*Directory path:* ``Root``
+
+
+Files
+-----
+
+- :ref:`file_Root_Algorithm.cxx`
+- :ref:`file_Root_BasicEventSelection.cxx`
+- :ref:`file_Root_BJetEfficiencyCorrector.cxx`
+- :ref:`file_Root_ClusterContainer.cxx`
+- :ref:`file_Root_ClusterHists.cxx`
+- :ref:`file_Root_ClusterHistsAlgo.cxx`
+- :ref:`file_Root_DebugTool.cxx`
+- :ref:`file_Root_ElectronCalibrator.cxx`
+- :ref:`file_Root_ElectronContainer.cxx`
+- :ref:`file_Root_ElectronEfficiencyCorrector.cxx`
+- :ref:`file_Root_ElectronHists.cxx`
+- :ref:`file_Root_ElectronHistsAlgo.cxx`
+- :ref:`file_Root_ElectronSelector.cxx`
+- :ref:`file_Root_EventInfo.cxx`
+- :ref:`file_Root_FatJetContainer.cxx`
+- :ref:`file_Root_HelperClasses.cxx`
+- :ref:`file_Root_HelperFunctions.cxx`
+- :ref:`file_Root_HelpTreeBase.cxx`
+- :ref:`file_Root_HistogramManager.cxx`
+- :ref:`file_Root_HLTJetGetter.cxx`
+- :ref:`file_Root_HLTJetRoIBuilder.cxx`
+- :ref:`file_Root_IParticleHists.cxx`
+- :ref:`file_Root_IParticleHistsAlgo.cxx`
+- :ref:`file_Root_IsoCloseByCorr.cxx`
+- :ref:`file_Root_Jet.cxx`
+- :ref:`file_Root_JetCalibrator.cxx`
+- :ref:`file_Root_JetContainer.cxx`
+- :ref:`file_Root_JetHists.cxx`
+- :ref:`file_Root_JetHistsAlgo.cxx`
+- :ref:`file_Root_JetSelector.cxx`
+- :ref:`file_Root_L1JetContainer.cxx`
+- :ref:`file_Root_LinkDef.h`
+- :ref:`file_Root_MessagePrinterAlgo.cxx`
+- :ref:`file_Root_METConstructor.cxx`
+- :ref:`file_Root_MetContainer.cxx`
+- :ref:`file_Root_MetHists.cxx`
+- :ref:`file_Root_MetHistsAlgo.cxx`
+- :ref:`file_Root_MinixAOD.cxx`
+- :ref:`file_Root_MuonCalibrator.cxx`
+- :ref:`file_Root_MuonContainer.cxx`
+- :ref:`file_Root_MuonEfficiencyCorrector.cxx`
+- :ref:`file_Root_MuonHists.cxx`
+- :ref:`file_Root_MuonHistsAlgo.cxx`
+- :ref:`file_Root_MuonInFatJetCorrector.cxx`
+- :ref:`file_Root_MuonSelector.cxx`
+- :ref:`file_Root_OnlineBeamSpotTool.cxx`
+- :ref:`file_Root_OverlapRemover.cxx`
+- :ref:`file_Root_ParticlePIDManager.cxx`
+- :ref:`file_Root_PhotonCalibrator.cxx`
+- :ref:`file_Root_PhotonContainer.cxx`
+- :ref:`file_Root_PhotonHists.cxx`
+- :ref:`file_Root_PhotonHistsAlgo.cxx`
+- :ref:`file_Root_PhotonSelector.cxx`
+- :ref:`file_Root_TauCalibrator.cxx`
+- :ref:`file_Root_TauContainer.cxx`
+- :ref:`file_Root_TauEfficiencyCorrector.cxx`
+- :ref:`file_Root_TauJetMatching.cxx`
+- :ref:`file_Root_TauSelector.cxx`
+- :ref:`file_Root_TrackContainer.cxx`
+- :ref:`file_Root_TrackHists.cxx`
+- :ref:`file_Root_TrackHistsAlgo.cxx`
+- :ref:`file_Root_TrackSelector.cxx`
+- :ref:`file_Root_TracksInJetHists.cxx`
+- :ref:`file_Root_TreeAlgo.cxx`
+- :ref:`file_Root_TrigMatcher.cxx`
+- :ref:`file_Root_TruthContainer.cxx`
+- :ref:`file_Root_TruthSelector.cxx`
+- :ref:`file_Root_VertexContainer.cxx`
+- :ref:`file_Root_VtxHists.cxx`
+- :ref:`file_Root_Writer.cxx`
+
+

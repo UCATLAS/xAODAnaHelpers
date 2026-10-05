@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a94ac546915235e4db2abbf535a422e0b:
+
+Function HelperFunctions::applyPrimaryVertexSelection
+=====================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::applyPrimaryVertexSelection(const xAOD::JetContainer *, const xAOD::VertexContainer *)

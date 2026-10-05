@@ -1,0 +1,13 @@
+.. _exhale_function_TruthSelector_8cxx_1aa8894ec4ae59f40b5d46e0b26a0af3d0:
+
+Function ClassImp(TruthSelector)
+================================
+
+- Defined in :ref:`file_Root_TruthSelector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(TruthSelector)

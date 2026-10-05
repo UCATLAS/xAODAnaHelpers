@@ -1,0 +1,13 @@
+.. _exhale_function_BasicEventSelection_8cxx_1a945cdd373f1dce14d6c1d29bf8310795:
+
+Function ClassImp(BasicEventSelection)
+======================================
+
+- Defined in :ref:`file_Root_BasicEventSelection.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(BasicEventSelection)

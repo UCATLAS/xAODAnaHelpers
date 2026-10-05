@@ -1,0 +1,37 @@
+.. _exhale_class_classHelperClasses_1_1IParticleInfoSwitch:
+
+Class IParticleInfoSwitch
+=========================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperClasses.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public HelperClasses::InfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1InfoSwitch`)
+
+
+Derived Types
+*************
+
+- ``public HelperClasses::ClusterInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1ClusterInfoSwitch`)
+- ``public HelperClasses::ElectronInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1ElectronInfoSwitch`)
+- ``public HelperClasses::JetInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1JetInfoSwitch`)
+- ``public HelperClasses::MuonInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1MuonInfoSwitch`)
+- ``public HelperClasses::PhotonInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1PhotonInfoSwitch`)
+- ``public HelperClasses::TauInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1TauInfoSwitch`)
+- ``public HelperClasses::TruthInfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1TruthInfoSwitch`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: HelperClasses::IParticleInfoSwitch
+   :members:
+   :protected-members:
+   :undoc-members:

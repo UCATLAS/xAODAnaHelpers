@@ -1,0 +1,13 @@
+.. _exhale_function_TauEfficiencyCorrector_8cxx_1a73ebda4dd26c55b37ba7eafb174ae90c:
+
+Function ClassImp(TauEfficiencyCorrector)
+=========================================
+
+- Defined in :ref:`file_Root_TauEfficiencyCorrector.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(TauEfficiencyCorrector)

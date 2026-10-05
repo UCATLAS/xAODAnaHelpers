@@ -1,0 +1,25 @@
+.. _exhale_class_classxAH_1_1PhotonContainer:
+
+Class PhotonContainer
+=====================
+
+- Defined in :ref:`file_xAODAnaHelpers_PhotonContainer.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::ParticleContainer< Photon, HelperClasses::PhotonInfoSwitch >`` (:ref:`exhale_class_classxAH_1_1ParticleContainer`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::PhotonContainer
+   :members:
+   :protected-members:
+   :undoc-members:

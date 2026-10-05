@@ -1,0 +1,13 @@
+.. _exhale_function_Algorithm_8cxx_1a7a6596e680792d05df015b697f1e79f4:
+
+Function ClassImp(xAH::Algorithm)
+=================================
+
+- Defined in :ref:`file_Root_Algorithm.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(xAH::Algorithm)

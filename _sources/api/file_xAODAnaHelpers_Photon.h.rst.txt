@@ -1,0 +1,57 @@
+
+.. _file_xAODAnaHelpers_Photon.h:
+
+File Photon.h
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/Photon.h``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_Photon.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/Particle.h`` (:ref:`file_xAODAnaHelpers_Particle.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_xAODAnaHelpers_PhotonContainer.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_xAH`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classxAH_1_1Photon`
+

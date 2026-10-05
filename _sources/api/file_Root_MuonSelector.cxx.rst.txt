@@ -1,0 +1,88 @@
+
+.. _file_Root_MuonSelector.cxx:
+
+File MuonSelector.cxx
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/MuonSelector.cxx``)
+--------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_MuonSelector.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``IsolationSelection/IsolationSelectionTool.h``
+
+- ``MuonSelectorTools/MuonSelectionTool.h``
+
+- ``TFile.h``
+
+- ``TObjArray.h``
+
+- ``TObjString.h``
+
+- ``TrigConfxAOD/xAODConfigTool.h``
+
+- ``TriggerMatchingTool/MatchFromCompositeTool.h``
+
+- ``TriggerMatchingTool/MatchingTool.h``
+
+- ``iostream``
+
+- ``tuple``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/MuonSelector.h`` (:ref:`file_xAODAnaHelpers_MuonSelector.h`)
+
+- ``xAODCore/ShallowCopy.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODMuon/MuonContainer.h``
+
+- ``xAODTracking/TrackParticlexAODHelpers.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_MuonSelector_8cxx_1a0b6cec0c5fbc8d042acbda0a6d2ffe86`
+

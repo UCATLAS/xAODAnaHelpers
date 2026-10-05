@@ -1,0 +1,13 @@
+.. _exhale_function_Writer_8cxx_1a45a9ad85b14f0a12e4ea6c78c32fcabc:
+
+Function ClassImp(Writer)
+=========================
+
+- Defined in :ref:`file_Root_Writer.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(Writer)
