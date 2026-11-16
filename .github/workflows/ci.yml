@@ -56,11 +56,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.10.21]
+        python-version: [3.11.18]
 
     steps:
     - uses: actions/checkout@master
-    - name: Set up Python 3.10.21
+    - name: Set up Python 3.11.18
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
