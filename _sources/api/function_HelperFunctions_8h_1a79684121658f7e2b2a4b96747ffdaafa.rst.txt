@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a79684121658f7e2b2a4b96747ffdaafa:
+
+Template Function HelperFunctions::getLink
+==========================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::getLink(const xAOD::IParticle *, std::string)

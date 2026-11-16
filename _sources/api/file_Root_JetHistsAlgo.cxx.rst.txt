@@ -1,0 +1,56 @@
+
+.. _file_Root_JetHistsAlgo.cxx:
+
+File JetHistsAlgo.cxx
+=====================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/JetHistsAlgo.cxx``)
+--------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_JetHistsAlgo.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/JetHists.h`` (:ref:`file_xAODAnaHelpers_JetHists.h`)
+
+- ``xAODAnaHelpers/JetHistsAlgo.h`` (:ref:`file_xAODAnaHelpers_JetHistsAlgo.h`)
+
+- ``xAODJet/JetContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_JetHistsAlgo_8cxx_1ac8ca316717a72e683288eae702e8de3d`
+

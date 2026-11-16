@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a20baf2e79be9f0bf700869d9a96d3a61:
+
+Function xAH::addRucio
+======================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: xAH::addRucio(SH::SampleHandler&, const std::string&, const std::string&)

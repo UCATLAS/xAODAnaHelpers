@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1af0a25209eb124af0d0473582cf684452:
+
+Function HelperFunctions::jetTrimming(const xAOD::Jet \*, double, double, fastjet::JetAlgorithm)
+================================================================================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::jetTrimming(const xAOD::Jet *, double, double, fastjet::JetAlgorithm)

@@ -1,0 +1,51 @@
+
+.. _file_xAODAnaHelpers_tools_ReturnCheckConfig.h:
+
+File ReturnCheckConfig.h
+========================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers_tools>` (``xAODAnaHelpers/tools``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/tools/ReturnCheckConfig.h``)
+---------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_tools_ReturnCheckConfig.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``int fSuccess = gSystem-``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_ReturnCheckConfig_8h_1a484a44f2b1ae321e010118663c32b00e`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_ReturnCheckConfig_8h_1a0544c3fe466e421738dae463968b70ba`
+

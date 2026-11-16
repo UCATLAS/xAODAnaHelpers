@@ -1,0 +1,50 @@
+
+.. _file_Root_TracksInJetHists.cxx:
+
+File TracksInJetHists.cxx
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TracksInJetHists.cxx``)
+------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TracksInJetHists.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``math.h``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TracksInJetHists.h`` (:ref:`file_xAODAnaHelpers_TracksInJetHists.h`)
+
+- ``xAODTracking/TrackParticle.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TracksInJetHists_8cxx_1a077a4a2cc0a8a1400ddc7e9d98893e0c`
+

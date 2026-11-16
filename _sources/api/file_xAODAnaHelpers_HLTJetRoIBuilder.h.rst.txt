@@ -1,0 +1,50 @@
+
+.. _file_xAODAnaHelpers_HLTJetRoIBuilder.h:
+
+File HLTJetRoIBuilder.h
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+This class builds HLT jets and thier associated objects. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/HLTJetRoIBuilder.h``)
+--------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_HLTJetRoIBuilder.h.rst
+
+
+
+Detailed Description
+--------------------
+
+John Alison john.alison@cern.ch 
+
+
+
+
+
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+
+

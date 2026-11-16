@@ -1,0 +1,62 @@
+
+.. _file_xAODAnaHelpers_TrackSelector.h:
+
+File TrackSelector.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TrackSelector.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TrackSelector.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AnaToolHandle.h``
+
+- ``InDetTrackSelectionTool/IInDetTrackSelectionTool.h``
+
+- ``TH1D.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODTracking/TrackParticleContainer.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_TrackSelector.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTrackSelector`
+

@@ -1,0 +1,35 @@
+.. _exhale_class_classxAH_1_1JetContainer:
+
+Class JetContainer
+==================
+
+- Defined in :ref:`file_xAODAnaHelpers_JetContainer.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structxAH_1_1JetContainer_1_1btagOpPoint`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public xAH::ParticleContainer< Jet, HelperClasses::JetInfoSwitch >`` (:ref:`exhale_class_classxAH_1_1ParticleContainer`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: xAH::JetContainer
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,60 @@
+
+.. _file_xAODAnaHelpers_TruthSelector.h:
+
+File TruthSelector.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/TruthSelector.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_TruthSelector.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TH1D.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODBTaggingEfficiency/BTaggingSelectionTool.h``
+
+- ``xAODTruth/TruthParticle.h``
+
+- ``xAODTruth/TruthParticleContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_LinkDef.h`
+
+- :ref:`file_Root_TruthSelector.cxx`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTruthSelector`
+

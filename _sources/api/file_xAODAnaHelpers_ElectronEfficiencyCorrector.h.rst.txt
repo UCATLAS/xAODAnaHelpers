@@ -1,0 +1,77 @@
+
+.. _file_xAODAnaHelpers_ElectronEfficiencyCorrector.h:
+
+File ElectronEfficiencyCorrector.h
+==================================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+Interface to the tools of the ElectronEfficiencyCorrection package. 
+
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/ElectronEfficiencyCorrector.h``)
+-------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_ElectronEfficiencyCorrector.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Marco Milesi marco.milesi@cern.ch 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``ElectronEfficiencyCorrection/AsgElectronEfficiencyCorrectionTool.h``
+
+- ``PATInterfaces/SystematicRegistry.h``
+
+- ``PATInterfaces/SystematicSet.h``
+
+- ``PATInterfaces/SystematicVariation.h``
+
+- ``PATInterfaces/SystematicsUtil.h``
+
+- ``xAODAnaHelpers/Algorithm.h`` (:ref:`file_xAODAnaHelpers_Algorithm.h`)
+
+- ``xAODEgamma/ElectronContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_ElectronEfficiencyCorrector.cxx`
+
+- :ref:`file_Root_LinkDef.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classElectronEfficiencyCorrector`
+

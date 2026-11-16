@@ -1,0 +1,58 @@
+
+.. _file_Root_TrackHistsAlgo.cxx:
+
+File TrackHistsAlgo.cxx
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TrackHistsAlgo.cxx``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TrackHistsAlgo.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/ConstDataVector.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TrackHistsAlgo.h`` (:ref:`file_xAODAnaHelpers_TrackHistsAlgo.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TrackHistsAlgo_8cxx_1a29f02c4a6e8acb161bb935030bead2d9`
+

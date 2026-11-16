@@ -1,0 +1,13 @@
+.. _exhale_function_MetHistsAlgo_8cxx_1a30b1849a937534f79d846d2e2fea5f4a:
+
+Function ClassImp(MetHistsAlgo)
+===============================
+
+- Defined in :ref:`file_Root_MetHistsAlgo.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(MetHistsAlgo)

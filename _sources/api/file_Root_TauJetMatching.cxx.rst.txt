@@ -1,0 +1,68 @@
+
+.. _file_Root_TauJetMatching.cxx:
+
+File TauJetMatching.cxx
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/TauJetMatching.cxx``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_TauJetMatching.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/StatusCode.h``
+
+- ``EventLoop/Worker.h``
+
+- ``TLorentzVector.h``
+
+- ``iostream``
+
+- ``map``
+
+- ``typeinfo``
+
+- ``xAODAnaHelpers/HelperClasses.h`` (:ref:`file_xAODAnaHelpers_HelperClasses.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODAnaHelpers/TauJetMatching.h`` (:ref:`file_xAODAnaHelpers_TauJetMatching.h`)
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODJet/JetContainer.h``
+
+- ``xAODTau/TauJetContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_TauJetMatching_8cxx_1a0c929e1430c01827687f115d6e22ef37`
+

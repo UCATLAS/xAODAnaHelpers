@@ -1,0 +1,51 @@
+
+.. _file_xAODAnaHelpers_MuonHists.h:
+
+File MuonHists.h
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/MuonHists.h``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_MuonHists.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``xAODAnaHelpers/EventInfo.h`` (:ref:`file_xAODAnaHelpers_EventInfo.h`)
+
+- ``xAODAnaHelpers/IParticleHists.h`` (:ref:`file_xAODAnaHelpers_IParticleHists.h`)
+
+- ``xAODAnaHelpers/Muon.h`` (:ref:`file_xAODAnaHelpers_Muon.h`)
+
+- ``xAODMuon/MuonContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_MuonHists.cxx`
+
+- :ref:`file_Root_MuonHistsAlgo.cxx`
+
+
+

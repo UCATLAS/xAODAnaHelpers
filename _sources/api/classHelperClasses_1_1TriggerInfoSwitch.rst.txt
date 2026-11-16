@@ -1,0 +1,25 @@
+.. _exhale_class_classHelperClasses_1_1TriggerInfoSwitch:
+
+Class TriggerInfoSwitch
+=======================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperClasses.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public HelperClasses::InfoSwitch`` (:ref:`exhale_class_classHelperClasses_1_1InfoSwitch`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: HelperClasses::TriggerInfoSwitch
+   :members:
+   :protected-members:
+   :undoc-members:

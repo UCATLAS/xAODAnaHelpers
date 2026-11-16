@@ -1,0 +1,13 @@
+.. _exhale_function_ElectronCalibrator_8cxx_1ae4b49bd754d234cffb18fb5011f2fdac:
+
+Function ClassImp(ElectronCalibrator)
+=====================================
+
+- Defined in :ref:`file_Root_ElectronCalibrator.cxx`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ClassImp(ElectronCalibrator)

@@ -1,0 +1,13 @@
+.. _exhale_function_ParticlePIDManager_8h_1a3d1abef16b552c1fb0bca4670d533164:
+
+Function ANA_MSG_HEADER
+=======================
+
+- Defined in :ref:`file_xAODAnaHelpers_ParticlePIDManager.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: ANA_MSG_HEADER(msgPIDManager)

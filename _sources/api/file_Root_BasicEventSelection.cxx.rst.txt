@@ -1,0 +1,84 @@
+
+.. _file_Root_BasicEventSelection.cxx:
+
+File BasicEventSelection.cxx
+============================
+
+|exhale_lsh| :ref:`Parent directory <dir_Root>` (``Root``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``Root/BasicEventSelection.cxx``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_Root_BasicEventSelection.cxx.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AsgTools/AsgMetadataTool.h``
+
+- ``EventLoop/Job.h``
+
+- ``EventLoop/OutputStream.h``
+
+- ``EventLoop/Worker.h``
+
+- ``GoodRunsLists/GoodRunsListSelectionTool.h``
+
+- ``PATInterfaces/CorrectionCode.h``
+
+- ``PileupReweighting/PileupReweightingTool.h``
+
+- ``TFile.h``
+
+- ``TSystem.h``
+
+- ``TTree.h``
+
+- ``TTreeFormula.h``
+
+- ``TrigConfxAOD/xAODConfigTool.h``
+
+- ``xAODAnaHelpers/BasicEventSelection.h`` (:ref:`file_xAODAnaHelpers_BasicEventSelection.h`)
+
+- ``xAODAnaHelpers/HelperFunctions.h`` (:ref:`file_xAODAnaHelpers_HelperFunctions.h`)
+
+- ``xAODCore/tools/IOStats.h``
+
+- ``xAODCore/tools/ReadStats.h``
+
+- ``xAODCutFlow/CutBookkeeper.h``
+
+- ``xAODCutFlow/CutBookkeeperContainer.h``
+
+- ``xAODEventInfo/EventInfo.h``
+
+- ``xAODMetaData/FileMetaData.h``
+
+- ``xAODTracking/VertexContainer.h``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_BasicEventSelection_8cxx_1a945cdd373f1dce14d6c1d29bf8310795`
+

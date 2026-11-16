@@ -1,0 +1,53 @@
+
+.. _file_xAODAnaHelpers_ElectronHists.h:
+
+File ElectronHists.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_xAODAnaHelpers>` (``xAODAnaHelpers``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``xAODAnaHelpers/ElectronHists.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_xAODAnaHelpers_ElectronHists.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``AthContainers/DataVector.h``
+
+- ``xAODAnaHelpers/Electron.h`` (:ref:`file_xAODAnaHelpers_Electron.h`)
+
+- ``xAODAnaHelpers/EventInfo.h`` (:ref:`file_xAODAnaHelpers_EventInfo.h`)
+
+- ``xAODAnaHelpers/IParticleHists.h`` (:ref:`file_xAODAnaHelpers_IParticleHists.h`)
+
+- ``xAODEgamma/ElectronContainer.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_Root_ElectronHists.cxx`
+
+- :ref:`file_Root_ElectronHistsAlgo.cxx`
+
+
+

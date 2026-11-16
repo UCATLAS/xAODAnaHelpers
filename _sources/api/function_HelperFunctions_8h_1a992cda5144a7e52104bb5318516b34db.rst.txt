@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1a992cda5144a7e52104bb5318516b34db:
+
+Function HelperFunctions::replaceString
+=======================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::replaceString(std::string, const std::string&, const std::string&)

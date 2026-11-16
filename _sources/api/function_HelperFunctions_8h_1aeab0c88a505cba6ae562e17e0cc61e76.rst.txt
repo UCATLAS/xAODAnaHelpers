@@ -1,0 +1,13 @@
+.. _exhale_function_HelperFunctions_8h_1aeab0c88a505cba6ae562e17e0cc61e76:
+
+Function HelperFunctions::string_pos
+====================================
+
+- Defined in :ref:`file_xAODAnaHelpers_HelperFunctions.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: HelperFunctions::string_pos(const std::string&, const std::string&, unsigned int)
